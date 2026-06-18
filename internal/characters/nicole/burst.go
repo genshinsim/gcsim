@@ -1,6 +1,8 @@
 package nicole
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -77,6 +79,7 @@ func init() {
 
 	// is this correct? The additional X=0.5, Y=1.5 offset uses direction from the melee position to the target
 	kleeOffset := meleeOffset.Sub(norm.Scale(1.5)).Add(norm.Perp().Scale(0.5))
+	fmt.Println("Klee offset", kleeOffset)
 	projectionHitbox[keys.Klee] = func(t *enemy.Enemy) info.AttackPattern {
 		return combat.NewCircleHitOnTarget(t, kleeOffset, 4.5)
 	}
@@ -109,7 +112,7 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6.5), burstHitmark, burstHitmark)
 
 	c.QueueCharTask(func() {
-		c.burstHits = 0
+		c.projections = 0
 		c.AddStatus(burstKey, 20*60, true)
 	}, burstHitmark+1)
 
@@ -134,7 +137,7 @@ func (c *char) burstInit() {
 			return
 		}
 
-		if c.burstHits >= 4 {
+		if c.projections >= 4 {
 			return
 		}
 
@@ -147,7 +150,7 @@ func (c *char) burstInit() {
 		}
 
 		c.AddStatus(burstICDKey, 3*60, true)
-		c.burstHits += 1
+		c.projections += 1
 
 		char := c.Core.Player.Chars()[ae.Info.ActorIndex]
 

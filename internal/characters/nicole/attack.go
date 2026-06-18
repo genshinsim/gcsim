@@ -38,7 +38,7 @@ func init() {
 	attackFrames[2][action.ActionCharge] = 52                             // N3 -> CA
 }
 
-func (c *char) Attack(p map[string]int) (action.Info, error) {
+func (c *char) Attack(_ map[string]int) (action.Info, error) {
 	// TODO: Find actual windup and conditions for windup
 	windup := 0
 	switch c.Core.Player.CurrentState() {

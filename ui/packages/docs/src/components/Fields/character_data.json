@@ -268,7 +268,7 @@
       "fields": [
         ".nicole.projections"
       ],
-      "desc": "Number of Arcane Projection attacks remaining."
+      "desc": "Number of Arcane Projection attacks done"
     }
   ],
   "ningguang": [

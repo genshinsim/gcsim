@@ -17,7 +17,7 @@ type char struct {
 	skillShield *shd
 	skillBuff   []float64
 	a1Buff      []float64
-	burstHits   int
+	projections int
 	a1Src       int
 	c2Buff      []float64
 }
@@ -62,5 +62,17 @@ func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 		return 5
 	default:
 		return c.Character.AnimationStartDelay(k)
+	}
+}
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "projections":
+		if !c.StatusIsActive(burstKey) {
+			return 0, nil
+		}
+		return c.projections, nil
+	default:
+		return c.Character.Condition(fields)
 	}
 }
