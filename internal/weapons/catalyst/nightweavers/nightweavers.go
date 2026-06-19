@@ -19,11 +19,42 @@ func init() {
 }
 
 type Weapon struct {
-	Index int
+	Index  int
+	Core   *core.Core
+	Char   *character.CharWrapper
+	Refine int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
-func (w *Weapon) Init() error      { return nil }
+func (w *Weapon) Init() error {
+	reactBuff := 0.3 + float64(w.Refine)*0.1
+	// add reaction bonus when both of previous bonuses are active
+
+	// TODO: figure out how the buff interacts with multiple holders
+	for _, otherChar := range w.Core.Player.Chars() {
+		otherChar.AddReactBonusMod(character.ReactBonusMod{
+			Base: modifier.NewBase("nightweavers", -1),
+			Amount: func(ai info.AttackInfo) float64 {
+				if !w.Char.StatusIsActive(prayerKey) || !w.Char.StatusIsActive(newMoonKey) {
+					return 0
+				}
+
+				switch ai.AttackTag {
+				case attacks.AttackTagBloom, attacks.AttackTagBountifulCore:
+					return reactBuff * 3
+				case attacks.AttackTagHyperbloom, attacks.AttackTagBurgeon:
+					return reactBuff * 2
+				case attacks.AttackTagDirectLunarBloom:
+					return reactBuff
+				default:
+					return 0
+				}
+			},
+		})
+	}
+
+	return nil
+}
 
 const (
 	prayerKey  = "prayer-of-the-far-north"
@@ -40,7 +71,11 @@ const (
 // is increased by 40%/50%/60%/70%/80%. This effect cannot stack. The aforementioned effects
 // can be triggered even if the equipping character is off-field.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	w := &Weapon{}
+	w := &Weapon{
+		Core:   c,
+		Char:   char,
+		Refine: p.Refine,
+	}
 	r := p.Refine
 
 	m := make([]float64, attributes.EndStatType)
@@ -92,30 +127,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		})
 	}
 	c.Events.Subscribe(event.OnLunarBloom, newmoon, fmt.Sprintf("new-moon-verse-%v", char.Base.Key.String()))
-
-	reactBuff := 0.3 + float64(r)*0.1
-	// add reaction bonus when both of previous bonuses are active
-	for _, otherChar := range c.Player.Chars() {
-		otherChar.AddReactBonusMod(character.ReactBonusMod{
-			Base: modifier.NewBase("nightweavers", -1),
-			Amount: func(ai info.AttackInfo) float64 {
-				if !char.StatusIsActive(prayerKey) || !char.StatusIsActive(newMoonKey) {
-					return 0
-				}
-
-				switch ai.AttackTag {
-				case attacks.AttackTagBloom, attacks.AttackTagBountifulCore:
-					return reactBuff * 3
-				case attacks.AttackTagHyperbloom, attacks.AttackTagBurgeon:
-					return reactBuff * 2
-				case attacks.AttackTagDirectLunarBloom:
-					return reactBuff
-				default:
-					return 0
-				}
-			},
-		})
-	}
 
 	return w, nil
 }
