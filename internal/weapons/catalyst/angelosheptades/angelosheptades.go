@@ -26,25 +26,25 @@ func init() {
 
 type Weapon struct {
 	Index   int
-	Core    *core.Core
-	Char    *character.CharWrapper
-	BuffSrc int
-	BuffAmt float64
+	core    *core.Core
+	char    *character.CharWrapper
+	buffSrc int
+	buffAmt float64
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error {
 	n := make([]float64, attributes.EndStatType)
-	for _, c := range w.Core.Player.Chars() {
+	for _, c := range w.core.Player.Chars() {
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("pathfinders-light", -1),
 			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
-				if !w.Char.StatusIsActive(angelosHeptadesHolderBuffKey) {
+				if !w.char.StatusIsActive(angelosHeptadesHolderBuffKey) {
 					return nil
 				}
 
-				n[attributes.DmgP] = w.BuffAmt
-				if c.Index() != w.Core.Player.Active() {
+				n[attributes.DmgP] = w.buffAmt
+				if c.Index() != w.core.Player.Active() {
 					if c.IsHexerei {
 						n[attributes.DmgP] *= 0.5
 						return n
@@ -62,10 +62,10 @@ func (w *Weapon) Init() error {
 
 func NewWeapon(core *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{
-		Core:    core,
-		Char:    char,
-		BuffSrc: -1,
-		BuffAmt: 0,
+		core:    core,
+		char:    char,
+		buffSrc: -1,
+		buffAmt: 0,
 	}
 	r := p.Refine
 
@@ -79,6 +79,8 @@ func NewWeapon(core *core.Core, char *character.CharWrapper, p info.WeaponProfil
 		},
 	})
 
+	energyAmount := 13.0 + float64(r)
+
 	core.Events.Subscribe(event.OnShielded, func(args ...any) {
 		shd := args[0].(shield.Shield)
 		if shd.ShieldOwner() != char.Index() {
@@ -89,16 +91,14 @@ func NewWeapon(core *core.Core, char *character.CharWrapper, p info.WeaponProfil
 			return
 		}
 
-		w.BuffSrc = core.F
+		w.buffSrc = core.F
 		char.AddStatus(angelosHeptadesHolderBuffKey, 20*60, true)
 
-		w.updateBuff(char, core, r, w.BuffSrc)
+		w.updateBuff(char, core, r, w.buffSrc)
 
 		if char.StatusIsActive(angelosHeptadesEnergyICDKey) {
 			return
 		}
-
-		energyAmount := 13.0 + float64(r)
 
 		char.AddStatus(angelosHeptadesEnergyICDKey, 14*60, true)
 		char.AddEnergy(angelosHeptadesEnergyKey, energyAmount)
@@ -107,22 +107,22 @@ func NewWeapon(core *core.Core, char *character.CharWrapper, p info.WeaponProfil
 }
 
 func (w *Weapon) updateBuff(char *character.CharWrapper, core *core.Core, r, src int) {
-	if w.BuffSrc != src {
+	if w.buffSrc != src {
+		return
+	}
+
+	if !char.StatusIsActive(angelosHeptadesHolderBuffKey) {
+		w.buffAmt = 0
 		return
 	}
 
 	buff := 0.07 + float64(r)*0.03
 	buffCap := 0.18 + float64(r)*0.08
-	w.BuffAmt = min(char.NonExtraStat(attributes.ATK)/1000.0*buff, buffCap)
-
-	if core.F-w.BuffSrc >= 20*60 {
-		w.BuffAmt = 0
-		return
-	}
+	w.buffAmt = min(char.NonExtraStat(attributes.ATK)/1000.0*buff, buffCap)
 
 	core.Log.NewEvent("angelos heptades buff updated", glog.LogWeaponEvent, char.Index()).
-		Write("src", w.BuffSrc).
-		Write("value", w.BuffAmt).
+		Write("src", w.buffSrc).
+		Write("value", w.buffAmt).
 		Write("holder-atk", char.NonExtraStat(attributes.ATK))
 
 	core.Tasks.Add(func() {
