@@ -68,28 +68,28 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal:
-			w.daybreakAddBuff(c, &w.naStacks, &w.naSrc)
+			w.daybreakAddBuff(c, char, &w.naStacks, &w.naSrc)
 			c.Log.NewEvent("daybreak-chronicles-normal", glog.LogWeaponEvent, char.Index()).
 				Write("stacks", w.naStacks)
 		case attacks.AttackTagElementalArt, attacks.AttackTagElementalArtHold:
-			w.daybreakAddBuff(c, &w.skillStacks, &w.skillSrc)
+			w.daybreakAddBuff(c, char, &w.skillStacks, &w.skillSrc)
 			c.Log.NewEvent("daybreak-chronicles-skill", glog.LogWeaponEvent, char.Index()).
 				Write("stacks", w.skillStacks)
 		case attacks.AttackTagElementalBurst:
-			w.daybreakAddBuff(c, &w.burstStacks, &w.burstSrc)
+			w.daybreakAddBuff(c, char, &w.burstStacks, &w.burstSrc)
 			c.Log.NewEvent("daybreak-chronicles-burst", glog.LogWeaponEvent, char.Index()).
 				Write("stacks", w.burstStacks)
 		}
 	}, fmt.Sprintf("daybreak-chronicles-buff-refresh-%v", char.Base.Key.String()))
 
-	c.Tasks.Add(w.decreaseStacks(c, c.F, &w.naStacks, &w.naSrc), 60)
-	c.Tasks.Add(w.decreaseStacks(c, c.F, &w.skillStacks, &w.skillSrc), 60)
-	c.Tasks.Add(w.decreaseStacks(c, c.F, &w.burstStacks, &w.burstSrc), 60)
+	char.QueueCharTask(w.decreaseStacks(c, char, c.F, &w.naStacks, &w.naSrc), 60)
+	char.QueueCharTask(w.decreaseStacks(c, char, c.F, &w.skillStacks, &w.skillSrc), 60)
+	char.QueueCharTask(w.decreaseStacks(c, char, c.F, &w.burstStacks, &w.burstSrc), 60)
 
 	return w, nil
 }
 
-func (w *Weapon) decreaseStacks(c *core.Core, src int, stacks, stacksSrc *int) func() {
+func (w *Weapon) decreaseStacks(c *core.Core, char *character.CharWrapper, src int, stacks, stacksSrc *int) func() {
 	return func() {
 		if *stacks == 0 {
 			return
@@ -102,26 +102,20 @@ func (w *Weapon) decreaseStacks(c *core.Core, src int, stacks, stacksSrc *int) f
 		*stacks--
 
 		if *stacks != 0 {
-			c.Tasks.Add(w.decreaseStacks(c, src, stacks, stacksSrc), 60)
+			char.QueueCharTask(w.decreaseStacks(c, char, src, stacks, stacksSrc), 60)
 		}
 	}
 }
 
-func (w *Weapon) daybreakAddBuff(c *core.Core, stacks, stacksSrc *int) {
+func (w *Weapon) daybreakAddBuff(c *core.Core, char *character.CharWrapper, stacks, stacksSrc *int) {
 	*stacksSrc = c.F
-	c.Tasks.Add(w.decreaseStacks(c, c.F, stacks, stacksSrc), 60)
+	char.QueueCharTask(w.decreaseStacks(c, char, c.F, stacks, stacksSrc), 60)
 
-	if *stacks >= 6 {
-		return
-	}
-	*stacks++
+	addStacks := 1
 
-	if c.Player.GetHexereiCount() < 2 {
-		return
+	if c.Player.GetHexereiCount() >= 2 {
+		addStacks = 2
 	}
 
-	if *stacks >= 6 {
-		return
-	}
-	*stacks++
+	*stacks = min(*stacks+addStacks, 6)
 }
