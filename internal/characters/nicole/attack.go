@@ -39,16 +39,14 @@ func init() {
 }
 
 func (c *char) Attack(_ map[string]int) (action.Info, error) {
-	// TODO: Find actual windup and conditions for windup
 	windup := 0
 	switch c.Core.Player.CurrentState() {
 	case action.NormalAttackState:
 		if c.NormalCounter == 0 {
-			// N3 -> N1
-			windup = 10
+			windup = 7
 		}
 	case action.ChargeAttackState:
-		windup = -4
+		windup = 3
 	}
 
 	counter := c.NormalCounter

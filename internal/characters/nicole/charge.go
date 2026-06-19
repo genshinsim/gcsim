@@ -27,11 +27,8 @@ func init() {
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	// TODO: Find actual windup and conditions for windup
 	windup := 0
-	switch c.Core.Player.CurrentState() {
-	case action.NormalAttackState:
-		if c.NormalCounter == 1 || c.NormalCounter == 2 {
-			windup = 14
-		}
+	if c.Core.Player.CurrentState() == action.Idle {
+		windup = 2
 	}
 
 	c.Core.Tasks.Add(func() {
