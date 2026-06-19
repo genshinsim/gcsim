@@ -26,7 +26,7 @@ func (c *char) c2Init() {
 		}
 
 		atk.Info.IgnoreDefPercent += 0.6
-	}, "nicole-c6-hook")
+	}, "raiden-c2-hook")
 }
 
 // When the Musou Isshin state applied by Secret Art: Musou Shinsetsu expires
