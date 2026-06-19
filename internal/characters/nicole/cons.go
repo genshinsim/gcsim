@@ -140,6 +140,10 @@ func (c *char) c4Init() {
 		return
 	}
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return
+		}
+
 		atk := args[1].(*info.AttackEvent)
 
 		switch atk.Info.AttackTag {
@@ -159,20 +163,22 @@ func (c *char) c4Init() {
 			return
 		}
 
-		if char.Tags[c4Key] > 0 {
-			amt := 0.7 * c.TotalAtk()
-			char.Tags[c4Key]--
-
-			if c.Core.Flags.LogDebug {
-				c.Core.Log.NewEvent("Nicole c4 proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
-					Write("before", atk.Info.FlatDmg).
-					Write("addition", amt).
-					Write("effect_ends_at", char.StatusExpiry(c4Key)).
-					Write("stacks_left", char.Tags[c4Key])
-			}
-
-			atk.Info.FlatDmg += amt
+		if char.Tags[c4Key] <= 0 {
+			return
 		}
+
+		amt := 0.7 * c.TotalAtk()
+		char.Tags[c4Key]--
+
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("Nicole c4 proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
+				Write("before", atk.Info.FlatDmg).
+				Write("addition", amt).
+				Write("effect_ends_at", char.StatusExpiry(c4Key)).
+				Write("stacks_left", char.Tags[c4Key])
+		}
+
+		atk.Info.FlatDmg += amt
 	}, "nicole-c4-hook")
 }
 

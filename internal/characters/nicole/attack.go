@@ -14,7 +14,7 @@ import (
 
 var (
 	attackFrames   [][]int
-	attackHitmarks = []int{15, 8, 38}
+	attackHitmarks = []int{10, 8, 38}
 	attackHitboxes = [][]float64{{4, 2}, {2}, {2.5}}
 	attackOffsets  = []*info.Point{{Y: -1}, nil, nil}
 )
@@ -26,8 +26,9 @@ const (
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 25) // N1 -> N2
-	attackFrames[0][action.ActionCharge] = 18                             // N1 -> CA
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 26) // N1 -> W
+	attackFrames[0][action.ActionAttack] = 18                             // N1 -> N2
+	attackFrames[0][action.ActionCharge] = 19                             // N1 -> CA
 
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 34) // N2 -> W
 	attackFrames[1][action.ActionAttack] = 22                             // N2 -> N3
