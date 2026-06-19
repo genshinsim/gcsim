@@ -47,6 +47,7 @@ func (c *char) Init() error {
 	c.a4()
 	c.onBurstStackCount()
 	c.onSwapClearBurst()
+	c.c2Init()
 	return nil
 }
 

@@ -141,9 +141,7 @@ func (c *char) swordAttack() action.Info {
 		// Sword hits are dynamic - group snapshots with damage proc
 		ai.Mult = mult[c.TalentLvlBurst()]
 		ai.Mult += resolveBonus[c.TalentLvlBurst()] * c.stacksConsumed
-		if c.Base.Cons >= 2 {
-			ai.IgnoreDefPercent = .6
-		}
+
 		ap := combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
 			info.Point{X: swordOffsets[c.NormalCounter][i][0], Y: swordOffsets[c.NormalCounter][i][1]},

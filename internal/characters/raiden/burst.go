@@ -63,10 +63,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burstBase[c.TalentLvlBurst()],
 	}
 
-	if c.Base.Cons >= 2 {
-		ai.IgnoreDefPercent = 0.6
-	}
-
 	c.Core.Tasks.Add(func() {
 		c.stacksConsumed = c.stacks
 		c.stacks = 0

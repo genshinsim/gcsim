@@ -91,9 +91,7 @@ func (c *char) swordCharge() action.Info {
 			ai.HitlagHaltFrames = 0
 			ai.CanBeDefenseHalted = false
 		}
-		if c.Base.Cons >= 2 {
-			ai.IgnoreDefPercent = .6
-		}
+
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,

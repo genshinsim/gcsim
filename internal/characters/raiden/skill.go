@@ -144,9 +144,7 @@ func (c *char) eyeOnDamage() {
 			Durability: 25,
 			Mult:       skillTick[c.TalentLvlSkill()],
 		}
-		if c.Base.Cons >= 2 && c.StatusIsActive(BurstKey) {
-			ai.IgnoreDefPercent = 0.6
-		}
+
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 4), 5, 5, c.particleCB)
 
 		c.eyeICD = c.Core.F + 54 // 0.9 sec icd
