@@ -149,19 +149,3 @@ func (c *char) onBurstStackCount() {
 			Write("final", c.stacks)
 	}, "raiden-stacks")
 }
-
-func (c *char) inBurstStateOrAnim() bool {
-	if c.StatusIsActive(BurstKey) {
-		return true
-	}
-
-	if c.Core.Player.CurrentState() == action.Idle {
-		return false
-	}
-
-	if c.Core.Player.CurrentStateStart() == c.burstAnimSrc {
-		return true
-	}
-
-	return false
-}

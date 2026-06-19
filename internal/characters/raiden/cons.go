@@ -21,7 +21,7 @@ func (c *char) c2Init() {
 			return
 		}
 
-		if !c.inBurstStateOrAnim() {
+		if !(c.StatusIsActive(BurstKey) || c.Core.Player.CurrentStateStart() == c.burstAnimSrc) {
 			return
 		}
 
