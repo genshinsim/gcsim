@@ -71,6 +71,8 @@ func init() {
 }
 
 func (c *char) swordCharge() action.Info {
+	c.burstAnimSrc = c.Core.F
+
 	for i, mult := range chargeSword {
 		ai := info.AttackInfo{
 			ActorIndex:         c.Index(),

@@ -29,6 +29,8 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
+	c.burstAnimSrc = c.Core.F
+
 	// activate burst, reset stacks
 	c.burstCastF = c.Core.F
 	c.restoreCount = 0

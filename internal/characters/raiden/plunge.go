@@ -136,6 +136,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 }
 
 func (c *char) lowPlungeBXY(p map[string]int) action.Info {
+	c.burstAnimSrc = c.Core.F
 	collision, ok := p["collision"]
 	if !ok {
 		collision = 0 // Whether or not collision hit
@@ -228,6 +229,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 }
 
 func (c *char) highPlungeBXY(p map[string]int) action.Info {
+	c.burstAnimSrc = c.Core.F
 	collision, ok := p["collision"]
 	if !ok {
 		collision = 0 // Whether or not collision hit
