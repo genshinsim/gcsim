@@ -128,7 +128,8 @@ func (p *Player) calc(atk *info.AttackEvent) (float64, bool) {
 	res := 0.0
 
 	def := char.TotalDef(false)
-	def *= (1 - atk.Info.IgnoreDefPercent)
+	defIgn := min(atk.Info.IgnoreDefPercent, 1.0)
+	def *= (1 - defIgn)
 	defmod := 1 - def/(def+float64(5*atk.Snapshot.CharLvl)+500)
 
 	// apply def mod
@@ -199,7 +200,7 @@ func (p *Player) calc(atk *info.AttackEvent) (float64, bool) {
 			Write("ele", st).
 			Write("ele_per", elePer).
 			Write("bonus_dmg", dmgBonus).
-			Write("ignore_def", atk.Info.IgnoreDefPercent).
+			Write("ignore_def", defIgn).
 			Write("def_adj", 0). // Players don't have DefMods applied
 			Write("target_lvl", char.Base.Level).
 			Write("char_lvl", atk.Snapshot.CharLvl).

@@ -206,7 +206,7 @@ func (c *char) c6Init() {
 		if !char.StatModIsActive(a1Key) {
 			return
 		}
-		atk.Info.IgnoreDefPercent = min(atk.Info.IgnoreDefPercent+0.4, 0.9)
+		atk.Info.IgnoreDefPercent += 0.4
 	}, "nicole-c6-hook")
 }
 
