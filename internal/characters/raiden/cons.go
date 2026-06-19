@@ -21,11 +21,9 @@ func (c *char) c2Init() {
 			return
 		}
 
-		if !(c.StatusIsActive(BurstKey) || c.Core.Player.CurrentStateStart() == c.burstAnimSrc) {
-			return
+		if c.StatusIsActive(BurstKey) || c.Core.Player.CurrentStateStart() == c.burstAnimSrc {
+			atk.Info.IgnoreDefPercent += 0.6
 		}
-
-		atk.Info.IgnoreDefPercent += 0.6
 	}, "raiden-c2-hook")
 }
 
