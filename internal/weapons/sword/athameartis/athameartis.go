@@ -15,9 +15,9 @@ import (
 )
 
 const (
-	bladeOfDaylightHoursStatus = "blade-of-the-daylight-hours-status"
-	bladeOfDaylightHoursBuff   = "blade-of-the-daylight-hours-buff"
-	teamBuffKey                = "athameartis-team-buff"
+	bladeOfDaylightHoursBuff = "blade-of-the-daylight-hours-buff"
+	teamBuffKey              = "athameartis-team-buff"
+	buffDur                  = 3 * 60
 )
 
 func init() {
@@ -25,15 +25,19 @@ func init() {
 }
 
 type Weapon struct {
-	Index int
+	Index    int
+	refine   int
+	c        *core.Core
+	char     *character.CharWrapper
+	teamBuff []float64
+	src      int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
-func (w *Weapon) Init() error      { return nil }
-
-func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	w := &Weapon{}
-	r := p.Refine
+func (w *Weapon) Init() error {
+	r := w.refine
+	c := w.c
+	char := w.char
 
 	burstCD := 0.12 + 0.04*float64(r)
 	selfATK := 0.15 + 0.05*float64(r)
@@ -53,63 +57,25 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	})
 
 	selfVal := make([]float64, attributes.EndStatType)
+	if c.Player.GetHexereiCount() >= 2 {
+		selfVal[attributes.ATKP] = selfATK * 1.75
+	} else {
+		selfVal[attributes.ATKP] = selfATK
+	}
 
-	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase(bladeOfDaylightHoursBuff, -1),
+	selfStatMod := character.StatMod{
+		Base:         modifier.NewBase(bladeOfDaylightHoursBuff, buffDur),
 		AffectedStat: attributes.ATKP,
 		Amount: func() []float64 {
-			if !char.StatusIsActive(bladeOfDaylightHoursStatus) {
-				return nil
-			}
-
-			if c.Player.GetHexereiCount() >= 2 {
-				selfVal[attributes.ATKP] = selfATK * 1.75
-			} else {
-				selfVal[attributes.ATKP] = selfATK
-			}
-
 			return selfVal
 		},
-	})
-
-	teamVal := make([]float64, attributes.EndStatType)
-
-	// TODO: When there are Athame Artis of different refines on the team,
-	// the team ATK% buff should use the higher refine value.
-
-	applyTeamBuff := func() {
-		active := c.Player.ActiveChar()
-
-		duration := 3 * 60
-
-		if c.Player.GetHexereiCount() >= 2 {
-			duration = 2 * 60
-			teamVal[attributes.ATKP] = teamATK * 1.75
-		} else {
-			teamVal[attributes.ATKP] = teamATK
-		}
-
-		// TODO: When there are Athame Artis of different refines on the team,
-		// the team atk% buff should prioritize higher buff value
-
-		active.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(teamBuffKey, duration),
-			AffectedStat: attributes.ATKP,
-			Amount: func() []float64 {
-				return teamVal
-			},
-		})
 	}
-	var refreshTeamBuff func()
 
-	refreshTeamBuff = func() {
-		if !char.StatusIsActive(bladeOfDaylightHoursStatus) {
-			return
-		}
-
-		applyTeamBuff()
-
-		c.Tasks.Add(refreshTeamBuff, 60)
+	w.teamBuff = make([]float64, attributes.EndStatType)
+	if c.Player.GetHexereiCount() >= 2 {
+		w.teamBuff[attributes.ATKP] = teamATK * 1.75
+	} else {
+		w.teamBuff[attributes.ATKP] = teamATK
 	}
 
 	// TODO: ATK% buff should affect hit that triggered it.
@@ -131,11 +97,64 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 
-		char.AddStatus(bladeOfDaylightHoursStatus, 3*60, true)
-
-		applyTeamBuff()
-		c.Tasks.Add(refreshTeamBuff, 60)
+		if !char.StatusIsActive(bladeOfDaylightHoursBuff) {
+			// only start a new task if the previous task should've expired
+			char.AddStatMod(selfStatMod)
+			w.src = c.F
+			w.refreshTeamBuff(c.F)()
+		} else {
+			char.AddStatMod(selfStatMod)
+		}
 	}, fmt.Sprintf("athame-%v", char.Base.Key.String()))
+	return nil
+}
+
+func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
+	w := &Weapon{
+		refine: p.Refine,
+		c:      c,
+		char:   char,
+	}
 
 	return w, nil
+}
+
+func (w *Weapon) refreshTeamBuff(src int) func() {
+	return func() {
+		if w.src != src {
+			return
+		}
+
+		if !w.char.StatusIsActive(bladeOfDaylightHoursBuff) {
+			return
+		}
+
+		w.char.QueueCharTask(w.refreshTeamBuff(src), 60)
+
+		active := w.c.Player.ActiveChar()
+		if active.Index() == w.char.Index() {
+			return
+		}
+
+		duration := buffDur
+
+		if w.c.Player.GetHexereiCount() >= 2 {
+			duration = 2 * 60
+		}
+
+		if active.StatModIsActive(teamBuffKey) {
+			// if the buff already exists on the active character from a different athame artis
+			// the buff is refreshed using the first weapon's refine instead of the new one
+			dur := active.StatusDuration(teamBuffKey)
+			active.ExtendStatus(teamBuffKey, duration-dur)
+		} else {
+			active.AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag(teamBuffKey, duration),
+				AffectedStat: attributes.ATKP,
+				Amount: func() []float64 {
+					return w.teamBuff
+				},
+			})
+		}
+	}
 }
