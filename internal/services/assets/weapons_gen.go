@@ -181,6 +181,7 @@ var weaponMap = map[string]string{
 	"thealleyflash":                   "UI_EquipIcon_Sword_Outlaw",
 	"amenomakageuchi":                 "UI_EquipIcon_Sword_Bakufu",
 	"aquilafavonia":                   "UI_EquipIcon_Sword_Falcon",
+	"athameartis":                     "UI_EquipIcon_Sword_Motsognir",
 	"azurelight":                      "UI_EquipIcon_Sword_OuterSword",
 	"blackclifflongsword":             "UI_EquipIcon_Sword_Blackrock",
 	"theblacksword":                   "UI_EquipIcon_Sword_Bloodstained",
