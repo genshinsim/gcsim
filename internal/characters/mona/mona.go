@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -81,9 +82,9 @@ func (c *char) omenIsNearby() bool {
 }
 
 func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
-	// can use charge without attack beforehand unlike most of the other sword users
-	if a == action.ActionCharge {
-		return nil
+	// TODO: you can do the CA after the N4 resets into idle
+	if c.Core.Player.LastAction.Type == action.ActionAttack && c.NormalCounter == 0 {
+		return player.ErrInvalidChargeAction
 	}
 	return c.Character.NextQueueItemIsValid(k, a, p)
 }
