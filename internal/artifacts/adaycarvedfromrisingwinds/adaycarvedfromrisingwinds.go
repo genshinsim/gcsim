@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -51,7 +52,13 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 	c4Buff := make([]float64, attributes.EndStatType)
 	c4Buff[attributes.ATKP] = 0.25
 
+	c4BuffHexerei := make([]float64, attributes.EndStatType)
+	c4BuffHexerei[attributes.CR] = 0.2
+
 	core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return
+		}
 		atk, ok := args[1].(*info.AttackEvent)
 		if !ok {
 			return
@@ -71,7 +78,7 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 		}
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("blessing-of-pastoral-winds", 6*60),
+			Base:         modifier.NewBaseWithHitlag("blessing-of-pastoral-winds", 6*60),
 			AffectedStat: attributes.ATKP,
 			Amount: func() []float64 {
 				return c4Buff
@@ -82,11 +89,8 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 			return
 		}
 
-		c4BuffHexerei := make([]float64, attributes.EndStatType)
-		c4BuffHexerei[attributes.CR] = 0.2
-
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("resolve-of-pastoral-winds", 6*60),
+			Base:         modifier.NewBaseWithHitlag("resolve-of-pastoral-winds", 6*60),
 			AffectedStat: attributes.CR,
 			Amount: func() []float64 {
 				return c4BuffHexerei
