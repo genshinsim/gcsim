@@ -136,6 +136,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 }
 
 func (c *char) lowPlungeBXY(p map[string]int) action.Info {
+	c.burstAnimSrc = c.Core.F
 	collision, ok := p["collision"]
 	if !ok {
 		collision = 0 // Whether or not collision hit
@@ -158,9 +159,7 @@ func (c *char) lowPlungeBXY(p map[string]int) action.Info {
 		Durability:     25,
 		Mult:           lowPlunge[c.TalentLvlBurst()] + resolveBonus[c.TalentLvlBurst()]*c.stacksConsumed,
 	}
-	if c.Base.Cons >= 2 {
-		ai.IgnoreDefPercent = .6
-	}
+
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, lowPlungeRadius),
@@ -230,6 +229,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 }
 
 func (c *char) highPlungeBXY(p map[string]int) action.Info {
+	c.burstAnimSrc = c.Core.F
 	collision, ok := p["collision"]
 	if !ok {
 		collision = 0 // Whether or not collision hit
@@ -252,9 +252,7 @@ func (c *char) highPlungeBXY(p map[string]int) action.Info {
 		Durability:     25,
 		Mult:           highPlunge[c.TalentLvlBurst()] + resolveBonus[c.TalentLvlBurst()]*c.stacksConsumed,
 	}
-	if c.Base.Cons >= 2 {
-		ai.IgnoreDefPercent = .6
-	}
+
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, highPlungeRadius),
@@ -302,8 +300,6 @@ func (c *char) plungeCollisionB(delay int) {
 		Durability:     0,
 		Mult:           collision[c.TalentLvlBurst()] + resolveBonus[c.TalentLvlBurst()]*c.stacksConsumed,
 	}
-	if c.Base.Cons >= 2 {
-		ai.IgnoreDefPercent = .6
-	}
+
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 1), delay, delay)
 }

@@ -71,6 +71,8 @@ func init() {
 }
 
 func (c *char) swordCharge() action.Info {
+	c.burstAnimSrc = c.Core.F
+
 	for i, mult := range chargeSword {
 		ai := info.AttackInfo{
 			ActorIndex:         c.Index(),
@@ -91,9 +93,7 @@ func (c *char) swordCharge() action.Info {
 			ai.HitlagHaltFrames = 0
 			ai.CanBeDefenseHalted = false
 		}
-		if c.Base.Cons >= 2 {
-			ai.IgnoreDefPercent = .6
-		}
+
 		c.QueueCharTask(func() {
 			c.Core.QueueAttack(
 				ai,
