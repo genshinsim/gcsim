@@ -40,6 +40,14 @@
       "image_name": "UI_EquipIcon_Bow_Amos",
       "name_text_hash_map ": "828711395"
     },
+    "angelosheptades": {
+      "id": 14523,
+      "key": "angelosheptades",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_FairyGarden",
+      "name_text_hash_map ": "1871665507"
+    },
     "apprenticesnotes": {
       "id": 14101,
       "key": "apprenticesnotes",
