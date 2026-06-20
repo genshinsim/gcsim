@@ -50,9 +50,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			return
 		}
 
-		if c.IsHexerei && !c.omenIsNearby() {
-			c.Core.Tasks.Add(c.c6(c.Core.F), 60)
-		}
+		c.c6OnApplyBubble()
 
 		// bubble is applied to each target on a per target basis
 		// lasts 8 seconds if not popped normally

@@ -241,6 +241,20 @@
       "desc": "Amount of Fighting Spirit."
     }
   ],
+  "mona": [
+    {
+      "fields": [
+        ".mona.astral-glow"
+      ],
+      "desc": "Number of Astral Glow of Mercury stacks."
+    },
+    {
+      "fields": [
+        ".mona.c6-stacks"
+      ],
+      "desc": "Number of C6 stacks."
+    }
+  ],
   "mualani": [
     {
       "fields": [

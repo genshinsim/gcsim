@@ -3,6 +3,7 @@ package mona
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -23,7 +24,8 @@ type char struct {
 	a4Stats          []float64
 	c6Src            int
 	c6Stacks         int
-	astralGlowStacks [2]int
+	astralGlowStacks int
+	astralGlowSrc    int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
@@ -76,4 +78,23 @@ func (c *char) omenIsNearby() bool {
 		}
 	}
 	return false
+}
+
+func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
+	// can use charge without attack beforehand unlike most of the other sword users
+	if a == action.ActionCharge {
+		return nil
+	}
+	return c.Character.NextQueueItemIsValid(k, a, p)
+}
+
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "astral-glow":
+		return c.astralGlowStacks, nil
+	case "c6-stacks":
+		return c.c6Stacks, nil
+	default:
+		return c.Character.Condition(fields)
+	}
 }

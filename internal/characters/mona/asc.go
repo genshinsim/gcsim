@@ -13,6 +13,7 @@ import (
 )
 
 const (
+	astralGlowKey     = "mona-astral-glow"
 	astralGlowICDKey  = "mona-astral-glow-icd"
 	omenRefreshICDKey = "mona-omen-refresh-icd"
 )
@@ -93,16 +94,13 @@ func (c *char) astralGlowGainCB(a info.AttackCB) {
 
 	c.AddStatus(astralGlowICDKey, 0.1*60, false) // 0.1s ICD
 
-	if c.astralGlowStacks[0] < 3 {
-		c.astralGlowStacks[0]++
+	if c.astralGlowStacks < 3 {
+		c.astralGlowStacks++
 	}
 
-	c.astralGlowStacks[1] = c.Core.F + 60*8
-
-	c.Core.Log.NewEvent("mona hexerei proc: astral glow", glog.LogCharacterEvent, c.Index()).
-		Write("expiry:", c.Core.F+60*8)
-
-	c.Core.Tasks.Add(c.removeAstralGlowStack, 60*8)
+	c.astralGlowSrc = c.Core.F
+	c.QueueCharTask(c.removeAstralGlowStack(c.astralGlowSrc), 60*8)
+	c.AddStatus(astralGlowKey, 8*60, true)
 }
 
 func (c *char) omenRefreshCB(a info.AttackCB) {
@@ -158,8 +156,6 @@ func (c *char) hexInit() {
 		return
 	}
 
-	c.astralGlowStacks = [2]int{0, 0}
-
 	for _, char := range c.Core.Player.Chars() {
 		if char.Index() == c.Index() {
 			continue
@@ -168,10 +164,10 @@ func (c *char) hexInit() {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase("mona-hexerei-astral-glow-vaporize", -1),
 			Amount: func(ai info.AttackInfo) float64 {
-				m := 0.05 * float64(c.astralGlowStacks[0])
+				m := 0.05 * float64(c.astralGlowStacks)
 
 				if ai.Amped && ai.AmpType == info.ReactionTypeVaporize {
-					c.astralGlowStacks[0] = 0 // clear all stacks
+					c.astralGlowStacks = 0 // clear all stacks
 					return m
 				}
 
@@ -181,13 +177,15 @@ func (c *char) hexInit() {
 	}
 }
 
-func (c *char) removeAstralGlowStack() {
-	if c.astralGlowStacks[0] == 0 {
-		return
-	}
-
-	if c.Core.F >= c.astralGlowStacks[1] {
-		c.astralGlowStacks[0] = 0
+func (c *char) removeAstralGlowStack(src int) func() {
+	return func() {
+		if c.astralGlowSrc == src {
+			return
+		}
+		if c.astralGlowStacks == 0 {
+			return
+		}
+		c.astralGlowStacks = 0
 		c.Core.Log.NewEvent("mona hexerei expired: astral glow", glog.LogCharacterEvent, c.Index())
 	}
 }
