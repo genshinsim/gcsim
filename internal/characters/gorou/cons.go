@@ -76,11 +76,8 @@ func (c *char) c2() {
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
 			return
 		}
-		if c.c2Extension >= 3 {
-			return
-		}
-		c.c2Extension++
-		c.Core.Status.Extend(generalGloryKey, 60)
+
+		c.c2Extend()
 	}, "gorou-c2")
 	c.Core.Events.Subscribe(event.OnShielded, func(args ...any) {
 		if c.Core.Status.Duration(generalGloryKey) <= 0 {
@@ -91,12 +88,17 @@ func (c *char) c2() {
 		if shd.Type() != shield.Crystallize {
 			return
 		}
-		if c.c2Extension >= 3 {
-			return
-		}
-		c.c2Extension++
-		c.Core.Status.Extend(generalGloryKey, 60)
+
+		c.c2Extend()
 	}, "gorou-c2")
+}
+
+func (c *char) c2Extend() {
+	if c.c2Extension >= 3 {
+		return
+	}
+	c.c2Extension++
+	c.Core.Status.Extend(generalGloryKey, 60)
 }
 
 // C6:

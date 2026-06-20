@@ -15,14 +15,18 @@ import (
 )
 
 const (
-	LcrKey              = "lunarcrystallize"
 	LcrExtraHitOverride = "lunarcrystallize-bonus-hit-chance"
 	lcrContributionKey  = "lunarcrystallize-contribution"
 	lcrCountKey         = "lunarcrystallize-count"
 	lcrDur              = 9 * 60
+	lcrTravel           = 10
 )
 
-var lcrContributorMult = []float64{0.6, 0.3, 0.05, 0.05} // TODO: move to a lunar.go ?
+var (
+	lcrContributorMult = []float64{0.6, 0.3, 0.05, 0.05}
+	moondriftOffset    = []info.Point{{Y: 1, X: 0}, {Y: -0.5, X: 0.866}, {Y: -0.5, X: -0.866}}
+	lcrHitmarks        = []int{13, 13 + 12, 13 + 12 + 12}
+)
 
 func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 	if r.GetAuraDurability(info.ReactionModKeyHydro) <= info.ZeroDur {
@@ -33,9 +37,8 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 		return false
 	}
 
-	r.core.Flags.Custom[lcrCountKey] += 1
-	r.core.Status.Add(LcrKey, lcrDur)
-	r.contributeToLCrWithAttack(a)
+	// event
+	r.core.Events.Emit(event.OnLunarCrystallize, r.self, a)
 
 	moondriftsNearby := 0
 	moondrifts, _ := r.core.Constructs.ConstructsByType(construct.GeoConstructLunarCrystallize)
@@ -52,15 +55,14 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 		}
 		// TODO: Check if constructs expiring will reset the counter
 		// TODO: Set accurate location for spawned moondrifts
-		r.core.Constructs.NewNoLimitCons(r.newLunarCrystallizeConstruct(r.self.Direction(), r.self.Pos().Add(info.Point{Y: 1, X: 0})), false)
-		r.core.Constructs.NewNoLimitCons(r.newLunarCrystallizeConstruct(r.self.Direction(), r.self.Pos().Add(info.Point{Y: -0.5, X: 0.866})), false)
-		r.core.Constructs.NewNoLimitCons(r.newLunarCrystallizeConstruct(r.self.Direction(), r.self.Pos().Add(info.Point{Y: -0.5, X: -0.866})), false)
-	} else if r.core.Status.Duration(LcrKey) > 0 && r.core.Flags.Custom[lcrCountKey] >= 3 {
-		r.extendNearbyLunarCrystallizeConstructDur()
+		for i := range 3 - moondriftsNearby {
+			moondrift := r.newLunarCrystallizeConstruct(r.self.Direction(), r.self.Pos().Add(moondriftOffset[i]))
+			r.core.Constructs.NewNoLimitCons(moondrift, false)
+		}
+	} else {
+		r.core.Flags.Custom[lcrCountKey] += 1
+		r.contributeToLCrWithAttack(a)
 	}
-
-	// event
-	r.core.Events.Emit(event.OnLunarCrystallize, r.self, a)
 
 	if r.core.Flags.Custom[lcrCountKey] >= 3 {
 		// trigger three attacks
@@ -68,6 +70,7 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 		r.core.Events.Emit(event.OnMoondriftHarmony, r.self, &a)
 		r.core.Log.NewEvent("Moondrift Harmony triggered", glog.LogElementEvent, a.Info.ActorIndex)
 		r.DoLCrAttack()
+		r.extendNearbyLunarCrystallizeConstructDur()
 	}
 
 	// reduce
@@ -79,29 +82,33 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 	return true
 }
 
-func AddLCrContributor(charInd int, core *core.Core) {
-	core.Flags.Custom[fmt.Sprintf("%v-%v", lcrContributionKey, charInd)] = 1
+func contributorKey(charInd int) string {
+	return fmt.Sprintf("%v-%v", lcrContributionKey, charInd)
 }
 
-func RemoveLCrContributor(charInd int, core *core.Core) {
-	core.Flags.Custom[fmt.Sprintf("%v-%v", lcrContributionKey, charInd)] = 0
+func (r *Reactable) addLCrContributor(charInd int) {
+	r.core.Flags.Custom[contributorKey(charInd)] = 1
 }
 
-func LCrContributors(core *core.Core) [info.MaxChars]bool {
+func (r *Reactable) removeLCrContributor(charInd int) {
+	r.core.Flags.Custom[contributorKey(charInd)] = 0
+}
+
+func (r *Reactable) lcrContributors() [info.MaxChars]bool {
 	var contributors [info.MaxChars]bool
-	for _, char := range core.Player.Chars() {
-		contributors[char.Index()] = core.Flags.Custom[fmt.Sprintf("%v-%v", lcrContributionKey, char.Index())] == 1
+	for _, char := range r.core.Player.Chars() {
+		contributors[char.Index()] = r.core.Flags.Custom[contributorKey(char.Index())] == 1
 	}
 	return contributors
 }
 
 func (r *Reactable) contributeToLCrWithAttack(a *info.AttackEvent) {
-	AddLCrContributor(a.Info.ActorIndex, r.core)
+	r.addLCrContributor(a.Info.ActorIndex)
 	for charInd, dur := range r.Durability[info.ReactionModKeyHydro] {
 		if dur <= info.ZeroDur {
 			continue
 		}
-		AddLCrContributor(charInd, r.core)
+		r.addLCrContributor(charInd)
 	}
 }
 
@@ -109,45 +116,16 @@ func (r *Reactable) extendNearbyLunarCrystallizeConstructDur() {
 	matched, _ := r.core.Constructs.ConstructsByType(construct.GeoConstructLunarCrystallize)
 	playerPos := r.core.Combat.Player().Pos()
 	for _, construct := range matched {
-		c, ok := (construct).(*skillConstruct)
+		c, ok := (construct).(*LunarCrystallizeConstruct)
 		if !ok {
 			continue
 		}
-		if playerPos.Distance(construct.Pos()) >= 20 {
+		if playerPos.Distance(construct.Pos()) > 20 {
 			continue
 		}
 		c.expiry = r.core.F + lcrDur
 	}
 }
-
-type skillConstruct struct {
-	src    int
-	expiry int
-	react  *Reactable
-	dir    info.Point
-	pos    info.Point
-}
-
-func (r *Reactable) newLunarCrystallizeConstruct(dir, pos info.Point) *skillConstruct {
-	return &skillConstruct{
-		src:    r.core.F,
-		expiry: r.core.F + lcrDur,
-		react:  r,
-		dir:    dir,
-		pos:    pos,
-	}
-}
-
-func (c *skillConstruct) OnDestruct() {}
-func (c *skillConstruct) Key() int    { return c.src }
-func (c *skillConstruct) Type() construct.GeoConstructType {
-	return construct.GeoConstructLunarCrystallize
-}
-func (c *skillConstruct) Expiry() int           { return c.expiry }
-func (c *skillConstruct) IsLimited() bool       { return true }
-func (c *skillConstruct) Count() int            { return 1 }
-func (c *skillConstruct) Direction() info.Point { return c.dir }
-func (c *skillConstruct) Pos() info.Point       { return c.pos }
 
 type lcrContribution = struct {
 	dmg     float64
@@ -157,18 +135,19 @@ type lcrContribution = struct {
 }
 
 func (r *Reactable) DoLCrAttack() {
-	DoLCrAttackWithContrib(LCrContributors(r.core), r.self, r.core, r.lcAtkOwner)
+	DoLCrAttackWithContrib(r.lcrContributors(), r.self, r.core, r.lcAtkOwner)
 	// clear contributors after last attack
+	// need to queue this after DoLCrAttackWithContrib to ensure the lcr contributors are removed after the last attack, instead of before
 	r.core.Tasks.Add(func() {
 		for _, char := range r.core.Player.Chars() {
-			RemoveLCrContributor(char.Index(), r.core)
+			r.removeLCrContributor(char.Index())
 		}
-	}, 7)
+	}, lcrHitmarks[len(lcrHitmarks)-1])
 }
 
 // Perform a Lunar Crystallize reaction 3-hit attack with the given contributors
 func DoLCrAttackWithContrib(contribMap [info.MaxChars]bool, target info.Target, core *core.Core, owner int) {
-	for _, delay := range []int{1, 4, 7} {
+	for _, delay := range lcrHitmarks {
 		core.Tasks.Add(func() { doSingleLCrAttack(contribMap, target, core, owner) }, delay)
 		if chance, ok := core.Flags.Custom[LcrExtraHitOverride]; ok && core.Rand.Float64() < chance {
 			core.Tasks.Add(func() { doSingleLCrAttack(contribMap, target, core, owner) }, delay)
@@ -181,7 +160,6 @@ func doSingleLCrAttack(contribMap [info.MaxChars]bool, target info.Target, core 
 
 	ap := combat.NewSingleTargetHit(target.Key())
 
-	// Do we need to make a new one for each character?
 	ai := info.AttackInfo{
 		DamageSrc:        target.Key(),
 		Abil:             string(info.ReactionTypeLunarCrystallize),
@@ -208,7 +186,7 @@ func doSingleLCrAttack(contribMap [info.MaxChars]bool, target info.Target, core 
 			Snapshot:    snap,
 		}
 
-		// Emit even so PreDamageMods can be applied to the individual LCr contributions
+		// Emit event so PreDamageMods can be applied to the individual LCr contributions
 		core.Events.Emit(event.OnLunarReactionAttack, target, &ae)
 
 		em := ae.Snapshot.Stats[attributes.EM]
@@ -271,6 +249,6 @@ func doSingleLCrAttack(contribMap [info.MaxChars]bool, target info.Target, core 
 		ai,
 		snap,
 		ap,
-		0,
+		lcrTravel,
 	)
 }

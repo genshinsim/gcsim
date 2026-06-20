@@ -252,17 +252,18 @@ func (c *char) addShrapnelBuffs(snap *info.Snapshot, count int) {
 	c.Core.Log.NewEvent("adding shrapnel buffs", glog.LogCharacterEvent, c.Index()).Write("dmg%", dmg).Write("cr", cr).Write("cd", cd)
 }
 
-// shrapnelGain adds Shrapnel Stacks when a Crystallise Shield is picked up.
+// shrapnelInit adds Shrapnel Stacks when a Crystallise Shield is picked up.
 // Stacks should last 300s but this is way too long to bother
 // When a character in the party obtains an Elemental Shard created from the Crystallize reaction, or when they trigger the Lunar-Crystallize reaction,
 // Navia will gain 1 Crystal Shrapnel charge. Navia can hold up to 6 charges of Crystal Shrapnel at once.
 // Each time Crystal Shrapnel gain is triggered, the duration of the Shards you have already will be reset.
-func (c *char) shrapnelGain() {
+func (c *char) shrapnelInit() {
 	c.Core.Events.Subscribe(event.OnLunarCrystallize, func(args ...any) {
-		if c.shrapnel < 6 {
-			c.shrapnel++
-			c.Core.Log.NewEvent("Crystal Shrapnel gained from Lunar Crystallize", glog.LogCharacterEvent, c.Index()).Write("shrapnel", c.shrapnel)
+		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return
 		}
+
+		c.gainShrapnel("Lunar Crystallize")
 	}, "shrapnel-gain")
 	c.Core.Events.Subscribe(event.OnShielded, func(args ...any) {
 		// Check shield
@@ -271,11 +272,15 @@ func (c *char) shrapnelGain() {
 			return
 		}
 
-		if c.shrapnel < 6 {
-			c.shrapnel++
-			c.Core.Log.NewEvent("Crystal Shrapnel gained from Crystallize", glog.LogCharacterEvent, c.Index()).Write("shrapnel", c.shrapnel)
-		}
+		c.gainShrapnel("Crystallize")
 	}, "shrapnel-gain")
+}
+
+func (c *char) gainShrapnel(src string) {
+	if c.shrapnel < 6 {
+		c.shrapnel++
+		c.Core.Log.NewEvent("Crystal Shrapnel gained from "+src, glog.LogCharacterEvent, c.Index()).Write("shrapnel", c.shrapnel)
+	}
 }
 
 func (c *char) surgingBlade(count int) {

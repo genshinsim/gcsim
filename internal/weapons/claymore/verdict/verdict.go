@@ -32,6 +32,7 @@ const (
 	buffDuration      = 15 * 60
 	dmgWindowKey      = "verdict-dmg-window"
 	dmgWindowDuration = 0.2 * 60
+	lcrSealGainICDKey = "verdict-lcr-icd"
 )
 
 // Increases ATK by 20/25/30/35/40%. When party members obtain Elemental Shards from Crystallize or trigger Lunar-Crystallize reactions,
@@ -77,20 +78,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	// seal gain on lunar-crystallize trigger
 	c.Events.Subscribe(event.OnLunarCrystallize, func(args ...any) {
+		if char.StatusIsActive(lcrSealGainICDKey) {
+			return
+		}
+		char.AddStatus(lcrSealGainICDKey, 60, true)
 		gainSeal()
-	}, fmt.Sprintf("verdict-seal-%v", char.Base.Key.String()))
-
-	// seal gain on lunar-crystallize trigger
-	c.Events.Subscribe(event.OnLunarCrystallize, func(args ...any) {
-		if !char.StatModIsActive(buffKey) {
-			w.stacks = 0
-		}
-		if w.stacks < 2 {
-			w.stacks++
-		}
-		c.Log.NewEvent("verdict adding stack", glog.LogWeaponEvent, char.Index()).
-			Write("stacks", w.stacks)
-		char.AddStatus(buffKey, buffDuration, true)
 	}, fmt.Sprintf("verdict-seal-%v", char.Base.Key.String()))
 
 	// skill dmg increase while seals active

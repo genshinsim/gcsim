@@ -19,7 +19,7 @@ const (
 	lcIcdKey         = "lunarcharged-cloud-icd"
 )
 
-var lcContributorMult = []float64{0.6, 0.3, 0.05, 0.05} // TODO: move to a lunar.go ?
+var lcContributorMult = []float64{0.6, 0.3, 0.05, 0.05}
 
 func (r *Reactable) TryAddLC(a *info.AttackEvent) bool {
 	if a.Info.Durability < info.ZeroDur {
@@ -87,7 +87,6 @@ func (r *Reactable) DoLCAttack() {
 
 	ap := combat.NewSingleTargetHit(r.self.Key())
 
-	// Do we need to make a new one for each character?
 	ai := info.AttackInfo{
 		DamageSrc:        r.self.Key(),
 		Abil:             string(info.ReactionTypeLunarCharged),
@@ -114,7 +113,7 @@ func (r *Reactable) DoLCAttack() {
 			Snapshot:    snap,
 		}
 
-		// Emit even so PreDamageMods can be applied to the individual LC contributions
+		// Emit event so PreDamageMods can be applied to the individual LC contributions
 		r.core.Events.Emit(event.OnLunarReactionAttack, r.self, &ae)
 
 		em := ae.Snapshot.Stats[attributes.EM]

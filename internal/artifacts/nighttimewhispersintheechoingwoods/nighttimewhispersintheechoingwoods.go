@@ -98,7 +98,7 @@ func (s *Set) OnCharacterSwap() func(args ...any) {
 		switch s.char.Index() {
 		case active:
 			s.tickerSrcF = s.core.F
-			s.moondrifTicker(s.tickerSrcF)
+			s.moondriftTicker(s.tickerSrcF)
 			s.lastF = max(shd.Expiry(), moondriftExpiry)
 		case prev:
 			s.lastF = s.core.F + 60
@@ -113,7 +113,7 @@ func (s *Set) OnSkill() func(args ...any) {
 			return
 		}
 		s.tickerSrcF = s.core.F
-		s.moondrifTicker(s.tickerSrcF)
+		s.moondriftTicker(s.tickerSrcF)
 		s.char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("nighttimewhispers-4pc", 10*60),
 			AffectedStat: attributes.GeoP,
@@ -129,7 +129,7 @@ func (s *Set) OnSkill() func(args ...any) {
 	}
 }
 
-func (s *Set) moondrifTicker(src int) {
+func (s *Set) moondriftTicker(src int) {
 	if s.tickerSrcF != src {
 		return
 	}
@@ -155,5 +155,5 @@ func (s *Set) moondrifTicker(src int) {
 		s.core.Status.Add("nighttimewhispers-4pc-moondrift", 60)
 		s.lastF = s.core.F + 60
 	}
-	s.core.Tasks.Add(func() { s.moondrifTicker(src) }, 60*2)
+	s.core.Tasks.Add(func() { s.moondriftTicker(src) }, 60*2)
 }
