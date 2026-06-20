@@ -47,9 +47,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 	)
 
 	// A1
-	if c.Base.Ascension >= 1 {
-		c.Core.Tasks.Add(c.a1, 120)
-	}
+	c.Core.Tasks.Add(c.a1, 120)
 
 	c.c6OnDash()
 

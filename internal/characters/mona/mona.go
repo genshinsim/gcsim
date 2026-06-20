@@ -4,7 +4,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -25,6 +24,8 @@ type char struct {
 	a4Stats          []float64
 	c6Src            int
 	c6Stacks         int
+	c6AtkMod         character.AttackMod
+	c6NearbyOmen     bool
 	astralGlowStacks int
 	astralGlowSrc    int
 }
@@ -55,30 +56,14 @@ func (c *char) Init() error {
 	c.burstDamageBonus()
 	c.a4()
 	c.hexInit()
-	if c.Base.Cons >= 1 {
-		c.c1()
-	}
-	if c.Base.Cons >= 2 {
-		c.c2()
-	}
-	if c.Base.Cons >= 4 {
-		c.c4()
-	}
-	if c.Base.Cons >= 6 {
-		c.c6Init()
-		c.c6ChargeAttackInit()
-	}
-	return nil
-}
 
-func (c *char) omenIsNearby() bool {
-	// TODO: check range of this in DM
-	for _, e := range c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 15), nil) {
-		if e.StatusIsActive(omenKey) || e.StatusIsActive(bubbleKey) {
-			return true
-		}
-	}
-	return false
+	c.c1Init()
+	c.c2Init()
+	c.c4Init()
+	c.c6Init()
+	c.c6HexInit()
+
+	return nil
 }
 
 func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
@@ -94,6 +79,9 @@ func (c *char) Condition(fields []string) (any, error) {
 	case "astral-glow":
 		return c.astralGlowStacks, nil
 	case "c6-stacks":
+		if !c.StatusIsActive(c6Key) {
+			return 0, nil
+		}
 		return c.c6Stacks, nil
 	default:
 		return c.Character.Condition(fields)

@@ -50,8 +50,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			return
 		}
 
-		c.c6OnApplyBubble()
-
 		// bubble is applied to each target on a per target basis
 		// lasts 8 seconds if not popped normally
 		t.AddStatus(bubbleKey, 481, true) // 1 frame extra so we don't run into problems breaking

@@ -24,6 +24,10 @@ const (
 //
 // - checks for ascension level in dash.go to avoid queuing this up only to fail the ascension level check
 func (c *char) a1() {
+	if c.Base.Ascension < 1 {
+		return
+	}
+
 	// do nothing if not Mona
 	if c.Core.Player.Active() != c.Index() {
 		return
@@ -179,7 +183,7 @@ func (c *char) hexInit() {
 
 func (c *char) removeAstralGlowStack(src int) func() {
 	return func() {
-		if c.astralGlowSrc == src {
+		if c.astralGlowSrc != src {
 			return
 		}
 		if c.astralGlowStacks == 0 {

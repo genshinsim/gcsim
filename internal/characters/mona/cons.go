@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -31,7 +32,10 @@ const (
 // - Frozen duration is extended by 15%.
 // After Hex: Additionally, when your off-field party members trigger the above effect,
 // the DMG Bonus to the above Hydro-related Elemental Reactions is enhanced to 160% of its original effect.
-func (c *char) c1() {
+func (c *char) c1Init() {
+	if c.Base.Cons < 1 {
+		return
+	}
 	// TODO: "Frozen duration is extended by 15%." is bugged
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		// ignore if target doesn't have debuff
@@ -96,7 +100,7 @@ func (c *char) c1() {
 // Additionally, within 5s after Mona unleashes her Elemental Burst Stellaris Phantasm, her next Normal Attack that hits an enemy will automatically trigger a Charged Attack.
 // This Charged Attack effect can only occur once every 5s.
 // When Mona's Charged Attack hits an opponent, all nearby party members will have their Elemental Mastery increased by 80 for 12s.
-func (c *char) c2() {
+func (c *char) c2Init() {
 	if c.Base.Cons < 2 {
 		return
 	}
@@ -127,6 +131,10 @@ func (c *char) c2() {
 }
 
 func (c *char) c2HexereiCB(a info.AttackCB) {
+	if c.Base.Cons < 2 {
+		return
+	}
+
 	if !c.IsHexerei {
 		return
 	}
@@ -152,7 +160,11 @@ func (c *char) c2HexereiCB(a info.AttackCB) {
 // C4:
 // When any party member attacks an opponent affected by an Omen, their CRIT Rate is increased by 15%.
 // After Hex: When any Hexerei party member attacks an opponent affected by an Omen, their CRIT DMG is increased by 15%.
-func (c *char) c4() {
+func (c *char) c4Init() {
+	if c.Base.Cons < 4 {
+		return
+	}
+
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CR] = 0.15
 
@@ -216,102 +228,13 @@ func (c *char) c4() {
 	}, c4key+"-lunar-reaction")
 }
 
-func (c *char) c6OnDash() {
-	if c.Base.Cons < 6 {
-		return
-	}
-	isHexAndOmen := c.IsHexerei && c.omenIsNearby()
-
-	if !isHexAndOmen {
-		// start a new task if an omen task isn't already ticking
-		c.c6Src = c.Core.F
-		c.QueueCharTask(c.c6Ticker(c.c6Src), 60)
-	}
-}
-
-func (c *char) c6OnDashEnd(_ action.AnimationState) {
-	if c.Base.Cons < 6 {
-		return
-	}
-	isHexAndOmen := c.IsHexerei && c.omenIsNearby()
-	if !isHexAndOmen {
-		// Cancel existing dash ticker when dash ends if Mona isn't Hex, or the Nearby Omen condition isn't met
-		c.c6Src = -1
-	}
-}
-
-// this must be called before the actual bubble/omen status is applied
-func (c *char) c6OnApplyBubble() {
-	if c.Base.Cons < 6 {
-		return
-	}
-
-	// start a Omen task only if a previous Omen task isn't still active
-	if c.IsHexerei && !c.omenIsNearby() {
-		c.c6Src = c.Core.F
-		c.QueueCharTask(c.c6Ticker(c.Core.F), 60)
-	}
-}
-
-// C6:
-// Upon entering Illusory Torrent, Mona gains a 60% increase to the DMG of her next Charged Attack per second of movement.
-// A maximum DMG Bonus of 180% can be achieved in this manner.
-// The effect lasts for no more than 8s.
-func (c *char) c6Ticker(src int) func() {
-	return func() {
-		// do nothing if not Mona
-		if c.Core.Player.Active() != c.Index() {
-			return
-		}
-
-		// cancel the task if the src was changed
-		if c.c6Src != src {
-			return
-		}
-
-		// do nothing if we aren't dashing anymore and we aren't hexerei and enemy with omen is nearby
-		isDashing := c.Core.Player.CurrentState() == action.DashState
-		isHexAndOmen := c.IsHexerei && c.omenIsNearby()
-
-		if !isDashing && !isHexAndOmen {
-			return
-		}
-
-		c.c6Stacks = min(c.c6Stacks+1, 3)
-
-		c.Core.Log.NewEvent(c6Key+" stack gained", glog.LogCharacterEvent, c.Index()).
-			Write("c6Stacks", c.c6Stacks)
-
-		// reset C6 stacks in 8s if we didn't use a CA
-		c.QueueCharTask(c.c6TimerReset(c.c6Src), 8*60+1)
-		// queue up another stack and buff refresh in 1s
-		c.QueueCharTask(c.c6Ticker(src), 60)
-	}
-}
-
 func (c *char) c6Init() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
-		if !c.IsHexerei {
-			return
-		}
-
-		if c.Core.Player.Active() != c.Index() {
-			return
-		}
-
-		t, ok := args[0].(enemy.Enemy)
-
-		if ok {
-			return
-		}
-
-		if t.StatusIsActive(omenKey) || t.StatusIsActive(bubbleKey) {
-			c.Core.Tasks.Add(c.c6Ticker(c.Core.F), 60)
-		}
-	}, "mona-c6-init")
+	if c.Base.Cons < 6 {
+		return
+	}
 
 	m := make([]float64, attributes.EndStatType)
-	c.AddAttackMod(character.AttackMod{
+	c.c6AtkMod = character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(c6Key, 8*60),
 		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagExtra {
@@ -325,10 +248,14 @@ func (c *char) c6Init() {
 
 			return m
 		},
-	})
+	}
 }
 
-func (c *char) c6ChargeAttackInit() {
+func (c *char) c6HexInit() {
+	if c.Base.Cons < 6 {
+		return
+	}
+
 	if !c.IsHexerei {
 		return
 	}
@@ -352,12 +279,19 @@ func (c *char) c6ChargeAttackInit() {
 	}
 
 	c.Core.Events.Subscribe(event.OnEnemyHit, c6HexCABuff, "mona-hexerei-c6-ca-buff-%v")
+
+	c.c6NearbyOmenTicker()()
 }
 
 func (c *char) makeC6CAResetCB() info.AttackCBFunc {
-	if c.Base.Cons < 6 || !c.StatusIsActive(c6Key) {
+	if c.Base.Cons < 6 {
 		return nil
 	}
+
+	if !c.StatusIsActive(c6Key) {
+		return nil
+	}
+
 	return func(a info.AttackCB) {
 		if a.Target.Type() == info.TargettableEnemy {
 			return
@@ -371,15 +305,104 @@ func (c *char) makeC6CAResetCB() info.AttackCBFunc {
 	}
 }
 
-func (c *char) c6TimerReset(src int) func() {
+func (c *char) c6OnDash() {
+	if c.Base.Cons < 6 {
+		return
+	}
+
+	c.c6StartTicker()
+}
+
+func (c *char) c6OnDashEnd(_ action.AnimationState) {
+	if c.Base.Cons < 6 {
+		return
+	}
+
+	if !c.c6NearbyOmen {
+		// cancel c6 ticker when both conditions are false
+		c.c6Src = -1
+	}
+}
+
+func (c *char) c6NearbyOmenTicker() func() {
 	return func() {
+		c.QueueCharTask(c.c6NearbyOmenTicker(), 0.3*60)
+
+		// do nothing if not Mona
+		if c.Core.Player.Active() != c.Index() {
+			return
+		}
+
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 15)
+
+		enemiesWithOmenNearby := c.Core.Combat.EnemiesWithinArea(ap, func(e info.Enemy) bool {
+			if e.StatusIsActive(omenKey) || e.StatusIsActive(bubbleKey) {
+				return true
+			}
+			return false
+		})
+
+		if len(enemiesWithOmenNearby) > 0 {
+			c.c6NearbyOmen = true
+			c.c6StartTicker()
+			return
+		}
+
+		c.c6NearbyOmen = false
+		if c.Core.Player.CurrentState() != action.DashState {
+			// cancel c6 ticker when both conditions are false
+			c.c6Src = -1
+		}
+	}
+}
+
+// starts the c6 ticker when there isn't an existing one active
+func (c *char) c6StartTicker() {
+	if c.c6Src >= 0 {
+		return
+	}
+
+	c.c6Src = c.Core.F
+	c.QueueCharTask(c.c6Ticker(c.c6Src), 60)
+}
+
+// C6:
+// Upon entering Illusory Torrent, Mona gains a 60% increase to the DMG of her next Charged Attack per second of movement.
+// A maximum DMG Bonus of 180% can be achieved in this manner.
+// The effect lasts for no more than 8s.
+func (c *char) c6Ticker(src int) func() {
+	return func() {
+		// cancel the task if the src was changed
 		if c.c6Src != src {
 			return
 		}
-		// handle C6 stack reset if CA not used before c6 buff expires
-		if c.c6Stacks > 0 && !c.StatusIsActive(c6Key) {
-			c.c6Stacks = 0
-			c.Core.Log.NewEvent(fmt.Sprintf("%v stacks reset via timer", c6Key), glog.LogCharacterEvent, c.Index())
+
+		// do nothing if not Mona
+		if c.Core.Player.Active() != c.Index() {
+			c.c6Src = -1
+			return
 		}
+
+		// do nothing if we aren't dashing anymore and we aren't hexerei and enemy with omen is nearby
+		isDashing := c.Core.Player.CurrentState() == action.DashState
+
+		if !isDashing && !c.c6NearbyOmen {
+			c.c6Src = -1
+			return
+		}
+
+		if !c.StatusIsActive(c6Key) {
+			c.c6Stacks = 0
+		}
+
+		c.c6Stacks = min(c.c6Stacks+1, 3)
+
+		c.Core.Log.NewEvent(c6Key+" stack gained", glog.LogCharacterEvent, c.Index()).
+			Write("c6Stacks", c.c6Stacks)
+
+		c.AddAttackMod(c.c6AtkMod)
+
+		// queue up another stack and buff refresh in 1s
+		c.QueueCharTask(c.c6Ticker(src), 60)
 	}
 }
