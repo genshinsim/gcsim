@@ -71,7 +71,7 @@ func (c *char) a1cb(cb info.AttackCB) {
 }
 
 func (c *char) a1MaxPoints() {
-	c.nightsoulState.ClearPoints()
+	c.nightsoulState.ConsumePoints(c.nightsoulState.Points())
 	c.AddStatus(activeSamplerKey, 15*60, false)
 	if c.Base.Cons >= 2 {
 		c.AddStatus(c2key, 15*60, true)

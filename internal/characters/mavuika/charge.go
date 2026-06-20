@@ -407,6 +407,7 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 		}, adjustedBikeChargeFinalHitmark)
 
 		c.QueueCharTask(func() {
+			c.nightsoulState.ConsumePoints(c.nightsoulState.Points())
 			c.exitNightsoul()
 		}, nightSoulDuration)
 	}
