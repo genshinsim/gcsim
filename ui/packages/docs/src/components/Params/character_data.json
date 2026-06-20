@@ -423,6 +423,13 @@
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
+  "durin": [
+    {
+      "ability": "burst",
+      "param": "travel",
+      "desc": "Projectile travel time for Dragon of Dark Decay. Default 10 frames. Does nothing for Dragon of White Flame."
+    }
+  ],
   "emilie": [
     {
       "ability": "skill",

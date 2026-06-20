@@ -24,6 +24,9 @@ const (
 	ICDGroupCynoBolt
 	ICDGroupDiluc
 	ICDGroupDoriBurst
+	ICDGroupDurinBurstWhite
+	ICDGroupDurinBurstBlack
+	ICDGroupDurinSkill
 	ICDGroupEmilieLumidouce
 	ICDGroupEscoffierSkill
 	ICDGroupFischl
@@ -138,6 +141,18 @@ func init() {
 	ICDGroupResetTimer[ICDGroupDoriBurst] = 180
 	ICDGroupEleApplicationSequence[ICDGroupDoriBurst] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	ICDGroupDamageSequence[ICDGroupDoriBurst] = []float64{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+
+	ICDGroupResetTimer[ICDGroupDurinBurstWhite] = 90
+	ICDGroupEleApplicationSequence[ICDGroupDurinBurstWhite] = []float64{1, 0}
+	ICDGroupDamageSequence[ICDGroupDurinBurstWhite] = []float64{1, 1}
+
+	ICDGroupResetTimer[ICDGroupDurinBurstBlack] = 120
+	ICDGroupEleApplicationSequence[ICDGroupDurinBurstBlack] = []float64{1, 0}
+	ICDGroupDamageSequence[ICDGroupDurinBurstBlack] = []float64{1, 1}
+
+	ICDGroupResetTimer[ICDGroupDurinSkill] = 18
+	ICDGroupEleApplicationSequence[ICDGroupDurinSkill] = []float64{1, 0, 0}
+	ICDGroupDamageSequence[ICDGroupDurinSkill] = []float64{1, 1, 1}
 
 	ICDGroupResetTimer[ICDGroupEmilieLumidouce] = 120
 	ICDGroupEleApplicationSequence[ICDGroupEmilieLumidouce] = []float64{1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}

@@ -83,6 +83,14 @@
       "desc": "Number of A1 stacks."
     }
   ],
+  "durin": [
+    {
+      "fields": [
+        ".durin.a4-stacks"
+      ],
+      "desc": "Number of A4 stacks remaining."
+    }
+  ],
   "escoffier": [
     {
       "fields": [

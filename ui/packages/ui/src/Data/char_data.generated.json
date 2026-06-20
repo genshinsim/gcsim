@@ -584,6 +584,23 @@
       },
       "name_text_hash_map ": "388272194"
     },
+    "durin": {
+      "id": 10000123,
+      "key": "durin",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Fire",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Durin",
+      "skill_details": {
+        "skill": 11232,
+        "burst": 11235,
+        "attack": 11231,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "2801077538"
+    },
     "emilie": {
       "id": 10000099,
       "key": "emilie",
