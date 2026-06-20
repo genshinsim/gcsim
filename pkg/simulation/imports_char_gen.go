@@ -70,6 +70,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/nahida"
 	_ "github.com/genshinsim/gcsim/internal/characters/navia"
 	_ "github.com/genshinsim/gcsim/internal/characters/neuvillette"
+	_ "github.com/genshinsim/gcsim/internal/characters/nicole"
 	_ "github.com/genshinsim/gcsim/internal/characters/nilou"
 	_ "github.com/genshinsim/gcsim/internal/characters/ningguang"
 	_ "github.com/genshinsim/gcsim/internal/characters/noelle"

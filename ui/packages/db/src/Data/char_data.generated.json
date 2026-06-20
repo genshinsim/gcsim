@@ -1371,6 +1371,22 @@
       },
       "name_text_hash_map ": "1504902330"
     },
+    "nicole": {
+      "id": 10000131,
+      "key": "nicole",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "element": "Fire",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Nicole",
+      "skill_details": {
+        "skill": 11312,
+        "burst": 11315,
+        "attack": 11311,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1711582634"
+    },
     "nilou": {
       "id": 10000070,
       "key": "nilou",

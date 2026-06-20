@@ -209,6 +209,7 @@ ace.define(
         'navia',
         'neuv',
         'neuvillette',
+        'nicole',
         'nilou',
         'ning',
         'ningguang',

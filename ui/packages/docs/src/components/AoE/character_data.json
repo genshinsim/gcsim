@@ -7785,6 +7785,105 @@
       }
     ]
   },
+  "nicole": {
+    "normal": [
+      {
+        "ability": "N1",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "offsetY": -1,
+        "boxX": 4,
+        "boxY": 2
+      },
+      {
+        "ability": "N2",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 2
+      },
+      {
+        "ability": "N3",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 2.5
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 3
+      }
+    ],
+    "skill": [
+      {
+        "ability": "E",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 5
+      }
+    ],
+    "burst": [
+      {
+        "ability": "Q",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 6.5
+      },
+      {
+        "ability": "Q-Projection",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 4.5,
+        "offsetX": -2.5,
+        "offsetY": 2.5,
+        "notes": "Default if projection hitbox is not otherwise specified"
+      },
+      {
+        "ability": "Q-Projection",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 4.5,
+        "offsetX": -2.5,
+        "offsetY": 2.5,
+        "notes": "Default if projection hitbox is not otherwise specified"
+      },
+      {
+        "ability": "Q-Projection-Albedo",
+        "shape": "Box",
+        "center": "PrimaryTarget",
+        "boxX": 3,
+        "boxY": 8,
+        "offsetX": -1.5,
+        "offsetY": 2.5
+      },
+      {
+        "ability": "Q-Projection-Razor",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 4.5,
+        "offsetX": -1.5,
+        "offsetY": 2.5
+      },
+      {
+        "ability": "Q-Projection-Sucrose",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 4.5,
+        "offsetX": -1.5,
+        "offsetY": 2.5
+      },
+      {
+        "ability": "Q-Projection-Klee",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 4.5,
+        "offsetX": -1.157003,
+        "offsetY": 0.956513
+      }
+    ]
+  },
   "nilou": {
     "normal": [
       {

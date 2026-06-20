@@ -17,6 +17,10 @@ func (p Point) Pos() Point {
 	return p
 }
 
+func (p Point) Scale(s float64) Point {
+	return Point{X: p.X * s, Y: p.Y * s}
+}
+
 func (p Point) Add(p2 Point) Point {
 	return Point{X: p.X + p2.X, Y: p.Y + p2.Y}
 }
@@ -34,6 +38,7 @@ func (p Point) Normalize() Point {
 	return Point{X: p.X / d, Y: p.Y / d}
 }
 
+// Rotates the vector 90 degrees CCW
 func (p Point) Perp() Point {
 	return Point{X: -p.Y, Y: p.X}
 }

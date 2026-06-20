@@ -1,0 +1,34 @@
+package_name: nicole
+genshin_id: 10000131
+key: nicole
+skill_data_mapping:
+  attack: # Allegoria
+    attack_1:
+      - 0 # 1-Hit DMG|{param0:F1P}
+    attack_2:
+      - 1 # 2-Hit DMG|{param1:F1P}
+    attack_3:
+      - 2 # 3-Hit DMG|{param2:F1P}
+    charge:
+      - 3 # Charged Attack DMG|{param3:F1P}
+  skill: # Revelation: Uncreated Light
+    skill:
+      - 0 # Skill DMG|{param0:F1P}
+    skillShieldAtk:
+      - 1 # Shield DMG Absorption|{param1:F1P} ATK+{param2:I}
+    skillShieldFlat:
+      - 2 # Shield DMG Absorption|{param1:F1P} ATK+{param2:I}
+    skillBuffRatio:
+      - 4 # Grace of Kenosis ATK Bonus Ratio|{param4:F2P} ATK\
+    skillBuffMax:
+      - 5 # Grace of Kenosis Max ATK Bonus|{param5:F1}
+  burst: # Revelation: Ladder of Divine Ascent
+    burstInitial:
+      - 0 # Skill DMG|{param0:F1P}
+    burstProjection:
+      - 1 # Arcane Projection DMG|{param1:F1P} Corresponding Character's ATK
+
+documentation:
+  fields_data:
+    - fields: [.nicole.projections]
+      desc: "Number of Arcane Projection attacks done by this burst. 0 if burst is not active."
