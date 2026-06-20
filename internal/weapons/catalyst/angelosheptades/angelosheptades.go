@@ -86,10 +86,6 @@ func NewWeapon(core *core.Core, char *character.CharWrapper, p info.WeaponProfil
 		if shd.ShieldOwner() != char.Index() {
 			return
 		}
-		// TODO: Not sure if the character needs to be on the field
-		if core.Player.Active() != char.Index() {
-			return
-		}
 
 		w.buffSrc = core.F
 		char.AddStatus(angelosHeptadesHolderBuffKey, 20*60, true)
