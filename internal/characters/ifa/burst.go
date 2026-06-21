@@ -16,7 +16,7 @@ var (
 
 const (
 	burstHitmark        = 41
-	sedationMarkHitmark = 20 // TODO: Ask cara for frames
+	sedationMarkHitmark = 38
 	burstNSFall         = 102
 )
 
