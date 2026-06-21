@@ -247,7 +247,6 @@ func (c *char) gravityTick(clearGravity bool) {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(func() {
-		c.skillSrc = c.Core.F
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
 			Abil:       "Skill",
@@ -265,8 +264,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		if !c.StatusIsActive(skillKey) {
 			c.clearGravity()
 		}
+
+		// skill cast won't interrupt skill ticks if skill already active
+		if !c.StatusIsActive(skillKey) {
+			c.skillSrc = c.Core.F
+			c.QueueCharTask(c.skillTickTask(c.skillSrc), 117)
+		}
 		c.AddStatus(skillKey, 25*60, true)
-		c.QueueCharTask(c.skillTickTask(c.skillSrc), 117)
 
 		c.c1OnSkill()
 	}, skillHitmark)
@@ -320,7 +324,6 @@ func (c *char) skillTick() {
 }
 
 func (c *char) skillTickTask(src int) func() {
-	// TODO: skill cast won't interrupt skill ticks if skill already active
 	return func() {
 		if c.skillSrc != src {
 			return
