@@ -66,7 +66,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	})
 
 	// workaround for giving lunarcharge the 20%/40% CR
-	c.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
+	c.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
 		r, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return

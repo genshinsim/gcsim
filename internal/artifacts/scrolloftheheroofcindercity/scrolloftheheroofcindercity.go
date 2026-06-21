@@ -21,11 +21,13 @@ var reactToElements = map[info.ReactionType][]attributes.Element{
 	info.ReactionTypeVaporize:           {attributes.Pyro, attributes.Hydro},
 	info.ReactionTypeFreeze:             {attributes.Cryo, attributes.Hydro},
 	info.ReactionTypeElectroCharged:     {attributes.Electro, attributes.Hydro},
+	info.ReactionTypeLunarCharged:       {attributes.Electro, attributes.Hydro},
 	info.ReactionTypeSwirlHydro:         {attributes.Anemo, attributes.Hydro},
 	info.ReactionTypeSwirlCryo:          {attributes.Anemo, attributes.Cryo},
 	info.ReactionTypeSwirlElectro:       {attributes.Anemo, attributes.Electro},
 	info.ReactionTypeSwirlPyro:          {attributes.Anemo, attributes.Pyro},
 	info.ReactionTypeCrystallizeHydro:   {attributes.Geo, attributes.Hydro},
+	info.ReactionTypeLunarCrystallize:   {attributes.Electro, attributes.Hydro},
 	info.ReactionTypeCrystallizeCryo:    {attributes.Geo, attributes.Cryo},
 	info.ReactionTypeCrystallizeElectro: {attributes.Geo, attributes.Electro},
 	info.ReactionTypeCrystallizePyro:    {attributes.Geo, attributes.Pyro},
@@ -37,7 +39,6 @@ var reactToElements = map[info.ReactionType][]attributes.Element{
 	info.ReactionTypeHyperbloom:         {attributes.Dendro, attributes.Electro},
 	info.ReactionTypeBurgeon:            {attributes.Dendro, attributes.Pyro},
 	info.ReactionTypeBurning:            {attributes.Dendro, attributes.Pyro},
-	info.ReactionTypeLunarCharged:       {attributes.Electro, attributes.Hydro},
 }
 
 func init() {
@@ -142,6 +143,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			event.OnSwirlElectro:       info.ReactionTypeSwirlElectro,
 			event.OnSwirlPyro:          info.ReactionTypeSwirlPyro,
 			event.OnCrystallizeHydro:   info.ReactionTypeCrystallizeHydro,
+			event.OnLunarCrystallize:   info.ReactionTypeLunarCharged,
 			event.OnCrystallizeCryo:    info.ReactionTypeCrystallizeCryo,
 			event.OnCrystallizeElectro: info.ReactionTypeCrystallizeElectro,
 			event.OnCrystallizePyro:    info.ReactionTypeCrystallizePyro,

@@ -181,7 +181,7 @@ func (c *char) c6Init() {
 		atk.Info.Elevation += other
 	}, c6Key)
 
-	c.Core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
+	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagReactionLunarCharge {
 			return

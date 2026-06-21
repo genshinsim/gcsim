@@ -1,6 +1,7 @@
 package combat
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
@@ -16,8 +17,15 @@ func CalcReactionBaseDmg(lvl int) float64 {
 	return reactionLvlBase[idx]
 }
 
-func CalcLunarChargedDmg(lvl int, reactBonus float64, atk info.AttackInfo, em float64) float64 {
-	return ((1+((6*em)/(2000+em))+reactBonus)*CalcReactionBaseDmg(lvl) + atk.FlatDmg) * (1 + atk.Elevation) * (1 + atk.BaseDmgBonus)
+func CalcLunarReactionDmg(lvl int, reactBonus float64, atk info.AttackInfo, em float64) float64 {
+	var reactionMultiplier float64
+	switch atk.AttackTag {
+	case attacks.AttackTagReactionLunarCharge:
+		reactionMultiplier = 3
+	case attacks.AttackTagReactionLunarCrystallize:
+		reactionMultiplier = 1.6
+	}
+	return (reactionMultiplier*(1+((6*em)/(2000+em))+reactBonus)*CalcReactionBaseDmg(lvl)*(1+atk.BaseDmgBonus) + atk.FlatDmg) * (1 + atk.Elevation)
 }
 
 func CalcReactionDmg(lvl int, src reactionBonusSrc, atk info.AttackInfo, em float64) (float64, info.Snapshot) {
