@@ -624,6 +624,14 @@
       "image_name": "UI_EquipIcon_Catalyst_Arakalari",
       "name_text_hash_map ": "2267978875"
     },
+    "gestofthemightywolf": {
+      "id": 12515,
+      "key": "gestofthemightywolf",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CLAYMORE",
+      "image_name": "UI_EquipIcon_Claymore_EnsisAquilonis",
+      "name_text_hash_map ": "3121311955"
+    },
     "hakushinring": {
       "id": 14414,
       "key": "hakushinring",
