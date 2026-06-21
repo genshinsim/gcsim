@@ -48,6 +48,7 @@ const (
 	ICDTagFurinaUsher
 	ICDTagHyperbloomDamage
 	ICDTagIfaSkill
+	ICDTagIfaSedationMark
 	ICDTagKinichLoopShot
 	ICDTagKinichScalespikerCannon
 	ICDTagKleeFireDamage
