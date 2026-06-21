@@ -14,6 +14,7 @@ import (
 	_ "github.com/genshinsim/gcsim/pkg/stats/swap"
 
 	// artifacts
+	_ "github.com/genshinsim/gcsim/internal/artifacts/adaycarvedfromrisingwinds"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/archaic"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/aubade"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/berserker"
