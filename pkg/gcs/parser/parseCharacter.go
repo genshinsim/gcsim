@@ -195,7 +195,11 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 	if len(s) > 0 && s[len(s)-1] == '"' {
 		s = s[:len(s)-1]
 	}
-	c.Weapon.Key = shortcut.WeaponNameToKey[s]
+	label, ok := shortcut.WeaponNameToKey[s]
+	if !ok {
+		return nil, fmt.Errorf("invalid weapon %v", s)
+	}
+	c.Weapon.Key = label
 	c.Weapon.Name = c.Weapon.Key.String()
 
 	lvlOk := false
