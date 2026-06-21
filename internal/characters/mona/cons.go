@@ -64,7 +64,7 @@ func (c *char) c1Init() {
 					// Additionally, when your off-field party members trigger the above effect, the DMG Bonus
 					// to the above Hydro-related Elemental Reactions is enhanced to 160% of its original effect.
 					if c.IsHexerei && c.Core.Player.Active() != char.Index() {
-						m = 0.15 * 1.6
+						m *= 1.6
 					}
 
 					switch ai.AttackTag {
