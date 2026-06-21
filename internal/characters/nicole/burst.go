@@ -1,8 +1,6 @@
 package nicole
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -79,7 +77,6 @@ func init() {
 
 	// is this correct? The additional X=0.5, Y=1.5 offset uses direction from the melee position to the target
 	kleeOffset := meleeOffset.Sub(norm.Scale(1.5)).Add(norm.Perp().Scale(0.5))
-	fmt.Println("Klee offset", kleeOffset)
 	projectionHitbox[keys.Klee] = func(t *enemy.Enemy) info.AttackPattern {
 		return combat.NewCircleHitOnTarget(t, kleeOffset, 4.5)
 	}
