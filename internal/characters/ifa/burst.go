@@ -114,11 +114,11 @@ func (c *char) sedationMark(ele attributes.Element, e info.Target) {
 		Abil:           "Sedation Mark",
 		AttackTag:      attacks.AttackTagElementalBurst,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		ICDTag:         attacks.ICDTagNone,
-		ICDGroup:       attacks.ICDGroupDefault,
+		ICDTag:         attacks.ICDTagIfaSedationMark,
+		ICDGroup:       attacks.ICDGroupIfaSedationMark,
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        ele,
-		Durability:     0,
+		Durability:     25,
 		Mult:           burst_mark[c.TalentLvlBurst()],
 	}
 
