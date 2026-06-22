@@ -68,8 +68,10 @@ func (c *char) Init() error {
 
 func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
 	// TODO: you can do the CA after the N4 resets into idle
-	if c.Core.Player.LastAction.Type == action.ActionAttack && c.NormalCounter == 0 {
-		return player.ErrInvalidChargeAction
+	if a == action.ActionCharge {
+		if c.Core.Player.LastAction.Type == action.ActionAttack && c.NormalCounter == 0 {
+			return player.ErrInvalidChargeAction
+		}
 	}
 	return c.Character.NextQueueItemIsValid(k, a, p)
 }
