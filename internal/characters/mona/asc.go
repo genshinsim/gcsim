@@ -143,7 +143,11 @@ func (c *char) omenRefreshCB(a info.AttackCB) {
 
 	c.AddStatus(omenRefreshICDKey, 0.5*60, false) // 0.5s ICD
 
-	t.Core.Status.Extend(omenKey, 60*2)
+	omenExp := t.StatusExpiry(omenKey)
+
+	newDur := omenExp - c.Core.F + 2*60
+
+	t.AddStatus(omenKey, newDur, true)
 
 	omenRefreshCount++
 
