@@ -37,6 +37,8 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 		return false
 	}
 
+	r.core.Flags.Custom[lcrCountKey] = min(r.core.Flags.Custom[lcrCountKey]+1, 6)
+	r.contributeToLCrWithAttack(a)
 	// event
 	r.core.Events.Emit(event.OnLunarCrystallize, r.self, a)
 
@@ -55,14 +57,9 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 			moondrift := r.newLunarCrystallizeConstruct(r.self.Direction(), r.self.Pos().Add(moondriftOffset[i]))
 			r.core.Constructs.NewNoLimitCons(moondrift, false)
 		}
-	} else {
-		r.core.Flags.Custom[lcrCountKey] += 1
-		r.contributeToLCrWithAttack(a)
-	}
-
-	if r.core.Flags.Custom[lcrCountKey] >= 3 {
+	} else if r.core.Flags.Custom[lcrCountKey] >= 3 {
 		// trigger three attacks
-		r.core.Flags.Custom[lcrCountKey] = 0
+		r.core.Flags.Custom[lcrCountKey] -= 3
 		r.core.Events.Emit(event.OnMoondriftHarmony, r.self, &a)
 		r.core.Log.NewEvent("Moondrift Harmony triggered", glog.LogElementEvent, a.Info.ActorIndex)
 		r.DoLCrAttack(a.Info.ActorIndex)
