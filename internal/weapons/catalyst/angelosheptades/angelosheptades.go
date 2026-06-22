@@ -70,10 +70,10 @@ func NewWeapon(core *core.Core, char *character.CharWrapper, p info.WeaponProfil
 	r := p.Refine
 
 	m := make([]float64, attributes.EndStatType)
-	m[attributes.ATK] = 0.09 + float64(r)*0.03
+	m[attributes.ATKP] = 0.09 + float64(r)*0.03
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("angelos-heptades-atk", -1),
-		AffectedStat: attributes.NoStat,
+		AffectedStat: attributes.ATKP,
 		Amount: func() []float64 {
 			return m
 		},
@@ -114,12 +114,12 @@ func (w *Weapon) updateBuff(char *character.CharWrapper, core *core.Core, r, src
 
 	buff := 0.07 + float64(r)*0.03
 	buffCap := 0.18 + float64(r)*0.08
-	w.buffAmt = min(char.NonExtraStat(attributes.ATK)/1000.0*buff, buffCap)
+	w.buffAmt = min(char.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK).TotalATK()/1000.0*buff, buffCap)
 
 	core.Log.NewEvent("angelos heptades buff updated", glog.LogWeaponEvent, char.Index()).
 		Write("src", w.buffSrc).
 		Write("value", w.buffAmt).
-		Write("holder-atk", char.NonExtraStat(attributes.ATK))
+		Write("holder-atk", char.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK).TotalATK())
 
 	core.Tasks.Add(func() {
 		w.updateBuff(char, core, r, src)
