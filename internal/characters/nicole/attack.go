@@ -16,7 +16,7 @@ var (
 	attackFrames   [][]int
 	attackHitmarks = []int{10, 8, 38}
 	attackHitboxes = [][]float64{{4, 2}, {2}, {2.5}}
-	attackOffsets  = []*info.Point{{Y: -1}, nil, nil}
+	attackOffsets  = []*info.Point{{Y: -1}, {}, {}}
 )
 
 const (
