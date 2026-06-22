@@ -293,7 +293,7 @@ func (c *char) makeC6CAResetCB() info.AttackCBFunc {
 	}
 
 	return func(a info.AttackCB) {
-		if a.Target.Type() == info.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if !c.StatusIsActive(c6Key) {
