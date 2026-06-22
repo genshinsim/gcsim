@@ -46,16 +46,12 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 	for _, moondrift := range moondrifts {
 		if playerPos.Distance(moondrift.Pos()) < 20 {
 			moondriftsNearby += 1
-			break
 		}
 	}
 	if moondriftsNearby < 3 {
-		for _, moondrift := range moondrifts {
-			r.core.Constructs.Destroy(moondrift.Key())
-		}
-		// TODO: Check if constructs expiring will reset the counter
+		// TODO: It seems to always spawn 3 new ones?
 		// TODO: Set accurate location for spawned moondrifts
-		for i := range 3 - moondriftsNearby {
+		for i := range 3 {
 			moondrift := r.newLunarCrystallizeConstruct(r.self.Direction(), r.self.Pos().Add(moondriftOffset[i]))
 			r.core.Constructs.NewNoLimitCons(moondrift, false)
 		}
@@ -69,7 +65,7 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 		r.core.Flags.Custom[lcrCountKey] = 0
 		r.core.Events.Emit(event.OnMoondriftHarmony, r.self, &a)
 		r.core.Log.NewEvent("Moondrift Harmony triggered", glog.LogElementEvent, a.Info.ActorIndex)
-		r.DoLCrAttack()
+		r.DoLCrAttack(a.Info.ActorIndex)
 		r.extendNearbyLunarCrystallizeConstructDur()
 	}
 
@@ -134,8 +130,8 @@ type lcrContribution = struct {
 	ae      info.AttackEvent
 }
 
-func (r *Reactable) DoLCrAttack() {
-	DoLCrAttackWithContrib(r.lcrContributors(), r.self, r.core, r.lcAtkOwner)
+func (r *Reactable) DoLCrAttack(owner int) {
+	DoLCrAttackWithContrib(r.lcrContributors(), r.self, r.core, owner)
 	// clear contributors after last attack
 	// need to queue this after DoLCrAttackWithContrib to ensure the lcr contributors are removed after the last attack, instead of before
 	r.core.Tasks.Add(func() {
