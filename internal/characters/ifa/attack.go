@@ -60,6 +60,12 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
 
+	travel, ok := p["travel"]
+
+	if !ok {
+		travel = 0
+	}
+
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.PrimaryTarget(),
 		nil,
@@ -68,7 +74,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(ai, ap, 0, 0)
-	}, attackHitmarks[c.NormalCounter])
+	}, attackHitmarks[c.NormalCounter]+travel)
 	defer c.AdvanceNormalIndex()
 
 	return action.Info{
@@ -93,6 +99,12 @@ func (c *char) attackTapSkillState(p map[string]int) action.Info {
 		Mult:           skill_dmg[c.TalentLvlSkill()],
 	}
 
+	travel, ok := p["travel"]
+
+	if !ok {
+		travel = 0
+	}
+
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.PrimaryTarget(),
 		nil,
@@ -112,7 +124,7 @@ func (c *char) attackTapSkillState(p map[string]int) action.Info {
 			c.healCB,
 			c.c1CB,
 		)
-	}, 3)
+	}, 3+travel)
 
 	atkspd := c.Stat(attributes.AtkSpd)
 
