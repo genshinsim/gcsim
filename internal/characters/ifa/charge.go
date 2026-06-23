@@ -1,8 +1,6 @@
 package ifa
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -28,11 +26,14 @@ func init() {
 	chargeFrames[action.ActionDash] = chargeHitmark
 	chargeFrames[action.ActionJump] = chargeHitmark
 	chargeFrames[action.ActionSwap] = 62
+
+	skillAttackHoldFrames = frames.InitNormalCancelSlice(0, chargeSkillInterval)
+	skillAttackHoldFrames[action.ActionAttack] = attackSkillInterval
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.nightsoulState.HasBlessing() {
-		return action.Info{}, fmt.Errorf("not available in flying state")
+		return c.attackTapSkillState(p), nil
 	}
 
 	ai := info.AttackInfo{
@@ -65,4 +66,53 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		CanQueueAfter:   chargeFrames[action.ActionDash],
 		State:           action.ChargeAttackState,
 	}, nil
+}
+
+func (c *char) attackHoldSkillState(_ map[string]int) action.Info {
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
+		Abil:           "Tonic Shot",
+		AttackTag:      attacks.AttackTagNormal,
+		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		ICDTag:         attacks.ICDTagIfaSkill,
+		ICDGroup:       attacks.ICDGroupIfaSkillHit,
+		StrikeType:     attacks.StrikeTypeDefault,
+		Element:        attributes.Anemo,
+		Durability:     25,
+		Mult:           skill_dmg[c.TalentLvlSkill()],
+	}
+
+	ap := combat.NewCircleHitOnTarget(
+		c.Core.Combat.PrimaryTarget(),
+		nil,
+		3,
+	)
+
+	c.QueueCharTask(func() {
+		if !c.nightsoulState.HasBlessing() {
+			return
+		}
+		c.Core.QueueAttack(
+			ai,
+			ap,
+			0,
+			0,
+			c.particleCB,
+			c.healCB,
+			c.c1CB,
+		)
+	}, 1)
+
+	c.c6OnHoldAttackSkill()
+
+	atkspd := c.Stat(attributes.AtkSpd)
+
+	return action.Info{
+		Frames: func(next action.Action) int {
+			return frames.AtkSpdAdjust(skillAttackHoldFrames[next], atkspd)
+		},
+		AnimationLength: attackSkillInterval,
+		CanQueueAfter:   0, // can run out of nightsoul and start falling earlier
+		State:           action.NormalAttackState,
+	}
 }
