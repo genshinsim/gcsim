@@ -4,8 +4,10 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -57,15 +59,28 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	})
 
 	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
+		}
+		if atk.Info.AttackTag != attacks.AttackTagNormal {
+			return
+		}
 		w.addStacks(1)
+		c.Log.NewEvent("gest adding stack- normal on hit", glog.LogWeaponEvent, char.Index()).
+			Write("stacks", w.stacks)
 	}, fmt.Sprintf("gest-of-the-mighty-wolf-on-normal-attack-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnChargeAttack, func(args ...any) {
 		w.addStacks(2)
+		c.Log.NewEvent("gest adding stack- charge on start", glog.LogWeaponEvent, char.Index()).
+			Write("stacks", w.stacks)
 	}, fmt.Sprintf("gest-of-the-mighty-wolf-on-charge-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		w.addStacks(2)
+		c.Log.NewEvent("gest adding stack- skill on cast", glog.LogWeaponEvent, char.Index()).
+			Write("stacks", w.stacks)
 	}, fmt.Sprintf("gest-of-the-mighty-wolf-on-skill-%v", char.Base.Key.String()))
 
 	return w, nil
