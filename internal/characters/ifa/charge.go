@@ -48,6 +48,12 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		Mult:       charge[c.TalentLvlAttack()],
 	}
 
+	travel, ok := p["travel"]
+
+	if !ok {
+		travel = 0
+	}
+
 	pos := c.Core.Combat.PrimaryTarget().Pos()
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(
@@ -58,7 +64,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			0,
 			0,
 		)
-	}, chargeHitmark)
+	}, chargeHitmark+travel)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
@@ -68,7 +74,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) attackHoldSkillState(_ map[string]int) action.Info {
+func (c *char) attackHoldSkillState(p map[string]int) action.Info {
 	ai := info.AttackInfo{
 		ActorIndex:     c.Index(),
 		Abil:           "Tonic Shot",
@@ -80,6 +86,12 @@ func (c *char) attackHoldSkillState(_ map[string]int) action.Info {
 		Element:        attributes.Anemo,
 		Durability:     25,
 		Mult:           skill_dmg[c.TalentLvlSkill()],
+	}
+
+	travel, ok := p["travel"]
+
+	if !ok {
+		travel = 0
 	}
 
 	ap := combat.NewCircleHitOnTarget(
@@ -101,7 +113,7 @@ func (c *char) attackHoldSkillState(_ map[string]int) action.Info {
 			c.healCB,
 			c.c1CB,
 		)
-	}, 1)
+	}, 1+travel)
 
 	c.c6OnHoldAttackSkill()
 
