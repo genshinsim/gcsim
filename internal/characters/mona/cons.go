@@ -288,10 +288,6 @@ func (c *char) makeC6CAResetCB() info.AttackCBFunc {
 		return nil
 	}
 
-	if !c.StatusIsActive(c6Key) {
-		return nil
-	}
-
 	return func(a info.AttackCB) {
 		if a.Target.Type() != info.TargettableEnemy {
 			return
@@ -328,10 +324,7 @@ func (c *char) c6NearbyOmenTicker() func() {
 	return func() {
 		c.QueueCharTask(c.c6NearbyOmenTicker(), 0.3*60)
 
-		// do nothing if not Mona
-		if c.Core.Player.Active() != c.Index() {
-			return
-		}
+		// this ticker continues when mona is off field
 
 		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 15)
 
@@ -349,7 +342,7 @@ func (c *char) c6NearbyOmenTicker() func() {
 		}
 
 		c.c6NearbyOmen = false
-		if c.Core.Player.CurrentState() != action.DashState {
+		if c.Core.Player.Active() != c.Index() || c.Core.Player.CurrentState() != action.DashState {
 			// cancel c6 ticker when both conditions are false
 			c.c6Src = -1
 		}
@@ -363,7 +356,7 @@ func (c *char) c6StartTicker() {
 	}
 
 	c.c6Src = c.Core.F
-	c.QueueCharTask(c.c6Ticker(c.c6Src), 60)
+	c.QueueCharTask(c.c6Ticker(c.c6Src), 59)
 }
 
 // C6:
@@ -377,16 +370,12 @@ func (c *char) c6Ticker(src int) func() {
 			return
 		}
 
-		// do nothing if not Mona
-		if c.Core.Player.Active() != c.Index() {
-			c.c6Src = -1
-			return
-		}
+		// ticker keeps ticking when mona is off field, but it just doesn't add stacks
 
 		// do nothing if we aren't dashing anymore and we aren't hexerei and enemy with omen is nearby
-		isDashing := c.Core.Player.CurrentState() == action.DashState
+		isMonaDashing := c.Core.Player.Active() == c.Index() && c.Core.Player.CurrentState() == action.DashState
 
-		if !isDashing && !c.c6NearbyOmen {
+		if !isMonaDashing && !c.c6NearbyOmen {
 			c.c6Src = -1
 			return
 		}
@@ -395,14 +384,16 @@ func (c *char) c6Ticker(src int) func() {
 			c.c6Stacks = 0
 		}
 
-		c.c6Stacks = min(c.c6Stacks+1, 3)
+		// queue up another check in 1s
+		c.QueueCharTask(c.c6Ticker(src), 60)
 
+		if c.Core.Player.Active() != c.Index() {
+			return
+		}
+
+		c.c6Stacks = min(c.c6Stacks+1, 3)
 		c.Core.Log.NewEvent(c6Key+" stack gained", glog.LogCharacterEvent, c.Index()).
 			Write("c6Stacks", c.c6Stacks)
-
 		c.AddAttackMod(c.c6AtkMod)
-
-		// queue up another stack and buff refresh in 1s
-		c.QueueCharTask(c.c6Ticker(src), 60)
 	}
 }
