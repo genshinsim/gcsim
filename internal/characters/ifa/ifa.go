@@ -4,6 +4,7 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -78,4 +79,12 @@ func (c *char) nightsoulTeamTracking() {
 
 		c.teamNightsoulPoints[idx] += amount
 	}, "ifa-add-team-nightsoul")
+}
+
+func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
+	if !c.nightsoulState.HasBlessing() {
+		return c.Character.ActionStam(a, p)
+	}
+
+	return 0
 }
