@@ -88,3 +88,11 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 
 	return 0
 }
+
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
+	if a == action.ActionSwap && c.nightsoulState.Points() > 0 {
+		return false, action.SwapCD
+	}
+
+	return c.Character.ActionReady(a, p)
+}
