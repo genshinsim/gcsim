@@ -15,11 +15,12 @@ import (
 )
 
 const (
-	LcrExtraHitOverride = "lunarcrystallize-bonus-hit-chance"
-	lcrContributionKey  = "lunarcrystallize-contribution"
-	lcrCountKey         = "lunarcrystallize-count"
-	lcrDur              = 9 * 60
-	lcrTravel           = 10
+	LcrExtraHitOverride    = "lunarcrystallize-bonus-hit-chance"
+	lcrContributionKey     = "lunarcrystallize-contribution"
+	lcrCountKey            = "lunarcrystallize-count"
+	lcrDur                 = 9 * 60
+	lcrTravel              = 10
+	moondriftHarmonyICDKey = "moondrift-harmony-icd"
 )
 
 var (
@@ -53,15 +54,16 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 	if moondriftsNearby < 3 {
 		// TODO: It seems to always spawn 3 new ones?
 		// TODO: Set accurate location for spawned moondrifts
-		for i := range 3 {
+		for i := range 3 - moondriftsNearby {
 			moondrift := r.newLunarCrystallizeConstruct(r.self.Direction(), r.self.Pos().Add(moondriftOffset[i]))
 			r.core.Constructs.NewNoLimitCons(moondrift, false)
 		}
-	} else if r.core.Flags.Custom[lcrCountKey] >= 3 {
+	} else if r.core.Flags.Custom[lcrCountKey] >= 3 && r.core.Status.Duration(moondriftHarmonyICDKey) > 0 {
 		// trigger three attacks
 		r.core.Flags.Custom[lcrCountKey] -= 3
 		r.core.Events.Emit(event.OnMoondriftHarmony, r.self, &a)
 		r.core.Log.NewEvent("Moondrift Harmony triggered", glog.LogElementEvent, a.Info.ActorIndex)
+		r.core.Status.Add(moondriftHarmonyICDKey, lcrHitmarks[len(lcrHitmarks)-1])
 		r.DoLCrAttack(a.Info.ActorIndex)
 		r.extendNearbyLunarCrystallizeConstructDur()
 	}
@@ -129,13 +131,10 @@ type lcrContribution = struct {
 
 func (r *Reactable) DoLCrAttack(owner int) {
 	DoLCrAttackWithContrib(r.lcrContributors(), r.self, r.core, owner)
-	// clear contributors after last attack
-	// need to queue this after DoLCrAttackWithContrib to ensure the lcr contributors are removed after the last attack, instead of before
-	r.core.Tasks.Add(func() {
-		for _, char := range r.core.Player.Chars() {
-			r.removeLCrContributor(char.Index())
-		}
-	}, lcrHitmarks[len(lcrHitmarks)-1])
+	// clear contributors after obtaining the contributor map
+	for _, char := range r.core.Player.Chars() {
+		r.removeLCrContributor(char.Index())
+	}
 }
 
 // Perform a Lunar Crystallize reaction 3-hit attack with the given contributors
