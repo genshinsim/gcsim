@@ -73,7 +73,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			return burstFramesGrounded[next]
 		},
 		AnimationLength: burstFramesGrounded[action.InvalidAction],
-		CanQueueAfter:   burstFramesNS[action.ActionSwap], // earliest cancel
+		CanQueueAfter:   burstFramesNS[action.ActionDash], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }
