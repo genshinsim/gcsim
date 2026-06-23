@@ -64,6 +64,7 @@ func (c *char) enterNightsoul() {
 	c.nightsoulState.EnterBlessing(80)
 	c.nightsoulSrc = c.Core.F
 	c.Core.Tasks.Add(c.nightsoulPointReduceFunc(c.nightsoulSrc), 4)
+	c.skillLastStamF = c.Core.Player.LastStamUse
 }
 
 func (c *char) nigthsoulFallingMsg() {
@@ -83,6 +84,7 @@ func (c *char) exitNightsoul() {
 	c.SetCD(action.ActionSkill, 7.5*60)
 	c.NormalHitNum = normalHitNum
 	c.NormalCounter = 0
+	c.Core.Player.LastStamUse = c.skillLastStamF
 	c.AddStatus(plungeAvailableKey, 26, true)
 }
 
