@@ -40,15 +40,11 @@ func init() {
 	attackFrames[2][action.ActionCharge] = 81
 
 	skillAttackTapFrames = frames.InitNormalCancelSlice(0, attackSkillInterval)
-
-	skillAttackHoldFrames = frames.InitNormalCancelSlice(0, chargeSkillInterval)
+	skillAttackTapFrames[action.ActionCharge] = chargeSkillInterval
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.nightsoulState.HasBlessing() {
-		if p["hold"] == 0 {
-			return c.attackTapSkillState(p), nil
-		}
 		return c.attackHoldSkillState(p), nil
 	}
 
@@ -83,7 +79,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) attackTapSkillState(_ map[string]int) action.Info {
+func (c *char) attackTapSkillState(p map[string]int) action.Info {
 	ai := info.AttackInfo{
 		ActorIndex:     c.Index(),
 		Abil:           "Tonic Shot",
@@ -123,55 +119,6 @@ func (c *char) attackTapSkillState(_ map[string]int) action.Info {
 	return action.Info{
 		Frames: func(next action.Action) int {
 			return frames.AtkSpdAdjust(skillAttackTapFrames[next], atkspd)
-		},
-		AnimationLength: attackSkillInterval,
-		CanQueueAfter:   0, // can run out of nightsoul and start falling earlier
-		State:           action.NormalAttackState,
-	}
-}
-
-func (c *char) attackHoldSkillState(_ map[string]int) action.Info {
-	ai := info.AttackInfo{
-		ActorIndex:     c.Index(),
-		Abil:           "Tonic Shot",
-		AttackTag:      attacks.AttackTagNormal,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		ICDTag:         attacks.ICDTagIfaSkill,
-		ICDGroup:       attacks.ICDGroupIfaSkillHit,
-		StrikeType:     attacks.StrikeTypeDefault,
-		Element:        attributes.Anemo,
-		Durability:     25,
-		Mult:           skill_dmg[c.TalentLvlSkill()],
-	}
-
-	ap := combat.NewCircleHitOnTarget(
-		c.Core.Combat.PrimaryTarget(),
-		nil,
-		3,
-	)
-
-	c.QueueCharTask(func() {
-		if !c.nightsoulState.HasBlessing() {
-			return
-		}
-		c.Core.QueueAttack(
-			ai,
-			ap,
-			0,
-			0,
-			c.particleCB,
-			c.healCB,
-			c.c1CB,
-		)
-	}, 1)
-
-	c.c6OnHoldAttackSkill()
-
-	atkspd := c.Stat(attributes.AtkSpd)
-
-	return action.Info{
-		Frames: func(next action.Action) int {
-			return frames.AtkSpdAdjust(skillAttackHoldFrames[next], atkspd)
 		},
 		AnimationLength: attackSkillInterval,
 		CanQueueAfter:   0, // can run out of nightsoul and start falling earlier

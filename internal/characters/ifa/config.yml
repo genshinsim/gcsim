@@ -4,7 +4,6 @@ key: ifa
 action_param_keys:
   attack:
     - param: "travel"
-    - param: "hold"
   charge:
     - param: "travel"
 icd_tags:
