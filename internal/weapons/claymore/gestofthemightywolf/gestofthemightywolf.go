@@ -17,11 +17,13 @@ func init() {
 }
 
 type Weapon struct {
-	Index  int
-	char   *character.CharWrapper
-	refine int
-	stacks int
-	mod    []float64
+	Index               int
+	char                *character.CharWrapper
+	core                *core.Core
+	refine              int
+	stacks              int
+	mod                 []float64
+	isHexereiSecretRite bool
 }
 
 const (
@@ -30,11 +32,16 @@ const (
 )
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
-func (w *Weapon) Init() error      { return nil }
+
+func (w *Weapon) Init() error {
+	w.isHexereiSecretRite = w.core.Player.GetHexereiCount() >= 2
+	return nil
+}
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{
 		char:   char,
+		core:   c,
 		refine: p.Refine,
 		mod:    make([]float64, attributes.EndStatType),
 	}
@@ -74,7 +81,7 @@ func (w *Weapon) addStacks(amt int) {
 		Amount: func() []float64 {
 			w.mod[attributes.DmgP] = (0.055 + 0.02*float64(w.refine)) * float64(w.stacks)
 
-			if !w.char.IsHexerei {
+			if !w.isHexereiSecretRite {
 				return w.mod
 			}
 
