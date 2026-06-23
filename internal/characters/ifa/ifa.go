@@ -21,6 +21,7 @@ type char struct {
 	nightsoulSrc        int
 	skillParticleICD    bool
 	teamNightsoulPoints []float64
+	skillLastStamF      int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
