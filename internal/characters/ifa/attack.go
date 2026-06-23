@@ -12,8 +12,10 @@ import (
 )
 
 var (
-	attackFrames   [][]int
-	attackHitmarks = []int{10, 13, 42}
+	attackFrames          [][]int
+	skillAttackTapFrames  []int
+	skillAttackHoldFrames []int
+	attackHitmarks        = []int{10, 13, 42}
 )
 
 const (
@@ -36,6 +38,10 @@ func init() {
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 90) // N3 -> N1
 	attackFrames[2][action.ActionWalk] = 88
 	attackFrames[2][action.ActionCharge] = 81
+
+	skillAttackTapFrames = frames.InitNormalCancelSlice(0, attackSkillInterval)
+
+	skillAttackHoldFrames = frames.InitNormalCancelSlice(0, chargeSkillInterval)
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
@@ -112,16 +118,11 @@ func (c *char) attackTapSkillState(_ map[string]int) action.Info {
 		)
 	}, 3)
 
+	atkspd := c.Stat(attributes.AtkSpd)
+
 	return action.Info{
 		Frames: func(next action.Action) int {
-			// TODO: Check correct frames
-			if next == action.ActionAttack {
-				return attackSkillInterval
-			}
-			if next == action.ActionCharge {
-				return chargeSkillInterval
-			}
-			return 0
+			return frames.AtkSpdAdjust(skillAttackTapFrames[next], atkspd)
 		},
 		AnimationLength: attackSkillInterval,
 		CanQueueAfter:   0, // can run out of nightsoul and start falling earlier
@@ -166,19 +167,14 @@ func (c *char) attackHoldSkillState(_ map[string]int) action.Info {
 
 	c.c6OnHoldAttackSkill()
 
+	atkspd := c.Stat(attributes.AtkSpd)
+
 	return action.Info{
 		Frames: func(next action.Action) int {
-			// TODO: check correct frames
-			if next == action.ActionAttack {
-				return attackSkillInterval
-			}
-			if next == action.ActionCharge {
-				return chargeSkillInterval
-			}
-			return 0
+			return frames.AtkSpdAdjust(skillAttackHoldFrames[next], atkspd)
 		},
 		AnimationLength: attackSkillInterval,
 		CanQueueAfter:   0, // can run out of nightsoul and start falling earlier
-		State:           action.ChargeAttackState,
+		State:           action.NormalAttackState,
 	}
 }

@@ -11,10 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var (
-	lowPlungeFrames   []int
-	lowPlungeFramesNS []int
-)
+var lowPlungeFrames []int
 
 const (
 	lowPlungeHitmark = 38
@@ -30,15 +27,6 @@ func init() {
 	lowPlungeFrames[action.ActionDash] = 61 - 19
 	lowPlungeFrames[action.ActionWalk] = 69
 	lowPlungeFrames[action.ActionSwap] = 57
-
-	lowPlungeFramesNS = frames.InitAbilSlice(69)
-	lowPlungeFramesNS[action.ActionAttack] = 50
-	lowPlungeFramesNS[action.ActionCharge] = 50
-	lowPlungeFramesNS[action.ActionSkill] = lowPlungeHitmark // assuming it's the same as burst
-	lowPlungeFramesNS[action.ActionBurst] = 50
-	lowPlungeFramesNS[action.ActionDash] = 62 - 19
-	lowPlungeFramesNS[action.ActionWalk] = 69
-	lowPlungeFramesNS[action.ActionSwap] = 55
 }
 
 func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
@@ -50,7 +38,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 
 	collision, ok := p["collision"]
 	if !ok {
-		collision = 0 // Whether or not Wanderer does a collision hit
+		collision = 0
 	}
 
 	if collision > 0 {
@@ -69,25 +57,11 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 		Mult:       plunge_low[c.TalentLvlAttack()],
 	}
 
-	// TODO: check snapshot delay
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3.5),
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
 		lowPlungeHitmark, lowPlungeHitmark)
 
-	c.Core.Tasks.Add(func() {
-		c.exitNightsoul()
-	}, lowPlungeHitmark)
-
-	if c.nightsoulState.HasBlessing() {
-		ai.AdditionalTags = []attacks.AdditionalTag{attacks.AdditionalTagNightsoul}
-	}
-
 	return action.Info{
-		Frames: func(next action.Action) int {
-			if c.nightsoulState.HasBlessing() {
-				return (lowPlungeFramesNS[next])
-			}
-			return (lowPlungeFrames[next])
-		},
+		Frames:          frames.NewAbilFunc(lowPlungeFrames),
 		AnimationLength: lowPlungeFrames[action.InvalidAction],
 		CanQueueAfter:   lowPlungeHitmark,
 		State:           action.PlungeAttackState,
