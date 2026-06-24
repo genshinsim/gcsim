@@ -52,7 +52,6 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 		}
 	}
 	if moondriftsNearby < 3 {
-		// TODO: It seems to always spawn 3 new ones?
 		// TODO: Set accurate location for spawned moondrifts
 		for i := range 3 - moondriftsNearby {
 			moondrift := r.newLunarCrystallizeConstruct(r.self.Direction(), r.self.Pos().Add(moondriftOffset[i]))
