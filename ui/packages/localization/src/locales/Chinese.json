@@ -50,6 +50,7 @@
         "vaporize": "蒸发",
         "crystallize-electro": "结晶 (雷)",
         "crystallize-hydro": "结晶 (水)",
+        "lunarcrystallize": "月结晶",
         "crystallize-pyro": "结晶 (火)",
         "crystallize-cryo": "结晶 (冰)",
         "swirl-electro": "扩散 (雷)",
@@ -57,6 +58,7 @@
         "swirl-pyro": "扩散 (火)",
         "swirl-cryo": "扩散 (冰)",
         "electrocharged": "感电",
+        "lunarcharged": "月感电",
         "shatter": "碎冰",
         "burning": "燃烧",
         "quicken": "原激化",
@@ -64,7 +66,8 @@
         "spread": "蔓激化",
         "bloom": "绽放",
         "burgeon": "烈绽放",
-        "hyperbloom": "超绽放"
+        "hyperbloom": "超绽放",
+        "lunarbloom": "月绽放"
     },
     "dash": {
         "get_started": "入门",

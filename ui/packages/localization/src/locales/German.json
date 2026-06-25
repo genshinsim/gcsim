@@ -50,6 +50,7 @@
         "vaporize": "Verdampfen",
         "crystallize-electro": "Kristallisation (Elektro)",
         "crystallize-hydro": "Kristallisation (Hydro)",
+        "lunarcrystallize": "Mond-Kristallisation",
         "crystallize-pyro": "Kristallisation (Pyro)",
         "crystallize-cryo": "Kristallisation (Kryo)",
         "swirl-electro": "Verwirbelung (Elektro)",
@@ -57,6 +58,7 @@
         "swirl-pyro": "Verwirbelung (Pyro)",
         "swirl-cryo": "Verwirbelung (Kryo)",
         "electrocharged": "Unter Strom",
+        "lunarcharged": "Mond unter Strom",
         "shatter": "Eisbrecher",
         "burning": "In Flammen",
         "quicken": "Urwuchs",
@@ -64,7 +66,8 @@
         "spread": "Rankenwuchs",
         "bloom": "Sprießen",
         "burgeon": "Flammenspross",
-        "hyperbloom": "Supraspross"
+        "hyperbloom": "Supraspross",
+        "lunarbloom": "Mondspross"
     },
     "dash": {
         "get_started": "Loslegen",

@@ -50,6 +50,7 @@
     "vaporize": "Vaporize",
     "crystallize-electro": "Crystallize (Electro)",
     "crystallize-hydro": "Crystallize (Hydro)",
+    "lunarcrystallize": "Lunar-Crystallize",
     "crystallize-pyro": "Crystallize (Pyro)",
     "crystallize-cryo": "Crystallize (Cryo)",
     "swirl-electro": "Swirl (Electro)",
@@ -57,6 +58,7 @@
     "swirl-pyro": "Swirl (Pyro)",
     "swirl-cryo": "Swirl (Cryo)",
     "electrocharged": "Electrocharged",
+    "lunarcharged": "Lunar-Charged",
     "shatter": "Shatter",
     "burning": "Burning",
     "quicken": "Quicken",
@@ -64,7 +66,8 @@
     "spread": "Spread",
     "bloom": "Bloom",
     "burgeon": "Burgeon",
-    "hyperbloom": "Hyperbloom"
+    "hyperbloom": "Hyperbloom",
+    "lunarbloom": "Lunar-Bloom"
   },
   "dash": {
     "get_started": "Get started",
