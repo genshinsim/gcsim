@@ -290,7 +290,7 @@
       "fields": [
         ".nicole.projections"
       ],
-      "desc": "Number of Arcane Projection attacks done"
+      "desc": "Number of Arcane Projection attacks done by this burst. 0 if burst is not active."
     }
   ],
   "ningguang": [
