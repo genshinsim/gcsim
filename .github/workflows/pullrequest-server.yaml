@@ -1,4 +1,4 @@
-name: Build and Comment PR Binary
+name: build server
 
 on:
   pull_request:
@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   build-and-comment:
-    name: Build and Link Binary
+    name: Build Binary
     runs-on: ubuntu-latest
 
     steps:
