@@ -92,9 +92,7 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 			if core.Player.Active() != char.Index() {
 				return
 			}
-
-			ae := (args[1]).(info.AttackEvent)
-			enableSet(ae.Info.Element)
+			enableSet(attributes.Hydro)
 		}, fmt.Sprintf("archaic-4pc-%v", char.Base.Key.String()))
 	}
 
