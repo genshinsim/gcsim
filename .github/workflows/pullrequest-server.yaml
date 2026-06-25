@@ -31,9 +31,9 @@ jobs:
       # 1. Upload file safely as an artifact without creating tags
       - name: Upload Binary Artifact
         id: upload-step
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
-          name: server_windows_amd64-${{ github.event.pull_request.number }}.exe
+          name: server_windows_amd64-pr${{ github.event.pull_request.number }}.exe
           path: server_windows_amd64.exe
           archive: false
           retention-days: 7
@@ -48,6 +48,6 @@ jobs:
             **PR Test Binary Built Successfully!**
 
             You can download the compiled server directly from the GitHub artifact portal:
-            [Download server_windows_amd64-${{ github.event.pull_request.number }}.exe](${{ steps.upload-step.outputs.artifact-url }})
+            [Download server_windows_amd64-pr${{ github.event.pull_request.number }}.exe](${{ steps.upload-step.outputs.artifact-url }})
 
             _Note: You must be logged into GitHub to access this link._
