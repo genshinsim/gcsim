@@ -43,7 +43,6 @@ jobs:
         uses: thollander/actions-comment-pull-request@v3
         with:
           comment-tag: pr_binary_download
-          mode: replace
           message: |
             **PR Test Binary Built Successfully!**
 
