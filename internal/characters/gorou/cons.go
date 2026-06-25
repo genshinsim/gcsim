@@ -72,7 +72,7 @@ func (c *char) c2() {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return
 		}
-		ae := args[1].(info.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
 			return
 		}
