@@ -44,9 +44,11 @@ jobs:
         with:
           comment-tag: pr_binary_download
           message: |
-            **PR Test Binary Built Successfully!**
+            **PR Test Server Built Successfully!**
 
-            You can download the compiled server directly from the GitHub artifact portal:
+            You can download the server directly from the GitHub artifact portal:
             Download [server-pr${{ github.event.pull_request.number }}.exe](${{ steps.upload-step.outputs.artifact-url }})
+
+            Note: Download will expire 7 days after the uploading
 
             _Note: You must be logged into GitHub to access this link._
