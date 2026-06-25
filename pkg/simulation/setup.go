@@ -20,8 +20,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var geoResTickerSrc int
-
 const (
 	nightsoulBurstICDStatus = "nightsoul-burst-icd"
 	geoResKey               = "geo-res"
@@ -214,7 +212,9 @@ func SetupResonance(s *core.Core) {
 			f := func() (float64, bool) { return 0.15, true }
 			s.Player.Shields.AddShieldBonusMod(geoResKey, -1, f)
 
-			updateGeoResonance(s, s.Player.Active(), geoResTickerSrc)
+			geoResTickerSrc := s.F
+
+			updateGeoResonance(s, s.Player.Active(), geoResTickerSrc, &geoResTickerSrc)
 
 			// shred geo res of target
 			s.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
@@ -240,7 +240,7 @@ func SetupResonance(s *core.Core) {
 				c.AddAttackMod(character.AttackMod{
 					Base: modifier.NewBase(geoResKey, -1),
 					Amount: func(ae *info.AttackEvent, t info.Target) []float64 {
-						if s.Flags.Custom[geoResKey] == 1 && s.Player.Active() == c.Index() {
+						if s.Status.Duration(geoResKey) != 0 && s.Player.Active() == c.Index() {
 							return m
 						}
 						return nil
@@ -253,9 +253,7 @@ func SetupResonance(s *core.Core) {
 
 				geoResTickerSrc = s.F
 
-				updateGeoResonance(s, next, geoResTickerSrc)
-
-				return
+				updateGeoResonance(s, next, geoResTickerSrc, &geoResTickerSrc)
 			}, "geo-res-on-swap")
 
 		case attributes.Anemo:
@@ -329,17 +327,13 @@ func SetupResonance(s *core.Core) {
 	}
 }
 
-func updateGeoResonance(s *core.Core, index, src int) func() {
+func updateGeoResonance(s *core.Core, index, src int, startFrame *int) func() {
 	return func() {
-		if geoResTickerSrc != src {
+		if *startFrame != src {
 			return
 		}
 
-		isGeoResActive := false
-
-		if s.Player.Shields.CharacterIsShielded(index, s.Player.Active()) {
-			isGeoResActive = true
-		}
+		isGeoResActive := s.Player.Shields.CharacterIsShielded(index, s.Player.Active())
 
 		moondrifts, _ := s.Constructs.ConstructsByType(construct.GeoConstructLunarCrystallize)
 		playerPos := s.Combat.Player().Pos()
@@ -350,12 +344,12 @@ func updateGeoResonance(s *core.Core, index, src int) func() {
 		}
 
 		if isGeoResActive {
-			s.Flags.Custom[geoResKey] = 1
+			s.Status.Add(geoResKey, -1)
 		} else {
-			s.Flags.Custom[geoResKey] = 0
+			s.Status.Delete(geoResKey)
 		}
 
-		s.Player.Chars()[index].QueueCharTask(updateGeoResonance(s, index, src), 1*60)
+		s.Player.Chars()[index].QueueCharTask(updateGeoResonance(s, index, src, startFrame), 1*60)
 	}
 }
 
