@@ -1,7 +1,7 @@
 name: build server
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
 
@@ -11,12 +11,15 @@ permissions:
 
 jobs:
   build-and-comment:
-    name: Build Binary
+    name: build binary
     runs-on: ubuntu-latest
 
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+          ref: ${{ github.event.pull_request.head.ref }}
 
       # Example: Setting up Go (Change this to your specific language setup)
       - name: Set up Go
@@ -49,6 +52,6 @@ jobs:
             You can download the server directly from the GitHub artifact portal:
             Download [server-pr${{ github.event.pull_request.number }}.exe](${{ steps.upload-step.outputs.artifact-url }})
 
-            Note: Download will expire 7 days after the uploading
+            Note: Download will expire 7 days after the last update
 
             _Note: You must be logged into GitHub to access this link._
