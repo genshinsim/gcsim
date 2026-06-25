@@ -20,7 +20,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const nightsoulBurstICDStatus = "nightsoul-burst-icd"
+var geoResTickerSrc int
+
+const (
+	nightsoulBurstICDStatus = "nightsoul-burst-icd"
+	geoResKey               = "geo-res"
+)
 
 // first is 0 because you can't proc it without the natlan character
 var nightsoulBurstICD = []int{0, 18 * 60, 12 * 60, 9 * 60, 9 * 60}
@@ -207,23 +212,9 @@ func SetupResonance(s *core.Core) {
 			//
 			// DMG dealt increased by 15%, dealing DMG to enemies will decrease their Geo RES by 20% for 15s.
 			f := func() (float64, bool) { return 0.15, true }
-			s.Player.Shields.AddShieldBonusMod("geo-res", -1, f)
+			s.Player.Shields.AddShieldBonusMod(geoResKey, -1, f)
 
-			isGeoResoActive := func(index int) bool {
-				if s.Player.Shields.CharacterIsShielded(index, s.Player.Active()) {
-					return true
-				}
-
-				moondrifts, _ := s.Constructs.ConstructsByType(construct.GeoConstructLunarCrystallize)
-				playerPos := s.Combat.Player().Pos()
-				for _, moondrift := range moondrifts {
-					// TODO: geo resonance distance for moondrifts
-					if playerPos.Distance(moondrift.Pos()) < 20 {
-						return true
-					}
-				}
-				return false
-			}
+			updateGeoResonance(s, s.Player.Active(), geoResTickerSrc)
 
 			// shred geo res of target
 			s.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
@@ -232,9 +223,11 @@ func SetupResonance(s *core.Core) {
 					return
 				}
 				atk := args[1].(*info.AttackEvent)
-				if isGeoResoActive(atk.Info.ActorIndex) {
+
+				charIndex := atk.Info.ActorIndex
+				if s.Flags.Custom[geoResKey] == 1 && s.Player.Active() == charIndex {
 					t.AddResistMod(info.ResistMod{
-						Base:  modifier.NewBaseWithHitlag("geo-res", 15*60),
+						Base:  modifier.NewBaseWithHitlag(geoResKey, 15*60),
 						Ele:   attributes.Geo,
 						Value: -0.2,
 					})
@@ -245,15 +238,25 @@ func SetupResonance(s *core.Core) {
 			m[attributes.DmgP] = .15
 			for _, c := range chars {
 				c.AddAttackMod(character.AttackMod{
-					Base: modifier.NewBase("geo-res", -1),
+					Base: modifier.NewBase(geoResKey, -1),
 					Amount: func(ae *info.AttackEvent, t info.Target) []float64 {
-						if isGeoResoActive(ae.Info.ActorIndex) {
+						if s.Flags.Custom[geoResKey] == 1 && s.Player.Active() == c.Index() {
 							return m
 						}
 						return nil
 					},
 				})
 			}
+
+			s.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
+				next := args[1].(int)
+
+				geoResTickerSrc = s.F
+
+				updateGeoResonance(s, next, geoResTickerSrc)
+
+				return
+			}, "geo-res-on-swap")
 
 		case attributes.Anemo:
 			s.Player.AddStamPercentMod("anemo-res-stam", -1, func(a action.Action) (float64, bool) {
@@ -323,6 +326,36 @@ func SetupResonance(s *core.Core) {
 			s.Events.Subscribe(event.OnHyperbloom, threeEl, "dendro-res")
 			s.Events.Subscribe(event.OnBurgeon, threeEl, "dendro-res")
 		}
+	}
+}
+
+func updateGeoResonance(s *core.Core, index, src int) func() {
+	return func() {
+		if geoResTickerSrc != src {
+			return
+		}
+
+		isGeoResActive := false
+
+		if s.Player.Shields.CharacterIsShielded(index, s.Player.Active()) {
+			isGeoResActive = true
+		}
+
+		moondrifts, _ := s.Constructs.ConstructsByType(construct.GeoConstructLunarCrystallize)
+		playerPos := s.Combat.Player().Pos()
+		for _, moondrift := range moondrifts {
+			if playerPos.Distance(moondrift.Pos()) < 16 {
+				isGeoResActive = true
+			}
+		}
+
+		if isGeoResActive {
+			s.Flags.Custom[geoResKey] = 1
+		} else {
+			s.Flags.Custom[geoResKey] = 0
+		}
+
+		s.Player.Chars()[index].QueueCharTask(updateGeoResonance(s, index, src), 1*60)
 	}
 }
 
