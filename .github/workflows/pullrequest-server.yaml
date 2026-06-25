@@ -1,0 +1,53 @@
+name: Build and Comment PR Binary
+
+on:
+  pull_request:
+    branches:
+      - main
+
+# Permissions required to upload releases and write comments
+permissions:
+  pull-requests: write
+
+jobs:
+  build-and-comment:
+    name: Build and Link Binary
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # Example: Setting up Go (Change this to your specific language setup)
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "^1.21"
+
+      - name: Build Binary
+        run: |
+          GOOS=windows GOARCH=amd64 go build -ldflags "-X main.version=`git tag --sort=-version:refname | head -n 1`" -o server_windows_amd64.exe ./cmd/server
+
+      # 1. Upload file safely as an artifact without creating tags
+      - name: Upload Binary Artifact
+        id: upload-step
+        uses: actions/upload-artifact@v4
+        with:
+          name: server_windows_amd64-${{ github.event.pull_request.number }}.exe
+          path: server_windows_amd64.exe
+          archive: false
+          retention-days: 7
+
+      # 2. Post or Update a comment containing the download instructions
+      - name: Comment PR Link
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          comment-tag: pr_binary_download
+          mode: replace
+          message: |
+            **PR Test Binary Built Successfully!**
+
+            You can download the compiled server directly from the GitHub artifact portal:
+            [Download server_windows_amd64-${{ github.event.pull_request.number }}.exe](${{ steps.upload-step.outputs.artifact-url }})
+
+            _Note: You must be logged into GitHub to access this link._
