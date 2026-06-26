@@ -85,6 +85,21 @@ func evalElement(c *core.Core, fields []string) (float64, error) {
 	return float64(dur), nil
 }
 
+func evalTags(c *core.Core, fields []string) (int, error) {
+	// .tags.e1.name
+	if err := fieldsCheck(fields, 3, "tags"); err != nil {
+		return 0, err
+	}
+	trg := fields[1]
+	name := fields[2]
+
+	e, err := parseTarget(c, trg)
+	if err != nil {
+		return 0, fmt.Errorf("bad element condition: %w", err)
+	}
+	return e.GetTag(name), nil
+}
+
 func parseTarget(c *core.Core, trg string) (*enemy.Enemy, error) {
 	trg = strings.TrimPrefix(trg, "t")
 	tid, err := strconv.ParseInt(trg, 10, 64)

@@ -28,6 +28,8 @@ func Eval(c *core.Core, fields []string) (any, error) {
 		return evalDebuff(c, fields)
 	case "element":
 		return evalElement(c, fields)
+	case "tags":
+		return evalTags(c, fields)
 	case "status":
 		if err := fieldsCheck(fields, 2, "status"); err != nil {
 			return 0, err
