@@ -11,20 +11,20 @@ import FieldsTable from "@site/src/components/Fields/FieldsTable";
 
 ## AoE Data
 
-<AoETable item_key="aubade" data_src="artifact" />
+<AoETable item_key="aubadeofmorningstarandmoon" data_src="artifact" />
 
 ## Known issues
 
-<IssuesTable item_key="aubade" data_src="artifact" />
+<IssuesTable item_key="aubadeofmorningstarandmoon" data_src="artifact" />
 
 ## Names
 
-<NamesList item_key="aubade" data_src="artifact" />
+<NamesList item_key="aubadeofmorningstarandmoon" data_src="artifact" />
 
 ## Params
 
-<ParamsTable item_key="aubade" data_src="artifact" />
+<ParamsTable item_key="aubadeofmorningstarandmoon" data_src="artifact" />
 
 ## Fields
 
-<FieldsTable item_key="aubade" data_src="artifact" />
+<FieldsTable item_key="aubadeofmorningstarandmoon" data_src="artifact" />
