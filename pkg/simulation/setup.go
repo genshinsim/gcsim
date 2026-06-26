@@ -254,6 +254,18 @@ func SetupResonance(s *core.Core) {
 				updateGeoResonance(s, geoResTickerSrc, &geoResTickerSrc)()
 			}, "geo-res-on-swap")
 
+			s.Events.Subscribe(event.OnShielded, func(args ...any) {
+				geoResTickerSrc = s.F
+
+				updateGeoResonance(s, geoResTickerSrc, &geoResTickerSrc)
+			}, "geo-res-on-shielded")
+
+			s.Events.Subscribe(event.OnShieldBreak, func(args ...any) {
+				geoResTickerSrc = s.F
+
+				updateGeoResonance(s, geoResTickerSrc, &geoResTickerSrc)
+			}, "geo-res-on-shield-break")
+
 		case attributes.Anemo:
 			s.Player.AddStamPercentMod("anemo-res-stam", -1, func(a action.Action) (float64, bool) {
 				return -0.15, false
