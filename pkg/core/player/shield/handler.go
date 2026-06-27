@@ -90,6 +90,7 @@ func (h *Handler) OnDamage(char, active int, dmg float64, ele attributes.Element
 	bonus := h.ShieldBonus()
 	mintaken := dmg // min of damage taken
 	n := 0
+	broken := make([]Shield, 0)
 	for _, v := range h.shields {
 		target := v.ShieldTarget()
 		if target == -1 && char != active {
@@ -130,10 +131,15 @@ func (h *Handler) OnDamage(char, active int, dmg float64, ele attributes.Element
 			).Write("name", v.Desc()).
 				Write("ele", v.Element()).
 				Write("expiry", v.Expiry())
-			h.events.Emit(event.OnShieldBreak, v)
+			broken = append(broken, v)
 		}
 	}
 	h.shields = h.shields[:n]
+	if len(broken) > 0 {
+		for _, v := range broken {
+			h.events.Emit(event.OnShieldBreak, v)
+		}
+	}
 	return mintaken
 }
 
