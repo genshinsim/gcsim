@@ -74,7 +74,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		aiBlade := info.AttackInfo{
 			// TODO: Apply Arkhe
 			ActorIndex: c.Index(),
-			Abil:       "Surging Blade (" + c.Base.Key.Pretty() + ")",
+			Abil:       "Surging Blade (" + c.Base.Key.String() + ")",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,

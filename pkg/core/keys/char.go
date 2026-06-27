@@ -33,10 +33,6 @@ func (c Char) String() string {
 	return charNames[c]
 }
 
-func (c Char) Pretty() string {
-	return charPrettyName[c]
-}
-
 const (
 	ChildePassive = "childe-talent-passive"
 	SkirkPassive  = "skirk-talent-passive"
@@ -83,28 +79,6 @@ var charNames = [EndCharKeys]string{
 	"lumine",
 	"", // delim for traveler
 	"test_char_do_not_use",
-}
-
-var charPrettyName = [EndCharKeys]string{
-	"Invalid",
-	"Aether (Anemo)",
-	"Lumine (Anemo)",
-	"Aether (Geo)",
-	"Lumine (Geo)",
-	"Aether (Electro)",
-	"Lumine (Electro)",
-	"Aether (Dendro)",
-	"Lumine (Dendro)",
-	"Aether (Hydro)",
-	"Lumine (Hydro)",
-	"Aether (Pyro)",
-	"Lumine (Pyro)",
-	"Aether (Cryo)",
-	"Lumine (Cryo)",
-	"Aether",
-	"Lumine",
-	"Invalid",
-	"!!!TEST CHAR DO NOT USE!!!",
 }
 
 var CharKeyToEle = map[Char]attributes.Element{

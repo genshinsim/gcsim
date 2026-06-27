@@ -111,7 +111,6 @@ const (
 func init() {
 {{- range $index, $ele := . }}
 	charNames[{{$ele.VarName}}] = "{{$ele.Key}}"
-	charPrettyName[{{$ele.VarName}}] = "{{$ele.PrettyName}}"
 	CharKeyToEle[{{$ele.VarName}}] = attributes.{{$ele.Element}}
 {{end -}}
 }
