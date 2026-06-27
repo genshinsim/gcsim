@@ -38,6 +38,16 @@ func (c *char) moonsignInit() {
 
 		atk.Info.BaseDmgBonus += bonus
 	}, lunarBonusKey)
+
+	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if !attacks.AttackTagIsLunar(atk.Info.AttackTag) {
+			return
+		}
+		bonus := min(c.TotalAtk()/100.0*0.007, 0.14)
+
+		atk.Info.BaseDmgBonus += bonus
+	}, lunarBonusKey+"-lunar-atk")
 }
 
 func (c *char) a1Init() {
