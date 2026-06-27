@@ -5,10 +5,6 @@ action_param_keys:
     skill:
         - param: "hold"
         - param: "hold_nostele"
-shortcuts:
-    - zl
-    - geoarchon
-    - morax
 skill_data_mapping:
     attack:
         attack_1:
