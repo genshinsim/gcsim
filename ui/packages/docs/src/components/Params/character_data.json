@@ -779,7 +779,7 @@
     },
     {
       "ability": "skill",
-      "param": "c6_travel",
+      "param": "c6-travel",
       "desc": "C6 Bounce Scalespiker projectile travel time. Default: 50 frames."
     },
     {
