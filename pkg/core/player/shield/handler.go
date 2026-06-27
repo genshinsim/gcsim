@@ -139,17 +139,23 @@ func (h *Handler) OnDamage(char, active int, dmg float64, ele attributes.Element
 
 func (h *Handler) Tick() {
 	n := 0
+	broken := make([]Shield, 0)
 	for _, v := range h.shields {
 		if v.Expiry() == *h.f {
 			v.OnExpire()
 			h.log.NewEvent("shield expired", glog.LogShieldEvent, -1).
 				Write("name", v.Desc()).
 				Write("hp", v.CurrentHP())
-			h.events.Emit(event.OnShieldBreak, v)
+			broken = append(broken, v)
 		} else {
 			h.shields[n] = v
 			n++
 		}
 	}
 	h.shields = h.shields[:n]
+	if len(broken) > 0 {
+		for _, v := range broken {
+			h.events.Emit(event.OnShieldBreak, v)
+		}
+	}
 }

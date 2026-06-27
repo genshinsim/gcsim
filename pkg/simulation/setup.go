@@ -257,13 +257,13 @@ func SetupResonance(s *core.Core) {
 			s.Events.Subscribe(event.OnShielded, func(args ...any) {
 				geoResTickerSrc = s.F
 
-				updateGeoResonance(s, geoResTickerSrc, &geoResTickerSrc)
+				updateGeoResonance(s, geoResTickerSrc, &geoResTickerSrc)()
 			}, "geo-res-on-shielded")
 
 			s.Events.Subscribe(event.OnShieldBreak, func(args ...any) {
 				geoResTickerSrc = s.F
 
-				updateGeoResonance(s, geoResTickerSrc, &geoResTickerSrc)
+				updateGeoResonance(s, geoResTickerSrc, &geoResTickerSrc)()
 			}, "geo-res-on-shield-break")
 
 		case attributes.Anemo:
