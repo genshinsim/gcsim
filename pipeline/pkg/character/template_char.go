@@ -10,7 +10,6 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -23,7 +22,7 @@ type charData struct {
 	Data         *model.AvatarData
 	NASlice      map[string]*naSlice
 	SkillLvlData []skillLvlData
-	ParamKeys    map[int][]paramData
+	ParamKeys    map[string][]paramData
 }
 
 type naSlice struct {
@@ -75,10 +74,10 @@ func (g *Generator) GenerateCharTemplate() error {
 			d.CharStructName = "char"
 		}
 		if d.ActionParamKeys != nil {
-			err := d.buildValidation()
-			if err != nil {
-				return fmt.Errorf("failed to build validation map for %v: %w", v.Key, err)
+			if d.KeyVarName == "" {
+				d.KeyVarName = cases.Title(language.AmericanEnglish).String(d.Key)
 			}
+			d.ParamKeys = d.ActionParamKeys
 		}
 		err := d.buildSkillData(dm)
 		if err != nil {
@@ -119,22 +118,6 @@ func writePBToFile(path string, dm *model.AvatarData) error {
 	// hack to work around stupid prototext not stable (on purpose - google u suck)
 	b = []byte(strings.ReplaceAll(string(b), ":  ", ": "))
 	return os.WriteFile(path, b, 0o644)
-}
-
-func (c *charData) buildValidation() error {
-	if c.KeyVarName == "" {
-		c.KeyVarName = cases.Title(language.AmericanEnglish).String(c.Key)
-	}
-	c.ParamKeys = make(map[int][]paramData)
-	for k, v := range c.ActionParamKeys {
-		a := action.StringToAction(k)
-		if a == action.InvalidAction {
-			return fmt.Errorf("invalid action string: %v", k)
-		}
-		c.ParamKeys[int(a)] = v
-	}
-
-	return nil
 }
 
 func (c *charData) buildSkillData(dm *model.AvatarData) error {
@@ -252,7 +235,7 @@ var base *model.AvatarData
 {{if ne (len .ParamKeys) 0 -}}
 var paramKeysValidation = map[action.Action][]string {
 	{{- range $key, $slice := .ParamKeys}}
-	{{$key}}: {
+	action.StringToAction("{{$key}}"): {
 		{{- range $val := $slice -}}
 		"{{$val.Param}}",
 		{{- end -}}
