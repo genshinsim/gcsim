@@ -149,32 +149,22 @@
     "thoma": [],
     "tighnari": [],
     "traveleranemo": [
-        "aether-anemo",
-        "lumine-anemo",
         "aetheranemo",
         "lumineanemo"
     ],
     "travelergeo": [
-        "aether-geo",
-        "lumine-geo",
         "aethergeo",
         "luminegeo"
     ],
     "travelerelectro": [
-        "aether-electro",
-        "lumine-electro",
         "aetherelectro",
         "lumineelectro"
     ],
     "travelerdendro": [
-        "aether-dendro",
-        "lumine-dendro",
         "aetherdendro",
         "luminedendro"
     ],
     "travelerhydro": [
-        "aether-hydro",
-        "lumine-hydro",
         "aetherhydro",
         "luminehydro"
     ],

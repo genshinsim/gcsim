@@ -77,13 +77,6 @@ ace.define(
       // var builtinConstants = "nil|true|false|iota";
 
       var gcsimAvatars = [
-        'aether-anemo',
-        'aether-cryo',
-        'aether-dendro',
-        'aether-electro',
-        'aether-geo',
-        'aether-hydro',
-        'aether-pyro',
         'aetheranemo',
         'aethercryo',
         'aetherdendro',
@@ -183,13 +176,6 @@ ace.define(
         'lesserlordkusanali',
         'lisa',
         'liuyun',
-        'lumine-anemo',
-        'lumine-cryo',
-        'lumine-dendro',
-        'lumine-electro',
-        'lumine-geo',
-        'lumine-hydro',
-        'lumine-pyro',
         'lumineanemo',
         'luminecryo',
         'luminedendro',
