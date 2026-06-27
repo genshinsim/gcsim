@@ -174,7 +174,7 @@ func (c *char) arkhe(delay int) info.AttackCBFunc {
 
 		aiArkhe := info.AttackInfo{
 			ActorIndex: c.Index(),
-			Abil:       "Surging Blade (" + c.Base.Key.Pretty() + ")",
+			Abil:       "Surging Blade (" + c.Base.Key.String() + ")",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,

@@ -66,7 +66,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	aiThorn := info.AttackInfo{
 		// TODO: Apply Pneuma
 		ActorIndex:         c.Index(),
-		Abil:               "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
+		Abil:               "Spiritbreath Thorn (" + c.Base.Key.String() + ")",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
