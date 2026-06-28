@@ -56,14 +56,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	pos := c.Core.Combat.PrimaryTarget().Pos()
 	c.QueueCharTask(func() {
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(
-			pos,
-			nil,
-			chargeRadius,
-		),
-			0,
-			0,
-		)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(pos, nil, chargeRadius), 0, 0)
 		c.QueueCharTask(c.arkhe(pos), 30)
 	}, chargeHitmark-windup)
 
@@ -83,7 +76,7 @@ func (c *char) arkhe(pos info.Point) func() {
 		c.AddStatus(arkheIcdKeys, 6*60, true)
 		ai := info.AttackInfo{
 			ActorIndex:     c.Index(),
-			Abil:           "Spiritbreath Thorn" + " (" + c.Base.Key.Pretty() + ")",
+			Abil:           "Spiritbreath Thorn" + " (" + c.Base.Key.String() + ")",
 			AttackTag:      attacks.AttackTagExtra,
 			ICDTag:         attacks.ICDTagNone,
 			ICDGroup:       attacks.ICDGroupDefault,

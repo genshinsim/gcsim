@@ -4,10 +4,6 @@ key: lauma
 action_param_keys:
   skill:
     - param: "hold"
-  low_plunge:
-    - param: "collision"
-  high_plunge:
-    - param: "collision"
 skill_data_mapping:
   attack: # Peregrination of Linnunrata
     attack_1:

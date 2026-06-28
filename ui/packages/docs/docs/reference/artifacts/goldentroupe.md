@@ -1,17 +1,12 @@
 ---
-title: >
-  Golden Troupe
+title: "Golden Troupe"
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";
+import FieldsTable from "@site/src/components/Fields/FieldsTable";
 import IssuesTable from "@site/src/components/Issues/IssuesTable";
 import NamesList from "@site/src/components/Names/NamesList";
 import ParamsTable from "@site/src/components/Params/ParamsTable";
-import FieldsTable from "@site/src/components/Fields/FieldsTable";
-
-## AoE Data
-
-<AoETable item_key="goldentroupe" data_src="artifact" />
 
 ## Known issues
 
@@ -28,3 +23,7 @@ import FieldsTable from "@site/src/components/Fields/FieldsTable";
 ## Fields
 
 <FieldsTable item_key="goldentroupe" data_src="artifact" />
+
+## AoE Data
+
+<AoETable item_key="goldentroupe" data_src="artifact" />

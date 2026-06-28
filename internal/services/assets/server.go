@@ -72,7 +72,7 @@ func New() (*Server, error) {
 	}
 	s.assetNameMapping[AssetTypeAvatars] = avatarMap
 	s.assetNameMapping[AssetTypeWeapons] = weaponMap
-	s.assetNameMapping[AssetTypeArtifacts] = artfactMap
+	s.assetNameMapping[AssetTypeArtifacts] = artifactMap
 
 	return s, nil
 }

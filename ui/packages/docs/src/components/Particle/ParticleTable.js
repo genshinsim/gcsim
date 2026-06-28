@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import enemy_data from "./enemy_data.json";
+import enemy_data from "./monster.dm.json";
 
 const Table = styled.table`
   border-collapse: collapse;

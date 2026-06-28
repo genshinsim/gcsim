@@ -1,6 +1,7 @@
 package character
 
 import (
+	"bytes"
 	"encoding/json"
 	"os"
 )
@@ -15,12 +16,12 @@ func (g *Generator) WriteFieldDocs(path string) error {
 		data[g.chars[i].Key] = g.chars[i].Documentation.FieldsData
 	}
 
-	f, err := os.OpenFile(path, os.O_TRUNC|os.O_WRONLY, 0o644)
-	if err != nil {
-		return err
-	}
-	e := json.NewEncoder(f)
+	b := bytes.NewBuffer(nil)
+	e := json.NewEncoder(b)
 	e.SetEscapeHTML(false)
 	e.SetIndent("", "  ")
-	return e.Encode(data)
+	if err := e.Encode(data); err != nil {
+		return err
+	}
+	return os.WriteFile(path, b.Bytes(), 0o644)
 }

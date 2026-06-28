@@ -58,7 +58,7 @@ func (s *Simulation) CharacterDetails() []*model.Character {
 		snap.Stats[attributes.ATKP] = 0
 		if s.C.Combat.Debug {
 			evt := s.C.Log.NewEvent(
-				fmt.Sprintf("%v final stats", c.Base.Key.Pretty()),
+				fmt.Sprintf("%v final stats", c.Base.Key.String()),
 				glog.LogCharacterEvent,
 				i,
 			)
