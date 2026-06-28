@@ -90,7 +90,7 @@ func (g *Generator) GenerateDocsPages(path string) {
 	}
 	for _, v := range g.Enemies {
 		g.generateDocPage(enemiesPath, docsData{
-			Name: g.Names.EnemyNames[v.Key],
+			Name: g.Names.MonsterNames[v.Key],
 			Key:  v.Key,
 			Type: "enemy",
 		}, enemyPageTmpl)

@@ -30,7 +30,7 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 
 func (g *Generator) DumpUIJSON(path string) error {
 	// delete existing
-	err := g.writeTranslationJSON(path + "/names.generated.json")
+	err := g.writeTranslationJSON(path + "/names.dm.json")
 	if err != nil {
 		return err
 	}
@@ -38,10 +38,10 @@ func (g *Generator) DumpUIJSON(path string) error {
 }
 
 type OutData struct {
-	CharacterNames map[string]string `json:"character_names"`
-	WeaponNames    map[string]string `json:"weapon_names"`
 	ArtifactNames  map[string]string `json:"artifact_names"`
-	EnemyNames     map[string]string `json:"enemy_names"`
+	CharacterNames map[string]string `json:"character_names"`
+	MonsterNames   map[string]string `json:"monster_names"`
+	WeaponNames    map[string]string `json:"weapon_names"`
 }
 
 func (g *Generator) GetNames(lang string) (OutData, error) {
@@ -49,7 +49,7 @@ func (g *Generator) GetNames(lang string) (OutData, error) {
 		CharacterNames: make(map[string]string),
 		WeaponNames:    make(map[string]string),
 		ArtifactNames:  make(map[string]string),
-		EnemyNames:     make(map[string]string),
+		MonsterNames:   make(map[string]string),
 	}
 	// load generator for this language
 	tp := g.Languages[lang]
@@ -88,7 +88,7 @@ func (g *Generator) GetNames(lang string) (OutData, error) {
 			fmt.Printf("error getting string for enemy %v id %v\n", v.Key, v.NameTextHashMap)
 			continue
 		}
-		data.EnemyNames[v.Key] = s
+		data.MonsterNames[v.Key] = s
 	}
 	return data, nil
 }
@@ -111,10 +111,11 @@ func (g *Generator) writeTranslationJSON(path string) error {
 		out[k] = data
 	}
 
-	data, err := json.MarshalIndent(out, "", "   ")
+	data, err := json.MarshalIndent(out, "", "  ")
 	if err != nil {
 		return err
 	}
+	data = []byte(string(data) + "\n")
 	err = os.WriteFile(path, data, 0o644)
 	if err != nil {
 		return err
