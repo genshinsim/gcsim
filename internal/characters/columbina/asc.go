@@ -25,8 +25,9 @@ func (c *char) moonsignInit() {
 	c.Core.Flags.Custom[reactable.LunarCrystallizeEnableKey] = 1
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
-
-		if !attacks.AttackTagIsLunar(atk.Info.AttackTag) {
+		tag := atk.Info.AttackTag
+		isDirect := attacks.DirectLunarReactionStartDelim < tag && tag < attacks.DirectLunarReactionEndDelim
+		if !isDirect {
 			return
 		}
 
@@ -41,10 +42,18 @@ func (c *char) moonsignInit() {
 
 	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
-		if !attacks.AttackTagIsLunar(atk.Info.AttackTag) {
+
+		tag := atk.Info.AttackTag
+		isLunarReact := attacks.LunarReactionStartDelim < tag && tag < attacks.LunarReactionEndDelim
+		if !isLunarReact {
 			return
 		}
-		bonus := min(c.TotalAtk()/100.0*0.007, 0.14)
+
+		bonus := min(c.MaxHP()/1000.0*0.002, 0.07)
+
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("columbina adding lunar base damage", glog.LogCharacterEvent, c.Index()).Write("bonus", bonus)
+		}
 
 		atk.Info.BaseDmgBonus += bonus
 	}, lunarBonusKey+"-lunar-atk")
