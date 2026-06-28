@@ -1,4 +1,7 @@
 {
+  "adaycarvedfromrisingwinds": [
+    "risingwinds"
+  ],
   "archaicpetra": [
     "ap"
   ],
@@ -18,6 +21,10 @@
   "braveheart": [
     "brave"
   ],
+	"celestialgift": [
+	  "gift",
+	  "cg"
+	],
   "crimsonwitchofflames": [
     "cwof",
     "cw",

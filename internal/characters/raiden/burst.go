@@ -29,6 +29,8 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
+	c.burstAnimSrc = c.Core.F
+
 	// activate burst, reset stacks
 	c.burstCastF = c.Core.F
 	c.restoreCount = 0
@@ -61,10 +63,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Element:    attributes.Electro,
 		Durability: 50,
 		Mult:       burstBase[c.TalentLvlBurst()],
-	}
-
-	if c.Base.Cons >= 2 {
-		ai.IgnoreDefPercent = 0.6
 	}
 
 	c.Core.Tasks.Add(func() {

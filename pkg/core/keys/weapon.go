@@ -38,11 +38,13 @@ var weaponNames = []string{
 	"alleyhunter",
 	"amenomakageuchi",
 	"amosbow",
+	"angelosheptades",
 	"apprenticesnotes",
 	"aquasimulacra",
 	"aquilafavonia",
 	"ashgravendrinkinghorn",
 	"astralvulturescrimsonplumage",
+	"athameartis",
 	"athousandblazingsuns",
 	"athousandfloatingdreams",
 	"azurelight",
@@ -109,6 +111,7 @@ var weaponNames = []string{
 	"frostbearer",
 	"fruitfulhook",
 	"fruitoffulfillment",
+	"gestofthemightywolf",
 	"hakushinring",
 	"halberd",
 	"hamayumi",
@@ -267,11 +270,13 @@ const (
 	AlleyHunter
 	AmenomaKageuchi
 	AmosBow
+	AngelosHeptades
 	ApprenticesNotes
 	AquaSimulacra
 	AquilaFavonia
 	AshGravenDrinkingHorn
 	AstralVulturesCrimsonPlumage
+	AthameArtis
 	AThousandBlazingSuns
 	AThousandFloatingDreams
 	Azurelight
@@ -338,6 +343,7 @@ const (
 	Frostbearer
 	FruitfulHook
 	FruitOfFulfillment
+	GestOfTheMightyWolf
 	HakushinRing
 	Halberd
 	Hamayumi

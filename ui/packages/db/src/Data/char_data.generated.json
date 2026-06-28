@@ -123,7 +123,7 @@
         "attack": 11211,
         "burst_energy_cost": 50
       },
-      "name_text_hash_map ": "3887688410"
+      "name_text_hash_map ": "3887687898"
     },
     "albedo": {
       "id": 10000038,
@@ -583,6 +583,23 @@
         "burst_energy_cost": 80
       },
       "name_text_hash_map ": "388272194"
+    },
+    "durin": {
+      "id": 10000123,
+      "key": "durin",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Fire",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Durin",
+      "skill_details": {
+        "skill": 11232,
+        "burst": 11235,
+        "attack": 11231,
+        "burst_energy_cost": 70
+      },
+      "name_text_hash_map ": "2801077538"
     },
     "emilie": {
       "id": 10000099,
@@ -1353,6 +1370,22 @@
         "burst_energy_cost": 70
       },
       "name_text_hash_map ": "1504902330"
+    },
+    "nicole": {
+      "id": 10000131,
+      "key": "nicole",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "element": "Fire",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Nicole",
+      "skill_details": {
+        "skill": 11312,
+        "burst": 11315,
+        "attack": 11311,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1711582634"
     },
     "nilou": {
       "id": 10000070,

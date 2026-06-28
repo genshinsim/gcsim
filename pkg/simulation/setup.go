@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/construct"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -159,7 +160,7 @@ func SetupResonance(s *core.Core) {
 			}
 
 			// workaround for giving lunarcharge the 15% CR
-			s.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
+			s.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
 				e, ok := args[0].(*enemy.Enemy)
 				if !ok {
 					return
@@ -200,12 +201,29 @@ func SetupResonance(s *core.Core) {
 			s.Events.Subscribe(event.OnAggravate, recoverNoGadget, "electro-res")
 			s.Events.Subscribe(event.OnHyperbloom, recoverParticle, "electro-res")
 		case attributes.Geo:
-			// Increases shield strength by 15%. Additionally, characters protected by a shield will have the
-			// following special characteristics:
-
-			//	DMG dealt increased by 15%, dealing DMG to enemies will decrease their Geo RES by 20% for 15s.
+			// Increases shield strength by 15%. Additionally, characters protected by a shield,
+			// or when Moondrifts formed by Lunar-Crystallize are nearby, will have the following
+			// special characteristics:
+			//
+			// DMG dealt increased by 15%, dealing DMG to enemies will decrease their Geo RES by 20% for 15s.
 			f := func() (float64, bool) { return 0.15, true }
 			s.Player.Shields.AddShieldBonusMod("geo-res", -1, f)
+
+			isGeoResoActive := func(index int) bool {
+				if s.Player.Shields.CharacterIsShielded(index, s.Player.Active()) {
+					return true
+				}
+
+				moondrifts, _ := s.Constructs.ConstructsByType(construct.GeoConstructLunarCrystallize)
+				playerPos := s.Combat.Player().Pos()
+				for _, moondrift := range moondrifts {
+					// TODO: geo resonance distance for moondrifts
+					if playerPos.Distance(moondrift.Pos()) < 20 {
+						return true
+					}
+				}
+				return false
+			}
 
 			// shred geo res of target
 			s.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
@@ -214,7 +232,7 @@ func SetupResonance(s *core.Core) {
 					return
 				}
 				atk := args[1].(*info.AttackEvent)
-				if s.Player.Shields.CharacterIsShielded(atk.Info.ActorIndex, s.Player.Active()) {
+				if isGeoResoActive(atk.Info.ActorIndex) {
 					t.AddResistMod(info.ResistMod{
 						Base:  modifier.NewBaseWithHitlag("geo-res", 15*60),
 						Ele:   attributes.Geo,
@@ -229,7 +247,7 @@ func SetupResonance(s *core.Core) {
 				c.AddAttackMod(character.AttackMod{
 					Base: modifier.NewBase("geo-res", -1),
 					Amount: func(ae *info.AttackEvent, t info.Target) []float64 {
-						if s.Player.Shields.CharacterIsShielded(ae.Info.ActorIndex, s.Player.Active()) {
+						if isGeoResoActive(ae.Info.ActorIndex) {
 							return m
 						}
 						return nil
@@ -422,8 +440,6 @@ func setupAscendantGleam(core *core.Core) {
 			return
 		}
 
-		gleamBuffUpdateGen(char, src)()
-
 		for _, c := range core.Player.Chars() {
 			c.AddReactBonusMod(character.ReactBonusMod{
 				Base: modifier.NewBase("ascendant-gleam", 20*60),
@@ -438,6 +454,7 @@ func setupAscendantGleam(core *core.Core) {
 				},
 			})
 		}
+		gleamBuffUpdateGen(char, src)()
 	}
 	core.Events.Subscribe(event.OnSkill, hook, "ascendant-gleam-on-skill")
 	core.Events.Subscribe(event.OnBurst, hook, "ascendant-gleam-on-burst")

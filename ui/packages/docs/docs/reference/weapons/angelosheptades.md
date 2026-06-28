@@ -1,6 +1,6 @@
 ---
 title: >
-  Aubade of Morningstar and Moon
+  Angelos' Heptades
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";
@@ -11,20 +11,20 @@ import FieldsTable from "@site/src/components/Fields/FieldsTable";
 
 ## AoE Data
 
-<AoETable item_key="aubade" data_src="artifact" />
+<AoETable item_key="angelosheptades" data_src="weapon" />
 
 ## Known issues
 
-<IssuesTable item_key="aubade" data_src="artifact" />
+<IssuesTable item_key="angelosheptades" data_src="weapon" />
 
 ## Names
 
-<NamesList item_key="aubade" data_src="artifact" />
+<NamesList item_key="angelosheptades" data_src="weapon" />
 
 ## Params
 
-<ParamsTable item_key="aubade" data_src="artifact" />
+<ParamsTable item_key="angelosheptades" data_src="weapon" />
 
 ## Fields
 
-<FieldsTable item_key="aubade" data_src="artifact" />
+<FieldsTable item_key="angelosheptades" data_src="weapon" />

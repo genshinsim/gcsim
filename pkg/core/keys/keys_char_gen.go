@@ -35,6 +35,7 @@ const (
 	Diluc
 	Diona
 	Dori
+	Durin
 	Emilie
 	Escoffier
 	Eula
@@ -74,6 +75,7 @@ const (
 	Nahida
 	Navia
 	Neuvillette
+	Nicole
 	Nilou
 	Ningguang
 	Noelle
@@ -224,6 +226,10 @@ func init() {
 	charNames[Dori] = "dori"
 	charPrettyName[Dori] = "Dori"
 	CharKeyToEle[Dori] = attributes.Electro
+
+	charNames[Durin] = "durin"
+	charPrettyName[Durin] = "Durin"
+	CharKeyToEle[Durin] = attributes.Pyro
 
 	charNames[Emilie] = "emilie"
 	charPrettyName[Emilie] = "Emilie"
@@ -380,6 +386,10 @@ func init() {
 	charNames[Neuvillette] = "neuvillette"
 	charPrettyName[Neuvillette] = "Neuvillette"
 	CharKeyToEle[Neuvillette] = attributes.Hydro
+
+	charNames[Nicole] = "nicole"
+	charPrettyName[Nicole] = "Nicole"
+	CharKeyToEle[Nicole] = attributes.Pyro
 
 	charNames[Nilou] = "nilou"
 	charPrettyName[Nilou] = "Nilou"
