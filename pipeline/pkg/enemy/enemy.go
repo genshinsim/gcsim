@@ -1,6 +1,9 @@
 package enemy
 
 import (
+	"cmp"
+	"slices"
+
 	"github.com/genshinsim/gcsim/pipeline/pkg/data/enemy"
 	"github.com/genshinsim/gcsim/pkg/model"
 )
@@ -28,6 +31,7 @@ func NewGenerator(cfg GeneratorConfig) (*Generator, error) {
 	}
 	g.src = src
 	g.data = src.GetMonsters()
+	slices.SortFunc(g.data, func(a, b *model.MonsterData) int { return cmp.Compare(a.Key, b.Key) })
 
 	return g, nil
 }

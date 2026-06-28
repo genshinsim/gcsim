@@ -64,9 +64,9 @@ func (g *Generator) GenerateKeys(dir string) error {
 		fmt.Println(string(src))
 		return fmt.Errorf("failed to gofmt on generated keys data: %w", err)
 	}
-	err = os.WriteFile(fmt.Sprintf("%v/keys_char_gen.go", dir), dst, 0o644)
+	err = os.WriteFile(fmt.Sprintf("%v/character.dm.go", dir), dst, 0o644)
 	if err != nil {
-		return fmt.Errorf("failed to write keys_char_gen.go: %w", err)
+		return fmt.Errorf("failed to write character.dm.go: %w", err)
 	}
 
 	return nil

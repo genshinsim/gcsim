@@ -28,7 +28,7 @@ const EnemyTitle = ({ id, enemy }: Props) => {
   const { t } = useTranslation();
   let name = enemy?.name;
   if (name) {
-    name = `(${t("game:enemy_names." + name)})`;
+    name = `(${t("game:monster_names." + name)})`;
   }
 
   return (

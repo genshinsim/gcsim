@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"os"
+	"path/filepath"
 
 	"github.com/genshinsim/gcsim/pkg/model"
 	"google.golang.org/protobuf/encoding/protojson"
@@ -12,7 +13,7 @@ import (
 
 func (g *Generator) DumpJSON(path string) error {
 	// delete existing
-	err := g.writeCharDataJSON(path + "/char_data.generated.json")
+	err := g.writeCharDataJSON(path + "/character.dm.json")
 	if err != nil {
 		return err
 	}
@@ -49,6 +50,7 @@ func (g *Generator) writeCharDataJSON(path string) error {
 	}
 	dst.WriteString("\n")
 	os.Remove(path)
+	os.MkdirAll(filepath.Dir(path), 0o755)
 	err = os.WriteFile(path, dst.Bytes(), 0o644)
 	if err != nil {
 		return err

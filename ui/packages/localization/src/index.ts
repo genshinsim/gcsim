@@ -4,39 +4,39 @@ import English from "./locales/English.json";
 import German from "./locales/German.json";
 import Japanese from "./locales/Japanese.json";
 import Korean from "./locales/Korean.json";
-import names from "./locales/names.generated.json";
-import traveler_names from "./locales/names.traveler.json";
+import names from "./locales/names.dm.json";
+import names_override from "./locales/names.override.json";
 import Russian from "./locales/Russian.json";
 import Spanish from "./locales/Spanish.json";
 
 export const resources = {
   en: {
     translation: English,
-    game: merge(names.English, traveler_names.English),
+    game: merge(names.English, names_override.English),
   },
   zh: {
     translation: Chinese,
-    game: merge(names.Chinese, traveler_names.Chinese),
+    game: merge(names.Chinese, names_override.Chinese),
   },
   ja: {
     translation: Japanese,
-    game: merge(names.Japanese, traveler_names.Japanese),
+    game: merge(names.Japanese, names_override.Japanese),
   },
   ko: {
     translation: Korean,
-    game: merge(names.Korean, traveler_names.Korean),
+    game: merge(names.Korean, names_override.Korean),
   },
   es: {
     translation: Spanish,
-    game: merge(names.Spanish, traveler_names.Spanish),
+    game: merge(names.Spanish, names_override.Spanish),
   },
   ru: {
     translation: Russian,
-    game: merge(names.Russian, traveler_names.Russian),
+    game: merge(names.Russian, names_override.Russian),
   },
   de: {
     translation: German,
-    game: merge(names.German, traveler_names.German),
+    game: merge(names.German, names_override.German),
   },
 };
 

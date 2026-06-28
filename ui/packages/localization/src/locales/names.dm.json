@@ -402,7 +402,7 @@
          "vourukashasglow": "花海甘露之光",
          "wandererstroupe": "流浪大地的乐团"
       },
-      "enemy_names": {
+      "monster_names": {
          "abyssheraldfrostfall": "深渊使徒·霜落",
          "abyssheraldwickedtorrents": "深渊使徒·激流",
          "abysslectorfathomlessflames": "深渊咏者·渊火",
@@ -1223,7 +1223,7 @@
          "vourukashasglow": "Vourukasha's Glow",
          "wandererstroupe": "Wanderer's Troupe"
       },
-      "enemy_names": {
+      "monster_names": {
          "abyssheraldfrostfall": "Abyss Herald: Frost Fall",
          "abyssheraldwickedtorrents": "Abyss Herald: Wicked Torrents",
          "abysslectorfathomlessflames": "Abyss Lector: Fathomless Flames",
@@ -2044,7 +2044,7 @@
          "vourukashasglow": "Licht der Vourukasha-Oase",
          "wandererstroupe": "Wanderorchester"
       },
-      "enemy_names": {
+      "monster_names": {
          "abyssheraldfrostfall": "Abgrundbote – Frostfall",
          "abyssheraldwickedtorrents": "Abgrundbote – Reißender Strom",
          "abysslectorfathomlessflames": "Abgrundsänger – Abgrundflammen",
@@ -2865,7 +2865,7 @@
          "vourukashasglow": "花海甘露の光",
          "wandererstroupe": "大地を流浪する楽団"
       },
-      "enemy_names": {
+      "monster_names": {
          "abyssheraldfrostfall": "アビスの使徒·落霜",
          "abyssheraldwickedtorrents": "アビスの使徒·激流",
          "abysslectorfathomlessflames": "アビスの詠唱者·淵炎",
@@ -3686,7 +3686,7 @@
          "vourukashasglow": "감로빛 꽃바다",
          "wandererstroupe": "대지를 유랑하는 악단"
       },
-      "enemy_names": {
+      "monster_names": {
          "abyssheraldfrostfall": "심연 사도·서리 내림",
          "abyssheraldwickedtorrents": "심연 사도·격류",
          "abysslectorfathomlessflames": "심연 봉독자·심연의 불꽃",
@@ -4507,7 +4507,7 @@
          "vourukashasglow": "Сияние Вурукаши",
          "wandererstroupe": "Странствующий ансамбль"
       },
-      "enemy_names": {
+      "monster_names": {
          "abyssheraldfrostfall": "Вестник Бездны: Наступление хлада",
          "abyssheraldwickedtorrents": "Вестник Бездны: Злые течения",
          "abysslectorfathomlessflames": "Чтец Бездны: Пламя бездны",
@@ -5328,7 +5328,7 @@
          "vourukashasglow": "Fulgor de Vurukasha",
          "wandererstroupe": "Orquesta del Errante"
       },
-      "enemy_names": {
+      "monster_names": {
          "abyssheraldfrostfall": "Emisario del Abismo - Helada sombría",
          "abyssheraldwickedtorrents": "Emisario del Abismo - Rápidos malignos",
          "abysslectorfathomlessflames": "Bardo del Abismo - Llamas abismales",

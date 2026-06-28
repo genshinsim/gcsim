@@ -1,6 +1,6 @@
 import tagData from '@gcsim/data/src/tags.json';
 import {createContext} from 'react';
-import charData from '../../Data/char_data.generated.json';
+import charData from '../../Data/character.dm.json';
 
 export interface FilterState {
   charFilter: CharFilter;

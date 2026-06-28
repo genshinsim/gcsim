@@ -50,9 +50,9 @@ func (g *Generator) GenerateICDData(dir string) error {
 		fmt.Println(string(src))
 		return fmt.Errorf("failed to gofmt on generated icd data: %w", err)
 	}
-	err = os.WriteFile(fmt.Sprintf("%v/icd_groups_gen.go", dir), dst, 0o644)
+	err = os.WriteFile(fmt.Sprintf("%v/icd_groups.dm.go", dir), dst, 0o644)
 	if err != nil {
-		return fmt.Errorf("failed to write icd_groups_gen.go: %w", err)
+		return fmt.Errorf("failed to write icd_groups.dm.go: %w", err)
 	}
 
 	// tags
@@ -71,9 +71,9 @@ func (g *Generator) GenerateICDData(dir string) error {
 		fmt.Println(string(src))
 		return fmt.Errorf("failed to gofmt on generated icd data: %w", err)
 	}
-	err = os.WriteFile(fmt.Sprintf("%v/icd_tags_gen.go", dir), dst, 0o644)
+	err = os.WriteFile(fmt.Sprintf("%v/icd_tags.dm.go", dir), dst, 0o644)
 	if err != nil {
-		return fmt.Errorf("failed to write icd_groups_gen.go: %w", err)
+		return fmt.Errorf("failed to write icd_tags.dm.go: %w", err)
 	}
 
 	return nil
@@ -93,8 +93,8 @@ const (
 func init() {
 {{- range $index, $ele := .GroupData }}
 	ICDGroupResetTimer[{{$ele.GroupName}}] = {{$ele.ResetTimer}}
-	ICDGroupEleApplicationSequence[{{$ele.GroupName}}] = []float64{ {{- range $val := $ele.EleAppSequence -}}{{$val}},{{ end}} } 
-	ICDGroupDamageSequence[{{$ele.GroupName}}] = []float64{ {{- range $val := $ele.DamageSequence -}}{{$val}},{{ end}} } 
+	ICDGroupEleApplicationSequence[{{$ele.GroupName}}] = []float64{ {{- range $val := $ele.EleAppSequence -}}{{$val}},{{ end}} }
+	ICDGroupDamageSequence[{{$ele.GroupName}}] = []float64{ {{- range $val := $ele.DamageSequence -}}{{$val}},{{ end}} }
 {{end -}}
 }
 `

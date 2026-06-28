@@ -200,7 +200,7 @@ func genChar(cfg config, excels string) []*model.AvatarData {
 
 	// documentation
 	log.Println("generate character documentation data...")
-	err = g.WriteFieldDocs(filepath.Join(cfg.docRoot, "/Fields/character_data.json"))
+	err = g.WriteFieldDocs(filepath.Join(cfg.docRoot, "/Fields/character.dm.json"))
 	if err != nil {
 		panic(err)
 	}

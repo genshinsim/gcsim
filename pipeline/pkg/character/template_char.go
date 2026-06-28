@@ -60,7 +60,7 @@ func (g *Generator) GenerateCharTemplate() error {
 		dmCopy.SkillDetails.A4 = 0
 		dmCopy.SkillDetails.A1Scaling = nil
 		dmCopy.SkillDetails.A4Scaling = nil
-		err = writePBToFile(fmt.Sprintf("%v/data_gen.textproto", v.RelativePath), dmCopy)
+		err = writePBToFile(fmt.Sprintf("%v/_data.dm.textproto", v.RelativePath), dmCopy)
 		if err != nil {
 			return fmt.Errorf("failed to write PB file: %w", err)
 		}
@@ -93,7 +93,7 @@ func (g *Generator) GenerateCharTemplate() error {
 			fmt.Println(string(src))
 			return fmt.Errorf("failed to gofmt on %v: %w", v.RelativePath, err)
 		}
-		os.WriteFile(fmt.Sprintf("%v/%v_gen.go", v.RelativePath, v.PackageName), dst, 0o644)
+		os.WriteFile(fmt.Sprintf("%v/zz_%v.dm.go", v.RelativePath, v.PackageName), dst, 0o644)
 	}
 
 	return nil
@@ -229,7 +229,7 @@ import (
 	{{- end }}
 )
 
-//go:embed data_gen.textproto
+//go:embed _data.dm.textproto
 var pbData []byte
 var base *model.AvatarData
 {{if ne (len .ParamKeys) 0 -}}
