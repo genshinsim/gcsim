@@ -3,6 +3,7 @@ package enemy
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/catalog"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -59,7 +60,7 @@ func getMonsterInfo(name string) (info.EnemyProfile, error) {
 	if !ok {
 		return info.EnemyProfile{}, fmt.Errorf("invalid target name `%v`", name)
 	}
-	result, ok := model.EnemyMap[id]
+	result, ok := catalog.MonsterMap[id]
 	if !ok {
 		return info.EnemyProfile{}, fmt.Errorf("invalid target name `%v`", name)
 	}
