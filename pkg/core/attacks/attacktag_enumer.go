@@ -7,11 +7,11 @@ import (
 	"strings"
 )
 
-const _AttackTagName = "nonenormalextraplungeelemental_artelemental_art_holdelemental_burstweapon_skillmona_bubble_breaknone_statreaction_attack_delimoverload_damagesuperconduct_damageec_damageshatterswirl_pyroswirl_hydroswirl_cryoswirl_electroburning_damagebloombountiful_coreburgeonhyperbloomlength"
+const _AttackTagName = "nonenormalextraplungeelemental_artelemental_art_holdelemental_burstweapon_skillmona_bubble_breaknone_statreaction_attack_start_delimoverload_damagesuperconduct_damageec_damageshatterswirl_pyroswirl_hydroswirl_cryoswirl_electroburning_damagebloombountiful_coreburgeonhyperbloomreaction_attack_end_delimlunar_reaction_start_delimreaction_lunar_chargereaction_lunar_crystallizelunar_reaction_end_delimdirect_lunar_reaction_start_delimdirect_lunar_chargeddirect_lunar_bloomdirect_lunar_crystallizedirect_lunar_reaction_end_delimlength"
 
-var _AttackTagIndex = [...]uint16{0, 4, 10, 15, 21, 34, 52, 67, 79, 96, 105, 126, 141, 160, 169, 176, 186, 197, 207, 220, 234, 239, 253, 260, 270, 276}
+var _AttackTagIndex = [...]uint16{0, 4, 10, 15, 21, 34, 52, 67, 79, 96, 105, 132, 147, 166, 175, 182, 192, 203, 213, 226, 240, 245, 259, 266, 276, 301, 327, 348, 374, 398, 431, 451, 469, 493, 524, 530}
 
-const _AttackTagLowerName = "nonenormalextraplungeelemental_artelemental_art_holdelemental_burstweapon_skillmona_bubble_breaknone_statreaction_attack_delimoverload_damagesuperconduct_damageec_damageshatterswirl_pyroswirl_hydroswirl_cryoswirl_electroburning_damagebloombountiful_coreburgeonhyperbloomlength"
+const _AttackTagLowerName = "nonenormalextraplungeelemental_artelemental_art_holdelemental_burstweapon_skillmona_bubble_breaknone_statreaction_attack_start_delimoverload_damagesuperconduct_damageec_damageshatterswirl_pyroswirl_hydroswirl_cryoswirl_electroburning_damagebloombountiful_coreburgeonhyperbloomreaction_attack_end_delimlunar_reaction_start_delimreaction_lunar_chargereaction_lunar_crystallizelunar_reaction_end_delimdirect_lunar_reaction_start_delimdirect_lunar_chargeddirect_lunar_bloomdirect_lunar_crystallizedirect_lunar_reaction_end_delimlength"
 
 func (i AttackTag) String() string {
 	if i < 0 || i >= AttackTag(len(_AttackTagIndex)-1) {
@@ -34,7 +34,7 @@ func _AttackTagNoOp() {
 	_ = x[AttackTagWeaponSkill-(7)]
 	_ = x[AttackTagMonaBubbleBreak-(8)]
 	_ = x[AttackTagNoneStat-(9)]
-	_ = x[ReactionAttackDelim-(10)]
+	_ = x[ReactionAttackStartDelim-(10)]
 	_ = x[AttackTagOverloadDamage-(11)]
 	_ = x[AttackTagSuperconductDamage-(12)]
 	_ = x[AttackTagECDamage-(13)]
@@ -48,10 +48,20 @@ func _AttackTagNoOp() {
 	_ = x[AttackTagBountifulCore-(21)]
 	_ = x[AttackTagBurgeon-(22)]
 	_ = x[AttackTagHyperbloom-(23)]
-	_ = x[AttackTagLength-(24)]
+	_ = x[ReactionAttackEndDelim-(24)]
+	_ = x[LunarReactionStartDelim-(25)]
+	_ = x[AttackTagReactionLunarCharge-(26)]
+	_ = x[AttackTagReactionLunarCrystallize-(27)]
+	_ = x[LunarReactionEndDelim-(28)]
+	_ = x[DirectLunarReactionStartDelim-(29)]
+	_ = x[AttackTagDirectLunarCharged-(30)]
+	_ = x[AttackTagDirectLunarBloom-(31)]
+	_ = x[AttackTagDirectLunarCrystallize-(32)]
+	_ = x[DirectLunarReactionEndDelim-(33)]
+	_ = x[AttackTagLength-(34)]
 }
 
-var _AttackTagValues = []AttackTag{AttackTagNone, AttackTagNormal, AttackTagExtra, AttackTagPlunge, AttackTagElementalArt, AttackTagElementalArtHold, AttackTagElementalBurst, AttackTagWeaponSkill, AttackTagMonaBubbleBreak, AttackTagNoneStat, ReactionAttackDelim, AttackTagOverloadDamage, AttackTagSuperconductDamage, AttackTagECDamage, AttackTagShatter, AttackTagSwirlPyro, AttackTagSwirlHydro, AttackTagSwirlCryo, AttackTagSwirlElectro, AttackTagBurningDamage, AttackTagBloom, AttackTagBountifulCore, AttackTagBurgeon, AttackTagHyperbloom, AttackTagLength}
+var _AttackTagValues = []AttackTag{AttackTagNone, AttackTagNormal, AttackTagExtra, AttackTagPlunge, AttackTagElementalArt, AttackTagElementalArtHold, AttackTagElementalBurst, AttackTagWeaponSkill, AttackTagMonaBubbleBreak, AttackTagNoneStat, ReactionAttackStartDelim, AttackTagOverloadDamage, AttackTagSuperconductDamage, AttackTagECDamage, AttackTagShatter, AttackTagSwirlPyro, AttackTagSwirlHydro, AttackTagSwirlCryo, AttackTagSwirlElectro, AttackTagBurningDamage, AttackTagBloom, AttackTagBountifulCore, AttackTagBurgeon, AttackTagHyperbloom, ReactionAttackEndDelim, LunarReactionStartDelim, AttackTagReactionLunarCharge, AttackTagReactionLunarCrystallize, LunarReactionEndDelim, DirectLunarReactionStartDelim, AttackTagDirectLunarCharged, AttackTagDirectLunarBloom, AttackTagDirectLunarCrystallize, DirectLunarReactionEndDelim, AttackTagLength}
 
 var _AttackTagNameToValueMap = map[string]AttackTag{
 	_AttackTagName[0:4]:          AttackTagNone,
@@ -74,36 +84,56 @@ var _AttackTagNameToValueMap = map[string]AttackTag{
 	_AttackTagLowerName[79:96]:   AttackTagMonaBubbleBreak,
 	_AttackTagName[96:105]:       AttackTagNoneStat,
 	_AttackTagLowerName[96:105]:  AttackTagNoneStat,
-	_AttackTagName[105:126]:      ReactionAttackDelim,
-	_AttackTagLowerName[105:126]: ReactionAttackDelim,
-	_AttackTagName[126:141]:      AttackTagOverloadDamage,
-	_AttackTagLowerName[126:141]: AttackTagOverloadDamage,
-	_AttackTagName[141:160]:      AttackTagSuperconductDamage,
-	_AttackTagLowerName[141:160]: AttackTagSuperconductDamage,
-	_AttackTagName[160:169]:      AttackTagECDamage,
-	_AttackTagLowerName[160:169]: AttackTagECDamage,
-	_AttackTagName[169:176]:      AttackTagShatter,
-	_AttackTagLowerName[169:176]: AttackTagShatter,
-	_AttackTagName[176:186]:      AttackTagSwirlPyro,
-	_AttackTagLowerName[176:186]: AttackTagSwirlPyro,
-	_AttackTagName[186:197]:      AttackTagSwirlHydro,
-	_AttackTagLowerName[186:197]: AttackTagSwirlHydro,
-	_AttackTagName[197:207]:      AttackTagSwirlCryo,
-	_AttackTagLowerName[197:207]: AttackTagSwirlCryo,
-	_AttackTagName[207:220]:      AttackTagSwirlElectro,
-	_AttackTagLowerName[207:220]: AttackTagSwirlElectro,
-	_AttackTagName[220:234]:      AttackTagBurningDamage,
-	_AttackTagLowerName[220:234]: AttackTagBurningDamage,
-	_AttackTagName[234:239]:      AttackTagBloom,
-	_AttackTagLowerName[234:239]: AttackTagBloom,
-	_AttackTagName[239:253]:      AttackTagBountifulCore,
-	_AttackTagLowerName[239:253]: AttackTagBountifulCore,
-	_AttackTagName[253:260]:      AttackTagBurgeon,
-	_AttackTagLowerName[253:260]: AttackTagBurgeon,
-	_AttackTagName[260:270]:      AttackTagHyperbloom,
-	_AttackTagLowerName[260:270]: AttackTagHyperbloom,
-	_AttackTagName[270:276]:      AttackTagLength,
-	_AttackTagLowerName[270:276]: AttackTagLength,
+	_AttackTagName[105:132]:      ReactionAttackStartDelim,
+	_AttackTagLowerName[105:132]: ReactionAttackStartDelim,
+	_AttackTagName[132:147]:      AttackTagOverloadDamage,
+	_AttackTagLowerName[132:147]: AttackTagOverloadDamage,
+	_AttackTagName[147:166]:      AttackTagSuperconductDamage,
+	_AttackTagLowerName[147:166]: AttackTagSuperconductDamage,
+	_AttackTagName[166:175]:      AttackTagECDamage,
+	_AttackTagLowerName[166:175]: AttackTagECDamage,
+	_AttackTagName[175:182]:      AttackTagShatter,
+	_AttackTagLowerName[175:182]: AttackTagShatter,
+	_AttackTagName[182:192]:      AttackTagSwirlPyro,
+	_AttackTagLowerName[182:192]: AttackTagSwirlPyro,
+	_AttackTagName[192:203]:      AttackTagSwirlHydro,
+	_AttackTagLowerName[192:203]: AttackTagSwirlHydro,
+	_AttackTagName[203:213]:      AttackTagSwirlCryo,
+	_AttackTagLowerName[203:213]: AttackTagSwirlCryo,
+	_AttackTagName[213:226]:      AttackTagSwirlElectro,
+	_AttackTagLowerName[213:226]: AttackTagSwirlElectro,
+	_AttackTagName[226:240]:      AttackTagBurningDamage,
+	_AttackTagLowerName[226:240]: AttackTagBurningDamage,
+	_AttackTagName[240:245]:      AttackTagBloom,
+	_AttackTagLowerName[240:245]: AttackTagBloom,
+	_AttackTagName[245:259]:      AttackTagBountifulCore,
+	_AttackTagLowerName[245:259]: AttackTagBountifulCore,
+	_AttackTagName[259:266]:      AttackTagBurgeon,
+	_AttackTagLowerName[259:266]: AttackTagBurgeon,
+	_AttackTagName[266:276]:      AttackTagHyperbloom,
+	_AttackTagLowerName[266:276]: AttackTagHyperbloom,
+	_AttackTagName[276:301]:      ReactionAttackEndDelim,
+	_AttackTagLowerName[276:301]: ReactionAttackEndDelim,
+	_AttackTagName[301:327]:      LunarReactionStartDelim,
+	_AttackTagLowerName[301:327]: LunarReactionStartDelim,
+	_AttackTagName[327:348]:      AttackTagReactionLunarCharge,
+	_AttackTagLowerName[327:348]: AttackTagReactionLunarCharge,
+	_AttackTagName[348:374]:      AttackTagReactionLunarCrystallize,
+	_AttackTagLowerName[348:374]: AttackTagReactionLunarCrystallize,
+	_AttackTagName[374:398]:      LunarReactionEndDelim,
+	_AttackTagLowerName[374:398]: LunarReactionEndDelim,
+	_AttackTagName[398:431]:      DirectLunarReactionStartDelim,
+	_AttackTagLowerName[398:431]: DirectLunarReactionStartDelim,
+	_AttackTagName[431:451]:      AttackTagDirectLunarCharged,
+	_AttackTagLowerName[431:451]: AttackTagDirectLunarCharged,
+	_AttackTagName[451:469]:      AttackTagDirectLunarBloom,
+	_AttackTagLowerName[451:469]: AttackTagDirectLunarBloom,
+	_AttackTagName[469:493]:      AttackTagDirectLunarCrystallize,
+	_AttackTagLowerName[469:493]: AttackTagDirectLunarCrystallize,
+	_AttackTagName[493:524]:      DirectLunarReactionEndDelim,
+	_AttackTagLowerName[493:524]: DirectLunarReactionEndDelim,
+	_AttackTagName[524:530]:      AttackTagLength,
+	_AttackTagLowerName[524:530]: AttackTagLength,
 }
 
 var _AttackTagNames = []string{
@@ -117,21 +147,31 @@ var _AttackTagNames = []string{
 	_AttackTagName[67:79],
 	_AttackTagName[79:96],
 	_AttackTagName[96:105],
-	_AttackTagName[105:126],
-	_AttackTagName[126:141],
-	_AttackTagName[141:160],
-	_AttackTagName[160:169],
-	_AttackTagName[169:176],
-	_AttackTagName[176:186],
-	_AttackTagName[186:197],
-	_AttackTagName[197:207],
-	_AttackTagName[207:220],
-	_AttackTagName[220:234],
-	_AttackTagName[234:239],
-	_AttackTagName[239:253],
-	_AttackTagName[253:260],
-	_AttackTagName[260:270],
-	_AttackTagName[270:276],
+	_AttackTagName[105:132],
+	_AttackTagName[132:147],
+	_AttackTagName[147:166],
+	_AttackTagName[166:175],
+	_AttackTagName[175:182],
+	_AttackTagName[182:192],
+	_AttackTagName[192:203],
+	_AttackTagName[203:213],
+	_AttackTagName[213:226],
+	_AttackTagName[226:240],
+	_AttackTagName[240:245],
+	_AttackTagName[245:259],
+	_AttackTagName[259:266],
+	_AttackTagName[266:276],
+	_AttackTagName[276:301],
+	_AttackTagName[301:327],
+	_AttackTagName[327:348],
+	_AttackTagName[348:374],
+	_AttackTagName[374:398],
+	_AttackTagName[398:431],
+	_AttackTagName[431:451],
+	_AttackTagName[451:469],
+	_AttackTagName[469:493],
+	_AttackTagName[493:524],
+	_AttackTagName[524:530],
 }
 
 // AttackTagString retrieves an enum value from the enum constants string name.
