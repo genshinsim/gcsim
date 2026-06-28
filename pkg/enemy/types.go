@@ -54,7 +54,6 @@ func ConfigureTarget(profile *info.EnemyProfile, name string, params TargetParam
 	return nil
 }
 
-//go:generate go run github.com/genshinsim/gcsim/scripts/enemystat
 func getMonsterInfo(name string) (info.EnemyProfile, error) {
 	id, ok := shortcut.MonsterNameToID[name]
 	if !ok {
