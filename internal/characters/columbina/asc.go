@@ -51,6 +51,10 @@ func (c *char) moonsignInit() {
 
 		bonus := min(c.MaxHP()/1000.0*0.002, 0.07)
 
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("columbina adding lunar base damage", glog.LogCharacterEvent, c.Index()).Write("bonus", bonus)
+		}
+
 		atk.Info.BaseDmgBonus += bonus
 	}, lunarBonusKey+"-lunar-atk")
 }

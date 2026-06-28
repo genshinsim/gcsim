@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -73,6 +74,10 @@ func (c *char) lunarchargeInit() {
 
 		bonus := min(c.TotalAtk()/100.0*0.007, 0.14)
 
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("flins adding lunarcharged base damage", glog.LogCharacterEvent, c.Index()).Write("bonus", bonus)
+		}
+
 		atk.Info.BaseDmgBonus += bonus
 	}, lunarchargeBonusKey)
 
@@ -83,6 +88,10 @@ func (c *char) lunarchargeInit() {
 		}
 
 		bonus := min(c.TotalAtk()/100.0*0.007, 0.14)
+
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("flins adding lunarcharged base damage", glog.LogCharacterEvent, c.Index()).Write("bonus", bonus)
+		}
 
 		atk.Info.BaseDmgBonus += bonus
 	}, lunarchargeBonusKey+"-lc-atk")
