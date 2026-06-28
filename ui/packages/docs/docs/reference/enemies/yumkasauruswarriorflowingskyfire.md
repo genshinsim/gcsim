@@ -1,25 +1,24 @@
 ---
-title: >
-  Yumkasaurus Warrior: Flowing Skyfire
+title: "Yumkasaurus Warrior: Flowing Skyfire"
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";
 import NamesList from "@site/src/components/Names/NamesList";
-import ResistTable from "@site/src/components/Resist/ResistTable";
 import ParticleTable from "@site/src/components/Particle/ParticleTable";
-
-## HP Data
-
-<HPTable item_key="yumkasauruswarriorflowingskyfire" data_src="enemy" />
+import ResistTable from "@site/src/components/Resist/ResistTable";
 
 ## Names
 
-<NamesList item_key="yumkasauruswarriorflowingskyfire" data_src="enemy" />
+<NamesList item_key="yumkasauruswarriorflowingskyfire" data_src="monster" />
 
 ## Resist Data
 
-<ResistTable item_key="yumkasauruswarriorflowingskyfire" data_src="enemy" />
+<ResistTable item_key="yumkasauruswarriorflowingskyfire" data_src="monster" />
 
 ## Particle Data
 
-<ParticleTable item_key="yumkasauruswarriorflowingskyfire" data_src="enemy" />
+<ParticleTable item_key="yumkasauruswarriorflowingskyfire" data_src="monster" />
+
+## HP Data
+
+<HPTable item_key="yumkasauruswarriorflowingskyfire" data_src="monster" />
