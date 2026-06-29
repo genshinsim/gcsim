@@ -23,6 +23,8 @@ const (
 	ICDTagEmilieLumidouce
 	ICDTagFurinaChevalmarin
 	ICDTagFurinaUsher
+	ICDTagIfaSkill
+	ICDTagIfaSedationMark
 	ICDTagKinichLoopShot
 	ICDTagKinichScalespikerCannon
 	ICDTagKleeFireDamage

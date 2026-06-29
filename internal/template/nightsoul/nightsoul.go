@@ -107,6 +107,7 @@ func (s *State) EnterTimedBlessing(amount float64, duration int, cb func()) {
 	if duration > 0 {
 		s.SetNightsoulExitTimer(duration, cb)
 	}
+	s.c.Events.Emit(event.OnNightsoulAdd, s.char.Index(), amount)
 	s.c.Log.NewEvent("enter nightsoul blessing", glog.LogCharacterEvent, s.char.Index()).
 		Write("points", s.nightsoulPoints).
 		Write("duration", duration)
@@ -132,6 +133,7 @@ func (s *State) GeneratePoints(amount float64) {
 	s.clampPoints()
 	added := s.nightsoulPoints - prevPoints
 	s.c.Events.Emit(event.OnNightsoulGenerate, s.char.Index(), added)
+	s.c.Events.Emit(event.OnNightsoulAdd, s.char.Index(), added)
 	s.c.Log.NewEvent("generate nightsoul points", glog.LogCharacterEvent, s.char.Index()).
 		Write("previous points", prevPoints).
 		Write("amount", amount).
@@ -144,6 +146,7 @@ func (s *State) ConsumePoints(amount float64) {
 	s.clampPoints()
 	used := prevPoints - s.nightsoulPoints
 	s.c.Events.Emit(event.OnNightsoulConsume, s.char.Index(), used)
+	s.c.Events.Emit(event.OnNightsoulRemove, s.char.Index(), used)
 	s.c.Log.NewEvent("consume nightsoul points", glog.LogCharacterEvent, s.char.Index()).
 		Write("previous points", prevPoints).
 		Write("amount", amount).
@@ -153,6 +156,8 @@ func (s *State) ConsumePoints(amount float64) {
 func (s *State) ClearPoints() {
 	amt := s.nightsoulPoints
 	s.nightsoulPoints = 0
+	s.c.Events.Emit(event.OnNightsoulConsume, s.char.Index(), amt)
+	s.c.Events.Emit(event.OnNightsoulRemove, s.char.Index(), amt)
 	s.c.Log.NewEvent("clear nightsoul points", glog.LogCharacterEvent, s.char.Index()).
 		Write("previous points", amt)
 }
