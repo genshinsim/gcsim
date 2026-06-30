@@ -1,5 +1,18 @@
 package varka
 
+import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
+)
+
+const c4Key = "varka-c4"
+
 func (c *char) c1OnSkill() {
 	if c.Base.Cons < 1 {
 		return
@@ -18,4 +31,76 @@ func (c *char) c1OnSpecialSkill() float64 {
 		return 2.0
 	}
 	return 1.0
+}
+
+func (c *char) c2OnSpecialSkill() {
+	if c.Base.Cons < 2 {
+		return
+	}
+
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
+		Abil:           "Varka C2",
+		AttackTag:      attacks.AttackTagElementalArt,
+		ICDTag:         attacks.ICDTagNone,
+		ICDGroup:       attacks.ICDGroupDefault,
+		StrikeType:     attacks.StrikeTypeDefault,
+		Element:        attributes.Anemo,
+		Durability:     25,
+		Mult:           8 * c.a1SkillMulti(),
+		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagVarkaSpecial},
+	}
+	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 4, 6)
+	c.Core.QueueAttack(ai, ap, 10, 10)
+}
+
+func (c *char) c4Init() {
+	if c.Base.Cons < 4 {
+		return
+	}
+
+	c.Core.Events.Subscribe(event.OnSwirlPyro, c.makeC4CB(attributes.Pyro), c4Key)
+	c.Core.Events.Subscribe(event.OnSwirlHydro, c.makeC4CB(attributes.Hydro), c4Key)
+	c.Core.Events.Subscribe(event.OnSwirlElectro, c.makeC4CB(attributes.Electro), c4Key)
+	c.Core.Events.Subscribe(event.OnSwirlCryo, c.makeC4CB(attributes.Cryo), c4Key)
+}
+
+func (c *char) makeC4CB(ele attributes.Element) func(...any) {
+	mAnemo := make([]float64, attributes.EndStatType)
+	mAnemo[attributes.AnemoP] = 0.2
+
+	dmgP := attributes.EleToDmgP(ele)
+	mEle := make([]float64, attributes.EndStatType)
+	mEle[dmgP] = 0.2
+	return func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return
+		}
+
+		atk := args[1].(*info.AttackEvent)
+
+		if atk.Info.ActorIndex != c.Index() {
+			return
+		}
+
+		for _, char := range c.Core.Player.Chars() {
+			char.AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag(c4Key+"-"+attributes.Anemo.String(), 10*60),
+				AffectedStat: attributes.AnemoP,
+				Amount: func() []float64 {
+					return mAnemo
+				},
+			})
+		}
+
+		for _, char := range c.Core.Player.Chars() {
+			char.AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag(c4Key+"-"+ele.String(), 10*60),
+				AffectedStat: dmgP,
+				Amount: func() []float64 {
+					return mEle
+				},
+			})
+		}
+	}
 }

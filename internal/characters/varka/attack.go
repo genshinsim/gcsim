@@ -15,14 +15,14 @@ var (
 	attackFrames          [][]int
 	attackHitmarks        = [][]int{{21}, {14, 26}, {28, 33}, {28, 33}, {30, 30}}
 	attackPoiseDMG        = []float64{107.0, 48.8, 44.43, 49.9, 155.4}
-	attackHitlagHaltFrame = []float64{0.09, 0.05, 0.05, 0.05, 0.1}
+	attackHitlagHaltFrame = []float64{0.05, 0.05, 0.05, 0.05, 0.1}
 	attackHitboxes        = [][]float64{{2.2}, {3.3, 4.3}, {2.8, 5.0}, {2.8, 5.0}, {3.2}}
 	attackOffsets         = []float64{0.5, -1.3, 0.5, 0.5, -0.8}
 
 	skillAttackFrames          [][]int
 	skillAttackHitmarks        = [][]int{{21}, {14, 26}, {28, 33}, {28, 33}, {30, 30}}
 	skillAttackPoiseDMG        = []float64{107.0, 48.8, 44.43, 49.9, 155.4}
-	skillAttackHitlagHaltFrame = []float64{0.09, 0.05, 0.05, 0.05, 0.1}
+	skillAttackHitlagHaltFrame = []float64{0.05, 0.05, 0.05, 0.05, 0.1}
 	skillAttackHitboxes        = [][]float64{{2.2}, {3.3, 4.3}, {2.8, 5.0}, {2.8, 5.0}, {3.2}}
 	skillAttackOffsets         = []float64{0.5, -1.3, 0.5, 0.5, -0.8}
 )
@@ -118,8 +118,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 func (c *char) skillAttack() (action.Info, error) {
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		info.Point{Y: attackOffsets[c.NormalCounter]},
-		attackHitboxes[c.NormalCounter][0],
+		info.Point{Y: skillAttackOffsets[c.NormalCounter]},
+		skillAttackHitboxes[c.NormalCounter][0],
 	)
 
 	ele := []attributes.Element{c.conversionElem, attributes.Anemo}
@@ -129,7 +129,7 @@ func (c *char) skillAttack() (action.Info, error) {
 		offset = 1
 	}
 
-	for i, delay := range attackHitmarks[c.NormalCounter] {
+	for i, delay := range skillAttackHitmarks[c.NormalCounter] {
 		ai := info.AttackInfo{
 			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Sturm und Drang Normal %v", c.NormalCounter),
@@ -137,12 +137,12 @@ func (c *char) skillAttack() (action.Info, error) {
 			ICDTag:             attacks.ICDTagNormalAttack,
 			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeBlunt,
-			PoiseDMG:           attackPoiseDMG[c.NormalCounter],
+			PoiseDMG:           skillAttackPoiseDMG[c.NormalCounter],
 			Element:            ele[(i+offset)%2],
 			Durability:         25,
-			Mult:               attack[c.NormalCounter][i][c.TalentLvlAttack()] * c.a1SkillMulti(),
+			Mult:               skillAttack[c.NormalCounter][i][c.TalentLvlSkill()] * c.a1SkillMulti(),
 			HitlagFactor:       0.01,
-			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
+			HitlagHaltFrames:   skillAttackHitlagHaltFrame[c.NormalCounter] * 60,
 			CanBeDefenseHalted: true,
 		}
 		c.Core.QueueAttack(ai, ap, delay, delay, c.fourWindsCDRedCB)

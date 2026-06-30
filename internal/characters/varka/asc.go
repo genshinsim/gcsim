@@ -70,7 +70,7 @@ func (c *char) a1Init() {
 
 func (c *char) a1UpdateBuff() {
 	stats := c.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK)
-	c.a1Buff = stats.TotalATK() * 0.1 / 1000
+	c.a1Buff = min(stats.TotalATK()*0.1/1000, 0.25)
 	c.QueueCharTask(c.a1UpdateBuff, 60)
 }
 
@@ -92,9 +92,6 @@ func (c *char) a4Init() {
 			return
 		}
 
-		if atk.Info.ActorIndex != c.Index() {
-			return
-		}
 		char := c.Core.Player.Chars()[atk.Info.ActorIndex]
 		if char.StatusIsActive(a4ICDKey) {
 			return
@@ -128,4 +125,11 @@ func (c *char) a4Init() {
 			return m
 		},
 	})
+}
+
+func (c *char) hexSkillCDReduction() int {
+	if !c.IsHexerei {
+		return 0.5 * 60
+	}
+	return 1.0 * 60
 }

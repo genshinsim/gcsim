@@ -16,7 +16,7 @@ type char struct {
 
 	// when readyFrame is -1, it means that the skill was used
 	fourWindsChargesStarted int
-	fourWindsChargesAva    int
+	fourWindsChargesAva     int
 	fourWindsCDDoneF        int
 	fourWindsCDStacks       int
 
@@ -31,10 +31,16 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.EnergyMax = 0
+	c.EnergyMax = 60
 	c.NormalHitNum = normalHitNum
-	c.SkillCon = 5
-	c.BurstCon = 3
+	c.SkillCon = 3
+	c.BurstCon = 5
+
+	hex, ok := p.Params["hexerei"]
+	if !ok {
+		hex = 1
+	}
+	c.IsHexerei = (hex != 0)
 
 	w.Character = &c
 
@@ -46,6 +52,7 @@ func (c *char) Init() error {
 	c.onExitField()
 	c.a1Init()
 	c.a4Init()
+	c.c4Init()
 	return nil
 }
 

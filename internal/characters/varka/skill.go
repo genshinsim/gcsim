@@ -87,6 +87,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
+		Durability: 25,
+		Mult:       skillInitial[c.TalentLvlSkill()],
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), skillHitmark, skillHitmark, c.particleCB)
 
@@ -134,6 +136,7 @@ func (c *char) fourWinds() (action.Info, error) {
 	}
 
 	c.useFourWindsCharge()
+	c.c2OnSpecialSkill()
 
 	return action.Info{
 		Frames:          func(next action.Action) int { return spearStormFrames[next] },
@@ -167,7 +170,8 @@ func (c *char) fourWindsCDRedCB(ac info.AttackCB) {
 	c.AddStatus(fourWindsCDReduceICDKey, 0.1*60, true)
 	c.fourWindsCDStacks++
 
-	c.reduceFourWindsCD(0.5 * 60)
+	amt := c.hexSkillCDReduction()
+	c.reduceFourWindsCD(amt)
 }
 
 func (c *char) reduceFourWindsCD(amt int) {
@@ -179,7 +183,8 @@ func (c *char) reduceFourWindsCD(amt int) {
 	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), action.ActionSkill.String(), " (four winds) cooldown forcefully reduced").
 		Write("type", action.ActionSkill.String()).
 		Write("expiry", c.fourWindsCDDoneF-amt).
-		Write("charges_remain", c.fourWindsCharges())
+		Write("charges_remain", c.fourWindsCharges()).
+		Write("four_winds_charges_started", c.fourWindsChargesStarted)
 
 	c.queueCDTask()
 }
@@ -236,7 +241,7 @@ func (c *char) fourWindsCD() int {
 
 func (c *char) fourWindsCharges() int {
 	if !c.StatusIsActive(skillKey) {
-		return -1
+		return 0
 	}
 	return c.fourWindsChargesAva
 }
