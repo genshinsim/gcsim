@@ -121,10 +121,6 @@ func (c *char) omenRefreshCB(a info.AttackCB) {
 		return
 	}
 
-	if c.Core.Player.Active() != c.Index() {
-		return
-	}
-
 	if !t.StatusIsActive(omenKey) {
 		return
 	}
