@@ -107,7 +107,7 @@ func (c *char) skillCharge() (action.Info, error) {
 			PoiseDMG:           120.0,
 			Element:            ele[i],
 			Durability:         25,
-			Mult:               charge[i][c.TalentLvlAttack()] * c.a1SkillMulti(),
+			Mult:               skillCharge[i][c.TalentLvlSkill()] * c.a1SkillMulti(),
 			HitlagHaltFrames:   skillChargeHitlagHaltFrames[i] * 60,
 			HitlagFactor:       0.01,
 			CanBeDefenseHalted: skillChargeCanBeDefenseHalted[i],
@@ -134,6 +134,8 @@ func (c *char) skillCharge() (action.Info, error) {
 }
 
 func (c *char) skillAzureDevour() (action.Info, error) {
+	// TODO: Windup?
+
 	ele := []attributes.Element{c.conversionElem, attributes.Anemo, c.conversionElem, attributes.Anemo}
 
 	c1Mult := c.c1OnSpecialSkill()
@@ -148,7 +150,7 @@ func (c *char) skillAzureDevour() (action.Info, error) {
 			PoiseDMG:           120.0,
 			Element:            ele[i],
 			Durability:         25,
-			Mult:               skillAzureDevour[i][c.TalentLvlAttack()] * c.a1SkillMulti() * c1Mult,
+			Mult:               skillAzureDevour[i][c.TalentLvlSkill()] * c.a1SkillMulti() * c1Mult,
 			HitlagHaltFrames:   azureDevourHitlagHaltFrames[i] * 60,
 			HitlagFactor:       0.01,
 			CanBeDefenseHalted: azureDevourCanBeDefenseHalted[i],
@@ -166,6 +168,8 @@ func (c *char) skillAzureDevour() (action.Info, error) {
 		)
 	}
 	c.useFourWindsCharge()
+	c.c2OnSpecialSkill()
+
 	return action.Info{
 		Frames:          frames.NewAbilFunc(azureDevourFrames),
 		AnimationLength: azureDevourFrames[action.InvalidAction],
