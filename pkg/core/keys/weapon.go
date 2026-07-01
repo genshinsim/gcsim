@@ -78,6 +78,7 @@ var weaponNames = []string{
 	"debateclub",
 	"dialoguesofthedesertsages",
 	"dodocotales",
+	"disasterandremorse",
 	"dragonsbane",
 	"dragonspinespear",
 	"dullblade",
@@ -310,6 +311,7 @@ const (
 	DebateClub
 	DialoguesOfTheDesertSages
 	DodocoTales
+	DisasterAndRemorse
 	DragonsBane
 	DragonspineSpear
 	DullBlade
