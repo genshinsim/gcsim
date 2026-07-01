@@ -1568,6 +1568,14 @@
       "image_name": "UI_EquipIcon_Pole_Mori",
       "name_text_hash_map ": "1148024091"
     },
+    "thedaybreakchronicles": {
+      "id": 15515,
+      "key": "thedaybreakchronicles",
+      "rarity": 5,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_Arianna",
+      "name_text_hash_map ": "1235520915"
+    },
     "thedockhandsassistant": {
       "id": 11427,
       "key": "thedockhandsassistant",
