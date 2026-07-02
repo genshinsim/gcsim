@@ -47,7 +47,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			hitmark,
 			hitmark,
 		)
-
 	}
 
 	// apparently extends E by 2.3s even though it's not in the description

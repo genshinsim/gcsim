@@ -11,7 +11,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c4Key = "varka-c4"
+const (
+	c4Key          = "varka-c4"
+	c6FreeSkillKey = "varka-c6-free-skill"
+	c6FreeCAKey    = "varka-c6-free-charge"
+	c6Dur          = 3 * 60
+)
 
 func (c *char) c1OnSkill() {
 	if c.Base.Cons < 1 {
@@ -103,4 +108,58 @@ func (c *char) makeC4CB(ele attributes.Element) func(...any) {
 			})
 		}
 	}
+}
+
+func (c *char) c6Init() {
+	if c.Base.Cons < 6 {
+		return
+	}
+
+	m := make([]float64, attributes.EndStatType)
+
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("varka-c6-cdmg", -1),
+		AffectedStat: attributes.AnemoP,
+		Amount: func() []float64 {
+			if c.a4Stacks == 0 {
+				return nil
+			}
+			m[attributes.CD] = float64(c.a4Stacks) * 0.2
+			return m
+		},
+	})
+}
+
+func (c *char) c6OnSkill() {
+	if c.Base.Cons < 6 {
+		return
+	}
+
+	c.AddStatus(c6FreeCAKey, c6Dur, true)
+}
+
+func (c *char) c6OnSkillCA() {
+	if c.Base.Cons < 6 {
+		return
+	}
+
+	c.AddStatus(c6FreeSkillKey, c6Dur, true)
+}
+
+func (c *char) c6FreeCA() bool {
+	if c.Base.Cons < 6 {
+		return false
+	}
+
+	// does this also need to be in E state?
+	return c.StatusIsActive(c6FreeCAKey)
+}
+
+func (c *char) c6FreeSkill() bool {
+	if c.Base.Cons < 6 {
+		return false
+	}
+
+	// does this also need to be in E state?
+	return c.StatusIsActive(c6FreeSkillKey)
 }

@@ -76,7 +76,7 @@ func (c *char) getConversionElem(prio ...attributes.Element) attributes.Element 
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.StatModIsActive(skillKey) && c.convertToFourWinds() {
-		return c.fourWinds()
+		return c.fourWinds(c.c6FreeSkill())
 	}
 
 	ai := info.AttackInfo{
@@ -114,7 +114,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) fourWinds() (action.Info, error) {
+func (c *char) fourWinds(c6Free bool) (action.Info, error) {
 	ele := []attributes.Element{c.conversionElem, attributes.Anemo}
 
 	c1Mult := c.c1OnSpecialSkill()
@@ -135,7 +135,11 @@ func (c *char) fourWinds() (action.Info, error) {
 		c.Core.QueueAttack(ai, ap, fourWindsHitmark[i], fourWindsHitmark[i])
 	}
 
-	c.useFourWindsCharge()
+	if !c6Free {
+		c.useFourWindsCharge()
+		c.c6OnSkill()
+	}
+
 	c.c2OnSpecialSkill()
 
 	return action.Info{
