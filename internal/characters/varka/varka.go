@@ -53,6 +53,7 @@ func (c *char) Init() error {
 	c.a1Init()
 	c.a4Init()
 	c.c4Init()
+	c.c6Init()
 	return nil
 }
 
@@ -66,7 +67,7 @@ func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	if a == action.ActionSkill && c.StatusIsActive(skillKey) {
-		if c.fourWindsCharges() <= 0 {
+		if c.fourWindsCharges() <= 0 && !c.c6FreeSkill() {
 			return false, action.SkillCD
 		}
 		return true, action.NoFailure

@@ -92,9 +92,10 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillCharge() (action.Info, error) {
-	if c.fourWindsCharges() > 0 {
-		return c.skillAzureDevour()
+	if c.fourWindsCharges() > 0 || c.c6FreeCA() {
+		return c.skillAzureDevour(c.c6FreeCA())
 	}
+
 	ele := []attributes.Element{c.conversionElem, attributes.Anemo}
 	for i, hitmark := range chargeHitmarks {
 		ai := info.AttackInfo{
@@ -133,7 +134,7 @@ func (c *char) skillCharge() (action.Info, error) {
 	}, nil
 }
 
-func (c *char) skillAzureDevour() (action.Info, error) {
+func (c *char) skillAzureDevour(c6Free bool) (action.Info, error) {
 	// TODO: Windup?
 
 	ele := []attributes.Element{c.conversionElem, attributes.Anemo, c.conversionElem, attributes.Anemo}
@@ -167,7 +168,11 @@ func (c *char) skillAzureDevour() (action.Info, error) {
 			hitmark,
 		)
 	}
-	c.useFourWindsCharge()
+	if !c6Free {
+		c.useFourWindsCharge()
+		c.c6OnSkillCA()
+	}
+
 	c.c2OnSpecialSkill()
 
 	return action.Info{
