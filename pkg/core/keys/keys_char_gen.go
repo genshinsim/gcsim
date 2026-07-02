@@ -95,6 +95,7 @@ const (
 	Thoma
 	Tighnari
 	Varesa
+	Varka
 	Venti
 	Wanderer
 	Wriothesley
@@ -466,6 +467,10 @@ func init() {
 	charNames[Varesa] = "varesa"
 	charPrettyName[Varesa] = "Varesa"
 	CharKeyToEle[Varesa] = attributes.Electro
+
+	charNames[Varka] = "varka"
+	charPrettyName[Varka] = "Varka"
+	CharKeyToEle[Varka] = attributes.Anemo
 
 	charNames[Venti] = "venti"
 	charPrettyName[Venti] = "Venti"
