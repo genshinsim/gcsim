@@ -4,6 +4,7 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -107,4 +108,13 @@ func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	default:
 		return c.Character.AnimationStartDelay(k)
 	}
+}
+
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
+	if a == action.ActionSwap {
+		if c.nightsoulState.Points() > 0 {
+			return false, action.SwapCD
+		}
+	}
+	return c.Character.ActionReady(a, p)
 }
