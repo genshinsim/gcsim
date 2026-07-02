@@ -1077,6 +1077,23 @@
       },
       "name_text_hash_map ": "2889777514"
     },
+    "linnea": {
+      "id": 10000130,
+      "key": "linnea",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_NODKRAI",
+      "element": "Rock",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Linnea",
+      "skill_details": {
+        "skill": 11302,
+        "burst": 11305,
+        "attack": 11301,
+        "burst_energy_cost": 60
+      },
+      "name_text_hash_map ": "1961019898"
+    },
     "lisa": {
       "id": 10000006,
       "key": "lisa",
