@@ -991,6 +991,11 @@
       "ability": "high_plunge",
       "param": "collision",
       "desc": "0 for no collision dmg (default), 1 for collision dmg. Flamestrider plunge has no collision."
+    },
+    {
+      "ability": "dash",
+      "param": "collision",
+      "desc": "0 for no collision dmg, 1 for collision dmg (default). Only applies to Flamestrider dash."
     }
   ],
   "mika": [

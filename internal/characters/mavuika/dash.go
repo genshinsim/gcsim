@@ -20,9 +20,9 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 	// Dash will do no damage, no matter how long it takes.
 	// Frames for swap and jump will be set to 2f instead of travel frames.
 	// Frames for charge will be set to 2f if allowed to early cancel
-	skipDmg, ok := p["skip_dmg"]
+	collision, ok := p["skip_dmg"]
 	if !ok {
-		skipDmg = 0
+		collision = 1
 	}
 
 	// Dash has a travelling hitbox that can hit as soon as 6f after start,
@@ -39,7 +39,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 	}
 
 	// Travel is set to 2 to represent cancel frames instead of hitmark, if damage is skipped
-	if skipDmg != 0 {
+	if collision == 0 {
 		travel = 2
 	}
 
@@ -69,7 +69,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 	dashFrames[action.ActionJump] = travel
 
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
-		if skipDmg == 0 {
+		if collision != 0 {
 			ai := info.AttackInfo{
 				ActorIndex:     c.Index(),
 				Abil:           "Flamestrider Sprint",
