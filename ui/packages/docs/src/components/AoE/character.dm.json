@@ -946,6 +946,30 @@
         "offsetY": -2.5,
         "boxX": 5,
         "boxY": 7
+      },
+      {
+        "ability": "Q-CA-AratakiKesagiriCombo-FirstCS",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -2.5,
+        "boxX": 5,
+        "boxY": 7
+      },
+      {
+        "ability": "Q-CA-AratakiKesagiriCombo-SecondCS",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -2.5,
+        "boxX": 5,
+        "boxY": 7
+      },
+      {
+        "ability": "Q-CA-AratakiKesagiriCombo-Third+CS",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -2.5,
+        "boxX": 5,
+        "boxY": 7
       }
     ],
     "plunge": [
@@ -1254,16 +1278,6 @@
     ]
   },
   "bennett": {
-    "cons": [
-      {
-        "ability": "E-Hold-Lv.1-C4",
-        "shape": "Box",
-        "center": "Player",
-        "offsetY": -1,
-        "boxX": 3,
-        "boxY": 4
-      }
-    ],
     "normal": [
       {
         "ability": "N1",
@@ -1362,6 +1376,14 @@
         "center": "Player",
         "boxX": 3,
         "boxY": 3
+      },
+      {
+        "ability": "E-Hold-Lv.1-C4",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -1,
+        "boxX": 3,
+        "boxY": 4
       },
       {
         "ability": "E-Hold-Lv.2-1",
@@ -2081,7 +2103,7 @@
         "radius": 3.5
       }
     ],
-    "normals": [
+    "normal": [
       {
         "ability": "N1",
         "shape": "Circle",
@@ -2191,6 +2213,14 @@
         "center": "Player",
         "offsetY": 1.4,
         "radius": 2.5
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "Player",
+        "radius": 4.1
       }
     ],
     "skill": [
@@ -6224,7 +6254,7 @@
         "boxY": 3.0
       },
       {
-        "ability": "N2",
+        "ability": "N2-1",
         "shape": "Box",
         "center": "Player",
         "offsetY": -0.2,
@@ -6232,7 +6262,22 @@
         "boxY": 3.0
       },
       {
-        "ability": "N3",
+        "ability": "N2-2",
+        "shape": "Box",
+        "center": "Player",
+        "offsetY": -0.2,
+        "boxX": 2.3,
+        "boxY": 3.0
+      },
+      {
+        "ability": "N3-1",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 0.3,
+        "radius": 2.2
+      },
+      {
+        "ability": "N3-2",
         "shape": "Circle",
         "center": "Player",
         "offsetY": 0.3,
@@ -6245,6 +6290,14 @@
         "offsetY": 0.5,
         "radius": 2.4,
         "fanAngle": 240
+      }
+    ],
+    "charge": [
+      {
+        "ability": "CA",
+        "shape": "Circle",
+        "center": "PrimaryTarget",
+        "radius": 2.5
       }
     ],
     "plunge": [
@@ -7830,15 +7883,6 @@
         "shape": "Circle",
         "center": "Player",
         "radius": 6.5
-      },
-      {
-        "ability": "Q-Projection",
-        "shape": "Circle",
-        "center": "PrimaryTarget",
-        "radius": 4.5,
-        "offsetX": -2.5,
-        "offsetY": 2.5,
-        "notes": "Default if projection hitbox is not otherwise specified"
       },
       {
         "ability": "Q-Projection",
@@ -12335,6 +12379,13 @@
         "center": "Player",
         "offsetY": 2,
         "radius": 4
+      },
+      {
+        "ability": "Q-DoT-1stOnly",
+        "shape": "Circle",
+        "center": "Player",
+        "offsetY": 2,
+        "radius": 4
       }
     ]
   },
@@ -12527,7 +12578,7 @@
     ],
     "cons": [
       {
-        "ability": "Q-C6",
+        "ability": "C6-Radish",
         "shape": "Circle",
         "center": "PrimaryTarget",
         "radius": 4

@@ -112,14 +112,7 @@
     ],
     "skill": [
       {
-        "ability": "E-Tap-Initial",
-        "hitHaltTime": 0.04,
-        "hitHaltTimeScale": 0.01,
-        "canBeDefenseHalt": true,
-        "deployable": false
-      },
-      {
-        "ability": "E-Hold-Initial",
+        "ability": "E-Initial",
         "hitHaltTime": 0.04,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
@@ -254,29 +247,6 @@
     ]
   },
   "citlali": {
-    "normal": [
-      {
-        "ability": "N1",
-        "hitHaltTime": 0,
-        "hitHaltTimeScale": 0.05,
-        "canBeDefenseHalt": false,
-        "deployable": true
-      },
-      {
-        "ability": "N2",
-        "hitHaltTime": 0,
-        "hitHaltTimeScale": 0.05,
-        "canBeDefenseHalt": false,
-        "deployable": true
-      },
-      {
-        "ability": "N3",
-        "hitHaltTime": 0,
-        "hitHaltTimeScale": 0.05,
-        "canBeDefenseHalt": false,
-        "deployable": true
-      }
-    ],
     "charge": [
       {
         "ability": "CA",
@@ -639,7 +609,9 @@
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
-      },
+      }
+    ],
+    "cons": [
       {
         "ability": "Q-C6",
         "hitHaltTime": 0,
@@ -841,14 +813,7 @@
         "deployable": false
       },
       {
-        "ability": "N3-1",
-        "hitHaltTime": 0.03,
-        "hitHaltTimeScale": 0.01,
-        "canBeDefenseHalt": true,
-        "deployable": false
-      },
-      {
-        "ability": "N3-2",
+        "ability": "N3",
         "hitHaltTime": 0.03,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
@@ -894,21 +859,21 @@
     ],
     "skill": [
       {
-        "ability": "Dash-NoBoL",
+        "ability": "SkillDash-NoBoL",
         "hitHaltTime": 0,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
         "deployable": false
       },
       {
-        "ability": "Dash-Regular",
+        "ability": "SkillDash-RegularBoL",
         "hitHaltTime": 0,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
         "deployable": false
       },
       {
-        "ability": "Dash-FullBoL",
+        "ability": "SkillDash-FullBoL",
         "hitHaltTime": 0,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
@@ -1760,7 +1725,7 @@
         "deployable": false
       },
       {
-        "ability": "E-MaxStacks",
+        "ability": "E-MaxStack",
         "hitHaltTime": 0.12,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
@@ -2260,7 +2225,7 @@
     ],
     "skill": [
       {
-        "ability": "E Scalespiker",
+        "ability": "E-Scalespiker",
         "hitHaltTime": 0,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
@@ -2378,7 +2343,7 @@
     ],
     "burst": [
       {
-        "ability": "Q-ElementalBurst",
+        "ability": "Q",
         "hitHaltTime": 0,
         "hitHaltTimeScale": 0,
         "canBeDefenseHalt": true,
@@ -2649,14 +2614,7 @@
         "deployable": false
       },
       {
-        "ability": "N2-1",
-        "hitHaltTime": 0.05,
-        "hitHaltTimeScale": 0.01,
-        "canBeDefenseHalt": true,
-        "deployable": false
-      },
-      {
-        "ability": "N2-2",
+        "ability": "N2",
         "hitHaltTime": 0.05,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
@@ -2670,28 +2628,56 @@
         "deployable": false
       },
       {
-        "ability": "N1 (Flamestrider)",
+        "ability": "N1-Flamestrider",
         "hitHaltTime": 0.09,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
       },
       {
-        "ability": "N2 (Flamestrider)",
+        "ability": "N2-Flamestrider",
         "hitHaltTime": 0.08,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
       },
       {
-        "ability": "N3 (Flamestrider)",
+        "ability": "N3-Flamestrider",
         "hitHaltTime": 0.04,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
       },
       {
-        "ability": "N4 (Flamestrider)",
+        "ability": "N4-Flamestrider",
+        "hitHaltTime": 0.03,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Q-N1-Flamestrider",
+        "hitHaltTime": 0.09,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Q-N2-Flamestrider",
+        "hitHaltTime": 0.08,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Q-N3-Flamestrider",
+        "hitHaltTime": 0.04,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Q-N4-Flamestrider",
         "hitHaltTime": 0.03,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
@@ -2707,7 +2693,14 @@
         "deployable": false
       },
       {
-        "ability": "Flamestrider CA (Final)",
+        "ability": "CA-Flamestrider-Final",
+        "hitHaltTime": 0.04,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
+      },
+      {
+        "ability": "Q-CA-Flamestrider-Final",
         "hitHaltTime": 0.04,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
@@ -2857,7 +2850,7 @@
     ]
   },
   "navia": {
-    "attack": [
+    "normal": [
       {
         "ability": "N1",
         "hitHaltTime": 0.06,
@@ -3028,13 +3021,6 @@
         "hitHaltTimeScale": 0,
         "canBeDefenseHalt": true,
         "deployable": false
-      },
-      {
-        "ability": "Q-Skill",
-        "hitHaltTime": 0.15,
-        "hitHaltTimeScale": 0.01,
-        "canBeDefenseHalt": true,
-        "deployable": false
       }
     ],
     "cons": [
@@ -3053,13 +3039,20 @@
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true,
         "deployable": false
+      },
+      {
+        "ability": "Q-Skill",
+        "hitHaltTime": 0.15,
+        "hitHaltTimeScale": 0.01,
+        "canBeDefenseHalt": true,
+        "deployable": false
       }
     ]
   },
   "ororon": {
     "asc": [
       {
-        "ability": "A1",
+        "ability": "E-A1",
         "hitHaltTime": 0,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": true
@@ -3408,7 +3401,7 @@
         "deployable": false
       },
       {
-        "ability": "E-Hold-Rolling-Anemo",
+        "ability": "E-Hold-Rolling",
         "hitHaltTime": 0.01,
         "hitHaltTimeScale": 0.05,
         "canBeDefenseHalt": false,
@@ -4923,14 +4916,7 @@
         "deployable": true
       },
       {
-        "ability": "FullAim-Head",
-        "hitHaltTime": 0.12,
-        "hitHaltTimeScale": 0.01,
-        "canBeDefenseHalt": false,
-        "deployable": true
-      },
-      {
-        "ability": "FullAim-Lv2-Head",
+        "ability": "FullAim-Lv.1-Head",
         "hitHaltTime": 0.12,
         "hitHaltTimeScale": 0.01,
         "canBeDefenseHalt": false,
