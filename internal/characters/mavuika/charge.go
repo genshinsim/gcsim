@@ -48,6 +48,7 @@ const (
 	bikeChargeAttackHitboxRadius = 3   // Placeholder
 	bikeChargeAttackSpinOffset   = 4.0 // Estimated center of hitbox from Mav origin
 	maxBufferedBikeChargeFrames  = 15
+	cdcLockoutStatus             = "CDC-Lockout"
 )
 
 func init() {
@@ -134,6 +135,20 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
+// Relative to bike charge start with no windup skip, Mav is unable to cdc
+// between 79 and 87f (inclusive), and every rotation thereafter
+// This only applies if mav is actively spinning, not if she goes into a finisher.
+func (c *char) cdcLockout(src int) {
+	if c.caState.StartFrame != src {
+		return
+	}
+	c.AddStatus(cdcLockoutStatus, 87-79+1, true)
+
+	c.QueueCharTask(func() {
+		c.cdcLockout(src)
+	}, bikeChargeAttackSpinFrames)
+}
+
 // This starts the CA, then goes to a loop handler for duration calc
 func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	// Parameters for tuning CA
@@ -154,7 +169,8 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	skippedWindupFrames := 0
 	if c.Core.Player.CurrentState() != action.ChargeAttackState || c.caState.StartFrame == 0 {
 		c.caState = ChargeState{}
-		c.caState.StartFrame = c.Core.F
+		startFrame := c.Core.F
+		c.caState.StartFrame = startFrame
 		c.caState.LastHit = make(map[info.TargetKey]int)
 		for _, t := range bikeHittableEntities {
 			targetIndex := t.Entity.Key()
@@ -163,6 +179,11 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 		c.bikeChargeAttackHook()
 		skippedWindupFrames = c.GetSkippedWindupFrames(bufferedFrames)
 		c.caState.skippedWindupF = skippedWindupFrames // Used for syncing CA frames on CA hook
+
+		c.DeleteStatus(cdcLockoutStatus)
+		c.QueueCharTask(func() {
+			c.cdcLockout(startFrame)
+		}, 79-skippedWindupFrames)
 	}
 
 	c.caState.srcFrame = c.Core.F
@@ -399,6 +420,7 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 
 		// Reset c.caState upon finisher landing
 		c.caState = ChargeState{}
+		c.DeleteStatus(cdcLockoutStatus)
 	}, adjustedBikeChargeFinalHitmark)
 
 	nightSoulDuration := c.GetRemainingNightSoulDuration()
@@ -731,6 +753,9 @@ func (c *char) CalculateValidCollisionFrames(durationCA int, collisionFrames [2]
 
 // Calculate start and end frames for each spin during which target is within Mav hitbox
 // Return false if target is not circle or has no overlap
+// Offset angle is 0 if primmary target is straight ahead of player (target has same x, higher y coords)
+//
+//	and increases as the target moves CCW
 func (c *char) BikeHitboxIntersectionAngles(v info.Target, f []int, offsetAngle float64) (bool, error) {
 	enemyShape := v.Shape()
 	var enemyRadius float64
@@ -766,6 +791,10 @@ func (c *char) BikeHitboxIntersectionAngles(v info.Target, f []int, offsetAngle 
 	enemyAngle := math.Atan2(posDifference.Y, posDifference.X) * (180 / math.Pi)
 	thetaM := math.Acos(cosThetaM) * (180 / math.Pi)
 
+	// This is the angle measured CCW from the X axis relative to Mavuika
+	//  where Mavuika is the origin coordinate facing the primary target,
+	//  and the Y axis originates from Mavuika and extends to said target.
+	//  By standard convention, the x axis measures 90 degrees CW from the Y axis
 	enemyAngle = math.Mod(enemyAngle-offsetAngle+360, 360)
 
 	intersectAngleStart := enemyAngle + thetaM
@@ -777,6 +806,10 @@ func (c *char) BikeHitboxIntersectionAngles(v info.Target, f []int, offsetAngle 
 	return true, nil
 }
 
+// 0 degree offset if primary target straight ahead (target has same x coord, higher y coord)
+// 90 degree offset if to the left (lesser x, same y)
+// 180 degree offset if behind (same x, lower y)
+// 270 degree offset if to the right (higher x, same y)
 func (c *char) DirectionOffsetToPrimaryTarget() float64 {
 	enemyDirection := info.CalcDirection(c.Core.Combat.Player().Pos(), c.Core.Combat.PrimaryTarget().Pos())
 	if enemyDirection == info.DefaultDirection() {

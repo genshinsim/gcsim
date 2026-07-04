@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -16,6 +17,16 @@ func init() {
 }
 
 func (c *char) Dash(p map[string]int) (action.Info, error) {
+	// Dash will do no damage, no matter how long it takes.
+	// Frames for swap and jump will be set to 2f instead of travel frames.
+	// Frames for charge will be set to 2f if allowed to early cancel
+	skipDmg, ok := p["skip_dmg"]
+	if !ok {
+		skipDmg = 0
+	}
+
+	// Dash has a travelling hitbox that can hit as soon as 6f after start,
+	// or as late as dash transitions to idle (exact end not tested)
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 6
@@ -23,14 +34,31 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 	if travel > 24 {
 		travel = 24
 	}
-	if travel < 1 {
-		travel = 1
+	if travel < 6 {
+		travel = 6
+	}
+
+	// Travel is set to 2 to represent cancel frames instead of hitmark, if damage is skipped
+	if skipDmg != 0 {
+		travel = 2
 	}
 
 	// Only applies when preceded and followed by a charge, otherwise does nothing
+	// If Mav is within the "clock lockout" of being able to cdc,
+	//   early cancel will be forced to false
 	earlyCancellable, ok := p["early_cancellable"]
 	if !ok {
 		earlyCancellable = 1
+	}
+	if c.StatusIsActive(cdcLockoutStatus) {
+		if earlyCancellable != 0 {
+			c.Core.Log.NewEvent(
+				"Blocked from performing an early dash cancel- Mavuika within lockout frames.",
+				glog.LogWarnings,
+				c.Index(),
+			)
+		}
+		earlyCancellable = 0
 	}
 
 	dashFrames[action.ActionCharge] = max(20, travel)
@@ -41,27 +69,30 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 	dashFrames[action.ActionJump] = travel
 
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
-		ai := info.AttackInfo{
-			ActorIndex:     c.Index(),
-			Abil:           "Flamestrider Sprint",
-			AttackTag:      attacks.AttackTagNone,
-			ICDTag:         attacks.ICDTagMavuikaFlamestrider,
-			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-			ICDGroup:       attacks.ICDGroupDefault,
-			StrikeType:     attacks.StrikeTypeBlunt,
-			PoiseDMG:       75.0,
-			Element:        attributes.Pyro,
-			Durability:     25,
-			Mult:           skillDash[c.TalentLvlSkill()],
-			HitlagFactor:   0.05,
-			IsDeployable:   true,
+		if skipDmg != 0 {
+			ai := info.AttackInfo{
+				ActorIndex:     c.Index(),
+				Abil:           "Flamestrider Sprint",
+				AttackTag:      attacks.AttackTagNone,
+				ICDTag:         attacks.ICDTagMavuikaFlamestrider,
+				AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+				ICDGroup:       attacks.ICDGroupDefault,
+				StrikeType:     attacks.StrikeTypeBlunt,
+				PoiseDMG:       75.0,
+				Element:        attributes.Pyro,
+				Durability:     25,
+				Mult:           skillDash[c.TalentLvlSkill()],
+				HitlagFactor:   0.05,
+				IsDeployable:   true,
+			}
+			ap := combat.NewCircleHitOnTarget(
+				c.Core.Combat.Player(),
+				info.Point{Y: 1.0},
+				1.2,
+			)
+			c.Core.QueueAttack(ai, ap, travel, travel)
 		}
-		ap := combat.NewCircleHitOnTarget(
-			c.Core.Combat.Player(),
-			info.Point{Y: 1.0},
-			1.2,
-		)
-		c.Core.QueueAttack(ai, ap, travel, travel)
+
 		c.reduceNightsoulPoints(10)
 		x := c.Core.Player.CurrentState()
 		c.isDashFromCA = false
@@ -73,7 +104,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 			if earlyCancellable != 0 && c.armamentState == bike && c.nightsoulState.HasBlessing() {
 				// Used for n0 proc logic in charge.go
 				c.isDashFromCA = true
-				dashFrames[action.ActionCharge] = 0
+				dashFrames[action.ActionCharge] = travel
 			}
 		default:
 		}
