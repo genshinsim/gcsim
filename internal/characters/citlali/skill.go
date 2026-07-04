@@ -78,7 +78,7 @@ func (c *char) Skill(_ map[string]int) (action.Info, error) {
 
 	if c.Base.Cons >= 6 {
 		currentPoints := c.nightsoulState.Points()
-		c.nightsoulState.ClearPoints()
+		c.nightsoulState.ConsumePoints(currentPoints)
 		c.numC6Stacks = min(maxC6Stacks, currentPoints)
 	}
 

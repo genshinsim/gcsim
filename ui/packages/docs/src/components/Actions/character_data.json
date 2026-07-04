@@ -1,4 +1,47 @@
 {
+  "aino": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": false,
+      "notes": "Not implemented yet."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "legal": false
+    },
+    {
+      "ability": "high_plunge",
+      "legal": false
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
   "albedo": [
     {
       "ability": "attack",
@@ -685,6 +728,48 @@
       "legal": true
     }
   ],
+  "columbina": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "legal": false
+    },
+    {
+      "ability": "high_plunge",
+      "legal": false
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
   "cyno": [
     {
       "ability": "attack",
@@ -918,6 +1003,49 @@
     {
       "ability": "walk",
       "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "durin": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true,
+      "notes": "Need to use attack right before charge."
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "low_plunge",
+      "legal": false
+    },
+    {
+      "ability": "high_plunge",
+      "legal": false
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
     },
     {
       "ability": "swap",
@@ -2388,6 +2516,40 @@
     }
   ],
   "neuvillette": [
+    {
+      "ability": "attack",
+      "legal": true
+    },
+    {
+      "ability": "charge",
+      "legal": true
+    },
+    {
+      "ability": "skill",
+      "legal": true
+    },
+    {
+      "ability": "burst",
+      "legal": true
+    },
+    {
+      "ability": "dash",
+      "legal": true
+    },
+    {
+      "ability": "jump",
+      "legal": true
+    },
+    {
+      "ability": "walk",
+      "legal": true
+    },
+    {
+      "ability": "swap",
+      "legal": true
+    }
+  ],
+  "nicole": [
     {
       "ability": "attack",
       "legal": true

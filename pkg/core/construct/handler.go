@@ -72,7 +72,7 @@ func (h *Handler) NewConstruct(c Construct, refresh bool, constructs *[]Construc
 		}
 	}
 
-	h.evt.Emit(event.OnConstructSpawned)
+	h.evt.Emit(event.OnConstructSpawned, &c)
 
 	h.cleanOutNils(constructs)
 }

@@ -19,6 +19,11 @@
     "element": "geo",
     "weapon_class": "sword"
   },
+  "aino": {
+    "rarity": 4,
+    "element": "hydro",
+    "weapon_class": "claymore"
+  },
   "albedo": {
     "rarity": 5,
     "element": "geo",

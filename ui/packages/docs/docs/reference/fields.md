@@ -23,7 +23,9 @@ All fields evaluate to a number.
 | `status` | core status name | - | - | Evaluates to the remaining duration of the specified core status. See the relevant character/weapon/artifact page for acceptable status names. |
 | `stam` | - | - | - | Evaluates to the player's remaining stamina. |
 | `construct` | `duration`/`count` | construct name | - | Evaluates to the duration/count of the specified construct. See individual character page for acceptable construct names. |
+| `dew` | - | Evaluates to the sum of the current amount of verdant dew and moonridge dew. |
 | `verdant-dew` | - | Evaluates current amount of verdant dew. |
+| `moonridge-dew` | - | Evaluates current amount of moonridge dew. |
 | `gadgets` | `dendrocore` | `count` | - | Evaluates to the current number of Dendro Cores. |
 | `gadgets` | `sourcewaterdroplet` | `count` | - | Evaluates to the current number of Sourcewater Droplets. Use character specific fields to get number of Sourcewater Droplets in range. |
 | `gadgets` | `crystallizeshard` | `all`/`pyro`/`hydro`/`electro`/`cryo` | - | Evaluates to the current number of Crystallize Shards that can be picked up. `all` will return the total number of Crystallize Shards while the others will only count the ones of the given element. |

@@ -1,4 +1,5 @@
 {
+  "aino": [],
   "albedo": [
     {
       "ability": "low_plunge",
@@ -420,6 +421,13 @@
       "ability": "high_plunge",
       "param": "collision",
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    }
+  ],
+  "durin": [
+    {
+      "ability": "burst",
+      "param": "travel",
+      "desc": "Projectile travel time for Dragon of Dark Decay. Default 10 frames. Does nothing for Dragon of White Flame."
     }
   ],
   "emilie": [

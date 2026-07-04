@@ -3,11 +3,29 @@ package raiden
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
+
+func (c *char) c2Init() {
+	if c.Base.Cons < 2 {
+		return
+	}
+
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if c.Index() != atk.Info.ActorIndex {
+			return
+		}
+
+		if c.StatusIsActive(BurstKey) || c.Core.Player.CurrentStateStart() == c.burstAnimSrc {
+			atk.Info.IgnoreDefPercent += 0.6
+		}
+	}, "raiden-c2-hook")
+}
 
 // When the Musou Isshin state applied by Secret Art: Musou Shinsetsu expires
 // all nearby party members (excluding the Raiden Shogun) gain 30% bonus ATK for 10s.

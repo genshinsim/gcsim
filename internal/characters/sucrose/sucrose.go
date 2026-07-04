@@ -22,9 +22,11 @@ type char struct {
 	a4Buff              []float64
 	c4Count             int
 	c6buff              []float64
+	hexereiBuffSkill    []float64
+	hexereiBuffBurst    []float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -37,6 +39,13 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 		c.SetNumCharges(action.ActionSkill, 2)
 	}
 
+	hex, ok := p.Params["hexerei"]
+	if !ok {
+		// default hexerei is enabled
+		hex = 1
+	}
+	c.IsHexerei = (hex != 0)
+
 	w.Character = &c
 
 	return nil
@@ -47,5 +56,8 @@ func (c *char) Init() error {
 	if c.Base.Cons >= 6 {
 		c.c6buff = make([]float64, attributes.EndStatType)
 	}
+
+	c.hexInit()
+
 	return nil
 }

@@ -29,6 +29,7 @@ var MonsterNameToID = map[string]int{
 	"sublimatedqueen":                            29121201,
 	"thegamebeforethegate":                       29122000,
 	"thedoctor":                                  29130101,
+	"ildottore":                                  29150102,
 	"eyeofthestorm":                              20020101,
 	"electrohypostasis":                          20040101,
 	"anemohypostasis":                            20040201,

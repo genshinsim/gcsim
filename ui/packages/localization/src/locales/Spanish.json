@@ -50,6 +50,7 @@
         "vaporize": "Vaporización",
         "crystallize-electro": "Cristalización (Electro)",
         "crystallize-hydro": "Cristalización (Hydro)",
+        "lunarcrystallize": "Cristalización Lunar",
         "crystallize-pyro": "Cristalización (Pyro)",
         "crystallize-cryo": "Cristalización (Cryo)",
         "swirl-electro": "Torbellino (Electro)",
@@ -57,6 +58,7 @@
         "swirl-pyro": "Torbellino (Pyro)",
         "swirl-cryo": "Torbellino (Cryo)",
         "electrocharged": "Electrocargado",
+        "lunarcharged": "Electrocargado Lunar",
         "shatter": "Quebradizo",
         "burning": "Quemadura",
         "quicken": "Aceleración",
@@ -64,7 +66,8 @@
         "spread": "Propagación",
         "bloom": "Florecimiento",
         "burgeon": "Crepitar",
-        "hyperbloom": "Sobreflorecimiento"
+        "hyperbloom": "Sobreflorecimiento",
+        "lunarbloom": "Florecimiento Lunar"
     },
     "dash": {
         "get_started": "Empezar",

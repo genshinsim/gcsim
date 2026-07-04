@@ -1,5 +1,6 @@
 {
     "albedo": [],
+    "aino": [],
     "alhaitham": [
         "haitham"
     ],
@@ -31,12 +32,14 @@
     "citlali": [],
     "clorinde": [],
     "collei": [],
+    "columbina": ["bina"],
     "cyno": [],
     "dahlia": [],
     "dehya": [],
     "diluc": [],
     "diona": [],
     "dori": [],
+    "durin": [],
     "emilie": [],
     "escoffier": [
         "esco"
@@ -109,6 +112,7 @@
         "neuv",
         "chiefjusticeoffontaine"
     ],
+    "nicole": [],
     "nilou": [],
     "ningguang": [
         "ning"

@@ -1,9 +1,19 @@
 {
   "data": {
+    "adaycarvedfromrisingwinds": {
+      "id": "15044",
+      "text_map_id": "3721836931",
+      "key": "adaycarvedfromrisingwinds"
+    },
     "archaicpetra": {
       "id": "15014",
       "text_map_id": "2040573235",
       "key": "archaicpetra"
+    },
+    "aubadeofmorningstarandmoon": {
+      "id": "15043",
+      "text_map_id": "894629371",
+      "key": "aubadeofmorningstarandmoon"
     },
     "berserker": {
       "id": "10005",
@@ -24,6 +34,11 @@
       "id": "10002",
       "text_map_id": "3535784243",
       "key": "braveheart"
+    },
+    "celestialgift": {
+      "id": "15045",
+      "text_map_id": "4291032347",
+      "key": "celestialgift"
     },
     "crimsonwitchofflames": {
       "id": "15006",

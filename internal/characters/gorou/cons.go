@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -61,9 +62,23 @@ func (c *char) c1() {
 
 // C2:
 // While General's Glory is in effect, its duration is extended by 1s when a nearby
-// active character obtains an Elemental Shard from a Crystallize reaction.
+// active character obtains an Elemental Shard from a Crystallize reaction, or triggers a Lunar-Crystallize reaction.
 // This effect can occur once every 0.1s. Max extension is 3s.
 func (c *char) c2() {
+	c.Core.Events.Subscribe(event.OnLunarCrystallize, func(args ...any) {
+		if c.Core.Status.Duration(generalGloryKey) <= 0 {
+			return
+		}
+		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return
+		}
+		ae := args[1].(*info.AttackEvent)
+		if ae.Info.ActorIndex != c.Core.Player.Active() {
+			return
+		}
+
+		c.c2Extend()
+	}, "gorou-c2")
 	c.Core.Events.Subscribe(event.OnShielded, func(args ...any) {
 		if c.Core.Status.Duration(generalGloryKey) <= 0 {
 			return
@@ -73,12 +88,17 @@ func (c *char) c2() {
 		if shd.Type() != shield.Crystallize {
 			return
 		}
-		if c.c2Extension >= 3 {
-			return
-		}
-		c.c2Extension++
-		c.Core.Status.Extend(generalGloryKey, 60)
+
+		c.c2Extend()
 	}, "gorou-c2")
+}
+
+func (c *char) c2Extend() {
+	if c.c2Extension >= 3 {
+		return
+	}
+	c.c2Extension++
+	c.Core.Status.Extend(generalGloryKey, 60)
 }
 
 // C6:

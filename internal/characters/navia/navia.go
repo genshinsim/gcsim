@@ -37,7 +37,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.a4()
-	c.shrapnelGain()
+	c.shrapnelInit()
 	return nil
 }
 

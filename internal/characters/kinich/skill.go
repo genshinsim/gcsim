@@ -141,7 +141,7 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 	var snap info.Snapshot
 	c.QueueCharTask(func() {
 		// Nightsoul points are drained before snapshot
-		c.nightsoulState.ClearPoints()
+		c.nightsoulState.ConsumePoints(c.nightsoulState.Points())
 		snap = c.Snapshot(&ai)
 		c.Core.Tasks.Add(c.createBlindSpot, blindSpotDelay)
 		c.Core.Tasks.Add(func() {

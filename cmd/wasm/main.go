@@ -99,7 +99,8 @@ func validateConfig(this js.Value, args []js.Value) (out interface{}) {
 
 	in := args[0].String()
 
-	cfg, _, err := simulator.Parse(in)
+	file := ast.NewFile()
+	cfg, _, err := simulator.Parse(file, in)
 	if err != nil {
 		return marshal(err)
 	}
@@ -136,7 +137,8 @@ func simulate(this js.Value, args []js.Value) (out interface{}) {
 	if err != nil {
 		return marshal(err)
 	}
-	eval, err := eval.NewEvaluator(program, core)
+	file := ast.NewFile()
+	eval, err := eval.NewEvaluator(file, program, core)
 	if err != nil {
 		return marshal(err)
 	}
@@ -282,7 +284,8 @@ func flush(this js.Value, args []js.Value) (out interface{}) {
 // internal helper functions
 
 func initialize(raw string) error {
-	parser := parser.New(raw)
+	file := ast.NewFile()
+	parser := parser.New(file, raw)
 	out, prog, err := parser.Parse()
 	if err != nil {
 		return err

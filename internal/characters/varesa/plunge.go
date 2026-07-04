@@ -182,7 +182,9 @@ func (c *char) highPlungeCA(p map[string]int) action.Info {
 		c.exitNS = true
 		plungeFrames = fieryHighPlungeFrames
 
-		c.QueueCharTask(c.nightsoulState.ClearPoints, 2)
+		c.QueueCharTask(func() {
+			c.nightsoulState.ConsumePoints(c.nightsoulState.Points())
+		}, 2)
 	} else {
 		c.QueueCharTask(c.generatePlungeNightsoul, hitmark)
 	}
@@ -242,7 +244,9 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		c.exitNS = true
 		plungeFrames = frames.NewAbilFunc(xianyunFieryHighPlungeFrames)
 
-		c.QueueCharTask(c.nightsoulState.ClearPoints, 2)
+		c.QueueCharTask(func() {
+			c.nightsoulState.ConsumePoints(c.nightsoulState.Points())
+		}, 2)
 	} else {
 		c.QueueCharTask(c.generatePlungeNightsoul, hitmark)
 	}
@@ -302,7 +306,9 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 		c.exitNS = true
 		plungeFrames = frames.NewAbilFunc(xianyunFieryLowPlungeFrames)
 
-		c.QueueCharTask(c.nightsoulState.ClearPoints, 2)
+		c.QueueCharTask(func() {
+			c.nightsoulState.ConsumePoints(c.nightsoulState.Points())
+		}, 2)
 	} else {
 		c.QueueCharTask(c.generatePlungeNightsoul, hitmark)
 	}

@@ -1,4 +1,12 @@
 {
+  "aino": [
+    {
+      "vid_credit": "caramielle.",
+      "count_credit": "caramielle.",
+      "vid": "https://youtu.be/4ytupEiwlEE",
+      "count": "https://docs.google.com/spreadsheets/d/1vxUU9xUugiqNoZAF3YQe2gg7tqscHfAsPkHl2M3OuRA/edit?usp=sharing"
+    }
+  ],
   "albedo": [
     {
       "vid_credit": "Kolibri#7675 (special thanks to Xreejan#1180)",
@@ -453,6 +461,20 @@
       "count": "https://docs.google.com/spreadsheets/d/1BHJW5zmHoPWUF_tAhCZRTrU-3Z9dZCvxrsiEJM24wOY/edit?usp=sharing"
     }
   ],
+  "columbina": [
+    {
+      "vid_credit": "charliex3000",
+      "count_credit": "charliex3000",
+      "vid": "https://youtu.be/fw4ll8DuwlU",
+      "count": "https://docs.google.com/spreadsheets/d/1dS2l7jwSQYMs6U9D8fBrq-foG2k3s1QV0fIC16uYJU4/edit?usp=sharing"
+    },
+    {
+      "vid_credit": "charliex3000",
+      "count_credit": "charliex3000",
+      "vid": "https://youtu.be/OMvsffxne9Y",
+      "count": "https://docs.google.com/spreadsheets/d/1dS2l7jwSQYMs6U9D8fBrq-foG2k3s1QV0fIC16uYJU4/edit?usp=sharing"
+    }
+  ],
   "cyno": [
     {
       "vid_credit": "Kolibri#7675",
@@ -577,6 +599,14 @@
       "count_credit": "kolibri._.",
       "vid": "https://youtu.be/UCMirfn4QgM",
       "count": "https://docs.google.com/spreadsheets/d/16ZDmEBZOD4xeUcodxFJVuLC7IIqM9LGLilkct65mElg/edit?usp=sharing"
+    }
+  ],
+  "durin": [
+    {
+      "vid_credit": "caramielle.",
+      "count_credit": "caxia5 and caramielle.",
+      "vid": "https://youtu.be/7RRKS0tbPXg",
+      "count": "https://docs.google.com/spreadsheets/d/1iOPmOa6RcDB2yTt4lP2phoZ4gCHe0x217bP427Fl3vY/edit?usp=sharing"
     }
   ],
   "fischl": [
@@ -1133,6 +1163,12 @@
       "count_credit": "soloxcx",
       "vid": "https://youtu.be/V7LU2AGTfvU",
       "count": "https://docs.google.com/spreadsheets/d/182Mq2Eimpolj_DyUKUDPnwutFeTaPxOLXBNSeSF0lRQ/edit?usp=sharing"
+    },
+    {
+      "vid_credit": "charliex3000",
+      "count_credit": "charliex3000",
+      "vid": "https://youtu.be/WFrbkaBalEI",
+      "count": "https://docs.google.com/spreadsheets/d/1EMmBc6eUdC6CSoPag_Jti5dDIUNyLk_NBAY9DFCSmWU/edit?usp=sharing"
     }
   ],
   "mualani": [
@@ -1207,6 +1243,20 @@
       "count_credit": "charliex3000",
       "vid": "https://youtu.be/HViQwc6zGrs",
       "count": "https://docs.google.com/spreadsheets/d/1-gPxRq_NX8hBXLijRYroabSgT85S0ND6WiFLjwc2b_k/edit#usp=sharing"
+    }
+  ],
+  "nicole": [
+    {
+      "vid_credit": "caramielle.",
+      "count_credit": "caxia5 and caramielle.",
+      "vid": "https://youtu.be/7eDR9Mr9qPo",
+      "count": "https://docs.google.com/spreadsheets/d/1H2uTneGE3-4m8FZNwV_clkeH_LEY_FbSHn285f-uFqY/edit?usp=sharing"
+    },
+    {
+      "vid_credit": "caramielle.",
+      "count_credit": "caxia5 and caramielle.",
+      "vid": "https://youtu.be/Rp9XUVtXLkk",
+      "count": "https://docs.google.com/spreadsheets/d/1H2uTneGE3-4m8FZNwV_clkeH_LEY_FbSHn285f-uFqY/edit?usp=sharing"
     }
   ],
   "nilou": [

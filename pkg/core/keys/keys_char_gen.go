@@ -7,6 +7,7 @@ import (
 
 const (
 	TestCharDoNotUse Char = iota + TravelerDelim + 1
+	Aino
 	Albedo
 	Alhaitham
 	Aloy
@@ -27,12 +28,14 @@ const (
 	Citlali
 	Clorinde
 	Collei
+	Columbina
 	Cyno
 	Dahlia
 	Dehya
 	Diluc
 	Diona
 	Dori
+	Durin
 	Emilie
 	Escoffier
 	Eula
@@ -72,6 +75,7 @@ const (
 	Nahida
 	Navia
 	Neuvillette
+	Nicole
 	Nilou
 	Ningguang
 	Noelle
@@ -111,6 +115,10 @@ const (
 )
 
 func init() {
+	charNames[Aino] = "aino"
+	charPrettyName[Aino] = "Aino"
+	CharKeyToEle[Aino] = attributes.Hydro
+
 	charNames[Albedo] = "albedo"
 	charPrettyName[Albedo] = "Albedo"
 	CharKeyToEle[Albedo] = attributes.Geo
@@ -191,6 +199,10 @@ func init() {
 	charPrettyName[Collei] = "Collei"
 	CharKeyToEle[Collei] = attributes.Dendro
 
+	charNames[Columbina] = "columbina"
+	charPrettyName[Columbina] = "Columbina"
+	CharKeyToEle[Columbina] = attributes.Hydro
+
 	charNames[Cyno] = "cyno"
 	charPrettyName[Cyno] = "Cyno"
 	CharKeyToEle[Cyno] = attributes.Electro
@@ -214,6 +226,10 @@ func init() {
 	charNames[Dori] = "dori"
 	charPrettyName[Dori] = "Dori"
 	CharKeyToEle[Dori] = attributes.Electro
+
+	charNames[Durin] = "durin"
+	charPrettyName[Durin] = "Durin"
+	CharKeyToEle[Durin] = attributes.Pyro
 
 	charNames[Emilie] = "emilie"
 	charPrettyName[Emilie] = "Emilie"
@@ -370,6 +386,10 @@ func init() {
 	charNames[Neuvillette] = "neuvillette"
 	charPrettyName[Neuvillette] = "Neuvillette"
 	CharKeyToEle[Neuvillette] = attributes.Hydro
+
+	charNames[Nicole] = "nicole"
+	charPrettyName[Nicole] = "Nicole"
+	CharKeyToEle[Nicole] = attributes.Pyro
 
 	charNames[Nilou] = "nilou"
 	charPrettyName[Nilou] = "Nilou"

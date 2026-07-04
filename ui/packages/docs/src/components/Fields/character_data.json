@@ -69,6 +69,28 @@
       "desc": "Number of Cifra of the Secret Law (C6) points."
     }
   ],
+  "columbina": [
+    {
+      "fields": [
+        ".columbina.gravity"
+      ],
+      "desc": "Amount of gravity accumulated."
+    },
+    {
+      "fields": [
+        ".columbina.a1-stacks"
+      ],
+      "desc": "Number of A1 stacks."
+    }
+  ],
+  "durin": [
+    {
+      "fields": [
+        ".durin.a4-stacks"
+      ],
+      "desc": "Number of A4 stacks remaining."
+    }
+  ],
   "escoffier": [
     {
       "fields": [
@@ -219,6 +241,20 @@
       "desc": "Amount of Fighting Spirit."
     }
   ],
+  "mona": [
+    {
+      "fields": [
+        ".mona.astral-glow"
+      ],
+      "desc": "Number of Astral Glow of Mercury stacks."
+    },
+    {
+      "fields": [
+        ".mona.c6-stacks"
+      ],
+      "desc": "Number of C6 stacks."
+    }
+  ],
   "mualani": [
     {
       "fields": [
@@ -247,6 +283,14 @@
         ".neuvillette.droplets-c6"
       ],
       "desc": "Number of Sourcewater droplets in range for C6."
+    }
+  ],
+  "nicole": [
+    {
+      "fields": [
+        ".nicole.projections"
+      ],
+      "desc": "Number of Arcane Projection attacks done by this burst. 0 if burst is not active."
     }
   ],
   "ningguang": [

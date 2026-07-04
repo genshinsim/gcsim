@@ -50,6 +50,7 @@
     "vaporize": "Пар",
     "crystallize-electro": "Кристалл (Электро)",
     "crystallize-hydro": "Кристалл (Гидро)",
+    "lunarcrystallize": "Лунный кристалл",
     "crystallize-pyro": "Кристалл (Пиро)",
     "crystallize-cryo": "Кристалл (Крио)",
     "swirl-electro": "Рассеивание (Электро)",
@@ -57,6 +58,7 @@
     "swirl-pyro": "Рассеивание (Пиро)",
     "swirl-cryo": "Рассеивание (Крио)",
     "electrocharged": "Заряжен",
+    "lunarcharged": "Лунный заряд",
     "shatter": "Разбит",
     "burning": "Горение",
     "quicken": "Стимуляция",
@@ -64,7 +66,8 @@
     "spread": "Разрастание",
     "bloom": "Бутонизация",
     "burgeon": "Цветение",
-    "hyperbloom": "Вегетация"
+    "hyperbloom": "Вегетация",
+    "lunarbloom": "Лунная бутонизация"
   },
   "dash": {
     "get_started": "Начать",

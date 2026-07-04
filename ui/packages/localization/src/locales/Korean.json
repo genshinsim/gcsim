@@ -50,6 +50,7 @@
         "vaporize": "증발",
         "crystallize-electro": "결정 (번개)",
         "crystallize-hydro": "결정 (물)",
+        "lunarcrystallize": "달 결정",
         "crystallize-pyro": "결정 (불)",
         "crystallize-cryo": "결정 (얼음)",
         "swirl-electro": "확산 (번개)",
@@ -57,6 +58,7 @@
         "swirl-pyro": "확산 (불)",
         "swirl-cryo": "확산 (얼음)",
         "electrocharged": "감전",
+        "lunarcharged": "달 감전",
         "shatter": "쇄빙",
         "burning": "연소",
         "quicken": "활성",
@@ -64,7 +66,8 @@
         "spread": "발산",
         "bloom": "개화",
         "burgeon": "발화",
-        "hyperbloom": "만개"
+        "hyperbloom": "만개",
+        "lunarbloom": "달 개화"
     },
     "characteredit": {
         "add_set_bonus": "세트 효과 추가",

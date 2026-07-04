@@ -46,6 +46,13 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 		c.ozTravel = travel
 	}
 
+	hex, ok := p.Params["hexerei"]
+	if !ok {
+		// default hexerei is enabled
+		hex = 1
+	}
+	c.IsHexerei = (hex != 0)
+
 	w.Character = &c
 
 	return nil
@@ -53,7 +60,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.a4()
-
+	c.hexInit()
 	if c.Base.Cons >= 6 {
 		w, err := minazuki.New(
 			minazuki.WithMandatory(keys.Fischl, "fischl c6", ozActiveKey, "", 60, c.c6Wave, c.Core),

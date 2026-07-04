@@ -25,6 +25,7 @@ type char struct {
 	applyC4        bool
 	c6Count        int
 	c6ICD          int
+	burstAnimSrc   int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -38,6 +39,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	w.Character = &c
 
+	c.burstAnimSrc = -1
+
 	return nil
 }
 
@@ -47,6 +50,7 @@ func (c *char) Init() error {
 	c.a4()
 	c.onBurstStackCount()
 	c.onSwapClearBurst()
+	c.c2Init()
 	return nil
 }
 

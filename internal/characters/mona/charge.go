@@ -24,6 +24,24 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
+	// add windup if we're in idle or swap only
+	// TODO: this ignores N4 -> CA (which should be illegal anyways)
+	windup := 14
+	if c.Core.Player.CurrentState() == action.Idle || c.Core.Player.CurrentState() == action.SwapState {
+		windup = 0
+	}
+
+	c.doCA(c.Core.Combat.PrimaryTarget(), chargeHitmark-windup)
+
+	return action.Info{
+		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
+		AnimationLength: chargeFrames[action.InvalidAction] - windup,
+		CanQueueAfter:   chargeFrames[action.ActionSwap] - windup, // earliest cancel is before hitmark
+		State:           action.ChargeAttackState,
+	}, nil
+}
+
+func (c *char) doCA(target info.Target, delay int) {
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
 		Abil:       "Charge Attack",
@@ -35,31 +53,19 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
-
-	// add windup if we're in idle or swap only
-	// TODO: this ignores N4 -> CA (which should be illegal anyways)
-	windup := 14
-	if c.Core.Player.CurrentState() == action.Idle || c.Core.Player.CurrentState() == action.SwapState {
-		windup = 0
-	}
-
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHit(
 			c.Core.Combat.Player(),
-			c.Core.Combat.PrimaryTarget(),
+			target,
 			nil,
 			3,
 		),
-		chargeHitmark-windup,
-		chargeHitmark-windup,
+		delay,
+		delay,
 		c.makeC6CAResetCB(),
+		c.astralGlowGainCB,
+		c.omenRefreshCB,
+		c.c2HexereiCB,
 	)
-
-	return action.Info{
-		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
-		AnimationLength: chargeFrames[action.InvalidAction] - windup,
-		CanQueueAfter:   chargeFrames[action.ActionSwap] - windup, // earliest cancel is before hitmark
-		State:           action.ChargeAttackState,
-	}, nil
 }

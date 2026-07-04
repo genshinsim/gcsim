@@ -32,3 +32,9 @@ skill_data_mapping:
       - 1 # Illusory Bubble Explosion DMG|{param1:P}
     omenDuration:
       - 3 # Omen Duration|{param3:F1}s
+documentation:
+  fields_data:
+    - fields: [.mona.astral-glow]
+      desc: Number of Astral Glow of Mercury stacks.
+    - fields: [.mona.c6-stacks]
+      desc: Number of C6 stacks.

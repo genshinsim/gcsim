@@ -38,11 +38,13 @@ var weaponNames = []string{
 	"alleyhunter",
 	"amenomakageuchi",
 	"amosbow",
+	"angelosheptades",
 	"apprenticesnotes",
 	"aquasimulacra",
 	"aquilafavonia",
 	"ashgravendrinkinghorn",
 	"astralvulturescrimsonplumage",
+	"athameartis",
 	"athousandblazingsuns",
 	"athousandfloatingdreams",
 	"azurelight",
@@ -109,6 +111,7 @@ var weaponNames = []string{
 	"frostbearer",
 	"fruitfulhook",
 	"fruitoffulfillment",
+	"gestofthemightywolf",
 	"hakushinring",
 	"halberd",
 	"hamayumi",
@@ -147,6 +150,8 @@ var weaponNames = []string{
 	"moonweaversdawn",
 	"mountainbracingbolt",
 	"mouunsmoon",
+	"nightweaverslookingglass",
+	"nocturnescurtaincall",
 	"oathsworneye",
 	"oldmercspal",
 	"otherworldlystory",
@@ -164,11 +169,13 @@ var weaponNames = []string{
 	"prototypecrescent",
 	"prototyperancour",
 	"prototypestarglitter",
+	"rainbowserpentbow",
 	"rainslasher",
 	"rangegauge",
 	"ravenbow",
 	"recurvebow",
 	"redhornstonethresher",
+	"reliquaryoftruth",
 	"rightfulreward",
 	"ringofyaxche",
 	"royalbow",
@@ -263,11 +270,13 @@ const (
 	AlleyHunter
 	AmenomaKageuchi
 	AmosBow
+	AngelosHeptades
 	ApprenticesNotes
 	AquaSimulacra
 	AquilaFavonia
 	AshGravenDrinkingHorn
 	AstralVulturesCrimsonPlumage
+	AthameArtis
 	AThousandBlazingSuns
 	AThousandFloatingDreams
 	Azurelight
@@ -334,6 +343,7 @@ const (
 	Frostbearer
 	FruitfulHook
 	FruitOfFulfillment
+	GestOfTheMightyWolf
 	HakushinRing
 	Halberd
 	Hamayumi
@@ -372,6 +382,8 @@ const (
 	MoonweaversDawn
 	MountainBracingBolt
 	MouunsMoon
+	NightweaversLookingGlass
+	NocturnesCurtainCall
 	OathswornEye
 	OldMercsPal
 	OtherworldlyStory
@@ -389,11 +401,13 @@ const (
 	PrototypeCrescent
 	PrototypeRancour
 	PrototypeStarglitter
+	RainbowSerpentBow
 	Rainslasher
 	RangeGauge
 	RavenBow
 	RecurveBow
 	RedhornStonethresher
+	ReliquaryOfTruth
 	RightfulReward
 	RingOfYaxche
 	RoyalBow

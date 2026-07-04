@@ -2,6 +2,7 @@
 package assets
 
 var avatarMap = map[string]string{
+	"aino":          "UI_AvatarIcon_Aino",
 	"albedo":        "UI_AvatarIcon_Albedo",
 	"alhaitham":     "UI_AvatarIcon_Alhatham",
 	"aloy":          "UI_AvatarIcon_Aloy",
@@ -22,12 +23,14 @@ var avatarMap = map[string]string{
 	"citlali":       "UI_AvatarIcon_Citlali",
 	"clorinde":      "UI_AvatarIcon_Clorinde",
 	"collei":        "UI_AvatarIcon_Collei",
+	"columbina":     "UI_AvatarIcon_Columbina",
 	"cyno":          "UI_AvatarIcon_Cyno",
 	"dahlia":        "UI_AvatarIcon_Dahlia",
 	"dehya":         "UI_AvatarIcon_Dehya",
 	"diluc":         "UI_AvatarIcon_Diluc",
 	"diona":         "UI_AvatarIcon_Diona",
 	"dori":          "UI_AvatarIcon_Dori",
+	"durin":         "UI_AvatarIcon_Durin",
 	"emilie":        "UI_AvatarIcon_Emilie",
 	"escoffier":     "UI_AvatarIcon_Escoffier",
 	"eula":          "UI_AvatarIcon_Eula",
@@ -67,6 +70,7 @@ var avatarMap = map[string]string{
 	"nahida":        "UI_AvatarIcon_Nahida",
 	"navia":         "UI_AvatarIcon_Navia",
 	"neuvillette":   "UI_AvatarIcon_Neuvillette",
+	"nicole":        "UI_AvatarIcon_Nicole",
 	"nilou":         "UI_AvatarIcon_Nilou",
 	"ningguang":     "UI_AvatarIcon_Ningguang",
 	"noelle":        "UI_AvatarIcon_Noel",

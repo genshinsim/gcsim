@@ -2,6 +2,7 @@
 package simulation
 
 import (
+	_ "github.com/genshinsim/gcsim/internal/characters/aino"
 	_ "github.com/genshinsim/gcsim/internal/characters/albedo"
 	_ "github.com/genshinsim/gcsim/internal/characters/alhaitham"
 	_ "github.com/genshinsim/gcsim/internal/characters/aloy"
@@ -22,12 +23,14 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/citlali"
 	_ "github.com/genshinsim/gcsim/internal/characters/clorinde"
 	_ "github.com/genshinsim/gcsim/internal/characters/collei"
+	_ "github.com/genshinsim/gcsim/internal/characters/columbina"
 	_ "github.com/genshinsim/gcsim/internal/characters/cyno"
 	_ "github.com/genshinsim/gcsim/internal/characters/dahlia"
 	_ "github.com/genshinsim/gcsim/internal/characters/dehya"
 	_ "github.com/genshinsim/gcsim/internal/characters/diluc"
 	_ "github.com/genshinsim/gcsim/internal/characters/diona"
 	_ "github.com/genshinsim/gcsim/internal/characters/dori"
+	_ "github.com/genshinsim/gcsim/internal/characters/durin"
 	_ "github.com/genshinsim/gcsim/internal/characters/emilie"
 	_ "github.com/genshinsim/gcsim/internal/characters/escoffier"
 	_ "github.com/genshinsim/gcsim/internal/characters/eula"
@@ -67,6 +70,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/nahida"
 	_ "github.com/genshinsim/gcsim/internal/characters/navia"
 	_ "github.com/genshinsim/gcsim/internal/characters/neuvillette"
+	_ "github.com/genshinsim/gcsim/internal/characters/nicole"
 	_ "github.com/genshinsim/gcsim/internal/characters/nilou"
 	_ "github.com/genshinsim/gcsim/internal/characters/ningguang"
 	_ "github.com/genshinsim/gcsim/internal/characters/noelle"

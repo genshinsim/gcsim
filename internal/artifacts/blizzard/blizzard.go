@@ -3,9 +3,11 @@ package blizzard
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -36,29 +38,55 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			},
 		})
 	}
-	if count >= 4 {
-		m := make([]float64, attributes.EndStatType)
-		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase("bs-4pc", -1),
-			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
-				r, ok := t.(core.Reactable)
-				if !ok {
-					return nil
-				}
 
-				// Frozen check first so we don't mistaken coexisting cryo
-				if r.AuraContains(attributes.Frozen) {
-					m[attributes.CR] = 0.4
-					return m
-				}
-				if r.AuraContains(attributes.Cryo) {
-					m[attributes.CR] = 0.2
-					return m
-				}
-				return nil
-			},
-		})
+	if count < 4 {
+		return &s, nil
 	}
+
+	m := make([]float64, attributes.EndStatType)
+	char.AddAttackMod(character.AttackMod{
+		Base: modifier.NewBase("bs-4pc", -1),
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+			r, ok := t.(core.Reactable)
+			if !ok {
+				return nil
+			}
+
+			// Frozen check first so we don't mistaken coexisting cryo
+			if r.AuraContains(attributes.Frozen) {
+				m[attributes.CR] = 0.4
+				return m
+			}
+			if r.AuraContains(attributes.Cryo) {
+				m[attributes.CR] = 0.2
+				return m
+			}
+			return nil
+		},
+	})
+
+	// workaround for giving lunarcharge the 20%/40% CR
+	c.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
+		r, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return
+		}
+
+		ae, ok := args[1].(*info.AttackEvent)
+		if !ok {
+			return
+		}
+
+		// Frozen check first so we don't mistaken coexisting cryo
+		if r.AuraContains(attributes.Frozen) {
+			ae.Snapshot.Stats[attributes.CR] += 0.4
+			return
+		}
+		if r.AuraContains(attributes.Cryo) {
+			ae.Snapshot.Stats[attributes.CR] += 0.2
+			return
+		}
+	}, "bs-4pc-lunarcharge-"+char.Base.Key.String())
 
 	return &s, nil
 }

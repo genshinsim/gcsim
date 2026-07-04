@@ -11,7 +11,8 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event, grpMult float64) (fl
 	var isCrit bool
 
 	if atk.Info.AttackTag == attacks.AttackTagDirectLunarCharged ||
-		atk.Info.AttackTag == attacks.AttackTagDirectLunarBloom {
+		atk.Info.AttackTag == attacks.AttackTagDirectLunarBloom ||
+		atk.Info.AttackTag == attacks.AttackTagDirectLunarCrystallize {
 		return e.calcDirectLunar(atk, evt, grpMult)
 	}
 
@@ -73,9 +74,10 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event, grpMult float64) (fl
 		defadj = 0.9
 	}
 
+	defIgn := min(atk.Info.IgnoreDefPercent, 1.0)
 	defmod := float64(atk.Snapshot.CharLvl+100) /
 		(float64(atk.Snapshot.CharLvl+100) +
-			float64(e.Level+100)*(1+defadj)*(1-atk.Info.IgnoreDefPercent))
+			float64(e.Level+100)*(1+defadj)*(1-defIgn))
 
 	// apply def mod
 	damage *= defmod
@@ -148,7 +150,7 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event, grpMult float64) (fl
 			Write("ele", st).
 			Write("ele_per", elePer).
 			Write("bonus_dmg", dmgBonus).
-			Write("ignore_def", atk.Info.IgnoreDefPercent).
+			Write("ignore_def", defIgn).
 			Write("def_adj", defadj).
 			Write("target_lvl", e.Level).
 			Write("char_lvl", atk.Snapshot.CharLvl).
@@ -202,9 +204,12 @@ func (e *Enemy) calcDirectLunar(atk *info.AttackEvent, evt glog.Event, grpMult f
 	damage := atk.Info.Mult * a * (1 + atk.Info.BaseDmgBonus)
 
 	mult := 1.0
-	// special 3x mult for direct lunarcharged
-	if atk.Info.AttackTag == attacks.AttackTagDirectLunarCharged {
+	// special 3x mult for direct lunarcharged // FIXME: SAME AS REACTION
+	switch atk.Info.AttackTag {
+	case attacks.AttackTagDirectLunarCharged:
 		mult = 3
+	case attacks.AttackTagDirectLunarCrystallize:
+		mult = 1.6
 	}
 	damage *= mult
 
@@ -226,9 +231,10 @@ func (e *Enemy) calcDirectLunar(atk *info.AttackEvent, evt glog.Event, grpMult f
 	if defadj > 0.9 {
 		defadj = 0.9
 	}
+	defIgn := min(atk.Info.IgnoreDefPercent, 1.0)
 	defmod := float64(atk.Snapshot.CharLvl+100) /
 		(float64(atk.Snapshot.CharLvl+100) +
-			float64(e.Level+100)*(1+defadj)*(1-atk.Info.IgnoreDefPercent))
+			float64(e.Level+100)*(1+defadj)*(1-defIgn))
 	damage *= defmod
 
 	// apply resist mod
@@ -297,7 +303,7 @@ func (e *Enemy) calcDirectLunar(atk *info.AttackEvent, evt glog.Event, grpMult f
 			Write("ele", st).
 			Write("ele_per", elePer).
 			Write("bonus_dmg", dmgBonus).
-			Write("ignore_def", atk.Info.IgnoreDefPercent).
+			Write("ignore_def", defIgn).
 			Write("def_adj", defadj).
 			Write("target_lvl", e.Level).
 			Write("char_lvl", atk.Snapshot.CharLvl).

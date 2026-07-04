@@ -110,6 +110,7 @@ func (h *AnimationHandler) Tick() {
 		h.logEnded()
 		h.events.Emit(event.OnStateChange, h.state, action.Idle)
 		h.state = action.Idle
+		h.started = *h.f
 		h.aniEvt = nil
 	}
 }

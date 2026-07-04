@@ -1,6 +1,13 @@
 {
+  "adaycarvedfromrisingwinds": [
+    "risingwinds"
+  ],
   "archaicpetra": [
     "ap"
+  ],
+  "aubadeofmorningstarandmoon": [
+    "aubadeofmorningstar",
+    "aubade"
   ],
   "berserker": [],
   "blizzardstrayer": [
@@ -14,6 +21,10 @@
   "braveheart": [
     "brave"
   ],
+	"celestialgift": [
+	  "gift",
+	  "cg"
+	],
   "crimsonwitchofflames": [
     "cwof",
     "cw",
