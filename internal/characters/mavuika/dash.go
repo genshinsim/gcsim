@@ -69,7 +69,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 	dashFrames[action.ActionJump] = travel
 
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
-		if skipDmg != 0 {
+		if skipDmg == 0 {
 			ai := info.AttackInfo{
 				ActorIndex:     c.Index(),
 				Abil:           "Flamestrider Sprint",
