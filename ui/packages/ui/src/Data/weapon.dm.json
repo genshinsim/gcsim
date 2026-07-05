@@ -469,6 +469,13 @@
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Vorpal_Awaken"
     },
+    "flameforgedinsight": {
+      "id": 12432,
+      "key": "flameforgedinsight",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CLAYMORE",
+      "image_name": "UI_EquipIcon_Claymore_Polilith_Awaken"
+    },
     "fleuvecendreferryman": {
       "id": 11426,
       "key": "fleuvecendreferryman",
