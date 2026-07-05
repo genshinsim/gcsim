@@ -1552,7 +1552,7 @@
     },
     {
       "ability": "walk",
-      "notes": true
+      "legal": true
     },
     {
       "ability": "swap",
