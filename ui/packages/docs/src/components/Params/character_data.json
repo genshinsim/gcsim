@@ -1005,7 +1005,7 @@
     {
       "ability": "dash",
       "param": "early_cancellable",
-      "desc": "0 for no early cancel (cdc), 1 to allow an early cancel (default). An early-cancelled dash allows a Flamestrider Charge Attack to begin as soon as the dash hitmark (or 2f, if collision is skipped). Only applies to Flamestrider dash following a charge attack or finisher. Note: after Mavuika has completed a revolution, when she is between 12:00 and 1:30 as the hourhand on a clock (approx) she is unable to perform an early cancel."
+      "desc": "1 to allow an early cancel (cdc), 0 for no early cancel (default). An early-cancelled dash allows a Flamestrider Charge Attack to begin as soon as the dash hitmark (or 2f, if collision is skipped). Only applies to Flamestrider dash following a charge attack or finisher. Note: after Mavuika has completed a revolution, when she is between 12:00 and 1:30 as the hourhand on a clock (approx) she is unable to perform an early cancel."
     }
   ],
   "mika": [

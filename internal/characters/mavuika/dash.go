@@ -48,7 +48,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 	//   early cancel will be forced to false
 	earlyCancellable, ok := p["early_cancellable"]
 	if !ok {
-		earlyCancellable = 1
+		earlyCancellable = 0
 	}
 	if c.StatusIsActive(cdcLockoutStatus) {
 		if earlyCancellable != 0 {
