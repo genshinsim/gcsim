@@ -98,7 +98,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		return c.BikeCharge(p)
 	}
 	if c.Core.Player.CurrentState() == action.DashState && c.isDashFromCA {
-		return action.Info{}, errors.New("Can only cancel a dash with a biked charge")
+		return action.Info{}, errors.New("can only cancel a dash with a biked charge")
 	}
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
