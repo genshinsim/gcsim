@@ -219,7 +219,7 @@ var (
 		0.324,
 		0.342,
 	}
-	// skill: skillPressureCryo = [3 4 6 8 -1]
+	// skill: skillPressureCryo = [3 4 6 8]
 	skillPressureCryo = [][]float64{
 		{
 			2.0048,
@@ -289,43 +289,9 @@ var (
 			0.90216,
 			0.95228,
 		},
-		{
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-		},
 	}
-	// skill: skillPressurePhys = [-1 5 7 9 10]
+	// skill: skillPressurePhys = [5 7 9 10]
 	skillPressurePhys = [][]float64{
-		{
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-			0,
-		},
 		{
 			0.48688,
 			0.523396,

@@ -182,11 +182,6 @@ func (c *charData) skillDataByType(typ string, data []*model.AvatarSkillExcelInd
 		}
 
 		for i, param := range params {
-			if param == -1 {
-				skill.Params[i].Values = make([]float64, 15)
-				continue
-			}
-
 			var paramData *model.AvatarSkillExcelIndexData
 			for _, v := range data {
 				if v.Index != int32(param) {
