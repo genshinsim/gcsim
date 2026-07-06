@@ -165,10 +165,9 @@ func (c *char) c4Init() {
 		return
 	}
 
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.CR] = 0.15
-
 	for _, char := range c.Core.Player.Chars() {
+		m := make([]float64, attributes.EndStatType)
+		m[attributes.CR] = 0.15
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(c4key, -1),
 			Amount: func(_ *info.AttackEvent, t info.Target) []float64 {
