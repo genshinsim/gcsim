@@ -13,10 +13,10 @@ import (
 )
 
 const (
-	LcKey                 = "lunarcharged-cloud"
-	LcExtraHitOverrideKey = "lunarcrystallize-bonus-hit-chance"
-	lcSrcKey              = "lunarcharged-cloud-src"
-	lcIcdKey              = "lunarcharged-cloud-icd"
+	LcKey              = "lunarcharged-cloud"
+	LcExtraHitOverride = "lunarcrystallize-bonus-hit-chance"
+	lcSrcKey           = "lunarcharged-cloud-src"
+	lcIcdKey           = "lunarcharged-cloud-icd"
 )
 
 var lcContributorMult = []float64{0.6, 0.3, 0.05, 0.05}
@@ -232,7 +232,7 @@ func (r *Reactable) nextLCTick(src int) func() {
 			e.AddStatus(lcIcdKey, 2*60, true)
 
 			enemy.DoLCAttack()
-			if chance, ok := r.core.Flags.Custom[LcrExtraHitOverride]; ok && r.core.Rand.Float64() < chance {
+			if chance, ok := r.core.Flags.Custom[LcExtraHitOverride]; ok && r.core.Rand.Float64() < chance {
 				enemy.DoLCAttack()
 			}
 		}
