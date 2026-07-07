@@ -191,7 +191,7 @@ func (r *Reactable) doSingleLCAttack(contribMap [info.MaxChars]bool, consumeAura
 		snap.Stats[attributes.CR] = 1.0
 	}
 
-	var cb info.AttackCBFunc = nil
+	var cb info.AttackCBFunc
 	if consumeAura {
 		cb = r.reduceLCAuraCB
 	}
