@@ -83,6 +83,27 @@ type lcContribution = struct {
 }
 
 func (r *Reactable) DoLCAttack() {
+	contrib := r.lcContributors()
+	r.doSingleLCAttack(contrib, true)
+	if chance, ok := r.core.Flags.Custom[LcExtraHitOverride]; ok && r.core.Rand.Float64() < chance {
+		r.core.Tasks.Add(func() {
+			r.doSingleLCAttack(contrib, false)
+		}, 36)
+	}
+}
+
+func (r *Reactable) lcContributors() [info.MaxChars]bool {
+	contribMap := [info.MaxChars]bool{}
+	for charInd := range r.core.Player.Chars() {
+		if r.Durability[info.ReactionModKeyHydro][charInd] <= info.ZeroDur && r.Durability[info.ReactionModKeyElectro][charInd] <= info.ZeroDur {
+			continue
+		}
+		contribMap[charInd] = true
+	}
+	return contribMap
+}
+
+func (r *Reactable) doSingleLCAttack(contribMap [info.MaxChars]bool, consumeAura bool) {
 	contributions := []lcContribution{}
 
 	ap := combat.NewSingleTargetHit(r.self.Key())
@@ -99,7 +120,7 @@ func (r *Reactable) DoLCAttack() {
 	}
 
 	for charInd, char := range r.core.Player.Chars() {
-		if r.Durability[info.ReactionModKeyHydro][charInd] <= info.ZeroDur && r.Durability[info.ReactionModKeyElectro][charInd] <= info.ZeroDur {
+		if !contribMap[charInd] {
 			continue
 		}
 
@@ -169,12 +190,18 @@ func (r *Reactable) DoLCAttack() {
 	if contributions[0].isCrit {
 		snap.Stats[attributes.CR] = 1.0
 	}
+
+	var cb info.AttackCBFunc = nil
+	if consumeAura {
+		cb = r.reduceLCAuraCB
+	}
+
 	r.core.QueueAttackWithSnap(
 		ai,
 		snap,
 		ap,
 		0,
-		r.reduceLCAuraCB,
+		cb,
 	)
 }
 
@@ -232,9 +259,6 @@ func (r *Reactable) nextLCTick(src int) func() {
 			e.AddStatus(lcIcdKey, 2*60, true)
 
 			enemy.DoLCAttack()
-			if chance, ok := r.core.Flags.Custom[LcExtraHitOverride]; ok && r.core.Rand.Float64() < chance {
-				enemy.DoLCAttack()
-			}
 		}
 		// queue up next tick
 		r.core.Tasks.Add(r.nextLCTick(src), 6)
