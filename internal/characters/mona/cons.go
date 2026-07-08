@@ -179,6 +179,8 @@ func (c *char) c4Init() {
 
 				if c.IsHexerei && char.IsHexerei {
 					m[attributes.CD] = 0.15
+				} else {
+					m[attributes.CD] = 0
 				}
 				// ok only if either bubble or omen is present
 				if x.StatusIsActive(bubbleKey) || x.StatusIsActive(omenKey) {
