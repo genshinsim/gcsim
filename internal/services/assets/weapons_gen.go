@@ -150,6 +150,7 @@ var weaponMap = map[string]string{
 	"crimsonmoonssemblance":           "UI_EquipIcon_Pole_BloodMoon",
 	"deathmatch":                      "UI_EquipIcon_Pole_Gladiator",
 	"dialoguesofthedesertsages":       "UI_EquipIcon_Pole_Caduceus",
+	"disasterandremorse":              "UI_EquipIcon_Pole_Carbine",
 	"dragonsbane":                     "UI_EquipIcon_Pole_Stardust",
 	"dragonspinespear":                "UI_EquipIcon_Pole_Everfrost",
 	"engulfinglightning":              "UI_EquipIcon_Pole_Narukami",

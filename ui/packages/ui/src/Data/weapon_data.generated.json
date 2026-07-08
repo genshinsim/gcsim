@@ -352,6 +352,14 @@
       "image_name": "UI_EquipIcon_Pole_Caduceus",
       "name_text_hash_map ": "2847771107"
     },
+    "disasterandremorse": {
+      "id": 13517,
+      "key": "disasterandremorse",
+      "rarity": 5,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Carbine",
+      "name_text_hash_map ": "3376210043"
+    },
     "dodocotales": {
       "id": 14413,
       "key": "dodocotales",
