@@ -119,7 +119,6 @@
          "zhongli": "钟离"
       },
       "weapon_names": {
-         "": "霜结的誓金枝",
          "absolution": "赦罪",
          "akuoumaru": "恶王丸",
          "alleyhunter": "暗巷猎手",
@@ -199,6 +198,7 @@
          "fruitfulhook": "硕果钩",
          "fruitoffulfillment": "盈满之实",
          "gestofthemightywolf": "狼的武功歌",
+         "goldenfrostboundoath": "霜结的誓金枝",
          "hakushinring": "白辰之环",
          "halberd": "钺矛",
          "hamayumi": "破魔之弓",
@@ -941,7 +941,6 @@
          "zhongli": "Zhongli"
       },
       "weapon_names": {
-         "": "Golden Frostbound Oath",
          "absolution": "Absolution",
          "akuoumaru": "Akuoumaru",
          "alleyhunter": "Alley Hunter",
@@ -1021,6 +1020,7 @@
          "fruitfulhook": "Fruitful Hook",
          "fruitoffulfillment": "Fruit of Fulfillment",
          "gestofthemightywolf": "Gest of the Mighty Wolf",
+         "goldenfrostboundoath": "Golden Frostbound Oath",
          "hakushinring": "Hakushin Ring",
          "halberd": "Halberd",
          "hamayumi": "Hamayumi",
@@ -1763,7 +1763,6 @@
          "zhongli": "Zhongli"
       },
       "weapon_names": {
-         "": "Goldener Frostschwur",
          "absolution": "Absolution",
          "akuoumaru": "Akuoumaru",
          "alleyhunter": "Gassenjäger",
@@ -1843,6 +1842,7 @@
          "fruitfulhook": "Fruchtbarer Haken",
          "fruitoffulfillment": "Vollmondfrucht",
          "gestofthemightywolf": "Kampflied des Wolfs",
+         "goldenfrostboundoath": "Goldener Frostschwur",
          "hakushinring": "Hakushin-Ring",
          "halberd": "Hellebarde",
          "hamayumi": "Hamayumi",
@@ -2585,7 +2585,6 @@
          "zhongli": "鍾離"
       },
       "weapon_names": {
-         "": "霜契の金枝",
          "absolution": "赦罪",
          "akuoumaru": "惡王丸",
          "alleyhunter": "ダークアレイの狩人",
@@ -2665,6 +2664,7 @@
          "fruitfulhook": "実りの鉤鉈",
          "fruitoffulfillment": "満悦の実",
          "gestofthemightywolf": "狼の武勲詩",
+         "goldenfrostboundoath": "霜契の金枝",
          "hakushinring": "白辰の輪",
          "halberd": "鉾槍",
          "hamayumi": "破魔の弓",
@@ -3407,7 +3407,6 @@
          "zhongli": "종려"
       },
       "weapon_names": {
-         "": "서리 맺힌 금빛 가지",
          "absolution": "사면",
          "akuoumaru": "아쿠오마루",
          "alleyhunter": "뒷골목 사냥꾼",
@@ -3487,6 +3486,7 @@
          "fruitfulhook": "수확의 갈고리",
          "fruitoffulfillment": "충만의 열매",
          "gestofthemightywolf": "늑대의 무용담",
+         "goldenfrostboundoath": "서리 맺힌 금빛 가지",
          "hakushinring": "하쿠신의 고리",
          "halberd": "미늘창",
          "hamayumi": "파마궁",
@@ -4229,7 +4229,6 @@
          "zhongli": "Чжун Ли"
       },
       "weapon_names": {
-         "": "Золотая клятва льда",
          "absolution": "Отпущение грехов",
          "akuoumaru": "Акуомару",
          "alleyhunter": "Охотник во тьме",
@@ -4309,6 +4308,7 @@
          "fruitfulhook": "Плодотворный крюк",
          "fruitoffulfillment": "Плод восполнения",
          "gestofthemightywolf": "Подвиг могучего волка",
+         "goldenfrostboundoath": "Золотая клятва льда",
          "hakushinring": "Кольцо Хакусин",
          "halberd": "Алебарда Миллелита",
          "hamayumi": "Хамаюми",
@@ -5051,7 +5051,6 @@
          "zhongli": "Zhongli"
       },
       "weapon_names": {
-         "": "Rama del Juramento Escarchado",
          "absolution": "Expiadora",
          "akuoumaru": "Rey del Mal",
          "alleyhunter": "Cazador del Callejón",
@@ -5131,6 +5130,7 @@
          "fruitfulhook": "Gancho del Triunfo",
          "fruitoffulfillment": "Fruto de la Culminación",
          "gestofthemightywolf": "Cantar de Gesta del Lobo",
+         "goldenfrostboundoath": "Rama del Juramento Escarchado",
          "hakushinring": "Anillo de Hakushin",
          "halberd": "Alabarda",
          "hamayumi": "Masacrademonios",
