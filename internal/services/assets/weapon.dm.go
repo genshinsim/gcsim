@@ -82,6 +82,7 @@ var weaponMap = map[string]string{
 	"fruitfulhook":                    "UI_EquipIcon_Claymore_Umpakati_Awaken",
 	"fruitoffulfillment":              "UI_EquipIcon_Catalyst_Arakalari_Awaken",
 	"gestofthemightywolf":             "UI_EquipIcon_Claymore_EnsisAquilonis_Awaken",
+	"goldenfrostboundoath":            "UI_EquipIcon_Bow_Alkonost_Awaken",
 	"hakushinring":                    "UI_EquipIcon_Catalyst_Bakufu_Awaken",
 	"halberd":                         "UI_EquipIcon_Pole_Halberd_Awaken",
 	"hamayumi":                        "UI_EquipIcon_Bow_Bakufu_Awaken",

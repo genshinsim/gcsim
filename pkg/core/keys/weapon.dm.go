@@ -122,6 +122,7 @@ const (
 	FruitfulHook                                  // fruitfulhook
 	FruitOfFulfillment                            // fruitoffulfillment
 	GestOfTheMightyWolf                           // gestofthemightywolf
+	GoldenFrostboundOath                          // goldenfrostboundoath
 	HakushinRing                                  // hakushinring
 	Halberd                                       // halberd
 	Hamayumi                                      // hamayumi
