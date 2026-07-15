@@ -11,13 +11,9 @@ shortcuts:
 
 docs:
   frames:
-    - count: https://docs.google.com/spreadsheets/d/1_a0KTCdTkvITCoHvLzOzFbcRm1wMtDaHt7zFU9h2aPQ/edit?usp=sharing
+    - count: https://docs.google.com/spreadsheets/d/1S7cJszsMoQF6ShCvA7hMjiXMuOCoDRwgW1rseP0uC8k/edit?usp=sharing
       count_credit: Kolibri#7675
-      video: https://youtu.be/MOyhu5YxeWA
-      video_credit: Kolibri#7675
-    - count: https://docs.google.com/spreadsheets/d/1_a0KTCdTkvITCoHvLzOzFbcRm1wMtDaHt7zFU9h2aPQ/edit?usp=sharing
-      count_credit: Kolibri#7675
-      video: https://youtu.be/uwnKGID7vSI
+      video: https://youtu.be/VaIaa4MW9eI
       video_credit: Kolibri#7675
     - count: https://docs.google.com/spreadsheets/d/1bvtaF1vt95lRQHxvnOL5jLbKMR683s_eHxx-q91q0Nk/edit?usp=sharing
       count_credit: Kolibri#7675
@@ -36,61 +32,30 @@ abilities:
 
   - name: attack
     hitbox:
-      - name: Aether-N1
-        shape: Box
-        center: Player
-        box: [1.4, 2.2]
-
-      - name: Aether-N2
-        shape: Circle
-        center: Player
-        offset: [0, 0.6]
-        fan_angle: 180
-        radius: 1.7
-
-      - name: Aether-N3
-        shape: Box
-        center: Player
-        offset: [0, 0.4]
-        box: [1.5, 2.2]
-
-      - name: Aether-N4
-        shape: Circle
-        center: Player
-        offset: [0, 0.6]
-        radius: 1.7
-
-      - name: Aether-N5
-        shape: Circle
-        center: Player
-        offset: [0, 0.6]
-        fan_angle: 240
-        radius: 1.75
-
-      - name: Lumine-N1
+      - name: N1
         shape: Circle
         center: Player
         offset: [0, 1]
         radius: 1.6
 
-      - name: Lumine-N2
+      - name: N2
         shape: Box
         center: Player
         box: [1.4, 2.2]
 
-      - name: Lumine-N3
+      - name: N3
         shape: Circle
         center: Player
         offset: [0, 0.7]
         radius: 1.5
 
-      - name: Lumine-N4
+      - name: N4
         shape: Circle
         center: Player
         offset: [0, 0.7]
         radius: 1.5
 
-      - name: Lumine-N5
+      - name: N5
         shape: Circle
         center: Player
         offset: [0, 1]

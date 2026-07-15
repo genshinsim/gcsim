@@ -12,17 +12,9 @@ docs:
       count_credit: Kolibri#7675
       video: https://youtu.be/2LnpQIVIszY
       video_credit: Kolibri#7675
-    - count: https://docs.google.com/spreadsheets/d/1S7cJszsMoQF6ShCvA7hMjiXMuOCoDRwgW1rseP0uC8k/edit?usp=sharing
-      count_credit: Kolibri#7675
-      video: https://youtu.be/VaIaa4MW9eI
-      video_credit: Kolibri#7675
     - count: https://docs.google.com/spreadsheets/d/1I81WBTsNgyBG8Z9eYjHBSVAn-dGk-dkBIoib5Yp4e4M/edit?usp=sharing
       count_credit: Kolibri#7675
       video: https://youtu.be/VbmlHb5dPqg
-      video_credit: Kolibri#7675
-    - count: https://docs.google.com/spreadsheets/d/1IQWPPH4rVSe9fvy2hpvufS1xi7Ni_jfZ7SL4aSudPuM/edit?usp=sharing
-      count_credit: Kolibri#7675
-      video: https://youtu.be/2VGB-csNGnI
       video_credit: Kolibri#7675
 
 abilities:
@@ -33,13 +25,13 @@ abilities:
 
   - name: attack
     hitbox:
-      - name: Aether-N1
+      - name: N1
         shape: Box
         center: Player
         box: [1.4, 2.2]
         hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
 
-      - name: Aether-N2
+      - name: N2
         shape: Circle
         center: Player
         offset: [0, 0.6]
@@ -47,61 +39,27 @@ abilities:
         radius: 1.7
         hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
 
-      - name: Aether-N3
+      - name: N3
         shape: Box
         center: Player
         offset: [0, 0.4]
         box: [1.5, 2.2]
         hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
 
-      - name: Aether-N4
+      - name: N4
         shape: Circle
         center: Player
         offset: [0, 0.6]
         radius: 1.7
         hitlag: {time: 0.09, scale: 0.01, defense_halt: true}
 
-      - name: Aether-N5
+      - name: N5
         shape: Circle
         center: Player
         offset: [0, 0.6]
         fan_angle: 240
         radius: 1.75
         hitlag: {time: 0.12, scale: 0.01, defense_halt: true}
-
-      - name: Lumine-N1
-        shape: Circle
-        center: Player
-        offset: [0, 1]
-        radius: 1.6
-        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
-
-      - name: Lumine-N2
-        shape: Box
-        center: Player
-        box: [1.4, 2.2]
-        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
-
-      - name: Lumine-N3
-        shape: Circle
-        center: Player
-        offset: [0, 0.7]
-        radius: 1.5
-        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
-
-      - name: Lumine-N4
-        shape: Circle
-        center: Player
-        offset: [0, 0.7]
-        radius: 1.5
-        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
-
-      - name: Lumine-N5
-        shape: Circle
-        center: Player
-        offset: [0, 1]
-        radius: 1.6
-        hitlag: {time: 0.1, scale: 0.01, defense_halt: true}
 
   - name: charge
     note: Need to use attack right before charge.
