@@ -141,6 +141,7 @@ ace.define(
         'ht',
         'tao',
         'ifa',
+        'illuga',
         'ineffa',
         'jahoda',
         'jean',

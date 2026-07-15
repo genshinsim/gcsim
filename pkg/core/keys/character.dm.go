@@ -90,6 +90,7 @@ const (
 	Gorou                         // gorou
 	HuTao                         // hutao
 	Ifa                           // ifa
+	Illuga                        // illuga
 	Ineffa                        // ineffa
 	Jahoda                        // jahoda
 	Jean                          // jean
