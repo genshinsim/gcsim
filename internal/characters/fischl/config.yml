@@ -1,84 +1,183 @@
-package_name: fischl
-genshin_id: 10000031
-key: fischl
-action_param_keys:
-    attack:
-      - param: "travel"
-    aim:
-      - param: "hold"
-      - param: "travel"
-      - param: "weakspot"
-    skill:
-      - param: "recast"
-skill_data_mapping:
-  attack:
-    aim:
-      - 5 # Aimed Shot|{param5:F1P}
-    auto_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    auto_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    auto_3:
-      - 2 # 3-Hit DMG|{param2:F1P}
-    auto_4:
-      - 3 # 4-Hit DMG|{param3:F1P}
-    auto_5:
-      - 4 # 5-Hit DMG|{param4:F1P}
-    fullaim:
-      - 6 # Fully-Charged Aimed Shot|{param6:P}
-  skill:
-    birdAtk:
-      - 0 # Oz''s ATK DMG|{param0:F1P}
-    birdSum:
-      - 1 # Summoning DMG|{param1:P}
-  burst:
-    burst:
-      - 0 # Falling Thunder DMG|{param0:P}
-icd_groups:
-  - group_name: ICDGroupFischl
-    reset_timer: 300
-    ele_app_sequence:
-      [
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-      ]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+use: pipeline
+kind: character
+name: fischl
 
-documentation:
-  fields_data:
-    - fields: [.fischl.oz]
-      desc: Whether Oz is active or not.
-    - fields: [.fischl.oz-source]
-      desc: The source frame Oz is spawned on.
-    - fields: [.fischl.oz-duration]
-      desc: Number of frames until Oz disappears if he is active, 0 otherwise.
+shortcuts:
+  - amy
+  - fish
+
+combat:
+  icd_groups:
+    - Fischl
+
+talents:
+  - auto:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Fully-Charged Aimed Shot)
+
+  - birdAtk: skill(Oz's ATK DMG)
+  - birdSum: skill(Summoning DMG)
+
+  - burst: burst(Falling Thunder DMG)
+
+docs:
+  fields:
+    .fischl.oz: Whether Oz is active or not.
+    .fischl.oz-duration: Number of frames until Oz disappears if he is active, 0 otherwise.
+    .fischl.oz-source: The source frame Oz is spawned on.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1Pbp9BY1HZIs_iPJdkR3B7WjLMO9iIjWP8tM7NNnp0bU/edit?usp=sharing
+      count_credit: Kurt#5846
+      video: https://youtu.be/FCgs75yM18Q
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1uLn-0Wv9aoPQ2aNuxkTC5AvxQXYVgQNZlLq58QQqjMQ/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/uXWGgOHrHDs
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/fsscsOMSnaA
+      video_credit: xsylent
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/jRrVMzEHoCU
+      video_credit: xsylent
+
+abilities:
+  - name: default
+    params:
+      oz_travel: Projectile travel time for Oz. Default 10 frames. Set via '+params=[oz_travel=...]' in Fischl's 'char' line.
+
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N4
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N5
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: aim
+    params:
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default).
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+  - name: skill
+    params:
+      recast: 0 to use E (default), 1 to use Recast E. Recast E is only possible if Oz is active and Recast E is not on cooldown.
+    hitbox:
+      - name: E-SummonOz
+        shape: Circle
+        center: GlobalValue
+        radius: 2
+
+      - name: E-SummonOz-C2
+        shape: Circle
+        center: GlobalValue
+        radius: 3
+
+      - name: E-OzATK
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: burst
+    hitbox:
+      - name: Q-FallingThunder
+        shape: Circle
+        center: Player
+        radius: 0.5
+
+  - name: asc
+    hitbox:
+      - name: E-A1
+        note: not implemented yet
+        shape: Box
+        center: PrimaryTarget
+        box: [2.5, 2.5]
+
+      - name: E-A4
+        note: Spawns on target that A4 proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 0.5
+
+  - name: cons
+    hitbox:
+      - name: E-C1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Q-C4
+        shape: Circle
+        center: Player
+        radius: 5
+
+      - name: E-C6
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -1]
+        box: [0.1, 1]
+
+  - name: walk
+    note: Only aim followed by walk has proper frames.

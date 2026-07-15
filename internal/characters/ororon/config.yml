@@ -1,39 +1,139 @@
-package_name: ororon
-genshin_id: 10000105
-key: ororon
-action_param_keys:
-  attack:
-    - param: "travel"
-  aim:
-    - param: "hold"
-    - param: "travel"
-    - param: "weakspot"
-  skill:
-    - param: "travel"
-skill_data_mapping:
-  attack:
-    aim:
-      - 3 # Aimed Shot|{param5:F1P}
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}
-    fullaim:
-      - 4 # Fully-Charged Aimed Shot|{param6:P}
-  skill:
-    spiritOrb:
-      - 0 # Spirit Orb DMG|{param0:F1P}
-  burst:
-    burst:
-      - 0 # Ritual DMG|{param0:P}
-    soundwave:
-      - 1 # Soundwave Collision DMG|{param1:P}
-icd_tags:
-  - ICDTagOroronElmentalBurst
-icd_groups:
-  - group_name: ICDGroupOroronElementalBurst
-    reset_timer: 180
-    ele_app_sequence: [1, 0, 0, 0, 0, 0, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+use: pipeline
+kind: character
+name: ororon
+
+override:
+  icd_group:
+    OroronElementalBurst:
+      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+      durability: [1, 0, 0, 0, 0, 0, 0, 0, 0]
+      timer: 3
+
+shortcuts:
+  - olorun
+
+combat:
+  icd_tags:
+    - OroronElmentalBurst
+  icd_groups:
+    - OroronElementalBurst
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Fully-Charged Aimed Shot)
+
+  - spiritOrb: skill(Spirit Orb DMG)
+
+  - burst: burst(Ritual DMG)
+  - soundwave: burst(Soundwave Collision DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1TUoz-kPRTnH2ShCxijokC46CBMjtYj5qRztgsd_QZR0/edit?usp=sharing
+      count_credit: HarmonyWave
+      video: https://youtu.be/qwzm-hoisxw?si=VM-GjH4KqpDtkX-0
+      video_credit: Mystathi
+    - count: https://docs.google.com/spreadsheets/d/1TUoz-kPRTnH2ShCxijokC46CBMjtYj5qRztgsd_QZR0/edit?usp=sharing
+      count_credit: HarmonyWave
+      video: https://youtu.be/ASW5U3CHKC4?si=hvOpr7ZyjB7iTaU-
+      video_credit: Mystathi
+    - count: https://docs.google.com/spreadsheets/d/1TUoz-kPRTnH2ShCxijokC46CBMjtYj5qRztgsd_QZR0/edit?usp=sharing
+      count_credit: HarmonyWave
+      video: https://youtu.be/JX-79e_cuM0
+      video_credit: Mystathi
+    - count: https://docs.google.com/spreadsheets/d/1TUoz-kPRTnH2ShCxijokC46CBMjtYj5qRztgsd_QZR0/edit?usp=sharing
+      count_credit: HarmonyWave
+      video: https://youtu.be/RD2PV7CNyMY?si=jl6KvJl2s3-J-utc
+      video_credit: Mystathi
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: aim
+    params:
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default).
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+  - name: skill
+    params:
+      travel: 'Travel time of bounce between targets in frames. Default: 10.'
+    hitbox:
+      - name: Spirit-Orb-Hit
+        note: Spawns on target Spirit Orb bounced to.
+        shape: Single
+        center: GlobalValue
+
+  - name: burst
+    hitbox:
+      - name: Burst-Cast
+        shape: Circle
+        center: Player
+        offset: [0, 2.3]
+        radius: 6.5
+
+      - name: Soundwave-Collision
+        shape: Circle
+        center: GlobalValue
+
+  - name: asc
+    hitbox:
+      - name: E-A1
+        note: Spawns on 4 closest targets.
+        shape: Box
+        center: GlobalValue
+        box: [0.2, 0.2]
+        hitlag: {scale: 0.01, defense_halt: true}
+
+  - name: walk
+    note: Only aim followed by walk has proper frames.

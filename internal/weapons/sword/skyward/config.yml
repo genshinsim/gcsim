@@ -1,3 +1,11 @@
-package_name: skyward
-genshin_id: 11502
-key: skywardblade
+use: pipeline
+kind: weapon
+name: skywardblade
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Skyward Blade
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Single
+        center: GlobalValue

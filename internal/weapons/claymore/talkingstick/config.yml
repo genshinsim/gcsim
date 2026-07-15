@@ -1,4 +1,7 @@
-package_name: talkingstick
-genshin_id: 12424
-key: talkingstick
-skip_data_func: true
+use: pipeline
+kind: weapon
+name: talkingstick
+
+docs:
+  issues:
+    - The passive is not implemented.

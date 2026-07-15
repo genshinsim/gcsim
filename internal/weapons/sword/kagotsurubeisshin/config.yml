@@ -1,3 +1,15 @@
-package_name: kagotsurubeisshin
-genshin_id: 11416
-key: kagotsurubeisshin
+use: pipeline
+kind: weapon
+name: kagotsurubeisshin
+
+shortcuts:
+  - isshin
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Kagotsurube Isshin
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 3

@@ -1,3 +1,6 @@
-package_name: crimsonmoonssemblance
-genshin_id: 13512
-key: crimsonmoonssemblance
+use: pipeline
+kind: weapon
+name: crimsonmoonssemblance
+
+shortcuts:
+  - crimsonmoon

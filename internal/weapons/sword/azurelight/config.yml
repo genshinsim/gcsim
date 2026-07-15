@@ -1,3 +1,3 @@
-package_name: azurelight
-genshin_id: 11517
-key: azurelight
+use: pipeline
+kind: weapon
+name: azurelight

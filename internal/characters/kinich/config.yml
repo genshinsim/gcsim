@@ -1,52 +1,159 @@
-package_name: kinich
-genshin_id: 10000101
-key: kinich
-action_param_keys:
-  attack:
-    - param: "direction"
-  skill:
-    - param: "hold"
-    - param: "travel"
-    - param: "c6-travel"
-icd_tags:
-  - ICDTagKinichLoopShot
-  - ICDTagKinichScalespikerCannon
-icd_groups:
-  - group_name: ICDGroupKinichLoopShot
-    reset_timer: 120
-    ele_app_sequence: [1, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1]
-  - group_name: ICDGroupKinichScalespikerCannon
-    reset_timer: 72
-    ele_app_sequence: [1, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1]
-skill_data_mapping:
-  attack:
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}
-    charge:
-      - 3 # Charged Attack DMG|{param3:F1P}x3
-    collision:
-      - 5 # Plunge DMG|{param5:F1P}
-    lowPlunge:
-      - 6 # Low/High Plunge DMG|{param6:P}/{param7:P}
-    highPlunge:
-      - 7 # Low/High Plunge DMG|{param6:P}/{param7:P}
-  skill:
-    loopShot:
-      - 0 # Loop Shot DMG|{param0:F2P}x2
-    scalespikerCannon:
-      - 1 # Scalespiker Cannon DMG|{param1:F2P}
-  burst:
-    burst:
-      - 0 # Skill DMG|{param0:F2P}
-    dragonBreath:
-      - 1 # Dragon Breath DMG|{param1:F2P}
-documentation:
-  fields_data:
-    - fields: [.kinich.blind_spot]
-      desc: The direction of the Blind Spot relatively to Kinich. -1 - in clock-wise direction; 1 - in counter clock-wise direction; 0 - does not exist at the moment.
+use: pipeline
+kind: character
+name: kinich
+
+override:
+  icd_group:
+    KinichLoopShot:
+      name: Kinich_Eart_Normal_Bullet
+    KinichScalespikerCannon:
+      damage: [1, 1, 1, 1]
+      durability: [1, 0, 0, 0]
+      timer: 1.2
+
+combat:
+  icd_tags:
+    - KinichLoopShot
+    - KinichScalespikerCannon
+  icd_groups:
+    - KinichLoopShot
+    - KinichScalespikerCannon
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - loopShot: skill(Loop Shot DMG)
+  - scalespikerCannon: skill(Scalespiker Cannon DMG)
+
+  - burst: burst(Skill DMG)
+  - dragonBreath: burst(Dragon Breath DMG)
+
+docs:
+  issues:
+    - The actual Kinich's circular movement is not simulated, so Loop Shots/Scalespiker Cannon will damage the Primary target, which does not depend on attack angle.
+  fields:
+    .kinich.blind_spot: The direction of the Blind Spot relatively to Kinich. -1 - in clock-wise direction; 1 - in counter clock-wise direction; 0 - does not exist at the moment.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1LAzshEMfE5tN-9iAA1sl4aQI9L-A9HGeLSPTk4e21L0/edit?usp=sharing
+      count_credit: ange1o5
+      video: https://youtu.be/Y7rRtpAAsts
+      video_credit: ange1o5
+    - count: https://docs.google.com/spreadsheets/d/1LAzshEMfE5tN-9iAA1sl4aQI9L-A9HGeLSPTk4e21L0/edit?usp=sharing
+      count_credit: ange1o5
+      video: https://youtu.be/toZZdY1gjU8
+      video_credit: ange1o5
+
+abilities:
+  - name: attack
+    params:
+      direction: 'Direction in which Kinich move when attached to the opponent: -1 - in clock-wise direction; 1 - in counter clock-wise direction. Default: -1'
+    hitbox:
+      - name: N1
+        shape: Box
+        center: Player
+        offset: [0, -0.7]
+        box: [3, 3]
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Box
+        center: Player
+        offset: [0, -1]
+        box: [2, 3.9]
+        hitlag: {time: 0.09, scale: 0.01, defense_halt: true}
+
+      - name: N3
+        shape: Box
+        center: Player
+        box: [2.2, 4.3]
+        hitlag: {time: 0.12, scale: 0.01, defense_halt: true}
+
+      - name: E-N1-1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.5
+
+      - name: E-N1-2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.5
+
+  - name: charge
+    note: Need to use attack right before charge. Cannot charge in nightsoul blessing
+    hitbox:
+      - name: CA-1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, 0.45]
+        box: [3, 5]
+
+      - name: CA-2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, 0.45]
+        box: [3, 5]
+
+      - name: CA-3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, 0.45]
+        box: [3, 5]
+        hitlag: {time: 0.01, scale: 0.01, defense_halt: true}
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example. Cannot low plunge in nightsoul blessing.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+
+  - name: skill
+    params:
+      c6-travel: 'C6 Bounce Scalespiker projectile travel time. Default: 50 frames.'
+      hold: 0 for Tap (default), value between 1 and 301 for Hold to enter Nightsoul and between 1 and 181 to shot Scalespiker. Subtracted by 1 to account for requiring a 1 to activate.
+      travel: 'Scalespiker projectile travel time. Default: 13 frames.'
+    hitbox:
+      - name: E-Scalespiker
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
+        hitlag: {scale: 0.01, defense_halt: true, deployable: true}
+
+      - name: E-Scalespiker C2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 5
+
+  - name: burst
+    hitbox:
+      - name: Q-Initial
+        shape: Circle
+        center: Player
+        radius: 4
+        hitlag: {scale: 0.01, defense_halt: true}
+
+      - name: Q-Laser
+        note: 'In actual game Ajaw''s laser is single target: hit is spawned on the enemy the laser touched. To approximate laser''s AoE, we use box.'
+        shape: Box
+        center: PrimaryTarget
+        box: [1, 10]
+        hitlag: {scale: 0.01, defense_halt: true}
+
+  - name: cons
+    hitbox:
+      - name: C6 Bounce
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
+        hitlag: {defense_halt: true, deployable: true}
+
+      - name: C6 Bounce (Trigger C2)
+        shape: Circle
+        center: PrimaryTarget
+        radius: 5

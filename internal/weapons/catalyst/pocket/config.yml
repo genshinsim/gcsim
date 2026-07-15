@@ -1,4 +1,6 @@
-package_name: pocket
-genshin_id: 14201
-key: pocketgrimoire
-skip_data_func: true
+use: pipeline
+kind: weapon
+name: pocketgrimoire
+
+shortcuts:
+  - pocket

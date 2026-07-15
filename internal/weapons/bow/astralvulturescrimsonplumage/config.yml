@@ -1,3 +1,6 @@
-package_name: astralvulturescrimsonplumage
-genshin_id: 15514
-key: astralvulturescrimsonplumage
+use: pipeline
+kind: weapon
+name: astralvulturescrimsonplumage
+
+shortcuts:
+  - avcp

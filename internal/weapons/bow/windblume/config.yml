@@ -1,3 +1,6 @@
-package_name: windblume
-genshin_id: 15413
-key: windblumeode
+use: pipeline
+kind: weapon
+name: windblumeode
+
+shortcuts:
+  - ode

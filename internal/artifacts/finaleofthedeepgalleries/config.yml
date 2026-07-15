@@ -1,2 +1,6 @@
-key: finaleofthedeepgalleries
-set_id: 15040
+use: pipeline
+kind: artifact
+name: finaleofthedeepgalleries
+
+shortcuts:
+  - deepgalleries

@@ -1,3 +1,11 @@
-package_name: messenger
-genshin_id: 15305
-key: messenger
+use: pipeline
+kind: weapon
+name: messenger
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Messenger
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Single
+        center: GlobalValue

@@ -1,54 +1,167 @@
-package_name: lanyan
-genshin_id: 10000108
-key: lanyan
-action_param_keys:
-  skill:
-    - param: "hold"
-  low_plunge:
-    - param: "collision"
-  high_plunge:
-    - param: "collision"
-icd_tags:
-  - ICDTagLanyanRingAttack
-  - ICDTagLanyanRingAttackMix
-icd_groups:
-  - group_name: ICDGroupLanyanRingAttack
-    reset_timer: 150
-    ele_app_sequence:
-      [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-  - group_name: ICDGroupLanyanRingAttackMix
-    reset_timer: 150
-    ele_app_sequence:
-      [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-skill_data_mapping:
-    attack:
-        attack_1:
-            - 0 # 1-Hit DMG|{param1:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param2:F1P}+{param3:F1P}
-            - 2 # 2-Hit DMG|{param2:F1P}+{param3:F1P}
-        attack_3:
-            - 3 # 3-Hit DMG|{param4:F1P}+{param5:F1P}
-            - 4 # 3-Hit DMG|{param4:F1P}+{param5:F1P}
-        attack_4:
-            - 5 # 4-Hit DMG|{param6:F1P}
-        charge:
-            - 6 # Charged Attack DMG|{param7:F1P}×3
-        collision:
-            - 8 # Plunge DMG|{param8:F1P}
-        lowPlunge:
-            - 9 # Low/High Plunge DMG|{param9:P}/{param10:P}
-        highPlunge:
-            - 10 # Low/High Plunge DMG|{param9:P}/{param10:P}
-    skill:
-        ring:
-            - 0 # Feathermoon Ring DMG|{param1:F1P}
-        shieldAmt:
-            - 1 # Shield DMG Absorption|{param2:F1P} ATK+{param3:I}
-        shieldFlat:
-            - 2 # Shield DMG Absorption|{param2:F1P} ATK+{param3:I}
-    burst:
-        burst:
-            - 0 # Skill DMG|{param1:F1P}×3
+use: pipeline
+kind: character
+name: lanyan
+
+override:
+  icd_group:
+    LanyanRingAttack:
+      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+      durability: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
+      timer: 2.5
+    LanyanRingAttackMix:
+      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+      durability: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
+      timer: 2.5
+
+combat:
+  icd_tags:
+    - LanyanRingAttack
+    - LanyanRingAttackMix
+  icd_groups:
+    - LanyanRingAttack
+    - LanyanRingAttackMix
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - - attack(2-Hit DMG)
+        - attack(2-Hit DMG|1)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG|1)
+      - attack(4-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - ring: skill(Feathermoon Ring DMG)
+  - shieldAmt: skill(Shield DMG Absorption)
+  - shieldFlat: skill(Shield DMG Absorption|1)
+
+  - burst: burst(Skill DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1JsbMbqBgV9vva05OGsY9-Wem_Y6_sbyKZZDd1IFpAIU/edit
+      count_credit: jwalk511 & imring
+      video: https://youtu.be/2zBnMI59acc
+      video_credit: imring
+    - count: https://docs.google.com/spreadsheets/d/1JsbMbqBgV9vva05OGsY9-Wem_Y6_sbyKZZDd1IFpAIU/edit
+      count_credit: jwalk511 & imring
+      video: https://youtu.be/jga0UI6dS4s
+      video_credit: imring
+    - count: https://docs.google.com/spreadsheets/d/1ieBa344vhM42FvxmlZLMSzlGm5PEykV8VMGQk9Haelk/edit?usp=sharing
+      count_credit: GaspNAwe
+      video: https://youtu.be/dpr9hjok8TQ
+      video_credit: GaspNAwe
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Box
+        center: Player
+        offset: [0, -0.2]
+        box: [2.2, 3]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N2-1
+        shape: Box
+        center: Player
+        offset: [0, -0.2]
+        box: [2.3, 3]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N2-2
+        shape: Box
+        center: Player
+        offset: [0, -0.2]
+        box: [2.3, 3]
+        hitlag: {defense_halt: true}
+
+      - name: N3-1
+        shape: Circle
+        center: Player
+        offset: [0, 0.3]
+        radius: 2.2
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: N3-2
+        shape: Circle
+        center: Player
+        offset: [0, 0.3]
+        radius: 2.2
+
+      - name: N4
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        fan_angle: 240
+        radius: 2.4
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2.5
+        hitlag: {deployable: true}
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        radius: 1.5
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        radius: 3.5
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    params:
+      hold: 0 for Tap (default), value between 1 and 610 for Hold.
+    hitbox:
+      - name: E-Detect
+        shape: Box
+        center: Player
+        box: [0.1, 5]
+
+      - name: E-Ring
+        shape: Single
+        center: PrimaryTarget
+        hitlag: {scale: 0.01, defense_halt: true}
+
+  - name: burst
+    hitbox:
+      - name: Q
+        shape: Circle
+        center: PrimaryTarget
+        radius: 6
+
+  - name: asc
+    hitbox:
+      - name: A1
+        shape: Single
+        center: PrimaryTarget
+
+  - name: walk
+    note: No action followed by walk (except low_plunge and high_plunge) has proper frames.

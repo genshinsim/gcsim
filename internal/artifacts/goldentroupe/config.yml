@@ -1,2 +1,6 @@
-key: goldentroupe
-set_id: 15032
+use: pipeline
+kind: artifact
+name: goldentroupe
+
+shortcuts:
+  - gt

@@ -1,35 +1,143 @@
-package_name: kaeya
-genshin_id: 10000015
-key: kaeya
-action_param_keys:
-    low_plunge:
-        - param: "collision"
-    high_plunge:
-        - param: "collision"
-skill_data_mapping:
-    attack:
-        auto_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        auto_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        auto_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        auto_4:
-            - 3 # 4-Hit DMG|{param3:F1P}
-        auto_5:
-            - 4 # 5-Hit DMG|{param4:F1P}
-        charge:
-            - 5 # Charged Attack DMG|{param5:F1P}+{param6:F1P}
-            - 6 # Charged Attack DMG|{param5:F1P}+{param6:F1P}
-        collision:
-            - 8 # Plunge DMG|{param8:F1P}
-        lowPlunge:
-            - 9 # Low/High Plunge DMG|{param9:P}/{param10:P}
-        highPlunge:
-            - 10 # Low/High Plunge DMG|{param9:P}/{param10:P}
-    skill:
-        skill:
-            - 0 # Skill DMG|{param0:P}
-    burst:
-        burst:
-            - 0 # Skill DMG|{param0:F1P}
+use: pipeline
+kind: character
+name: kaeya
+
+talents:
+  - auto:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+  - charge:
+      - attack(Charged Attack DMG)
+      - attack(Charged Attack DMG|1)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skill: skill(Skill DMG)
+
+  - burst: burst(Skill DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/11f_FxKhXFpL4EHSfFHPPjhXJvVOTi-FP_R6cqaZ9dwo/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/RvgMyM9f3Gk
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/11f_FxKhXFpL4EHSfFHPPjhXJvVOTi-FP_R6cqaZ9dwo/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/tb1bGGVNJoA?t=55
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1ieBa344vhM42FvxmlZLMSzlGm5PEykV8VMGQk9Haelk/edit?usp=sharing
+      count_credit: GaspNAwe
+      video: https://youtu.be/2jiPYhEdrwc
+      video_credit: GaspNAwe
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.8]
+        radius: 1.7
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, 1.2]
+        radius: 1.5
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N3
+        shape: Box
+        center: Player
+        offset: [0, -0.2]
+        box: [1, 2.6]
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: N4
+        shape: Box
+        center: Player
+        offset: [0, 0.3]
+        box: [1, 3.5]
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: N5
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 1.8
+        hitlag: {time: 0.1, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA-1
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 2.2
+
+      - name: CA-2
+        shape: Circle
+        center: Player
+        offset: [0, 1.3]
+        radius: 2.2
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    hitbox:
+      - name: E-Skill
+        shape: Box
+        center: Player
+        offset: [0, -0.2]
+        box: [4, 8]
+
+  - name: burst
+    hitbox:
+      - name: Q-Start
+        note: not implemented yet
+        shape: Circle
+        center: Player
+        radius: 3
+
+      - name: Q-Icicle
+        shape: Circle
+        center: Player
+        radius: 2
+
+  - name: walk
+    note: No action followed by walk (except low_plunge and high_plunge) has proper frames.

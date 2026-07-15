@@ -1,3 +1,11 @@
-package_name: sacrificialjade
-genshin_id: 14424
-key: sacrificialjade
+use: pipeline
+kind: weapon
+name: sacrificialjade
+
+shortcuts:
+  - sacjade
+
+abilities:
+  - name: default
+    params:
+      stacks: 1 to enable the passive in the beginning, 0 default.

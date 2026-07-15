@@ -1,72 +1,279 @@
-package_name: mavuika
-genshin_id: 10000106
-key: mavuika
-icd_tags:
-    - ICDTagMavuikaFlamestrider
-action_param_keys:
-    skill:
-        - param: "hold"
-        - param: "recast"
-    low_plunge:
-        - param: "collision"
-    high_plunge:
-        - param: "collision"
-    charge:
-        - param: "hold"
-        - param: "final"
-        - param: "buffered"
-skill_data_mapping:
-    attack: # Normal Attack: Flames Weave Life
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}×2
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}×3
-        attack_4:
-            - 3 # 4-Hit DMG|{param3:F1P}
-        charge:
-            - 4 # Charged Attack Final DMG|{param4:P}
-        collision:
-            - 6 # Plunge DMG|{param6:F1P}
-        lowPlunge:
-            - 7 # Low/High Plunge DMG|{param7:P}/{param8:P}
-        highPlunge:
-            - 8 # Low/High Plunge DMG|{param7:P}/{param8:P}
-    skill: # The Named Moment
-        skill:
-            - 0 # Activation DMG|{param0:F1P}
-        skillRing:
-            - 1 # Remote Weapon Interval DMG|{param1:F1P}
-        skillAttack_1:
-            - 3 # Motorcycle Normal Attack 1-Hit DMG|{param3:F1P}
-        skillAttack_2:
-            - 4 # Motorcycle Normal Attack 2-Hit DMG|{param4:F1P}
-        skillAttack_3:
-            - 5 # Motorcycle Normal Attack 3-Hit DMG|{param5:F1P}
-        skillAttack_4:
-            - 6 # Motorcycle Normal Attack 4-Hit DMG|{param6:F1P}
-        skillAttack_5:
-            - 7 # Motorcycle Normal Attack 5-Hit DMG|{param7:F1P}
-        skillDash:
-            - 8 # Motorcycle Sprint DMG|{param8:F1P}
-        skillCharge:
-            - 9 # Motorcycle Charged Attack Cyclic DMG|{param9:F1P}
-        skillChargeFinal:
-            - 10 # Motorcycle Charged Attack Final DMG|{param10:F1P}
-        skillPlunge:
-            - 11 # Motorcycle Plunge DMG|{param11:F1P}
-    burst: # Hour of Burning Skies
-        burst:
-            - 0 # Explosion DMG|{param0:F1P}
-        burstQBonus:
-            - 2 # Burst DMG Bonus|{param2:F1P} ATK per War God Energy Point
-        burstNABonus:
-            - 3 # Motorcycle Normal Attack Bonus|{param3:F2P} ATK per War God Energy Point
-        burstCABonus:
-            - 4 # Motorcycle Charged Attack Bonus|{param4:F2P} ATK per War God Energy Point
+use: pipeline
+kind: character
+name: mavuika
 
-documentation:
-    fields_data:
-        - fields: [.mavuika.fightingspirit]
-          desc: Amount of Fighting Spirit.
+shortcuts:
+  - mav
+
+combat:
+  icd_tags:
+    - MavuikaFlamestrider
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skill: skill(Skill DMG)
+  - skillRing: skill(Ring of Searing Radiance DMG)
+  - skillAttack:
+      - skill(Flamestrider Normal Attack 1-Hit DMG)
+      - skill(Flamestrider Normal Attack 2-Hit DMG)
+      - skill(Flamestrider Normal Attack 3-Hit DMG)
+      - skill(Flamestrider Normal Attack 4-Hit DMG)
+      - skill(Flamestrider Normal Attack 5-Hit DMG)
+  - skillDash: skill(Flamestrider Sprint DMG)
+  - skillCharge: skill(Flamestrider Charged Attack Cyclic DMG)
+  - skillChargeFinal: skill(Flamestrider Charged Attack Final DMG)
+  - skillPlunge: skill(Flamestrider Plunge DMG)
+
+  - burst: burst(Skill DMG)
+  - burstQBonus: burst(Sunfell Slice DMG Bonus)
+  - burstNABonus: burst(Flamestrider Normal Attack DMG Bonus)
+  - burstCABonus: burst(Flamestrider Charged Attack DMG Bonus)
+
+docs:
+  fields:
+    .mavuika.fightingspirit: Amount of Fighting Spirit.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1HmsTvcv127qYflBtgjV8-4-ldteXGcDFdUv9JnyFz2o/edit?usp=sharing
+      count_credit: aftermathrar
+      video: https://www.youtube.com/playlist?list=PLR5JbgmY4L_TBQ13IzYvVvfKZkk-ypM3t
+      video_credit: aftermathrar
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2.2
+        hitlag: {time: 0.09, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Box
+        center: Player
+        offset: [0, -1.3]
+        box: [3.3, 4.3]
+        hitlag: {time: 0.05, scale: 0.01, defense_halt: true}
+
+      - name: N3
+        shape: Box
+        center: Player
+        offset: [0, 0.5]
+        box: [2.8, 5]
+
+      - name: N4
+        shape: Circle
+        center: Player
+        offset: [0, -0.8]
+        radius: 3.2
+        hitlag: {time: 0.1, scale: 0.01, defense_halt: true}
+
+      - name: N1-Flamestrider
+        shape: Circle
+        center: Player
+        offset: [0, 1.5]
+        radius: 3.2
+        hitlag: {time: 0.09, scale: 0.01, defense_halt: true}
+
+      - name: N2-Flamestrider
+        shape: Circle
+        center: Player
+        offset: [0, 1.85]
+        radius: 3.5
+        hitlag: {time: 0.08, scale: 0.01, defense_halt: true}
+
+      - name: N3-Flamestrider
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 3
+        hitlag: {time: 0.04, scale: 0.01, defense_halt: true}
+
+      - name: N4-Flamestrider
+        shape: Box
+        center: Player
+        offset: [0, -0.8]
+        box: [3.5, 4.5]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N5-Flamestrider
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 4
+
+      - name: Q-N1-Flamestrider
+        shape: Circle
+        center: Player
+        offset: [0, 1.5]
+        radius: 3.7
+        hitlag: {time: 0.09, scale: 0.01, defense_halt: true}
+
+      - name: Q-N2-Flamestrider
+        shape: Circle
+        center: Player
+        offset: [0, 1.85]
+        radius: 4
+        hitlag: {time: 0.08, scale: 0.01, defense_halt: true}
+
+      - name: Q-N3-Flamestrider
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 3.7
+        hitlag: {time: 0.04, scale: 0.01, defense_halt: true}
+
+      - name: Q-N4-Flamestrider
+        shape: Box
+        center: Player
+        offset: [0, -0.8]
+        box: [4.5, 5.5]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: Q-N5-Flamestrider
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 4.7
+
+  - name: charge
+    params:
+      buffered: Number of frames to buffer CA. Range 0-15, lower values can be used to trigger certain N0 abilities.
+      final: Used to explicitly initiate the Flamestrider's final hit of the charge attack.
+      hold: Number of frames to extend Charge Attack by. Min 1, max 45, can only be used after a Charge attack has started.
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: Player
+        offset: [0, 0.3]
+        radius: 3.3
+        hitlag: {time: 0.15, scale: 0.01, defense_halt: true}
+
+      - name: CA-Flamestrider-Cyclic
+        note: This is an approximation because we do not actually know the real AoE. This is a moving hitbox. It moves at varying speeds in a circle of radius 4.0m around the player with a hitbox radius of 3.0m.
+        shape: Single
+        center: GlobalValue
+
+      - name: CA-Flamestrider-Final
+        shape: Circle
+        center: Player
+        offset: [0, 2]
+        radius: 4
+        hitlag: {time: 0.04, scale: 0.01, defense_halt: true}
+
+      - name: Q-CA-Flamestrider-Final
+        shape: Circle
+        center: Player
+        offset: [0, 2]
+        radius: 4.5
+        hitlag: {time: 0.04, scale: 0.01, defense_halt: true}
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+      - name: Low_Plunge-Flamestrider
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge-Flamestrider
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    note: Previous action must be a walking Flamestrider jump or jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg. Flamestrider plunge has no collision.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg. Flamestrider plunge has no collision.
+
+  - name: skill
+    params:
+      hold: 0 for Tap (default), 1 for Hold.
+      recast: 0 to use E (default), 1 to use Recast E. Recast E is only possible if Nightsoul Blessing is active and Recast E is not on cooldown.
+    hitbox:
+      - name: E-Tap
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 5
+
+      - name: E-Hold
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 6
+
+      - name: E-Flamestrider-Refresh
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 6
+
+      - name: E-Ring
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 6
+
+  - name: burst
+    hitbox:
+      - name: Q-Initial
+        shape: Circle
+        center: Player
+        offset: [0, 2.5]
+        radius: 7
+
+  - name: cons
+    hitbox:
+      - name: C6-Flamestrider
+        note: Spawns on target that C6 proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 6
+
+      - name: C6-Ring
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 6
+
+  - name: dash
+    hitbox:
+      - name: Dash
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1.2

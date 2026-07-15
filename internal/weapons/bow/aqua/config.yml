@@ -1,3 +1,15 @@
-package_name: aqua
-genshin_id: 15508
-key: aquasimulacra
+use: pipeline
+kind: weapon
+name: aquasimulacra
+
+shortcuts:
+  - aqua
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Aqua Simulacra Enemy Detection
+        note: It looks for enemies within this hitbox.
+        shape: Circle
+        center: Player
+        radius: 8

@@ -1,45 +1,228 @@
-package_name: hutao
-genshin_id: 10000046
-key: hutao
-action_param_keys:
-    low_plunge:
-        - param: "collision"
-    high_plunge:
-        - param: "collision"
-skill_data_mapping:
-    attack:
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        attack_4:
-            - 3 # 4-Hit DMG|{param3:F1P}
-        attack_5:
-            - 4 # 5-Hit DMG|{param4:F1P}+{param5:F1P}
-            - 5 # 5-Hit DMG|{param4:F1P}+{param5:F1P}
-        attack_6:
-            - 6 # 6-Hit DMG|{param6:F1P}
-        charge:
-            - 7 # Charged Attack|{param7:F1P}
-        collision:
-            - 9 # Plunge DMG|{param6:F1P}
-        lowPlunge:
-            - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
-        highPlunge:
-            - 11 # Low/High Plunge DMG|{param7:P}/{param8:P}
-    skill:
-        bb:
-            - 2 # Blood Blossom DMG|{param2:P}
-        ppatk:
-            - 1 # ATK Increase|{param1:F2P} Max HP
-    burst:
-        burst:
-            - 0 # Skill DMG|{param0:P}
-        burstLow:
-            - 1 # Low HP Skill DMG|{param1:P}
-        regen:
-            - 2 # Skill HP Regeneration|{param2:F2P} Max HP
-        regenLow:
-            - 3 # Low HP Skill Regeneration|{param3:F2P} Max HP
+use: pipeline
+kind: character
+name: hutao
+
+shortcuts:
+  - ht
+  - tao
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+      - - attack(5-Hit DMG)
+        - attack(5-Hit DMG|1)
+      - attack(6-Hit DMG)
+  - charge: attack(Charged Attack)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - ppatk: skill(ATK Increase)
+  - bb: skill(Blood Blossom DMG)
+
+  - burst: burst(Skill DMG)
+  - burstLow: burst(Low HP Skill DMG)
+  - regen: burst(Skill HP Regeneration)
+  - regenLow: burst(Low HP Skill Regeneration)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1KR_FMtupIbLEhWRGww2N2UKEJG3hy5mWJIez8S6EZ2w/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/9IPwipyFu4A
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1KR_FMtupIbLEhWRGww2N2UKEJG3hy5mWJIez8S6EZ2w/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/a8vo9uxMWM0
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1zCwdd6_KYFqMD4OQ_llGLdDshoZTu_1pmAMysxGDQvs/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/KlgZlck5kQQ?t=566
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/16ZDmEBZOD4xeUcodxFJVuLC7IIqM9LGLilkct65mElg/edit?usp=sharing
+      count_credit: kolibri._.
+      video: https://youtu.be/izR9rbll168
+      video_credit: kolibri._.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.8]
+        fan_angle: 150
+        radius: 1.8
+
+      - name: N2
+        shape: Box
+        center: Player
+        offset: [0, -0.1]
+        box: [1.5, 3]
+
+      - name: N3
+        shape: Circle
+        center: Player
+        offset: [0, 1.1]
+        fan_angle: 300
+        radius: 2
+
+      - name: N4
+        shape: Circle
+        center: Player
+        offset: [0, 2.4]
+        radius: 1.8
+
+      - name: N5-1
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        fan_angle: 320
+        radius: 1.8
+
+      - name: N5-2
+        shape: Box
+        center: Player
+        offset: [0, 0.3]
+        box: [2, 3]
+
+      - name: N6
+        shape: Circle
+        center: Player
+        offset: [-0.2, 1.1]
+        radius: 2.3
+
+      - name: E-N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.8]
+        fan_angle: 180
+        radius: 2.3
+        hitlag: {time: 0.01, scale: 0.01, defense_halt: true}
+
+      - name: E-N2
+        shape: Box
+        center: Player
+        offset: [0, -0.1]
+        box: [1.9, 3]
+        hitlag: {time: 0.01, scale: 0.01, defense_halt: true}
+
+      - name: E-N3
+        shape: Circle
+        center: Player
+        offset: [0, 1.1]
+        fan_angle: 300
+        radius: 2.6
+        hitlag: {time: 0.01, scale: 0.01, defense_halt: true}
+
+      - name: E-N4
+        shape: Circle
+        center: Player
+        offset: [0, 2.4]
+        radius: 2.2
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: E-N5-1
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        fan_angle: 320
+        radius: 2.3
+        hitlag: {time: 0.02, scale: 0.01}
+
+      - name: E-N5-2
+        shape: Box
+        center: Player
+        offset: [0, 0.3]
+        box: [2.2, 3.2]
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: E-N6
+        shape: Circle
+        center: Player
+        offset: [-0.2, 1.1]
+        radius: 2.8
+        hitlag: {time: 0.04, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.8
+        hitlag: {scale: 0.01, defense_halt: true, deployable: true}
+
+      - name: E-CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.8
+        hitlag: {scale: 0.01, defense_halt: true, deployable: true}
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: E-Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: E-Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+      - name: E-High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    hitbox:
+      - name: E-Start
+        shape: Circle
+        center: Player
+        radius: 3
+
+  - name: burst
+    hitbox:
+      - name: Q-ElementalBurst
+        shape: Circle
+        center: Player
+        radius: 6
+
+  - name: walk
+    note: No action followed by walk (except low_plunge and high_plunge) has proper frames.

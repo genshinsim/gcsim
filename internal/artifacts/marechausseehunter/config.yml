@@ -1,2 +1,6 @@
-key: marechausseehunter
-set_id: 15031
+use: pipeline
+kind: artifact
+name: marechausseehunter
+
+shortcuts:
+  - mh

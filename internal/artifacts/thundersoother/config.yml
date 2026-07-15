@@ -1,2 +1,6 @@
-key: thundersoother
-set_id: 14002
+use: pipeline
+kind: artifact
+name: thundersoother
+
+shortcuts:
+  - ts

@@ -1,2 +1,7 @@
-key: viridescentvenerer
-set_id: 15002
+use: pipeline
+kind: artifact
+name: viridescentvenerer
+
+shortcuts:
+  - viridescent
+  - vv

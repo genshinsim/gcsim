@@ -1,3 +1,7 @@
-package_name: sharpshooter
-genshin_id: 15302
-key: sharpshootersoath
+use: pipeline
+kind: weapon
+name: sharpshootersoath
+
+shortcuts:
+  - sharpshooter
+  - sharpshooters

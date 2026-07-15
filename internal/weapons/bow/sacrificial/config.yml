@@ -1,4 +1,6 @@
-package_name: sacrificial
-genshin_id: 15403
-key: sacrificialbow
-skip_data_func: true
+use: pipeline
+kind: weapon
+name: sacrificialbow
+
+shortcuts:
+  - sacbow

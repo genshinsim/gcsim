@@ -1,3 +1,7 @@
-package_name: urakumisugiri
-genshin_id: 11514
-key: urakumisugiri
+use: pipeline
+kind: weapon
+name: urakumisugiri
+
+shortcuts:
+  - misugiri
+  - uraku

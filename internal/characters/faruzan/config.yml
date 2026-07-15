@@ -1,39 +1,143 @@
-package_name: faruzan
-genshin_id: 10000076
-key: faruzan
-action_param_keys:
-    attack:
-        - param: "travel"
-    aim:
-        - param: "hold"
-        - param: "travel"
-        - param: "weakspot"
-skill_data_mapping:
-    attack:
-        aim:
-            - 4 # Aimed Shot|{param4:F1P}
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        attack_4:
-            - 3 # 4-Hit DMG|{param3:F1P}
-        fullaim:
-            - 5 # Fully-Charged Aimed Shot|{param5:P}
-    skill:
-        skill:
-            - 0 # Skill DMG|{param0:F1P}
-        vortexDmg:
-            - 1 # Pressurized Collapse Vortex DMG|{param1:F1P}
-    burst:
-        burst:
-            - 0 # Skill DMG|{param0:F1P}
-        burstBuff:
-            - 1 # Anemo DMG Bonus|{param1:F1P}
+use: pipeline
+kind: character
+name: faruzan
 
-documentation:
-    fields_data:
-        - fields: [.faruzan.hurricane-count]
-          desc: Current number of Hurricane Arrows that Faruzan can fire off.
+shortcuts:
+  - faru
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Fully-Charged Aimed Shot)
+
+  - skill: skill(Skill DMG)
+  - vortexDmg: skill(Pressurized Collapse Vortex DMG)
+
+  - burst: burst(Skill DMG)
+  - burstBuff: burst(Anemo DMG Bonus)
+
+docs:
+  fields:
+    .faruzan.hurricane-count: Current number of Hurricane Arrows that Faruzan can fire off.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1sdhP2n26JZvlDZX6k8CoFNJrzNcF29GVjH67P9_aF7w/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/rTPNZG4RUVM
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1sdhP2n26JZvlDZX6k8CoFNJrzNcF29GVjH67P9_aF7w/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/IpjVIFiPz1w
+      video_credit: Kolibri#7675
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N4
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N5
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N6
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: aim
+    params:
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default).
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: E-FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: E-FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+  - name: skill
+    hitbox:
+      - name: E-Initial
+        shape: Circle
+        center: Player
+        offset: [0, 3]
+        radius: 3
+
+      - name: E-Collapse
+        note: Spawns on target that Pressurized Collapse proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 6
+
+  - name: burst
+    hitbox:
+      - name: Q-Initial
+        note: 'Q detection area for Prayerful Wind''s Benefit (Anemo%) is 40m, for Perfidious Wind''s Bale (Anemo res shred) it is 6m around the current Q position. Q moves around in a triangle with its center being the same as Q-Initial between 3 positions: top right (offsetX: 5.19, offsetY: 10.5), top left (offsetX: -5.19, offsetY: 10.5), bottom middle (offsetY: 1.5). Starting from top right it moves counterclockwise.'
+        shape: Circle
+        center: Player
+        offset: [0, 1.5]
+        radius: 6.3

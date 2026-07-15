@@ -1,41 +1,160 @@
-package_name: amber
-genshin_id: 10000021
-key: amber
-action_param_keys:
-  attack: 
-      - param: "travel"
-  aim:
-      - param: "hold"
-      - param: "travel"
-      - param: "weakspot"
-      - param: "bunny"
-  skill:
-      - param: "hold"
-icd_groups:
-  - group_name: ICDGroupAmber
-    reset_timer: 60
-    ele_app_sequence:
-      [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-skill_data_mapping:
-  attack:
-    aim:
-      - 5 # Aimed Shot|{param5:F1P}
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}
-    attack_4:
-      - 3 # 4-Hit DMG|{param3:F1P}
-    attack_5:
-      - 4 # 5-Hit DMG|{param4:F1P}
-    fullaim:
-      - 6 # Fully-Charged Aimed Shot|{param6:P}
-  skill:
-    bunnyExplode:
-      - 1 # Explosion DMG|{param1:P}
-  burst:
-    burstTick:
-      - 0 # Fiery Rain DMG Per Wave|{param0:F1P}
+use: pipeline
+kind: character
+name: amber
+
+override:
+  icd_group:
+    Amber:
+      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+      durability: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
+      timer: 1
+
+combat:
+  icd_groups:
+    - Amber
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Fully-Charged Aimed Shot)
+
+  - bunnyExplode: skill(Explosion DMG)
+
+  - burstTick: burst(Fiery Rain DMG Per Wave)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1XDS-RP7G7-htZ4PP9A5SXPbg7Gy-Laksp4oXwObNgf8/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/UrChJbc4juc
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/wUccmEbVP3w
+      video_credit: xsylent
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/DG6AcZpXVnU
+      video_credit: xsylent
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N4
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N5
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: aim
+    params:
+      bunny: Shoot the first bunny (for C2+ only). Default 0 (false). Arrow does no damage if 1 (true).
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default).
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: skill
+    params:
+      hold: Frames to hold bunny for (for throwing). Default 0 frames.
+    hitbox:
+      - name: E-Explosion
+        shape: Circle
+        center: Player
+        radius: 3
+
+  - name: burst
+    hitbox:
+      - name: Q-ArrowRainLoop
+        note: Burst center is at PrimaryTarget. 5 arrows spawn at a random position with radius distance from burst center, 3 arrows spawn at a random position with radius distance from burst center, 10 arrows spawn at a random position between 0.1m and radius distance from burst center.
+        shape: Circle
+        center: GlobalValue
+        radius: 2
+
+      - name: Q-ArrowRainLoop-A1
+        shape: Circle
+        center: GlobalValue
+        radius: 2.6
+
+  - name: cons
+    hitbox:
+      - name: Aim-C1-Arrow
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head-C1-Arrow
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-C1-Arrow
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head-C1-Arrow
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: walk
+    note: Only burst and aim followed by walk have proper frames.

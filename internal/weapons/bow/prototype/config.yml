@@ -1,3 +1,6 @@
-package_name: prototype
-genshin_id: 15406
-key: prototypecrescent
+use: pipeline
+kind: weapon
+name: prototypecrescent
+
+shortcuts:
+  - crescent

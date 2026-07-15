@@ -1,2 +1,7 @@
-key: scrolloftheheroofcindercity
-set_id: 15037
+use: pipeline
+kind: artifact
+name: scrolloftheheroofcindercity
+
+shortcuts:
+  - scroll
+  - sothocc

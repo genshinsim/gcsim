@@ -1,35 +1,133 @@
-package_name: sethos
-genshin_id: 10000097
-key: sethos
-action_param_keys:
-  attack:
-    - param: "travel"
-  aim:
-    - param: "hold"
-    - param: "travel"
-    - param: "weakspot"
-skill_data_mapping:
-  attack: # Normal Attack: Royal Reed Bowmanship
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}+{param2:F1P}
-      - 2 # 2-Hit DMG|{param1:F1P}+{param2:F1P}
-    attack_3:
-      - 3 # 3-Hit DMG|{param3:F1P}
-    aim:
-      - 4 # Aimed Shot|{param4:F1P}
-    fullaim:
-      - 5 # Aimed Shot Charge Level 1|{param5:F1P}
-    shadowpierceAtk:
-      - 6 # Shadowpiercing Shot DMG|{param6:P} ATK+{param7:P} Elemental Mastery
-    shadowpierceEM:
-      - 7 # Shadowpiercing Shot DMG|{param6:P} ATK+{param7:P} Elemental Mastery
-  skill: # Ancient Rite: Thunderous Roar of Sand
-    skill:
-      - 0 # Skill DMG|{param0:F1P}
-    skillEnergyRegen:
-      - 1 # Energy Regeneration|{param1:I}
-  burst: # Secret Rite: Twilight Shadowpiercer
-    burstEM:
-      - 0 # Dusk Bolt DMG Increase|{param0:F1P} Elemental Mastery
+use: pipeline
+kind: character
+name: sethos
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - - attack(2-Hit DMG)
+        - attack(2-Hit DMG|1)
+      - attack(3-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Aimed Shot Charge Level 1)
+  - shadowpierceAtk: attack(Shadowpiercing Shot DMG)
+  - shadowpierceEM: attack(Shadowpiercing Shot DMG|1)
+
+  - skill: skill(Skill DMG)
+  - skillEnergyRegen: skill(Energy Regeneration)
+
+  - burstEM: burst(Dusk Bolt DMG Increase)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1Fxk8KZtVJjY2P9BX5IIy4oNHIcPqCTi6zqrdAn335dY/edit?usp=sharing
+      count_credit: ange1o5
+      video: https://youtu.be/MYXatbTDbBo
+      video_credit: ange1o5
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2-1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2-2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Q-N1
+        note: This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target.
+        shape: Box
+        center: Player
+        box: [0.1, 15]
+
+      - name: Q-N2-1
+        note: This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target.
+        shape: Box
+        center: Player
+        box: [0.1, 15]
+
+      - name: Q-N2-2
+        note: This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target.
+        shape: Box
+        center: Player
+        box: [0.1, 15]
+
+      - name: Q-N3
+        note: This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target.
+        shape: Box
+        center: Player
+        box: [0.1, 15]
+
+  - name: aim
+    params:
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default), 2 for Shadowpiercing Shot.
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: ShadowpiercingShot
+        note: This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target.
+        shape: Box
+        center: Player
+        box: [0.1, 15]
+
+      - name: ShadowpiercingShot-Head
+        note: This is an approximation because we do not actually know the real AoE. This attack is a line going from the Player to the direction of the Primary Target.
+        shape: Box
+        center: Player
+        box: [0.1, 15]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+  - name: skill
+    hitbox:
+      - name: E
+        shape: Circle
+        center: Player
+        radius: 4.5
+
+  - name: burst

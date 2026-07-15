@@ -1,39 +1,101 @@
-package_name: baizhu
-genshin_id: 10000082
-key: baizhu
-icd_groups:
-  - group_name: ICDGroupBaizhuC2
-    reset_timer: 240
-    ele_app_sequence: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-skill_data_mapping:
-  attack:
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}×2
-      - 2 # 3-Hit DMG|{param2:F1P}×2
-    attack_4:
-      - 3 # 4-Hit DMG|{param3:F1P}
-    charge:
-      - 4 # Charged Attack DMG|{param4:F1P}
-  skill:
-    skillDamage:
-      - 0 # Skill DMG|{param0:F1P}
-    skillHealFlat:
-      - 2 # Healing|{param1:F2P} Max HP+{param2:I}
-    skillHealPP:
-      - 1 # Healing|{param1:F2P} Max HP+{param2:I}
-  burst:
-    burstAtk:
-      - 6 # Spiritvein DMG|{param6:F1P}
-    burstHealFlat:
-      - 5 # Seamless Shield Healing|{param4:F2P} Max HP+{param5:I}
-    burstHealPP:
-      - 4 # Seamless Shield Healing|{param4:F2P} Max HP+{param5:I}
-    burstShieldFlat:
-      - 1 # Seamless Shield DMG Absorption|{param0:F2P} Max HP+{param1:I}
-    burstShieldPP:
-      - 0 # Seamless Shield DMG Absorption|{param0:F2P} Max HP+{param1:I}
+use: pipeline
+kind: character
+name: baizhu
+
+override:
+  icd_group:
+    BaizhuC2:
+      name: Baizhuer_Talent
+
+combat:
+  icd_groups:
+    - BaizhuC2
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+
+  - skillDamage: skill(Skill DMG)
+  - skillHealPP: skill(Healing)
+  - skillHealFlat: skill(Healing|1)
+
+  - burstShieldPP: burst(Seamless Shield DMG Absorption)
+  - burstShieldFlat: burst(Seamless Shield DMG Absorption|1)
+  - burstHealPP: burst(Seamless Shield Healing)
+  - burstHealFlat: burst(Seamless Shield Healing|1)
+  - burstAtk: burst(Spiritvein DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1u74NvNfOgKS6B0cZYOFUArqA133Kqjr3bjT-KXKUMq0/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/DvAeMykwiwo
+      video_credit: Kolibri#7675
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Box
+        center: Player
+        offset: [0, -0.2]
+        box: [2, 3]
+
+      - name: N2
+        shape: Box
+        center: Player
+        offset: [0, -0.2]
+        box: [2, 3]
+
+      - name: N3
+        shape: Box
+        center: Player
+        offset: [0, -0.2]
+        box: [2.4, 3]
+
+      - name: N4
+        shape: Box
+        center: Player
+        offset: [0, -0.2]
+        box: [3.2, 3]
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2.3
+
+  - name: skill
+    hitbox:
+      - name: E
+        note: Is done as a chain of attacks starting at PrimaryTarget and moving on to a random enemy within 10m radius of the current enemy (including current enemy) if such an enemy exists.
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.6
+
+  - name: burst
+    hitbox:
+      - name: Q-Start
+        note: not implemented yet
+        shape: Circle
+        center: Player
+        radius: 3
+
+      - name: Q-Spiritvein
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1.5
+
+  - name: cons
+    hitbox:
+      - name: C2
+        note: Spawns on target that C2 proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 0.6

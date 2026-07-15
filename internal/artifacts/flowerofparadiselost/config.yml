@@ -1,2 +1,7 @@
-key: flowerofparadiselost
-set_id: 15028
+use: pipeline
+kind: artifact
+name: flowerofparadiselost
+
+shortcuts:
+  - fopl
+  - paradiselost

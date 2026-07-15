@@ -1,3 +1,7 @@
-package_name: tamayuratei
-genshin_id: 13432
-key: tamayurateinoohanashi
+use: pipeline
+kind: weapon
+name: tamayurateinoohanashi
+
+shortcuts:
+  - lamppost
+  - tamayuratei

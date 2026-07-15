@@ -1,3 +1,6 @@
-package_name: blacksword
-genshin_id: 11409
-key: theblacksword
+use: pipeline
+kind: weapon
+name: theblacksword
+
+shortcuts:
+  - blacksword

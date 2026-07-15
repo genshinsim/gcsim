@@ -1,40 +1,137 @@
-package_name: mona
-genshin_id: 10000041
-key: mona
-action_param_keys:
-  dash:
-    - param: "f"
-  skill:
-    - param: "hold"
-icd_tags:
-  - ICDTagMonaWaterDamage
-skill_data_mapping:
-  attack:
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}
-    attack_4:
-      - 3 # 4-Hit DMG|{param3:F1P}
-    charge:
-      - 4 # Charged Attack DMG|{param4:P}
-  skill:
-    skill:
-      - 1 # Explosion DMG|{param1:P}
-    skillDot:
-      - 0 # DoT|{param0:F1P}
-  burst:
-    dmgBonus:
-      - 9 # DMG Bonus|{param9:P}
-    explosion:
-      - 1 # Illusory Bubble Explosion DMG|{param1:P}
-    omenDuration:
-      - 3 # Omen Duration|{param3:F1}s
-documentation:
-  fields_data:
-    - fields: [.mona.astral-glow]
-      desc: Number of Astral Glow of Mercury stacks.
-    - fields: [.mona.c6-stacks]
-      desc: Number of C6 stacks.
+use: pipeline
+kind: character
+name: mona
+
+combat:
+  icd_tags:
+    - MonaWaterDamage
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+
+  - skillDot: skill(DoT)
+  - skill: skill(Explosion DMG)
+
+  - explosion: burst(Illusory Bubble Explosion DMG)
+  - omenDuration: burst(Omen Duration)
+  - dmgBonus: burst(DMG Bonus)
+
+docs:
+  fields:
+    .mona.astral-glow: Number of Astral Glow of Mercury stacks.
+    .mona.c6-stacks: Number of C6 stacks.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1fCdmkNZ6vXmqiOmk6s0Q8AQFzOQt_UjltspbMyDrx4A/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/KfjCdGrh5Dk
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1fCdmkNZ6vXmqiOmk6s0Q8AQFzOQt_UjltspbMyDrx4A/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/mRSPMhmpKX0
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1zCwdd6_KYFqMD4OQ_llGLdDshoZTu_1pmAMysxGDQvs/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/KlgZlck5kQQ?t=1072
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/182Mq2Eimpolj_DyUKUDPnwutFeTaPxOLXBNSeSF0lRQ/edit?usp=sharing
+      count_credit: soloxcx
+      video: https://youtu.be/V7LU2AGTfvU
+      video_credit: soloxcx
+    - count: https://docs.google.com/spreadsheets/d/1EMmBc6eUdC6CSoPag_Jti5dDIUNyLk_NBAY9DFCSmWU/edit?usp=sharing
+      count_credit: charliex3000
+      video: https://youtu.be/WFrbkaBalEI
+      video_credit: charliex3000
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: N2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: N3
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: N4
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
+
+  - name: skill
+    params:
+      hold: 0 for Tap (default), 1 for Hold.
+    hitbox:
+      - name: E-DoT
+        note: Spawns at phantom position which was spawned on Player.
+        shape: Circle
+        center: GlobalValue
+        radius: 5
+
+      - name: E-Explosion
+        note: Spawns at phantom position which was spawned on Player.
+        shape: Circle
+        center: GlobalValue
+        radius: 5
+
+  - name: burst
+    hitbox:
+      - name: Q-Bubble
+        note: 0 damage attack that breaks bubble if not already broken has the same hitbox.
+        shape: Circle
+        center: Player
+        radius: 10
+
+      - name: Q-Bubble-Explosion
+        note: Spawns on the target that the Bubble burst on.
+        shape: Circle
+        center: GlobalValue
+        radius: 1
+
+  - name: asc
+    hitbox:
+      - name: A1
+        note: Spawns at phantom position which was spawned on Player.
+        shape: Circle
+        center: Player
+        radius: 5
+
+  - name: cons
+    hitbox:
+      - name: CA-C2
+        note: Spawns on target that C2 proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 3
+
+  - name: dash
+    params:
+      f: Number of frames to add to minimum dash length. Default 0 frames.
+    hitbox:
+      - name: Dash
+        shape: Circle
+        center: Player
+        offset: [0, 0.1]
+        radius: 2
+
+  - name: walk
+    note: No action followed by walk has proper frames.

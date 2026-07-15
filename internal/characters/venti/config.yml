@@ -1,50 +1,199 @@
-package_name: venti
-genshin_id: 10000022
-key: venti
-action_param_keys:
-  attack:
-    - param: "travel"
-  aim:
-    - param: "hold"
-    - param: "travel"
-    - param: "weakspot"
-  skill:
-    - param: "hold"
-icd_groups:
-  - group_name: ICDGroupVenti
-    reset_timer: 60
-    ele_app_sequence:
-      [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-skill_data_mapping:
-  attack:
-    aim:
-      - 6 # Aimed Shot|{param6:F1P}
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}+{param0:F1P}
-      - 0 # 1-Hit DMG|{param0:F1P}+{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}
-    attack_4:
-      - 3 # 4-Hit DMG|{param3:F1P}+{param3:F1P}
-      - 3 # 4-Hit DMG|{param3:F1P}+{param3:F1P}
-    attack_5:
-      - 4 # 5-Hit DMG|{param4:F1P}
-    attack_6:
-      - 5 # 6-Hit DMG|{param5:F1P}
-    fullaim:
-      - 7 # Fully-Charged Aimed Shot|{param7:P}
-    highPlunge:
-      - 10 # Low/High Plunge DMG|{param9:P}/{param10:P}
-  skill:
-    skillHold:
-      - 2 # Hold DMG|{param2:P}
-    skillPress:
-      - 0 # #{LAYOUT_MOBILE#Tap}{LAYOUT_PC#Press}{LAYOUT_PS#Press} DMG|{param0:P}
-  burst:
-    burstAbsorbDot:
-      - 1 # Additional Elemental DMG|{param1:F1P}
-    burstDot:
-      - 0 # DoT|{param0:F1P}
+use: pipeline
+kind: character
+name: venti
+
+override:
+  icd_group:
+    Venti:
+      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+      durability: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
+      timer: 1
+
+combat:
+  icd_groups:
+    - Venti
+
+talents:
+  - attack:
+      - - attack(1-Hit DMG)
+        - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - - attack(4-Hit DMG)
+        - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+      - attack(6-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Fully-Charged Aimed Shot)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skillPress: skill(Press DMG)
+  - skillHold: skill(Hold DMG)
+
+  - burstDot: burst(DoT)
+  - burstAbsorbDot: burst(Additional Elemental DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1wjNpI530VwWX8PtmAA7ZZex5FurVpItfu6jmRQsMcaw/edit?usp=sharing
+      count_credit: Kurt#5846
+      video: https://youtu.be/6SNc67MnDz8
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1zCwdd6_KYFqMD4OQ_llGLdDshoZTu_1pmAMysxGDQvs/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/KlgZlck5kQQ?t=1520
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/8lEGOwFqUB8
+      video_credit: xsylent
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/eDpKHWwQA8Q
+      video_credit: xsylent
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N4
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N5
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N6
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: aim
+    params:
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default).
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+  - name: plunge
+    hitbox:
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        radius: 3.5
+
+  - name: high_plunge
+    note: Previous action must be skill[hold=1].
+
+  - name: skill
+    params:
+      hold: 0 for Tap (default), 1 for Hold.
+    hitbox:
+      - name: E-Tap
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
+
+      - name: E-Hold
+        shape: Circle
+        center: Player
+        radius: 6
+
+  - name: burst
+    hitbox:
+      - name: Q-DoT
+        shape: Circle
+        center: Player
+        offset: [0, 5]
+        radius: 4
+
+      - name: Q-AdditionalElement
+        note: Spawns at the Q-DoT position.
+        shape: Circle
+        center: GlobalValue
+        radius: 6
+
+      - name: Q-AbsorbCheck
+        shape: Box
+        center: GlobalValue
+        offset: [0, -1]
+        box: [2.5, 2.5]
+
+  - name: cons
+    hitbox:
+      - name: Aim-C1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head-C1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-C1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head-C1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: walk
+    note: Only aim followed by walk has proper frames.

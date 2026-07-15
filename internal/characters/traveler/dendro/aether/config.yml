@@ -1,4 +1,148 @@
-package_name: "aether"
-genshin_id: 10000005
-sub_id: 508
-key: "aetherdendro"
+use: pipeline
+kind: character
+name: aetherdendro
+
+override:
+  id: 10000005
+  depot: 508
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/186FpS4ckDENVY4U60xxgevJZj_vdyYWZroIa7P_yDr4/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/2LnpQIVIszY
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1S7cJszsMoQF6ShCvA7hMjiXMuOCoDRwgW1rseP0uC8k/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/VaIaa4MW9eI
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1ufLdNaAkmLgYZdgN8kKITU_e0iX1OpDI5Mk-dNnMmg8/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/qVlplMGhYw8
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1TZvQVhI4o7JbSep8bRVWTVrU7KHVa_hr4T6cvdAq4_0/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/XWRVicbV15A
+      video_credit: Kolibri#7675
+
+abilities:
+  - name: default
+    params:
+      base_atk_buff: 0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line.
+      skirk_story_buff: 0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line.
+
+  - name: attack
+    hitbox:
+      - name: Aether-N1
+        shape: Box
+        center: Player
+        box: [1.4, 2.2]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: Aether-N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        fan_angle: 180
+        radius: 1.7
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: Aether-N3
+        shape: Box
+        center: Player
+        offset: [0, 0.4]
+        box: [1.5, 2.2]
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: Aether-N4
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        radius: 1.7
+        hitlag: {time: 0.09, scale: 0.01, defense_halt: true}
+
+      - name: Aether-N5
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        fan_angle: 240
+        radius: 1.75
+        hitlag: {time: 0.12, scale: 0.01, defense_halt: true}
+
+      - name: Lumine-N1
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1.6
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: Lumine-N2
+        shape: Box
+        center: Player
+        box: [1.4, 2.2]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: Lumine-N3
+        shape: Circle
+        center: Player
+        offset: [0, 0.7]
+        radius: 1.5
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: Lumine-N4
+        shape: Circle
+        center: Player
+        offset: [0, 0.7]
+        radius: 1.5
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: Lumine-N5
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1.6
+        hitlag: {time: 0.1, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA-1
+        shape: Circle
+        center: Player
+        radius: 2.2
+
+      - name: CA-2
+        shape: Circle
+        center: Player
+        radius: 2.2
+
+  - name: skill
+    hitbox:
+      - name: E-Skill
+        shape: Circle
+        center: Player
+        offset: [0, -0.3]
+        fan_angle: 130
+        radius: 6.5
+
+  - name: burst
+    hitbox:
+      - name: Q-Explosion
+        note: Q/A1/C6 have a 8m/12m (Hydro) detection area with the same hitbox position.
+        shape: Circle
+        center: Player
+        radius: 6.5
+
+      - name: Q-Tick
+        note: 'At every tick: Spawn 1 attack on a random enemy in the detection area.'
+        shape: Circle
+        center: GlobalValue
+        radius: 2
+
+      - name: Q-Tick-Hydro
+        shape: Circle
+        center: GlobalValue
+        radius: 4
+
+  - name: walk
+    note: No action followed by walk has proper frames.

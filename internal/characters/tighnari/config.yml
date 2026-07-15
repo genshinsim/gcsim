@@ -1,47 +1,157 @@
-package_name: tighnari
-genshin_id: 10000069
-key: tighnari
-action_param_keys:
-  attack:
-    - param: "travel"
-  aim:
-    - param: "hold"
-    - param: "travel"
-    - param: "weakspot"
-    - param: "wreath"
-  skill:
-    - param: "travel"
-  burst:
-    - param: "travel"
-icd_groups:
-  - group_name: ICDGroupTighnari
-    reset_timer: 150
-    ele_app_sequence: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-skill_data_mapping:
-  attack:
-    aim:
-      - 4 # Aimed Shot|{param4:F1P}
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}×2
-      - 2 # 3-Hit DMG|{param2:F1P}×2
-    attack_4:
-      - 3 # 4-Hit DMG|{param3:F1P}
-    clusterbloom:
-      - 7 # Clusterbloom Arrow DMG|{param7:F1P}
-    fullaim:
-      - 5 # Level 1 Aimed Shot|{param5:P}
-    wreath:
-      - 6 # Wreath Arrow DMG|{param6:F1P}
-  skill:
-    skill:
-      - 0 # Skill DMG|{param0:F1P}
-  burst:
-    burst:
-      - 0 # Tanglevine Shaft DMG|{param0:F1P}
-    burstSecond:
-      - 1 # Secondary Tanglevine Shaft DMG|{param1:F1P}
+use: pipeline
+kind: character
+name: tighnari
+
+override:
+  icd_group:
+    Tighnari:
+      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+      durability: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0]
+      timer: 2.5
+
+combat:
+  icd_groups:
+    - Tighnari
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Level 1 Aimed Shot)
+  - wreath: attack(Wreath Arrow DMG)
+  - clusterbloom: attack(Clusterbloom Arrow DMG)
+
+  - skill: skill(Skill DMG)
+
+  - burst: burst(Tanglevine Shaft DMG)
+  - burstSecond: burst(Secondary Tanglevine Shaft DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1rECAO_yOwB4sDJ70z75pJr6fQsQjx5kgsOWtylcAGLk/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/NSP4lWjYYPc
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1rECAO_yOwB4sDJ70z75pJr6fQsQjx5kgsOWtylcAGLk/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/1CRVySJPkHo
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1rECAO_yOwB4sDJ70z75pJr6fQsQjx5kgsOWtylcAGLk/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/ZO7ViyYFvKQ
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1zCwdd6_KYFqMD4OQ_llGLdDshoZTu_1pmAMysxGDQvs/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/KlgZlck5kQQ?t=1458
+      video_credit: Kolibri#7675
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N4
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: aim
+    params:
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default), 2 for Wreath Arrow. If his E state is active, then hold is 2 by default.
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+      wreath: Projectile travel time for Clusterbloom Arrows from when the Wreath Arrow hits. Only available if level is 1. Default 35 frames.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim-Lv2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Lv2-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim-Lv2-Clusterbloom
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+  - name: skill
+    params:
+      travel: Projectile travel time. Default 5 frames.
+    hitbox:
+      - name: E-Skill
+        note: C2 has a detection area with the same hitbox.
+        shape: Circle
+        center: PrimaryTarget
+        radius: 6
+
+  - name: burst
+    params:
+      travel: Projectile travel time. Default 0 frames.
+    hitbox:
+      - name: Q-TanglevineShaft
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: Q-SecondaryTanglevineShaft
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+  - name: walk
+    note: Only aim followed by walk has proper frames.
