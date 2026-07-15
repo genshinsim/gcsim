@@ -1,0 +1,69 @@
+use: pipeline
+
+override:
+  icd_group:
+    Default:
+      name: default
+    PoleExtraAttack:
+      name: Avatar_Pole_ExtraAttack
+      durability: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
+    ReactionA:
+      name: ElementReaction_Damage_Attenuation_1
+      durability: [1, 1]
+    ReactionB:
+      name: ElementReaction_Damage_Attenuation_2
+      durability: [1, 1]
+    Burning:
+      name: ElementReaction_Burning_Attenuation
+      # actual data: [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]
+      # however there seems to be no limit to the amount of burning dmg a target can take
+      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+    TravelerDewdrop:
+      name: Player_Water_Sustained_Shooting
+    TravelerBurst:
+      name: Player_Water_Burst_Bullet
+
+combat:
+  icd_tags:
+    - NormalAttack
+    - ExtraAttack
+    - ElementalArt
+    - ElementalArtHold
+    - ElementalArtAnemo
+    - ElementalArtPyro
+    - ElementalArtHydro
+    - ElementalArtCryo
+    - ElementalArtElectro
+    - ElementalBurst
+    - ElementalBurstAnemo
+    - ElementalBurstPyro
+    - ElementalBurstHydro
+    - ElementalBurstCryo
+    - ElementalBurstElectro
+    - Dash
+    - TravelerWakeOfEarth
+    - TravelerDewdrop
+    - TravelerScorchingThreshold
+    - TravelerBlazingThreshold
+    - TravelerHoldDMG
+    - OverloadDamage
+    - SuperconductDamage
+    - ECDamage
+    - Shatter
+    - SwirlPyro
+    - SwirlHydro
+    - SwirlCryo
+    - SwirlElectro
+    - BurningDamage
+    - BloomDamage
+    - BountifulCoreDamage
+    - BurgeonDamage
+    - HyperbloomDamage
+  icd_groups:
+    - Default
+    - PoleExtraAttack
+    - ReactionA
+    - ReactionB
+    - Burning
+    - TravelerDewdrop
+    - TravelerBurst
