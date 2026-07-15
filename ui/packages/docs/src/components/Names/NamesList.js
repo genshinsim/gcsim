@@ -17,10 +17,7 @@ export default function NamesList({ item_key, data_src }) {
       data = enemy_data;
       break;
   }
-  if (!(item_key in data)) {
-    return <div>Does not have any known names</div>;
-  }
-  if (data[item_key].length === 0) {
+  if (data[item_key] === undefined) {
     return (
       <div>
         <ul>

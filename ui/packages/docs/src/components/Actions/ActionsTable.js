@@ -19,22 +19,9 @@ const TH = styled.th`
   padding: 0.5rem;
 `;
 
-const actions = [
-  "attack",
-  "charge",
-  "aim",
-  "skill",
-  "burst",
-  "low_plunge",
-  "high_plunge",
-  "dash",
-  "jump",
-  "walk",
-  "swap",
-];
-
 export default function ActionsTable({ item_key }) {
-  if (!(item_key in character_data) || character_data[item_key].length === 0) {
+  let data = character_data;
+  if (!(item_key in data) || data[item_key].length === 0) {
     return <div>Does not have any known legal actions</div>;
   }
   return (
@@ -48,23 +35,12 @@ export default function ActionsTable({ item_key }) {
           </tr>
         </Thead>
         <tbody>
-          {actions.map((a) => {
-            const action = character_data[item_key].find(
-              (item) => item.ability === a
-            );
+          {data[item_key].map((e) => {
             return (
               <tr key={item_key}>
-                <TD><code>{a}</code></TD>
-                <TD align="center">
-                  {action
-                    ? action.legal === undefined
-                      ? "⚠"
-                      : action.legal
-                      ? "✔"
-                      : "❌"
-                    : "❌"}
-                </TD>
-                <TD>{action?.notes ?? "-"}</TD>
+                <TD><code>{e.ability}</code></TD>
+                <TD align="center">{e.invalid ? "❌" : (e.note ? "⚠" : "✔")}</TD>
+                <TD>{e.note ?? "-"}</TD>
               </tr>
             );
           })}
