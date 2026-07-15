@@ -32,14 +32,14 @@ talents:
   - triKarmaEM: skill(Tri-Karma Purification DMG|1)
 
   - burstTriKarmaDmgBonus:
-      - 'burst(Pyro: DMG Bonus 1 Character {0})'
-      - 'burst(Pyro: DMG Bonus 2 Characters {1})'
+      - 'burst(?Pyro: DMG Bonus 1 Character)'
+      - 'burst(?Pyro: DMG Bonus 2 Character)'
   - burstTriKarmaCDReduction:
-      - 'burst(Electro: Trigger Interval Decrease 1 Character {2}s)'
-      - 'burst(Electro: Trigger Interval Decrease 2 Characters {3}s)'
+      - 'burst(?Electro: Trigger Interval Decrease 1 Character)'
+      - 'burst(?Electro: Trigger Interval Decrease 2 Character)'
   - burstTriKarmaDurationExtend:
-      - 'burst(Hydro: Duration Extension 1 Character {4}s)'
-      - 'burst(Hydro: Duration Extension 2 Characters {5}s)'
+      - 'burst(?Hydro: Duration Extension 1 Character)'
+      - 'burst(?Hydro: Duration Extension 2 Character)'
 
 docs:
   frames:
