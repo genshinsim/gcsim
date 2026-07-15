@@ -43,8 +43,24 @@ docs:
     .mavuika.fightingspirit: Amount of Fighting Spirit.
   frames:
     - count: https://docs.google.com/spreadsheets/d/1HmsTvcv127qYflBtgjV8-4-ldteXGcDFdUv9JnyFz2o/edit?usp=sharing
-      count_credit: aftermathrar
-      video: https://www.youtube.com/playlist?list=PLR5JbgmY4L_TBQ13IzYvVvfKZkk-ypM3t
+      count_credit: aftermathrar & jwalk511
+      video: https://youtu.be/fNacO_u9rBY
+      video_credit: aftermathrar
+    - count: https://docs.google.com/spreadsheets/d/1HmsTvcv127qYflBtgjV8-4-ldteXGcDFdUv9JnyFz2o/edit?usp=sharing
+      count_credit: aftermathrar & jwalk511
+      video: https://youtu.be/nxjiYDNTBJ4
+      video_credit: aftermathrar
+    - count: https://docs.google.com/spreadsheets/d/1HmsTvcv127qYflBtgjV8-4-ldteXGcDFdUv9JnyFz2o/edit?usp=sharing
+      count_credit: aftermathrar & jwalk511
+      video: https://youtu.be/3LWJuoJoAQI
+      video_credit: aftermathrar
+    - count: https://docs.google.com/spreadsheets/d/1HmsTvcv127qYflBtgjV8-4-ldteXGcDFdUv9JnyFz2o/edit?usp=sharing
+      count_credit: aftermathrar & jwalk511
+      video: https://youtu.be/WTezJEqst5U
+      video_credit: aftermathrar
+    - count: https://docs.google.com/spreadsheets/d/1HmsTvcv127qYflBtgjV8-4-ldteXGcDFdUv9JnyFz2o/edit?usp=sharing
+      count_credit: aftermathrar & jwalk511
+      video: https://youtu.be/MeueiXCfXZo
       video_credit: aftermathrar
 
 abilities:
