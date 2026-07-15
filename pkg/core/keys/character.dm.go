@@ -89,6 +89,7 @@ const (
 	Ganyu                         // ganyu
 	Gorou                         // gorou
 	HuTao                         // hutao
+	Illuga                        // illuga
 	Ineffa                        // ineffa
 	Jean                          // jean
 	KaedeharaKazuha               // kaedeharakazuha
