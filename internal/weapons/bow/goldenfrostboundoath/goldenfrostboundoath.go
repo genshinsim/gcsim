@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/construct"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -22,23 +21,16 @@ const (
 	teamLcrBuffKey = "golden-frostbound-oath-team-lcr"
 )
 
-func init() {
-	core.RegisterWeaponFunc(keys.GoldenFrostboundOath, NewWeapon)
-}
-
 type Weapon struct {
-	Index          int
-	core           *core.Core
-	char           *character.CharWrapper
-	teamBuffSource int
+	Index       int
+	core        *core.Core
+	char        *character.CharWrapper
+	teamBuffSrc int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-// Decreases Gliding Stamina consumption by 15%. When using Aimed Shots, the DMG dealt by Charged Attacks
-// increases by 6% every 0.5s. This effect can stack up to 6 times and will be removed 10s after leaving
-// Aiming Mode.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{
 		core: c,
@@ -102,16 +94,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			},
 		})
 
-		w.teamBuffSource = c.F
-		w.refreshTeamBuff(c.F, teamM, teamLcrBuff)()
+		w.teamBuffSrc = c.F
+		w.teamBuffTicker(c.F, teamM, teamLcrBuff)()
 	}, fmt.Sprintf("goldenfrostboundoath-on-skill-or-lunar-crystallize-%v", char.Base.Key.String()))
 
 	return w, nil
 }
 
-func (w *Weapon) refreshTeamBuff(src int, m []float64, lcrBuff float64) func() {
+func (w *Weapon) teamBuffTicker(src int, m []float64, lcrBuff float64) func() {
 	return func() {
-		if w.teamBuffSource != src {
+		if w.teamBuffSrc != src {
 			return
 		}
 
@@ -131,8 +123,9 @@ func (w *Weapon) refreshTeamBuff(src int, m []float64, lcrBuff float64) func() {
 			}
 		}
 
+		w.char.QueueCharTask(w.teamBuffTicker(src, m, lcrBuff), 1*60)
+
 		if !moondriftnearby {
-			w.char.QueueCharTask(w.refreshTeamBuff(src, m, lcrBuff), 1*60)
 			return
 		}
 
@@ -140,24 +133,34 @@ func (w *Weapon) refreshTeamBuff(src int, m []float64, lcrBuff float64) func() {
 			if char.Index() == w.char.Index() {
 				continue
 			}
-			char.AddStatMod(character.StatMod{
-				Base: modifier.NewBaseWithHitlag(teamGeoBuffKey, 2*60),
-				Amount: func() []float64 {
-					return m
-				},
-			})
-			char.AddReactBonusMod(character.ReactBonusMod{
-				Base: modifier.NewBaseWithHitlag(teamLcrBuffKey, 2*60),
-				Amount: func(atk info.AttackInfo) float64 {
-					switch atk.AttackTag {
-					case attacks.AttackTagDirectLunarCrystallize,
-						attacks.AttackTagReactionLunarCrystallize:
-						return lcrBuff
-					default:
-						return 0
-					}
-				},
-			})
+			if char.StatModIsActive(teamGeoBuffKey) {
+				duration := char.StatusDuration(teamGeoBuffKey)
+				char.ExtendStatus(teamGeoBuffKey, 2*60-duration)
+			} else {
+				char.AddStatMod(character.StatMod{
+					Base: modifier.NewBaseWithHitlag(teamGeoBuffKey, 2*60),
+					Amount: func() []float64 {
+						return m
+					},
+				})
+			}
+			if char.ReactBonusModIsActive(teamLcrBuffKey) {
+				duration := char.StatusDuration(teamLcrBuffKey)
+				char.ExtendStatus(teamLcrBuffKey, 2*60-duration)
+			} else {
+				char.AddReactBonusMod(character.ReactBonusMod{
+					Base: modifier.NewBaseWithHitlag(teamLcrBuffKey, 2*60),
+					Amount: func(atk info.AttackInfo) float64 {
+						switch atk.AttackTag {
+						case attacks.AttackTagDirectLunarCrystallize,
+							attacks.AttackTagReactionLunarCrystallize:
+							return lcrBuff
+						default:
+							return 0
+						}
+					},
+				})
+			}
 		}
 	}
 }
