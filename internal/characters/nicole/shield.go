@@ -18,7 +18,7 @@ func (c *char) addShield() {
 			Target:     -1,
 			Src:        c.Core.F,
 			Name:       "Shield of Blazing Light (Shield)",
-			ShieldType: shield.CitlaliSkill,
+			ShieldType: shield.NicoleSkill,
 			HP:         shieldHP,
 			Ele:        attributes.Pyro,
 			Expires:    c.Core.F + 20*60,
