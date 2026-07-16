@@ -16,11 +16,10 @@ func init() {
 
 type char struct {
 	*tmpl.Character
-	nightsoulState      *nightsoul.State
-	nightsoulSrc        int
-	skillParticleICD    bool
-	teamNightsoulPoints []float64
-	skillLastStamF      int
+	nightsoulState   *nightsoul.State
+	nightsoulSrc     int
+	skillParticleICD bool
+	skillLastStamF   int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

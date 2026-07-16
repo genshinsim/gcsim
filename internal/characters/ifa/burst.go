@@ -79,17 +79,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) targetElement(t info.TargetWithAura) attributes.Element {
-	prio := []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
-	for _, ele := range prio {
-		if t.AuraContains(ele) {
-			return ele
-		}
-	}
-
-	return attributes.NoElement
-}
-
 func (c *char) sedationMarkCB(a info.AttackCB) {
 	t := a.Target
 
