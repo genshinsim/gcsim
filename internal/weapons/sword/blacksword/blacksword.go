@@ -8,14 +8,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.TheBlackSword, NewWeapon)
-}
 
 // Increases DMG dealt by Normal and Charged Attacks by 20%. Additionally,
 // regenerates 60% of ATK as HP when Normal and Charged Attacks score a CRIT Hit. This effect can occur once every 5s.

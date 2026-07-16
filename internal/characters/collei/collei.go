@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -18,10 +17,6 @@ var dendroEvents = []event.Event{
 	event.OnHyperbloom,
 	event.OnBurgeon,
 	event.OnLunarBloom,
-}
-
-func init() {
-	core.RegisterCharFunc(keys.Collei, NewChar)
 }
 
 type char struct {

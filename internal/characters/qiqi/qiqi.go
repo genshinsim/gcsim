@@ -4,7 +4,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -12,10 +11,6 @@ const (
 	talismanKey    = "qiqi-talisman"
 	talismanICDKey = "qiqi-talisman-icd"
 )
-
-func init() {
-	core.RegisterCharFunc(keys.Qiqi, NewChar)
-}
 
 type char struct {
 	*tmpl.Character

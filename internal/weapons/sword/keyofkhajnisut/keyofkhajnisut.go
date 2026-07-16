@@ -6,14 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.KeyOfKhajNisut, NewWeapon)
-}
 
 // HP increased by 20%. When an Elemental Skill hits opponents, you gain the Grand Hymn effect for 20s.
 // This effect increases the equipping character’s Elemental Mastery by 0.12% of their Max HP. This effect can trigger once every 0.3s.

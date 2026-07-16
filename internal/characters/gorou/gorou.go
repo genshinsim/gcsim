@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -18,10 +17,6 @@ const (
 	a1Key                    = "gorou-a1"
 	c6key                    = "gorou-c6"
 )
-
-func init() {
-	core.RegisterCharFunc(keys.Gorou, NewChar)
-}
 
 type char struct {
 	*tmpl.Character

@@ -7,13 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
-
-func init() {
-	core.RegisterCharFunc(keys.Diluc, NewChar)
-}
 
 type char struct {
 	*tmpl.Character

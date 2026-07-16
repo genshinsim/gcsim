@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -18,10 +17,6 @@ const (
 	AtkpBuff = "fracturedhalo-atkp"
 	LcBuff   = "fracturedhalo-lc-buff"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.FracturedHalo, NewWeapon)
-}
 
 type Weapon struct {
 	Index int

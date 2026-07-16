@@ -14,10 +14,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-func init() {
-	core.RegisterWeaponFunc(keys.SwordOfDescension, NewWeapon)
-}
-
 // Descension
 // This weapon's effect is only applied on the following platform(s):
 // "PlayStation Network"

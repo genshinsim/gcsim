@@ -9,10 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
-func init() {
-	core.RegisterCharFunc(keys.Furina, NewChar)
-}
-
 type Arkhe int
 
 const (

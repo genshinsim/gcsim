@@ -15,10 +15,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
-func init() {
-	core.RegisterCharFunc(keys.Skirk, NewChar)
-}
-
 type char struct {
 	*tmpl.Character
 	serpentsSubtlety float64

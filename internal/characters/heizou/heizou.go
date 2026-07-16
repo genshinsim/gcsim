@@ -11,10 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
-func init() {
-	core.RegisterCharFunc(keys.Heizou, NewChar)
-}
-
 type char struct {
 	*tmpl.Character
 	decStack         int

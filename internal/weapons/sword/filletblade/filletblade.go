@@ -9,13 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.FilletBlade, NewWeapon)
-}
 
 // On hit, has 50% chance to deal 240/280/320/360/400% ATK DMG to a single enemy.
 // Can only occur once every 15/14/13/12/11s.
