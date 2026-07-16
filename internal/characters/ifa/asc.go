@@ -23,13 +23,9 @@ func (c *char) a1Init() {
 					return 0
 				}
 
-				m := 0.0
+				m := c.getTeamNightsoul()
 
-				for _, nightsoulAmount := range c.teamNightsoulPoints {
-					m += nightsoulAmount
-				}
-
-				m = 60 + max((m-60), 0)*c.c2Mult()
+				m += c.c2BonusPoints(m)
 
 				m = min(m, 150.0+c.c2CapIncrease())
 
@@ -63,7 +59,7 @@ func (c *char) a4Init() {
 
 	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) {
 		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("ifa-a4", 10*60),
+			Base:         modifier.NewBaseWithHitlag("ifa-a4", 10*60),
 			AffectedStat: attributes.EM,
 			Amount: func() []float64 {
 				return m

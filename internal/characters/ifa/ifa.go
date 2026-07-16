@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -39,7 +38,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	c.nightsoulTeamTracking()
 	c.a1Init()
 	c.a4Init()
 	return nil
@@ -56,30 +54,20 @@ func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	}
 }
 
-func (c *char) nightsoulTeamTracking() {
-	for range c.Core.Player.Chars() {
-		c.teamNightsoulPoints = append(c.teamNightsoulPoints, 0.0)
+func (c *char) getTeamNightsoul() float64 {
+	sum := 0.0
+	for _, char := range c.Core.Player.Chars() {
+		points, err := char.Condition([]string{"nightsoul", "points"})
+		if err != nil {
+			continue
+		}
+		p, ok := points.(float64)
+		if !ok {
+			continue
+		}
+		sum += p
 	}
-
-	c.Core.Events.Subscribe(event.OnNightsoulRemove, func(args ...any) {
-		amount := args[1].(float64)
-		if amount < 0.0000001 {
-			return
-		}
-		idx := args[0].(int)
-
-		c.teamNightsoulPoints[idx] -= amount
-	}, "ifa-subtract-team-nightsoul")
-
-	c.Core.Events.Subscribe(event.OnNightsoulAdd, func(args ...any) {
-		amount := args[1].(float64)
-		if amount < 0.0000001 {
-			return
-		}
-		idx := args[0].(int)
-
-		c.teamNightsoulPoints[idx] += amount
-	}, "ifa-add-team-nightsoul")
+	return sum
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {

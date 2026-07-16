@@ -25,14 +25,12 @@ func (c *char) c1CB(a info.AttackCB) {
 	c.AddStatus(c1EnergyICDKey, 8*60, true)
 }
 
-func (c *char) c2Mult() float64 {
+func (c *char) c2BonusPoints(m float64) float64 {
 	if c.Base.Cons < 2 {
 		return 0
 	}
-	if c.Base.Ascension < 1 {
-		return 0
-	}
-	return 4
+
+	return max((m-60), 0) * 3 // 3x because we are already receiving 1x amount directly from m
 }
 
 func (c *char) c2CapIncrease() float64 {
@@ -54,7 +52,7 @@ func (c *char) c4OnBurst() {
 	m[attributes.EM] = 100
 
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("ifa-c2", 15*60),
+		Base:         modifier.NewBaseWithHitlag("ifa-c4", 15*60),
 		AffectedStat: attributes.EM,
 		Amount: func() []float64 {
 			return m

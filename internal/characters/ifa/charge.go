@@ -56,11 +56,13 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	pos := c.Core.Combat.PrimaryTarget().Pos()
 	c.QueueCharTask(func() {
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(
-			pos,
-			nil,
-			chargeRadius,
-		),
+		c.Core.QueueAttack(
+			ai,
+			combat.NewCircleHitOnTarget(
+				pos,
+				nil,
+				chargeRadius,
+			),
 			0,
 			0,
 		)
@@ -110,7 +112,7 @@ func (c *char) attackHoldSkillState(p map[string]int) action.Info {
 			0,
 			0,
 			c.particleCB,
-			c.healCB,
+			c.healHoldCB,
 			c.c1CB,
 		)
 	}, 1+travel)

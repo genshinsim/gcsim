@@ -10,11 +10,11 @@ icd_tags:
   - ICDTagIfaSkill
 skill_data_mapping:
   attack: # Rite of Dispelling Winds
-    attack_1:
+    attack1:
       - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
+    attack2:
       - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
+    attack3:
       - 2 # 3-Hit DMG|{param2:F1P}
     charge:
       - 3 # Charged Attack DMG|{param3:F1P}

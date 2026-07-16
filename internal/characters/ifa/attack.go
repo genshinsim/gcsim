@@ -121,7 +121,7 @@ func (c *char) attackTapSkillState(p map[string]int) action.Info {
 			0,
 			0,
 			c.particleCB,
-			c.healCB,
+			c.healTapCB,
 			c.c1CB,
 		)
 	}, 3+travel)

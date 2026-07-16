@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -56,7 +57,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		ap,
 		burstHitmark,
 		burstHitmark,
-		c.sedationMarkAbsorbtion,
+		c.sedationMarkCB,
 	)
 
 	c.c4OnBurst()
@@ -89,27 +90,16 @@ func (c *char) targetElement(t info.TargetWithAura) attributes.Element {
 	return attributes.NoElement
 }
 
-func (c *char) sedationMarkAbsorbtion(a info.AttackCB) {
-	enemies := c.Core.Combat.Enemies()
-	p := a.AttackEvent.Pattern
+func (c *char) sedationMarkCB(a info.AttackCB) {
+	t := a.Target
 
-	for _, e := range enemies {
-		t, ok := e.(info.TargetWithAura)
+	x, ok := t.(info.TargetWithAura)
 
-		if !ok {
-			continue
-		}
-
-		ele := c.targetElement(t)
-
-		if collision, _ := t.AttackWillLand(p); collision && ele != attributes.NoElement {
-			c.sedationMark(ele, e)
-		}
+	if !ok {
+		return
 	}
-}
 
-func (c *char) sedationMark(ele attributes.Element, e info.Target) {
-	ai := info.AttackInfo{
+	aiAbs := info.AttackInfo{
 		ActorIndex:     c.Index(),
 		Abil:           "Sedation Mark",
 		AttackTag:      attacks.AttackTagElementalBurst,
@@ -117,14 +107,30 @@ func (c *char) sedationMark(ele attributes.Element, e info.Target) {
 		ICDTag:         attacks.ICDTagIfaSedationMark,
 		ICDGroup:       attacks.ICDGroupIfaSedationMark,
 		StrikeType:     attacks.StrikeTypeDefault,
-		Element:        ele,
 		Durability:     25,
 		Mult:           burst_mark[c.TalentLvlBurst()],
 	}
 
-	ap := combat.NewCircleHitOnTarget(e, nil, 2.5)
+	auraPriority := []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
+	for _, ele := range auraPriority {
+		if x.AuraContains(ele) {
+			aiAbs.Element = ele
+			break
+		}
+	}
+
+	if aiAbs.Element == attributes.NoElement {
+		c.Core.Log.NewEvent(
+			"No valid aura detected, omiting sedation mark",
+			glog.LogCharacterEvent,
+			c.Index(),
+		).Write("target", t.Key())
+		return
+	}
+
+	ap := combat.NewCircleHitOnTarget(t, nil, 2.5)
 	c.Core.QueueAttack(
-		ai,
+		aiAbs,
 		ap,
 		sedationMarkHitmark,
 		sedationMarkHitmark,

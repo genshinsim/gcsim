@@ -20,6 +20,8 @@ const (
 	// skillHitmarks      = 3
 	plungeAvailableKey       = "ifa-plunge-available"
 	skillCancelPlungeHitmark = 39
+	healTapICDKey            = "tonicshot-tap-healing-icd"
+	healHoldICDKey           = "tonicshot-hold-healing-icd"
 )
 
 func init() {
@@ -61,6 +63,7 @@ func (c *char) checkNS() {
 }
 
 func (c *char) enterNightsoul() {
+	c.skillParticleICD = false
 	c.nightsoulState.EnterBlessing(80)
 	c.nightsoulSrc = c.Core.F
 	c.Core.Tasks.Add(c.nightsoulPointReduceFunc(c.nightsoulSrc), 4)
@@ -169,7 +172,25 @@ func (c *char) skillPlunge(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) healCB(a info.AttackCB) {
+func (c *char) healTapCB(a info.AttackCB) {
+	if c.StatusIsActive(healTapICDKey) {
+		return
+	}
+
+	c.AddStatus(healTapICDKey, 0.1*60, true)
+	c.healSkill()
+}
+
+func (c *char) healHoldCB(a info.AttackCB) {
+	if c.StatusIsActive(healHoldICDKey) {
+		return
+	}
+
+	c.AddStatus(healHoldICDKey, 0.1*60, true)
+	c.healSkill()
+}
+
+func (c *char) healSkill() {
 	em := c.Stat(attributes.EM)
 	healAmt := skill_heal[c.TalentLvlSkill()]*em + skill_heal_flat[c.TalentLvlSkill()]
 	healBonus := c.Stat(attributes.Heal)
@@ -194,9 +215,11 @@ func (c *char) particleCB(a info.AttackCB) {
 	}
 	c.skillParticleICD = true
 
-	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Anemo, c.ParticleDelay)
+	particles := 4.0
 
 	if c.Core.Rand.Float64() < 0.3 {
-		c.Core.QueueParticle(c.Base.Key.String(), 1, attributes.Anemo, c.ParticleDelay)
+		particles = 5.0
 	}
+
+	c.Core.QueueParticle(c.Base.Key.String(), particles, attributes.Anemo, c.ParticleDelay)
 }
