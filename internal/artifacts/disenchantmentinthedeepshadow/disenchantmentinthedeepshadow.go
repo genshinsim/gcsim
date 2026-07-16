@@ -78,7 +78,7 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 		},
 	})
 
-	core.Events.Subscribe(event.OnLunarChargedReactionAttack, func(args ...any) {
+	core.Events.Subscribe(event.OnSuperconduct, func(args ...any) {
 		r, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return
