@@ -12,6 +12,6 @@ import (
 // This effect can be triggered once every 12s.
 // TODO: https://github.com/genshinsim/gcsim/issues/850
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	w := common.NewNoEffect(base)
+	w := common.NewNoEffect()
 	return w.NewWeapon(c, char, p)
 }

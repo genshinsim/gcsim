@@ -26,7 +26,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.SkillCon = 3
 	c.BurstCon = 5
 
-	c.EnergyMax = burstEnergy[c.TalentLvlBurst()]
+	c.EnergyMax = 60
 	c.NormalHitNum = normalHitNum
 
 	w.Character = &c

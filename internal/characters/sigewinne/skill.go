@@ -227,7 +227,7 @@ func (c *char) bubbleFinalHealing() {
 		Caller:  c.Index(),
 		Target:  c.Index(),
 		Message: "Bolstering Bubblebalm Healing",
-		Src:     finalBounceHealing[c.TalentLvlSkill()] * c.MaxHP(),
+		Src:     finalBounceHealing * c.MaxHP(),
 		Bonus:   c.Stat(attributes.Heal) + skillBonus,
 	})
 	c.c6CritMode()

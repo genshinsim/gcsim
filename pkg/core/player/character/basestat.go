@@ -11,7 +11,7 @@ import (
 )
 
 func (c *CharWrapper) UpdateBaseStats() error {
-	data := c.Data()
+	data := catalog.CharacterMap[c.Base.Key]
 	if data == nil {
 		return fmt.Errorf("unexpected nil char data for %v", c.Base.Key)
 	}
@@ -25,7 +25,7 @@ func (c *CharWrapper) UpdateBaseStats() error {
 	asc := AvatarAsc(c.Base.MaxLevel, data)
 	c.Base.Ascension = asc
 
-	wdata := c.Equip.Weapon.Data()
+	wdata := catalog.WeaponMap[c.Weapon.Key]
 	if wdata == nil {
 		return fmt.Errorf("unexpected nil weapon data for %v", c.Weapon.Key)
 	}

@@ -8,6 +8,6 @@ import (
 )
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	w := common.NewRoyal(base)
+	w := common.NewRoyal()
 	return w.NewWeapon(c, char, p)
 }
