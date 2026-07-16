@@ -101,12 +101,12 @@ func (c *char) a4OnLunarCharge(args ...any) {
 	}
 
 	if c.StatusIsActive(burstBuffKey) {
-		c.Core.Flags.Custom[reactable.LcExtraHitOverrideKey] = 0.33
+		c.Core.Flags.Custom[reactable.LcExtraHitOverride] = 0.33
 		return
 	}
 
 	// player is outside of lunar domain, reset buffs
-	delete(c.Core.Flags.Custom, reactable.LcExtraHitOverrideKey)
+	delete(c.Core.Flags.Custom, reactable.LcExtraHitOverride)
 }
 
 func (c *char) a4OnLunarCrystallize(args ...any) {
