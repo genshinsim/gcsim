@@ -20,7 +20,7 @@ type char struct {
 	c2stacks int
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
