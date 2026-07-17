@@ -3,6 +3,7 @@ package enemy
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/catalog"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -38,7 +39,7 @@ func ConfigureTarget(profile *info.EnemyProfile, name string, params TargetParam
 	enemyInfo.Modified = false
 	enemyInfo.Level = profile.Level
 	enemyInfo.Pos = profile.Pos
-	enemyInfo.HP = enemyInfo.HpBase * model.EnemyStatGrowthMult[enemyInfo.Level-1][enemyInfo.HpGrowCurve]
+	enemyInfo.HP = enemyInfo.HpBase * catalog.EnemyStatGrowthMult[enemyInfo.Level-1][enemyInfo.HpGrowCurve]
 	if params.HpMultiplier != 0 {
 		enemyInfo.HP *= params.HpMultiplier
 	} else {
@@ -54,13 +55,12 @@ func ConfigureTarget(profile *info.EnemyProfile, name string, params TargetParam
 	return nil
 }
 
-//go:generate go run github.com/genshinsim/gcsim/scripts/enemystat
 func getMonsterInfo(name string) (info.EnemyProfile, error) {
 	id, ok := shortcut.MonsterNameToID[name]
 	if !ok {
 		return info.EnemyProfile{}, fmt.Errorf("invalid target name `%v`", name)
 	}
-	result, ok := model.EnemyMap[id]
+	result, ok := catalog.MonsterMap[id]
 	if !ok {
 		return info.EnemyProfile{}, fmt.Errorf("invalid target name `%v`", name)
 	}

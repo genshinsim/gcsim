@@ -12,7 +12,7 @@ import (
 
 func (g *Generator) DumpUIJSON(path string) error {
 	// delete existing
-	err := g.writeDataJSON(path + "/weapon_data.generated.json")
+	err := g.writeDataJSON(path + "/weapon.dm.json")
 	if err != nil {
 		return err
 	}

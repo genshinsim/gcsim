@@ -133,7 +133,7 @@ func (c *char) detonateSkill() (action.Info, error) {
 		pressureFrameIndex = 1
 	}
 
-	if skillPressureCryo[c.skillStacks][c.TalentLvlSkill()] > 0 {
+	if c.skillStacks <= 3 {
 		poiseDMG := 150.0
 		if c.skillStacks > 0 {
 			poiseDMG = 70.0
@@ -161,7 +161,7 @@ func (c *char) detonateSkill() (action.Info, error) {
 		)
 	}
 
-	if skillPressurePhys[c.skillStacks][c.TalentLvlSkill()] > 0 {
+	if c.skillStacks >= 1 {
 		poiseDMG := 150.0
 		if c.skillStacks < 4 {
 			poiseDMG = 70.0
@@ -176,7 +176,7 @@ func (c *char) detonateSkill() (action.Info, error) {
 			PoiseDMG:   poiseDMG,
 			Element:    attributes.Physical,
 			Durability: 25,
-			Mult:       skillPressurePhys[c.skillStacks][c.TalentLvlSkill()],
+			Mult:       skillPressurePhys[c.skillStacks-1][c.TalentLvlSkill()],
 		}
 		if c.skillStacks == 4 {
 			ai.HitlagFactor = 0.01

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"text/template"
 
 	"github.com/genshinsim/gcsim/pipeline/pkg/translation"
@@ -70,29 +71,29 @@ func (g *Generator) GenerateDocsPages(path string) {
 		}
 
 		g.generateDocPage(charsPath, docsData{
-			Name: g.Names.CharacterNames[v.Key],
+			Name: strconv.Quote(g.Names.CharacterNames[v.Key]),
 			Key:  v.Key,
 		}, charDocsPageTmpl)
 	}
 	for _, v := range g.Weapons {
 		g.generateDocPage(weaponsPath, docsData{
-			Name: g.Names.WeaponNames[v.Key],
+			Name: strconv.Quote(g.Names.WeaponNames[v.Key]),
 			Key:  v.Key,
 			Type: "weapon",
 		}, docPageTmpl)
 	}
 	for _, v := range g.Artifacts {
 		g.generateDocPage(artifactsPath, docsData{
-			Name: g.Names.ArtifactNames[v.Key],
+			Name: strconv.Quote(g.Names.ArtifactNames[v.Key]),
 			Key:  v.Key,
 			Type: "artifact",
 		}, docPageTmpl)
 	}
 	for _, v := range g.Enemies {
 		g.generateDocPage(enemiesPath, docsData{
-			Name: g.Names.EnemyNames[v.Key],
+			Name: strconv.Quote(g.Names.MonsterNames[v.Key]),
 			Key:  v.Key,
-			Type: "enemy",
+			Type: "monster",
 		}, enemyPageTmpl)
 	}
 }
@@ -113,18 +114,13 @@ func (g *Generator) generateDocPage(path string, data docsData, tmpl string) err
 }
 
 const enemyPageTmpl = `---
-title: >
-  {{ .Name }}
+title: {{ .Name }}
 ---
 
 import HPTable from "@site/src/components/HP/HPTable";
 import NamesList from "@site/src/components/Names/NamesList";
-import ResistTable from "@site/src/components/Resist/ResistTable";
 import ParticleTable from "@site/src/components/Particle/ParticleTable";
-
-## HP Data
-
-<HPTable item_key="{{ .Key }}" data_src="{{ .Type }}" />
+import ResistTable from "@site/src/components/Resist/ResistTable";
 
 ## Names
 
@@ -136,22 +132,22 @@ import ParticleTable from "@site/src/components/Particle/ParticleTable";
 
 ## Particle Data
 
-<ParticleTable item_key="{{ .Key }}" data_src="{{ .Type }}" />`
+<ParticleTable item_key="{{ .Key }}" data_src="{{ .Type }}" />
+
+## HP Data
+
+<HPTable item_key="{{ .Key }}" data_src="{{ .Type }}" />
+`
 
 const docPageTmpl = `---
-title: >
-  {{ .Name }}
+title: {{ .Name }}
 ---
 
 import AoETable from "@site/src/components/AoE/AoETable";
+import FieldsTable from "@site/src/components/Fields/FieldsTable";
 import IssuesTable from "@site/src/components/Issues/IssuesTable";
 import NamesList from "@site/src/components/Names/NamesList";
 import ParamsTable from "@site/src/components/Params/ParamsTable";
-import FieldsTable from "@site/src/components/Fields/FieldsTable";
-
-## AoE Data
-
-<AoETable item_key="{{ .Key }}" data_src="{{ .Type }}" />
 
 ## Known issues
 
@@ -168,21 +164,32 @@ import FieldsTable from "@site/src/components/Fields/FieldsTable";
 ## Fields
 
 <FieldsTable item_key="{{ .Key }}" data_src="{{ .Type }}" />
+
+## AoE Data
+
+<AoETable item_key="{{ .Key }}" data_src="{{ .Type }}" />
 `
 
 const charDocsPageTmpl = `---
-title: >
-  {{ .Name }}
+title: {{ .Name }}
 ---
 
-import HitlagTable from "@site/src/components/Hitlag/HitlagTable";
-import FieldsTable from "@site/src/components/Fields/FieldsTable";
-import ParamsTable from "@site/src/components/Params/ParamsTable";
-import FramesTable from "@site/src/components/Frames/FramesTable";
-import IssuesTable from "@site/src/components/Issues/IssuesTable";
-import AoETable from "@site/src/components/AoE/AoETable";
-import NamesList from "@site/src/components/Names/NamesList";
 import ActionsTable from "@site/src/components/Actions/ActionsTable";
+import AoETable from "@site/src/components/AoE/AoETable";
+import FieldsTable from "@site/src/components/Fields/FieldsTable";
+import FramesTable from "@site/src/components/Frames/FramesTable";
+import HitlagTable from "@site/src/components/Hitlag/HitlagTable";
+import IssuesTable from "@site/src/components/Issues/IssuesTable";
+import NamesList from "@site/src/components/Names/NamesList";
+import ParamsTable from "@site/src/components/Params/ParamsTable";
+
+## Known issues
+
+<IssuesTable item_key="{{ .Key }}" />
+
+## Names
+
+<NamesList item_key="{{ .Key }}" />
 
 ## Frames
 
@@ -195,14 +202,6 @@ import ActionsTable from "@site/src/components/Actions/ActionsTable";
 ## AoE Data
 
 <AoETable item_key="{{ .Key }}" />
-
-## Known issues
-
-<IssuesTable item_key="{{ .Key }}" />
-
-## Names
-
-<NamesList item_key="{{ .Key }}" />
 
 ## Legal Actions
 

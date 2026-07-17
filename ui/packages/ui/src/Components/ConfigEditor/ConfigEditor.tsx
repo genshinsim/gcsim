@@ -1,7 +1,7 @@
 import AceEditor from 'react-ace';
 //THESE IMPORTS NEEDS TO BE AFTER IMPORTING AceEditor
 import 'ace-builds/src-noconflict/ext-language_tools';
-import '../../util/mode-gcsim.js';
+import '../../util/mode-gcsim.dm.js';
 //manually import supported themes cause we can't get for loop to work here
 import {FormGroup, HTMLSelect, NumericInput} from '@blueprintjs/core';
 import 'ace-builds/src-noconflict/theme-github';

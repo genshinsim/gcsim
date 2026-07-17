@@ -10,7 +10,6 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -23,7 +22,7 @@ type charData struct {
 	Data         *model.AvatarData
 	NASlice      map[string]*naSlice
 	SkillLvlData []skillLvlData
-	ParamKeys    map[int][]paramData
+	ParamKeys    map[string][]paramData
 }
 
 type naSlice struct {
@@ -61,7 +60,7 @@ func (g *Generator) GenerateCharTemplate() error {
 		dmCopy.SkillDetails.A4 = 0
 		dmCopy.SkillDetails.A1Scaling = nil
 		dmCopy.SkillDetails.A4Scaling = nil
-		err = writePBToFile(fmt.Sprintf("%v/data_gen.textproto", v.RelativePath), dmCopy)
+		err = writePBToFile(fmt.Sprintf("%v/_data.dm.textproto", v.RelativePath), dmCopy)
 		if err != nil {
 			return fmt.Errorf("failed to write PB file: %w", err)
 		}
@@ -75,10 +74,10 @@ func (g *Generator) GenerateCharTemplate() error {
 			d.CharStructName = "char"
 		}
 		if d.ActionParamKeys != nil {
-			err := d.buildValidation()
-			if err != nil {
-				return fmt.Errorf("failed to build validation map for %v: %w", v.Key, err)
+			if d.KeyVarName == "" {
+				d.KeyVarName = cases.Title(language.AmericanEnglish).String(d.Key)
 			}
+			d.ParamKeys = d.ActionParamKeys
 		}
 		err := d.buildSkillData(dm)
 		if err != nil {
@@ -94,7 +93,7 @@ func (g *Generator) GenerateCharTemplate() error {
 			fmt.Println(string(src))
 			return fmt.Errorf("failed to gofmt on %v: %w", v.RelativePath, err)
 		}
-		os.WriteFile(fmt.Sprintf("%v/%v_gen.go", v.RelativePath, v.PackageName), dst, 0o644)
+		os.WriteFile(fmt.Sprintf("%v/zz_%v.dm.go", v.RelativePath, v.PackageName), dst, 0o644)
 	}
 
 	return nil
@@ -119,22 +118,6 @@ func writePBToFile(path string, dm *model.AvatarData) error {
 	// hack to work around stupid prototext not stable (on purpose - google u suck)
 	b = []byte(strings.ReplaceAll(string(b), ":  ", ": "))
 	return os.WriteFile(path, b, 0o644)
-}
-
-func (c *charData) buildValidation() error {
-	if c.KeyVarName == "" {
-		c.KeyVarName = cases.Title(language.AmericanEnglish).String(c.Key)
-	}
-	c.ParamKeys = make(map[int][]paramData)
-	for k, v := range c.ActionParamKeys {
-		a := action.StringToAction(k)
-		if a == action.InvalidAction {
-			return fmt.Errorf("invalid action string: %v", k)
-		}
-		c.ParamKeys[int(a)] = v
-	}
-
-	return nil
 }
 
 func (c *charData) buildSkillData(dm *model.AvatarData) error {
@@ -199,11 +182,6 @@ func (c *charData) skillDataByType(typ string, data []*model.AvatarSkillExcelInd
 		}
 
 		for i, param := range params {
-			if param == -1 {
-				skill.Params[i].Values = make([]float64, 15)
-				continue
-			}
-
 			var paramData *model.AvatarSkillExcelIndexData
 			for _, v := range data {
 				if v.Index != int32(param) {
@@ -246,13 +224,13 @@ import (
 	{{- end }}
 )
 
-//go:embed data_gen.textproto
+//go:embed _data.dm.textproto
 var pbData []byte
 var base *model.AvatarData
 {{if ne (len .ParamKeys) 0 -}}
 var paramKeysValidation = map[action.Action][]string {
 	{{- range $key, $slice := .ParamKeys}}
-	{{$key}}: {
+	action.StringToAction("{{$key}}"): {
 		{{- range $val := $slice -}}
 		"{{$val.Param}}",
 		{{- end -}}

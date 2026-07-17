@@ -49,9 +49,9 @@ func (g *Generator) GenerateAssetsKey(dir string) error {
 		fmt.Println(string(src))
 		return fmt.Errorf("failed to gofmt on generated weapon assets data: %w", err)
 	}
-	err = os.WriteFile(fmt.Sprintf("%v/weapons_gen.go", dir), dst, 0o644)
+	err = os.WriteFile(fmt.Sprintf("%v/weapon.dm.go", dir), dst, 0o644)
 	if err != nil {
-		return fmt.Errorf("failed to write weapons_gen.go: %w", err)
+		return fmt.Errorf("failed to write weapon.dm.go: %w", err)
 	}
 
 	return nil

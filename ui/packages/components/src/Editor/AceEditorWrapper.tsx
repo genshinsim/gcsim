@@ -15,7 +15,7 @@ import "ace-builds/src-noconflict/theme-tomorrow_night";
 import "ace-builds/src-noconflict/theme-twilight";
 import "ace-builds/src-noconflict/theme-xcode";
 //gcsim specific module
-import "./mode-gcsim.js";
+import "./mode-gcsim.dm.js";
 import { AceEditorWrapperProps } from "./types.js";
 
 export function AceEditorWrapper({

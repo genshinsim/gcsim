@@ -177,7 +177,7 @@ func (c *char) surgingBladeTask(target info.Target) {
 
 	aiThorn := info.AttackInfo{
 		ActorIndex:   c.Index(),
-		Abil:         "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
+		Abil:         "Spiritbreath Thorn (" + c.Base.Key.String() + ")",
 		AttackTag:    attacks.AttackTagElementalArt,
 		ICDTag:       attacks.ICDTagNone,
 		ICDGroup:     attacks.ICDGroupDefault,
