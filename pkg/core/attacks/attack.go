@@ -1,5 +1,6 @@
 package attacks
 
+//go:generate go tool github.com/dmarkham/enumer -type=AttackTag -trimprefix=AttackTag -transform=snake
 type AttackTag int // attacktag is used instead of actions etc..
 
 const (
