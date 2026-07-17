@@ -12,15 +12,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var dashFrames []int
-
 const (
 	dashChargeCancelErr = "can only begin a charge cancelled dash while Mavuika is in the Flamestrider Charged Attack (Cyclic or Final) animation"
 )
-
-func init() {
-	dashFrames = frames.InitAbilSlice(24) // Dash -> Dash
-}
 
 func (c *char) Dash(p map[string]int) (action.Info, error) {
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
@@ -50,12 +44,12 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 			travel = 2
 		}
 
-		dashFrames[action.ActionCharge] = max(20, travel)
-		dashFrames[action.ActionAttack] = max(18, travel)
-		dashFrames[action.ActionSkill] = max(20, travel)
-		dashFrames[action.ActionBurst] = max(20, travel)
-		dashFrames[action.ActionSwap] = travel
-		dashFrames[action.ActionJump] = travel
+		c.dashFrames[action.ActionCharge] = max(20, travel)
+		c.dashFrames[action.ActionAttack] = max(18, travel)
+		c.dashFrames[action.ActionSkill] = max(20, travel)
+		c.dashFrames[action.ActionBurst] = max(20, travel)
+		c.dashFrames[action.ActionSwap] = travel
+		c.dashFrames[action.ActionJump] = travel
 
 		// Only applies when preceded and followed by a charge, otherwise does nothing
 		// If Mav is within the "clock lockout" of being able to cdc,
@@ -85,7 +79,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 
 			// Used for n0 proc logic in charge.go
 			c.chargeCancel = true
-			dashFrames[action.ActionCharge] = travel
+			c.dashFrames[action.ActionCharge] = travel
 		}
 
 		if collision != 0 {
@@ -120,8 +114,8 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 		// Execute dash CD logic
 		c.ApplyDashCD()
 		return action.Info{
-			Frames:          frames.NewAbilFunc(dashFrames),
-			AnimationLength: dashFrames[action.InvalidAction],
+			Frames:          frames.NewAbilFunc(c.dashFrames),
+			AnimationLength: c.dashFrames[action.InvalidAction],
 			CanQueueAfter:   travel,
 			State:           action.DashState,
 		}, nil

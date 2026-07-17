@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/genshinsim/gcsim/internal/frames"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -39,6 +40,7 @@ type char struct {
 	caState            ChargeState
 	canBikePlunge      bool
 	chargeCancel       bool
+	dashFrames         []int
 }
 
 func init() {
@@ -67,6 +69,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 
 	w.Character = &c
 	c.nightsoulState = nightsoul.New(c.Core, c.CharWrapper)
+	c.dashFrames = frames.InitAbilSlice(24) // Dash -> Dash
 	return nil
 }
 
