@@ -1,7 +1,7 @@
 import React from "react";
-import character_data from "./character_data.json";
-import weapon_data from "./weapon_data.json";
-import artifact_data from "./artifact_data.json";
+import character_data from "./character.dm.json";
+import weapon_data from "./weapon.dm.json";
+import artifact_data from "./artifact.dm.json";
 
 export default function FieldsTable({ item_key, data_src }) {
   let data = character_data;

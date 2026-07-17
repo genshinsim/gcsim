@@ -2,9 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import character_data from "./character_data.json";
-import weapon_data from "./weapon_data.json";
-import artifact_data from "./artifact_data.json";
+import character_data from "./character.dm.json";
+import weapon_data from "./weapon.dm.json";
+import artifact_data from "./artifact.dm.json";
 
 const Table = styled.table`
   border-collapse: collapse;
@@ -103,7 +103,7 @@ export default function AoETable({ item_key, data_src }) {
       return <div>No AoE data for {data_src}</div>;
     }
     return <AbilAoE data={item} />;
-  } 
+  }
   abils.forEach((a, i) => {
     // skip if no data for this tab
     if (!(a in item)) {

@@ -20,7 +20,7 @@ export const render: ItemRenderer<IEnemy> = (
       label={""}
       key={item}
       onClick={handleClick}
-      text={highlightText(i18n.t("enemy_names." + item, { ns: "game" }), query)}
+      text={highlightText(i18n.t("monster_names." + item, { ns: "game" }), query)}
     />
   );
 };
@@ -33,7 +33,7 @@ export const filter: ItemPredicate<IEnemy> = (
 ) => {
   const normalizedQuery = query.toLowerCase();
   const transItem = i18n
-    .t("enemy_names." + item, { ns: "game" })
+    .t("monster_names." + item, { ns: "game" })
     .replace(" ", "")
     .toLowerCase();
   if (exactMatch) {

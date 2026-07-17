@@ -222,7 +222,7 @@ func (c *char) skillAligned(pos info.Point) func() {
 
 		propAlignedAI := info.AttackInfo{
 			ActorIndex: c.Index(),
-			Abil:       "Spiritbreath Thorn (" + c.Base.Key.Pretty() + ")",
+			Abil:       "Spiritbreath Thorn (" + c.Base.Key.String() + ")",
 			AttackTag:  attacks.AttackTagExtra,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,

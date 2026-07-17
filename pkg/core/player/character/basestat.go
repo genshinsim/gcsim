@@ -3,6 +3,7 @@ package character
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/catalog"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -73,9 +74,9 @@ func AvatarBaseStat(char info.CharacterBase, data *model.AvatarData) ([]float64,
 	res := make([]float64, attributes.EndStatType)
 
 	lvl := min(max(char.Level-1, 0), 99)
-	res[attributes.BaseHP] = data.Stats.BaseHp * model.AvatarGrowCurveByLvl[lvl][data.Stats.HpCurve]
-	res[attributes.BaseATK] = data.Stats.BaseAtk * model.AvatarGrowCurveByLvl[lvl][data.Stats.AtkCurve]
-	res[attributes.BaseDEF] = data.Stats.BaseDef * model.AvatarGrowCurveByLvl[lvl][data.Stats.DefCruve]
+	res[attributes.BaseHP] = data.Stats.BaseHp * catalog.AvatarGrowCurveByLvl[lvl][data.Stats.HpCurve]
+	res[attributes.BaseATK] = data.Stats.BaseAtk * catalog.AvatarGrowCurveByLvl[lvl][data.Stats.AtkCurve]
+	res[attributes.BaseDEF] = data.Stats.BaseDef * catalog.AvatarGrowCurveByLvl[lvl][data.Stats.DefCruve]
 	res[attributes.EM] = data.Stats.ElementMastery
 	// default er/cr/cd
 	res[attributes.ER] += 1
@@ -106,7 +107,7 @@ func WeaponBaseStat(weap info.WeaponProfile, data *model.WeaponData) ([]float64,
 	for _, v := range data.BaseStats.BaseProps {
 		s := info.ConvertProtoStat(v.PropType)
 		// TODO: should this be cumulative?
-		res[s] = v.InitialValue * model.WeaponGrowCurveByLvl[lvl][v.Curve]
+		res[s] = v.InitialValue * catalog.WeaponGrowCurveByLvl[lvl][v.Curve]
 	}
 
 	// calculate promotion bonus

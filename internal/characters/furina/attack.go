@@ -57,7 +57,7 @@ func (c *char) arkheCB(a info.AttackCB) {
 	c.QueueCharTask(func() {
 		ai := info.AttackInfo{
 			ActorIndex:     c.Index(),
-			Abil:           arkhePrettyPrint[c.arkhe] + " (" + c.Base.Key.Pretty() + ")",
+			Abil:           arkhePrettyPrint[c.arkhe] + " (" + c.Base.Key.String() + ")",
 			AttackTag:      attacks.AttackTagNormal,
 			ICDTag:         attacks.ICDTagNone,
 			ICDGroup:       attacks.ICDGroupDefault,

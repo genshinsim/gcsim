@@ -12,7 +12,7 @@ Character PR checklist:
 
 - [ ] New character package
 - [ ] Config in character package
-- [ ] Run pipeline with added config (generates character curve, talent stats, `.generated.json` files)
+- [ ] Run pipeline with added config (generates character curve, talent stats, `.dm.json` files)
 - [ ] Character key
 - [ ] Shortcuts for character key
 - [ ] Update `mode_gcsim.js` with shortcuts for syntax highlighting
@@ -46,7 +46,7 @@ Weapon PR checklist:
 
 - [ ] New weapon package
 - [ ] Config in weapon package
-- [ ] Run pipeline with added config (generates weapon curve, `.generated.json` files)
+- [ ] Run pipeline with added config (generates weapon curve, `.dm.json` files)
 - [ ] Weapon key
 - [ ] Shortcuts for weapon key
 - [ ] Add weapon package to imports
@@ -57,7 +57,7 @@ Artifact PR checklist:
 
 - [ ] New artifact package
 - [ ] Config in artifacts package
-- [ ] Run pipeline with added config (generates `.generated.json` files)
+- [ ] Run pipeline with added config (generates `.dm.json` files)
 - [ ] Artifact key
 - [ ] Shortcuts for artifact key
 - [ ] Add artifact package to imports
@@ -70,13 +70,13 @@ Please try to be explicit about what is complete or incomplete.
 Items may be omitted when irrelevant.
 
 <details><summary>Click to expand copy-paste friendly version</summary>
-  
+
 ```
 Character PR checklist:
 
 - [ ] New character package
 - [ ] Config in character package
-- [ ] Run pipeline with added config (generates character curve, talent stats, `.generated.json` files)
+- [ ] Run pipeline with added config (generates character curve, talent stats, `.dm.json` files)
 - [ ] Character key
 - [ ] Shortcuts for character key
 - [ ] Update `mode_gcsim.js` with shortcuts for syntax highlighting
@@ -110,7 +110,7 @@ Weapon PR checklist:
 
 - [ ] New weapon package
 - [ ] Config in weapon package
-- [ ] Run pipeline with added config (generates weapon curve, `.generated.json` files)
+- [ ] Run pipeline with added config (generates weapon curve, `.dm.json` files)
 - [ ] Weapon key
 - [ ] Shortcuts for weapon key
 - [ ] Add weapon package to imports
@@ -121,7 +121,7 @@ Artifact PR checklist:
 
 - [ ] New artifact package
 - [ ] Config in artifacts package
-- [ ] Run pipeline with added config (generates `.generated.json` files)
+- [ ] Run pipeline with added config (generates `.dm.json` files)
 - [ ] Artifact key
 - [ ] Shortcuts for artifact key
 - [ ] Add artifact package to imports
@@ -131,7 +131,6 @@ Artifact PR checklist:
 
 ````
 </details>
-
 
 # Git/Github Quick Reference Guide
 For those who are new to git/github
@@ -148,7 +147,6 @@ git push -f
 
 ````
 Where new parent is the commitment hash of the newest commit on the main branch and old parent is the commitment hash of the oldest common commitment between your feature branch and the main branch.
-
 
 # Dev Environment Setup
 
