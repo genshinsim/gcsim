@@ -12,16 +12,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
-
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 	"github.com/genshinsim/gcsim/pkg/testhelper"
 )
 
 func init() {
-	core.RegisterCharFunc(keys.TestCharDoNotUse, testhelper.NewChar)
-	core.RegisterWeaponFunc(keys.DullBlade, testhelper.NewFakeWeapon)
+	testhelper.RegisterTestCharacter()
+	testhelper.RegisterTestWeapon()
 }
 
 func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
@@ -48,22 +46,7 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 	}
 
 	for range 4 {
-		p := info.CharacterProfile{}
-		p.Base.Key = keys.TestCharDoNotUse
-		p.Stats = make([]float64, attributes.EndStatType)
-		p.StatsByLabel = make(map[string][]float64)
-		p.Params = make(map[string]int)
-		p.Sets = make(map[keys.Set]int)
-		p.SetParams = make(map[keys.Set]map[string]int)
-		p.Weapon.Params = make(map[string]int)
-		p.Base.Element = attributes.Geo
-		p.Weapon.Key = keys.DullBlade
-
-		p.Stats[attributes.EM] = 100
-		p.Base.Level = 90
-		p.Base.MaxLevel = 90
-		p.Talents = info.TalentProfile{Attack: 1, Skill: 1, Burst: 1}
-
+		p := testhelper.DefaultProfile(testhelper.TestCharKey, testhelper.TestWeaponKey)
 		_, err := c.AddChar(p)
 		if err != nil {
 			panic(err)

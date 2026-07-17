@@ -12,12 +12,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/testhelper"
 )
 
 // Test to make sure in 2 target scenario, Beidou burst bounces between the 2 targets
 func TestBeidouBounce(t *testing.T) {
 	c, trg := makeCore(2)
-	prof := defProfile(keys.Beidou)
+	prof := testhelper.DefaultProfile(keys.Beidou, testhelper.TestWeaponKey)
 	prof.Base.Cons = 6
 	idx, err := c.AddChar(prof)
 	if err != nil {

@@ -3,25 +3,21 @@ package testhelper
 import (
 	_ "embed"
 
+	"github.com/genshinsim/gcsim/pkg/catalog"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
-	"google.golang.org/protobuf/encoding/prototext"
 )
 
-//go:embed test_char_data.pb
-var pbData []byte
-var base *model.AvatarData
+// TODO: insert a custom char at runtime
+const TestCharKey = keys.InvalidChar
 
-func init() {
-	base = &model.AvatarData{}
-	err := prototext.Unmarshal(pbData, base)
-	if err != nil {
-		panic(err)
-	}
+func RegisterTestCharacter() {
+	// TODO: this should be part of registration
+	catalog.CharacterMap[TestCharKey] = catalog.CharacterMap[keys.Albedo]
+	core.RegisterCharFunc(TestCharKey, NewChar)
 }
 
 type Character struct {
@@ -44,7 +40,6 @@ func (c *Character) SetCDWithDelay(a action.Action, dur, delay int)       {}
 func (c *Character) Charges(a action.Action) int                          { return 1 }
 func (c *Character) SetCD(a action.Action, dur int)                       {}
 func (c *Character) Init() error                                          { return nil }
-func (c *Character) Data() *model.AvatarData                              { return base }
 func (c *Character) CurrentHPRatio() float64                              { return 0 }
 func (c *Character) CurrentHP() float64                                   { return 0 }
 func (c *Character) CurrentHPDebt() float64                               { return 0 }
