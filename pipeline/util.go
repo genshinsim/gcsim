@@ -18,6 +18,7 @@ import (
 	"slices"
 	"strings"
 	"text/template"
+	"unicode"
 
 	"github.com/fatih/color"
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -55,6 +56,31 @@ func cleanText(s string) string {
 	s = regexp.MustCompile(`{[^}]*}`).ReplaceAllString(s, "")
 	s = regexp.MustCompile(`<i>[^<]*</i>`).ReplaceAllString(s, "")
 	return strings.TrimSpace(s)
+}
+
+func indentText(prefix, lines string) string {
+	b := bytes.NewBuffer(nil)
+	for line := range strings.Lines(lines) {
+		line = strings.TrimSuffix(line, "\n")
+		fmt.Fprintf(b, "%s%s\n", prefix, line)
+	}
+	return b.String()
+}
+
+func wrapText(s string, limit uint) string {
+	b := bytes.NewBuffer(nil)
+	var n uint
+	for _, char := range s {
+		n++
+		if n > limit && unicode.IsSpace(char) {
+			char = '\n'
+		}
+		b.WriteRune(char)
+		if char == '\n' {
+			n = 0
+		}
+	}
+	return b.String()
 }
 
 func useTemplate(name string, v any) []byte {

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"cmp"
 	"fmt"
-	"maps"
 	"path"
 	"reflect"
 	"slices"
@@ -175,7 +174,11 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 			skills[typ] = v.ProudSkillGroupId
 		}
 	}
-	for _, typ := range slices.Sorted(maps.Keys(skills)) {
+	var links []uint32
+	for _, typ := range abilities {
+		if _, ok := skills[typ]; !ok {
+			continue
+		}
 		pds := excel.Filter(excel.ProudSkillExcelConfigData, func(v *excel.ProudSkill) bool { return v.ProudSkillGroupId == skills[typ] })
 		slices.SortFunc(pds, func(a, b *excel.ProudSkill) int { return cmp.Compare(a.Level, b.Level) })
 
@@ -187,7 +190,7 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 			}
 		}
 
-		skill := excel.Find(excel.AvatarSkillExcelConfigData, func(v *excel.AvatarSkill) bool { return v.ProudSkillGroupId == pd.ProudSkillGroupId })
+		skill := pd.FindSkill()
 		if skill != nil {
 			attr := &AttributeSpec{
 				Type:   typ,
@@ -195,6 +198,7 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 				Desc:   skill.DescTextMapHash.String(),
 				Config: pd.OpenConfig,
 			}
+			links = append(links, ExtractLinks(attr.Desc)...)
 			attr.SetValues(0, nil)
 			cfg.Attributes = append(cfg.Attributes, attr)
 		}
@@ -225,6 +229,7 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 				Config: pd.OpenConfig,
 				Index:  NewTalentIndex(pd.ParamList),
 			}
+			links = append(links, ExtractLinks(attr.Desc)...)
 			attr.SetValues(len(pds), func(i int) []float64 { return pds[i].ParamList })
 			cfg.Attributes = append(cfg.Attributes, attr)
 		}
@@ -238,7 +243,24 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 			Config: t.OpenConfig,
 			Index:  NewTalentIndex(t.ParamList),
 		}
+		links = append(links, ExtractLinks(attr.Desc)...)
 		attr.SetValues(1, func(i int) []float64 { return t.ParamList })
+		cfg.Attributes = append(cfg.Attributes, attr)
+	}
+
+	seen := make(map[uint32]struct{})
+	for _, id := range links {
+		if _, ok := seen[id]; ok {
+			continue
+		}
+		seen[id] = struct{}{}
+		link := excel.FindHyperLink(id)
+		attr := &AttributeSpec{
+			Type: fmt.Sprintf("effect%d", len(seen)),
+			Name: link.NameTextMapHash.String(),
+			Desc: link.DescTextMapHash.String(),
+		}
+		attr.SetValues(0, nil)
 		cfg.Attributes = append(cfg.Attributes, attr)
 	}
 

@@ -214,15 +214,15 @@ func (c *Compiled) build(config *Config) error {
 			if spec.ref.Name() == "Traveler" {
 				switch spec.Model.Body {
 				case model.BodyType_BODY_BOY:
-					name = excel.FindManualTextMap("INFO_MALE_PRONOUN_KONG").TextMapContentTextMapHash.Lang(lang)
+					name = excel.FindManualTextMap("INFO_MALE_PRONOUN_KONG").Lang(lang)
 				case model.BodyType_BODY_GIRL:
-					name = excel.FindManualTextMap("INFO_MALE_PRONOUN_YING").TextMapContentTextMapHash.Lang(lang)
+					name = excel.FindManualTextMap("INFO_MALE_PRONOUN_YING").Lang(lang)
 				default:
 					panic("unreachable")
 				}
 			}
 			if len(spec.ref.CandSkillDepotIds) > 0 {
-				name = fmt.Sprintf("%s (%s)", name, excel.FindManualTextMap(spec.Model.Element.String()).TextMapContentTextMapHash.Lang(lang))
+				name = fmt.Sprintf("%s (%s)", name, excel.FindManualTextMap(spec.Model.Element.String()).Lang(lang))
 			}
 			loc.CharacterNames[spec.Model.Key] = name
 		}
@@ -242,10 +242,11 @@ func (c *Compiled) build(config *Config) error {
 	}
 
 	slices.SortStableFunc(config.Attributes, func(a, b *AttributeSpec) int {
-		return cmp.Compare(
-			slices.Index(abilities, a.Type),
-			slices.Index(abilities, b.Type),
-		)
+		aIdx, bIdx := slices.Index(abilities, a.Type), slices.Index(abilities, b.Type)
+		if aIdx != -1 && bIdx != -1 {
+			return cmp.Compare(aIdx, bIdx)
+		}
+		return 0
 	})
 
 	for i, name := range config.Shortcuts {

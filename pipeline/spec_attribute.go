@@ -44,10 +44,10 @@ func IndexFromParams(s string) ([]int, string) {
 		}
 		var num string
 		if num, s, ok = strings.Cut(s, ":"); !ok {
-			continue
+			break
 		}
 		if _, s, ok = strings.Cut(s, "}"); !ok {
-			continue
+			break
 		}
 		if param, err := strconv.Atoi(num); err == nil {
 			param--
@@ -76,6 +76,32 @@ func (s *AttributeSpec) SetValues(count int, level func(i int) []float64) {
 	}
 }
 
+func ExtractLinks(s string) []uint32 {
+	const prefix = "{LINK#"
+	var links []uint32
+	for {
+		var ok bool
+		if _, s, ok = strings.Cut(s, prefix); !ok {
+			break
+		}
+		var num string
+		if num, s, ok = strings.Cut(s, "}"); !ok || len(num) == 0 {
+			break
+		}
+		switch num[0] {
+		case 'N':
+		case 'P', 'S', 'T':
+			continue
+		default:
+			panic("unreachable")
+		}
+		if link, err := strconv.Atoi(num[1:]); err == nil {
+			links = append(links, uint32(link))
+		}
+	}
+	return links
+}
+
 func (s *AttributeSpec) EmitDesc(prefix string) string {
 	b := bytes.NewBuffer(nil)
 	fmt.Fprintf(b, "%s: %s", s.Type, s.Name)
@@ -85,18 +111,10 @@ func (s *AttributeSpec) EmitDesc(prefix string) string {
 	b.WriteString("\n\n")
 
 	desc := s.Desc
-	desc = strings.ReplaceAll(desc, ". ", ".\n")
-	desc = strings.ReplaceAll(desc, ": ", ":\n")
+	desc = wrapText(desc, 80)
 	for line := range strings.Lines(desc) {
 		line = strings.TrimSpace(line)
 		fmt.Fprintf(b, " %s\n", line)
 	}
-	lines := b.String()
-
-	b.Reset()
-	for line := range strings.Lines(lines) {
-		line = strings.TrimSuffix(line, "\n")
-		fmt.Fprintf(b, "%s%s\n", prefix, line)
-	}
-	return b.String()
+	return indentText(prefix, b.String())
 }

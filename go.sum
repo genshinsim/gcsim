@@ -263,8 +263,8 @@ github.com/sanity-io/litter v1.5.9-0.20260504104730-2ddefc21bc33 h1:OFMtPm/USSAP
 github.com/sanity-io/litter v1.5.9-0.20260504104730-2ddefc21bc33/go.mod h1:RpCoNc3ErwT75e2xPJolldnTgc57U9zDRUBbRKZk7mQ=
 github.com/schollz/progressbar/v3 v3.18.0 h1:uXdoHABRFmNIjUfte/Ex7WtuyVslrw2wVPQmCN62HpA=
 github.com/schollz/progressbar/v3 v3.18.0/go.mod h1:IsO3lpbaGuzh8zIMzgY3+J8l4C8GjO0Y9S69eFvNsec=
-github.com/shizukayuki/excel-hk4e v0.0.0-20260408210830-9e23d1b60cd9 h1:y8lF2xLzRTxOpJtC5cV2YlkMiDIBO6c2AOHdRw+le00=
-github.com/shizukayuki/excel-hk4e v0.0.0-20260408210830-9e23d1b60cd9/go.mod h1:2Bg1NC89NfpptgIo2+zu7HKIEMdx7HeBf700ISbCEuY=
+github.com/shizukayuki/excel-hk4e v0.0.0-20260717230206-c93b17a7e33b h1:NIY7cwEO1PmkTMoJAfRHzJE54ImgXkDSJRpExjxg6Qg=
+github.com/shizukayuki/excel-hk4e v0.0.0-20260717230206-c93b17a7e33b/go.mod h1:2Bg1NC89NfpptgIo2+zu7HKIEMdx7HeBf700ISbCEuY=
 github.com/sirupsen/logrus v1.9.3 h1:dueUQJ1C2q9oE3F7wvmSGAaVtTmUizReu6fjN8uqzbQ=
 github.com/sirupsen/logrus v1.9.3/go.mod h1:naHLuLoDiP4jHNo9R0sCBMtWGeIprob74mVsIT4qYEQ=
 github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72/go.mod h1:JwIasOWyU6f++ZhiEuf87xNszmSA2myDM2Kzu9HwQUA=

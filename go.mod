@@ -34,7 +34,7 @@ require (
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/sanity-io/litter v1.5.9-0.20260504104730-2ddefc21bc33
 	github.com/schollz/progressbar/v3 v3.18.0
-	github.com/shizukayuki/excel-hk4e v0.0.0-20260408210830-9e23d1b60cd9
+	github.com/shizukayuki/excel-hk4e v0.0.0-20260717230206-c93b17a7e33b
 	github.com/tinylib/msgp v1.1.9
 	github.com/urfave/cli/v3 v3.10.1
 	go.mongodb.org/mongo-driver v1.12.1
