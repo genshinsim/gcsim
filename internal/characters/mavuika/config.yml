@@ -15,6 +15,11 @@ action_param_keys:
         - param: "hold"
         - param: "final"
         - param: "buffered"
+    skillDash:
+        - param: "travel"
+        - param: "collision"
+        - param: "charge_cancel"
+
 skill_data_mapping:
     attack: # Normal Attack: Flames Weave Life
         attack_1:

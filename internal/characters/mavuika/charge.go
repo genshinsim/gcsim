@@ -10,6 +10,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -48,7 +49,7 @@ const (
 	bikeChargeAttackHitboxRadius = 3   // Placeholder
 	bikeChargeAttackSpinOffset   = 4.0 // Estimated center of hitbox from Mav origin
 	maxBufferedBikeChargeFrames  = 15
-	cdcLockoutStatus             = "CDC-Lockout"
+	cdcLockoutStatus             = "mavuika-cdc-lockout"
 )
 
 func init() {
@@ -97,7 +98,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
 		return c.BikeCharge(p)
 	}
-	if c.Core.Player.CurrentState() == action.DashState && c.isDashFromCA {
+	if c.Core.Player.CurrentState() == action.DashState && c.chargeCancel {
 		return action.Info{}, errors.New("can only cancel a dash with a biked charge")
 	}
 	ai := info.AttackInfo{
@@ -480,7 +481,13 @@ func (c *char) GetSkippedWindupFrames(bufferedFrames int) int {
 	switch {
 	case x == action.DashState:
 		// You can only allow less than max buffered frames if you allow dash to finish completely
-		if c.isDashFromCA {
+		if c.chargeCancel {
+			c.chargeCancel = false
+			c.Core.Log.NewEvent(
+				"Mav cancelled charge cancel",
+				glog.LogCharacterEvent,
+				c.Index(),
+			)
 			return maxBufferedBikeChargeFrames
 		}
 		skippedWindupFrames = maxBufferedBikeChargeFrames
