@@ -2,7 +2,7 @@ import React from "react";
 import ReactPlayer from "react-player";
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
-import character_data from "./character_data.json";
+import character_data from "./character.dm.json";
 
 function Vid({ vid }) {
   return (

@@ -232,7 +232,7 @@ func (c *char) gravityTick(clearGravity bool) {
 		Mult:             mult,
 	}
 
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, radius)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, radius)
 	c.a1OGravityTick()
 	c.c1OnGravityTick(maxReaction)
 	c.c2OnGravityTick(maxReaction)

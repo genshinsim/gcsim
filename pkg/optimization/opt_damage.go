@@ -66,7 +66,7 @@ func (stats *SubstatOptimizerDetails) optimizeNonErSubstatsForChar(
 	}
 
 	totalSubs := stats.getCharSubstatTotal(idxChar)
-	stats.optimizer.logger.Debug(char.Base.Key.Pretty())
+	stats.optimizer.logger.Debug(char.Base.Key.String())
 	stats.optimizer.logger.Debug(PrettyPrintStatsCounts(stats.charSubstatFinal[idxChar]))
 	for totalSubs > stats.charTotalLiquidSubstats[idxChar] {
 		amount := -1

@@ -32,6 +32,7 @@ const (
 	DahliaBurst
 	IneffaSkill
 	ColumbinaC1
+	NicoleSkill
 	EndType
 )
 

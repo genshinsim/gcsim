@@ -36,9 +36,9 @@ func (g *Generator) GenerateImports(dir string) error {
 		fmt.Println(string(src))
 		return fmt.Errorf("failed to gofmt on generated keys data: %w", err)
 	}
-	err = os.WriteFile(fmt.Sprintf("%v/imports_char_gen.go", dir), dst, 0o644)
+	err = os.WriteFile(fmt.Sprintf("%v/imports.character.dm.go", dir), dst, 0o644)
 	if err != nil {
-		return fmt.Errorf("failed to write imports_char_gen.go: %w", err)
+		return fmt.Errorf("failed to write imports.character.dm.go: %w", err)
 	}
 
 	return nil

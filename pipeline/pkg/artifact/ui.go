@@ -12,7 +12,7 @@ import (
 
 func (g *Generator) DumpJSON(path string) error {
 	// delete existing
-	err := g.writeCharDataJSON(path + "/artifact_data.generated.json")
+	err := g.writeCharDataJSON(path + "/artifact.dm.json")
 	if err != nil {
 		return err
 	}
@@ -38,6 +38,7 @@ func (g *Generator) writeCharDataJSON(path string) error {
 	if err != nil {
 		return err
 	}
+	dst.WriteString("\n")
 	os.Remove(path)
 	err = os.WriteFile(path, dst.Bytes(), 0o644)
 	if err != nil {
