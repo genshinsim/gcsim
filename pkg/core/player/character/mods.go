@@ -64,12 +64,39 @@ func (c *CharWrapper) AddStatus(key string, dur int, hitlag bool) {
 	modifier.LogAdd("status", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
+// Add an AttackMod.
+//
+// Note: If the AttackMod can affect Lunar reaction damage, an additional subscription
+// to OnLunarReactionAttack should be added to apply the AttackMod to individual contributions
+//
+//	m := make([]float64, attributes.EndStatType)
+//	m[attributes.CR] = 0.12
+//	char.AddAttackMod(character.AttackMod{
+//		Base: modifier.NewBaseWithHitlag("buff", 10*60),
+//		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+//			if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
+//				return nil
+//			}
+//			return m
+//		},
+//	})
 func (c *CharWrapper) AddAttackMod(mod AttackMod) {
 	mod.SetExpiry(*c.f)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
 	modifier.LogAdd("attack", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
+// Add a Cooldown Mod
+//
+//	char.AddCooldownMod(character.CooldownMod{
+//		Base: modifier.NewBaseWithHitlag("buff", 10*60),
+//		Amount: func(a action.Action) float64 {
+//			if a == action.ActionSkill {
+//				return -0.15
+//			}
+//			return 0
+//		},
+//	})
 func (c *CharWrapper) AddCooldownMod(mod CooldownMod) {
 	mod.SetExpiry(*c.f)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
@@ -82,18 +109,50 @@ func (c *CharWrapper) AddDamageReductionMod(mod DamageReductionMod) {
 	modifier.LogAdd("dr", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
+// Add a HealBonusMod
+//
+//	char.AddHealBonusMod(character.HealBonusMod{
+//		Base: modifier.NewBaseWithHitlag("buff", 18)60),
+//		Amount: func() float64 {
+//			return 0.3
+//		},
+//	})
 func (c *CharWrapper) AddHealBonusMod(mod HealBonusMod) {
 	mod.SetExpiry(*c.f)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
 	modifier.LogAdd("heal bonus", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
+// Add a ReactBonusMod
+//
+//	char.AddReactBonusMod(character.ReactBonusMod{
+//		Base: modifier.NewBaseWithHitlag("buff", 10*60),
+//		Amount: func(ai info.AttackInfo) float64 {
+//			switch ai.AttackTag {
+//			case attacks.AttackTagOverloadDamage,
+//				attacks.AttackTagBurningDamage,
+//				return 0.5
+//			}
+//			return 0
+//		},
+//	})
 func (c *CharWrapper) AddReactBonusMod(mod ReactBonusMod) {
 	mod.SetExpiry(*c.f)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
 	modifier.LogAdd("react bonus", c.Index(), &mod, c.log, overwrote, oldEvt)
 }
 
+// Add a StatMod
+//
+//	m := make([]float64, attributes.EndStatType)
+//	m[attributes.EM] = 80
+//	s.char.AddStatMod(character.StatMod{
+//		 Base:		 modifier.NewBaseWithHitlag("buff", 10*60),
+//		 AffectedStat: attributes.EM,
+//		 Amount: func() []float64 {
+//		 	return m
+//		 },
+//	})
 func (c *CharWrapper) AddStatMod(mod StatMod) {
 	mod.SetExpiry(*c.f)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&c.mods, &mod, *c.f)
