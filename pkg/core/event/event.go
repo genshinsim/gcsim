@@ -115,6 +115,22 @@ func New() *Handler {
 	return h
 }
 
+// Subscribe to an event
+//
+//	core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+//		e, ok := args[0].(*enemy.Enemy);
+//		if !ok {
+//			return
+//		}
+//		atk, ok := args[1].(*info.AttackEvent)
+//		if !ok {
+//			return
+//		}
+//		if atk.Info.ActorIndex != char.Index() {
+//			return
+//		}
+//		doSomething(e)
+//	}, "subscription")
 func (h *Handler) Subscribe(e Event, f Hook, key string) {
 	a := h.events[e]
 
