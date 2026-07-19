@@ -52,7 +52,7 @@ func (c *char) c2OnSpecialSkill() {
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Anemo,
 		Durability:     25,
-		Mult:           8 * c.a1SkillMulti(),
+		Mult:           8,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagVarkaSpecial},
 	}
 	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 4, 6)

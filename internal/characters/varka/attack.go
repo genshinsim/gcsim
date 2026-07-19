@@ -145,7 +145,7 @@ func (c *char) skillAttack() (action.Info, error) {
 			HitlagHaltFrames:   skillAttackHitlagHaltFrame[c.NormalCounter] * 60,
 			CanBeDefenseHalted: true,
 		}
-		c.Core.QueueAttack(ai, ap, delay, delay, c.fourWindsCDRedCB)
+		c.Core.QueueAttack(ai, ap, delay, delay, c.fourWindsCDRedCB())
 	}
 
 	defer c.AdvanceNormalIndex()

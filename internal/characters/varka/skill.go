@@ -23,8 +23,7 @@ const (
 	skillKey       = "sturm-und-drang"
 	skillCD        = 16 * 60
 
-	fourWindsCD             = 11 * 60
-	fourWindsCDReduceICDKey = "four-winds-cd-reduction-icd"
+	fourWindsCD = 11 * 60
 )
 
 func init() {
@@ -150,32 +149,34 @@ func (c *char) fourWinds(c6Free bool) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) fourWindsCDRedCB(ac info.AttackCB) {
-	if ac.Target.Type() != info.TargettableEnemy {
-		return
+func (c *char) fourWindsCDRedCB() func(ac info.AttackCB) {
+	done := false
+	return func(ac info.AttackCB) {
+		if ac.Target.Type() != info.TargettableEnemy {
+			return
+		}
+
+		if c.fourWindsCDStacks >= 15 {
+			return
+		}
+
+		if !c.StatusIsActive(skillKey) {
+			return
+		}
+
+		if done {
+			return
+		}
+
+		if c.fourWindsCDDoneF < 0 {
+			return
+		}
+		done = true
+		c.fourWindsCDStacks++
+
+		amt := c.hexSkillCDReduction()
+		c.reduceFourWindsCD(amt)
 	}
-
-	if c.fourWindsCDStacks >= 15 {
-		return
-	}
-
-	if !c.StatusIsActive(skillKey) {
-		return
-	}
-
-	if c.StatusIsActive(fourWindsCDReduceICDKey) {
-		return
-	}
-
-	if c.fourWindsCDDoneF < 0 {
-		return
-	}
-
-	c.AddStatus(fourWindsCDReduceICDKey, 0.1*60, true)
-	c.fourWindsCDStacks++
-
-	amt := c.hexSkillCDReduction()
-	c.reduceFourWindsCD(amt)
 }
 
 func (c *char) reduceFourWindsCD(amt int) {
