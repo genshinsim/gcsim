@@ -146,7 +146,7 @@ func (c *CharWrapper) AddReactBonusMod(mod ReactBonusMod) {
 //
 //	m := make([]float64, attributes.EndStatType)
 //	m[attributes.EM] = 80
-//	s.char.AddStatMod(character.StatMod{
+//	char.AddStatMod(character.StatMod{
 //		 Base:		 modifier.NewBaseWithHitlag("buff", 10*60),
 //		 AffectedStat: attributes.EM,
 //		 Amount: func() []float64 {
