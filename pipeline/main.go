@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"cmp"
 	"context"
 	"errors"
@@ -122,6 +123,16 @@ var app = &cli.Command{
 			Name:   "run",
 			Usage:  "generate files",
 			Action: run,
+		},
+		{
+			Name:  "init",
+			Usage: "print config.yml template",
+			Flags: []cli.Flag{
+				&cli.StringFlag{Name: "name"},
+				&cli.IntFlag{Name: "id"},
+				&cli.IntFlag{Name: "depot"},
+			},
+			Action: configTemplate,
 		},
 	},
 }
@@ -451,6 +462,97 @@ func run(ctx context.Context, cmd *cli.Command) error {
 		}
 		Log(slog.LevelDebug, "%v took %v", name, time.Since(t))
 	}
+
+	return nil
+}
+
+func configTemplate(ctx context.Context, cmd *cli.Command) error {
+	if err := fetch(ctx, cmd); err != nil {
+		return err
+	}
+
+	cfg := &Config{
+		Name: excel.SlugLower(cmd.String("name")),
+		Override: Override{
+			Id:    uint32(cmd.Int("id")),
+			Depot: uint32(cmd.Int("depot")),
+		},
+	}
+	var err error
+	if cfg.Artifact, err = buildArtifactSpec(cfg); err != nil {
+		Log(slog.LevelError, "%v: %v", KindArtifact, err)
+	}
+	if cfg.Character, err = buildCharacterSpec(cfg); err != nil {
+		Log(slog.LevelError, "%v: %v", KindCharacter, err)
+	}
+	if cfg.Weapon, err = buildWeaponSpec(cfg); err != nil {
+		Log(slog.LevelError, "%v: %v", KindWeapon, err)
+	}
+	switch {
+	case cfg.Artifact != nil:
+		cfg.Kind = KindArtifact
+		cfg.Name = cfg.Artifact.Model.Key
+	case cfg.Character != nil:
+		cfg.Kind = KindCharacter
+		cfg.Name = cfg.Character.Model.Key
+	case cfg.Weapon != nil:
+		cfg.Kind = KindWeapon
+		cfg.Name = cfg.Weapon.Model.Key
+	default:
+		Log(slog.LevelError, "no result")
+		cli.ShowSubcommandHelp(cmd)
+		return nil
+	}
+
+	indent := strings.Repeat(" ", 2)
+	b := bytes.NewBuffer(nil)
+	b.WriteString("use: pipeline\n")
+	fmt.Fprintf(b, "kind: %s\n", cfg.Kind)
+	fmt.Fprintf(b, "name: %s\n", cfg.Name)
+	b.WriteString("\n")
+	b.WriteString("talents:\n")
+	var seen string
+	for _, attr := range cfg.Attributes {
+		useParam := attr.ParamDesc == ""
+		useParam = useParam || len(excel.Filter(cfg.Attributes, func(s *AttributeSpec) bool {
+			return attr.Type == s.Type && attr.Desc == s.Desc
+		})) > 1
+		for ind := range attr.Index {
+			if ind == 0 && seen != attr.Type {
+				if seen != "" {
+					b.WriteString("\n")
+				}
+				seen = attr.Type
+				if attr.ParamDesc == "" {
+					desc := attr.Desc
+					desc = wrapText(desc, 80)
+					desc = indentText(indent+"# ", desc)
+					b.WriteString(desc)
+				}
+			}
+
+			b.WriteString(indent)
+			fmt.Fprintf(b, "- _%[1]s: %[1]s", attr.Type)
+			if useParam {
+				fmt.Fprintf(b, "#%d", attr.Index[ind])
+				if attr.ParamDesc != "" {
+					fmt.Fprintf(b, " # %s | %s", attr.Desc, attr.ParamDesc)
+				} else {
+					fmt.Fprintf(b, " # %v", attr.Const[ind])
+				}
+			} else {
+				b.WriteString("(")
+				b.WriteString(attr.Desc)
+				if ind > 0 {
+					fmt.Fprintf(b, "|%d", ind)
+				}
+				b.WriteString(")")
+			}
+			b.WriteString("\n")
+		}
+	}
+	b.WriteString("\n")
+	fmt.Println(b.String())
 
 	return nil
 }
