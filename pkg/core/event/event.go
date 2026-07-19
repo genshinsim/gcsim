@@ -117,7 +117,7 @@ func New() *Handler {
 
 // Subscribe to an event
 //
-//	core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+//	core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 //		e, ok := args[0].(*enemy.Enemy);
 //		if !ok {
 //			return
