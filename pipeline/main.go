@@ -12,6 +12,7 @@ import (
 	"reflect"
 	"runtime"
 	"slices"
+	"strconv"
 	"strings"
 	"time"
 
@@ -27,6 +28,7 @@ var (
 	optRemote   bool
 	optCache    bool
 	optVerbose  bool
+	optQuickfix []string
 
 	// excel.Languages
 	languages = map[string]string{
@@ -89,6 +91,11 @@ var app = &cli.Command{
 			Hidden:      true,
 			Value:       false,
 			Destination: &optVerbose,
+		},
+		&cli.StringSliceFlag{
+			Name:        "qf",
+			Usage:       "translate datamine fields at runtime",
+			Destination: &optQuickfix,
 		},
 	},
 	Before: func(_ context.Context, _ *cli.Command) (context.Context, error) {
@@ -183,6 +190,17 @@ func fetch(ctx context.Context, cmd *cli.Command) error {
 	for _, v := range languages {
 		lang = append(lang, v)
 	}
+	quickfix := make(map[string]string)
+	for _, in := range optQuickfix {
+		s := strings.Split(in, "->")
+		if len(s) != 2 {
+			return fmt.Errorf("quickfix wants from->to but got=%v", in)
+		}
+		from, to := strings.TrimSpace(s[0]), strings.TrimSpace(s[1])
+		from = strconv.Quote(from) + ":"
+		to = strconv.Quote(to) + ":"
+		quickfix[from] = to
+	}
 	return excel.LoadResources(excel.LoaderConfig{
 		Languages: lang,
 		ReadFile: func(root, name string) ([]byte, error) {
@@ -193,6 +211,9 @@ func fetch(ctx context.Context, cmd *cli.Command) error {
 				}
 			}()
 			data, err := fetch(root, name)
+			for from, to := range quickfix {
+				data = bytes.ReplaceAll(data, []byte(from), []byte(to))
+			}
 			return data, err
 		},
 	})
