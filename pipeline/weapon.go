@@ -48,13 +48,12 @@ func buildWeaponSpec(cfg *Config) (*WeaponSpec, error) {
 
 	spec.Name = spec.ref.Name()
 	spec.Model = &model.WeaponData{
-		Id:              int32(spec.ref.Id),
-		Key:             excel.SlugLower(spec.Name),
-		Rarity:          int32(spec.ref.RankLevel),
-		WeaponClass:     ConvertEnum[model.WeaponClass](spec.ref.WeaponType, model.WeaponClass_value, -1),
-		ImageName:       spec.ref.AwakenIcon,
-		BaseStats:       &model.WeaponStatsData{},
-		NameTextHashMap: int64(spec.ref.NameTextMapHash),
+		Id:          spec.ref.Id,
+		Key:         excel.SlugLower(spec.Name),
+		Rarity:      spec.ref.RankLevel,
+		WeaponClass: ConvertEnum[model.WeaponType](spec.ref.WeaponType, model.WeaponType_value, -1),
+		ImageName:   spec.ref.AwakenIcon,
+		BaseStats:   &model.WeaponStatsData{},
 	}
 	if spec.Model.WeaponClass == -1 {
 		return nil, fmt.Errorf("unknown weapon_type=%v", spec.ref.WeaponType)
@@ -67,8 +66,8 @@ func buildWeaponSpec(cfg *Config) (*WeaponSpec, error) {
 		if curve := add.Type; !slices.Contains(curveTypes[KindWeapon], curve) {
 			return nil, fmt.Errorf("curve not listed in known types: %v", curve)
 		}
-		typ := ConvertEnum[model.StatType](add.PropType, model.StatType_value, -1)
-		curve := ConvertEnum[model.WeaponCurveType](add.Type, model.WeaponCurveType_value, -1)
+		typ := ConvertEnum[model.FightPropType](add.PropType, model.FightPropType_value, -1)
+		curve := ConvertEnum[model.GrowCurveType](add.Type, model.GrowCurveType_value, -1)
 		if typ == -1 {
 			return nil, fmt.Errorf("unknown prop=%v", add.PropType)
 		}
@@ -88,7 +87,7 @@ func buildWeaponSpec(cfg *Config) (*WeaponSpec, error) {
 			return nil, err
 		}
 		spec.Model.BaseStats.PromoData = append(spec.Model.BaseStats.PromoData, &model.PromotionData{
-			MaxLevel: int32(v.UnlockMaxLevel),
+			MaxLevel: v.UnlockMaxLevel,
 			AddProps: props,
 		})
 	}

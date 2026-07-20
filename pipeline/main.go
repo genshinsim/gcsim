@@ -332,7 +332,7 @@ func compile(ctx context.Context, cmd *cli.Command) (*Compiled, error) {
 	c := &Compiled{
 		Configuration: make([]*Config, 0, len(configs)),
 		ElementCoeff:  make([]float64, 0),
-		GrowCurveData: make(map[excel.GrowCurveType][]float64),
+		GrowCurveData: make(map[model.GrowCurveType][]float64),
 		ICDGroup:      make(map[string]AttackAttenuation),
 		Localization:  make(map[string]Localization),
 	}

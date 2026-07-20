@@ -5,165 +5,107 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
-func ConvertProtoStat(s model.StatType) attributes.Stat {
-	switch s {
-	case model.StatType_INVALID_STAT_TYPE:
-		return attributes.NoStat
-	case model.StatType_FIGHT_PROP_DEFENSE_PERCENT:
-		return attributes.DEFP
-	case model.StatType_FIGHT_PROP_DEFENSE:
-		return attributes.DEF
-	case model.StatType_FIGHT_PROP_HP:
-		return attributes.HP
-	case model.StatType_FIGHT_PROP_HP_PERCENT:
-		return attributes.HPP
-	case model.StatType_FIGHT_PROP_ATTACK:
-		return attributes.ATK
-	case model.StatType_FIGHT_PROP_ATTACK_PERCENT:
-		return attributes.ATKP
-	case model.StatType_FIGHT_PROP_CHARGE_EFFICIENCY:
-		return attributes.ER
-	case model.StatType_FIGHT_PROP_ELEMENT_MASTERY:
-		return attributes.EM
-	case model.StatType_FIGHT_PROP_CRITICAL:
-		return attributes.CR
-	case model.StatType_FIGHT_PROP_CRITICAL_HURT:
-		return attributes.CD
-	case model.StatType_FIGHT_PROP_HEAL_ADD:
-		return attributes.Heal
-	case model.StatType_FIGHT_PROP_FIRE_ADD_HURT:
-		return attributes.PyroP
-	case model.StatType_FIGHT_PROP_WATER_ADD_HURT:
-		return attributes.HydroP
-	case model.StatType_FIGHT_PROP_GRASS_ADD_HURT:
-		return attributes.DendroP
-	case model.StatType_FIGHT_PROP_ELEC_ADD_HURT:
-		return attributes.ElectroP
-	case model.StatType_FIGHT_PROP_WIND_ADD_HURT:
-		return attributes.AnemoP
-	case model.StatType_FIGHT_PROP_ICE_ADD_HURT:
-		return attributes.CryoP
-	case model.StatType_FIGHT_PROP_ROCK_ADD_HURT:
-		return attributes.GeoP
-	case model.StatType_FIGHT_PROP_PHYSICAL_ADD_HURT:
-		return attributes.PhyP
-	case model.StatType_FIGHT_PROP_SHIELD_COST_MINUS_RATIO_ADD_HURT:
-		// TODO: this is not a stat for gcsim yet
-		return attributes.NoStat
-	case model.StatType_FIGHT_PROP_HEALED_ADD:
-		// TODO: this is for incoming heal i believe
-		return attributes.NoStat
-	case model.StatType_FIGHT_PROP_BASE_HP:
-		return attributes.BaseHP
-	case model.StatType_FIGHT_PROP_BASE_ATTACK:
-		return attributes.BaseATK
-	case model.StatType_FIGHT_PROP_BASE_DEFENSE:
-		return attributes.BaseDEF
-	case model.StatType_FIGHT_PROP_MAX_HP:
-		// TODO: this is for maxhp which is not a stat for us
-		return attributes.NoStat
-	default:
-		return attributes.NoStat
+func ConvertProtoStat(in model.FightPropType) attributes.Stat {
+	if out, ok := map[model.FightPropType]attributes.Stat{
+		model.FightPropType_FIGHT_PROP_BASE_HP:           attributes.BaseHP,
+		model.FightPropType_FIGHT_PROP_HP:                attributes.HP,
+		model.FightPropType_FIGHT_PROP_HP_PERCENT:        attributes.HPP,
+		model.FightPropType_FIGHT_PROP_BASE_ATTACK:       attributes.BaseATK,
+		model.FightPropType_FIGHT_PROP_ATTACK:            attributes.ATK,
+		model.FightPropType_FIGHT_PROP_ATTACK_PERCENT:    attributes.ATKP,
+		model.FightPropType_FIGHT_PROP_BASE_DEFENSE:      attributes.BaseDEF,
+		model.FightPropType_FIGHT_PROP_DEFENSE:           attributes.DEF,
+		model.FightPropType_FIGHT_PROP_DEFENSE_PERCENT:   attributes.DEFP,
+		model.FightPropType_FIGHT_PROP_CRITICAL:          attributes.CR,
+		model.FightPropType_FIGHT_PROP_CRITICAL_HURT:     attributes.CD,
+		model.FightPropType_FIGHT_PROP_CHARGE_EFFICIENCY: attributes.ER,
+		model.FightPropType_FIGHT_PROP_HEAL_ADD:          attributes.Heal,
+		model.FightPropType_FIGHT_PROP_ELEMENT_MASTERY:   attributes.EM,
+		model.FightPropType_FIGHT_PROP_PHYSICAL_ADD_HURT: attributes.PhyP,
+		model.FightPropType_FIGHT_PROP_FIRE_ADD_HURT:     attributes.PyroP,
+		model.FightPropType_FIGHT_PROP_ELEC_ADD_HURT:     attributes.ElectroP,
+		model.FightPropType_FIGHT_PROP_WATER_ADD_HURT:    attributes.HydroP,
+		model.FightPropType_FIGHT_PROP_GRASS_ADD_HURT:    attributes.DendroP,
+		model.FightPropType_FIGHT_PROP_WIND_ADD_HURT:     attributes.AnemoP,
+		model.FightPropType_FIGHT_PROP_ROCK_ADD_HURT:     attributes.GeoP,
+		model.FightPropType_FIGHT_PROP_ICE_ADD_HURT:      attributes.CryoP,
+	}[in]; ok {
+		return out
 	}
+	return attributes.NoStat
 }
 
-func ConvertProtoElement(e model.Element) attributes.Element {
-	switch e {
-	case model.Element_Electric:
-		return attributes.Electro
-	case model.Element_Fire:
-		return attributes.Pyro
-	case model.Element_Ice:
-		return attributes.Cryo
-	case model.Element_Water:
-		return attributes.Hydro
-	case model.Element_Grass:
-		return attributes.Dendro
-	case model.Element_ELEMENT_QUICKEN:
-		return attributes.Quicken
-	case model.Element_ELEMENT_FROZEN:
-		return attributes.Frozen
-	case model.Element_Wind:
-		return attributes.Anemo
-	case model.Element_Rock:
-		return attributes.Geo
-	default:
-		return attributes.NoElement
+func ConvertProtoElement(in model.ElementType) attributes.Element {
+	if out, ok := map[model.ElementType]attributes.Element{
+		model.ElementType_Fire:     attributes.Pyro,
+		model.ElementType_Water:    attributes.Hydro,
+		model.ElementType_Grass:    attributes.Dendro,
+		model.ElementType_Electric: attributes.Electro,
+		model.ElementType_Ice:      attributes.Cryo,
+		model.ElementType_Wind:     attributes.Anemo,
+		model.ElementType_Rock:     attributes.Geo,
+	}[in]; ok {
+		return out
 	}
+	return attributes.NoElement
 }
 
-func ConvertRegion(z model.ZoneType) ZoneType {
-	switch z {
-	case model.ZoneType_ASSOC_TYPE_MONDSTADT:
-		return ZoneMondstadt
-	case model.ZoneType_ASSOC_TYPE_LIYUE:
-		return ZoneLiyue
-	case model.ZoneType_ASSOC_TYPE_INAZUMA:
-		return ZoneInazuma
-	case model.ZoneType_ASSOC_TYPE_SUMERU:
-		return ZoneSumeru
-	case model.ZoneType_ASSOC_TYPE_FONTAINE:
-		return ZoneFontaine
-	case model.ZoneType_ASSOC_TYPE_NATLAN:
-		return ZoneNatlan
-	case model.ZoneType_ASSOC_TYPE_RANGER:
-		// aloy
-		return ZoneUnknown
-	case model.ZoneType_ASSOC_TYPE_MAINACTOR:
-		// traveler
-		return ZoneUnknown
-	case model.ZoneType_ASSOC_TYPE_NODKRAI:
-		return ZoneNodKrai
-	default:
-		return ZoneUnknown
+func ConvertRegion(in model.AssocType) ZoneType {
+	if out, ok := map[model.AssocType]ZoneType{
+		model.AssocType_ASSOC_TYPE_MONDSTADT:      ZoneMondstadt,
+		model.AssocType_ASSOC_TYPE_LIYUE:          ZoneLiyue,
+		model.AssocType_ASSOC_TYPE_INAZUMA:        ZoneInazuma,
+		model.AssocType_ASSOC_TYPE_SUMERU:         ZoneSumeru,
+		model.AssocType_ASSOC_TYPE_FONTAINE:       ZoneFontaine,
+		model.AssocType_ASSOC_TYPE_NATLAN:         ZoneNatlan,
+		model.AssocType_ASSOC_TYPE_SNEZHNAYA:      ZoneSnezhnaya,
+		model.AssocType_ASSOC_TYPE_NODKRAI:        ZoneNodKrai,
+		model.AssocType_ASSOC_TYPE_NODKRAI_ZIBAI:  ZoneNodKrai, // TODO: is zibai not liyue?
+		model.AssocType_ASSOC_TYPE_SNEZHNAYA_STAR: ZoneSnezhnaya,
+	}[in]; ok {
+		return out
 	}
+	return ZoneUnknown
 }
 
-func ConvertWeaponClass(w model.WeaponClass) WeaponClass {
-	switch w {
-	case model.WeaponClass_WEAPON_SWORD_ONE_HAND:
-		return WeaponClassSword
-	case model.WeaponClass_WEAPON_CLAYMORE:
-		return WeaponClassClaymore
-	case model.WeaponClass_WEAPON_POLE:
-		return WeaponClassSpear
-	case model.WeaponClass_WEAPON_BOW:
-		return WeaponClassBow
-	case model.WeaponClass_WEAPON_CATALYST:
-		return WeaponClassCatalyst
-	default:
-		// TODO: we should have an invalid?
-		return WeaponClassSword
+func ConvertWeaponClass(in model.WeaponType) WeaponClass {
+	if out, ok := map[model.WeaponType]WeaponClass{
+		model.WeaponType_WEAPON_SWORD_ONE_HAND: WeaponClassSword,
+		model.WeaponType_WEAPON_CATALYST:       WeaponClassCatalyst,
+		model.WeaponType_WEAPON_CLAYMORE:       WeaponClassClaymore,
+		model.WeaponType_WEAPON_BOW:            WeaponClassBow,
+		model.WeaponType_WEAPON_POLE:           WeaponClassSpear,
+	}[in]; ok {
+		return out
 	}
+	// TODO: no invalid
+	return WeaponClassSword
 }
 
-func ConvertBodyType(b model.BodyType) BodyType {
-	switch b {
-	case model.BodyType_BODY_BOY:
-		return BodyBoy
-	case model.BodyType_BODY_GIRL:
-		return BodyGirl
-	case model.BodyType_BODY_MALE:
-		return BodyMale
-	case model.BodyType_BODY_LADY:
-		return BodyLady
-	case model.BodyType_BODY_LOLI:
-		return BodyLoli
-	default:
-		// TODO: no invalid
-		return BodyMale
+func ConvertBodyType(in model.BodyType) BodyType {
+	if out, ok := map[model.BodyType]BodyType{
+		model.BodyType_BODY_BOY:  BodyBoy,
+		model.BodyType_BODY_GIRL: BodyGirl,
+		model.BodyType_BODY_LADY: BodyLady,
+		model.BodyType_BODY_MALE: BodyMale,
+		model.BodyType_BODY_LOLI: BodyLoli,
+	}[in]; ok {
+		return out
 	}
+	// TODO: no invalid
+	return BodyMale
 }
 
-func ConvertRarity(q model.QualityType) int {
-	switch q {
-	case model.QualityType_QUALITY_ORANGE_SP:
-		return 5
-	case model.QualityType_QUALITY_ORANGE:
-		return 5
-	case model.QualityType_QUALITY_PURPLE:
-		return 4
-	default:
-		return 4
+func ConvertRarity(in model.QualityType) int {
+	if out, ok := map[model.QualityType]int{
+		model.QualityType_QUALITY_WHITE:     1,
+		model.QualityType_QUALITY_GREEN:     2,
+		model.QualityType_QUALITY_BLUE:      3,
+		model.QualityType_QUALITY_PURPLE:    4,
+		model.QualityType_QUALITY_ORANGE:    5,
+		model.QualityType_QUALITY_ORANGE_SP: 5,
+	}[in]; ok {
+		return out
 	}
+	return 0
 }

@@ -4,7 +4,7 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/shizukayuki/excel-hk4e"
+	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 //go:generate go tool github.com/dmarkham/enumer -text -json -linecomment -type=Kind $GOFILE
@@ -22,7 +22,7 @@ const (
 type Compiled struct {
 	Configuration []*Config                         `yaml:"configuration,omitempty"`
 	ElementCoeff  []float64                         `yaml:"element_coeff,omitempty"`
-	GrowCurveData map[excel.GrowCurveType][]float64 `yaml:"grow_curve_data,omitempty"`
+	GrowCurveData map[model.GrowCurveType][]float64 `yaml:"grow_curve_data,omitempty"`
 	ICDGroup      map[string]AttackAttenuation      `yaml:"icd_group,omitempty"`
 	Localization  map[string]Localization           `yaml:"localization,omitempty"`
 }

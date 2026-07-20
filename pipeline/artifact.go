@@ -57,8 +57,8 @@ func buildArtifactSpec(cfg *Config) (*ArtifactSpec, error) {
 
 	spec.Name = affixes[0].Name()
 	spec.Model = &model.ArtifactData{
-		SetId:      int64(spec.ref.SetId),
-		TextMapId:  int64(affixes[len(affixes)-1].NameTextMapHash), // FIXME: this is unstable
+		SetId:      spec.ref.SetId,
+		TextMapId:  uint32(affixes[len(affixes)-1].NameTextMapHash), // FIXME: this is unstable
 		Key:        excel.SlugLower(spec.Name),
 		ImageNames: &model.ArtifactImageData{},
 	}

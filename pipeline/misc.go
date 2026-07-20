@@ -54,7 +54,7 @@ func (c *Compiled) buildCurveData() error {
 		default:
 			panic("unreachable")
 		}
-		ref = excel.Filter(ref, func(v *excel.Curve) bool { return v.Level >= 1 })
+		ref = excel.Filter(ref, func(v *excel.Curve) bool { return v.Level > 0 })
 		slices.SortFunc(ref, func(a, b *excel.Curve) int { return cmp.Compare(a.Level, b.Level) })
 
 		for lv, curve := range ref {
@@ -67,7 +67,11 @@ func (c *Compiled) buildCurveData() error {
 				if arith != "ARITH_MULTI" {
 					return fmt.Errorf("lv=%v,curve=%v has unexpected arith type: %v", curve.Level, typ, arith)
 				}
-				c.GrowCurveData[typ] = append(c.GrowCurveData[typ], value)
+				k := ConvertEnum[model.GrowCurveType](typ, model.GrowCurveType_value, -1)
+				if k == -1 {
+					return fmt.Errorf("unknown curve=%v at lv=%v", typ, curve.Level)
+				}
+				c.GrowCurveData[k] = append(c.GrowCurveData[k], value)
 			}
 		}
 	}
@@ -75,76 +79,14 @@ func (c *Compiled) buildCurveData() error {
 }
 
 func (c *Compiled) GenerateCurve() error {
-	var (
-		avatar  []map[model.AvatarCurveType]float64
-		monster []map[model.MonsterCurveType]float64
-		weapon  []map[model.WeaponCurveType]float64
-	)
-	for _, curve := range curveTypes[KindCharacter] {
-		typ := ConvertEnum[model.AvatarCurveType](curve, model.AvatarCurveType_value, -1)
-		if typ == -1 {
-			return fmt.Errorf("unknown curve=%v", curve)
-		}
-		data := c.GrowCurveData[curve]
-		if len(avatar) == 0 {
-			avatar = make([]map[model.AvatarCurveType]float64, len(data))
-		}
-		for lv, mul := range data {
-			if avatar[lv] == nil {
-				avatar[lv] = make(map[model.AvatarCurveType]float64)
-			}
-			avatar[lv][typ] = mul
-		}
-	}
-	for _, curve := range curveTypes[KindWeapon] {
-		typ := ConvertEnum[model.WeaponCurveType](curve, model.WeaponCurveType_value, -1)
-		if typ == -1 {
-			return fmt.Errorf("unknown curve=%v", curve)
-		}
-		data := c.GrowCurveData[curve]
-		if len(weapon) == 0 {
-			weapon = make([]map[model.WeaponCurveType]float64, len(data))
-		}
-		for lv, mul := range data {
-			if weapon[lv] == nil {
-				weapon[lv] = make(map[model.WeaponCurveType]float64)
-			}
-			weapon[lv][typ] = mul
-		}
-	}
-	for _, curve := range curveTypes[KindMonster] {
-		typ := ConvertEnum[model.MonsterCurveType](curve, model.MonsterCurveType_value, -1)
-		if typ == -1 {
-			return fmt.Errorf("unknown curve=%v", curve)
-		}
-		data := c.GrowCurveData[curve]
-		if len(monster) == 0 {
-			monster = make([]map[model.MonsterCurveType]float64, len(data))
-		}
-		for lv, mul := range data {
-			if monster[lv] == nil {
-				monster[lv] = make(map[model.MonsterCurveType]float64)
-			}
-			monster[lv][typ] = mul
-		}
-	}
-
 	b := bytes.NewBuffer(nil)
 	b.WriteString("package catalog\n")
 	b.WriteString("import (\n")
 	fmt.Fprintf(b, "\t\"%s\"\n", path.Join(baseModule, "pkg/model"))
 	b.WriteString(")\n")
 
-	b.WriteString("var AvatarGrowCurveByLvl = ")
-	b.WriteString(dumpGo(avatar, false))
-	b.WriteString("\n")
-
-	b.WriteString("var WeaponGrowCurveByLvl = ")
-	b.WriteString(dumpGo(weapon, false))
-	b.WriteString("\n")
-
-	b.WriteString("var EnemyStatGrowthMult = ")
-	b.WriteString(dumpGo(monster, false))
+	b.WriteString("var GrowCurve = ")
+	b.WriteString(dumpGo(c.GrowCurveData, false))
 	b.WriteString("\n")
 
 	writeFile("pkg/catalog/curve.dm.go", b.Bytes())
@@ -152,7 +94,7 @@ func (c *Compiled) GenerateCurve() error {
 }
 
 func (c *Compiled) buildElementCoeff() error {
-	ref := excel.Filter(excel.ElementCoeffExcelConfigData, func(v *excel.ElementCoeff) bool { return v.Level >= 1 })
+	ref := excel.Filter(excel.ElementCoeffExcelConfigData, func(v *excel.ElementCoeff) bool { return v.Level > 0 })
 	slices.SortFunc(ref, func(a, b *excel.ElementCoeff) int { return cmp.Compare(a.Level, b.Level) })
 	for lv, coeff := range ref {
 		lv := uint32(lv + 1)

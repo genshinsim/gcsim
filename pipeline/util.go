@@ -111,7 +111,7 @@ func ConvertAddProps(in []*excel.PropValue) ([]*model.PromotionAddProp, error) {
 		if add.Value == 0 || add.PropType == excel.FIGHT_PROP_NONE {
 			continue
 		}
-		typ := ConvertEnum[model.StatType](add.PropType, model.StatType_value, -1)
+		typ := ConvertEnum[model.FightPropType](add.PropType, model.FightPropType_value, -1)
 		if typ == -1 {
 			return nil, fmt.Errorf("unknown prop=%v", add.PropType)
 		}

@@ -58,7 +58,7 @@ func buildMonsterSpec(ref *excel.Monster) (*MonsterSpec, error) {
 
 	spec.Name = desc.Name()
 	spec.Model = &model.MonsterData{
-		Id:  int32(spec.ref.Id),
+		Id:  spec.ref.Id,
 		Key: excel.SlugLower(spec.Name),
 		BaseStats: &model.MonsterStatsData{
 			BaseHp: spec.ref.HpBase,
@@ -74,7 +74,6 @@ func buildMonsterSpec(ref *excel.Monster) (*MonsterSpec, error) {
 			},
 			HpDrop: []*model.MonsterHPDrop{},
 		},
-		NameTextHashMap: int64(desc.NameTextMapHash),
 	}
 	if spec.ref.Type == "MONSTER_BOSS" {
 		spec.Model.BaseStats.FreezeResist = 1
@@ -84,7 +83,7 @@ func buildMonsterSpec(ref *excel.Monster) (*MonsterSpec, error) {
 	if curve := curve.GrowCurve; !slices.Contains(curveTypes[KindMonster], curve) {
 		return nil, fmt.Errorf("curve not listed in known types: %v", curve)
 	}
-	if typ := ConvertEnum[model.MonsterCurveType](curve.GrowCurve, model.MonsterCurveType_value, -1); typ != -1 {
+	if typ := ConvertEnum[model.GrowCurveType](curve.GrowCurve, model.GrowCurveType_value, -1); typ != -1 {
 		spec.Model.BaseStats.HpCurve = typ
 	} else {
 		return nil, fmt.Errorf("unknown curve=%v", curve.GrowCurve)
@@ -95,12 +94,12 @@ func buildMonsterSpec(ref *excel.Monster) (*MonsterSpec, error) {
 	}
 	for _, d := range excel.Filter(spec.ref.HpDrops, func(v *excel.MonsterDrop) bool { return v.DropId != 0 && v.HpPercent != 0 }) {
 		add(&model.MonsterHPDrop{
-			DropId:    int32(d.DropId),
+			DropId:    d.DropId,
 			HpPercent: d.HpPercent / 100,
 		})
 	}
 	if id := spec.ref.KillDropId; id != 0 {
-		add(&model.MonsterHPDrop{DropId: int32(id)})
+		add(&model.MonsterHPDrop{DropId: id})
 	}
 
 	return spec, nil
@@ -133,7 +132,7 @@ func (c *Compiled) GenerateMonsters() error {
 		Freeze   float64 `json:"freeze"`
 	}
 	type ParticleData struct {
-		DropId    int32   `json:"drop_id"`
+		DropId    uint32  `json:"drop_id"`
 		HpPercent float64 `json:"hp_percent"`
 	}
 
@@ -150,15 +149,10 @@ func (c *Compiled) GenerateMonsters() error {
 		shortcut.Names = append(shortcut.Names, []string{spec.Model.Key})
 
 		stats := spec.Model.BaseStats
-
-		curve, err := excel.GrowCurveTypeString(stats.HpCurve.String())
-		if err != nil {
-			return fmt.Errorf("%v: unknown curve=%v: %w", spec.Model.Key, stats.HpCurve, err)
-		}
 		for _, lv := range []int{1, 10, 20, 30, 40, 50, 60, 70, 80, 90, 95, 98, 100} {
 			hpData[spec.Model.Key] = append(hpData[spec.Model.Key], HPData{
 				Level: lv,
-				HP:    stats.BaseHp * c.GrowCurveData[curve][lv-1],
+				HP:    stats.BaseHp * c.GrowCurveData[stats.HpCurve][lv-1],
 			})
 		}
 		for _, drop := range stats.HpDrop {

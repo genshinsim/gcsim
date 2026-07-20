@@ -57,13 +57,13 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 
 	spec.Name = spec.ref.Name()
 	spec.Model = &model.AvatarData{
-		Id:          int32(spec.ref.Id),
-		SubId:       int32(spec.ref.SkillDepotId),
+		Id:          spec.ref.Id,
+		SubId:       spec.ref.SkillDepotId,
 		Key:         excel.SlugLower(spec.Name),
 		Rarity:      ConvertEnum[model.QualityType](spec.ref.QualityType, model.QualityType_value, -1),
 		Body:        ConvertEnum[model.BodyType](spec.ref.BodyType, model.BodyType_value, -1),
-		Region:      ConvertEnum[model.ZoneType](fetter.AvatarAssocType, model.ZoneType_value, -1),
-		WeaponClass: ConvertEnum[model.WeaponClass](spec.ref.WeaponType, model.WeaponClass_value, -1),
+		Region:      ConvertEnum[model.AssocType](fetter.AvatarAssocType, model.AssocType_value, -1),
+		WeaponClass: ConvertEnum[model.WeaponType](spec.ref.WeaponType, model.WeaponType_value, -1),
 		IconName:    spec.ref.IconName,
 		Stats: &model.AvatarStatsData{
 			BaseHp:         spec.ref.HpBase,
@@ -71,8 +71,7 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 			BaseDef:        spec.ref.DefenseBase,
 			ElementMastery: spec.ref.ElementMastery,
 		},
-		SkillDetails:    &model.AvatarSkillsData{},
-		NameTextHashMap: int64(spec.ref.NameTextMapHash),
+		SkillDetails: &model.AvatarSkillsData{},
 	}
 	if spec.Model.Rarity == -1 {
 		return nil, fmt.Errorf("unknown quality_type=%v", spec.ref.QualityType)
@@ -88,9 +87,9 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 	}
 
 	if v := cfg.Override.Depot; v != 0 {
-		spec.Model.SubId = int32(v)
+		spec.Model.SubId = v
 	}
-	spec.depot = excel.FindSkillDepot(uint32(spec.Model.SubId))
+	spec.depot = excel.FindSkillDepot(spec.Model.SubId)
 	if spec.depot == nil {
 		return nil, fmt.Errorf("depot=%v not found", spec.Model.SubId)
 	}
@@ -106,9 +105,9 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 	if burst == nil {
 		return nil, fmt.Errorf("depot=%v,burst=%v not found", spec.depot.Id, spec.depot.EnergySkill)
 	}
-	spec.Model.SkillDetails.Attack = int32(attack.Id)
-	spec.Model.SkillDetails.Skill = int32(skill.Id)
-	spec.Model.SkillDetails.Burst = int32(burst.Id)
+	spec.Model.SkillDetails.Attack = attack.Id
+	spec.Model.SkillDetails.Skill = skill.Id
+	spec.Model.SkillDetails.Burst = burst.Id
 
 	if spec.ref.Name() == "Traveler" {
 		switch spec.Model.Body {
@@ -126,7 +125,7 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 		spec.Model.Key = excel.SlugLower(spec.Name)
 	}
 
-	for curve, prop := range map[*model.AvatarCurveType]excel.FightProp{
+	for curve, prop := range map[*model.GrowCurveType]excel.FightProp{
 		&spec.Model.Stats.HpCurve:  excel.FIGHT_PROP_BASE_HP,
 		&spec.Model.Stats.AtkCurve: excel.FIGHT_PROP_BASE_ATTACK,
 		&spec.Model.Stats.DefCruve: excel.FIGHT_PROP_BASE_DEFENSE,
@@ -135,7 +134,7 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 		if curve := v.GrowCurve; !slices.Contains(curveTypes[KindCharacter], curve) {
 			return nil, fmt.Errorf("curve not listed in known types: %v", curve)
 		}
-		*curve = ConvertEnum[model.AvatarCurveType](v.GrowCurve, model.AvatarCurveType_value, -1)
+		*curve = ConvertEnum[model.GrowCurveType](v.GrowCurve, model.GrowCurveType_value, -1)
 		if *curve == -1 {
 			return nil, fmt.Errorf("unknown curve=%v", v.GrowCurve)
 		}
@@ -147,13 +146,13 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 			return nil, err
 		}
 		spec.Model.Stats.PromoData = append(spec.Model.Stats.PromoData, &model.PromotionData{
-			MaxLevel: int32(v.UnlockMaxLevel),
+			MaxLevel: v.UnlockMaxLevel,
 			AddProps: props,
 		})
 	}
 
 	spec.Model.SkillDetails.BurstEnergyCost = burst.CostElemVal
-	if ele := ConvertEnum[model.Element](burst.CostElemType, model.Element_value, -1); ele != -1 {
+	if ele := ConvertEnum[model.ElementType](burst.CostElemType, model.ElementType_value, -1); ele != -1 {
 		spec.Model.Element = ele
 	} else {
 		return nil, fmt.Errorf("unknown element=%v", burst.CostElemType)

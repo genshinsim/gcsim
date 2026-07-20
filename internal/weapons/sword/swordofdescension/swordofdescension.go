@@ -46,7 +46,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 
 	// TODO: this doesn't need to read catalog/model directly
-	if catalog.CharacterMap[char.Base.Key].Region == model.ZoneType_ASSOC_TYPE_MAINACTOR {
+	if catalog.CharacterMap[char.Base.Key].Region == model.AssocType_ASSOC_TYPE_MAINACTOR {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("swordofdescension", -1),
 			AffectedStat: attributes.NoStat,
