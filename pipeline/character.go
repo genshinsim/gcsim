@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"cmp"
 	"fmt"
+	"maps"
 	"path"
 	"reflect"
 	"slices"
@@ -345,8 +346,12 @@ func (c *Compiled) GenerateCharacters() error {
 		fmt.Fprintf(b, "package %s\n", path.Base(config.Dir()))
 		b.WriteString("import (\n")
 		for _, pkg := range []string{
+			"fmt",
+			"slices",
 			path.Join(baseModule, "pkg/core"),
+			path.Join(baseModule, "pkg/core/action"),
 			path.Join(baseModule, "pkg/core/keys"),
+			path.Join(baseModule, "pkg/gcs/validation"),
 		} {
 			fmt.Fprintf(b, "\t\"%s\"\n", pkg)
 		}
@@ -354,6 +359,39 @@ func (c *Compiled) GenerateCharacters() error {
 
 		b.WriteString("func init() {\n")
 		fmt.Fprintf(b, "core.Register%[2]sFunc(keys.%[1]s, New%[2]s)\n", excel.Slug(spec.Name), "Char")
+
+		b.WriteString("paramsFor := map[action.Action][]string{\n")
+		//nolint:goconst // using a constant is not that useful here
+		for _, abil := range config.Abilities {
+			if abil.Name == "default" || len(abil.Params) == 0 {
+				continue
+			}
+			fmt.Fprintf(b, "action.Action%s:", map[string]string{
+				"attack":      "Attack",
+				"aim":         "Aim",
+				"charge":      "Charge",
+				"low_plunge":  "LowPlunge",
+				"high_plunge": "HighPlunge",
+				"skill":       "Skill",
+				"burst":       "Burst",
+				"dash":        "Dash",
+				"jump":        "Jump",
+				"walk":        "Walk",
+				"swap":        "Swap",
+			}[abil.Name])
+			b.WriteString(dumpGo(slices.Sorted(maps.Keys(abil.Params)), true))
+			b.WriteString(",\n")
+		}
+		b.WriteString("}\n")
+		fmt.Fprintf(b, "validation.RegisterCharParamValidationFunc(keys.%s, func(a action.Action, keys []string) error {\n", excel.Slug(spec.Name))
+		b.WriteString("valid, ok := paramsFor[a]\n")
+		b.WriteString("if !ok { return nil }\n")
+		b.WriteString("for _, v := range keys {\n")
+		b.WriteString("if !slices.Contains(valid, v) { return fmt.Errorf(\"key %v is invalid for action %v\", v, a) }")
+		b.WriteString("}\n")
+		b.WriteString("return nil\n")
+		b.WriteString("})\n")
+
 		b.WriteString("}\n")
 
 		if err := emitTalents(b, config.Talents, config.Attributes); err != nil {
