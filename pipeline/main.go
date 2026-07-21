@@ -556,9 +556,12 @@ func configTemplate(ctx context.Context, cmd *cli.Command) error {
 			fmt.Fprintf(b, "- _%[1]s: %[1]s", attr.Type)
 			if useParam {
 				fmt.Fprintf(b, "#%d", attr.Index[ind])
-				if attr.ParamDesc != "" {
+				switch {
+				case attr.ParamDesc != "":
 					fmt.Fprintf(b, " # %s | %s", attr.Desc, attr.ParamDesc)
-				} else {
+				case attr.Values[ind] != nil:
+					fmt.Fprintf(b, " # %v", attr.Values[ind])
+				default:
 					fmt.Fprintf(b, " # %v", attr.Const[ind])
 				}
 			} else {
