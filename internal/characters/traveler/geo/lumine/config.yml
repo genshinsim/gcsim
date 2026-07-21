@@ -9,6 +9,10 @@ override:
 shortcuts:
   - travelergeo
 
+combat:
+  icd_tags:
+    - TravelerWakeOfEarth
+
 docs:
   frames:
     - count: https://docs.google.com/spreadsheets/d/1S7cJszsMoQF6ShCvA7hMjiXMuOCoDRwgW1rseP0uC8k/edit?usp=sharing

@@ -5,9 +5,21 @@ name: luminehydro
 override:
   id: 10000007
   depot: 703
+  icd_group:
+    TravelerDewdrop:
+      name: Player_Water_Sustained_Shooting
+    TravelerBurst:
+      name: Player_Water_Burst_Bullet
 
 shortcuts:
   - travelerhydro
+
+combat:
+  icd_tags:
+    - TravelerDewdrop
+  icd_groups:
+    - TravelerDewdrop
+    - TravelerBurst
 
 docs:
   frames:

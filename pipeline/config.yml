@@ -15,10 +15,6 @@ override:
       # actual data: [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]
       # however there seems to be no limit to the amount of burning dmg a target can take
       damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-    TravelerDewdrop:
-      name: Player_Water_Sustained_Shooting
-    TravelerBurst:
-      name: Player_Water_Burst_Bullet
 
 combat:
   icd_tags:
@@ -38,11 +34,6 @@ combat:
     - ElementalBurstCryo
     - ElementalBurstElectro
     - Dash
-    - TravelerWakeOfEarth
-    - TravelerDewdrop
-    - TravelerScorchingThreshold
-    - TravelerBlazingThreshold
-    - TravelerHoldDMG
     - OverloadDamage
     - SuperconductDamage
     - ECDamage
@@ -62,5 +53,3 @@ combat:
     - ReactionA
     - ReactionB
     - Burning
-    - TravelerDewdrop
-    - TravelerBurst
