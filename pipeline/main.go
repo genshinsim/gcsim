@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"reflect"
+	"regexp"
 	"runtime"
 	"slices"
 	"strconv"
@@ -525,6 +526,7 @@ func configTemplate(ctx context.Context, cmd *cli.Command) error {
 		return nil
 	}
 
+	reParam := regexp.MustCompile(`{[^}]*}`)
 	indent := strings.Repeat(" ", 2)
 	b := bytes.NewBuffer(nil)
 	b.WriteString("use: pipeline\n")
@@ -571,6 +573,9 @@ func configTemplate(ctx context.Context, cmd *cli.Command) error {
 					fmt.Fprintf(b, "|%d", ind)
 				}
 				b.WriteString(")")
+				if len(attr.Index) > 1 {
+					fmt.Fprintf(b, " # %s", reParam.ReplaceAllString(attr.ParamDesc, "{}"))
+				}
 			}
 			b.WriteString("\n")
 		}
