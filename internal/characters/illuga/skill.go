@@ -12,13 +12,18 @@ import (
 var skillFrames []int
 
 const (
-	skillTapHitmark  = 50
+	skillTapHitmark  = 27
 	skillHoldHitmark = 50
 	particleICDKey   = "illuga-particle-icd"
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(100)
+	skillFrames = frames.InitAbilSlice(47) // E -> walk
+	skillFrames[action.ActionAttack] = 38
+	skillFrames[action.ActionBurst] = 38
+	skillFrames[action.ActionDash] = 37
+	skillFrames[action.ActionJump] = 39
+	skillFrames[action.ActionSwap] = 36
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -49,7 +54,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.a1()
 
-	c.SetCD(action.ActionSkill, 15*60)
+	c.SetCDWithDelay(action.ActionSkill, 15*60, 24)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
