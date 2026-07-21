@@ -16,11 +16,15 @@ var burstFrames []int
 
 const (
 	orioleSongKey = "haunted-night-oriole-song"
-	burstHitmark  = 50
+	burstHitmark  = 48
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(100)
+	burstFrames = frames.InitAbilSlice(65) // Q -> N1
+	burstFrames[action.ActionDash] = 64
+	burstFrames[action.ActionJump] = 64
+	burstFrames[action.ActionWalk] = 64
+	burstFrames[action.ActionSwap] = 62
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -70,6 +74,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.c4Src = c.Core.F
 
 	c.c4(c.Core.F)()
+
+	c.SetCD(action.ActionBurst, 15*60)
+
+	c.ConsumeEnergy(6)
 
 	c.Core.QueueAttack(
 		ai,
