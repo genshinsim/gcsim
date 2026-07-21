@@ -6,10 +6,9 @@
     "ap"
   ],
   "aubadeofmorningstarandmoon": [
-    "aubadeofmorningstar",
-    "aubade"
+    "aubade",
+    "aubadeofmorningstar"
   ],
-  "berserker": [],
   "blizzardstrayer": [
     "blizzard",
     "bs"
@@ -21,34 +20,30 @@
   "braveheart": [
     "brave"
   ],
-	"celestialgift": [
-	  "gift",
-	  "cg"
-	],
+  "celestialgift": [
+    "cg",
+    "gift"
+  ],
   "crimsonwitchofflames": [
-    "cwof",
-    "cw",
     "crimson",
+    "cw",
+    "cwof",
     "witch"
   ],
   "deepwoodmemories": [
     "deepwood"
   ],
   "defenderswill": [
-    "defenders",
-    "defender"
+    "defender",
+    "defenders"
   ],
   "desertpavilionchronicle": [
     "desertpavilion",
     "dpc"
   ],
-  "disenchantmentinthedeepshadow": [
-    "disenchantment",
-    "deepshadow"
-  ],
-  "vourukashasglow": [
-    "vourukasha",
-    "vg"
+  "disenchantmentindeepshadow": [
+    "deepshadow",
+    "disenchantment"
   ],
   "echoesofanoffering": [
     "echoes"
@@ -62,14 +57,16 @@
     "deepgalleries"
   ],
   "flowerofparadiselost": [
-    "paradiselost",
-    "fopl"
+    "fopl",
+    "paradiselost"
   ],
   "fragmentofharmonicwhimsy": [
-    "harmonicwhimsy",
     "fohw"
   ],
-  "gambler": [],
+  "gildeddreams": [
+    "gd",
+    "gilded"
+  ],
   "gladiatorsfinale": [
     "glad",
     "gladiators"
@@ -77,16 +74,12 @@
   "goldentroupe": [
     "gt"
   ],
-  "gildeddreams": [
-    "gilded",
-    "gd"
-  ],
   "heartofdepth": [
     "hod"
   ],
   "huskofopulentdreams": [
-    "husk",
-    "hood"
+    "hood",
+    "husk"
   ],
   "instructor": [
     "ins"
@@ -104,19 +97,18 @@
   "marechausseehunter": [
     "mh"
   ],
-  "martialartist": [],
   "nightoftheskysunveiling": [
-    "skysunveiling",
-    "notsu"
+    "notsu",
+    "skysunveiling"
   ],
   "nighttimewhispersintheechoingwoods": [
-    "nighttimewhispers",
     "echoingwoods",
-    "nighttime"
+    "nighttime",
+    "nighttimewhispers"
   ],
   "noblesseoblige": [
-    "noblesse",
-    "no"
+    "no",
+    "noblesse"
   ],
   "nymphsdream": [
     "nymph"
@@ -125,8 +117,8 @@
     "oc"
   ],
   "oceanhuedclam": [
-    "ohc",
-    "clam"
+    "clam",
+    "ohc"
   ],
   "paleflame": [
     "pf"
@@ -137,29 +129,28 @@
   "retracingbolide": [
     "bolide"
   ],
-  "scholar": [],
   "scrolloftheheroofcindercity": [
     "scroll",
     "sothocc"
+  ],
+  "shimenawasreminiscence": [
+    "shim",
+    "shime",
+    "shimenawa",
+    "sr"
   ],
   "silkenmoonsserenade": [
     "silkenmoon",
     "sms"
   ],
-  "shimenawasreminiscence": [
-    "shimenawa",
-    "shime",
-    "shim",
-    "sr"
-  ],
   "songofdayspast": [
     "sodp"
   ],
   "tenacityofthemillelith": [
-    "tom",
-    "totm",
+    "millelith",
     "tenacity",
-    "millelith"
+    "tom",
+    "totm"
   ],
   "theexile": [
     "exile"
@@ -180,6 +171,10 @@
   "viridescentvenerer": [
     "viridescent",
     "vv"
+  ],
+  "vourukashasglow": [
+    "vg",
+    "vourukasha"
   ],
   "wandererstroupe": [
     "wanderers",

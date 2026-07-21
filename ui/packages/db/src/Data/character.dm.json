@@ -15,8 +15,7 @@
         "burst": 10068,
         "attack": 100543,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "1533656306"
+      }
     },
     "aetherdendro": {
       "id": 10000005,
@@ -33,8 +32,7 @@
         "burst": 10118,
         "attack": 100547,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "1533656306"
+      }
     },
     "aetherelectro": {
       "id": 10000005,
@@ -51,8 +49,7 @@
         "burst": 10605,
         "attack": 100546,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "1533656306"
+      }
     },
     "aethergeo": {
       "id": 10000005,
@@ -69,8 +66,7 @@
         "burst": 10078,
         "attack": 100545,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "1533656306"
+      }
     },
     "aetherhydro": {
       "id": 10000005,
@@ -87,8 +83,7 @@
         "burst": 10088,
         "attack": 100542,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "1533656306"
+      }
     },
     "aetherpyro": {
       "id": 10000005,
@@ -105,11 +100,11 @@
         "burst": 10098,
         "attack": 100541,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "1533656306"
+      }
     },
     "aino": {
       "id": 10000121,
+      "sub_id": 12101,
       "key": "aino",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_LOLI",
@@ -122,11 +117,11 @@
         "burst": 11215,
         "attack": 11211,
         "burst_energy_cost": 50
-      },
-      "name_text_hash_map ": "3887687898"
+      }
     },
     "albedo": {
       "id": 10000038,
+      "sub_id": 3801,
       "key": "albedo",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_BOY",
@@ -139,11 +134,11 @@
         "burst": 10388,
         "attack": 10386,
         "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "4108620210"
+      }
     },
     "alhaitham": {
       "id": 10000078,
+      "sub_id": 7801,
       "key": "alhaitham",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_MALE",
@@ -156,11 +151,11 @@
         "burst": 10785,
         "attack": 10781,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "4002156906"
+      }
     },
     "aloy": {
       "id": 10000062,
+      "sub_id": 6201,
       "key": "aloy",
       "rarity": "QUALITY_ORANGE_SP",
       "body": "BODY_GIRL",
@@ -173,11 +168,11 @@
         "burst": 10625,
         "attack": 10621,
         "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "3689107586"
+      }
     },
     "amber": {
       "id": 10000021,
+      "sub_id": 2101,
       "key": "amber",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -190,11 +185,28 @@
         "burst": 10017,
         "attack": 10041,
         "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "1966438658"
+      }
+    },
+    "aratakiitto": {
+      "id": 10000057,
+      "sub_id": 5701,
+      "key": "aratakiitto",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Rock",
+      "weapon_class": "WEAPON_CLAYMORE",
+      "icon_name": "UI_AvatarIcon_Itto",
+      "skill_details": {
+        "skill": 10572,
+        "burst": 10575,
+        "attack": 10571,
+        "burst_energy_cost": 70
+      }
     },
     "arlecchino": {
       "id": 10000096,
+      "sub_id": 9601,
       "key": "arlecchino",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LADY",
@@ -207,45 +219,11 @@
         "burst": 10965,
         "attack": 10961,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "167198962"
-    },
-    "ayaka": {
-      "id": 10000002,
-      "key": "ayaka",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_GIRL",
-      "region": "ASSOC_TYPE_INAZUMA",
-      "element": "Ice",
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "icon_name": "UI_AvatarIcon_Ayaka",
-      "skill_details": {
-        "skill": 10018,
-        "burst": 10019,
-        "attack": 10024,
-        "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "1006042610"
-    },
-    "ayato": {
-      "id": 10000066,
-      "key": "ayato",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_MALE",
-      "region": "ASSOC_TYPE_INAZUMA",
-      "element": "Water",
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "icon_name": "UI_AvatarIcon_Ayato",
-      "skill_details": {
-        "skill": 10662,
-        "burst": 10665,
-        "attack": 10661,
-        "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "1588620330"
+      }
     },
     "baizhu": {
       "id": 10000082,
+      "sub_id": 8201,
       "key": "baizhu",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_MALE",
@@ -258,11 +236,11 @@
         "burst": 10825,
         "attack": 10821,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "2984815066"
+      }
     },
     "barbara": {
       "id": 10000014,
+      "sub_id": 1401,
       "key": "barbara",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -275,11 +253,11 @@
         "burst": 10072,
         "attack": 10070,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "3775298658"
+      }
     },
     "beidou": {
       "id": 10000024,
+      "sub_id": 2401,
       "key": "beidou",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_LADY",
@@ -292,11 +270,11 @@
         "burst": 10245,
         "attack": 10241,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "2646367730"
+      }
     },
     "bennett": {
       "id": 10000032,
+      "sub_id": 3201,
       "key": "bennett",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_BOY",
@@ -309,11 +287,11 @@
         "burst": 10323,
         "attack": 10321,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "968892866"
+      }
     },
     "candace": {
       "id": 10000072,
+      "sub_id": 7201,
       "key": "candace",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_LADY",
@@ -326,11 +304,11 @@
         "burst": 10725,
         "attack": 10721,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "3092975658"
+      }
     },
     "charlotte": {
       "id": 10000088,
+      "sub_id": 8801,
       "key": "charlotte",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -343,11 +321,11 @@
         "burst": 10885,
         "attack": 10881,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "3831162130"
+      }
     },
     "chasca": {
       "id": 10000104,
+      "sub_id": 10401,
       "key": "chasca",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LADY",
@@ -360,11 +338,11 @@
         "burst": 11045,
         "attack": 11041,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "3746229466"
+      }
     },
     "chevreuse": {
       "id": 10000090,
+      "sub_id": 9001,
       "key": "chevreuse",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -377,11 +355,11 @@
         "burst": 10905,
         "attack": 10901,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "540313842"
+      }
     },
     "chiori": {
       "id": 10000094,
+      "sub_id": 9401,
       "key": "chiori",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -394,11 +372,11 @@
         "burst": 10945,
         "attack": 10941,
         "burst_energy_cost": 50
-      },
-      "name_text_hash_map ": "1944606922"
+      }
     },
     "chongyun": {
       "id": 10000036,
+      "sub_id": 3601,
       "key": "chongyun",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_BOY",
@@ -411,11 +389,11 @@
         "burst": 10403,
         "attack": 10401,
         "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "2876340530"
+      }
     },
     "citlali": {
       "id": 10000107,
+      "sub_id": 10701,
       "key": "citlali",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -428,11 +406,11 @@
         "burst": 11075,
         "attack": 11071,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "1197974530"
+      }
     },
     "clorinde": {
       "id": 10000098,
+      "sub_id": 9801,
       "key": "clorinde",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LADY",
@@ -445,11 +423,11 @@
         "burst": 10985,
         "attack": 10981,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "2745368786"
+      }
     },
     "collei": {
       "id": 10000067,
+      "sub_id": 6701,
       "key": "collei",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -462,11 +440,11 @@
         "burst": 10675,
         "attack": 10671,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "2948361666"
+      }
     },
     "columbina": {
       "id": 10000125,
+      "sub_id": 12501,
       "key": "columbina",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -479,11 +457,11 @@
         "burst": 11255,
         "attack": 11251,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "1888371106"
+      }
     },
     "cyno": {
       "id": 10000071,
+      "sub_id": 7101,
       "key": "cyno",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_BOY",
@@ -496,11 +474,11 @@
         "burst": 10715,
         "attack": 10711,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "1049891906"
+      }
     },
     "dahlia": {
       "id": 10000115,
+      "sub_id": 11501,
       "key": "dahlia",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_BOY",
@@ -513,11 +491,11 @@
         "burst": 11155,
         "attack": 11151,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "2332663914"
+      }
     },
     "dehya": {
       "id": 10000079,
+      "sub_id": 7901,
       "key": "dehya",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LADY",
@@ -530,11 +508,11 @@
         "burst": 10795,
         "attack": 10791,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "2360533154"
+      }
     },
     "diluc": {
       "id": 10000016,
+      "sub_id": 1601,
       "key": "diluc",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_MALE",
@@ -547,11 +525,11 @@
         "burst": 10165,
         "attack": 10160,
         "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "3608179810"
+      }
     },
     "diona": {
       "id": 10000039,
+      "sub_id": 3901,
       "key": "diona",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_LOLI",
@@ -564,11 +542,11 @@
         "burst": 10395,
         "attack": 10391,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "1468367026"
+      }
     },
     "dori": {
       "id": 10000068,
+      "sub_id": 6801,
       "key": "dori",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_LOLI",
@@ -581,11 +559,11 @@
         "burst": 10685,
         "attack": 10681,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "388272194"
+      }
     },
     "durin": {
       "id": 10000123,
+      "sub_id": 12301,
       "key": "durin",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_BOY",
@@ -598,11 +576,11 @@
         "burst": 11235,
         "attack": 11231,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "2801077538"
+      }
     },
     "emilie": {
       "id": 10000099,
+      "sub_id": 9901,
       "key": "emilie",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -615,11 +593,11 @@
         "burst": 10995,
         "attack": 10991,
         "burst_energy_cost": 50
-      },
-      "name_text_hash_map ": "1705785610"
+      }
     },
     "escoffier": {
       "id": 10000112,
+      "sub_id": 11201,
       "key": "escoffier",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -632,11 +610,11 @@
         "burst": 11125,
         "attack": 11121,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "4035850498"
+      }
     },
     "eula": {
       "id": 10000051,
+      "sub_id": 5101,
       "key": "eula",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LADY",
@@ -649,11 +627,11 @@
         "burst": 10515,
         "attack": 10511,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "3717666906"
+      }
     },
     "faruzan": {
       "id": 10000076,
+      "sub_id": 7601,
       "key": "faruzan",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -666,11 +644,11 @@
         "burst": 10765,
         "attack": 10761,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "2387711482"
+      }
     },
     "fischl": {
       "id": 10000031,
+      "sub_id": 3101,
       "key": "fischl",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -683,11 +661,11 @@
         "burst": 10313,
         "attack": 10311,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "3277782506"
+      }
     },
     "flins": {
       "id": 10000120,
+      "sub_id": 12001,
       "key": "flins",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_MALE",
@@ -700,11 +678,11 @@
         "burst": 11205,
         "attack": 11201,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "1804674298"
+      }
     },
     "freminet": {
       "id": 10000085,
+      "sub_id": 8501,
       "key": "freminet",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_BOY",
@@ -717,11 +695,11 @@
         "burst": 10855,
         "attack": 10851,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "4201963842"
+      }
     },
     "furina": {
       "id": 10000089,
+      "sub_id": 8901,
       "key": "furina",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -734,11 +712,11 @@
         "burst": 10895,
         "attack": 10891,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "2180900234"
+      }
     },
     "gaming": {
       "id": 10000092,
+      "sub_id": 9201,
       "key": "gaming",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_BOY",
@@ -751,11 +729,11 @@
         "burst": 10925,
         "attack": 10921,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "2822240322"
+      }
     },
     "ganyu": {
       "id": 10000037,
+      "sub_id": 3701,
       "key": "ganyu",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -768,11 +746,11 @@
         "burst": 10373,
         "attack": 10371,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "2679780610"
+      }
     },
     "gorou": {
       "id": 10000055,
+      "sub_id": 5501,
       "key": "gorou",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_BOY",
@@ -785,28 +763,11 @@
         "burst": 10555,
         "attack": 10551,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "3400133034"
-    },
-    "heizou": {
-      "id": 10000059,
-      "key": "heizou",
-      "rarity": "QUALITY_PURPLE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_INAZUMA",
-      "element": "Wind",
-      "weapon_class": "WEAPON_CATALYST",
-      "icon_name": "UI_AvatarIcon_Heizo",
-      "skill_details": {
-        "skill": 10592,
-        "burst": 10595,
-        "attack": 10591,
-        "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "646031578"
+      }
     },
     "hutao": {
       "id": 10000046,
+      "sub_id": 4601,
       "key": "hutao",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -819,11 +780,11 @@
         "burst": 10463,
         "attack": 10461,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "1940919482"
+      }
     },
     "ineffa": {
       "id": 10000116,
+      "sub_id": 11601,
       "key": "ineffa",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -836,28 +797,11 @@
         "burst": 11165,
         "attack": 11161,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "2759230658"
-    },
-    "itto": {
-      "id": 10000057,
-      "key": "itto",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_MALE",
-      "region": "ASSOC_TYPE_INAZUMA",
-      "element": "Rock",
-      "weapon_class": "WEAPON_CLAYMORE",
-      "icon_name": "UI_AvatarIcon_Itto",
-      "skill_details": {
-        "skill": 10572,
-        "burst": 10575,
-        "attack": 10571,
-        "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "3068316954"
+      }
     },
     "jean": {
       "id": 10000003,
+      "sub_id": 301,
       "key": "jean",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LADY",
@@ -870,11 +814,28 @@
         "burst": 10034,
         "attack": 10031,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "3221565738"
+      }
+    },
+    "kaedeharakazuha": {
+      "id": 10000047,
+      "sub_id": 4701,
+      "key": "kaedeharakazuha",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Wind",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Kazuha",
+      "skill_details": {
+        "skill": 10472,
+        "burst": 10475,
+        "attack": 10471,
+        "burst_energy_cost": 60
+      }
     },
     "kaeya": {
       "id": 10000015,
+      "sub_id": 1501,
       "key": "kaeya",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_MALE",
@@ -887,11 +848,45 @@
         "burst": 10075,
         "attack": 10073,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "4119662698"
+      }
+    },
+    "kamisatoayaka": {
+      "id": 10000002,
+      "sub_id": 201,
+      "key": "kamisatoayaka",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Ice",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Ayaka",
+      "skill_details": {
+        "skill": 10018,
+        "burst": 10019,
+        "attack": 10024,
+        "burst_energy_cost": 80
+      }
+    },
+    "kamisatoayato": {
+      "id": 10000066,
+      "sub_id": 6601,
+      "key": "kamisatoayato",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_MALE",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Water",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Ayato",
+      "skill_details": {
+        "skill": 10662,
+        "burst": 10665,
+        "attack": 10661,
+        "burst_energy_cost": 80
+      }
     },
     "kaveh": {
       "id": 10000081,
+      "sub_id": 8101,
       "key": "kaveh",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_MALE",
@@ -904,28 +899,11 @@
         "burst": 10815,
         "attack": 10811,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "466355514"
-    },
-    "kazuha": {
-      "id": 10000047,
-      "key": "kazuha",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_BOY",
-      "region": "ASSOC_TYPE_INAZUMA",
-      "element": "Wind",
-      "weapon_class": "WEAPON_SWORD_ONE_HAND",
-      "icon_name": "UI_AvatarIcon_Kazuha",
-      "skill_details": {
-        "skill": 10472,
-        "burst": 10475,
-        "attack": 10471,
-        "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "88505754"
+      }
     },
     "keqing": {
       "id": 10000042,
+      "sub_id": 4201,
       "key": "keqing",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -938,11 +916,11 @@
         "burst": 10425,
         "attack": 10421,
         "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "1864015138"
+      }
     },
     "kinich": {
       "id": 10000101,
+      "sub_id": 10101,
       "key": "kinich",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_BOY",
@@ -955,11 +933,11 @@
         "burst": 11015,
         "attack": 11011,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "4172712122"
+      }
     },
     "kirara": {
       "id": 10000061,
+      "sub_id": 6101,
       "key": "kirara",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -972,11 +950,11 @@
         "burst": 10615,
         "attack": 10611,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "1456642530"
+      }
     },
     "klee": {
       "id": 10000029,
+      "sub_id": 2901,
       "key": "klee",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LOLI",
@@ -989,29 +967,29 @@
         "burst": 10295,
         "attack": 10291,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "3339083250"
+      }
     },
-    "kokomi": {
-      "id": 10000054,
-      "key": "kokomi",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_GIRL",
+    "kujousara": {
+      "id": 10000056,
+      "sub_id": 5601,
+      "key": "kujousara",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_LADY",
       "region": "ASSOC_TYPE_INAZUMA",
-      "element": "Water",
-      "weapon_class": "WEAPON_CATALYST",
-      "icon_name": "UI_AvatarIcon_Kokomi",
+      "element": "Electric",
+      "weapon_class": "WEAPON_BOW",
+      "icon_name": "UI_AvatarIcon_Sara",
       "skill_details": {
-        "skill": 10542,
-        "burst": 10545,
-        "attack": 10541,
-        "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "3914045794"
+        "skill": 10562,
+        "burst": 10565,
+        "attack": 10561,
+        "burst_energy_cost": 80
+      }
     },
-    "kuki": {
+    "kukishinobu": {
       "id": 10000065,
-      "key": "kuki",
+      "sub_id": 6501,
+      "key": "kukishinobu",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
       "region": "ASSOC_TYPE_INAZUMA",
@@ -1023,11 +1001,11 @@
         "burst": 10655,
         "attack": 10651,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "1940821474"
+      }
     },
     "lanyan": {
       "id": 10000108,
+      "sub_id": 10801,
       "key": "lanyan",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -1040,11 +1018,11 @@
         "burst": 11085,
         "attack": 11081,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "1888132250"
+      }
     },
     "lauma": {
       "id": 10000119,
+      "sub_id": 11901,
       "key": "lauma",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LADY",
@@ -1057,11 +1035,11 @@
         "burst": 11195,
         "attack": 11191,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "1776873506"
+      }
     },
     "layla": {
       "id": 10000074,
+      "sub_id": 7401,
       "key": "layla",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -1074,11 +1052,11 @@
         "burst": 10745,
         "attack": 10741,
         "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "2889777514"
+      }
     },
     "lisa": {
       "id": 10000006,
+      "sub_id": 601,
       "key": "lisa",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_LADY",
@@ -1091,8 +1069,7 @@
         "burst": 10062,
         "attack": 10060,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "3344622722"
+      }
     },
     "lumineanemo": {
       "id": 10000007,
@@ -1109,8 +1086,7 @@
         "burst": 10068,
         "attack": 100553,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "3816664530"
+      }
     },
     "luminedendro": {
       "id": 10000007,
@@ -1127,8 +1103,7 @@
         "burst": 10118,
         "attack": 100557,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "3816664530"
+      }
     },
     "lumineelectro": {
       "id": 10000007,
@@ -1145,8 +1120,7 @@
         "burst": 10605,
         "attack": 100556,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "3816664530"
+      }
     },
     "luminegeo": {
       "id": 10000007,
@@ -1163,8 +1137,7 @@
         "burst": 10078,
         "attack": 100555,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "3816664530"
+      }
     },
     "luminehydro": {
       "id": 10000007,
@@ -1181,8 +1154,7 @@
         "burst": 10088,
         "attack": 100552,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "3816664530"
+      }
     },
     "luminepyro": {
       "id": 10000007,
@@ -1199,11 +1171,11 @@
         "burst": 10098,
         "attack": 100551,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "3816664530"
+      }
     },
     "lynette": {
       "id": 10000083,
+      "sub_id": 8301,
       "key": "lynette",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -1216,11 +1188,11 @@
         "burst": 10835,
         "attack": 10831,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "1225226258"
+      }
     },
     "lyney": {
       "id": 10000084,
+      "sub_id": 8401,
       "key": "lyney",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_BOY",
@@ -1233,11 +1205,11 @@
         "burst": 10845,
         "attack": 10841,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "2472444970"
+      }
     },
     "mavuika": {
       "id": 10000106,
+      "sub_id": 10601,
       "key": "mavuika",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LADY",
@@ -1249,11 +1221,11 @@
         "skill": 11062,
         "burst": 11065,
         "attack": 11061
-      },
-      "name_text_hash_map ": "113398050"
+      }
     },
     "mika": {
       "id": 10000080,
+      "sub_id": 8001,
       "key": "mika",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_BOY",
@@ -1266,28 +1238,11 @@
         "burst": 10805,
         "attack": 10801,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "231911858"
-    },
-    "mizuki": {
-      "id": 10000109,
-      "key": "mizuki",
-      "rarity": "QUALITY_ORANGE",
-      "body": "BODY_GIRL",
-      "region": "ASSOC_TYPE_INAZUMA",
-      "element": "Wind",
-      "weapon_class": "WEAPON_CATALYST",
-      "icon_name": "UI_AvatarIcon_Mizuki",
-      "skill_details": {
-        "skill": 11092,
-        "burst": 11095,
-        "attack": 11091,
-        "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "3784387026"
+      }
     },
     "mona": {
       "id": 10000041,
+      "sub_id": 4101,
       "key": "mona",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -1300,11 +1255,11 @@
         "burst": 10415,
         "attack": 10411,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "1113306282"
+      }
     },
     "mualani": {
       "id": 10000102,
+      "sub_id": 10201,
       "key": "mualani",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -1317,11 +1272,11 @@
         "burst": 30007,
         "attack": 30000,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "3949670506"
+      }
     },
     "nahida": {
       "id": 10000073,
+      "sub_id": 7301,
       "key": "nahida",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LOLI",
@@ -1334,11 +1289,11 @@
         "burst": 10735,
         "attack": 10731,
         "burst_energy_cost": 50
-      },
-      "name_text_hash_map ": "712500570"
+      }
     },
     "navia": {
       "id": 10000091,
+      "sub_id": 9101,
       "key": "navia",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LADY",
@@ -1351,11 +1306,11 @@
         "burst": 10915,
         "attack": 10911,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "2877588578"
+      }
     },
     "neuvillette": {
       "id": 10000087,
+      "sub_id": 8701,
       "key": "neuvillette",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_MALE",
@@ -1368,14 +1323,15 @@
         "burst": 10875,
         "attack": 10871,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "1504902330"
+      }
     },
     "nicole": {
       "id": 10000131,
+      "sub_id": 13101,
       "key": "nicole",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_HVISION",
       "element": "Fire",
       "weapon_class": "WEAPON_CATALYST",
       "icon_name": "UI_AvatarIcon_Nicole",
@@ -1384,11 +1340,11 @@
         "burst": 11315,
         "attack": 11311,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "1711582634"
+      }
     },
     "nilou": {
       "id": 10000070,
+      "sub_id": 7001,
       "key": "nilou",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -1401,11 +1357,11 @@
         "burst": 10705,
         "attack": 10701,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "3850149970"
+      }
     },
     "ningguang": {
       "id": 10000027,
+      "sub_id": 2701,
       "key": "ningguang",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_LADY",
@@ -1418,11 +1374,11 @@
         "burst": 10274,
         "attack": 10271,
         "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "4127888458"
+      }
     },
     "noelle": {
       "id": 10000034,
+      "sub_id": 3401,
       "key": "noelle",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -1435,11 +1391,11 @@
         "burst": 10343,
         "attack": 10341,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "1921418330"
+      }
     },
     "ororon": {
       "id": 10000105,
+      "sub_id": 10501,
       "key": "ororon",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_MALE",
@@ -1452,11 +1408,11 @@
         "burst": 30505,
         "attack": 30501,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "1198350762"
+      }
     },
     "qiqi": {
       "id": 10000035,
+      "sub_id": 3501,
       "key": "qiqi",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LOLI",
@@ -1469,12 +1425,12 @@
         "burst": 10353,
         "attack": 10351,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "168956210"
+      }
     },
-    "raiden": {
+    "raidenshogun": {
       "id": 10000052,
-      "key": "raiden",
+      "sub_id": 5201,
+      "key": "raidenshogun",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LADY",
       "region": "ASSOC_TYPE_INAZUMA",
@@ -1486,11 +1442,11 @@
         "burst": 10525,
         "attack": 10521,
         "burst_energy_cost": 90
-      },
-      "name_text_hash_map ": "3024506994"
+      }
     },
     "razor": {
       "id": 10000020,
+      "sub_id": 2001,
       "key": "razor",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_BOY",
@@ -1503,11 +1459,11 @@
         "burst": 10203,
         "attack": 10201,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "4160146730"
+      }
     },
     "rosaria": {
       "id": 10000045,
+      "sub_id": 4501,
       "key": "rosaria",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_LADY",
@@ -1520,28 +1476,28 @@
         "burst": 10453,
         "attack": 10451,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "4260733330"
+      }
     },
-    "sara": {
-      "id": 10000056,
-      "key": "sara",
-      "rarity": "QUALITY_PURPLE",
-      "body": "BODY_LADY",
+    "sangonomiyakokomi": {
+      "id": 10000054,
+      "sub_id": 5401,
+      "key": "sangonomiyakokomi",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
       "region": "ASSOC_TYPE_INAZUMA",
-      "element": "Electric",
-      "weapon_class": "WEAPON_BOW",
-      "icon_name": "UI_AvatarIcon_Sara",
+      "element": "Water",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Kokomi",
       "skill_details": {
-        "skill": 10562,
-        "burst": 10565,
-        "attack": 10561,
-        "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "1483922610"
+        "skill": 10542,
+        "burst": 10545,
+        "attack": 10541,
+        "burst_energy_cost": 70
+      }
     },
     "sayu": {
       "id": 10000053,
+      "sub_id": 5301,
       "key": "sayu",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_LOLI",
@@ -1554,11 +1510,11 @@
         "burst": 10535,
         "attack": 10531,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "2388785242"
+      }
     },
     "sethos": {
       "id": 10000097,
+      "sub_id": 9701,
       "key": "sethos",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_BOY",
@@ -1571,11 +1527,11 @@
         "burst": 10975,
         "attack": 10971,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "1431321834"
+      }
     },
     "shenhe": {
       "id": 10000063,
+      "sub_id": 6301,
       "key": "shenhe",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LADY",
@@ -1588,11 +1544,28 @@
         "burst": 10635,
         "attack": 10631,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "334242122"
+      }
+    },
+    "shikanoinheizou": {
+      "id": 10000059,
+      "sub_id": 5901,
+      "key": "shikanoinheizou",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Heizo",
+      "skill_details": {
+        "skill": 10592,
+        "burst": 10595,
+        "attack": 10591,
+        "burst_energy_cost": 40
+      }
     },
     "sigewinne": {
       "id": 10000095,
+      "sub_id": 9501,
       "key": "sigewinne",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LOLI",
@@ -1605,11 +1578,11 @@
         "burst": 10955,
         "attack": 10951,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "781488450"
+      }
     },
     "skirk": {
       "id": 10000114,
+      "sub_id": 11401,
       "key": "skirk",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -1621,11 +1594,11 @@
         "skill": 11142,
         "burst": 11145,
         "attack": 11141
-      },
-      "name_text_hash_map ": "123650378"
+      }
     },
     "sucrose": {
       "id": 10000043,
+      "sub_id": 4301,
       "key": "sucrose",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -1638,11 +1611,11 @@
         "burst": 10435,
         "attack": 10431,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "1053433018"
+      }
     },
     "tartaglia": {
       "id": 10000033,
+      "sub_id": 3301,
       "key": "tartaglia",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_MALE",
@@ -1655,11 +1628,11 @@
         "burst": 10333,
         "attack": 10331,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "3847142754"
+      }
     },
     "thoma": {
       "id": 10000050,
+      "sub_id": 5001,
       "key": "thoma",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_MALE",
@@ -1672,11 +1645,11 @@
         "burst": 10505,
         "attack": 10501,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "3555115090"
+      }
     },
     "tighnari": {
       "id": 10000069,
+      "sub_id": 6901,
       "key": "tighnari",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_BOY",
@@ -1689,11 +1662,11 @@
         "burst": 10695,
         "attack": 10691,
         "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "2506955778"
+      }
     },
     "varesa": {
       "id": 10000111,
+      "sub_id": 11101,
       "key": "varesa",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -1706,11 +1679,11 @@
         "burst": 11115,
         "attack": 11111,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "283438362"
+      }
     },
     "venti": {
       "id": 10000022,
+      "sub_id": 2201,
       "key": "venti",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_BOY",
@@ -1723,11 +1696,11 @@
         "burst": 10225,
         "attack": 10221,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "2466140362"
+      }
     },
     "wanderer": {
       "id": 10000075,
+      "sub_id": 7501,
       "key": "wanderer",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_BOY",
@@ -1740,11 +1713,11 @@
         "burst": 10755,
         "attack": 10751,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "3230559562"
+      }
     },
     "wriothesley": {
       "id": 10000086,
+      "sub_id": 8601,
       "key": "wriothesley",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_MALE",
@@ -1757,11 +1730,11 @@
         "burst": 10865,
         "attack": 10861,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "370150538"
+      }
     },
     "xiangling": {
       "id": 10000023,
+      "sub_id": 2301,
       "key": "xiangling",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -1774,11 +1747,11 @@
         "burst": 10235,
         "attack": 10231,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "1130995834"
+      }
     },
     "xianyun": {
       "id": 10000093,
+      "sub_id": 9301,
       "key": "xianyun",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LADY",
@@ -1791,11 +1764,11 @@
         "burst": 10935,
         "attack": 10931,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "3648220258"
+      }
     },
     "xiao": {
       "id": 10000026,
+      "sub_id": 2601,
       "key": "xiao",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_BOY",
@@ -1808,11 +1781,11 @@
         "burst": 10265,
         "attack": 10261,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "1021947178"
+      }
     },
     "xilonen": {
       "id": 10000103,
+      "sub_id": 10301,
       "key": "xilonen",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LADY",
@@ -1825,11 +1798,11 @@
         "burst": 11035,
         "attack": 11031,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "2515292370"
+      }
     },
     "xingqiu": {
       "id": 10000025,
+      "sub_id": 2501,
       "key": "xingqiu",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_BOY",
@@ -1842,11 +1815,11 @@
         "burst": 10385,
         "attack": 10381,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "4197635170"
+      }
     },
     "xinyan": {
       "id": 10000044,
+      "sub_id": 4401,
       "key": "xinyan",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -1859,11 +1832,11 @@
         "burst": 10443,
         "attack": 10441,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "4273845410"
+      }
     },
     "yaemiko": {
       "id": 10000058,
+      "sub_id": 5801,
       "key": "yaemiko",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LADY",
@@ -1876,11 +1849,11 @@
         "burst": 10585,
         "attack": 10581,
         "burst_energy_cost": 90
-      },
-      "name_text_hash_map ": "2713452722"
+      }
     },
     "yanfei": {
       "id": 10000048,
+      "sub_id": 4801,
       "key": "yanfei",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -1893,11 +1866,11 @@
         "burst": 10485,
         "attack": 10481,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "697277554"
+      }
     },
     "yaoyao": {
       "id": 10000077,
+      "sub_id": 7701,
       "key": "yaoyao",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_LOLI",
@@ -1910,11 +1883,11 @@
         "burst": 10775,
         "attack": 10771,
         "burst_energy_cost": 80
-      },
-      "name_text_hash_map ": "1732417970"
+      }
     },
     "yelan": {
       "id": 10000060,
+      "sub_id": 6001,
       "key": "yelan",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_LADY",
@@ -1927,11 +1900,11 @@
         "burst": 10610,
         "attack": 10606,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "2848373866"
+      }
     },
     "yoimiya": {
       "id": 10000049,
+      "sub_id": 4901,
       "key": "yoimiya",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -1944,11 +1917,28 @@
         "burst": 10495,
         "attack": 10491,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "2504399314"
+      }
+    },
+    "yumemizukimizuki": {
+      "id": 10000109,
+      "sub_id": 10901,
+      "key": "yumemizukimizuki",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_INAZUMA",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Mizuki",
+      "skill_details": {
+        "skill": 11092,
+        "burst": 11095,
+        "attack": 11091,
+        "burst_energy_cost": 60
+      }
     },
     "yunjin": {
       "id": 10000064,
+      "sub_id": 6401,
       "key": "yunjin",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -1961,11 +1951,11 @@
         "burst": 10643,
         "attack": 10641,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "655825362"
+      }
     },
     "zhongli": {
       "id": 10000030,
+      "sub_id": 3001,
       "key": "zhongli",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_MALE",
@@ -1978,8 +1968,7 @@
         "burst": 10303,
         "attack": 10301,
         "burst_energy_cost": 40
-      },
-      "name_text_hash_map ": "3862787418"
+      }
     }
   }
 }
