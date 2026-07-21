@@ -5,13 +5,9 @@ name: sigewinne
 override:
   icd_group:
     Sigewinne:
-      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-      durability: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-      timer: 2
+      name: Sigewinne_ElementalArt
     SigewinneBurst:
-      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-      durability: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-      timer: 1.9
+      name: Sigewinne_ElementalBurst
 
 combat:
   icd_groups:

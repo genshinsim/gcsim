@@ -5,9 +5,7 @@ name: venti
 override:
   icd_group:
     Venti:
-      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-      durability: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
-      timer: 1
+      name: Venti
 
 combat:
   icd_groups:

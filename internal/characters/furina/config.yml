@@ -5,9 +5,8 @@ name: furina
 override:
   icd_group:
     FurinaSalonSolitaire:
-      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-      durability: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
-      timer: 30
+      # name: Furina_SeaHorse
+      name: Furina_Octopus
 
 shortcuts:
   - furinadefontaine

@@ -5,9 +5,7 @@ name: citlali
 override:
   icd_group:
     CitlaliFrostfallStorm:
-      damage: [1, 1]
-      durability: [1, 0]
-      timer: 1.5
+      name: Citlali_Storm
 
 combat:
   icd_tags:

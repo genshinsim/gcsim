@@ -5,9 +5,7 @@ name: tighnari
 override:
   icd_group:
     Tighnari:
-      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-      durability: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0]
-      timer: 2.5
+      name: Tighnari
 
 combat:
   icd_groups:

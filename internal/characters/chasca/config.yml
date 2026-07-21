@@ -5,21 +5,13 @@ name: chasca
 override:
   icd_group:
     ChascaBurst:
-      damage: [1, 1, 1, 1, 1, 1]
-      durability: [1, 0, 1, 0, 1, 0]
-      timer: 1.5
+      name: Chasca_MultiAimAttack_ElementalBurst
     ChascaShadowhunt:
-      damage: [1, 1]
-      durability: [1, 0]
-      timer: 1.5
+      name: Chasca_MultiAimAttack_Extra
     ChascaShining:
-      damage: [1, 1, 1, 1, 1, 1]
-      durability: [1, 0, 1, 0, 1, 0]
-      timer: 1.5
+      name: Chasca_MultiAimAttack_Base
     ChascaTap:
-      damage: [1, 1]
-      durability: [1, 0]
-      timer: 1.5
+      name: Chasca_MultiAimAttack_Extra
 
 combat:
   icd_tags:

@@ -5,9 +5,7 @@ name: yaemiko
 override:
   icd_group:
     YaeCharged:
-      damage: [1, 0, 0, 0, 0, 0, 0]
-      durability: [1, 0, 0, 0, 0, 0, 0]
-      timer: 0.5
+      name: Yae_ExtraAttack
 
 shortcuts:
   - yae

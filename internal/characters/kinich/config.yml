@@ -7,9 +7,7 @@ override:
     KinichLoopShot:
       name: Kinich_Eart_Normal_Bullet
     KinichScalespikerCannon:
-      damage: [1, 1, 1, 1]
-      durability: [1, 0, 0, 0]
-      timer: 1.2
+      name: Kinich_Eart_Final_Bullet
 
 combat:
   icd_tags:

@@ -5,9 +5,7 @@ name: ororon
 override:
   icd_group:
     OroronElementalBurst:
-      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-      durability: [1, 0, 0, 0, 0, 0, 0, 0, 0]
-      timer: 3
+      name: Olorun_ElementalBurst
 
 shortcuts:
   - olorun

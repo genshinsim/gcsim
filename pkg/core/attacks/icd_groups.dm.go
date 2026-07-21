@@ -84,7 +84,7 @@ var ICDGroupResetTimer = []int{
 	ICDGroupChascaShadowhunt:          90,   // 1.5s
 	ICDGroupChascaShining:             90,   // 1.5s
 	ICDGroupChascaTap:                 90,   // 1.5s
-	ICDGroupChevreuseBurstMines:       300,  // 5s
+	ICDGroupChevreuseBurstMines:       180,  // 3s
 	ICDGroupChioriSkill:               114,  // 1.9s
 	ICDGroupCitlaliFrostfallStorm:     90,   // 1.5s
 	ICDGroupClorindeElementalArt:      60,   // 1s
@@ -128,9 +128,9 @@ var ICDGroupResetTimer = []int{
 
 var ICDGroupEleApplicationSequence = [][]float64{
 	ICDGroupDefault:                   {1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0},
-	ICDGroupPoleExtraAttack:           {1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0},
-	ICDGroupReactionA:                 {1.0, 1.0},
-	ICDGroupReactionB:                 {1.0, 1.0},
+	ICDGroupPoleExtraAttack:           {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+	ICDGroupReactionA:                 {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
+	ICDGroupReactionB:                 {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupBurning:                   {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	ICDGroupAinoBurstMoonHit:          {1.0, 0.0, 0.0, 0.0},
 	ICDGroupAlhaithamExtraAttack:      {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
@@ -149,14 +149,14 @@ var ICDGroupEleApplicationSequence = [][]float64{
 	ICDGroupChioriSkill:               {1.0, 0.0, 0.0, 0.0, 0.0},
 	ICDGroupCitlaliFrostfallStorm:     {1.0, 0.0},
 	ICDGroupClorindeElementalArt:      {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-	ICDGroupColleiBurst:               {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+	ICDGroupColleiBurst:               {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	ICDGroupCynoBolt:                  {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	ICDGroupDiluc:                     {1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0},
 	ICDGroupDoriBurst:                 {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	ICDGroupDurinBurstBlack:           {1.0, 0.0},
 	ICDGroupDurinBurstWhite:           {1.0, 0.0},
 	ICDGroupDurinSkill:                {1.0, 0.0, 0.0},
-	ICDGroupEmilieLumidouce:           {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+	ICDGroupEmilieLumidouce:           {1.0, 0.0},
 	ICDGroupEscoffierSkill:            {1.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	ICDGroupFischl:                    {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
 	ICDGroupFurinaSalonSolitaire:      {1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0},
@@ -170,10 +170,10 @@ var ICDGroupEleApplicationSequence = [][]float64{
 	ICDGroupNahidaSkill:               {1.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	ICDGroupNaviaBurst:                {1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0},
 	ICDGroupNilou:                     {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
-	ICDGroupOroronElementalBurst:      {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-	ICDGroupSigewinne:                 {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-	ICDGroupSigewinneBurst:            {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-	ICDGroupTighnari:                  {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0},
+	ICDGroupOroronElementalBurst:      {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+	ICDGroupSigewinne:                 {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+	ICDGroupSigewinneBurst:            {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+	ICDGroupTighnari:                  {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
 	ICDGroupTravelerBurst:             {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
 	ICDGroupTravelerDewdrop:           {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	ICDGroupVenti:                     {1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0},
@@ -211,13 +211,13 @@ var ICDGroupDamageSequence = [][]float64{
 	ICDGroupCitlaliFrostfallStorm:     {1.0, 1.0},
 	ICDGroupClorindeElementalArt:      {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupColleiBurst:               {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
-	ICDGroupCynoBolt:                  {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
+	ICDGroupCynoBolt:                  {1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	ICDGroupDiluc:                     {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupDoriBurst:                 {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupDurinBurstBlack:           {1.0, 1.0},
 	ICDGroupDurinBurstWhite:           {1.0, 1.0},
 	ICDGroupDurinSkill:                {1.0, 1.0, 1.0},
-	ICDGroupEmilieLumidouce:           {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
+	ICDGroupEmilieLumidouce:           {1.0, 1.0},
 	ICDGroupEscoffierSkill:            {1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupFischl:                    {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupFurinaSalonSolitaire:      {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
@@ -231,9 +231,9 @@ var ICDGroupDamageSequence = [][]float64{
 	ICDGroupNahidaSkill:               {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupNaviaBurst:                {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupNilou:                     {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
-	ICDGroupOroronElementalBurst:      {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
-	ICDGroupSigewinne:                 {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
-	ICDGroupSigewinneBurst:            {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
+	ICDGroupOroronElementalBurst:      {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
+	ICDGroupSigewinne:                 {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
+	ICDGroupSigewinneBurst:            {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupTighnari:                  {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupTravelerBurst:             {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupTravelerDewdrop:           {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},

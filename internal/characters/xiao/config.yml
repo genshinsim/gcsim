@@ -5,9 +5,7 @@ name: xiao
 override:
   icd_group:
     XiaoDash:
-      damage: [1, 0, 0, 0, 0, 0, 0]
-      durability: [1, 0, 0, 0, 0, 0, 0]
-      timer: 0.1
+      name: Xiao_DevilDash
 
 combat:
   icd_groups:

@@ -5,9 +5,7 @@ name: yumemizukimizuki
 override:
   icd_group:
     MizukiSkill:
-      damage: [1, 1, 1, 1]
-      durability: [1, 0, 0, 0]
-      timer: 1.2
+      name: Mizuki_Eart_Attack
 
 shortcuts:
   - mizuki

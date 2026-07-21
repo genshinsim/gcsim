@@ -5,13 +5,9 @@ name: lanyan
 override:
   icd_group:
     LanyanRingAttack:
-      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-      durability: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
-      timer: 2.5
+      name: Lanyan_ElementalArt
     LanyanRingAttackMix:
-      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-      durability: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
-      timer: 2.5
+      name: Lanyan_ElementalArt_Mix
 
 combat:
   icd_tags:

@@ -5,13 +5,9 @@ name: durin
 override:
   icd_group:
     DurinBurstBlack:
-      damage: [1, 1]
-      durability: [1, 0]
-      timer: 2
+      name: Durin_Burst_BlackBullet
     DurinBurstWhite:
-      damage: [1, 1]
-      durability: [1, 0]
-      timer: 1.5
+      name: Durin_Burst_WhiteFire
     DurinSkill:
       name: Durin_EleA_BlackBullet
 

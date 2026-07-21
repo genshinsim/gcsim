@@ -5,9 +5,7 @@ name: dori
 override:
   icd_group:
     DoriBurst:
-      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-      durability: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-      timer: 3
+      name: Dori_Elemental_Burst
 
 combat:
   icd_tags:

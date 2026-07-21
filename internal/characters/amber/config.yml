@@ -5,9 +5,7 @@ name: amber
 override:
   icd_group:
     Amber:
-      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-      durability: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
-      timer: 1
+      name: Ambor
 
 combat:
   icd_groups:
