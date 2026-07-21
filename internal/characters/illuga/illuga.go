@@ -51,3 +51,10 @@ func (c *char) NextQueueItemIsValid(_ keys.Char, a action.Action, p map[string]i
 	}
 	return nil
 }
+
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
+		return 11
+	}
+	return c.Character.AnimationStartDelay(k)
+}
