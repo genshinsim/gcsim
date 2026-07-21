@@ -3,42 +3,8 @@ package optimization
 import (
 	"fmt"
 	"math"
-	"sort"
 	"strings"
 )
-
-// Thin wrapper around sort Slice to retrieve the sorted indices as well
-type Slice struct {
-	slice sort.Float64Slice
-	idx   []int
-}
-
-func (s Slice) Len() int {
-	return len(s.slice)
-}
-
-func (s Slice) Less(i, j int) bool {
-	return s.slice[i] < s.slice[j]
-}
-
-func (s Slice) Swap(i, j int) {
-	s.slice.Swap(i, j)
-	s.idx[i], s.idx[j] = s.idx[j], s.idx[i]
-}
-
-func newSlice(n ...float64) *Slice {
-	var nDup []float64
-	nDup = append(nDup, n...)
-
-	s := &Slice{
-		slice: sort.Float64Slice(nDup),
-		idx:   make([]int, len(nDup)),
-	}
-	for i := range s.idx {
-		s.idx[i] = i
-	}
-	return s
-}
 
 func percentile[T comparable](arr []T, percentile float64) T {
 	return arr[int(math.Floor(float64(len(arr))*percentile))]
