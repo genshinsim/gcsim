@@ -14,10 +14,10 @@ import (
 )
 
 type MonsterSpec struct {
-	ref *excel.Monster `yaml:"-"`
-
 	Name  string             `yaml:"name,omitempty"`
 	Model *model.MonsterData `yaml:"model,omitempty"`
+
+	ref *excel.Monster `yaml:"-"`
 }
 
 func (s *MonsterSpec) ClearRef() {

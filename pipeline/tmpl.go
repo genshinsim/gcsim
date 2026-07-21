@@ -14,7 +14,6 @@ import (
 
 const baseModule = "github.com/genshinsim/gcsim"
 
-//nolint:goconst // using a constant is not that useful here
 var abilities = []string{
 	"default",
 	"attack", "aim", "charge",

@@ -189,6 +189,9 @@ linters:
       - path: 'backend/pkg' # mongodb yet again
         linters:
           - goconst
+      - path: pipeline # complains about strings for unrelated things
+        linters:
+          - goconst
     paths:
       - cmd/wasm/
       - third_party$

@@ -16,10 +16,10 @@ import (
 )
 
 type ArtifactSpec struct {
-	ref *excel.ReliquarySet `yaml:"-"`
-
 	Name  string              `yaml:"name,omitempty"`
 	Model *model.ArtifactData `yaml:"model,omitempty"`
+
+	ref *excel.ReliquarySet `yaml:"-"`
 }
 
 func (s *ArtifactSpec) ClearRef() {

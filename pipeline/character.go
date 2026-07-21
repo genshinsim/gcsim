@@ -17,11 +17,11 @@ import (
 )
 
 type CharacterSpec struct {
-	ref   *excel.Avatar           `yaml:"-"`
-	depot *excel.AvatarSkillDepot `yaml:"-"`
-
 	Name  string            `yaml:"name,omitempty"`
 	Model *model.AvatarData `yaml:"model,omitempty"`
+
+	ref   *excel.Avatar           `yaml:"-"`
+	depot *excel.AvatarSkillDepot `yaml:"-"`
 }
 
 func (s *CharacterSpec) ClearRef() {
@@ -159,7 +159,6 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 		return nil, fmt.Errorf("unknown element=%v", burst.CostElemType)
 	}
 
-	//nolint:goconst // using a constant is not that useful here
 	skills := map[string]uint32{
 		"attack": attack.ProudSkillGroupId,
 		"skill":  skill.ProudSkillGroupId,
@@ -235,9 +234,10 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 		}
 	}
 	for con, id := range spec.depot.Talents {
+		con := con + 1
 		t := excel.FindTalent(id)
 		attr := &AttributeSpec{
-			Type:   fmt.Sprintf("c%d", con+1),
+			Type:   fmt.Sprintf("c%d", con),
 			Name:   t.NameTextMapHash.String(),
 			Desc:   t.DescTextMapHash.String(),
 			Config: t.OpenConfig,
@@ -361,7 +361,6 @@ func (c *Compiled) GenerateCharacters() error {
 		fmt.Fprintf(b, "core.Register%[2]sFunc(keys.%[1]s, New%[2]s)\n", excel.Slug(spec.Name), "Char")
 
 		b.WriteString("paramsFor := map[action.Action][]string{\n")
-		//nolint:goconst // using a constant is not that useful here
 		for _, abil := range config.Abilities {
 			if abil.Name == "default" || len(abil.Params) == 0 {
 				continue

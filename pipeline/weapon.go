@@ -16,10 +16,10 @@ import (
 )
 
 type WeaponSpec struct {
-	ref *excel.Weapon `yaml:"-"`
-
 	Name  string            `yaml:"name,omitempty"`
 	Model *model.WeaponData `yaml:"model,omitempty"`
+
+	ref *excel.Weapon `yaml:"-"`
 }
 
 func (s *WeaponSpec) ClearRef() {
