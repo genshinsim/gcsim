@@ -118,13 +118,13 @@ func (c *char) attackTapSkillState(p map[string]int) action.Info {
 		c.Core.QueueAttack(
 			ai,
 			ap,
-			0,
-			0,
+			travel,
+			travel,
 			c.particleCB,
 			c.healTapCB,
 			c.c1CB,
 		)
-	}, 3+travel)
+	}, 3)
 
 	atkspd := c.Stat(attributes.AtkSpd)
 

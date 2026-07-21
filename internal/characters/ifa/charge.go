@@ -55,18 +55,17 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	pos := c.Core.Combat.PrimaryTarget().Pos()
-	c.QueueCharTask(func() {
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHitOnTarget(
-				pos,
-				nil,
-				chargeRadius,
-			),
-			0,
-			0,
-		)
-	}, chargeHitmark+travel)
+
+	c.Core.QueueAttack(
+		ai,
+		combat.NewCircleHitOnTarget(
+			pos,
+			nil,
+			chargeRadius,
+		),
+		chargeHitmark+travel,
+		chargeHitmark+travel,
+	)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(chargeFrames),
@@ -109,13 +108,13 @@ func (c *char) attackHoldSkillState(p map[string]int) action.Info {
 		c.Core.QueueAttack(
 			ai,
 			ap,
-			0,
-			0,
+			travel,
+			travel,
 			c.particleCB,
 			c.healHoldCB,
 			c.c1CB,
 		)
-	}, 1+travel)
+	}, 1)
 
 	c.c6OnHoldAttackSkill()
 
