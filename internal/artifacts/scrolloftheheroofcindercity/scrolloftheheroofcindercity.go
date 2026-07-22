@@ -75,11 +75,11 @@ func (s *Set) buffCB(react info.ReactionType, gadgetEmit bool) func(args ...any)
 			for _, ele := range elements {
 				stat := attributes.EleToDmgP(ele)
 				other.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-%v", ele), 15*60),
+					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-%v", ele), buffDuration*60),
 					AffectedStat: stat,
 					Amount: func() []float64 {
 						clear(s.buff)
-						s.buff[stat] = 0.12
+						s.buff[stat] = dmgBuff
 						return s.buff
 					},
 				})
@@ -88,11 +88,11 @@ func (s *Set) buffCB(react info.ReactionType, gadgetEmit bool) func(args ...any)
 					continue
 				}
 				other.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-nightsoul-%v", ele), 20*60),
+					Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("scroll-4pc-nightsoul-%v", ele), nyxBuffDuration*60),
 					AffectedStat: stat,
 					Amount: func() []float64 {
 						clear(s.nightsoulBuff)
-						s.nightsoulBuff[stat] = 0.28
+						s.nightsoulBuff[stat] = nyxDmgBuff
 						return s.nightsoulBuff
 					},
 				})
@@ -109,21 +109,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		buff:          make([]float64, attributes.EndStatType),
 		nightsoulBuff: make([]float64, attributes.EndStatType),
 	}
-	// 2 Piece: When a nearby party member triggers a Nightsoul Burst, the equipping
-	// character regenerates 6 Elemental Energy.
+
 	if count >= 2 {
 		c.Combat.Events.Subscribe(event.OnNightsoulBurst, func(args ...any) {
-			char.AddEnergy("scroll-2pc", 6)
+			char.AddEnergy("scroll-2pc", energyGain)
 		}, fmt.Sprintf("scroll-2pc-%v", char.Base.Key.String()))
 	}
-	// 4 Piece: After the equipping character triggers a reaction related to their
-	// Elemental Type, all nearby party members gain a 12% Elemental DMG Bonus for
-	// the Elemental Types involved in the elemental reaction for 15s. If the
-	// equipping character is in the Nightsoul's Blessing state when triggering this
-	// effect, all nearby party members gain an additional 28% Elemental DMG Bonus
-	// for the Elemental Types involved in the elemental reaction for 20s. The
-	// equipping character can trigger this effect while off-field, and the DMG bonus
-	// from Artifact Sets with the same name do not stack.
+
 	if count >= 4 {
 		for evt, react := range map[event.Event]info.ReactionType{
 			event.OnOverload:           info.ReactionTypeOverload,
