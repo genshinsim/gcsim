@@ -8,7 +8,11 @@ ignore (
 )
 
 tool (
+<<<<<<< HEAD
 	github.com/dmarkham/enumer
+=======
+	github.com/mna/pigeon
+>>>>>>> ab74c7860 (refactor: migrate gcsl parser to pigeon PEG grammar)
 	github.com/tinylib/msgp
 )
 
@@ -92,6 +96,7 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
+	github.com/mna/pigeon v1.3.0 // indirect
 	github.com/moby/term v0.5.0 // indirect
 	github.com/montanaflynn/stats v0.7.1 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect

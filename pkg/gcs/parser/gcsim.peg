@@ -1,0 +1,676 @@
+{
+package parser
+
+func pp(c *current) *Parser { return c.globalStore["parser"].(*Parser) }
+func toAnySlice(v any) []any {
+	if v == nil { return nil }
+	return v.([]any)
+}
+}
+
+// ==== Program ====
+Program = _ rows:(_ Row)* _ EOF {
+	p := pp(c)
+	for _, r := range toAnySlice(rows) {
+		sl := r.([]any)
+		if sl[1] != nil {
+			p.prog.Append(sl[1].(ast.Node))
+		}
+	}
+	return p.prog, nil
+}
+EOF = !.
+
+Row = Stmt / ActiveRow / OptionsRow / TargetRow / HurtRow / EnergyRow / CharRow
+
+// CharRow handles char detail/add rows (NOT action rows, which go through Stmt->CharActionStmt)
+CharRow = cn:CharNameRaw #{
+	p := pp(c)
+	key := shortcut.CharNameToKey[cn.(string)]
+	p.ensureChar(key)
+	p.currentCharKey = key
+	return nil
+} _ body:CharRowBody _ ';' {
+	p := pp(c)
+	if body != nil {
+		if node, ok := body.(ast.Node); ok {
+			p.prog.Append(node)
+		}
+	}
+	return nil, nil
+}
+
+_ = ( [ \t\r\n] / "#" [^\n]* / "/" "/" [^\n]* )*
+
+EOW = &( TerminatorChar / !. )
+TerminatorChar = SpaceChar / TermPunct
+SpaceChar = [ \t\r\n]
+TermPunct = '.' / ',' / '|' / ':' / ')' / '(' / '+' / '=' / '>' / '<' / '&' / '!' / ';' / '[' / ']' / '{' / '}' / '/' / '*'
+
+IdentStart = [\p{L}_%]
+IdentCont  = [\p{L}\p{Nd}_%-]
+
+IdentText = IdentStart IdentCont* EOW { return string(c.text), nil }
+
+Number = ([0-9]+ ('.' [0-9]*)? / '.' [0-9]+) { return string(c.text), nil }
+IntNumber = [0-9]+ { return string(c.text), nil }
+Bool = ("true" / "false") EOW { return string(c.text), nil }
+String = '"' ( '\\' !'\n' . / [^"\\\n] )* '"' { return string(c.text), nil }
+
+Assign = '=' !'='
+OrOp = "||" { return opTok(c, ast.LogicOr, c.pos.offset, "||"), nil }
+AndOp = "&&" { return opTok(c, ast.LogicAnd, c.pos.offset, "&&"), nil }
+EqOp = "==" { return opTok(c, ast.OpEqual, c.pos.offset, "=="), nil }
+NotEqOp = ("!=" / "<>") { return opTok(c, ast.OpNotEqual, c.pos.offset, string(c.text)), nil }
+RelOp = "<=" { return opTok(c, ast.OpLessThanOrEqual, c.pos.offset, "<="), nil }
+       / '<' { return opTok(c, ast.OpLessThan, c.pos.offset, "<"), nil }
+       / ">=" { return opTok(c, ast.OpGreaterThanOrEqual, c.pos.offset, ">="), nil }
+       / '>' { return opTok(c, ast.OpGreaterThan, c.pos.offset, ">"), nil }
+AddOp = '+' { return opTok(c, ast.ItemPlus, c.pos.offset, "+"), nil }
+       / '-' { return opTok(c, ast.ItemMinus, c.pos.offset, "-"), nil }
+MulOp = '*' { return opTok(c, ast.ItemAsterisk, c.pos.offset, "*"), nil }
+       / '/' { return opTok(c, ast.ItemForwardSlash, c.pos.offset, "/"), nil }
+UnOp = '!' { return opTok(c, ast.LogicNot, c.pos.offset, "!"), nil }
+     / '-' { return opTok(c, ast.ItemMinus, c.pos.offset, "-"), nil }
+
+KeywordLet         = "let"         EOW
+KeywordWhile       = "while"       EOW
+KeywordIf          = "if"          EOW
+KeywordElse        = "else"        EOW
+KeywordFn          = "fn"          EOW
+KeywordSwitch      = "switch"      EOW
+KeywordCase        = "case"        EOW
+KeywordDefault     = "default"     EOW
+KeywordBreak       = "break"       EOW
+KeywordContinue    = "continue"    EOW
+KeywordFallthrough = "fallthrough" EOW
+KeywordReturn      = "return"      EOW
+KeywordFor         = "for"         EOW
+KeywordOptions     = "options"     EOW
+KeywordAdd         = "add"         EOW
+KeywordChar        = "char"        EOW
+KeywordStats       = "stats"       EOW
+KeywordWeapon      = "weapon"      EOW
+KeywordSet         = "set"         EOW
+KeywordLvl         = "lvl"         EOW
+KeywordRefine      = "refine"      EOW
+KeywordCons        = "cons"        EOW
+KeywordTalent      = "talent"      EOW
+KeywordCount       = "count"       EOW
+KeywordParams      = "params"      EOW
+KeywordLabel       = "label"       EOW
+KeywordActive      = "active"      EOW
+KeywordTarget      = "target"      EOW
+KeywordResist      = "resist"      EOW
+KeywordEnergy      = "energy"      EOW
+KeywordParticleThreshold = "particle_threshold" EOW
+KeywordParticleDropCount  = "particle_drop_count" EOW
+KeywordParticleElement    = "particle_element" EOW
+KeywordHurt        = "hurt"        EOW
+
+IdentName = t:IdentText &{ return isPlainIdent(t.(string)), nil } { return t.(string), nil }
+CharNameRaw = t:IdentText &{ return isCharName(t.(string)), nil } { return t.(string), nil }
+ActionNameRaw = t:IdentText &{ return isActionName(t.(string)), nil } { return t.(string), nil }
+StatNameRaw = t:IdentText &{ return isStatName(t.(string)), nil } { return t.(string), nil }
+EleNameRaw = t:IdentText &{ return isEleName(t.(string)), nil } { return t.(string), nil }
+
+// ==== CharRows (must handle action, char details, and add) ====
+CharRowBody = items:ActionItemList {
+	p := pp(c)
+	cn := charNameInfo{key: p.currentCharKey, pos: int(c.pos.offset)}
+	var actItems []actionItem
+	for _, it := range toAnySlice(items) {
+		actItems = append(actItems, it.(actionItem))
+	}
+	return buildActionBlock(p, cn, actItems), nil
+} / cdi:CharDetailItems {
+	return nil, nil
+} / asr:AddSubRow {
+	return nil, nil
+}
+
+// wrap AddSubRow for clarity 
+AddSubRow = KeywordAdd _ addBody:AddBody { return nil, nil }
+AddBody = KeywordWeapon _ Assign _ name:String _ items:(_ AddWeaponItem)* {
+	p := pp(c)
+	applyCharAddWeapon(p, p.currentCharKey, name.(string), toAnySlice(items))
+	return nil, nil
+} / KeywordSet _ Assign _ name:String _ items:(_ AddSetItem)* {
+	p := pp(c)
+	applyCharAddSet(p, p.currentCharKey, name.(string), toAnySlice(items))
+	return nil, nil
+} / KeywordStats _ "random" EOW _ items:(_ AddRandomItem)* {
+	p := pp(c)
+	applyCharAddRandomStats(p, p.currentCharKey, toAnySlice(items))
+	return nil, nil
+} / KeywordStats _ items:(_ AddStatsItem)* {
+	p := pp(c)
+	applyCharAddStats(p, p.currentCharKey, toAnySlice(items))
+	return nil, nil
+}
+
+AddWeaponItem = KeywordLvl _ Assign _ base:IntNumber _ '/' _ max:IntNumber {
+	p := pp(c); return addWeaponItem{kind: "lvl", intVal: parseIntNumber(p, c.pos.offset, base.(string)), intVal2: parseIntNumber(p, c.pos.offset, max.(string))}, nil
+} / KeywordRefine _ Assign _ n:IntNumber {
+	p := pp(c); return addWeaponItem{kind: "refine", intVal: parseIntNumber(p, c.pos.offset, n.(string))}, nil
+} / '+' _ KeywordParams _ Assign _ m:MapExpr {
+	p := pp(c); return addWeaponItem{kind: "params", mapVal: acceptIntMap(p, c.pos.offset, m.(*ast.MapExpr))}, nil
+}
+
+AddSetItem = KeywordCount _ Assign _ n:IntNumber {
+	p := pp(c); return addSetItem{kind: "count", intVal: parseIntNumber(p, c.pos.offset, n.(string))}, nil
+} / '+' _ KeywordParams _ Assign _ m:MapExpr {
+	p := pp(c); return addSetItem{kind: "params", mapVal: acceptIntMap(p, c.pos.offset, m.(*ast.MapExpr))}, nil
+}
+
+AddRandomItem = "rarity" EOW _ Assign _ n:IntNumber {
+	p := pp(c); return randomStatItem{kind: "rarity", intVal: parseIntNumber(p, c.pos.offset, n.(string))}, nil
+} / "sand" EOW _ Assign _ sn:StatNameRaw {
+	return randomStatItem{kind: "sand", statName: sn.(string)}, nil
+} / "goblet" EOW _ Assign _ sn:StatNameRaw {
+	return randomStatItem{kind: "goblet", statName: sn.(string)}, nil
+} / "circlet" EOW _ Assign _ sn:StatNameRaw {
+	return randomStatItem{kind: "circlet", statName: sn.(string)}, nil
+}
+
+AddStatsItem = sn:StatNameRaw _ Assign _ e:Expr {
+	p := pp(c)
+	amt := constFloat(p, e.(ast.Expr))
+	return addStatItem{kind: "stat", key: ast.StatKeys[sn.(string)], val: amt}, nil
+} / KeywordLabel _ Assign _ ln:IdentName {
+	return addStatItem{kind: "label", label: ln.(string)}, nil
+}
+
+CharDetailItems = KeywordChar _ items:(_ CharDetailItem)* {
+	p := pp(c)
+	applyCharDetails(p, p.currentCharKey, toAnySlice(items))
+	return nil, nil
+}
+
+CharDetailItem = KeywordLvl _ Assign _ base:IntNumber _ '/' _ max:IntNumber {
+	p := pp(c); return charDetailData{kind: "lvl", intVal: parseIntNumber(p, c.pos.offset, base.(string)), intVal2: parseIntNumber(p, c.pos.offset, max.(string))}, nil
+} / KeywordCons _ Assign _ n:IntNumber {
+	p := pp(c); return charDetailData{kind: "cons", intVal: parseIntNumber(p, c.pos.offset, n.(string))}, nil
+} / KeywordTalent _ Assign _ a:IntNumber _ ',' _ s:IntNumber _ ',' _ b:IntNumber {
+	p := pp(c); return charDetailData{kind: "talent", intVal: parseIntNumber(p, c.pos.offset, a.(string)), intVal2: parseIntNumber(p, c.pos.offset, s.(string)), intVal3: parseIntNumber(p, c.pos.offset, b.(string))}, nil
+} / '+' _ KeywordParams _ Assign _ m:MapExpr {
+	p := pp(c); return charDetailData{kind: "params", mapVal: acceptIntMap(p, c.pos.offset, m.(*ast.MapExpr))}, nil
+}
+
+// ==== Action items ====
+CharActionStmt = cn:CharNameRaw _ items:ActionItemList _ ';' {
+	p := pp(c)
+	key := shortcut.CharNameToKey[cn.(string)]
+	cnInfo := charNameInfo{key: key, pos: c.pos.offset}
+	var actItems []actionItem
+	for _, it := range toAnySlice(items) {
+		actItems = append(actItems, it.(actionItem))
+	}
+	return buildActionBlock(p, cnInfo, actItems), nil
+}
+
+ActionItemList = first:ActionItem rest:(_ ',' _ ActionItem)* {
+	items := []any{first}
+	for _, r := range toAnySlice(rest) {
+		items = append(items, r.([]any)[3])
+	}
+	return items, nil
+}
+
+ActionItem = name:ActionNameRaw params:ParamBlock? count:RepeatCount? {
+	actKey := ast.ActionKeys[name.(string)]
+	var m *ast.MapExpr
+	if params != nil { m = params.(*ast.MapExpr) }
+	cnt := 1
+	if count != nil { cnt = count.(int) }
+	return actionItem{actionName: name.(string), actionKey: actKey, pos: c.pos.offset, params: m, count: cnt}, nil
+}
+
+ParamBlock = '[' _ inner:MapEntries? _ ']' {
+	if inner == nil { return &ast.MapExpr{Pos: ast.Pos(c.pos.offset)}, nil }
+	m := inner.(*ast.MapExpr)
+	m.Pos = ast.Pos(c.pos.offset)
+	return m, nil
+}
+
+RepeatCount = ':' _ n:IntNumber { p := pp(c)
+	return int(parseIntNumber(p, c.pos.offset, n.(string))), nil }
+
+MapEntries = first:MapEntry rest:(_ ',' _ MapEntry)* {
+	m := &ast.MapExpr{Pos: ast.Pos(c.pos.offset), Fields: make(map[string]ast.Expr)}
+	entry := first.(mapEntry)
+	m.Fields[entry.key] = entry.val
+	for _, r := range toAnySlice(rest) {
+		entry := r.([]any)[3].(mapEntry)
+		m.Fields[entry.key] = entry.val
+	}
+	return m, nil
+}
+
+MapEntry = k:IdentName _ Assign _ v:Expr { return mapEntry{key: k.(string), val: v.(ast.Expr)}, nil }
+
+// ==== ActiveRow ====
+ActiveRow = KeywordActive _ cn:CharNameRaw _ ';' {
+	p := pp(c)
+	p.res.InitialChar = shortcut.CharNameToKey[cn.(string)]
+	return nil, nil
+}
+
+// ==== OptionsRow ====
+OptionsRow = KeywordOptions _ items:(_ OptionItem)* _ ';' {
+	p := pp(c)
+	applyOptions(p, toAnySlice(items))
+	return nil, nil
+}
+
+OptionItem = name:IdentName _ Assign _ val:OptionValue {
+	item := val.(optionItem)
+	item.kind = name.(string)
+	return item, nil
+}
+
+OptionValue = b:Bool { return optionItem{bval: string(c.text) == ast.TrueVal}, nil }
+           / n:Number {
+	num := buildNumberLit(pp(c), c.pos.offset, n.(string))
+	return optionItem{ival: num.IntVal, fval: num.FloatVal}, nil
+} / t:IdentName { return optionItem{text: t.(string)}, nil }
+
+// ==== TargetRow ====
+TargetRow = KeywordTarget _ items:(_ TargetItem)* _ ';' {
+	p := pp(c)
+	applyTargets(p, toAnySlice(items))
+	return nil, nil
+}
+
+TargetItem = KeywordLvl _ Assign _ n:IntNumber { p := pp(c); return targetItem{kind: "lvl", intVal: parseIntNumber(p, c.pos.offset, n.(string))}, nil }
+          / sn:StatNameRaw _ Assign _ n:Number {
+	num := buildNumberLit(pp(c), c.pos.offset, n.(string))
+	return targetItem{kind: "hp", floatVal: num.FloatVal}, nil
+} / KeywordResist _ Assign _ e:Expr {
+	p := pp(c)
+	return targetItem{kind: "resist", floatVal: constFloat(p, e.(ast.Expr))}, nil
+} / el:EleNameRaw _ Assign _ e:Expr {
+	p := pp(c)
+	return targetItem{kind: "element", ele: ast.EleKeys[el.(string)], floatVal: constFloat(p, e.(ast.Expr))}, nil
+} / "pos" EOW _ Assign _ x:Expr _ ',' _ y:Expr {
+	p := pp(c)
+	return targetItem{kind: "pos", x: constFloat(p, x.(ast.Expr)), y: constFloat(p, y.(ast.Expr))}, nil
+} / "radius" EOW _ Assign _ n:Number {
+	num := buildNumberLit(pp(c), c.pos.offset, n.(string))
+	return targetItem{kind: "radius", floatVal: num.FloatVal}, nil
+} / "type" EOW _ Assign _ name:IdentName _ params:TargetParamBlock? {
+	var pairs []paramPair
+	if params != nil { pairs = params.([]paramPair) }
+	return targetItem{kind: "type", text: name.(string), paramList: pairs}, nil
+} / "freeze_resist" EOW _ Assign _ e:Expr {
+	p := pp(c)
+	return targetItem{kind: "freeze_resist", floatVal: constFloat(p, e.(ast.Expr))}, nil
+} / KeywordParticleThreshold _ Assign _ n:Number {
+	num := buildNumberLit(pp(c), c.pos.offset, n.(string))
+	return targetItem{kind: "particle_threshold", floatVal: num.FloatVal}, nil
+} / KeywordParticleDropCount _ Assign _ n:Number {
+	num := buildNumberLit(pp(c), c.pos.offset, n.(string))
+	return targetItem{kind: "particle_drop_count", floatVal: num.FloatVal}, nil
+} / KeywordParticleElement _ Assign _ el:EleNameRaw {
+	return targetItem{kind: "particle_element", ele: ast.EleKeys[el.(string)]}, nil
+}
+
+TargetParamBlock = '[' _ first:TargetParam rest:(_ ',' _ TargetParam)* _ ']' {
+	pairs := []paramPair{first.(paramPair)}
+	for _, r := range toAnySlice(rest) {
+		pairs = append(pairs, r.([]any)[3].(paramPair))
+	}
+	return pairs, nil
+}
+
+TargetParam = name:IdentName _ Assign _ n:Number {
+	num := buildNumberLit(pp(c), c.pos.offset, n.(string))
+	return paramPair{key: name.(string), val: num, pos: c.pos.offset}, nil
+}
+
+// ==== EnergyRow ====
+EnergyRow = KeywordEnergy _ body:EnergyBody? _ ';' { return nil, nil }
+EnergyBody = "once" EOW _ items:(_ EnergyOnceItem)* {
+	p := pp(c)
+	parseEnergyIntervalOnce(p, toAnySlice(items))
+	return nil, nil
+} / "every" EOW _ items:(_ EnergyEveryItem)* {
+	p := pp(c)
+	parseEnergyIntervalEvery(p, toAnySlice(items))
+	return nil, nil
+}
+EnergyOnceItem = "interval" EOW _ Assign _ n:IntNumber { p := pp(c); return energyItem{kind: "interval", ival: parseIntNumber(p, c.pos.offset, n.(string))}, nil }
+              / "amount" EOW _ Assign _ n:IntNumber { p := pp(c); return energyItem{kind: "amount", ival: parseIntNumber(p, c.pos.offset, n.(string))}, nil }
+EnergyEveryItem = "interval" EOW _ Assign _ start:IntNumber _ ',' _ end:IntNumber {
+	p := pp(c); return energyItem{kind: "interval", startIval: parseIntNumber(p, c.pos.offset, start.(string)), endIval: parseIntNumber(p, c.pos.offset, end.(string))}, nil
+} / "amount" EOW _ Assign _ n:IntNumber { p := pp(c); return energyItem{kind: "amount", ival: parseIntNumber(p, c.pos.offset, n.(string))}, nil }
+
+// ==== HurtRow ====
+HurtRow = KeywordHurt _ body:HurtBody? _ ';' { return nil, nil }
+HurtBody = "once" EOW _ items:(_ HurtOnceItem)* {
+	p := pp(c)
+	parseHurtOnce(p, toAnySlice(items))
+	return nil, nil
+} / "every" EOW _ items:(_ HurtEveryItem)* {
+	p := pp(c)
+	parseHurtEvery(p, toAnySlice(items))
+	return nil, nil
+}
+HurtOnceItem = "interval" EOW _ Assign _ n:IntNumber { p := pp(c); return hurtItem{kind: "interval", ival: parseIntNumber(p, c.pos.offset, n.(string))}, nil }
+             / "amount" EOW _ Assign _ min:Number _ ',' _ max:Number {
+	p := pp(c); minNum := buildNumberLit(p, c.pos.offset, min.(string)); maxNum := buildNumberLit(p, c.pos.offset, max.(string))
+	return hurtItem{kind: "amount", minF: minNum.FloatVal, maxF: maxNum.FloatVal}, nil
+} / "element" EOW _ Assign _ el:EleNameRaw { return hurtItem{kind: "element", ele: ast.EleKeys[el.(string)]}, nil }
+HurtEveryItem = "interval" EOW _ Assign _ start:IntNumber _ ',' _ end:IntNumber {
+	p := pp(c); return hurtItem{kind: "interval", startIval: parseIntNumber(p, c.pos.offset, start.(string)), endIval: parseIntNumber(p, c.pos.offset, end.(string))}, nil
+} / "amount" EOW _ Assign _ min:Number _ ',' _ max:Number {
+	p := pp(c); minNum := buildNumberLit(p, c.pos.offset, min.(string)); maxNum := buildNumberLit(p, c.pos.offset, max.(string))
+	return hurtItem{kind: "amount", minF: minNum.FloatVal, maxF: maxNum.FloatVal}, nil
+} / "element" EOW _ Assign _ el:EleNameRaw { return hurtItem{kind: "element", ele: ast.EleKeys[el.(string)]}, nil }
+
+// ==== Statements ====
+Stmt = LetStmt / FnStmt / IfStmt / SwitchStmt / WhileStmt / ForStmt / CtrlStmt / ReturnStmt / Block / CharActionStmt / AssignStmt / ExprStmt
+
+LetStmt = KeywordLet _ i:IdentTok _ t:Type? _ Assign _ e:Expr _ ';' {
+	typ := t
+	kwPos := ast.Pos(c.pos.offset)
+	if typ == nil { typ = &ast.NumberType{Pos: kwPos} }
+	return &ast.LetStmt{Pos: kwPos, Ident: i.(ast.Token), Type: typ.(ast.ExprType), Val: e.(ast.Expr)}, nil
+}
+
+FnStmt = KeywordFn _ i:IdentTok _ lit:FnCore {
+	return &ast.FnStmt{Pos: i.(ast.Token).Pos, Ident: i.(ast.Token), Func: lit.(*ast.FuncLit)}, nil
+}
+
+IfStmt = KeywordIf _ cond:Expr _ b:Block _ e:ElsePart? {
+	stmt := &ast.IfStmt{Pos: ast.Pos(c.pos.offset), Condition: cond.(ast.Expr), IfBlock: b.(*ast.BlockStmt)}
+	if e != nil { stmt.ElseBlock = e.(ast.Stmt) }
+	return stmt, nil
+}
+
+ElsePart = KeywordElse _ s:(IfStmt / Block) { return s, nil }
+
+WhileStmt = KeywordWhile _ cond:Expr _ b:Block {
+	return &ast.WhileStmt{Pos: ast.Pos(c.pos.offset), Condition: cond.(ast.Expr), WhileBlock: b.(*ast.BlockStmt)}, nil
+}
+
+ForStmt = KeywordFor _ val:(b:Block {
+	return b.(*ast.BlockStmt), nil
+} / init:ForInit? _ cond:Expr _ post:ForPost? _ body:Block {
+	var i, p any
+	if init != nil { i = init }
+	if post != nil { p = post }
+	return forParts{Init: i, Cond: cond.(ast.Expr), Post: p, Body: body.(*ast.BlockStmt)}, nil
+}) {
+	switch v := val.(type) {
+	case *ast.BlockStmt:
+		return &ast.ForStmt{Pos: ast.Pos(c.pos.offset), Body: v}, nil
+	case forParts:
+		stmt := &ast.ForStmt{Pos: ast.Pos(c.pos.offset), Cond: v.Cond, Body: v.Body}
+		if v.Init != nil { stmt.Init = v.Init.(ast.Stmt) }
+		if v.Post != nil { stmt.Post = v.Post.(ast.Stmt) }
+		return stmt, nil
+	}
+	panic("unreachable")
+}
+
+ForInit = s:(LetCore / AssignCore) _ ';' { return s, nil }
+ForPost = ';' _ p:AssignCore? { return p, nil }
+
+SwitchStmt = KeywordSwitch _ cond:SwitchCond? _ '{' _ clauses:SwitchClause* _ '}' {
+	stmt := &ast.SwitchStmt{Pos: ast.Pos(c.pos.offset)}
+	if cond != nil { stmt.Condition = cond.(ast.Expr) }
+	for _, cl := range toAnySlice(clauses) {
+		switch c := cl.(type) {
+		case *ast.CaseStmt: stmt.Cases = append(stmt.Cases, c)
+		case *ast.BlockStmt: stmt.Default = c
+		}
+	}
+	return stmt, nil
+}
+
+SwitchCond = e:Expr _ { return e, nil }
+SwitchClause = CaseClause / DefaultClause
+
+CaseKwPos = "case" EOW { return c.pos.offset, nil }
+DefaultKwPos = "default" EOW { return c.pos.offset, nil }
+
+CaseClause = _ casePos:CaseKwPos _ e:Expr _ colon:ColonPos _ body:CaseStmts {
+	block := ast.NewBlockStmt(ast.Pos(colon.(int)))
+	for _, item := range body.([]ast.Node) { block.Append(item) }
+	return &ast.CaseStmt{Pos: ast.Pos(casePos.(int)), Condition: e.(ast.Expr), Body: block}, nil
+}
+
+DefaultClause = _ defPos:DefaultKwPos _ colon:ColonPos _ body:CaseStmts {
+	block := ast.NewBlockStmt(ast.Pos(colon.(int)))
+	for _, item := range body.([]ast.Node) { block.Append(item) }
+	return block, nil
+}
+
+ColonPos = ':' { return c.pos.offset, nil }
+
+CaseStmts = stmts:(_ s:Stmt)* {
+	var list []ast.Node
+	for _, item := range toAnySlice(stmts) {
+		sl := item.([]any)
+		if sl[1] != nil { list = append(list, sl[1].(ast.Node)) }
+	}
+	return list, nil
+}
+
+CtrlStmt = kw:(KeywordBreak { return ast.CtrlBreak, nil } / KeywordContinue { return ast.CtrlContinue, nil } / KeywordFallthrough { return ast.CtrlFallthrough, nil }) _ ';' {
+	return &ast.CtrlStmt{Pos: ast.Pos(c.pos.offset), Typ: kw.(ast.CtrlTyp)}, nil
+}
+
+ReturnStmt = KeywordReturn _ e:Expr _ ';' {
+	return &ast.ReturnStmt{Pos: ast.Pos(c.pos.offset), Val: e.(ast.Expr)}, nil
+}
+
+Block = '{' _ stmts:StmtList _ '}' {
+	block := ast.NewBlockStmt(ast.Pos(c.pos.offset))
+	list := stmts.([]ast.Node)
+	for _, item := range list { block.Append(item) }
+	return block, nil
+}
+
+StmtList = stmts:(_ s:Stmt)* {
+	var list []ast.Node
+	for _, item := range toAnySlice(stmts) {
+		sl := item.([]any)
+		if sl[1] != nil { list = append(list, sl[1].(ast.Node)) }
+	}
+	return list, nil
+}
+
+AssignStmt = core:AssignCore _ ';' { return core, nil }
+
+AssignCore = i:IdentTok _ Assign _ e:Expr {
+	return &ast.AssignStmt{Pos: i.(ast.Token).Pos, Ident: i.(ast.Token), Val: e.(ast.Expr)}, nil
+}
+
+LetCore = KeywordLet _ i:IdentTok _ t:Type? _ Assign _ e:Expr {
+	typ := t
+	kwPos := ast.Pos(c.pos.offset)
+	if typ == nil { typ = &ast.NumberType{Pos: kwPos} }
+	return &ast.LetStmt{Pos: kwPos, Ident: i.(ast.Token), Type: typ.(ast.ExprType), Val: e.(ast.Expr)}, nil
+}
+
+ExprStmt = e:Expr _ ';' { return e.(ast.Expr), nil }
+
+IdentTok = i:IdentName { return identTok(c, c.pos.offset, i.(string)), nil }
+
+Type = FnType / BasicType
+
+BasicType = t:IdentText &{ return t.(string) == "number" || t.(string) == "string" || t.(string) == "map", nil } {
+	switch t.(string) {
+	case "number": return &ast.NumberType{Pos: ast.Pos(c.pos.offset)}, nil
+	case "string": return &ast.StringType{Pos: ast.Pos(c.pos.offset)}, nil
+	default: return &ast.MapType{Pos: ast.Pos(c.pos.offset)}, nil
+	}
+}
+
+FnType = KeywordFn _ '(' _ args:(first:Type rest:(_ ',' _ Type)*)? _ ')' _ rt:Type? {
+	fn := &ast.FuncType{Pos: ast.Pos(c.pos.offset)}
+	if args != nil {
+		sl := toAnySlice(args)
+		fn.ArgsType = append(fn.ArgsType, sl[0].(ast.ExprType))
+		for _, r := range toAnySlice(sl[1]) { fn.ArgsType = append(fn.ArgsType, r.([]any)[3].(ast.ExprType)) }
+	}
+	if rt != nil { fn.ResultType = rt.(ast.ExprType) } else { fn.ResultType = &ast.NumberType{Pos: ast.Pos(c.pos.offset)} }
+	return fn, nil
+}
+
+FnCore = '(' _ params:ParamList? _ ')' _ rt:Type? _ body:Block {
+	p := pp(c)
+	lit := &ast.FuncLit{Pos: ast.Pos(c.pos.offset), Signature: &ast.FuncType{Pos: ast.Pos(c.pos.offset)}}
+	if params != nil {
+		raw := params.([]any)
+		// first element is direct paramDef
+		pd := raw[0].(paramDef)
+		lit.Args = append(lit.Args, &ast.Ident{Pos: ast.Pos(pd.pos), Value: pd.name})
+		if pd.typ != nil { lit.Signature.ArgsType = append(lit.Signature.ArgsType, pd.typ) } else { lit.Signature.ArgsType = append(lit.Signature.ArgsType, &ast.NumberType{Pos: ast.Pos(pd.pos)}) }
+		// rest elements are [_, ',', _, paramDef]
+		for _, r := range raw[1:] {
+			pd := r.([]any)[3].(paramDef)
+			lit.Args = append(lit.Args, &ast.Ident{Pos: ast.Pos(pd.pos), Value: pd.name})
+			if pd.typ != nil { lit.Signature.ArgsType = append(lit.Signature.ArgsType, pd.typ) } else { lit.Signature.ArgsType = append(lit.Signature.ArgsType, &ast.NumberType{Pos: ast.Pos(pd.pos)}) }
+		}
+	}
+	checkDuplicateParams(p, lit.Args)
+	if rt != nil { lit.Signature.ResultType = rt.(ast.ExprType) } else { lit.Signature.ResultType = &ast.NumberType{Pos: ast.Pos(c.pos.offset)} }
+	lit.Body = body.(*ast.BlockStmt)
+	return lit, nil
+}
+
+ParamList = first:Param rest:(_ ',' _ Param)* {
+	sl := []any{first}
+	sl = append(sl, toAnySlice(rest)...)
+	return sl, nil
+}
+
+Param = i:IdentTok _ t:Type? {
+	var ptyp ast.ExprType
+	if t != nil { ptyp = t.(ast.ExprType) }
+	return paramDef{name: i.(ast.Token).Val, pos: int(i.(ast.Token).Pos), typ: ptyp}, nil
+}
+
+Expr = OrExpr
+
+OrExpr = first:AndExpr rest:(_ op:OrOp _ e:AndExpr)* {
+	p := pp(c)
+	expr := first.(ast.Expr)
+	for _, r := range toAnySlice(rest) {
+		sl := r.([]any)
+		expr = buildBinaryExpr(p, expr, sl[1].(ast.Token), sl[3].(ast.Expr))
+	}
+	return expr, nil
+}
+
+AndExpr = first:EqExpr rest:(_ op:AndOp _ e:EqExpr)* {
+	p := pp(c)
+	expr := first.(ast.Expr)
+	for _, r := range toAnySlice(rest) {
+		sl := r.([]any)
+		expr = buildBinaryExpr(p, expr, sl[1].(ast.Token), sl[3].(ast.Expr))
+	}
+	return expr, nil
+}
+
+EqExpr = first:RelExpr rest:(_ op:(EqOp / NotEqOp) _ e:RelExpr)* {
+	p := pp(c)
+	expr := first.(ast.Expr)
+	for _, r := range toAnySlice(rest) {
+		sl := r.([]any)
+		expr = buildBinaryExpr(p, expr, sl[1].(ast.Token), sl[3].(ast.Expr))
+	}
+	return expr, nil
+}
+
+RelExpr = first:AddExpr rest:(_ op:RelOp _ e:AddExpr)* {
+	p := pp(c)
+	expr := first.(ast.Expr)
+	for _, r := range toAnySlice(rest) {
+		sl := r.([]any)
+		expr = buildBinaryExpr(p, expr, sl[1].(ast.Token), sl[3].(ast.Expr))
+	}
+	return expr, nil
+}
+
+AddExpr = first:MulExpr rest:(_ op:AddOp _ e:MulExpr)* {
+	p := pp(c)
+	expr := first.(ast.Expr)
+	for _, r := range toAnySlice(rest) {
+		sl := r.([]any)
+		expr = buildBinaryExpr(p, expr, sl[1].(ast.Token), sl[3].(ast.Expr))
+	}
+	return expr, nil
+}
+
+MulExpr = first:Unary rest:(_ op:MulOp _ e:Unary)* {
+	p := pp(c)
+	expr := first.(ast.Expr)
+	for _, r := range toAnySlice(rest) {
+		sl := r.([]any)
+		expr = buildBinaryExpr(p, expr, sl[1].(ast.Token), sl[3].(ast.Expr))
+	}
+	return expr, nil
+}
+
+Unary = op:UnOp _ r:Unary {
+	p := pp(c)
+	return buildUnaryExpr(p, op.(ast.Token), r.(ast.Expr)), nil
+} / CallExpr
+
+CallExpr = fun:Primary parts:(_ CallPart)* {
+	expr := fun.(ast.Expr)
+	for _, part := range toAnySlice(parts) {
+		sl := part.([]any)
+		cp := sl[1].(callPart)
+		expr = &ast.CallExpr{Pos: ast.Pos(cp.lparenPos), Fun: expr, Args: cp.args}
+	}
+	return expr, nil
+}
+
+CallPart = '(' _ args:CallArgs? _ ')' {
+	var a []ast.Expr
+	if args != nil { a = args.([]ast.Expr) }
+	return callPart{lparenPos: c.pos.offset, args: a}, nil
+}
+
+CallArgs = first:Expr rest:(_ ',' _ Expr)* {
+	args := []ast.Expr{first.(ast.Expr)}
+	for _, r := range toAnySlice(rest) {
+		args = append(args, r.([]any)[3].(ast.Expr))
+	}
+	return args, nil
+}
+
+Primary = NumberExpr / StringExpr / BoolExpr / FnExpr / MapExpr / Field / ParenExpr / Ident
+
+NumberExpr = n:Number { p := pp(c); return buildNumberLit(p, c.pos.offset, n.(string)), nil }
+StringExpr = s:String { return &ast.StringLit{Pos: ast.Pos(c.pos.offset), Value: string(c.text)}, nil }
+BoolExpr = b:Bool { return buildBoolLit(c.pos.offset, string(c.text)), nil }
+FnExpr = KeywordFn _ lit:FnCore { return &ast.FuncExpr{Pos: ast.Pos(c.pos.offset), Func: lit.(*ast.FuncLit)}, nil }
+
+MapExpr = '[' _ ']' { return &ast.MapExpr{Pos: ast.Pos(c.pos.offset)}, nil }
+        / '[' _ entries:MapEntries _ ']' {
+	m := entries.(*ast.MapExpr)
+	m.Pos = ast.Pos(c.pos.offset)
+	return m, nil
+}
+
+Field = segs:( '.' IdentCont+ )+ EOW _ {
+	raw := string(c.text)
+	// strip trailing whitespace that was consumed by _
+	raw = strings.TrimRight(raw, " \t\r\n")
+	parts := strings.Split(raw, ".")
+	clean := make([]string, 0, len(parts))
+	for _, p := range parts { if p != "" { clean = append(clean, p) } }
+	// Field.Pos is NEXT TOKEN position (end of match including trailing whitespace)
+	nextPos := c.pos.offset + len(c.text)
+	return &ast.Field{Pos: ast.Pos(nextPos), Value: clean}, nil
+}
+
+ParenExpr = '(' _ e:Expr _ ')' { return e, nil }
+
+Ident = i:IdentName { return &ast.Ident{Pos: ast.Pos(c.pos.offset), Value: i.(string)}, nil }

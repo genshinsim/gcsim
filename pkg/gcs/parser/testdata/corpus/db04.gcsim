@@ -1,0 +1,41 @@
+ganyu char lvl=90/90 cons=0 talent=9,9,9;
+ganyu add weapon="amosbow" refine=1 lvl=90/90;
+ganyu add set="wandererstroupe" count=5;
+ganyu add stats def%=0.124 def=39.36 hp=5287.88 hp%=0.0992 atk=344.08 atk%=0.0992 er=0.1102 em=266.28 cr=0.642 cd=0.7944 cryo%=0.466;
+
+bennett char lvl=90/90 cons=5 talent=9,9,9;
+bennett add weapon="skywardblade" refine=1 lvl=90/90;
+bennett add set="noblesseoblige" count=4;
+bennett add stats def%=0.124 def=39.36 hp=5287.88 hp%=0.0992 atk=344.08 atk%=0.0992 er=1.069 em=39.64 cr=0.5096 cd=0.662 pyro%=0.466;
+
+nahida char lvl=90/90 cons=0 talent=9,9,9;
+nahida add weapon="prototypeamber" refine=5 lvl=90/90;
+nahida add set="deepwoodmemories" count=5;
+nahida add stats hp=4780 atk=311 em=187 em=187 em=187 ; 
+nahida add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.6612 em=118.92 cr=0.1655 cd=0.331;
+
+
+thoma char lvl=90/90 cons=6 talent=9,9,9;
+thoma add weapon="favoniuslance" refine=5 lvl=90/90;
+thoma add set ="emblem" count=2;
+thoma add set="tenacity" count=2;
+thoma add stats hp=4780 atk=311 er=0.518 hp%=0.466 cr=0.311; #main
+thoma add stats def=39.36 def%=0.124 hp=507.88 hp%=0.3968
+atk=33.08 atk%=0.0992 er=0.3306 em=39.64 cr=0.331 cd=0.2648;
+
+
+options swap_delay=12 iteration=500;
+target lvl=100 resist=.1 hp=1000000000 radius=2 pos=2.4,2 freeze_resist=0;
+energy every interval=480,720 amount=1;
+
+active nahida;
+
+for let i=0; i<4; i=i+1 {
+nahida skill,burst;
+thoma skill,burst;
+bennett skill,burst;
+ganyu attack,aim:5,skill,aim;
+bennett skill,attack;
+}
+
+#Nahida EQ - Thoma EQ - Bennett EQ - Ganyu N1 5CA E CA - Bennett E

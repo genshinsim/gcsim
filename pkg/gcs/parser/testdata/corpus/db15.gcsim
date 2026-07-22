@@ -1,0 +1,45 @@
+ayaka char lvl=90/90 cons=6 talent=9,9,9;
+ayaka add weapon="mistsplitterreforged" refine=5 lvl=90/90;
+ayaka add set="blizzardstrayer" count=4;
+ayaka add stats def%=0.124 def=39.36 hp=5287.88 hp%=0.0992 atk=344.08 atk%=0.714 er=0.1102 em=39.64 cr=0.6089 cd=0.7944 cryo%=0.466;
+
+ganyu char lvl=90/90 cons=6 talent=9,9,9;
+ganyu add weapon="thefirstgreatmagic" refine=5 lvl=90/90;
+ganyu add set="blizzardstrayer" count=4;
+ganyu add stats def%=0.124 def=39.36 hp=5287.88 hp%=0.0992 atk=344.08 atk%=0.8628 er=0.1102 em=39.64 cr=0.6089 cd=0.7944 cryo%=0.466;
+
+shenhe char lvl=90/90 cons=6 talent=9,9,9;
+shenhe add weapon="calamityqueller" refine=5 lvl=90/90;
+shenhe add set="noblesseoblige" count=4;
+shenhe add stats def%=0.124 def=39.36 hp=5287.88 hp%=0.0992 atk=344.08 atk%=1.6956000000000002 er=0.1102 em=39.64 cr=0.331 cd=0.662;
+
+kazuha char lvl=90/90 cons=6 talent=9,9,9;
+kazuha add weapon="freedomsworn" refine=5 lvl=90/90;
+kazuha add set="viridescentvenerer" count=4;
+kazuha add stats def%=0.124 def=39.36 hp=5287.88 hp%=0.0992 atk=344.08 atk%=0.0992 er=0.1102 em=679.92 cr=0.331 cd=0.662;
+
+options swap_delay=12 debug=true iteration=1000;
+energy every interval=480,720 amount=1;
+target lvl=100 resist=0.1 hp=1000000000 pos=3,0 radius=2;
+#target lvl=100 resist=0.1 hp=1000000000 pos=2,0 radius=2;
+#target lvl=100 resist=0.1 hp=1000000000 pos=4,0 radius=2;
+#target lvl=100 resist=0.1 hp=1000000000 pos=1,0 radius=2;
+#target lvl=100 resist=0.1 hp=1000000000 pos=5,0 radius=2;
+
+#Rotation____
+active ayaka;
+
+let rotations = 1;
+while rotations {
+  ayaka dash; 
+  kazuha burst;
+  shenhe burst, skill;
+  ganyu  skill, burst, aim;
+  ayaka dash, attack, skill, attack, charge, burst;
+  kazuha skill, high_plunge;
+  shenhe skill, skill[hold=1];
+  ganyu attack, skill, aim, skill, aim;
+
+  rotations = rotations - 1;
+}
+wait(33);

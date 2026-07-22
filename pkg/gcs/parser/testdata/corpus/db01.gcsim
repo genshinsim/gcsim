@@ -1,0 +1,54 @@
+options swap_delay=12 iteration=1000;
+
+ganyu char lvl=90/90 cons=0 talent=9,9,9; 
+ganyu add weapon="hamayumi" refine=5 lvl=90/90;
+ganyu add set="blizzardstrayer" count=5;
+ganyu add stats hp=4780 atk=311 atk%=0.466 cryo%=0.466 cd=0.622 ; #main
+ganyu add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.1984 er=0.1102 em=39.64 cr=0.3972 cd=0.662;
+							
+zhongli char lvl=90/90 cons=0 talent=9,9,9; 
+zhongli add weapon="favoniuslance" refine=3 lvl=90/90;
+zhongli add set="tenacityofthemillelith" count=4;
+zhongli add stats hp=4780 atk=311 hp%=0.466 geo%=0.466 cr=0.311 ; #main
+zhongli add stats def=39.36 def%=0.124 hp=507.88 hp%=0.1984 atk=33.08 atk%=0.0992 er=0.1102 em=39.64 cr=0.331 cd=0.7944 ;										
+
+chiori char lvl=90/90 cons=0 talent=9,9,9; 
+chiori add weapon="harbingerofdawn" refine=5 lvl=90/90;
+chiori add set="goldentroupe" count=4;
+chiori add stats hp=4780 atk=311 def%=0.583 geo%=0.466 cd=0.622; #mainstats
+chiori add stats def%=0.248 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.1102 em=39.64 cr=0.3972 cd=0.662;
+
+shenhe char lvl=90/90 cons=0 talent=9,9,9;
+shenhe add weapon="favoniuslance" refine=3 lvl=90/90;
+shenhe add set="no" count=4;
+shenhe add set="glad" count=1;
+shenhe add stats hp=4780 atk=311 atk%=0.466 atk%=0.466 atk%=0.466; #main
+shenhe add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.2976 er=0.1102 em=39.64 cr=0.331 cd=0.662 ;										
+
+active zhongli;
+target lvl=100 resist=0.1 radius=2 pos=0,2.4 hp=999999999; 
+energy every interval=480,720 amount=1;
+
+for let i=0; i<4; i=i+1 {
+	zhongli attack,skill[hold=1], dash;
+	while (.zhongli.mods.favonius-cd==0) {
+	  zhongli attack;
+	}
+	chiori skill:2;
+	shenhe skill[hold=1],attack;
+	
+	if .shenhe.burst.ready {
+	  shenhe burst;
+	} else {
+	  chiori burst;
+	}
+	
+	if .ganyu.burst.ready {
+	  ganyu burst;
+	} else {
+	  ganyu aim;
+	}
+	
+	ganyu skill, aim[weakspot=1],aim:3;
+	print("end");
+}

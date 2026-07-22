@@ -1,0 +1,93 @@
+options iteration=1000;
+
+fn rand_delay(mean, stddev) {
+  let del = randnorm() * stddev + mean;
+  if del > (mean + mean) {
+    del = mean + mean;
+  }
+  delay(del);
+}
+
+let prev_char_id = -1;
+let prev_action_id = -1;
+
+let _execute_action = execute_action;
+fn execute_action(char_id number, action_id number, p map) {
+  #print(prev_char_id, " ", prev_action_id, " ", char_id, " ", action_id);
+
+  # this next if block handles implict swap or otherwise any pre swap delay specified in this function
+  # will not work
+  if prev_char_id != char_id && action_id != .action.swap {
+    execute_action(char_id, .action.swap, []);
+  }
+
+  # this following if block handles conditionally adding in delay depending on
+  # what the previous and next action is. in this example, delay is not added between attacks
+  # and charge attack following an attack
+  # modify these conditions as you see fit
+  if action_id == .action.swap {
+    # add delay before swap
+    rand_delay(12, 3);
+  } else if prev_action_id == .action.attack && action_id != .action.attack && action_id != .action.charge {
+    # add delay after attack, but only if not followed by another attack or charge
+    rand_delay(3, 1);
+  } else if prev_action_id != .action.attack {
+    # add delay to everything else
+    rand_delay(3, 1);
+  }
+
+  # this here tracks the previous character id so that it can be used above
+  prev_char_id = char_id;
+  prev_action_id = action_id;
+  return _execute_action(char_id, action_id, p);
+}
+
+neuvillette char lvl=90/90 cons=0 talent=9,9,9 ; 
+neuvillette add weapon="sacrificialjade" refine=1 lvl=90/90 ;
+neuvillette add set="mh" count=4;
+neuvillette add stats hp=4780 atk=311 hp%=0.466 hydro%=0.466 cd=0.622 ; #main
+neuvillette add stats def=39.36 def%=0.124 hp=507.88 hp%=0.496 atk=33.08 atk%=0.0992 er=0.1102 em=39.64 cr=0.1986 cd=0.662;
+
+furina char lvl=90/90 cons=0 talent=9,9,9 ; 
+furina add weapon="wolffang" refine=1 lvl=90/90;
+furina add set="gt" count=4;
+furina add stats hp=4780 atk=311 hp%=0.466 hp%=0.466 cd=0.622 ; #main
+furina add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.3306 em=39.64 cr=0.331 cd=0.662;
+
+ganyu char lvl=90/90 cons=0 talent=9,9,9;
+ganyu add weapon="songofstillness" refine=5 lvl=90/90;
+#ganyu add weapon="mouun" refine=1 lvl=90/90;
+#ganyu add weapon="fadingtwilight" refine=5 lvl=90/90;
+ganyu add set="blizzardstrayer" count=4;
+ganyu add stats hp=4780 atk=311 er=0.518 cryo%=0.466 cd=0.622 ; #main
+ganyu add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.1984 er=0.1102 em=39.64 cr=0.3972 cd=0.662;	
+
+kazuha char lvl=90/90 cons=0 talent=9,9,9;
+kazuha add weapon="xiphosmoonlight" refine=1 lvl=90/90;
+kazuha add set="viridescentvenerer" count=4;
+kazuha add stats hp=4780 atk=311 em=187 em=187 em=187 ; #main
+kazuha add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.5510 em=118.92 cr=0.331 cd=0.1324;
+
+active furina;
+
+target lvl=100 resist=0.1 radius=1.5 pos=0,2 hp=999999999; 
+target lvl=100 resist=0.1 radius=1.5 pos=0,5.2 hp=999999999; 
+energy every interval=480,720 amount=1;
+
+for let i=0; i<4; i=i+1 {
+  furina skill, dash, attack;
+  neuvillette skill, attack;
+  kazuha burst;
+  ganyu skill, burst, dash;
+  furina burst; 
+  kazuha skill, high_plunge;
+  neuvillette charge, burst, skill, charge, attack; #this N1 is for more reliable hydro swirl
+  kazuha skill, high_plunge;
+  ganyu skill, attack:2;
+  neuvillette charge, charge;
+}
+
+ wait(173); #for the last CA
+ 
+ #Furina E dash N1 > Neuv E > Kazuha Q > Ganyu EQ >
+ #Furina Q > Kazuha tEP > Neuv C Q E C N1 > Kazuha tEP > Ganyu E > Neuv 2C

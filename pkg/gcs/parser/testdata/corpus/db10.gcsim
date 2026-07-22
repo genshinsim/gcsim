@@ -1,0 +1,53 @@
+neuvillette char lvl=90/90 cons=0 talent=9,9,9 +params=[start_hp=35000]; 
+neuvillette add weapon="sacrificialjade" refine=1 lvl=90/90 ;
+neuvillette add set="mh" count=4;
+neuvillette add stats hp=4780 atk=311 hp%=0.466 hydro%=0.466 cd=0.622 ; #main
+neuvillette add stats def=39.36 def%=0.124 hp=1523.64 hp%=0.496 atk=33.08 atk%=0.0992 er=0.1102 em=39.64 cr=0.0662 cd=0.662;
+#neuvillette add stats def=39.36 def%=0.124 hp=1015.76 hp%=0.496 atk=33.08 atk%=0.0992 er=0.2204 em=39.64 cr=0.0662 cd=0.662;
+
+ganyu char lvl=90/90 cons=0 talent=9,9,9;
+ganyu add weapon="mouun" refine=1 lvl=90/90;
+ganyu add set="blizzardstrayer" count=4;
+ganyu add stats hp=4780 atk=311 er=0.518 cryo%=0.466 cd=0.622 ; #main
+ganyu add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.2204 em=39.64 cr=0.3972 cd=0.662;			
+#ganyu add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.3306 em=39.64 cr=0.3972 cd=0.5296;	
+
+venti char lvl=90/90 cons=0 talent=9,9,9;
+venti add weapon="favoniuswarbow" refine=3 lvl=90/90;
+venti add set="viridescentvenerer" count=5;
+venti add stats hp=4780 atk=311 em=187 em=187 em=187 ; #main
+venti add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.1102 em=118.92 cr=0.331 cd=0.662;		
+
+shenhe char lvl=90/90 cons=0 talent=9,9,9;
+shenhe add weapon="favoniuslance" refine=3 lvl=90/90;
+shenhe add set="no" count=4;
+shenhe add stats hp=4780 atk=311 atk%=0.466 atk%=0.466 atk%=0.466 ; #main
+shenhe add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=132.32 atk%=0.2976 er=0.1102 em=39.64 cr=0.3972 cd=0.1324;
+						
+																						
+							
+# ----  Default Enemy
+options swap_delay=12 debug=true iteration=1000;
+target lvl=100 resist=0.1 hp=100000000 pos=0,1.5 radius=1;
+target lvl=100 resist=0.1 hp=100000000 pos=-1.2,3.5 radius=1;
+#target lvl=100 resist=0.1 hp=100000000 pos=1.2,3.5 radius=1;
+#target lvl=100 resist=0.1 hp=100000000 pos=0,5.5 radius=1;
+energy every interval=480,720 amount=1;
+
+active neuv;
+for let i = 0; i < 3; i = i + 1 {
+  neuv burst;
+  venti attack, skill, burst;
+  shenhe burst, skill[hold=1];
+  ganyu skill, burst;
+  neuv charge, charge, skill, attack:3;
+  venti attack:2, skill, attack;
+  shenhe attack:2, dash, skill[hold=1];
+  ganyu skill, burst;
+  neuv charge, skill, charge;
+}
+wait(173);
+
+#Neuv Q > 
+#Venti N1 E Q > Shenhe Q hE > Ganyu EQ > Neuv 2C E N3 >
+#Venti N2 E N1 > Shenhe N2 dash hE > Ganyu EQ > Neuv C E C

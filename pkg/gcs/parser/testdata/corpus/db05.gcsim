@@ -1,0 +1,48 @@
+ganyu char lvl=90/90 cons=0 talent=9,9,9; 
+ganyu add weapon="hamayumi" refine=5 lvl=90/90;
+ganyu add set="wt" count=4;
+ganyu add stats hp=4780 atk=311 atk%=0.466 cryo%=0.466 cr=0.311; #main
+ganyu add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.1984 er=0.1102 em=39.64 cr=0.331 cd=0.7944;
+
+sucrose char lvl=90/90 cons=6 talent=9,9,9;
+sucrose add weapon="thrillingtalesofdragonslayers" refine=5 lvl=90/90;
+sucrose add set="viridescentvenerer" count=4;
+sucrose add stats hp=4780 atk=311 em=187 em=187 em=187; #main
+sucrose add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.5952 er=0.4408 em=118.92 cr=0.0662 cd=0.1324;
+
+xiangling char lvl=90/90 cons=6 talent=9,9,9; 
+xiangling add weapon="moonpiercer" refine=5 lvl=90/90 +params=[pickup_delay=1];
+#xiangling add set="totm" count=4;
+xiangling add set="gt" count=4;
+xiangling add stats hp=4780 atk=311 atk%=0.466 pyro%=0.466 cr=0.311; #main
+xiangling add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.1984 er=0.1102 em=39.64 cr=0.331 cd=0.7944;
+
+nahida char lvl=90/90 cons=0 talent=9,9,9;
+nahida add weapon="wanderingevenstar" refine=1 lvl=90/90;
+#nahida add set="noblesseoblige" count=4;
+nahida add set="totm" count=4;
+nahida add stats hp=4780 atk=311 em=187 em=187 em=187; #main
+nahida add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.6612 em=118.92 cr=0.1986 cd=0.2648;
+
+options swap_delay=12 iteration=1000;
+target lvl=100 resist=0.1 radius=2 pos=0,2.4 hp=999999999; 
+energy every interval=480,720 amount=1;
+
+active ganyu;
+ganyu skill;
+for let i=0; i<4; i=i+1 {
+  nahida skill, burst;
+  
+  xiangling attack, skill;
+  sucrose skill;
+  ganyu aim:5, skill;
+  
+  xiangling attack, skill;
+  if i == i / 2 * 2 {
+    sucrose attack, burst;
+  } else {
+    sucrose skill;
+  }
+  ganyu aim:4, skill;
+  print("rotation done");
+}

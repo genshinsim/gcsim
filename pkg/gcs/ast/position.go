@@ -42,6 +42,15 @@ func (f *File) Position(offset Pos) Position {
 	}
 }
 
+func (f *File) SetInput(input string) {
+	f.size = len(input)
+	for i := 0; i < len(input); i++ {
+		if input[i] == '\n' {
+			f.AddLine(i + 1)
+		}
+	}
+}
+
 func NewFile() *File {
 	return &File{lines: []int{0}}
 }

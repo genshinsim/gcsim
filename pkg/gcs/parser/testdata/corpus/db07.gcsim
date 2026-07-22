@@ -1,0 +1,46 @@
+options swap_delay=12 iteration=250 ;
+
+shenhe char lvl=90/90 cons=0 talent=9,9,9; 
+shenhe add weapon="favlance" refine=5 lvl=90/90;
+shenhe add set="noblesseoblige" count=5;
+shenhe add stats hp=4780 atk=311 atk%=0.466 atk%=0.466 atk%=0.466 ; #main
+shenhe add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.1984 er=0.551 em=39.64 cr=0.3972 cd=0.1324 ;
+
+kokomi char lvl=90/90 cons=0 talent=9,9,9; 
+kokomi add weapon="thrillingtalesofdragonslayers" refine=5 lvl=90/90;
+kokomi add set="totm" count=5;
+kokomi add stats hp=4780 atk=311 hp%=0.466 hp%=0.466 heal=0.359 ; #main
+kokomi add stats def=39.36 def%=0.124 hp=1523.64 hp%=0.3968 atk=33.08 atk%=0.5952 er=0.1102 em=39.64 cr=0.0662 cd=0.1324 ;
+
+furina char lvl=90/90 cons=0 talent=9,9,9; 
+furina add weapon="festeringdesire" refine=5 lvl=90/90;
+furina add set="gt" count=5;
+furina add stats hp=4780 atk=311 hp%=0.466 hp%=0.466 cd=0.622 ; #main
+furina add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.3306 em=39.64 cr=0.331 cd=0.662 ;
+
+ganyu char lvl=90/90 cons=0 talent=9,9,9; 
+ganyu add weapon="prototypecrescent" refine=5 lvl=90/90;
+ganyu add set="blizzardstrayer" count=5;
+ganyu add stats hp=4780 atk=311 atk%=0.466 cryo%=0.466 cd=0.622 ; #main
+ganyu add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.1984 er=0.1102 em=39.64 cr=0.3972 cd=0.662 ;
+
+target lvl=100 resist=.1 hp=999999999 pos=0,2.35 radius=2;
+
+energy every interval=480,720 amount=1;
+active furina;
+#-------------------------------------------
+for let x = 0; x < 4; x = x + 1 {
+	furina skill, dash;
+	if !.furina.burst.ready {
+	  furina attack;
+	} 
+	furina burst;
+	shenhe skill, burst;
+	kokomi skill, dash;
+	ganyu skill, burst, aim[weakspot=1]:2;
+	shenhe skill, attack;
+	ganyu aim:2, skill, aim[weakspot=1]:2;
+
+}
+
+ganyu jump;

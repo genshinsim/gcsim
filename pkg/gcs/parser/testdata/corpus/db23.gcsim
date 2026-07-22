@@ -1,0 +1,65 @@
+nahida char lvl=90/90 cons=0 talent=9,9,9 ;
+nahida add weapon="ttds" refine=5 lvl=90/90;
+nahida add set="totm" count=4;
+nahida add stats hp=4780 atk=311 em=187 em=187 em=187 ; #main
+nahida add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.1102 em=118.92 cr=0.331 cd=0.662 ;
+
+shenhe char lvl=90/90 cons=0 talent=9,9,9;
+shenhe add weapon="favlance" refine=5 lvl=90/90;
+shenhe add set="shim" count=2;
+shenhe add set="glad" count=2;
+shenhe add stats hp=4780 atk=311 atk%=0.932 atk%=0.466; #main
+shenhe add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.2976 er=0.3306 em=79.28 cr=0.3972 cd=0.1324;
+
+bennett char lvl=90/90 cons=6 talent=9,9,9;
+bennett add weapon="sapwoodblade" refine=5 lvl=90/90 +params=[pickup_delay=630];
+bennett add set="noblesseoblige" count=5;
+bennett add stats hp=4780 atk=311 er=0.518 pyro%=0.466 cr=0.311 ; #main
+bennett add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.551 em=39.64 cr=0.1986 cd=0.662 ;
+
+ganyu char lvl=90/90 cons=0 talent=9,9,9;
+ganyu add weapon="hamayumi" refine=5 lvl=90/90;
+ganyu add set="wandererstroupe" count=5;
+ganyu add stats hp=4780 atk=311 em=187 cryo%=0.466 cr=0.311; #main
+ganyu add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.1102 em=79.28 cr=0.331 cd=0.7944;
+
+options swap_delay=12 iteration=1000;
+
+target lvl=100 resist=0.1 radius=2 pos=0,2.4 hp=999999999; 
+energy every interval=480,720 amount=1;
+active shenhe;
+let go=0;
+
+for let x = 0; x < 6; x = x + 1 {
+
+  shenhe attack, skill[hold=1], attack;
+  if x > 0 {
+    if go {
+      nahida skill;
+    } else {
+      nahida attack, skill;
+    }
+  }
+  if go {
+    nahida burst;
+    go = 0;
+  }
+  bennett swap;
+  bennett skill, burst;
+  nahida swap;
+  if !x {
+    nahida skill;
+  }
+  ganyu aim:6, skill;
+  bennett skill, attack:2;
+  if !.nahida.burst.ready {
+    ganyu aim;
+  } else {
+    shenhe swap;
+    go = 1;
+  }
+  
+}
+
+
+

@@ -1,0 +1,48 @@
+nahida char lvl=90/90 cons=0 talent=9,9,9;
+nahida add weapon="prototypeamber" refine=5 lvl=90/90;
+nahida add set="totm" count=4;
+nahida add stats hp=4780 atk=311 em=187 em=187 em=187 ; #main
+nahida add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.6612 em=118.92 cr=0.1655 cd=0.331;
+
+ganyu char lvl=90/90 cons=0 talent=9,9,9;
+ganyu add weapon="hamayumi" refine=5 lvl=90/90;
+ganyu add set="wt" count=5;
+ganyu add stats hp=4780 atk=311 em=187 cryo%=0.466 cr=0.311 ; #main
+ganyu add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.1102 em=79.28 cr=0.331 cd=0.7944;
+
+kazuha char lvl=90/90 cons=0 talent=9,9,9;
+kazuha add weapon="favsword" refine=5 lvl=90/90;
+kazuha add set="vv" count=5;
+kazuha add stats hp=4780 atk=311 er=0.518 em=187 em=187 ; #main
+kazuha add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.4408 em=118.92 cr=0.3972 cd=0.1324;
+
+bennett char lvl=90/90 cons=6 talent=9,9,9;
+bennett add weapon="sapwoodblade" refine=5 lvl=90/90 +params=[pickup_delay=280];
+bennett add set="noblesse" count=5;	
+bennett add stats hp=4780 atk=311 er=0.518 pyro%=0.466 cr=0.311 ; #main
+bennett add stats def=39.36 def%=0.124 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.0992 er=0.551 em=39.64 cr=0.1986 cd=0.662;
+																															
+				
+options swap_delay=12 iteration=1000;
+
+
+active ganyu;
+target lvl=100 resist=0.1 radius=2 pos=0,2.4 hp=999999999; 
+energy every interval=480,720 amount=1;
+
+for let i=0; i<4; i=i+1 {
+  ganyu aim;
+  nahida skill, burst;
+  if !.element.t0.cryo {
+      kazuha attack;
+  }
+  kazuha skill, high_plunge;
+
+  bennett skill, burst;
+  kazuha burst;
+  ganyu aim:6;
+  bennett skill;
+  kazuha skill, high_plunge;
+  ganyu skill;
+}
+
