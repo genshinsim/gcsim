@@ -47,8 +47,8 @@ const (
 	ICDTagFurinaChevalmarin
 	ICDTagFurinaUsher
 	ICDTagHyperbloomDamage
-	ICDTagIfaSkill
 	ICDTagIfaSedationMark
+	ICDTagIfaSkill
 	ICDTagKinichLoopShot
 	ICDTagKinichScalespikerCannon
 	ICDTagKleeFireDamage
