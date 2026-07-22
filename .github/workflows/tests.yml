@@ -1,17 +1,25 @@
 name: run tests
 
-on: [push, pull_request]
+on:
+  push:
+    paths-ignore:
+      - "**.md"
+      - "**.txt"
+  pull_request:
+    paths-ignore:
+      - "**.md"
+      - "**.txt"
 
 jobs:
   test-go:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: go-setup-and-test
       uses: ./.github/actions/go-setup-and-test
   test-ui:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: yarn-setup-and-test
       uses: ./.github/actions/yarn-setup-and-test
