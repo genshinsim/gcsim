@@ -26,17 +26,17 @@ const TH = styled.th`
 function AbilAoE({ data }) {
   const rows = data.map((e) => {
     return (
-      <tr key={e.ability}>
-        <TD>{e.ability}</TD>
+      <tr key={e.name}>
+        <TD>{e.name}</TD>
         <TD>{e.shape}</TD>
         <TD>{e.center}</TD>
-        <TD>{e.offsetX ?? '-'}</TD>
-        <TD>{e.offsetY ?? '-'}</TD>
+        <TD>{e.offset_x ?? '-'}</TD>
+        <TD>{e.offset_y ?? '-'}</TD>
         <TD>{e.radius ?? '-'}</TD>
-        <TD>{e.fanAngle ?? '-'}</TD>
-        <TD>{e.boxX ?? '-'}</TD>
-        <TD>{e.boxY ?? '-'}</TD>
-        <TD>{e.notes ?? '-'}</TD>
+        <TD>{e.fan_angle ?? '-'}</TD>
+        <TD>{e.box_x ?? '-'}</TD>
+        <TD>{e.box_y ?? '-'}</TD>
+        <TD>{e.note ?? '-'}</TD>
       </tr>
     );
   });
@@ -64,29 +64,26 @@ function AbilAoE({ data }) {
   );
 }
 
-const abils = ["normal", "charge", "plunge", "aim", "skill", "burst", "asc", "cons"];
-const abilLabels = [
-  "Normal",
-  "Charge Attack",
-  "Plunge",
-  "Aimed Shot",
-  "Skill",
-  "Burst",
-  "Ascension",
-  "Cons"
-];
+const labels = {
+  ["attack"]: "Normal",
+  ["charge"]: "Charge",
+  ["plunge"]: "Plunge",
+  ["aim"]: "Aimed",
+  ["skill"]: "Skill",
+  ["burst"]: "Burst",
+  ["asc"]: "Ascension",
+  ["cons"]: "Constellation",
+  ["-"]: "Other",
+};
 
 export default function AoETable({ item_key, data_src }) {
   let data = character_data;
-  let useAbils = true;
   switch (data_src) {
     case "weapon":
       data = weapon_data;
-      useAbils = false;
       break;
     case "artifact":
       data = artifact_data;
-      useAbils = false;
       break;
   }
   if (!data) {
@@ -95,28 +92,20 @@ export default function AoETable({ item_key, data_src }) {
   if (!(item_key in data)) {
     return <div>No AoE data for {data_src}</div>;
   }
-  const item = data[item_key];
+  let abil_data = {};
+  data[item_key].forEach((e) => {
+    abil_data[e.ability] = abil_data[e.ability] ?? [];
+    abil_data[e.ability].push(e);
+  });
   let tabs = [];
-  let count = 0;
-  if (!useAbils) {
-    if (item.length === 0) {
-      return <div>No AoE data for {data_src}</div>;
-    }
-    return <AbilAoE data={item} />;
-  }
-  abils.forEach((a, i) => {
-    // skip if no data for this tab
-    if (!(a in item)) {
-      return;
-    }
-    count++;
+  for (let abil in abil_data) {
     tabs.push(
-      <TabItem value={a} label={abilLabels[i]} key={a}>
-        <AbilAoE data={item[a]} />
+      <TabItem key={abil} value={abil} label={labels[abil]}>
+        <AbilAoE data={abil_data[abil]} />
       </TabItem>
     );
-  });
-  if (count == 0) {
+  }
+  if (tabs.length == 0) {
     return <div>No AoE data for {data_src}</div>;
   }
   return <Tabs>{tabs}</Tabs>;

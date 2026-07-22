@@ -16,6 +16,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	_ "github.com/genshinsim/gcsim/pkg/simulation"
+	"github.com/genshinsim/gcsim/pkg/testhelper"
 )
 
 // purpose of this test is to check that characters abilities do not randomly panic
@@ -27,7 +28,7 @@ func TestAbilities(t *testing.T) {
 
 func testChar(t *testing.T, k keys.Char) {
 	c, trg := makeCore(2)
-	prof := defProfile(k)
+	prof := testhelper.DefaultProfile(k, keys.DullBlade)
 	prof.Base.Cons = 6
 	idx, err := c.AddChar(prof)
 	if err != nil {
@@ -96,26 +97,6 @@ func makeCore(trgCount int) (*core.Core, []*enemy.Enemy) {
 	c.Player.SetActive(0)
 
 	return c, trgs
-}
-
-func defProfile(key keys.Char) info.CharacterProfile {
-	p := info.CharacterProfile{}
-	p.Base.Key = key
-	p.Stats = make([]float64, attributes.EndStatType)
-	p.StatsByLabel = make(map[string][]float64)
-	p.Params = make(map[string]int)
-	p.Sets = make(map[keys.Set]int)
-	p.SetParams = make(map[keys.Set]map[string]int)
-	p.Weapon.Params = make(map[string]int)
-	p.Base.Element = keys.CharKeyToEle[key]
-	p.Weapon.Key = keys.DullBlade
-
-	p.Stats[attributes.EM] = 100
-	p.Base.Level = 90
-	p.Base.MaxLevel = 90
-	p.Talents = info.TalentProfile{Attack: 1, Skill: 1, Burst: 1}
-
-	return p
 }
 
 func advanceCoreFrame(c *core.Core) {

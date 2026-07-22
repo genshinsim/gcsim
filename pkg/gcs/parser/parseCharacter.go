@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/catalog"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -35,7 +36,7 @@ func (p *Parser) newChar(key keys.Char) {
 	r.Sets = make(map[keys.Set]int)
 	r.SetParams = make(map[keys.Set]map[string]int)
 	r.Weapon.Params = make(map[string]int)
-	r.Base.Element = keys.CharKeyToEle[key]
+	r.Base.Element = info.ConvertProtoElement(catalog.CharacterMap[key].Element)
 	p.chars[key] = &r
 	p.charOrder = append(p.charOrder, key)
 }

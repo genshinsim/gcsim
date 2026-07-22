@@ -1,3 +1,11 @@
-package_name: filletblade
-genshin_id: 11305
-key: filletblade
+use: pipeline
+kind: weapon
+name: filletblade
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Fillet Blade
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Single
+        center: GlobalValue

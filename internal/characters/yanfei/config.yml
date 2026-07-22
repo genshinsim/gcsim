@@ -1,45 +1,141 @@
-package_name: yanfei
-genshin_id: 10000048
-key: yanfei
-action_param_keys:
-  attack:
-    - param: "travel"
-  low_plunge:
-    - param: "collision"
-  high_plunge:
-    - param: "collision"
-icd_tags:
-  - ICDTagYanfeiFire
-skill_data_mapping:
-  attack:
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}
-    charge:
-      - 3 # Charged Attack|{param3:P}/{param4:P}/{param5:P}/{param6:P}/{param7:P}
-      - 4 # Charged Attack|{param3:P}/{param4:P}/{param5:P}/{param6:P}/{param7:P}
-      - 5 # Charged Attack|{param3:P}/{param4:P}/{param5:P}/{param6:P}/{param7:P}
-      - 6 # Charged Attack|{param3:P}/{param4:P}/{param5:P}/{param6:P}/{param7:P}
-      - 7 # Charged Attack|{param3:P}/{param4:P}/{param5:P}/{param6:P}/{param7:P}
-    collision:
-      - 15 # Plunge DMG|{param6:F1P}
-    lowPlunge:
-      - 16 # Low/High Plunge DMG|{param7:P}/{param8:P}
-    highPlunge:
-      - 17 # Low/High Plunge DMG|{param7:P}/{param8:P}
-  skill:
-    skill:
-      - 0 # Skill DMG|{param0:P}
-  burst:
-    burst:
-      - 0 # Skill DMG|{param0:P}
-    burstBonus:
-      - 1 # Charged Attack DMG Bonus|{param1:P}
+use: pipeline
+kind: character
+name: yanfei
 
-documentation:
-  fields_data:
-    - fields: [.yanfei.seal-count]
-      desc: Number of Scarlet Seals.
+combat:
+  icd_tags:
+    - YanfeiFire
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+  - charge:
+      - attack(Charged Attack)
+      - attack(Charged Attack|1)
+      - attack(Charged Attack|2)
+      - attack(Charged Attack|3)
+      - attack(Charged Attack|4)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skill: skill(Skill DMG)
+
+  - burst: burst(Skill DMG)
+  - burstBonus: burst(Charged Attack DMG Bonus)
+
+docs:
+  fields:
+    .yanfei.seal-count: Number of Scarlet Seals.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1NslqbafUoW4rhl1D2oVeSsn0SXfvAwnxAlIlwvKY_5Q/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/O43Ws1bgyXY
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/16ZDmEBZOD4xeUcodxFJVuLC7IIqM9LGLilkct65mElg/edit?usp=sharing
+      count_credit: kolibri._.
+      video: https://youtu.be/SRfExbRwUx4
+      video_credit: kolibri._.
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.75
+
+      - name: N2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.75
+
+      - name: N3
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.75
+
+  - name: charge
+    hitbox:
+      - name: CA-0Stack
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2.5
+
+      - name: CA-1Stack
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
+
+      - name: CA-2Stack
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3.5
+
+      - name: CA-3Stack
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4
+
+      - name: CA-4Stack
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        radius: 1.5
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        radius: 3.5
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    hitbox:
+      - name: E-Skill
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3.5
+
+  - name: burst
+    hitbox:
+      - name: Q-ElementalBurst
+        shape: Circle
+        center: Player
+        radius: 6.5
+        hitlag: {scale: 0.01, defense_halt: true}
+
+  - name: asc
+    hitbox:
+      - name: A4
+        note: Spawns on target that A4 proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 3.5
+        hitlag: {scale: 0.05, defense_halt: true}
+
+  - name: walk
+    note: No action followed by walk (except low_plunge and high_plunge) has proper frames.

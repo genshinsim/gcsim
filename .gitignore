@@ -27,6 +27,9 @@ cmd/gcsim/gcsim
 .envrc
 .direnv/
 **/protos_gen
+pipeline/_cache/
+pipeline/_compiled.spec.yml
+pipeline/data/
 keys.json
 tagger_mapping.json
 /app/*

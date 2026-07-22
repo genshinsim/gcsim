@@ -37,7 +37,7 @@ func (c *char) spawnLumidouceCase(level int, pos info.Point, afterBurst bool) {
 	c.lumidouceSrc = c.Core.F
 	c.lumidoucePos = pos
 	c.SetTag(lumidouceLevel, level)
-	c.AddStatus(lumidouceStatus, int(skillDuration[c.TalentLvlSkill()]*60), true)
+	c.AddStatus(lumidouceStatus, skillDuration*60, true)
 	c.QueueCharTask(c.lumidouceAttack(c.lumidouceSrc), lumidouceTickInterval)
 	c.QueueCharTask(c.lumidouceOnBurning(c.lumidouceSrc), lumidouceScentInterval)
 	c.QueueCharTask(c.lumidouceScentCollect(c.lumidouceSrc), lumidouceScentInterval)

@@ -1,4 +1,8 @@
-package_name: sacrificial
-genshin_id: 14403
-key: sacrificialfragments
-skip_data_func: true
+use: pipeline
+kind: weapon
+name: sacrificialfragments
+
+shortcuts:
+  - sacfrag
+  - sacfragments
+  - sacfrags

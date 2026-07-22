@@ -1,3 +1,15 @@
-package_name: sealord
-genshin_id: 12412
-key: luxurioussealord
+use: pipeline
+kind: weapon
+name: luxurioussealord
+
+shortcuts:
+  - sealord
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Luxurious Sea-Lord
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 3

@@ -28,6 +28,7 @@
           '';
 
           devShells.default = pkgs.mkShell {
+            GOTOOLCHAIN = "local";
             nativeBuildInputs =
               with pkgs;
               let

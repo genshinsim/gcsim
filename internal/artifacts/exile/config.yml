@@ -1,2 +1,6 @@
-key: theexile
-set_id: 10009
+use: pipeline
+kind: artifact
+name: theexile
+
+shortcuts:
+  - exile

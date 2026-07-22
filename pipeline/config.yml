@@ -1,0 +1,55 @@
+use: pipeline
+
+override:
+  icd_group:
+    Default:
+      name: default
+    PoleExtraAttack:
+      name: Avatar_Pole_ExtraAttack
+    ReactionA:
+      name: ElementReaction_Damage_Attenuation_1
+    ReactionB:
+      name: ElementReaction_Damage_Attenuation_2
+    Burning:
+      name: ElementReaction_Burning_Attenuation
+      # actual data: [1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0]
+      # however there seems to be no limit to the amount of burning dmg a target can take
+      damage: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+
+combat:
+  icd_tags:
+    - NormalAttack
+    - ExtraAttack
+    - ElementalArt
+    - ElementalArtHold
+    - ElementalArtAnemo
+    - ElementalArtPyro
+    - ElementalArtHydro
+    - ElementalArtCryo
+    - ElementalArtElectro
+    - ElementalBurst
+    - ElementalBurstAnemo
+    - ElementalBurstPyro
+    - ElementalBurstHydro
+    - ElementalBurstCryo
+    - ElementalBurstElectro
+    - Dash
+    - OverloadDamage
+    - SuperconductDamage
+    - ECDamage
+    - Shatter
+    - SwirlPyro
+    - SwirlHydro
+    - SwirlCryo
+    - SwirlElectro
+    - BurningDamage
+    - BloomDamage
+    - BountifulCoreDamage
+    - BurgeonDamage
+    - HyperbloomDamage
+  icd_groups:
+    - Default
+    - PoleExtraAttack
+    - ReactionA
+    - ReactionB
+    - Burning

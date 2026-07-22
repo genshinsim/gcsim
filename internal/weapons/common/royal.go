@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -17,15 +16,13 @@ const icdKey = "royal-icd"
 
 type Royal struct {
 	Index int
-	data  *model.WeaponData
 }
 
-func (r *Royal) SetIndex(idx int)        { r.Index = idx }
-func (r *Royal) Init() error             { return nil }
-func (r *Royal) Data() *model.WeaponData { return r.data }
+func (r *Royal) SetIndex(idx int) { r.Index = idx }
+func (r *Royal) Init() error      { return nil }
 
-func NewRoyal(data *model.WeaponData) *Royal {
-	return &Royal{data: data}
+func NewRoyal() *Royal {
+	return &Royal{}
 }
 
 func (r *Royal) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {

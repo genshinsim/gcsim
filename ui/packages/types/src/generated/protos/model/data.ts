@@ -1,34 +1,27 @@
 /* eslint-disable */
-import Long from "long";
 import _m0 from "protobufjs/minimal";
 import {
-  AvatarCurveType,
-  avatarCurveTypeFromJSON,
-  avatarCurveTypeToJSON,
+  AssocType,
+  assocTypeFromJSON,
+  assocTypeToJSON,
   BodyType,
   bodyTypeFromJSON,
   bodyTypeToJSON,
-  Element,
-  elementFromJSON,
-  elementToJSON,
-  MonsterCurveType,
-  monsterCurveTypeFromJSON,
-  monsterCurveTypeToJSON,
+  ElementType,
+  elementTypeFromJSON,
+  elementTypeToJSON,
+  FightPropType,
+  fightPropTypeFromJSON,
+  fightPropTypeToJSON,
+  GrowCurveType,
+  growCurveTypeFromJSON,
+  growCurveTypeToJSON,
   QualityType,
   qualityTypeFromJSON,
   qualityTypeToJSON,
-  StatType,
-  statTypeFromJSON,
-  statTypeToJSON,
-  WeaponClass,
-  weaponClassFromJSON,
-  weaponClassToJSON,
-  WeaponCurveType,
-  weaponCurveTypeFromJSON,
-  weaponCurveTypeToJSON,
-  ZoneType,
-  zoneTypeFromJSON,
-  zoneTypeToJSON,
+  WeaponType,
+  weaponTypeFromJSON,
+  weaponTypeToJSON,
 } from "./enums";
 
 export interface AvatarDataMap {
@@ -46,13 +39,13 @@ export interface AvatarData {
   key?: string | undefined;
   rarity?: QualityType | undefined;
   body?: BodyType | undefined;
-  region?: ZoneType | undefined;
-  element?: Element | undefined;
-  weapon_class?: WeaponClass | undefined;
+  region?: AssocType | undefined;
+  element?: ElementType | undefined;
+  weapon_class?: WeaponType | undefined;
   icon_name?: string | undefined;
   stats?: AvatarStatsData | undefined;
   skill_details?: AvatarSkillsData | undefined;
-  "name_text_hash_map "?: number | undefined;
+  name_text_hash_map?: number | undefined;
 }
 
 export interface AvatarStatsData {
@@ -64,9 +57,9 @@ export interface AvatarStatsData {
   base_hp?: number | undefined;
   base_atk?: number | undefined;
   base_def?: number | undefined;
-  hp_curve?: AvatarCurveType | undefined;
-  atk_curve?: AvatarCurveType | undefined;
-  def_cruve?: AvatarCurveType | undefined;
+  hp_curve?: GrowCurveType | undefined;
+  atk_curve?: GrowCurveType | undefined;
+  def_cruve?: GrowCurveType | undefined;
   promo_data?: PromotionData[] | undefined;
   element_mastery?: number | undefined;
 }
@@ -115,10 +108,10 @@ export interface WeaponData {
     | undefined;
   /** for whatever reason weapon rarity is a number */
   rarity?: number | undefined;
-  weapon_class?: WeaponClass | undefined;
+  weapon_class?: WeaponType | undefined;
   image_name?: string | undefined;
   base_stats?: WeaponStatsData | undefined;
-  "name_text_hash_map "?: number | undefined;
+  name_text_hash_map?: number | undefined;
 }
 
 export interface WeaponStatsData {
@@ -127,9 +120,9 @@ export interface WeaponStatsData {
 }
 
 export interface WeaponProp {
-  prop_type?: StatType | undefined;
+  prop_type?: FightPropType | undefined;
   initial_value?: number | undefined;
-  curve?: WeaponCurveType | undefined;
+  curve?: GrowCurveType | undefined;
 }
 
 export interface ArtifactDataMap {
@@ -162,7 +155,7 @@ export interface PromotionData {
 }
 
 export interface PromotionAddProp {
-  prop_type?: StatType | undefined;
+  prop_type?: FightPropType | undefined;
   value?: number | undefined;
 }
 
@@ -175,7 +168,7 @@ export interface MonsterData {
 
 export interface MonsterStatsData {
   base_hp?: number | undefined;
-  hp_curve?: MonsterCurveType | undefined;
+  hp_curve?: GrowCurveType | undefined;
   resist?: MonsterResistData | undefined;
   freeze_resist?: number | undefined;
   hp_drop?: MonsterHPDrop[] | undefined;
@@ -364,17 +357,17 @@ function createBaseAvatarData(): AvatarData {
     icon_name: "",
     stats: undefined,
     skill_details: undefined,
-    "name_text_hash_map ": 0,
+    name_text_hash_map: 0,
   };
 }
 
 export const AvatarData = {
   encode(message: AvatarData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== undefined && message.id !== 0) {
-      writer.uint32(8).int32(message.id);
+      writer.uint32(8).uint32(message.id);
     }
     if (message.sub_id !== undefined && message.sub_id !== 0) {
-      writer.uint32(16).int32(message.sub_id);
+      writer.uint32(16).uint32(message.sub_id);
     }
     if (message.key !== undefined && message.key !== "") {
       writer.uint32(26).string(message.key);
@@ -403,8 +396,8 @@ export const AvatarData = {
     if (message.skill_details !== undefined) {
       AvatarSkillsData.encode(message.skill_details, writer.uint32(90).fork()).ldelim();
     }
-    if (message["name_text_hash_map "] !== undefined && message["name_text_hash_map "] !== 0) {
-      writer.uint32(96).int64(message["name_text_hash_map "]);
+    if (message.name_text_hash_map !== undefined && message.name_text_hash_map !== 0) {
+      writer.uint32(96).uint32(message.name_text_hash_map);
     }
     return writer;
   },
@@ -421,14 +414,14 @@ export const AvatarData = {
             break;
           }
 
-          message.id = reader.int32();
+          message.id = reader.uint32();
           continue;
         case 2:
           if (tag !== 16) {
             break;
           }
 
-          message.sub_id = reader.int32();
+          message.sub_id = reader.uint32();
           continue;
         case 3:
           if (tag !== 26) {
@@ -498,7 +491,7 @@ export const AvatarData = {
             break;
           }
 
-          message["name_text_hash_map "] = longToNumber(reader.int64() as Long);
+          message.name_text_hash_map = reader.uint32();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -516,15 +509,13 @@ export const AvatarData = {
       key: isSet(object.key) ? globalThis.String(object.key) : "",
       rarity: isSet(object.rarity) ? qualityTypeFromJSON(object.rarity) : 0,
       body: isSet(object.body) ? bodyTypeFromJSON(object.body) : 0,
-      region: isSet(object.region) ? zoneTypeFromJSON(object.region) : 0,
-      element: isSet(object.element) ? elementFromJSON(object.element) : 0,
-      weapon_class: isSet(object.weapon_class) ? weaponClassFromJSON(object.weapon_class) : 0,
+      region: isSet(object.region) ? assocTypeFromJSON(object.region) : 0,
+      element: isSet(object.element) ? elementTypeFromJSON(object.element) : 0,
+      weapon_class: isSet(object.weapon_class) ? weaponTypeFromJSON(object.weapon_class) : 0,
       icon_name: isSet(object.icon_name) ? globalThis.String(object.icon_name) : "",
       stats: isSet(object.stats) ? AvatarStatsData.fromJSON(object.stats) : undefined,
       skill_details: isSet(object.skill_details) ? AvatarSkillsData.fromJSON(object.skill_details) : undefined,
-      "name_text_hash_map ": isSet(object["name_text_hash_map "])
-        ? globalThis.Number(object["name_text_hash_map "])
-        : 0,
+      name_text_hash_map: isSet(object.name_text_hash_map) ? globalThis.Number(object.name_text_hash_map) : 0,
     };
   },
 
@@ -546,13 +537,13 @@ export const AvatarData = {
       obj.body = bodyTypeToJSON(message.body);
     }
     if (message.region !== undefined && message.region !== 0) {
-      obj.region = zoneTypeToJSON(message.region);
+      obj.region = assocTypeToJSON(message.region);
     }
     if (message.element !== undefined && message.element !== 0) {
-      obj.element = elementToJSON(message.element);
+      obj.element = elementTypeToJSON(message.element);
     }
     if (message.weapon_class !== undefined && message.weapon_class !== 0) {
-      obj.weapon_class = weaponClassToJSON(message.weapon_class);
+      obj.weapon_class = weaponTypeToJSON(message.weapon_class);
     }
     if (message.icon_name !== undefined && message.icon_name !== "") {
       obj.icon_name = message.icon_name;
@@ -563,8 +554,8 @@ export const AvatarData = {
     if (message.skill_details !== undefined) {
       obj.skill_details = AvatarSkillsData.toJSON(message.skill_details);
     }
-    if (message["name_text_hash_map "] !== undefined && message["name_text_hash_map "] !== 0) {
-      obj["name_text_hash_map "] = Math.round(message["name_text_hash_map "]);
+    if (message.name_text_hash_map !== undefined && message.name_text_hash_map !== 0) {
+      obj.name_text_hash_map = Math.round(message.name_text_hash_map);
     }
     return obj;
   },
@@ -589,7 +580,7 @@ export const AvatarData = {
     message.skill_details = (object.skill_details !== undefined && object.skill_details !== null)
       ? AvatarSkillsData.fromPartial(object.skill_details)
       : undefined;
-    message["name_text_hash_map "] = object["name_text_hash_map "] ?? 0;
+    message.name_text_hash_map = object.name_text_hash_map ?? 0;
     return message;
   },
 };
@@ -715,9 +706,9 @@ export const AvatarStatsData = {
       base_hp: isSet(object.base_hp) ? globalThis.Number(object.base_hp) : 0,
       base_atk: isSet(object.base_atk) ? globalThis.Number(object.base_atk) : 0,
       base_def: isSet(object.base_def) ? globalThis.Number(object.base_def) : 0,
-      hp_curve: isSet(object.hp_curve) ? avatarCurveTypeFromJSON(object.hp_curve) : 0,
-      atk_curve: isSet(object.atk_curve) ? avatarCurveTypeFromJSON(object.atk_curve) : 0,
-      def_cruve: isSet(object.def_cruve) ? avatarCurveTypeFromJSON(object.def_cruve) : 0,
+      hp_curve: isSet(object.hp_curve) ? growCurveTypeFromJSON(object.hp_curve) : 0,
+      atk_curve: isSet(object.atk_curve) ? growCurveTypeFromJSON(object.atk_curve) : 0,
+      def_cruve: isSet(object.def_cruve) ? growCurveTypeFromJSON(object.def_cruve) : 0,
       promo_data: globalThis.Array.isArray(object?.promo_data)
         ? object.promo_data.map((e: any) => PromotionData.fromJSON(e))
         : [],
@@ -737,13 +728,13 @@ export const AvatarStatsData = {
       obj.base_def = message.base_def;
     }
     if (message.hp_curve !== undefined && message.hp_curve !== 0) {
-      obj.hp_curve = avatarCurveTypeToJSON(message.hp_curve);
+      obj.hp_curve = growCurveTypeToJSON(message.hp_curve);
     }
     if (message.atk_curve !== undefined && message.atk_curve !== 0) {
-      obj.atk_curve = avatarCurveTypeToJSON(message.atk_curve);
+      obj.atk_curve = growCurveTypeToJSON(message.atk_curve);
     }
     if (message.def_cruve !== undefined && message.def_cruve !== 0) {
-      obj.def_cruve = avatarCurveTypeToJSON(message.def_cruve);
+      obj.def_cruve = growCurveTypeToJSON(message.def_cruve);
     }
     if (message.promo_data?.length) {
       obj.promo_data = message.promo_data.map((e) => PromotionData.toJSON(e));
@@ -790,19 +781,19 @@ function createBaseAvatarSkillsData(): AvatarSkillsData {
 export const AvatarSkillsData = {
   encode(message: AvatarSkillsData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.skill !== undefined && message.skill !== 0) {
-      writer.uint32(8).int32(message.skill);
+      writer.uint32(8).uint32(message.skill);
     }
     if (message.burst !== undefined && message.burst !== 0) {
-      writer.uint32(16).int32(message.burst);
+      writer.uint32(16).uint32(message.burst);
     }
     if (message.attack !== undefined && message.attack !== 0) {
-      writer.uint32(24).int32(message.attack);
+      writer.uint32(24).uint32(message.attack);
     }
     if (message.a1 !== undefined && message.a1 !== 0) {
-      writer.uint32(80).int32(message.a1);
+      writer.uint32(80).uint32(message.a1);
     }
     if (message.a4 !== undefined && message.a4 !== 0) {
-      writer.uint32(88).int32(message.a4);
+      writer.uint32(88).uint32(message.a4);
     }
     if (message.burst_energy_cost !== undefined && message.burst_energy_cost !== 0) {
       writer.uint32(33).double(message.burst_energy_cost);
@@ -847,35 +838,35 @@ export const AvatarSkillsData = {
             break;
           }
 
-          message.skill = reader.int32();
+          message.skill = reader.uint32();
           continue;
         case 2:
           if (tag !== 16) {
             break;
           }
 
-          message.burst = reader.int32();
+          message.burst = reader.uint32();
           continue;
         case 3:
           if (tag !== 24) {
             break;
           }
 
-          message.attack = reader.int32();
+          message.attack = reader.uint32();
           continue;
         case 10:
           if (tag !== 80) {
             break;
           }
 
-          message.a1 = reader.int32();
+          message.a1 = reader.uint32();
           continue;
         case 11:
           if (tag !== 88) {
             break;
           }
 
-          message.a4 = reader.int32();
+          message.a4 = reader.uint32();
           continue;
         case 4:
           if (tag !== 33) {
@@ -1019,10 +1010,10 @@ function createBaseAvatarSkillExcelIndexData(): AvatarSkillExcelIndexData {
 export const AvatarSkillExcelIndexData = {
   encode(message: AvatarSkillExcelIndexData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.group_id !== undefined && message.group_id !== 0) {
-      writer.uint32(8).int32(message.group_id);
+      writer.uint32(8).uint32(message.group_id);
     }
     if (message.index !== undefined && message.index !== 0) {
-      writer.uint32(16).int32(message.index);
+      writer.uint32(16).uint32(message.index);
     }
     if (message.level_data !== undefined && message.level_data.length !== 0) {
       for (const v of message.level_data) {
@@ -1044,14 +1035,14 @@ export const AvatarSkillExcelIndexData = {
             break;
           }
 
-          message.group_id = reader.int32();
+          message.group_id = reader.uint32();
           continue;
         case 2:
           if (tag !== 16) {
             break;
           }
 
-          message.index = reader.int32();
+          message.index = reader.uint32();
           continue;
         case 3:
           if (tag !== 26) {
@@ -1112,7 +1103,7 @@ function createBaseAvatarSkillExcelLevelData(): AvatarSkillExcelLevelData {
 export const AvatarSkillExcelLevelData = {
   encode(message: AvatarSkillExcelLevelData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.level !== undefined && message.level !== 0) {
-      writer.uint32(8).int32(message.level);
+      writer.uint32(8).uint32(message.level);
     }
     if (message.value !== undefined && message.value !== 0) {
       writer.uint32(17).double(message.value);
@@ -1132,7 +1123,7 @@ export const AvatarSkillExcelLevelData = {
             break;
           }
 
-          message.level = reader.int32();
+          message.level = reader.uint32();
           continue;
         case 2:
           if (tag !== 17) {
@@ -1334,27 +1325,19 @@ export const WeaponDataMap_DataEntry = {
 };
 
 function createBaseWeaponData(): WeaponData {
-  return {
-    id: 0,
-    key: "",
-    rarity: 0,
-    weapon_class: 0,
-    image_name: "",
-    base_stats: undefined,
-    "name_text_hash_map ": 0,
-  };
+  return { id: 0, key: "", rarity: 0, weapon_class: 0, image_name: "", base_stats: undefined, name_text_hash_map: 0 };
 }
 
 export const WeaponData = {
   encode(message: WeaponData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== undefined && message.id !== 0) {
-      writer.uint32(8).int32(message.id);
+      writer.uint32(8).uint32(message.id);
     }
     if (message.key !== undefined && message.key !== "") {
       writer.uint32(18).string(message.key);
     }
     if (message.rarity !== undefined && message.rarity !== 0) {
-      writer.uint32(24).int32(message.rarity);
+      writer.uint32(24).uint32(message.rarity);
     }
     if (message.weapon_class !== undefined && message.weapon_class !== 0) {
       writer.uint32(32).int32(message.weapon_class);
@@ -1365,8 +1348,8 @@ export const WeaponData = {
     if (message.base_stats !== undefined) {
       WeaponStatsData.encode(message.base_stats, writer.uint32(50).fork()).ldelim();
     }
-    if (message["name_text_hash_map "] !== undefined && message["name_text_hash_map "] !== 0) {
-      writer.uint32(56).int64(message["name_text_hash_map "]);
+    if (message.name_text_hash_map !== undefined && message.name_text_hash_map !== 0) {
+      writer.uint32(56).uint32(message.name_text_hash_map);
     }
     return writer;
   },
@@ -1383,7 +1366,7 @@ export const WeaponData = {
             break;
           }
 
-          message.id = reader.int32();
+          message.id = reader.uint32();
           continue;
         case 2:
           if (tag !== 18) {
@@ -1397,7 +1380,7 @@ export const WeaponData = {
             break;
           }
 
-          message.rarity = reader.int32();
+          message.rarity = reader.uint32();
           continue;
         case 4:
           if (tag !== 32) {
@@ -1425,7 +1408,7 @@ export const WeaponData = {
             break;
           }
 
-          message["name_text_hash_map "] = longToNumber(reader.int64() as Long);
+          message.name_text_hash_map = reader.uint32();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -1441,12 +1424,10 @@ export const WeaponData = {
       id: isSet(object.id) ? globalThis.Number(object.id) : 0,
       key: isSet(object.key) ? globalThis.String(object.key) : "",
       rarity: isSet(object.rarity) ? globalThis.Number(object.rarity) : 0,
-      weapon_class: isSet(object.weapon_class) ? weaponClassFromJSON(object.weapon_class) : 0,
+      weapon_class: isSet(object.weapon_class) ? weaponTypeFromJSON(object.weapon_class) : 0,
       image_name: isSet(object.image_name) ? globalThis.String(object.image_name) : "",
       base_stats: isSet(object.base_stats) ? WeaponStatsData.fromJSON(object.base_stats) : undefined,
-      "name_text_hash_map ": isSet(object["name_text_hash_map "])
-        ? globalThis.Number(object["name_text_hash_map "])
-        : 0,
+      name_text_hash_map: isSet(object.name_text_hash_map) ? globalThis.Number(object.name_text_hash_map) : 0,
     };
   },
 
@@ -1462,7 +1443,7 @@ export const WeaponData = {
       obj.rarity = Math.round(message.rarity);
     }
     if (message.weapon_class !== undefined && message.weapon_class !== 0) {
-      obj.weapon_class = weaponClassToJSON(message.weapon_class);
+      obj.weapon_class = weaponTypeToJSON(message.weapon_class);
     }
     if (message.image_name !== undefined && message.image_name !== "") {
       obj.image_name = message.image_name;
@@ -1470,8 +1451,8 @@ export const WeaponData = {
     if (message.base_stats !== undefined) {
       obj.base_stats = WeaponStatsData.toJSON(message.base_stats);
     }
-    if (message["name_text_hash_map "] !== undefined && message["name_text_hash_map "] !== 0) {
-      obj["name_text_hash_map "] = Math.round(message["name_text_hash_map "]);
+    if (message.name_text_hash_map !== undefined && message.name_text_hash_map !== 0) {
+      obj.name_text_hash_map = Math.round(message.name_text_hash_map);
     }
     return obj;
   },
@@ -1489,7 +1470,7 @@ export const WeaponData = {
     message.base_stats = (object.base_stats !== undefined && object.base_stats !== null)
       ? WeaponStatsData.fromPartial(object.base_stats)
       : undefined;
-    message["name_text_hash_map "] = object["name_text_hash_map "] ?? 0;
+    message.name_text_hash_map = object.name_text_hash_map ?? 0;
     return message;
   },
 };
@@ -1633,22 +1614,22 @@ export const WeaponProp = {
 
   fromJSON(object: any): WeaponProp {
     return {
-      prop_type: isSet(object.prop_type) ? statTypeFromJSON(object.prop_type) : 0,
+      prop_type: isSet(object.prop_type) ? fightPropTypeFromJSON(object.prop_type) : 0,
       initial_value: isSet(object.initial_value) ? globalThis.Number(object.initial_value) : 0,
-      curve: isSet(object.curve) ? weaponCurveTypeFromJSON(object.curve) : 0,
+      curve: isSet(object.curve) ? growCurveTypeFromJSON(object.curve) : 0,
     };
   },
 
   toJSON(message: WeaponProp): unknown {
     const obj: any = {};
     if (message.prop_type !== undefined && message.prop_type !== 0) {
-      obj.prop_type = statTypeToJSON(message.prop_type);
+      obj.prop_type = fightPropTypeToJSON(message.prop_type);
     }
     if (message.initial_value !== undefined && message.initial_value !== 0) {
       obj.initial_value = message.initial_value;
     }
     if (message.curve !== undefined && message.curve !== 0) {
-      obj.curve = weaponCurveTypeToJSON(message.curve);
+      obj.curve = growCurveTypeToJSON(message.curve);
     }
     return obj;
   },
@@ -1826,10 +1807,10 @@ function createBaseArtifactData(): ArtifactData {
 export const ArtifactData = {
   encode(message: ArtifactData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== undefined && message.id !== 0) {
-      writer.uint32(8).int64(message.id);
+      writer.uint32(8).uint32(message.id);
     }
     if (message.text_map_id !== undefined && message.text_map_id !== 0) {
-      writer.uint32(16).int64(message.text_map_id);
+      writer.uint32(16).uint32(message.text_map_id);
     }
     if (message.key !== undefined && message.key !== "") {
       writer.uint32(26).string(message.key);
@@ -1852,14 +1833,14 @@ export const ArtifactData = {
             break;
           }
 
-          message.id = longToNumber(reader.int64() as Long);
+          message.id = reader.uint32();
           continue;
         case 2:
           if (tag !== 16) {
             break;
           }
 
-          message.text_map_id = longToNumber(reader.int64() as Long);
+          message.text_map_id = reader.uint32();
           continue;
         case 3:
           if (tag !== 26) {
@@ -2051,7 +2032,7 @@ function createBasePromotionData(): PromotionData {
 export const PromotionData = {
   encode(message: PromotionData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.max_level !== undefined && message.max_level !== 0) {
-      writer.uint32(8).int32(message.max_level);
+      writer.uint32(8).uint32(message.max_level);
     }
     if (message.add_props !== undefined && message.add_props.length !== 0) {
       for (const v of message.add_props) {
@@ -2073,7 +2054,7 @@ export const PromotionData = {
             break;
           }
 
-          message.max_level = reader.int32();
+          message.max_level = reader.uint32();
           continue;
         case 2:
           if (tag !== 18) {
@@ -2169,7 +2150,7 @@ export const PromotionAddProp = {
 
   fromJSON(object: any): PromotionAddProp {
     return {
-      prop_type: isSet(object.prop_type) ? statTypeFromJSON(object.prop_type) : 0,
+      prop_type: isSet(object.prop_type) ? fightPropTypeFromJSON(object.prop_type) : 0,
       value: isSet(object.value) ? globalThis.Number(object.value) : 0,
     };
   },
@@ -2177,7 +2158,7 @@ export const PromotionAddProp = {
   toJSON(message: PromotionAddProp): unknown {
     const obj: any = {};
     if (message.prop_type !== undefined && message.prop_type !== 0) {
-      obj.prop_type = statTypeToJSON(message.prop_type);
+      obj.prop_type = fightPropTypeToJSON(message.prop_type);
     }
     if (message.value !== undefined && message.value !== 0) {
       obj.value = message.value;
@@ -2203,7 +2184,7 @@ function createBaseMonsterData(): MonsterData {
 export const MonsterData = {
   encode(message: MonsterData, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.id !== undefined && message.id !== 0) {
-      writer.uint32(8).int32(message.id);
+      writer.uint32(8).uint32(message.id);
     }
     if (message.key !== undefined && message.key !== "") {
       writer.uint32(18).string(message.key);
@@ -2212,7 +2193,7 @@ export const MonsterData = {
       MonsterStatsData.encode(message.base_stats, writer.uint32(26).fork()).ldelim();
     }
     if (message.name_text_hash_map !== undefined && message.name_text_hash_map !== 0) {
-      writer.uint32(32).int64(message.name_text_hash_map);
+      writer.uint32(32).uint32(message.name_text_hash_map);
     }
     return writer;
   },
@@ -2229,7 +2210,7 @@ export const MonsterData = {
             break;
           }
 
-          message.id = reader.int32();
+          message.id = reader.uint32();
           continue;
         case 2:
           if (tag !== 18) {
@@ -2250,7 +2231,7 @@ export const MonsterData = {
             break;
           }
 
-          message.name_text_hash_map = longToNumber(reader.int64() as Long);
+          message.name_text_hash_map = reader.uint32();
           continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
@@ -2382,7 +2363,7 @@ export const MonsterStatsData = {
   fromJSON(object: any): MonsterStatsData {
     return {
       base_hp: isSet(object.base_hp) ? globalThis.Number(object.base_hp) : 0,
-      hp_curve: isSet(object.hp_curve) ? monsterCurveTypeFromJSON(object.hp_curve) : 0,
+      hp_curve: isSet(object.hp_curve) ? growCurveTypeFromJSON(object.hp_curve) : 0,
       resist: isSet(object.resist) ? MonsterResistData.fromJSON(object.resist) : undefined,
       freeze_resist: isSet(object.freeze_resist) ? globalThis.Number(object.freeze_resist) : 0,
       hp_drop: globalThis.Array.isArray(object?.hp_drop)
@@ -2397,7 +2378,7 @@ export const MonsterStatsData = {
       obj.base_hp = message.base_hp;
     }
     if (message.hp_curve !== undefined && message.hp_curve !== 0) {
-      obj.hp_curve = monsterCurveTypeToJSON(message.hp_curve);
+      obj.hp_curve = growCurveTypeToJSON(message.hp_curve);
     }
     if (message.resist !== undefined) {
       obj.resist = MonsterResistData.toJSON(message.resist);
@@ -2607,7 +2588,7 @@ function createBaseMonsterHPDrop(): MonsterHPDrop {
 export const MonsterHPDrop = {
   encode(message: MonsterHPDrop, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
     if (message.drop_id !== undefined && message.drop_id !== 0) {
-      writer.uint32(8).int32(message.drop_id);
+      writer.uint32(8).uint32(message.drop_id);
     }
     if (message.hp_percent !== undefined && message.hp_percent !== 0) {
       writer.uint32(17).double(message.hp_percent);
@@ -2627,7 +2608,7 @@ export const MonsterHPDrop = {
             break;
           }
 
-          message.drop_id = reader.int32();
+          message.drop_id = reader.uint32();
           continue;
         case 2:
           if (tag !== 17) {
@@ -2685,18 +2666,6 @@ type DeepPartial<T> = T extends Builtin ? T
 type KeysOfUnion<T> = T extends T ? keyof T : never;
 type Exact<P, I extends P> = P extends Builtin ? P
   : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
-
-function longToNumber(long: Long): number {
-  if (long.gt(globalThis.Number.MAX_SAFE_INTEGER)) {
-    throw new globalThis.Error("Value is larger than Number.MAX_SAFE_INTEGER");
-  }
-  return long.toNumber();
-}
-
-if (_m0.util.Long !== Long) {
-  _m0.util.Long = Long as any;
-  _m0.configure();
-}
 
 function isObject(value: any): boolean {
   return typeof value === "object" && value !== null;

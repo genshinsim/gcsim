@@ -1,8 +1,144 @@
-package_name: "aether"
-genshin_id: 10000005
-sub_id: 502
-key: aetherpyro
-key_var_name: AetherPyro
-action_param_keys:
-  skill:
-    - param: "hold"
+use: pipeline
+kind: character
+name: aetherpyro
+
+override:
+  id: 10000005
+  depot: 502
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/186FpS4ckDENVY4U60xxgevJZj_vdyYWZroIa7P_yDr4/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/2LnpQIVIszY
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1H-AkUNbvgXf4gkk6vUGZXieEVNV72mvmBnDAkFyEbhI/edit?usp=sharing
+      count_credit: PJelJr
+      video: https://youtu.be/RKLhQV2HYo8
+      video_credit: caramielle.
+
+abilities:
+  - name: default
+    params:
+      base_atk_buff: 0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line.
+      skirk_story_buff: 0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line.
+
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Box
+        center: Player
+        box: [1.4, 2.2]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        fan_angle: 180
+        radius: 1.7
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N3
+        shape: Box
+        center: Player
+        offset: [0, 0.4]
+        box: [1.5, 2.2]
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: N4
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        radius: 1.7
+        hitlag: {time: 0.09, scale: 0.01, defense_halt: true}
+
+      - name: N5
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        fan_angle: 240
+        radius: 1.75
+        hitlag: {time: 0.12, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA-1
+        shape: Circle
+        center: Player
+        radius: 2.2
+
+      - name: CA-2
+        shape: Circle
+        center: Player
+        radius: 2.2
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    note: Only available for Lumine. Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Only available for Lumine. Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    params:
+      hold: 0 for Blazing Threshold; 1 for Scorching Threshold. Default 0.
+    hitbox:
+      - name: E Hold DMG
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
+
+      - name: E Scorching Threshold
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1.5
+
+      - name: E Blazing Threshold
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.5
+
+      - name: E Scorching Threshold (A1)
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4
+
+      - name: E Blazing Threshold (A1)
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
+
+  - name: burst
+    hitbox:
+      - name: Q
+        shape: Circle
+        center: Player
+        radius: 4.5
+
+  - name: walk
+    note: Only skill and burst followed by walk have proper frames.

@@ -1,383 +1,275 @@
 {
   "albedo": [
     {
-      "fields": [
-        ".albedo.elevator"
-      ],
-      "desc": "Evaluates to 1 if skill is currently active"
+      "field": ".<character>.mods.albedo-a4",
+      "desc": "Whether or not Albedo A4 buff is active on the specified character"
     },
     {
-      "fields": [
-        ".albedo.c2stacks"
-      ],
+      "field": ".albedo.c2stacks",
       "desc": "Current number of C2 stacks"
     },
     {
-      "fields": [
-        ".<character>.mods.albedo-a4"
-      ],
-      "desc": "Whether or not Albedo A4 buff is active on the specified character"
+      "field": ".albedo.elevator",
+      "desc": "Evaluates to 1 if skill is currently active"
     }
   ],
   "alhaitham": [
     {
-      "fields": [
-        ".alhaitham.mirrors"
-      ],
-      "desc": "Current number of Mirrors that Alhaitham has."
+      "field": ".alhaitham.c2-stacks",
+      "desc": "Number of C2 stacks that are currently active."
     },
     {
-      "fields": [
-        ".alhaitham.c2-stacks"
-      ],
-      "desc": "Number of C2 stacks that are currently active."
+      "field": ".alhaitham.mirrors",
+      "desc": "Current number of Mirrors that Alhaitham has."
     }
   ],
   "aloy": [
     {
-      "fields": [
-        ".aloy.coil"
-      ],
+      "field": ".aloy.coil",
       "desc": "Current number of coil stacks."
+    }
+  ],
+  "aratakiitto": [
+    {
+      "field": ".itto.slash-type.final",
+      "desc": "Returns the number that represents the CA Final Slash state."
+    },
+    {
+      "field": ".itto.slash-type.idle",
+      "desc": "Returns the number that represents the CA Idle state."
+    },
+    {
+      "field": ".itto.slash-type.left",
+      "desc": "Returns the number that represents the CA Left Combo Slash state."
+    },
+    {
+      "field": ".itto.slash-type.right",
+      "desc": "Returns the number that represents the CA Right Combo Slash state."
+    },
+    {
+      "field": ".itto.slash-type.saichi",
+      "desc": "Returns the number that represents the CA Saichimonji Slash state."
+    },
+    {
+      "field": ".itto.slash.current",
+      "desc": "Returns the current CA Slash. Perform checks on this by using the values under .itto.slash-type."
+    },
+    {
+      "field": ".itto.slash.next",
+      "desc": "Returns the next CA Slash that will be performed based on the stack count at the time that this is evaluated. Perform checks on this by using the values under .itto.slash-type."
+    },
+    {
+      "field": ".itto.will-c6-proc",
+      "desc": "Returns whether C6 will proc for the upcoming CA."
     }
   ],
   "chevreuse": [
     {
-      "fields": [
-        ".chevreuse.overcharged-ball"
-      ],
+      "field": ".chevreuse.overcharged-ball",
       "desc": "Whether Chevreuse has an Overcharged Ball or not."
     }
   ],
   "citlali": [
     {
-      "fields": [
-        ".citlali.stellar-blade"
-      ],
-      "desc": "Number of Stellar Blade (C1) stacks."
+      "field": ".citlali.c6-stacks",
+      "desc": "Number of Cifra of the Secret Law (C6) points."
     },
     {
-      "fields": [
-        ".citlali.opal-fire"
-      ],
+      "field": ".citlali.opal-fire",
       "desc": "Whether Itzpapa is in the Opal Fire state."
     },
     {
-      "fields": [
-        ".citlali.c6-stacks"
-      ],
-      "desc": "Number of Cifra of the Secret Law (C6) points."
+      "field": ".citlali.stellar-blade",
+      "desc": "Number of Stellar Blade (C1) stacks."
     }
   ],
   "columbina": [
     {
-      "fields": [
-        ".columbina.gravity"
-      ],
-      "desc": "Amount of gravity accumulated."
+      "field": ".columbina.a1-stacks",
+      "desc": "Number of A1 stacks."
     },
     {
-      "fields": [
-        ".columbina.a1-stacks"
-      ],
-      "desc": "Number of A1 stacks."
+      "field": ".columbina.gravity",
+      "desc": "Amount of gravity accumulated."
     }
   ],
   "durin": [
     {
-      "fields": [
-        ".durin.a4-stacks"
-      ],
+      "field": ".durin.a4-stacks",
       "desc": "Number of A4 stacks remaining."
     }
   ],
   "escoffier": [
     {
-      "fields": [
-        ".escoffier.c2-count"
-      ],
+      "field": ".escoffier.c2-count",
       "desc": "Number of Cold Dish (C2) stacks"
     },
     {
-      "fields": [
-        ".escoffier.c4-count"
-      ],
+      "field": ".escoffier.c4-count",
       "desc": "Number of extra healing and energy restore effects (C4) left"
     },
     {
-      "fields": [
-        ".escoffier.c6-count"
-      ],
+      "field": ".escoffier.c6-count",
       "desc": "Number of Special-Grade Frosty Parfait (C6) attacks left"
     }
   ],
   "faruzan": [
     {
-      "fields": [
-        ".faruzan.hurricane-count"
-      ],
+      "field": ".faruzan.hurricane-count",
       "desc": "Current number of Hurricane Arrows that Faruzan can fire off."
     }
   ],
   "fischl": [
     {
-      "fields": [
-        ".fischl.oz"
-      ],
+      "field": ".fischl.oz",
       "desc": "Whether Oz is active or not."
     },
     {
-      "fields": [
-        ".fischl.oz-source"
-      ],
-      "desc": "The source frame Oz is spawned on."
+      "field": ".fischl.oz-duration",
+      "desc": "Number of frames until Oz disappears if he is active, 0 otherwise."
     },
     {
-      "fields": [
-        ".fischl.oz-duration"
-      ],
-      "desc": "Number of frames until Oz disappears if he is active, 0 otherwise."
+      "field": ".fischl.oz-source",
+      "desc": "The source frame Oz is spawned on."
     }
   ],
   "furina": [
     {
-      "fields": [
-        ".furina.ousia"
-      ],
-      "desc": "Whether Furina is in the Ousia Arke."
+      "field": ".furina.c6-count",
+      "desc": "Number of c6 effects triggered."
     },
     {
-      "fields": [
-        ".furina.fanfare"
-      ],
+      "field": ".furina.fanfare",
       "desc": "Current amount of fanfare."
     },
     {
-      "fields": [
-        ".furina.c6-count"
-      ],
-      "desc": "Number of c6 effects triggered."
-    }
-  ],
-  "heizou": [
-    {
-      "fields": [
-        ".heizou.declension"
-      ],
-      "desc": "Number of Declension stacks."
-    }
-  ],
-  "itto": [
-    {
-      "fields": [
-        ".itto.slash.current"
-      ],
-      "desc": "Returns the current CA Slash. Perform checks on this by using the values under .itto.slash-type."
-    },
-    {
-      "fields": [
-        ".itto.slash.next"
-      ],
-      "desc": "Returns the next CA Slash that will be performed based on the stack count at the time that this is evaluated. Perform checks on this by using the values under .itto.slash-type."
-    },
-    {
-      "fields": [
-        ".itto.slash-type.idle"
-      ],
-      "desc": "Returns the number that represents the CA Idle state."
-    },
-    {
-      "fields": [
-        ".itto.slash-type.saichi"
-      ],
-      "desc": "Returns the number that represents the CA Saichimonji Slash state."
-    },
-    {
-      "fields": [
-        ".itto.slash-type.left"
-      ],
-      "desc": "Returns the number that represents the CA Left Combo Slash state."
-    },
-    {
-      "fields": [
-        ".itto.slash-type.right"
-      ],
-      "desc": "Returns the number that represents the CA Right Combo Slash state."
-    },
-    {
-      "fields": [
-        ".itto.slash-type.final"
-      ],
-      "desc": "Returns the number that represents the CA Final Slash state."
-    },
-    {
-      "fields": [
-        ".itto.will-c6-proc"
-      ],
-      "desc": "Returns whether C6 will proc for the upcoming CA."
+      "field": ".furina.ousia",
+      "desc": "Whether Furina is in the Ousia Arke."
     }
   ],
   "kinich": [
     {
-      "fields": [
-        ".kinich.blind_spot"
-      ],
+      "field": ".kinich.blind_spot",
       "desc": "The direction of the Blind Spot relatively to Kinich. -1 - in clock-wise direction; 1 - in counter clock-wise direction; 0 - does not exist at the moment."
     }
   ],
   "lyney": [
     {
-      "fields": [
-        ".lyney.propSurplusStacks"
-      ],
+      "field": ".lyney.propSurplusStacks",
       "desc": "Number of Prop Surplus stacks."
     }
   ],
   "mavuika": [
     {
-      "fields": [
-        ".mavuika.fightingspirit"
-      ],
+      "field": ".mavuika.fightingspirit",
       "desc": "Amount of Fighting Spirit."
     }
   ],
   "mona": [
     {
-      "fields": [
-        ".mona.astral-glow"
-      ],
+      "field": ".mona.astral-glow",
       "desc": "Number of Astral Glow of Mercury stacks."
     },
     {
-      "fields": [
-        ".mona.c6-stacks"
-      ],
+      "field": ".mona.c6-stacks",
       "desc": "Number of C6 stacks."
     }
   ],
   "mualani": [
     {
-      "fields": [
-        ".mualani.momentum"
-      ],
+      "field": ".mualani.momentum",
       "desc": "Number of Wave Momentum stacks."
     }
   ],
   "navia": [
     {
-      "fields": [
-        ".navia.shrapnel"
-      ],
+      "field": ".navia.shrapnel",
       "desc": "Number of Crystal Shrapnel stacks."
     }
   ],
   "neuvillette": [
     {
-      "fields": [
-        ".neuvillette.droplets"
-      ],
+      "field": ".neuvillette.droplets",
       "desc": "Number of Sourcewater droplets in range for Charged Attack Empowerment: Legal Evaluation."
     },
     {
-      "fields": [
-        ".neuvillette.droplets-c6"
-      ],
+      "field": ".neuvillette.droplets-c6",
       "desc": "Number of Sourcewater droplets in range for C6."
     }
   ],
   "nicole": [
     {
-      "fields": [
-        ".nicole.projections"
-      ],
+      "field": ".nicole.projections",
       "desc": "Number of Arcane Projection attacks done by this burst. 0 if burst is not active."
     }
   ],
   "ningguang": [
     {
-      "fields": [
-        ".ningguang.prevAttack"
-      ],
-      "desc": "Returns a number representing the previous N1 version. Possible values are: 0 = Left, 1 = Right, 2 = Twirl."
+      "field": ".ningguang.jadeCount",
+      "desc": "Number of Star Jades."
     },
     {
-      "fields": [
-        ".ningguang.jadeCount"
-      ],
-      "desc": "Number of Star Jades."
+      "field": ".ningguang.prevAttack",
+      "desc": "Returns a number representing the previous N1 version. Possible values are: 0 = Left, 1 = Right, 2 = Twirl."
+    }
+  ],
+  "shikanoinheizou": [
+    {
+      "field": ".heizou.declension",
+      "desc": "Number of Declension stacks."
     }
   ],
   "skirk": [
     {
-      "fields": [
-        ".skirk.serpents_subtlety"
-      ],
-      "desc": "Amount of Serpent's Subtlety."
-    },
-    {
-      "fields": [
-        ".skirk.void_rifts"
-      ],
-      "desc": "Number of Void Rifts on the field."
-    },
-    {
-      "fields": [
-        ".skirk.a4_stacks"
-      ],
+      "field": ".skirk.a4_stacks",
       "desc": "Number of A4 stacks."
     },
     {
-      "fields": [
-        ".skirk.c6_stacks"
-      ],
+      "field": ".skirk.c6_stacks",
       "desc": "Number of C6 stacks."
+    },
+    {
+      "field": ".skirk.serpents_subtlety",
+      "desc": "Amount of Serpent's Subtlety."
+    },
+    {
+      "field": ".skirk.void_rifts",
+      "desc": "Number of Void Rifts on the field."
     }
   ],
   "wanderer": [
     {
-      "fields": [
-        ".wanderer.skydweller-points"
-      ],
+      "field": ".wanderer.skydweller-points",
       "desc": "Amount of Kuugoryoku Points that Wanderer has. A value greater than 0 indicates that Wanderer is in the Windfavored state."
     }
   ],
   "wriothesley": [
     {
-      "fields": [
-        ".wriothesley.gracious-rebuke"
-      ],
+      "field": ".wriothesley.gracious-rebuke",
       "desc": "Whether Wriothesley currently has a Gracious Rebuke or not."
     }
   ],
   "xianyun": [
     {
-      "fields": [
-        ".xianyun.adeptal-assistance"
-      ],
+      "field": ".xianyun.adeptal-assistance",
       "desc": "Number of Adeptal Assistance stacks."
     }
   ],
   "yanfei": [
     {
-      "fields": [
-        ".yanfei.seal-count"
-      ],
+      "field": ".yanfei.seal-count",
       "desc": "Number of Scarlet Seals."
     }
   ],
   "yelan": [
     {
-      "fields": [
-        ".yelan.breakthrough"
-      ],
+      "field": ".yelan.breakthrough",
       "desc": "Whether Yelan is in the Breakthrough state or not."
     }
   ],
   "zhongli": [
     {
-      "fields": [
-        ".zhongli.shielded"
-      ],
+      "field": ".zhongli.shielded",
       "desc": "Evaluates to 1 if player is currently shielded"
     }
   ]

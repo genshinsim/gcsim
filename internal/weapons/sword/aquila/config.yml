@@ -1,3 +1,14 @@
-package_name: aquila
-genshin_id: 11501
-key: aquilafavonia
+use: pipeline
+kind: weapon
+name: aquilafavonia
+
+shortcuts:
+  - aquila
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Aquila Favonia
+        shape: Circle
+        center: Player
+        radius: 6

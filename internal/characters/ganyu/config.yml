@@ -1,38 +1,164 @@
-package_name: ganyu
-genshin_id: 10000037
-key: ganyu
-action_param_keys:
-    attack:
-        - param: "travel"
-    aim:
-        - param: "hold"
-        - param: "travel"
-        - param: "weakspot"
-skill_data_mapping:
-    attack:
-        aim:
-            - 6 # Aimed Shot|{param6:F1P}
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        attack_4:
-            - 3 # 4-Hit DMG|{param3:F1P}
-        attack_5:
-            - 4 # 5-Hit DMG|{param4:F1P}
-        attack_6:
-            - 5 # 6-Hit DMG|{param5:F1P}
-        ffa:
-            - 8 # Frostflake Arrow DMG|{param8:P}
-        ffb:
-            - 9 # Frostflake Arrow Bloom DMG|{param9:P}
-        fullaim:
-            - 7 # Aimed Shot Charge Level 1|{param7:P}
-    skill:
-        lotus:
-            - 1 # Skill DMG|{param1:P}
-    burst:
-        shower:
-            - 0 # Ice Shard DMG|{param0:P}
+use: pipeline
+kind: character
+name: ganyu
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+      - attack(6-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Aimed Shot Charge Level 1)
+  - ffa: attack(Frostflake Arrow DMG)
+  - ffb: attack(Frostflake Arrow Bloom DMG)
+
+  - lotus: skill(Skill DMG)
+
+  - shower: burst(Ice Shard DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1PDHCZKh-7eWpbE1b0OyQUCzSPHcViYZ22EDEItjiU7Y/edit?usp=sharing
+      count_credit: Kurt#5846
+      video: https://youtu.be/ROvivlCUR3s
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1zCwdd6_KYFqMD4OQ_llGLdDshoZTu_1pmAMysxGDQvs/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/KlgZlck5kQQ?t=504
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/ktGMr_PCuSs
+      video_credit: xsylent
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/ygGcFEQhY6Q
+      video_credit: xsylent
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/XYp9OJnC9Qs
+      video_credit: xsylent
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N4
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N5
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N6
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: aim
+    params:
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot, 2 for Frostflake Arrow (default).
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim-Lv2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Lv2-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim-Bloom
+        shape: Circle
+        center: PrimaryTarget
+        radius: 5
+
+  - name: skill
+    hitbox:
+      - name: E-Skill
+        shape: Circle
+        center: Player
+        radius: 4
+
+      - name: E-Explosion
+        note: Spawns at the E-Skill position.
+        shape: Circle
+        center: Player
+        radius: 4
+
+  - name: burst
+    hitbox:
+      - name: Q-Start
+        note: Q/A4/C4 has a detection area of 10m around the position of this hitbox. This hitbox is a 0 damage attack that is not implemented yet.
+        shape: Circle
+        center: Player
+        radius: 3
+
+      - name: Q-IceShard
+        note: 'At every tick: If there are enemies within the Q detection area that are not currently marked, then it spawns at a random enemy out of those. This random enemy is then marked for 1.45s. Otherwise, it will spawn randomly between 0.5m and 9.5m from the Q center.'
+        shape: Circle
+        center: GlobalValue
+        radius: 2.5
+
+  - name: walk
+    note: Only aim followed by walk has proper frames.

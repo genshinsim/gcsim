@@ -1,2 +1,8 @@
-key: emblemofseveredfate
-set_id: 15020
+use: pipeline
+kind: artifact
+name: emblemofseveredfate
+
+shortcuts:
+  - emblem
+  - eosf
+  - esf

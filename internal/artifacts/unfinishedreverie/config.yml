@@ -1,2 +1,6 @@
-key: unfinishedreverie
-set_id: 15036
+use: pipeline
+kind: artifact
+name: unfinishedreverie
+
+shortcuts:
+  - ur

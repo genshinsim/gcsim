@@ -18,10 +18,6 @@ const (
 	burstICDKey        = "yelanburstICD"
 )
 
-func init() {
-	core.RegisterCharFunc(keys.Yelan, NewChar)
-}
-
 type char struct {
 	*tmpl.Character
 	a4buff       []float64

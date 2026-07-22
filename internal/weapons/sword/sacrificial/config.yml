@@ -1,4 +1,6 @@
-package_name: sacrificial
-genshin_id: 11403
-key: sacrificialsword
-skip_data_func: true
+use: pipeline
+kind: weapon
+name: sacrificialsword
+
+shortcuts:
+  - sacsword

@@ -1,4162 +1,5570 @@
 {
-  "aino": [
+  "aetheranemo": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": false,
-      "notes": "Not implemented yet."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "legal": false
+      "invalid": true
     },
     {
       "ability": "high_plunge",
-      "legal": false
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
+    }
+  ],
+  "aetherdendro": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
+    }
+  ],
+  "aetherelectro": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
+    }
+  ],
+  "aethergeo": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
+    }
+  ],
+  "aetherhydro": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "note": "Only skill and burst followed by walk have proper frames.",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
+    }
+  ],
+  "aetherpyro": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "note": "Only available for Lumine. Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "high_plunge",
+      "note": "Only available for Lumine. Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "note": "Only skill and burst followed by walk have proper frames.",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
+    }
+  ],
+  "aino": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "invalid": true
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
     }
   ],
   "albedo": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "alhaitham": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be skill[hold=1] or a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be skill[hold=1] or a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "aloy": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "charge",
+      "invalid": true
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Only aim followed by walk has proper frames."
+      "note": "Only aim followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "amber": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
-    },
-    {
-      "ability": "dash",
-      "legal": true
-    },
-    {
-      "ability": "jump",
-      "legal": true
-    },
-    {
-      "ability": "walk",
-      "notes": "Only burst and aim followed by walk have proper frames."
-    },
-    {
-      "ability": "swap",
-      "legal": true
-    }
-  ],
-  "itto": [
-    {
-      "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": true
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "invalid": true
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "Only burst and aim followed by walk have proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
+    }
+  ],
+  "aratakiitto": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "high_plunge",
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
+    }
+  ],
+  "arlecchino": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": false
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
     }
   ],
   "baizhu": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "barbara": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Everything except charge and burst followed by walk has proper frames."
+      "note": "Everything except charge and burst followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "beidou": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": false,
-      "notes": "Not implemented yet."
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "bennett": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "candace": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "charlotte": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "chasca": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
+      "invalid": false
     },
     {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "ability": "charge",
+      "invalid": true
     },
     {
       "ability": "low_plunge",
-      "notes": "Must have just exited Nightsoul Blessing"
+      "note": "Must have just exited Nightsoul Blessing",
+      "invalid": false
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "chevreuse": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "chiori": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be skill[hold=1]."
+      "note": "Previous action must be skill[hold=1].",
+      "invalid": false
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Everything except normal followed by walk has proper frames."
+      "note": "Everything except normal followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "chongyun": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": false,
-      "notes": "Not implemented yet."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "citlali": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "clorinde": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "collei": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "charge",
+      "invalid": true
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Only aim followed by walk has proper frames."
+      "note": "Only aim followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "columbina": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "legal": false
+      "invalid": true
     },
     {
       "ability": "high_plunge",
-      "legal": false
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "cyno": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "dahlia": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "dehya": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": false,
-      "notes": "Not implemented yet."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "diluc": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": false,
-      "notes": "Not implemented yet."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "diona": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "charge",
+      "invalid": true
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Only aim followed by walk has proper frames."
+      "note": "Only aim followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "dori": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": false,
-      "notes": "Not implemented yet."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "durin": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true,
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "legal": false
+      "invalid": true
     },
     {
       "ability": "high_plunge",
-      "legal": false
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "emilie": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "escoffier": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "eula": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": false,
-      "notes": "Not implemented yet."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Everything except normal followed by walk has proper frames."
+      "note": "Everything except normal followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "faruzan": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "charge",
+      "invalid": true
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "fischl": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "charge",
+      "invalid": true
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Only aim followed by walk has proper frames."
+      "note": "Only aim followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "flins": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "legal": false
+      "invalid": true
     },
     {
       "ability": "high_plunge",
-      "legal": false
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "freminet": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "furina": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "gaming": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be skill or a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be skill or a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be skill or a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be skill or a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "ganyu": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "charge",
+      "invalid": true
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Only aim followed by walk has proper frames."
+      "note": "Only aim followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "gorou": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "charge",
+      "invalid": true
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Only aim followed by walk has proper frames."
+      "note": "Only aim followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "hutao": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "ineffa": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "jean": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
-    },
-    {
-      "ability": "dash",
-      "legal": true
-    },
-    {
-      "ability": "jump",
-      "legal": true
-    },
-    {
-      "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
-    },
-    {
-      "ability": "swap",
-      "legal": true
-    }
-  ],
-  "kazuha": [
-    {
-      "ability": "attack",
-      "legal": true
-    },
-    {
-      "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "invalid": true
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be skill or a jump buffed via Xianyun's burst for example."
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
+    }
+  ],
+  "kaedeharakazuha": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "high_plunge",
+      "note": "Previous action must be skill or a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
     }
   ],
   "kaeya": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
-  "ayaka": [
+  "kamisatoayaka": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
-  "ayato": [
+  "kamisatoayato": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Not available in skill state. Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Not available in skill state. Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example. Cannot be used while in skill state."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example. Cannot be used while in skill state.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example. Cannot be used while in skill state."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example. Cannot be used while in skill state.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "kaveh": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": false,
-      "notes": "Not implemented yet."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "keqing": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "kinich": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge. Cannot charge in nightsoul blessing"
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
-    },
-    {
-      "ability": "dash",
-      "legal": true
-    },
-    {
-      "ability": "jump",
-      "legal": true
-    },
-    {
-      "ability": "walk",
-      "legal": true
-    },
-    {
-      "ability": "swap",
-      "legal": true
+      "note": "Need to use attack right before charge. Cannot charge in nightsoul blessing",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example. Cannot low plunge in nightsoul blessing."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example. Cannot low plunge in nightsoul blessing.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
     }
   ],
   "kirara": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "klee": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
-    },
-    {
-      "ability": "dash",
-      "legal": true
-    },
-    {
-      "ability": "jump",
-      "legal": true
-    },
-    {
-      "ability": "walk",
-      "legal": true
-    },
-    {
-      "ability": "swap",
-      "legal": true
-    }
-  ],
-  "kuki": [
-    {
-      "ability": "attack",
-      "legal": true
-    },
-    {
-      "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
+    }
+  ],
+  "kujousara": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": false
+    },
+    {
+      "ability": "charge",
+      "invalid": true
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "note": "Only aim followed by walk has proper frames.",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
+    }
+  ],
+  "kukishinobu": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
     }
   ],
   "lanyan": [
     {
       "ability": "attack",
-      "legal": true
-    },
-    {
-      "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
-    },
-    {
-      "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
-    },
-    {
-      "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
-    },
-    {
-      "ability": "dash",
-      "legal": true
-    },
-    {
-      "ability": "jump",
-      "legal": true
-    },
-    {
-      "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
-    },
-    {
-      "ability": "swap",
-      "legal": true
-    }
-  ],
-  "sara": [
-    {
-      "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "high_plunge",
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Only aim followed by walk has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "lauma": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true,
-      "notes": "Cannot dash while in spirit envoy state."
+      "note": "Cannot dash while in spirit envoy state.",
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "layla": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "lisa": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
+    }
+  ],
+  "lumineanemo": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
+    }
+  ],
+  "luminedendro": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
+    }
+  ],
+  "lumineelectro": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
+    }
+  ],
+  "luminegeo": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
+    }
+  ],
+  "luminehydro": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "note": "Only skill and burst followed by walk have proper frames.",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
+    }
+  ],
+  "luminepyro": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "note": "Only available for Lumine. Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "high_plunge",
+      "note": "Only available for Lumine. Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "note": "Only skill and burst followed by walk have proper frames.",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
     }
   ],
   "lynette": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "lyney": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "charge",
+      "invalid": true
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "mavuika": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a walking Flamestrider jump or jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a walking Flamestrider jump or jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "mika": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
-    }
-  ],
-  "mizuki": [
-    {
-      "ability": "attack",
-      "legal": true
-    },
-    {
-      "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
-    },
-    {
-      "ability": "dash",
-      "legal": true
-    },
-    {
-      "ability": "jump",
-      "legal": true
-    },
-    {
-      "ability": "walk",
-      "legal": true
-    },
-    {
-      "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "mona": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "mualani": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "nahida": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "navia": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": false
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": true
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Normal Attacks do not have legal walk cancels recorded, but Skill, Burst and Low/High Plunge do."
+      "note": "Normal Attacks do not have legal walk cancels recorded, but Skill, Burst and Low/High Plunge do.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "neuvillette": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "nicole": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "nilou": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "ningguang": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "noelle": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "ororon": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "charge",
+      "invalid": true
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Only aim followed by walk has proper frames."
+      "note": "Only aim followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "qiqi": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
-  "raiden": [
+  "raidenshogun": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "razor": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": false,
-      "notes": "Not implemented yet."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "rosaria": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
-    },
-    {
-      "ability": "dash",
-      "legal": true
-    },
-    {
-      "ability": "jump",
-      "legal": true
-    },
-    {
-      "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
-    },
-    {
-      "ability": "swap",
-      "legal": true
-    }
-  ],
-  "kokomi": [
-    {
-      "ability": "attack",
-      "legal": true
-    },
-    {
-      "ability": "charge",
-      "legal": true
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
+    }
+  ],
+  "sangonomiyakokomi": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
     }
   ],
   "sayu": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": false,
-      "notes": "Not implemented yet."
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "sethos": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "charge",
+      "invalid": true
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "shenhe": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Everything except normal followed by walk has proper frames."
+      "note": "Everything except normal followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
+    }
+  ],
+  "shikanoinheizou": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "high_plunge",
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
     }
   ],
   "sigewinne": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
-    },
-    {
-      "ability": "dash",
-      "legal": true
-    },
-    {
-      "ability": "jump",
-      "legal": true
-    },
-    {
-      "ability": "walk",
-      "legal": true
-    },
-    {
-      "ability": "swap",
-      "legal": true
-    }
-  ],
-  "heizou": [
-    {
-      "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": true
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "invalid": true
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "skirk": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true,
-      "notes": "Cannot be used in Seven-Phase Flash."
+      "note": "Cannot be used in Seven-Phase Flash.",
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "sucrose": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "tartaglia": [
     {
       "ability": "attack",
-      "legal": true
-    },
-    {
-      "ability": "charge",
-      "notes": "Only available if in skill state. Need to use attack right before charge."
+      "invalid": false
     },
     {
       "ability": "aim",
-      "notes": "Only available if not in skill state."
+      "note": "Only available if not in skill state.",
+      "invalid": false
+    },
+    {
+      "ability": "charge",
+      "note": "Only available if in skill state. Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Only aim followed by walk and walk followed by skill have proper frames."
+      "note": "Only aim followed by walk and walk followed by skill have proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "thoma": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "tighnari": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
-    },
-    {
-      "ability": "dash",
-      "legal": true
-    },
-    {
-      "ability": "jump",
-      "legal": true
-    },
-    {
-      "ability": "walk",
-      "notes": "Only aim followed by walk has proper frames."
-    },
-    {
-      "ability": "swap",
-      "legal": true
-    }
-  ],
-  "traveleranemo": [
-    {
-      "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
-    },
-    {
-      "ability": "dash",
-      "legal": true
-    },
-    {
-      "ability": "jump",
-      "legal": true
-    },
-    {
-      "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
-    },
-    {
-      "ability": "swap",
-      "legal": true
-    }
-  ],
-  "travelergeo": [
-    {
-      "ability": "attack",
-      "legal": true
-    },
-    {
-      "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
-    },
-    {
-      "ability": "dash",
-      "legal": true
-    },
-    {
-      "ability": "jump",
-      "legal": true
-    },
-    {
-      "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
-    },
-    {
-      "ability": "swap",
-      "legal": true
-    }
-  ],
-  "travelerelectro": [
-    {
-      "ability": "attack",
-      "legal": true
-    },
-    {
-      "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
-    },
-    {
-      "ability": "dash",
-      "legal": true
-    },
-    {
-      "ability": "jump",
-      "legal": true
-    },
-    {
-      "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
-    },
-    {
-      "ability": "swap",
-      "legal": true
-    }
-  ],
-  "travelerdendro": [
-    {
-      "ability": "attack",
-      "legal": true
-    },
-    {
-      "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
-    },
-    {
-      "ability": "dash",
-      "legal": true
-    },
-    {
-      "ability": "jump",
-      "legal": true
-    },
-    {
-      "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
-    },
-    {
-      "ability": "swap",
-      "legal": true
-    }
-  ],
-  "travelerhydro": [
-    {
-      "ability": "attack",
-      "legal": true
-    },
-    {
-      "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
-    },
-    {
-      "ability": "dash",
-      "legal": true
-    },
-    {
-      "ability": "jump",
-      "legal": true
-    },
-    {
-      "ability": "walk",
-      "notes": "Only skill and burst followed by walk have proper frames."
-    },
-    {
-      "ability": "swap",
-      "legal": true
-    }
-  ],
-  "travelerpyro": [
-    {
-      "ability": "attack",
-      "legal": true
-    },
-    {
-      "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": true
     },
     {
       "ability": "low_plunge",
-      "notes": "Only available for Lumine. Previous action must be a jump buffed via Xianyun's burst for example."
+      "invalid": true
     },
     {
       "ability": "high_plunge",
-      "notes": "Only available for Lumine. Previous action must be a jump buffed via Xianyun's burst for example."
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Only skill and burst followed by walk have proper frames."
+      "note": "Only aim followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "varesa": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
-      "ability": "skill",
-      "notes": "Hold skill is not implemented."
+      "ability": "aim",
+      "invalid": true
     },
     {
-      "ability": "burst",
-      "legal": true
-    },
-    {
-      "ability": "high_plunge",
-      "notes": "Previous action must be charge or jump buffed via Xianyun's burst for example."
+      "ability": "charge",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "high_plunge",
+      "note": "Previous action must be charge or jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "note": "Hold skill is not implemented.",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "venti": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
+      "invalid": false
     },
     {
-      "ability": "skill",
-      "legal": true
+      "ability": "charge",
+      "invalid": true
     },
     {
-      "ability": "burst",
-      "legal": true
+      "ability": "low_plunge",
+      "invalid": true
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be skill[hold=1]."
+      "note": "Previous action must be skill[hold=1].",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Only aim followed by walk has proper frames."
+      "note": "Only aim followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "wanderer": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Only available for a short time after Windfavored state ends."
+      "note": "Only available for a short time after Windfavored state ends.",
+      "invalid": false
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "notes": "Swapping while Windfavored state is active is not legal."
+      "note": "Swapping while Windfavored state is active is not legal.",
+      "invalid": false
     }
   ],
   "wriothesley": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "xiangling": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "xianyun": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be jump buffed via Xianyun's burst for example or must be still in Cloud Transmogrification state (Xianyun E)."
+      "note": "Previous action must be jump buffed via Xianyun's burst for example or must be still in Cloud Transmogrification state (Xianyun E).",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be jump buffed via Xianyun's burst for example or must be still in Cloud Transmogrification state (Xianyun E)."
+      "note": "Previous action must be jump buffed via Xianyun's burst for example or must be still in Cloud Transmogrification state (Xianyun E).",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "xiao": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "xilonen": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge. Cannot charge in nightsoul blessing"
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
-    },
-    {
-      "ability": "dash",
-      "legal": true
-    },
-    {
-      "ability": "jump",
-      "legal": true
-    },
-    {
-      "ability": "walk",
-      "legal": true
-    },
-    {
-      "ability": "swap",
-      "legal": true
+      "note": "Need to use attack right before charge. Cannot charge in nightsoul blessing",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example. Cannot low plunge in nightsoul blessing."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example. Cannot low plunge in nightsoul blessing.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
     }
   ],
   "xingqiu": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "xinyan": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": false,
-      "notes": "Not implemented yet."
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "yaemiko": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "yanfei": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "legal": true
-    },
-    {
-      "ability": "skill",
-      "legal": true
-    },
-    {
-      "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "notes": "Previous action must be a jump buffed via Xianyun's burst for example."
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk (except low_plunge and high_plunge) has proper frames."
+      "note": "No action followed by walk (except low_plunge and high_plunge) has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "yaoyao": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "yelan": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "charge",
+      "invalid": true
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Only aim followed by walk has proper frames."
+      "note": "Only aim followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "yoimiya": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "aim",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "charge",
+      "invalid": true
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "Only aim followed by walk has proper frames."
+      "note": "Only aim followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
+    }
+  ],
+  "yumemizukimizuki": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
     }
   ],
   "yunjin": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ],
   "zhongli": [
     {
       "ability": "attack",
-      "legal": true
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
     },
     {
       "ability": "charge",
-      "notes": "Need to use attack right before charge."
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
     },
     {
       "ability": "skill",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "dash",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "jump",
-      "legal": true
+      "invalid": false
     },
     {
       "ability": "walk",
-      "notes": "No action followed by walk has proper frames."
+      "note": "No action followed by walk has proper frames.",
+      "invalid": false
     },
     {
       "ability": "swap",
-      "legal": true
+      "invalid": false
     }
   ]
 }

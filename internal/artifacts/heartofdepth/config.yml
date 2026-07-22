@@ -1,2 +1,6 @@
-key: heartofdepth
-set_id: 15016
+use: pipeline
+kind: artifact
+name: heartofdepth
+
+shortcuts:
+  - hod

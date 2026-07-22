@@ -1,3 +1,15 @@
-package_name: flute
-genshin_id: 11402
-key: theflute
+use: pipeline
+kind: weapon
+name: theflute
+
+shortcuts:
+  - flute
+
+abilities:
+  - name: default
+    hitbox:
+      - name: The Flute
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 4

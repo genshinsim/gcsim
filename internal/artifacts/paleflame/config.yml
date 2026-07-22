@@ -1,2 +1,6 @@
-key: paleflame
-set_id: 15018
+use: pipeline
+kind: artifact
+name: paleflame
+
+shortcuts:
+  - pf

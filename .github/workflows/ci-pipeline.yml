@@ -1,0 +1,56 @@
+name: ci-pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      DM_REPO:
+        description: Datamine repository
+        required: true
+        type: string
+        default: github:iam-akuzihs/excel/live
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci-pipeline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: nixbuild/nix-quick-install-action@9f63be77f412a248c9d9a65a4c82cf066cdf8f0c # v35
+      - uses: nix-community/cache-nix-action@7df957e333c1e5da7721f60227dbba6d06080569 # v7.0.2
+        id: nix-cache
+        with:
+          primary-key: ${{ runner.os }}-nix-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+      - name: Prefetch nix store
+        if: steps.nix-cache.outputs.hit-primary-key != 'true'
+        run: |-
+          nix develop -c true
+
+      - name: Setup go cache
+        uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
+        with:
+          path: |
+            ~/.cache/go-build
+            ~/go/pkg/mod
+          key: nix-${{ runner.os }}-go-${{ hashFiles('**/go.mod', '**/go.sum') }}
+          restore-keys: nix-${{ runner.os }}-go-
+
+      - name: Run pipeline
+        env:
+          DM_REPO: ${{ inputs.DM_REPO }}
+        run: |-
+          set -eu
+
+          nix develop -c task pipeline-clean > /dev/null 2>&1
+          nix develop -c task pipeline -- run -remote -no-cache
+          nix develop -c task pipeline-add > /dev/null 2>&1
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "pipeline: generate files" || exit 0
+          git push

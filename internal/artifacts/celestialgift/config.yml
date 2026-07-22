@@ -1,2 +1,7 @@
-key: celestialgift
-set_id: 15045
+use: pipeline
+kind: artifact
+name: celestialgift
+
+shortcuts:
+  - cg
+  - gift

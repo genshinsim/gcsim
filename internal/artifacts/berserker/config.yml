@@ -1,2 +1,3 @@
-key: berserker
-set_id: 10005
+use: pipeline
+kind: artifact
+name: berserker

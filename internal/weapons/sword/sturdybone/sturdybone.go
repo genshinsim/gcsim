@@ -10,17 +10,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 const (
 	buffKey = "sturdy-bone"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.SturdyBone, NewWeapon)
-}
 
 type Weapon struct {
 	Index int

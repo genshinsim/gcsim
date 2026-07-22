@@ -10,20 +10,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type Sacrificial struct {
 	Index int
-	data  *model.WeaponData
 }
 
-func (s *Sacrificial) SetIndex(idx int)        { s.Index = idx }
-func (s *Sacrificial) Init() error             { return nil }
-func (s *Sacrificial) Data() *model.WeaponData { return s.data }
+func (s *Sacrificial) SetIndex(idx int) { s.Index = idx }
+func (s *Sacrificial) Init() error      { return nil }
 
-func NewSacrificial(data *model.WeaponData) *Sacrificial {
-	return &Sacrificial{data: data}
+func NewSacrificial() *Sacrificial {
+	return &Sacrificial{}
 }
 
 func (s *Sacrificial) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {

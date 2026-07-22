@@ -12,10 +12,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-func init() {
-	core.RegisterWeaponFunc(keys.Slingshot, NewWeapon)
-}
-
 type Weapon struct {
 	Index int
 }

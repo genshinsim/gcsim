@@ -1,66 +1,137 @@
-package_name: durin
-genshin_id: 10000123
-key: durin
+use: pipeline
+kind: character
+name: durin
 
-action_param_keys:
-  burst:
-    - param: "travel"
+override:
+  icd_group:
+    DurinBurstBlack:
+      name: Durin_Burst_BlackBullet
+    DurinBurstWhite:
+      name: Durin_Burst_WhiteFire
+    DurinSkill:
+      name: Durin_EleA_BlackBullet
 
-icd_groups:
-  - group_name: ICDGroupDurinBurstWhite
-    reset_timer: 90
-    ele_app_sequence: [1, 0]
-    damage_sequence: [1, 1]
-  - group_name: ICDGroupDurinBurstBlack
-    reset_timer: 120
-    ele_app_sequence: [1, 0]
-    damage_sequence: [1, 1]
-  - group_name: ICDGroupDurinSkill
-    reset_timer: 18
-    ele_app_sequence: [1, 0, 0]
-    damage_sequence: [1, 1, 1]
+combat:
+  icd_tags:
+    - DurinBurstBlack
+    - DurinBurstTornado
+    - DurinBurstWhite
+  icd_groups:
+    - DurinBurstBlack
+    - DurinBurstWhite
+    - DurinSkill
 
-icd_tags:
-  - ICDTagDurinBurstTornado
-  - ICDTagDurinBurstWhite
-  - ICDTagDurinBurstBlack
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG|1)
+      - attack(4-Hit DMG)
+  - charge: attack(Charged Attack DMG)
 
-skill_data_mapping:
-  attack: # Radiant Wingslash
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-      - 3 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-    attack_4:
-      - 4 # 4-Hit DMG|{param4:F1P}
-    charge:
-      - 5 # Charged Attack DMG|{param5:F1P}
-  skill: # Binary Form: Convergence and Division
-    skillWhite:
-      - 0 # Transmutation: Confirmation of Purity DMG|{param0:F1P}
-    skillBlack:
-      - 1 # Transmutation: Denial of Darkness DMG|{param1:F1P}+{param2:F1P}+{param3:F1P}
-      - 2 # Transmutation: Denial of Darkness DMG|{param1:F1P}+{param2:F1P}+{param3:F1P}
-      - 3 # Transmutation: Denial of Darkness DMG|{param1:F1P}+{param2:F1P}+{param3:F1P}
-    skillEnergy:
-      - 4 # Energy Regeneration|{param4:F1}
-  burst: # Principle of Purity: As the Light Shifts
-    burstWhiteInitial:
-      - 0 # Principle of Purity: As the Light Shifts DMG|{param0:F1P}+{param1:F1P}+{param2:F1P}
-      - 1 # Principle of Purity: As the Light Shifts DMG|{param0:F1P}+{param1:F1P}+{param2:F1P}
-      - 2 # Principle of Purity: As the Light Shifts DMG|{param0:F1P}+{param1:F1P}+{param2:F1P}
-    burstBlackInitial:
-      - 3 # Principle of Darkness: As the Stars Smolder DMG|{param3:F1P}+{param4:F1P}+{param5:F1P}
-      - 4 # Principle of Darkness: As the Stars Smolder DMG|{param3:F1P}+{param4:F1P}+{param5:F1P}
-      - 5 # Principle of Darkness: As the Stars Smolder DMG|{param3:F1P}+{param4:F1P}+{param5:F1P}
-    burstWhiteDoT:
-      - 6 # Dragon of White Flame DMG|{param6:F1P}
-    burstBlackDoT:
-      - 7 # Dragon of Dark Decay DMG|{param7:F1P}
-documentation:
-  fields_data:
-    - fields: [.durin.a4-stacks]
-      desc: "Number of A4 stacks remaining."
+  - skillWhite: 'skill(Transmutation: Confirmation of Purity DMG)'
+  - skillBlack:
+      - 'skill(Transmutation: Denial of Darkness DMG)'
+      - 'skill(Transmutation: Denial of Darkness DMG|1)'
+      - 'skill(Transmutation: Denial of Darkness DMG|2)'
+  - skillEnergy: skill(Energy Regeneration)
+
+  - burstWhiteInitial:
+      - 'burst(Principle of Purity: As the Light Shifts DMG)'
+      - 'burst(Principle of Purity: As the Light Shifts DMG|1)'
+      - 'burst(Principle of Purity: As the Light Shifts DMG|2)'
+  - burstBlackInitial:
+      - 'burst(Principle of Darkness: As the Stars Smolder DMG)'
+      - 'burst(Principle of Darkness: As the Stars Smolder DMG|1)'
+      - 'burst(Principle of Darkness: As the Stars Smolder DMG|2)'
+  - burstWhiteDoT: burst(Dragon of White Flame DMG)
+  - burstBlackDoT: burst(Dragon of Dark Decay DMG)
+
+docs:
+  fields:
+    .durin.a4-stacks: Number of A4 stacks remaining.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1iOPmOa6RcDB2yTt4lP2phoZ4gCHe0x217bP427Fl3vY/edit?usp=sharing
+      count_credit: caxia5 and caramielle.
+      video: https://youtu.be/7RRKS0tbPXg
+      video_credit: caramielle.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.3]
+        radius: 2.15
+        hitlag: {time: 0.02, scale: 0.01}
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        radius: 2.15
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: N3-1
+        shape: Circle
+        center: Player
+        offset: [-0.2, 0.4]
+        radius: 2.4
+
+      - name: N3-2
+        shape: Circle
+        center: Player
+        offset: [-0.2, 0.4]
+        radius: 2.4
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: N4
+        shape: Box
+        center: Player
+        offset: [-0.2, -0.6]
+        box: [3.3, 4.8]
+        hitlag: {time: 0.05, scale: 0.01}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: Player
+        offset: [0, 0.8]
+        radius: 2.5
+
+  - name: skill
+    hitbox:
+      - name: E-White
+        shape: Circle
+        center: Player
+        offset: [0, 1.2]
+        radius: 4.5
+
+      - name: E-Black
+        shape: Box
+        center: Player
+        offset: [0, -3]
+        box: [3, 7]
+
+  - name: burst
+    params:
+      travel: Projectile travel time for Dragon of Dark Decay. Default 10 frames. Does nothing for Dragon of White Flame.
+    hitbox:
+      - name: Q-Initial
+        shape: Circle
+        center: Player
+        radius: 6.5
+
+      - name: Q-Tick-White
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3.5
+
+      - name: Q-Tick-Black
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1.5

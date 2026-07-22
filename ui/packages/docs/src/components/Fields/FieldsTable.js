@@ -35,19 +35,9 @@ export default function FieldsTable({ item_key, data_src }) {
     return <div>Does not have any fields</div>;
   }
   const rows = data[item_key].map((e) => {
-    if (e.fields.length < 0) {
-      return;
-    }
-    const codes = e.fields.map((f, i) => {
-      return (
-        <div key={i}>
-          <code>{f}</code>
-        </div>
-      );
-    });
     return (
       <tr key={item_key}>
-        <TD>{codes}</TD>
+        <TD><code>{e.field}</code></TD>
         <TD>{e.desc}</TD>
       </tr>
     );
@@ -63,7 +53,6 @@ export default function FieldsTable({ item_key, data_src }) {
         </Thead>
         <tbody>{rows}</tbody>
       </Table>
-      <i>If more than one field is available, then either field will work.</i>
     </div>
   );
 }

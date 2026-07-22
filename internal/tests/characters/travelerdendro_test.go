@@ -12,11 +12,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/testhelper"
 )
 
 func TestTravelerDendroBurstAttach(t *testing.T) {
 	c, trg := makeCore(2)
-	prof := defProfile(keys.AetherDendro)
+	prof := testhelper.DefaultProfile(keys.AetherDendro, testhelper.TestWeaponKey)
 	prof.Base.Cons = 6
 	idx, err := c.AddChar(prof)
 	if err != nil {
@@ -86,7 +87,7 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 
 func TestTravelerDendroBurstPyro(t *testing.T) {
 	c, trg := makeCore(1)
-	prof := defProfile(keys.AetherDendro)
+	prof := testhelper.DefaultProfile(keys.AetherDendro, testhelper.TestWeaponKey)
 	prof.Base.Cons = 6
 	idx, err := c.AddChar(prof)
 	if err != nil {
@@ -173,7 +174,7 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 // duration is either 12s at c0 or 15s at c2
 func TestTravelerDendroBurstTicks(t *testing.T) {
 	c, trg := makeCore(1)
-	prof := defProfile(keys.AetherDendro)
+	prof := testhelper.DefaultProfile(keys.AetherDendro, testhelper.TestWeaponKey)
 	prof.Base.Cons = 6
 	idx, err := c.AddChar(prof)
 	if err != nil {
@@ -218,7 +219,7 @@ func TestTravelerDendroBurstTicks(t *testing.T) {
 
 func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 	c, trg := makeCore(1)
-	prof := defProfile(keys.AetherDendro)
+	prof := testhelper.DefaultProfile(keys.AetherDendro, testhelper.TestWeaponKey)
 	prof.Base.Cons = 6
 	idx, err := c.AddChar(prof)
 	if err != nil {

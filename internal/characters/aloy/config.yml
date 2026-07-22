@@ -1,50 +1,171 @@
-package_name: aloy
-genshin_id: 10000062
-key: aloy
-action_param_keys:
-    attack: 
-        - param: "travel"
-    aim:
-        - param: "hold"
-        - param: "travel"
-        - param: "weakspot"
-    skill:
-        - param: "travel"
-        - param: "bomblets"
-        - param: "bomb_delay"
-skill_data_mapping:
-    attack:
-        aim:
-            - 5 # Aimed Shot|{param5:F1P}
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}+{param1:F1P}
-            - 1 # 1-Hit DMG|{param0:F1P}+{param1:F1P}
-        attack_2:
-            - 2 # 2-Hit DMG|{param2:F1P}
-        attack_3:
-            - 3 # 3-Hit DMG|{param3:F1P}
-        attack_4:
-            - 4 # 4-Hit DMG|{param4:F1P}
-        fullaim:
-            - 6 # Fully-Charged Aimed Shot|{param6:P}
-    skill:
-        skillAtkDecrease:
-            - 2 # ATK Decrease|{param2:P}
-        skillBomblets:
-            - 1 # Chillwater Bomblet DMG|{param1:F1P}
-        skillCoilNABonus:
-            - 4 # Coil Normal Attack DMG Bonus|{param4:F1P}/{param5:F1P}/{param6:F1P}
-            - 5 # Coil Normal Attack DMG Bonus|{param4:F1P}/{param5:F1P}/{param6:F1P}
-            - 6 # Coil Normal Attack DMG Bonus|{param4:F1P}/{param5:F1P}/{param6:F1P}
-        skillMain:
-            - 0 # Freeze Bomb DMG|{param0:P}
-        skillRushingIceNABonus:
-            - 7 # Rushing Ice Normal Attack DMG Bonus|{param7:F1P}
-    burst:
-        burst:
-            - 0 # Skill DMG|{param0:P}
+use: pipeline
+kind: character
+name: aloy
 
-documentation:
-    fields_data:
-        - fields: [.aloy.coil]
-          desc: Current number of coil stacks.
+talents:
+  - attack:
+      - - attack(1-Hit DMG)
+        - attack(1-Hit DMG|1)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Fully-Charged Aimed Shot)
+
+  - skillMain: skill(Freeze Bomb DMG)
+  - skillBomblets: skill(Chillwater Bomblet DMG)
+  - skillAtkDecrease: skill(ATK Decrease)
+  - skillCoilNABonus:
+      - skill(Coil Normal Attack DMG Bonus)
+      - skill(Coil Normal Attack DMG Bonus|1)
+      - skill(Coil Normal Attack DMG Bonus|2)
+  - skillRushingIceNABonus: skill(Rushing Ice Normal Attack DMG Bonus)
+
+  - burst: burst(Skill DMG)
+
+docs:
+  fields:
+    .aloy.coil: Current number of coil stacks.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/11uyES6x6UFGm2bqcsY4dPSqLgsELrdkPv145NmMwTmc/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/mGnzKSsvq9s
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1zCwdd6_KYFqMD4OQ_llGLdDshoZTu_1pmAMysxGDQvs/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/KlgZlck5kQQ?t=57
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/6wz4EZF-BmE
+      video_credit: xsylent
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/HCeDppXuSyo
+      video_credit: xsylent
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1-1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N1-1-MaxCoil
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N1-2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N1-2-MaxCoil
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2-MaxCoil
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3-MaxCoil
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N4
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N4-MaxCoil
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: aim
+    params:
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default).
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+  - name: skill
+    params:
+      bomb_delay: Determines when Chillwater Bomblets start exploding after projectile hits. Default 0 frames.
+      bomblets: Number of Chillwater Bomblets to spawn. Default 2 bomblets.
+      travel: Projectile travel time. Default 5 frames.
+    hitbox:
+      - name: E-FreezeBomb
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4
+
+      - name: E-ChillwaterBomblets
+        note: Attacks spawn at same Target as E-FreezeBomb.
+        shape: Circle
+        center: GlobalValue
+        radius: 2
+        hitlag: {defense_halt: true, deployable: true}
+
+  - name: burst
+    hitbox:
+      - name: Q-ElementalBurst
+        shape: Circle
+        center: Player
+        offset: [0, 6.5]
+        radius: 6.5
+
+  - name: walk
+    note: Only aim followed by walk has proper frames.

@@ -1,3 +1,15 @@
-package_name: scionoftheblazingsun
-genshin_id: 15424
-key: scionoftheblazingsun
+use: pipeline
+kind: weapon
+name: scionoftheblazingsun
+
+shortcuts:
+  - scion
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Scion of the Blazing Sun
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 3.5

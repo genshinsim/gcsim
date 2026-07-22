@@ -1,4 +1,3 @@
-package_name: ironpoint
-genshin_id: 13201
-key: ironpoint
-skip_data_func: true
+use: pipeline
+kind: weapon
+name: ironpoint

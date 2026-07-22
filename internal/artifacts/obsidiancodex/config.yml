@@ -1,2 +1,6 @@
-key: obsidiancodex
-set_id: 15038
+use: pipeline
+kind: artifact
+name: obsidiancodex
+
+shortcuts:
+  - oc

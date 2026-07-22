@@ -13,10 +13,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-func init() {
-	core.RegisterWeaponFunc(keys.Predator, NewWeapon)
-}
-
 type Weapon struct {
 	Index int
 }

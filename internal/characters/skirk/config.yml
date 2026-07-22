@@ -1,76 +1,196 @@
-package_name: skirk
-genshin_id: 10000114
-key: skirk
-icd_tags:
-  - ICDTagSkirkCons
-action_param_keys:
-  skill:
-    - param: "hold"
-skill_data_mapping:
-  attack: # Havoc: Sunder
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-      - 3 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-    attack_4:
-      - 4 # 4-Hit DMG|{param4:F1P}
-    attack_5:
-      - 5 # 5-Hit DMG|{param5:F1P}
-    charge:
-      - 6 # Charged Attack DMG|{param6:F1P}×2
-      - 6 # Charged Attack DMG|{param6:F1P}×2
-    collision:
-      - 8 # Plunge DMG|{param8:F1P}
-    lowPlunge:
-      - 9 # Low/High Plunge DMG|{param9:P}/{param10:P}
-    highPlunge:
-      - 10 # Low/High Plunge DMG|{param9:P}/{param10:P}
-  skill: # Havoc: Warp
-    skillAttack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    skillAttack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    skillAttack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-      - 3 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-    skillAttack_4:
-      - 4 # 4-Hit DMG|{param4:F1P}+{param5:F1P}
-      - 5 # 4-Hit DMG|{param4:F1P}+{param5:F1P}
-    skillAttack_5:
-      - 6 # 5-Hit DMG|{param6:F1P}
-    skillCharge:
-      - 7 # Charged Attack DMG|{param7:F1P}×3
-      - 7 # Charged Attack DMG|{param7:F1P}×3
-      - 7 # Charged Attack DMG|{param7:F1P}×3
-    skillCollision:
-      - 9 # Plunge DMG|{param9:F1P}
-    skillLowPlunge:
-      - 10 # Low/High Plunge DMG|{param10:P}/{param11:P}
-    skillHighPlunge:
-      - 11 # Low/High Plunge DMG|{param10:P}/{param11:P}
-  burst: # Havoc: Ruin
-    burstDoT:
-      - 0 # Skill DMG|{param0:F1P}×5
-    burstFinal:
-      - 1 # Skill Final Attack DMG|{param1:F1P}
-    burstBonus:
-      - 2 # Serpent's Subtlety Bonus|{param2:F2P} ATK Per Point
-    burstDMG:
-      - 3 # 0/1/2/3 Void Rift Absorption DMG Bonus|{param3:F1P}/{param4:F1P}/{param5:F1P}/{param6:F1P}
-      - 4 # 0/1/2/3 Void Rift Absorption DMG Bonus|{param3:F1P}/{param4:F1P}/{param5:F1P}/{param6:F1P}
-      - 5 # 0/1/2/3 Void Rift Absorption DMG Bonus|{param3:F1P}/{param4:F1P}/{param5:F1P}/{param6:F1P}
-      - 6 # 0/1/2/3 Void Rift Absorption DMG Bonus|{param3:F1P}/{param4:F1P}/{param5:F1P}/{param6:F1P}
+use: pipeline
+kind: character
+name: skirk
 
-documentation:
-  fields_data:
-    - fields: [.skirk.serpents_subtlety]
-      desc: Amount of Serpent's Subtlety.
-    - fields: [.skirk.void_rifts]
-      desc: Number of Void Rifts on the field.
-    - fields: [.skirk.a4_stacks]
-      desc: Number of A4 stacks.
-    - fields: [.skirk.c6_stacks]
-      desc: Number of C6 stacks.
+combat:
+  icd_tags:
+    - SkirkCons
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG|1)
+      - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+  - charge:
+      - attack(Charged Attack DMG)
+      - attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skillAttack:
+      - skill(1-Hit DMG)
+      - skill(2-Hit DMG)
+      - - skill(3-Hit DMG)
+        - skill(3-Hit DMG|1)
+      - - skill(4-Hit DMG)
+        - skill(4-Hit DMG|1)
+      - skill(5-Hit DMG)
+  - skillCharge:
+      - skill(Charged Attack DMG)
+      - skill(Charged Attack DMG)
+      - skill(Charged Attack DMG)
+  - skillCollision: skill(Plunge DMG)
+  - skillLowPlunge: skill(Low/High Plunge DMG)
+  - skillHighPlunge: skill(Low/High Plunge DMG|1)
+
+  - burstDoT: burst(Slash DMG)
+  - burstFinal: burst(Final Slash DMG)
+  - burstBonus: burst(Serpent's Subtlety Bonus)
+  - burstDMG:
+      - burst(0/1/2/3 Void Rift Absorption DMG Bonus)
+      - burst(0/1/2/3 Void Rift Absorption DMG Bonus|1)
+      - burst(0/1/2/3 Void Rift Absorption DMG Bonus|2)
+      - burst(0/1/2/3 Void Rift Absorption DMG Bonus|3)
+
+docs:
+  fields:
+    .skirk.a4_stacks: Number of A4 stacks.
+    .skirk.c6_stacks: Number of C6 stacks.
+    .skirk.serpents_subtlety: Amount of Serpent's Subtlety.
+    .skirk.void_rifts: Number of Void Rifts on the field.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1GR9gnMj2UQiO3dDhCp9gI2AX2r50u6LPTyQb9oonKCY/edit?usp=sharing
+      count_credit: caramielle.
+      video: https://youtu.be/_axQvoeyqy4
+      video_credit: charliex3000
+    - count: https://docs.google.com/spreadsheets/d/1GR9gnMj2UQiO3dDhCp9gI2AX2r50u6LPTyQb9oonKCY/edit?usp=sharing
+      count_credit: charliex3000
+      video: https://youtu.be/5EOo75WSRRE
+      video_credit: charliex3000
+
+abilities:
+  - name: default
+    params:
+      start_serpents_subtlety: deprecated; use start_energy instead.
+
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.3]
+        radius: 2
+        hitlag: {time: 0.02, scale: 0.01}
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, -0.3]
+        radius: 2.2
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: N3-1
+        shape: Box
+        center: Player
+        offset: [0, -1.8]
+        box: [2.5, 3.5]
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: N3-2
+        shape: Box
+        center: Player
+        offset: [0, -1.8]
+        box: [2.5, 3.5]
+
+      - name: N4
+        shape: Box
+        center: Player
+        offset: [0, -1]
+        box: [2.5, 6]
+        hitlag: {time: 0.05, scale: 0.01}
+
+      - name: N5
+        shape: Circle
+        center: Player
+        offset: [0, -0.3]
+        radius: 3.2
+        hitlag: {time: 0.06, scale: 0.01}
+
+      - name: E-N1
+        shape: Box
+        center: Player
+        offset: [0, -0.4]
+        box: [7, 5]
+        hitlag: {time: 0.02, scale: 0.01}
+
+      - name: E-N2
+        shape: Box
+        center: Player
+        offset: [0, -0.4]
+        box: [7, 3.5]
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: E-N3-1
+        shape: Box
+        center: Player
+        offset: [0, -0.4]
+        box: [6, 3.5]
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: E-N3-2
+        shape: Box
+        center: Player
+        offset: [0, -0.2]
+        box: [6, 3.5]
+
+      - name: E-N4-1
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [5, 6]
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: E-N4-2
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [5, 6]
+
+      - name: E-N5
+        shape: Box
+        center: Player
+        offset: [0, -0.4]
+        box: [11, 6]
+        hitlag: {time: 0.06, scale: 0.01}
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2.8
+
+      - name: E-CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3.3
+
+  - name: skill
+    note: Cannot be used in Seven-Phase Flash.
+    params:
+      hold: 0 for Tap (default), value between 1 and 184 for Hold. The number determines the hold E duration in frames.
+
+  - name: burst
+    hitbox:
+      - name: Q
+        shape: Box
+        center: Player
+        offset: [0, -5]
+        box: [14, 12]
+
+  - name: cons
+    hitbox:
+      - name: Far to Fall (C1)
+        shape: Box
+        center: Player
+        offset: [0, -3]
+        box: [4, 8]
+
+      - name: 'Havoc: Sever (C6)'
+        shape: Circle
+        center: Player
+        radius: 5

@@ -1,3 +1,6 @@
-package_name: hakushin
-genshin_id: 14414
-key: hakushinring
+use: pipeline
+kind: weapon
+name: hakushinring
+
+shortcuts:
+  - hakushin

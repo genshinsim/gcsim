@@ -1,7 +1,8 @@
 {
   "oceanhuedclam": [
     {
-      "ability": "Ocean-Hued Clam",
+      "ability": "-",
+      "name": "Ocean-Hued Clam",
       "shape": "Circle",
       "center": "GlobalValue",
       "radius": 6

@@ -1,3 +1,6 @@
-package_name: aquamarine
-genshin_id: 12415
-key: makhairaaquamarine
+use: pipeline
+kind: weapon
+name: makhairaaquamarine
+
+shortcuts:
+  - aquamarine

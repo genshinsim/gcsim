@@ -12,10 +12,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
-func init() {
-	core.RegisterCharFunc(keys.Mualani, NewChar)
-}
-
 type char struct {
 	*tmpl.Character
 	nightsoulState *nightsoul.State

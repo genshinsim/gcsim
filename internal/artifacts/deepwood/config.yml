@@ -1,2 +1,6 @@
-key: deepwoodmemories
-set_id: 15025
+use: pipeline
+kind: artifact
+name: deepwoodmemories
+
+shortcuts:
+  - deepwood

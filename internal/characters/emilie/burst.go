@@ -51,7 +51,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		if c.StatusIsActive(lumidouceStatus) {
 			c.prevLumidouceLvl = c.Tag(lumidouceLevel)
 		}
-		c.spawnBurstLumidouceCase(int(burstDuration[c.TalentLvlBurst()]*60) + extendDuration)
+		c.spawnBurstLumidouceCase(burstDuration*60 + extendDuration)
 		c.c6()
 	}, burstSpawn)
 	c.QueueCharTask(func() {
@@ -59,7 +59,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, burstResetLumidouce+extendDuration)
 
 	c.ConsumeEnergy(9)
-	c.SetCD(action.ActionBurst, int(burstCD[c.TalentLvlBurst()]*60))
+	c.SetCD(action.ActionBurst, burstCD*60)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),

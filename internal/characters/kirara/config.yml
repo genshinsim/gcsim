@@ -1,45 +1,146 @@
-package_name: kirara
-genshin_id: 10000061
-key: kirara
-action_param_keys:
-    skill:
-        - param: "short_hold"
-        - param: "hold"
-    burst:
-        - param: "hits"
-        - param: "mine_delay"
-skill_data_mapping:
-    attack:
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-            - 3 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-        attack_4:
-            - 4 # 4-Hit DMG|{param4:F1P}
-        charge:
-            - 5 # Charged Attack DMG|{param5:F1P}+{param6:F1P}+{param7:F1P}
-            - 6 # Charged Attack DMG|{param5:F1P}+{param6:F1P}+{param7:F1P}
-            - 6 # Charged Attack DMG|{param5:F1P}+{param6:F1P}+{param7:F1P}
-    skill:
-        catDmg:
-            - 6 # Urgent Neko Parcel Hit DMG|{param6:F1P}
-        flipclawDmg:
-            - 8 # Flipclaw Strike DMG|{param8:F1P}
-        maxShieldFlat:
-            - 4 # Max Shield DMG Absorption|{param3:F1P} Max HP+{param4:I}
-        maxShieldPP:
-            - 3 # Max Shield DMG Absorption|{param3:F1P} Max HP+{param4:I}
-        shieldFlat:
-            - 2 # Shield DMG Absorption|{param1:F1P} Max HP+{param2:I}
-        shieldPP:
-            - 1 # Shield DMG Absorption|{param1:F1P} Max HP+{param2:I}
-        skillPress:
-            - 0 # Tail-Flicking Flying Kick DMG|{param0:F1P}
-    burst:
-        burst:
-            - 0 # Skill DMG|{param0:F1P}
-        cardamom:
-            - 1 # Cat Grass Cardamom Explosion DMG|{param1:F1P}
+use: pipeline
+kind: character
+name: kirara
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG|1)
+      - attack(4-Hit DMG)
+  - charge:
+      - attack(Charged Attack DMG)
+      - attack(Charged Attack DMG|1)
+      - attack(Charged Attack DMG|1)
+
+  - skillPress: skill(Tail-Flicking Flying Kick DMG)
+  - shieldPP: skill(Shield DMG Absorption)
+  - shieldFlat: skill(Shield DMG Absorption|1)
+  - maxShieldPP: skill(Max Shield DMG Absorption)
+  - maxShieldFlat: skill(Max Shield DMG Absorption|1)
+  - catDmg: skill(Urgent Neko Parcel Hit DMG)
+  - flipclawDmg: skill(Flipclaw Strike DMG)
+
+  - burst: burst(Skill DMG)
+  - cardamom: burst(Cat Grass Cardamom Explosion DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1elfdm19X1n45ScqZ3UODi_aulOvGtxUycyLWZm5tyeU/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/FTQIt5OSSs4
+      video_credit: Kolibri#7675
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        radius: 2
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Box
+        center: Player
+        offset: [0, -0.3]
+        box: [1.8, 3.8]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N3-1
+        shape: Circle
+        center: Player
+        offset: [0, 0.4]
+        radius: 2
+        hitlag: {time: 0.01, scale: 0.01, defense_halt: true}
+
+      - name: N3-2
+        shape: Circle
+        center: Player
+        offset: [0, 0.9]
+        radius: 2
+        hitlag: {time: 0.05, scale: 0.01, defense_halt: true}
+
+      - name: N4
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 2.1
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA-1
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 2.8
+
+      - name: CA-2
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 2.8
+
+      - name: CA-3
+        shape: Circle
+        center: Player
+        offset: [0, 1.5]
+        radius: 2.8
+        hitlag: {time: 0.1, scale: 0.01, defense_halt: true}
+
+  - name: skill
+    params:
+      hold: 0 for Tap (default), value between 1 and 600 for Hold. The number determines the E duration in frames.
+      short_hold: 0 for Tap (default), 1 for Short Hold. The Short Hold version is the shortest possible Hold.
+    hitbox:
+      - name: E-Tap-Kick
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        fan_angle: 270
+        radius: 2.5
+        hitlag: {scale: 0.01, defense_halt: true}
+
+      - name: E-Hold
+        note: Rolling mechanics (collision) are not properly implemented yet.
+        shape: Circle
+        center: Player
+        radius: 3
+
+      - name: E-Hold-Kick
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2.6
+        hitlag: {scale: 0.01, defense_halt: true}
+
+  - name: burst
+    params:
+      hits: Number of mines that hit. Default 2 hits.
+      mine_delay: Time until all mines explode. Default 180 frames.
+    hitbox:
+      - name: Q-Initial
+        shape: Circle
+        center: Player
+        offset: [0, 3]
+        radius: 6.5
+
+      - name: Q-Mine
+        note: Mine mechanics are not properly implemented yet.
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2
+        hitlag: {defense_halt: true, deployable: true}
+
+  - name: cons
+    hitbox:
+      - name: C4
+        note: Spawns on target that C4 proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 2
+        hitlag: {defense_halt: true}

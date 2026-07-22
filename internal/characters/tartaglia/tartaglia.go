@@ -18,10 +18,6 @@ const (
 	meleeKey           = "tartagliamelee"
 )
 
-func init() {
-	core.RegisterCharFunc(keys.Tartaglia, NewChar)
-}
-
 // tartaglia specific character implementation
 type char struct {
 	*tmpl.Character

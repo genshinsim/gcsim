@@ -39,7 +39,7 @@ func ConfigureTarget(profile *info.EnemyProfile, name string, params TargetParam
 	enemyInfo.Modified = false
 	enemyInfo.Level = profile.Level
 	enemyInfo.Pos = profile.Pos
-	enemyInfo.HP = enemyInfo.HpBase * catalog.EnemyStatGrowthMult[enemyInfo.Level-1][enemyInfo.HpGrowCurve]
+	enemyInfo.HP = enemyInfo.HpBase * catalog.GrowCurve[enemyInfo.HpGrowCurve][enemyInfo.Level-1]
 	if params.HpMultiplier != 0 {
 		enemyInfo.HP *= params.HpMultiplier
 	} else {

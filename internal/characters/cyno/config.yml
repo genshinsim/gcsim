@@ -1,59 +1,233 @@
-package_name: cyno
-genshin_id: 10000071
-key: cyno
-action_param_keys:
-    low_plunge:
-      - param: "collision"
-    high_plunge:
-      - param: "collision"
-icd_tags:
-  - ICDTagCynoBolt
-icd_groups:
-  - group_name: ICDGroupCynoBolt
-    reset_timer: 150
-    ele_app_sequence: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-skill_data_mapping:
-  attack:
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-    attack_4:
-      - 4 # 4-Hit DMG|{param4:F1P}
-    charge:
-      - 5 # Charged Attack DMG|{param5:F1P}
-    collision:
-      - 7 # Plunge DMG|{param6:F1P}
-    lowPlunge:
-      - 8 # Low/High Plunge DMG|{param7:P}/{param8:P}
-    highPlunge:
-      - 9 # Low/High Plunge DMG|{param7:P}/{param8:P}
-  skill:
-    skill:
-      - 0 # Skill DMG|{param0:F1P}
-    skillB:
-      - 1 # Mortuary Rite DMG|{param1:F1P}
-  burst:
-    attackB_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attackB_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attackB_3:
-      - 2 # 3-Hit DMG|{param2:F1P}
-    attackB_4:
-      - 3 # 4-Hit DMG|{param3:F1P}+{param4:F1P}
-      - 3 # 4-Hit DMG|{param3:F1P}+{param4:F1P}
-    attackB_5:
-      - 5 # 5-Hit DMG|{param5:F1P}
-    chargeB:
-      - 6 # Charged Attack DMG|{param6:F1P}
-    collisionB:
-      - 8 # Plunge DMG|{param6:F1P}
-    lowPlungeB:
-      - 9 # Low/High Plunge DMG|{param7:P}/{param8:P}
-    highPlungeB:
-      - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
+use: pipeline
+kind: character
+name: cyno
+
+override:
+  icd_group:
+    CynoBolt:
+      name: Cyno_ElementalArt_Blade
+
+combat:
+  icd_tags:
+    - CynoBolt
+  icd_groups:
+    - CynoBolt
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skill: skill(Skill DMG)
+  - skillB: skill(Mortuary Rite DMG)
+
+  - attackB:
+      - burst(1-Hit DMG)
+      - burst(2-Hit DMG)
+      - burst(3-Hit DMG)
+      - - burst(4-Hit DMG)
+        - burst(4-Hit DMG)
+      - burst(5-Hit DMG)
+  - chargeB: burst(Charged Attack DMG)
+  - collisionB: burst(Plunge DMG)
+  - lowPlungeB: burst(Low/High Plunge DMG)
+  - highPlungeB: burst(Low/High Plunge DMG|1)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1BxBymOtw3To2lE7OfNiM5xQO-nkY_IKwvfTSCOFbqC0/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/Vg-3mGid3pc
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/16ZDmEBZOD4xeUcodxFJVuLC7IIqM9LGLilkct65mElg/edit?usp=sharing
+      count_credit: caramielle.
+      video: https://youtu.be/ZrDwv23yHgc
+      video_credit: caramielle.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        fan_angle: 270
+        radius: 1.8
+        hitlag: {time: 0.01, scale: 0.01}
+
+      - name: N2
+        shape: Box
+        center: Player
+        offset: [0, -0.2]
+        box: [1.8, 2.7]
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: N3-1
+        shape: Box
+        center: Player
+        box: [2.2, 3.6]
+
+      - name: N3-2
+        shape: Box
+        center: Player
+        box: [2.2, 3.6]
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: N4
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 2.3
+        hitlag: {time: 0.04, scale: 0.01, defense_halt: true}
+
+      - name: Q-N1
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 2
+        hitlag: {time: 0.01, scale: 0.01}
+
+      - name: Q-N2
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 2
+        hitlag: {time: 0.01, scale: 0.01}
+
+      - name: Q-N3
+        shape: Box
+        center: Player
+        offset: [0, -0.2]
+        box: [2.5, 6]
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: Q-N4-1
+        shape: Circle
+        center: Player
+        offset: [0, 0.8]
+        radius: 2.5
+        hitlag: {time: 0.01, scale: 0.01}
+
+      - name: Q-N4-2
+        shape: Circle
+        center: Player
+        offset: [0, 0.8]
+        radius: 2.5
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: Q-N5
+        shape: Circle
+        center: Player
+        offset: [0, 1.5]
+        radius: 3.5
+        hitlag: {time: 0.05, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.8
+        hitlag: {scale: 0.01, defense_halt: true, deployable: true}
+
+      - name: Q-CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.8
+        hitlag: {scale: 0.01, defense_halt: true, deployable: true}
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Q-Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+      - name: Q-Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 4
+
+      - name: Q-High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 6
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    hitbox:
+      - name: E
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+        hitlag: {scale: 0.01, deployable: true}
+
+      - name: Q-E
+        shape: Circle
+        center: Player
+        offset: [0, 1.5]
+        radius: 6
+        hitlag: {time: 0.03, scale: 0.01}
+
+  - name: burst
+    hitbox:
+      - name: Q-Start
+        note: not implemented yet
+        shape: Circle
+        center: Player
+        radius: 3
+
+  - name: asc
+    hitbox:
+      - name: E-A1-DuststalkerBolt
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.3
+
+  - name: cons
+    hitbox:
+      - name: C6
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.3
+
+  - name: walk
+    note: No action followed by walk (except low_plunge and high_plunge) has proper frames.

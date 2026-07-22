@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -18,10 +17,6 @@ const (
 	gleamingMoonIntentCRKey    = "gleaming-moon-intent-cr"
 	gleamingMoonIntentReactKey = "gleaming-moon-intent-reaction"
 )
-
-func init() {
-	core.RegisterSetFunc(keys.NightOfTheSkysUnveiling, NewSet)
-}
 
 type Set struct {
 	char  *character.CharWrapper

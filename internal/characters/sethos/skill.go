@@ -44,7 +44,7 @@ func (c *char) skillRefundHook() {
 			return
 		}
 		c.lastSkillFrame = ae.SourceFrame
-		c.AddEnergy("sethos-skill", skillEnergyRegen[c.TalentLvlSkill()])
+		c.AddEnergy("sethos-skill", skillEnergyRegen)
 		c.c2AddStack(c2RegainingKey)
 	}
 

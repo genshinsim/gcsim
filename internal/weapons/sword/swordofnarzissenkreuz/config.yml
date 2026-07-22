@@ -1,3 +1,11 @@
-package_name: swordofnarzissenkreuz
-genshin_id: 11428
-key: swordofnarzissenkreuz
+use: pipeline
+kind: weapon
+name: swordofnarzissenkreuz
+
+shortcuts:
+  - narzissenkreuz
+
+abilities:
+  - name: default
+    params:
+      arkhe: 0 for Pneuma, 1 for Ousia (default).

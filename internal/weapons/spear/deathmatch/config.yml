@@ -1,3 +1,12 @@
-package_name: deathmatch
-genshin_id: 13405
-key: deathmatch
+use: pipeline
+kind: weapon
+name: deathmatch
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Deathmatch Enemy Detection
+        note: It looks for enemies within this hitbox.
+        shape: Circle
+        center: Player
+        radius: 8

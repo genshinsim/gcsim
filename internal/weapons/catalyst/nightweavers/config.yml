@@ -1,3 +1,6 @@
-package_name: nightweavers
-genshin_id: 14520
-key: nightweaverslookingglass
+use: pipeline
+kind: weapon
+name: nightweaverslookingglass
+
+shortcuts:
+  - nightweavers

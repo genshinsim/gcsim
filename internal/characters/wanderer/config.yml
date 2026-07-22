@@ -1,54 +1,177 @@
-package_name: wanderer
-genshin_id: 10000075
-key: wanderer
-action_param_keys:
-  attack:
-    - param: "travel"
-  low_plunge:
-    - param: "collision"
-icd_tags:
-  - ICDTagWandererC6
-  - ICDTagWandererA4
-icd_groups:
-  - group_name: ICDGroupWandererC6
-    reset_timer: 120
-    ele_app_sequence:
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-  - group_name: ICDGroupWandererA4
-    reset_timer: 60
-    ele_app_sequence:
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-skill_data_mapping:
-  attack:
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-    charge:
-      - 4 # Charged Attack DMG|{param4:F1P}
-    highPlunge:
-      - 8 # Low/High Plunge DMG|{param7:P}/{param8:P}
-    lowPlunge:
-      - 7 # Low/High Plunge DMG|{param7:P}/{param8:P}
-    plunge:
-      - 6 # Plunge DMG|{param6:F1P}
-  skill:
-    skill:
-      - 0 # Skill DMG|{param0:F1P}
-    skillCABonus:
-      - 2 # Kuugo: Toufukai DMG|{param2:F1P} Charged Attack DMG
-    skillNABonus:
-      - 1 # Kuugo: Fushoudan DMG|{param1:F1P} Normal Attack DMG
-  burst:
-    burst:
-      - 0 # Skill DMG|{param0:F1P}×5
+use: pipeline
+kind: character
+name: wanderer
 
-documentation:
-  fields_data:
-    - fields: [.wanderer.skydweller-points]
-      desc: Amount of Kuugoryoku Points that Wanderer has. A value greater than 0 indicates that Wanderer is in the Windfavored state.
+override:
+  icd_group:
+    WandererA4:
+      name: Wanderer_PermanentSkill_2
+    WandererC6:
+      name: Wanderer_Constellation_6
+
+shortcuts:
+  - kabukimono
+  - kuni
+  - kunikuzushi
+  - scara
+  - scaramouche
+
+combat:
+  icd_tags:
+    - WandererA4
+    - WandererC6
+  icd_groups:
+    - WandererA4
+    - WandererC6
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - plunge: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skill: skill(Skill DMG)
+  - skillNABonus: 'skill(Kuugo: Fushoudan DMG)'
+  - skillCABonus: 'skill(Kuugo: Toufukai DMG)'
+
+  - burst: burst(Skill DMG)
+
+docs:
+  fields:
+    .wanderer.skydweller-points: Amount of Kuugoryoku Points that Wanderer has. A value greater than 0 indicates that Wanderer is in the Windfavored state.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1UaDmefkw0AsA-sV1oc6Ya4SYRUZEv_deExY4H30RV4U/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/PrGKTV3cOm4
+      video_credit: Kolibri#7675
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 5 frames.
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: N2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: N3-1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: N3-2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: E-N1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2.5
+
+      - name: E-N2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2.5
+
+      - name: E-N3-1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
+
+      - name: E-N3-2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2.5
+
+      - name: E-CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3.5
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        radius: 1.5
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        radius: 3
+
+  - name: low_plunge
+    note: Only available for a short time after Windfavored state ends.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    hitbox:
+      - name: E-Initial
+        shape: Circle
+        center: Player
+        radius: 6
+
+  - name: burst
+    hitbox:
+      - name: Q
+        shape: Circle
+        center: PrimaryTarget
+        radius: 5
+
+  - name: asc
+    hitbox:
+      - name: A1-AbsorbCheck
+        shape: Circle
+        center: Player
+        radius: 6
+
+      - name: A4
+        shape: Circle
+        center: Player
+        radius: 1
+
+  - name: cons
+    hitbox:
+      - name: C6-N1
+        note: Spawns at the target hit by the N1.
+        shape: Circle
+        center: GlobalValue
+        radius: 2
+
+      - name: C6-N2
+        shape: Circle
+        center: GlobalValue
+        radius: 2
+
+      - name: C6-N3-1
+        shape: Circle
+        center: GlobalValue
+        radius: 2
+
+      - name: C6-N3-2
+        shape: Circle
+        center: GlobalValue
+        radius: 2
+
+  - name: swap
+    note: Swapping while Windfavored state is active is not legal.

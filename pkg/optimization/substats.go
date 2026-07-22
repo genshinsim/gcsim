@@ -138,7 +138,6 @@ func NewSubstatOptimizerDetails(
 
 	s.artifactSets4Star = []keys.Set{
 		keys.ResolutionOfSojourner,
-		keys.TinyMiracle,
 		keys.Berserker,
 		keys.Instructor,
 		keys.TheExile,
@@ -147,10 +146,15 @@ func NewSubstatOptimizerDetails(
 		keys.MartialArtist,
 		keys.Gambler,
 		keys.Scholar,
-		keys.PrayersForWisdom,
-		keys.PrayersForDestiny,
-		keys.PrayersForIllumination,
-		keys.PrayersToSpringtime,
+		// unimplemented
+		// keys.TinyMiracle,
+		// keys.Adventurer,
+		// keys.LuckyDog,
+		// keys.TravelingDoctor,
+		// keys.PrayersForIllumination,
+		// keys.PrayersForDestiny,
+		// keys.PrayersForWisdom,
+		// keys.PrayersToSpringtime,
 	}
 
 	s.substatValues = make([]float64, attributes.EndStatType)

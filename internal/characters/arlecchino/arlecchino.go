@@ -11,10 +11,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
-func init() {
-	core.RegisterCharFunc(keys.Arlecchino, NewChar)
-}
-
 type char struct {
 	*tmpl.Character
 	skillDebt             float64
@@ -26,7 +22,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
-	c.EnergyMax = base.SkillDetails.BurstEnergyCost
+	c.EnergyMax = 60
 	c.NormalHitNum = normalHitNum
 	c.NormalCon = 3
 	c.BurstCon = 5

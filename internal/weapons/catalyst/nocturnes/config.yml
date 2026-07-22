@@ -1,3 +1,6 @@
-package_name: nocturnes
-genshin_id: 14522
-key: nocturnescurtaincall
+use: pipeline
+kind: weapon
+name: nocturnescurtaincall
+
+shortcuts:
+  - nocturnes

@@ -1,74 +1,160 @@
-package_name: clorinde
-genshin_id: 10000098
-key: clorinde
-icd_groups:
-  - group_name: ICDGroupClorindeElementalArt
-    reset_timer: 60
-    ele_app_sequence:
-      [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-skill_data_mapping:
-  a1:
-    a1FlatDmg:
-      - 1
-    a1PercentBuff:
-      - 2
-    a1Duration:
-      - 0
-  a4:
-    a4CritBuff:
-      - 2
-    a4Duration:
-      - 3
-  attack:
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-      - 3 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-    attack_4:
-      - 4 # 4-Hit DMG|{param4:F1P}+{param5:F1P}+{param6:F1P}
-      - 5 # 4-Hit DMG|{param4:F1P}+{param5:F1P}+{param6:F1P}
-      - 6 # 4-Hit DMG|{param4:F1P}+{param5:F1P}+{param6:F1P}
-    attack_5:
-      - 9 # 5-Hit DMG|{param9:F1P}
-    charge:
-      - 10 # Charged Attack DMG|{param10:F1P}
-    collision:
-      - 12 # Plunge DMG|{param12:F1P}
-    lowPlunge:
-      - 13 # Low/High Plunge DMG|{param13:P}/{param14:P}
-    highPlunge:
-      - 14 # Low/High Plunge DMG|{param13:P}/{param14:P}
-  skill:
-    skillNA:
-      - 0
-    skillEnhancedNA:
-      - 1
-    skillBOLGain:
-      - 2
-    skillLungeNoBOL:
-      - 3
-    skillLungeLowBOL:
-      - 4
-    skillLungeLowBOLHeal:
-      - 5
-    skillLungeFullBOL:
-      - 6
-    skillLungeFullBOLHeal:
-      - 7
-    healingBOL:
-      - 8
-    arkheDamage:
-      - 9
-    arkheCD:
-      - 10
-    skillStateDuration:
-      - 11
-  burst:
-    burstDamage:
-      - 0
-    burstBOL:
-      - 1
+use: pipeline
+kind: character
+name: clorinde
+
+combat:
+  icd_groups:
+    - ClorindeElementalArt
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG|1)
+      - - attack(4-Hit DMG)
+        - attack(4-Hit DMG|1)
+        - attack(4-Hit DMG|2)
+      - attack(5-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skillNA: skill(Swift Hunt DMG)
+  - skillEnhancedNA: skill(Swift Hunt DMG|1)
+  - skillBOLGain: skill(Swift Hunt Bond of Life Gain)
+  - skillLungeNoBOL: skill(Impale the Night DMG)
+  - skillLungeLowBOL: skill(Impale the Night DMG|1)
+  - skillLungeLowBOLHeal: skill(Impale the Night Healing)
+  - skillLungeFullBOL: skill(Impale the Night DMG|2)
+  - skillLungeFullBOLHeal: skill(Impale the Night Healing|1)
+  - healingBOL: skill(Bond of Life Conversion)
+  - arkheDamage: skill(Surging Blade DMG)
+  - arkheCD: skill(Surging Blade Interval)
+  - skillStateDuration: skill(Night Vigil Duration)
+
+  - burstDamage: burst(Skill DMG)
+  - burstBOL: burst(Bond of Life Gain)
+
+  - a1Duration: a1#0
+  - a1FlatDmg: a1#1
+  - a1PercentBuff: a1#2
+
+  - a4CritBuff: a4#2
+  - a4Duration: a4#3
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1phqJvYI0JrhBQ5NHPftz4RkhNQ1M798a-zfZb25wl9A/edit?gid=1096128578
+      count_credit: shizukayuki
+      video: https://youtu.be/dmKCk2zSC1o
+      video_credit: shizukayuki
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 1.1]
+        radius: 1.7
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, 1.3]
+        radius: 1.9
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N3
+        shape: Circle
+        center: Player
+        offset: [0, 1.2]
+        radius: 2.1
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N4-1
+        shape: Box
+        center: Player
+        offset: [0, 1.3]
+        box: [2, 3.5]
+        hitlag: {time: 0.02, scale: 0.05, defense_halt: true}
+
+      - name: N4-2
+        shape: Box
+        center: Player
+        offset: [0, 1.3]
+        box: [2, 3]
+        hitlag: {time: 0.02, scale: 0.05, defense_halt: true}
+
+      - name: N4-3
+        shape: Box
+        center: Player
+        offset: [0, 1.3]
+        box: [2, 3]
+        hitlag: {time: 0.02, scale: 0.05, defense_halt: true}
+
+      - name: N5
+        shape: Circle
+        center: Player
+        offset: [0, 1.4]
+        radius: 2.5
+        hitlag: {time: 0.03, scale: 0.05, defense_halt: true}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: Player
+        radius: 4.1
+
+  - name: skill
+    hitbox:
+      - name: SkillAttack-100BoL
+        shape: Box
+        center: PrimaryTarget
+        box: [2, 14]
+
+      - name: SkillAttack
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.6
+
+      - name: SkillDash-NoBoL
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.6
+
+      - name: SkillDash-FullBoL
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.8
+
+      - name: SkillDash-RegularBoL
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.8
+
+  - name: burst
+    hitbox:
+      - name: Burst
+        shape: Box
+        center: Player
+        offset: [0, -1]
+        box: [11.2, 9]
+
+  - name: cons
+    hitbox:
+      - name: C1-Hit
+        shape: Circle
+        center: Player
+        offset: [0, -3]
+        radius: 4
+
+      - name: C6-Hit
+        shape: Circle
+        center: PrimaryTarget
+        radius: 8

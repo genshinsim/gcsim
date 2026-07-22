@@ -1,3 +1,6 @@
-package_name: songofstillness
-genshin_id: 15425
-key: songofstillness
+use: pipeline
+kind: weapon
+name: songofstillness
+
+shortcuts:
+  - stillness

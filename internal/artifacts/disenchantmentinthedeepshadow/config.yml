@@ -1,2 +1,7 @@
-key: disenchantmentinthedeepshadow
-set_id: 15046
+use: pipeline
+kind: artifact
+name: disenchantmentindeepshadow
+
+shortcuts:
+  - deepshadow
+  - disenchantment

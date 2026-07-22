@@ -1,2 +1,7 @@
-key: nightoftheskysunveiling
-set_id: 15041
+use: pipeline
+kind: artifact
+name: nightoftheskysunveiling
+
+shortcuts:
+  - notsu
+  - skysunveiling
