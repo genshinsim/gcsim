@@ -27,12 +27,25 @@ func (e *Enemy) AddStatus(key string, dur int, hitlag bool) {
 	modifier.LogAdd("status", -1, &mod, e.Core.Log, overwrote, oldEvt)
 }
 
+// Add a ResistMod
+//
+//	e.AddResistMod(info.ResistMod{
+//		Base:  modifier.NewBaseWithHitlag("debuff", 10*60),
+//		Ele:   attributes.Cryo,
+//		Value: -0.15,
+//	})
 func (e *Enemy) AddResistMod(mod info.ResistMod) {
 	mod.SetExpiry(e.Core.F)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&e.mods, &mod, e.Core.F)
 	modifier.LogAdd("enemy", -1, &mod, e.Core.Log, overwrote, oldEvt)
 }
 
+// Add a DefMod
+//
+//	e.AddDefMod(info.DefMod{
+//		Base:  modifier.NewBaseWithHitlag("debuff", 10*60),
+//		Value: -0.3,
+//	})
 func (e *Enemy) AddDefMod(mod info.DefMod) {
 	mod.SetExpiry(e.Core.F)
 	overwrote, oldEvt := modifier.Add[modifier.Mod](&e.mods, &mod, e.Core.F)
