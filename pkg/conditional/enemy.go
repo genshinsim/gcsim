@@ -86,7 +86,7 @@ func evalElement(c *core.Core, fields []string) (float64, error) {
 }
 
 func evalTags(c *core.Core, fields []string) (int, error) {
-	// .tags.e1.name
+	// .tags.t1.name
 	if err := fieldsCheck(fields, 3, "tags"); err != nil {
 		return 0, err
 	}
@@ -95,7 +95,7 @@ func evalTags(c *core.Core, fields []string) (int, error) {
 
 	e, err := parseTarget(c, trg)
 	if err != nil {
-		return 0, fmt.Errorf("bad element condition: %w", err)
+		return 0, fmt.Errorf("bad tags condition: %w", err)
 	}
 	return e.GetTag(name), nil
 }
