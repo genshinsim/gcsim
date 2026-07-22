@@ -59,19 +59,90 @@ func (t *KeysTmpl) Write() {
 	if typ == "" {
 		panic("unreachable")
 	}
-	end := "Invalid" + typ
+	var keys, names []string
+	keys = append(keys, "No"+typ)
+	keys = append(keys, t.Name...)
+	keys = append(keys, "Invalid"+typ)
+	names = make([]string, len(keys))
+	for i, name := range keys {
+		keys[i] = excel.Slug(name)
+		names[i] = excel.SlugLower(name)
+		if i == 0 {
+			names[i] = ""
+		}
+	}
 
 	b := bytes.NewBuffer(nil)
 	b.WriteString("package keys\n")
-	fmt.Fprintf(b, "//go:generate go tool github.com/dmarkham/enumer -text -json -linecomment -type=%s -output %[2]s.enumer.dm.go -- %[2]s.dm.go\n", typ, t.Kind)
-	fmt.Fprintf(b, "type %s int\n", typ)
-	b.WriteString("const (\n")
-	fmt.Fprintf(b, "\tNo%[1]s %[1]s = iota //\n", typ)
-	for _, name := range t.Name {
-		fmt.Fprintf(b, "\t%s // %s\n", excel.Slug(name), excel.SlugLower(name))
+	b.WriteString("import (\n")
+	for _, pkg := range []string{
+		"encoding/json",
+		"fmt",
+		"slices",
+		"strings",
+	} {
+		fmt.Fprintf(b, "\t\"%s\"\n", pkg)
 	}
-	fmt.Fprintf(b, "\t%s // %s\n", excel.Slug(end), excel.SlugLower(end))
 	b.WriteString(")\n")
+
+	fmt.Fprintf(b, "type %s int\n", typ)
+
+	b.WriteString("\n")
+	fmt.Fprintf(b, "func (v %[1]s) String() string { return _%[1]sNames[v] }\n", typ)
+	fmt.Fprintf(b, "func (v %[1]s) MarshalJSON() ([]byte, error) { return json.Marshal(v.String()) }\n", typ)
+	fmt.Fprintf(b, "func %[1]sStrings() []string { return _%[1]sNames[:] }\n", typ)
+	fmt.Fprintf(b, "func %[1]sValues() []%[1]s { return _%[1]sValues[:] }\n", typ)
+
+	b.WriteString("\n")
+	fmt.Fprintf(b, "func %[1]sString(s string) (%[1]s, error) {\n", typ)
+	b.WriteString("s = strings.ToLower(s)\n")
+	fmt.Fprintf(b, "ind := slices.IndexFunc(_%[1]sNames[:], func(i string) bool { return i == s })\n", typ)
+	fmt.Fprintf(b, "if ind == -1 { return 0, fmt.Errorf(\"%%s does not belong to %[1]s\", s) }\n", typ)
+	fmt.Fprintf(b, "return _%[1]sValues[ind], nil", typ)
+	b.WriteString("}\n")
+
+	b.WriteString("\n")
+	fmt.Fprintf(b, "func (v *%[1]s) UnmarshalJSON(in []byte) error {\n", typ)
+	b.WriteString("var s string\n")
+	b.WriteString("if err := json.Unmarshal(in, &s); err != nil { return err }\n")
+	b.WriteString("var err error\n")
+	fmt.Fprintf(b, "*v, err = %[1]sString(s)\n", typ)
+	b.WriteString("return err\n")
+	b.WriteString("}\n")
+
+	b.WriteString("\n")
+	fmt.Fprintf(b, "func _comptime_%[1]s() { var x [1]struct{}\n", typ)
+	fmt.Fprintf(b, "_ = x[int(%[2]s+1)-len(_%[1]sNames)]\n", typ, keys[len(keys)-1])
+	fmt.Fprintf(b, "_ = x[int(%[2]s+1)-len(_%[1]sValues)]\n", typ, keys[len(keys)-1])
+	// for i := range keys {
+	// 	fmt.Fprintf(b, "_ = x[%s-(%d)]\n", keys[i], i)
+	// }
+	b.WriteString("}\n")
+
+	b.WriteString("const (\n")
+	for i := range keys {
+		b.WriteString(keys[i])
+		if i == 0 {
+			fmt.Fprintf(b, " %s = iota", typ)
+		}
+		b.WriteString(" // ")
+		b.WriteString(names[i])
+		b.WriteString("\n")
+	}
+	b.WriteString(")\n")
+
+	fmt.Fprintf(b, "var _%[1]sNames = [...]string{\n", typ)
+	for _, v := range names {
+		fmt.Fprintf(b, "%s,\n", strconv.Quote(v))
+	}
+	b.WriteString("}\n")
+
+	fmt.Fprintf(b, "var _%[1]sValues = [...]%[1]s{\n", typ)
+	for _, v := range keys {
+		fmt.Fprintf(b, "%s,\n", v)
+	}
+	b.WriteString("}\n")
+
 	writeFile(fmt.Sprintf("pkg/core/keys/%s.dm.go", t.Kind), b.Bytes())
 }
 

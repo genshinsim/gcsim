@@ -37,7 +37,6 @@ tasks:
     cmds:
       - go generate ./pipeline
       - go run ./pipeline {{.CLI_ARGS}}
-      - go generate ./pkg/core/keys
   pipeline-add:
     cmds:
       - git add -v 'ui/packages/docs/docs/reference/*/*.md' > /dev/null

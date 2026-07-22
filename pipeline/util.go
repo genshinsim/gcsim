@@ -204,7 +204,8 @@ func writeFile(name string, data []byte) {
 
 func walkConfigs() ([]*Config, error) {
 	var configs []*Config
-	err := fs.WalkDir(projectRoot.FS(), ".", func(path string, d fs.DirEntry, err error) error {
+	err := fs.WalkDir(projectRoot.FS(), ".", func(filename string, d fs.DirEntry, err error) error {
+		path := path.Clean(filepath.ToSlash(filename))
 		if err != nil || d.IsDir() {
 			return err
 		}
@@ -215,17 +216,22 @@ func walkConfigs() ([]*Config, error) {
 		if d.Name() != "config.yml" {
 			return nil
 		}
+		switch dir, _, _ := strings.Cut(path, "/"); dir {
+		case "internal", "pipeline":
+		default:
+			return nil
+		}
 
 		data, err := projectRoot.ReadFile(path)
 		if err != nil {
 			return err
 		}
 		var cfg *Config
-		if err := yaml.Unmarshal(data, &cfg); err != nil {
+		if err := yaml.Load(data, &cfg, yaml.WithV4Defaults(), yaml.WithKnownFields()); err != nil {
 			return fmt.Errorf("failed to unmarshal %v: %w", path, err)
 		}
 		if cfg.Use == "pipeline" {
-			cfg.Path = filepath.ToSlash(path)
+			cfg.Path = path
 			cfg.ClearSpec()
 			configs = append(configs, cfg)
 		}
