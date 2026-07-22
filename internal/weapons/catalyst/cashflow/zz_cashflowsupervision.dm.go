@@ -3,9 +3,9 @@
 // passive: Golden Blood-Tide # Weapon_Catalyst_Wheatley
 //
 //	ATK is increased by 16%. When current HP increases or decreases, Normal Attack DMG
-//	will be increased by 16% and Charged Attack DMG will be increased by 14% for 4s.
-//	Max 3 stacks. This effect can be triggered once every 0.3s. When the wielder has
-//	3 stacks, ATK SPD will be increased by 8%.
+//	is increased by 16%, Charged Attack DMG is increased by 14%, and Stellar-Conduct
+//	DMG is increased by 14% for 4s. Max 3 stacks. This effect can be triggered once every
+//	0.3s. When the wielder has 3 stacks, ATK SPD will be increased by 8%.
 package cashflow
 
 import (

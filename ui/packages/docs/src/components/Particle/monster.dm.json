@@ -363,6 +363,20 @@
       "hp_percent": 0
     }
   ],
+  "battlehardenedprecursorssecretsourcematrixofoverseernetwork": [
+    {
+      "drop_id": 22010030,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010030,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010050,
+      "hp_percent": 0
+    }
+  ],
   "battlehardenedprimordialbathysmalvishap": [
     {
       "drop_id": 22010012,
@@ -378,6 +392,20 @@
     },
     {
       "drop_id": 22010042,
+      "hp_percent": 0
+    }
+  ],
+  "battlehardenedprismslime": [
+    {
+      "drop_id": 22010030,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010030,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010050,
       "hp_percent": 0
     }
   ],
@@ -2894,6 +2922,24 @@
     }
   ],
   "praetoriangolem": [
+    {
+      "drop_id": 22010010,
+      "hp_percent": 0.75
+    },
+    {
+      "drop_id": 22010010,
+      "hp_percent": 0.5
+    },
+    {
+      "drop_id": 22010010,
+      "hp_percent": 0.25
+    },
+    {
+      "drop_id": 22010030,
+      "hp_percent": 0
+    }
+  ],
+  "precursorssecretsourcematrixofoverseernetwork": [
     {
       "drop_id": 22010010,
       "hp_percent": 0.75

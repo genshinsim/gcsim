@@ -67,10 +67,12 @@ func TestForceTerminate(t *testing.T) {
 		if err != nil {
 			t.Errorf("unexpected error when checking for NextAction(): %v", err)
 			t.FailNow()
+			return
 		}
 		if a == nil {
 			t.Error("NextAction() should be not be nil")
 			t.FailNow()
+			return
 		}
 		fmt.Printf("%v %v\n", a.Char.String(), a.Action.String())
 	}
@@ -117,6 +119,7 @@ func TestSleepAsWaitAlias(t *testing.T) {
 	if a == nil {
 		t.Error("unexpected next action is nil")
 		t.FailNow()
+		return
 	}
 	if a.Action != action.ActionWait {
 		t.Errorf("expecting action to be wait, got %v", a.Action.String())
