@@ -5,3 +5,11 @@ name: scrolloftheheroofcindercity
 shortcuts:
   - scroll
   - sothocc
+
+talents:
+  - energyGain: set2#0 # 6
+
+  - dmgBuff: set4#0 # 0.12
+  - buffDuration: set4#1 # 15
+  - nyxDmgBuff: set4#2 # 0.28
+  - nyxBuffDuration: set4#3 # 20

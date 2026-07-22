@@ -24,3 +24,11 @@ import (
 func init() {
 	core.RegisterSetFunc(keys.ScrollOfTheHeroOfCinderCity, NewSet)
 }
+
+const (
+	energyGain      = 6    // set2: ScrollOfTheHeroOfCinderCity
+	dmgBuff         = 0.12 // set4: ScrollOfTheHeroOfCinderCity
+	buffDuration    = 15   // set4: ScrollOfTheHeroOfCinderCity
+	nyxDmgBuff      = 0.28 // set4: ScrollOfTheHeroOfCinderCity
+	nyxBuffDuration = 20   // set4: ScrollOfTheHeroOfCinderCity
+)
