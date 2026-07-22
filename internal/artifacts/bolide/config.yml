@@ -1,2 +1,6 @@
-key: retracingbolide
-set_id: 15015
+use: pipeline
+kind: artifact
+name: retracingbolide
+
+shortcuts:
+  - bolide

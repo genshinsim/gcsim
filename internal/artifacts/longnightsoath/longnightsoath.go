@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/stacks"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -25,10 +24,6 @@ var attackStackInfo = map[attacks.AttackTag]attackStackType{
 	attacks.AttackTagExtra:            {icdStatus: "longnightsoath-icd-charge", stacks: 2},
 	attacks.AttackTagElementalArt:     {icdStatus: "longnightsoath-icd-skill", stacks: 2},
 	attacks.AttackTagElementalArtHold: {icdStatus: "longnightsoath-icd-skill", stacks: 2},
-}
-
-func init() {
-	core.RegisterSetFunc(keys.LongNightsOath, NewSet)
 }
 
 type Set struct {

@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -17,10 +16,6 @@ const (
 	icdKey      = "crimsonmoonssemblance-icd"
 	icdDuration = 14 * 60
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.CrimsonMoonsSemblance, NewWeapon)
-}
 
 type Weapon struct {
 	Index int

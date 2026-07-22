@@ -1,64 +1,214 @@
-package_name: alhaitham
-genshin_id: 10000078
-key: alhaitham
-action_param_keys:
-  skill: 
-      - param: "hold"
-  high_plunge:
-      - param: "collision"
-  low_plunge:
-      - param: "collision"
-      - param: "short"
-icd_groups:
-  - group_name: ICDGroupAlhaithamProjectionAttack
-    reset_timer: 720
-    ele_app_sequence:
-      [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-  - group_name: ICDGroupAlhaithamExtraAttack
-    reset_timer: 120
-    ele_app_sequence: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-skill_data_mapping:
-  attack:
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-    attack_4:
-      - 4 # 4-Hit DMG|{param4:F1P}
-    attack_5:
-      - 5 # 5-Hit DMG|{param5:F1P}
-    charge:
-      - 6 # Charged Attack DMG|{param6:F1P}+{param7:F1P}
-      - 6 # Charged Attack DMG|{param6:F1P}+{param7:F1P}
-    collision:
-      - 9 # Plunge DMG|{param6:F1P}
-    lowPlunge:
-      - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
-    highPlunge:
-      - 11 # Low/High Plunge DMG|{param7:P}/{param8:P}
-  skill:
-    mirrorAtk:
-      - 3 # 1-Mirror Projection Attack DMG|{param3:F1P} ATK+{param4:F1P} Elemental Mastery
-    mirrorEm:
-      - 4 # 1-Mirror Projection Attack DMG|{param3:F1P} ATK+{param4:F1P} Elemental Mastery
-    rushAtk:
-      - 0 # Rush Attack DMG|{param0:F1P} ATK+{param1:F1P} Elemental Mastery
-    rushEm:
-      - 1 # Rush Attack DMG|{param0:F1P} ATK+{param1:F1P} Elemental Mastery
-  burst:
-    burstAtk:
-      - 0 # Single-Instance DMG|{param0:F1P} ATK+{param1:F1P} Elemental Mastery
-    burstEm:
-      - 1 # Single-Instance DMG|{param0:F1P} ATK+{param1:F1P} Elemental Mastery
+use: pipeline
+kind: character
+name: alhaitham
 
-documentation:
-  fields_data:
-    - fields: [.alhaitham.mirrors]
-      desc: Current number of Mirrors that Alhaitham has.
-    - fields: [.alhaitham.c2-stacks]
-      desc: Number of C2 stacks that are currently active.
+override:
+  icd_group:
+    AlhaithamExtraAttack:
+      name: Alhatham_ExtraAttack
+    AlhaithamProjectionAttack:
+      name: Alhatham_ForlornLotus
+
+shortcuts:
+  - haitham
+
+combat:
+  icd_groups:
+    - AlhaithamExtraAttack
+    - AlhaithamProjectionAttack
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+  - charge:
+      - attack(Charged Attack DMG)
+      - attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - rushAtk: skill(Rush Attack DMG)
+  - rushEm: skill(Rush Attack DMG|1)
+  - mirrorAtk: skill(1-Mirror Projection Attack DMG)
+  - mirrorEm: skill(1-Mirror Projection Attack DMG|1)
+
+  - burstAtk: burst(Single-Instance DMG)
+  - burstEm: burst(Single-Instance DMG|1)
+
+docs:
+  fields:
+    .alhaitham.c2-stacks: Number of C2 stacks that are currently active.
+    .alhaitham.mirrors: Current number of Mirrors that Alhaitham has.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1qznqZMkFRRFKpzEXvQ_bJAXoleI2BrV-nKNAusJoYrU/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/zqm1ypb3qUo
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/16ZDmEBZOD4xeUcodxFJVuLC7IIqM9LGLilkct65mElg/edit?usp=sharing
+      count_credit: kolibri._.
+      video: https://youtu.be/Y4y_fElmrmo
+      video_credit: kolibri._.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: E-N1
+        shape: Circle
+        center: Player
+        offset: [0, -0.1]
+        fan_angle: 180
+        radius: 2.5
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: E-N2
+        shape: Box
+        center: Player
+        offset: [0, -0.1]
+        box: [2, 2.5]
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: E-N3-1
+        shape: Box
+        center: Player
+        box: [2, 3]
+
+      - name: E-N3-2
+        shape: Box
+        center: Player
+        box: [2, 3]
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: E-N4
+        shape: Box
+        center: Player
+        box: [3, 4.5]
+
+      - name: E-N5
+        shape: Circle
+        center: Player
+        offset: [0, 2.2]
+        radius: 2.5
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: E-CA-1
+        shape: Circle
+        center: Player
+        radius: 2.5
+
+      - name: E-CA-2
+        shape: Circle
+        center: Player
+        radius: 2.5
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: E-Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: E-Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+      - name: E-High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    note: Previous action must be skill[hold=1] or a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg. Does not apply to low_plunge from skill[hold=1].
+      short: 0 for normal low plunge (default), 1 for short low plunge. The short version is 20 frames shorter.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    params:
+      hold: 0 for Tap (default), 1 for Hold.
+    hitbox:
+      - name: E-Initial
+        shape: Circle
+        center: Player
+        offset: [0.01, 1]
+        radius: 2.25
+        hitlag: {time: 0.04, scale: 0.01, defense_halt: true}
+
+      - name: E-1-Mirror
+        shape: Box
+        center: Player
+        box: [7, 3]
+
+      - name: E-2-Mirror-1
+        shape: Circle
+        center: Player
+        offset: [0, -0.1]
+        fan_angle: 180
+        radius: 5.5
+
+      - name: E-2-Mirror-2
+        shape: Circle
+        center: Player
+        offset: [0, -0.1]
+        fan_angle: 180
+        radius: 5.5
+
+      - name: E-3-Mirror-1
+        shape: Circle
+        center: Player
+        offset: [0, 4]
+        radius: 4
+
+      - name: E-3-Mirror-2
+        shape: Circle
+        center: Player
+        offset: [0, 4]
+        radius: 4
+
+      - name: E-3-Mirror-3
+        shape: Circle
+        center: Player
+        offset: [0, 4]
+        radius: 4
+
+  - name: burst
+    hitbox:
+      - name: Q
+        shape: Circle
+        center: Player
+        offset: [0, 7.1]
+        radius: 6.8

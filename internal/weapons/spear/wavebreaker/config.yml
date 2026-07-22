@@ -1,4 +1,6 @@
-package_name: wavebreaker
-genshin_id: 13416
-key: wavebreakersfin
-skip_data_func: true
+use: pipeline
+kind: weapon
+name: wavebreakersfin
+
+shortcuts:
+  - wavebreaker

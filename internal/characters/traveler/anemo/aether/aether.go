@@ -27,6 +27,5 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 }
 
 func init() {
-	core.RegisterCharFunc(keys.AetherAnemo, NewChar)
 	hacks.RegisterNOSpecialChar(keys.AetherAnemo)
 }

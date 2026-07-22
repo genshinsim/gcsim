@@ -1,3 +1,8 @@
-package_name: mitternachtswaltz
-genshin_id: 15412
-key: mitternachtswaltz
+use: pipeline
+kind: weapon
+name: mitternachtswaltz
+
+shortcuts:
+  - mitternacht
+  - mitternachts
+  - waltz

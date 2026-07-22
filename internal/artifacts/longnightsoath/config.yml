@@ -1,2 +1,6 @@
-key: longnightsoath
-set_id: 15039
+use: pipeline
+kind: artifact
+name: longnightsoath
+
+shortcuts:
+  - lno

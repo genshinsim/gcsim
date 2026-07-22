@@ -1,3 +1,12 @@
-package_name: skyward
-genshin_id: 13502
-key: skywardspine
+use: pipeline
+kind: weapon
+name: skywardspine
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Skyward Spine
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Box
+        center: GlobalValue
+        box: [0.1, 0.1]

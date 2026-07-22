@@ -3,20 +3,17 @@ package swordofdescension
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/catalog"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.SwordOfDescension, NewWeapon)
-}
 
 // Descension
 // This weapon's effect is only applied on the following platform(s):
@@ -48,7 +45,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		return w, nil
 	}
 
-	if char.Base.Key < keys.TravelerDelim {
+	// TODO: this doesn't need to read catalog/model directly
+	if catalog.CharacterMap[char.Base.Key].Region == model.AssocType_ASSOC_TYPE_MAINACTOR {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("swordofdescension", -1),
 			AffectedStat: attributes.NoStat,

@@ -9,14 +9,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.KagotsurubeIsshin, NewWeapon)
-}
 
 // When a Normal, Charged, or Plunging Attack hits an opponent, it will whip up a
 // Hewing Gale, dealing AoE DMG equal to 180% of ATK and increasing ATK by 15% for

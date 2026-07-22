@@ -1,3 +1,6 @@
-package_name: nagamasa
-genshin_id: 12414
-key: katsuragikirinagamasa
+use: pipeline
+kind: weapon
+name: katsuragikirinagamasa
+
+shortcuts:
+  - nagamasa

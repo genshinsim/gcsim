@@ -1,2 +1,7 @@
-key: vourukashasglow
-set_id: 15030
+use: pipeline
+kind: artifact
+name: vourukashasglow
+
+shortcuts:
+  - vg
+  - vourukasha

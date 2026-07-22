@@ -1,3 +1,6 @@
-package_name: festering
-genshin_id: 11413
-key: festeringdesire
+use: pipeline
+kind: weapon
+name: festeringdesire
+
+shortcuts:
+  - festering

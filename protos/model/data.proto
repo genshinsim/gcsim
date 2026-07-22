@@ -1,26 +1,27 @@
 syntax = "proto3";
 package model;
-option go_package = "github.com/genshinsim/gcsim/pkg/model";
 
 import "protos/model/enums.proto";
+
+option go_package = "github.com/genshinsim/gcsim/pkg/model";
 
 message AvatarDataMap {
   map<string, AvatarData> data = 1 [ json_name = "data" ];
 }
 
 message AvatarData {
-  int32 id = 1 [ json_name = "id" ];
-  int32 sub_id = 2 [ json_name = "sub_id" ];
+  uint32 id = 1 [ json_name = "id" ];
+  uint32 sub_id = 2 [ json_name = "sub_id" ];
   string key = 3 [ json_name = "key" ];
   QualityType rarity = 4 [ json_name = "rarity" ];
   BodyType body = 5 [ json_name = "body" ];
-  ZoneType region = 6 [ json_name = "region" ];
-  Element element = 7 [ json_name = "element" ];
-  WeaponClass weapon_class = 8 [ json_name = "weapon_class" ];
+  AssocType region = 6 [ json_name = "region" ];
+  ElementType element = 7 [ json_name = "element" ];
+  WeaponType weapon_class = 8 [ json_name = "weapon_class" ];
   string icon_name = 9 [ json_name = "icon_name" ];
   AvatarStatsData stats = 10 [ json_name = "stats" ];
   AvatarSkillsData skill_details = 11 [ json_name = "skill_details" ];
-  int64 name_text_hash_map = 12 [ json_name = "name_text_hash_map " ];
+  uint32 name_text_hash_map = 12 [ json_name = "name_text_hash_map" ];
 }
 
 message AvatarStatsData {
@@ -30,39 +31,35 @@ message AvatarStatsData {
   double base_hp = 1 [ json_name = "base_hp" ];
   double base_atk = 2 [ json_name = "base_atk" ];
   double base_def = 3 [ json_name = "base_def" ];
-  AvatarCurveType hp_curve = 4 [ json_name = "hp_curve" ];
-  AvatarCurveType atk_curve = 5 [ json_name = "atk_curve" ];
-  AvatarCurveType def_cruve = 6 [ json_name = "def_cruve" ];
+  GrowCurveType hp_curve = 4 [ json_name = "hp_curve" ];
+  GrowCurveType atk_curve = 5 [ json_name = "atk_curve" ];
+  GrowCurveType def_cruve = 6 [ json_name = "def_cruve" ];
   repeated PromotionData promo_data = 7 [ json_name = "promo_data" ];
   double element_mastery = 8 [ json_name = "element_mastery" ];
 }
 
 message AvatarSkillsData {
-  int32 skill = 1 [ json_name = "skill" ];
-  int32 burst = 2 [ json_name = "burst" ];
-  int32 attack = 3 [ json_name = "attack" ];
-  int32 a1 = 10 [ json_name = "a1" ];
-  int32 a4 = 11 [ json_name = "a4" ];
+  uint32 skill = 1 [ json_name = "skill" ];
+  uint32 burst = 2 [ json_name = "burst" ];
+  uint32 attack = 3 [ json_name = "attack" ];
+  uint32 a1 = 10 [ json_name = "a1" ];
+  uint32 a4 = 11 [ json_name = "a4" ];
   double burst_energy_cost = 4 [ json_name = "burst_energy_cost" ];
-  repeated AvatarSkillExcelIndexData attack_scaling = 5
-      [ json_name = "attack_scaling" ];
-  repeated AvatarSkillExcelIndexData skill_scaling = 6
-      [ json_name = "skill_scaling" ];
-  repeated AvatarSkillExcelIndexData burst_scaling = 7
-      [ json_name = "burst_scaling" ];
+  repeated AvatarSkillExcelIndexData attack_scaling = 5 [ json_name = "attack_scaling" ];
+  repeated AvatarSkillExcelIndexData skill_scaling = 6 [ json_name = "skill_scaling" ];
+  repeated AvatarSkillExcelIndexData burst_scaling = 7 [ json_name = "burst_scaling" ];
   repeated AvatarSkillExcelIndexData a1_scaling = 8 [ json_name = "a1_scaling" ];
   repeated AvatarSkillExcelIndexData a4_scaling = 9 [ json_name = "a4_scaling" ];
 }
 
 message AvatarSkillExcelIndexData {
-  int32 group_id = 1 [ json_name = "group_id" ];
-  int32 index = 2 [ json_name = "index" ]; // position in the param list
-  repeated AvatarSkillExcelLevelData level_data = 3
-      [ json_name = "level_data" ];
+  uint32 group_id = 1 [ json_name = "group_id" ];
+  uint32 index = 2 [ json_name = "index" ]; // position in the param list
+  repeated AvatarSkillExcelLevelData level_data = 3 [ json_name = "level_data" ];
 }
 
 message AvatarSkillExcelLevelData {
-  int32 level = 1 [ json_name = "level" ];
+  uint32 level = 1 [ json_name = "level" ];
   double value = 2 [ json_name = "value" ];
 }
 
@@ -71,14 +68,13 @@ message WeaponDataMap {
 }
 
 message WeaponData {
-  int32 id = 1 [ json_name = "id" ];
+  uint32 id = 1 [ json_name = "id" ];
   string key = 2 [ json_name = "key" ];
-  int32 rarity = 3
-      [ json_name = "rarity" ]; // for whatever reason weapon rarity is a number
-  WeaponClass weapon_class = 4 [ json_name = "weapon_class" ];
+  uint32 rarity = 3 [ json_name = "rarity" ]; // for whatever reason weapon rarity is a number
+  WeaponType weapon_class = 4 [ json_name = "weapon_class" ];
   string image_name = 5 [ json_name = "image_name" ];
   WeaponStatsData base_stats = 6 [ json_name = "base_stats" ];
-  int64 name_text_hash_map = 7 [ json_name = "name_text_hash_map " ];
+  uint32 name_text_hash_map = 7 [ json_name = "name_text_hash_map" ];
 }
 
 message WeaponStatsData {
@@ -87,9 +83,9 @@ message WeaponStatsData {
 }
 
 message WeaponProp {
-  StatType prop_type = 1 [ json_name = "prop_type" ];
+  FightPropType prop_type = 1 [ json_name = "prop_type" ];
   double initial_value = 2 [ json_name = "initial_value" ];
-  WeaponCurveType curve = 3 [ json_name = "curve" ];
+  GrowCurveType curve = 3 [ json_name = "curve" ];
 }
 
 message ArtifactDataMap {
@@ -97,8 +93,8 @@ message ArtifactDataMap {
 }
 
 message ArtifactData {
-  int64 set_id = 1 [ json_name = "id" ];
-  int64 text_map_id = 2 [ json_name = "text_map_id" ];
+  uint32 set_id = 1 [ json_name = "id" ];
+  uint32 text_map_id = 2 [ json_name = "text_map_id" ];
   string key = 3 [ json_name = "key" ];
   ArtifactImageData image_names = 4 [ json_name = "image_names" ];
 }
@@ -112,25 +108,25 @@ message ArtifactImageData {
 }
 
 message PromotionData {
-  int32 max_level = 1 [ json_name = "max_level" ];
+  uint32 max_level = 1 [ json_name = "max_level" ];
   repeated PromotionAddProp add_props = 2 [ json_name = "add_props" ];
 }
 
 message PromotionAddProp {
-  StatType prop_type = 1 [ json_name = "prop_type" ];
+  FightPropType prop_type = 1 [ json_name = "prop_type" ];
   double value = 2 [ json_name = "value" ];
 }
 
 message MonsterData {
-  int32 id = 1 [ json_name = "id" ];
+  uint32 id = 1 [ json_name = "id" ];
   string key = 2 [ json_name = "key" ];
   MonsterStatsData base_stats = 3 [ json_name = "base_stats" ];
-  int64 name_text_hash_map = 4 [ json_name = "name_text_hash_map" ];
+  uint32 name_text_hash_map = 4 [ json_name = "name_text_hash_map" ];
 }
 
 message MonsterStatsData {
   double base_hp = 1 [ json_name = "base_hp" ];
-  MonsterCurveType hp_curve = 2 [ json_name = "hp_curve" ];
+  GrowCurveType hp_curve = 2 [ json_name = "hp_curve" ];
   MonsterResistData resist = 3 [ json_name = "resist" ];
   double freeze_resist = 4 [ json_name = "freeze_resist" ];
   repeated MonsterHPDrop hp_drop = 5 [ json_name = "hp_drop" ];
@@ -148,6 +144,6 @@ message MonsterResistData {
 }
 
 message MonsterHPDrop {
-  int32 drop_id = 1 [ json_name = "drop_id" ];
+  uint32 drop_id = 1 [ json_name = "drop_id" ];
   double hp_percent = 2 [ json_name = "hp_percent" ];
 }

@@ -1,4 +1,165 @@
-package_name: "lumine"
-genshin_id: 10000007
-sub_id: 704
-key: "lumineanemo"
+use: pipeline
+kind: character
+name: lumineanemo
+
+override:
+  id: 10000007
+  depot: 704
+
+shortcuts:
+  - traveleranemo
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1S7cJszsMoQF6ShCvA7hMjiXMuOCoDRwgW1rseP0uC8k/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/VaIaa4MW9eI
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1QCtYnC_qdrCYwN5qDJLYYGuvx81z9fTGNzPdZ8H4nrU/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/t6dhmLD6rf0
+      video_credit: Kolibri#7675
+
+abilities:
+  - name: default
+    params:
+      base_atk_buff: 0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line.
+      skirk_story_buff: 0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line.
+
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1.6
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Box
+        center: Player
+        box: [1.4, 2.2]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N3
+        shape: Circle
+        center: Player
+        offset: [0, 0.7]
+        radius: 1.5
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: N4
+        shape: Circle
+        center: Player
+        offset: [0, 0.7]
+        radius: 1.5
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: N5
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1.6
+        hitlag: {time: 0.1, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA-1
+        shape: Circle
+        center: Player
+        radius: 2.2
+
+      - name: CA-2
+        shape: Circle
+        center: Player
+        radius: 2.2
+
+  - name: skill
+    params:
+      hold: 0 for Tap (default), 1 for Hold.
+      hold_ticks: Number of ticks for Hold E. Default 6, maximum 6. Only works if hold = 1.
+    hitbox:
+      - name: E-Tap-InitialStorm
+        shape: Circle
+        center: Player
+        fan_angle: 100
+        radius: 6
+
+      - name: E-Tap-InitialStorm-AdditionalElement
+        shape: Circle
+        center: Player
+        fan_angle: 100
+        radius: 6
+
+      - name: E-Tap-MaxStorm
+        shape: Circle
+        center: Player
+        fan_angle: 100
+        radius: 6
+
+      - name: E-Tap-MaxStorm-AdditionalElement
+        shape: Circle
+        center: Player
+        fan_angle: 100
+        radius: 6
+
+      - name: E-Hold-InitialCutting
+        shape: Circle
+        center: Player
+        offset: [0, 1.2]
+        radius: 1.7
+
+      - name: E-Hold-InitialCutting-AdditonalElement
+        shape: Circle
+        center: Player
+        offset: [0, 1.2]
+        radius: 1.7
+
+      - name: E-Hold-MaxCutting
+        shape: Circle
+        center: Player
+        offset: [0, 1.2]
+        radius: 3.6
+
+      - name: E-Hold-MaxCutting-AdditionalElement
+        shape: Circle
+        center: Player
+        offset: [0, 1.2]
+        radius: 3.6
+
+      - name: E-AbsorbCheck
+        shape: Circle
+        center: Player
+        offset: [0, 1.2]
+        radius: 3
+
+  - name: burst
+    hitbox:
+      - name: Q-Tornado
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -1.5]
+        box: [3, 3]
+
+      - name: Q-AdditionalElement
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -1]
+        box: [2.5, 2.5]
+
+      - name: Q-AbsorbCheck
+        shape: Box
+        center: Player
+        offset: [0, -1.5]
+        box: [2.5, 2.5]
+
+  - name: asc
+    hitbox:
+      - name: A1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+  - name: walk
+    note: No action followed by walk has proper frames.

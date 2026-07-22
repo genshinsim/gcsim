@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type WeaponClass int
@@ -63,5 +62,4 @@ type WeaponProfile struct {
 type Weapon interface {
 	SetIndex(int)
 	Init() error
-	Data() *model.WeaponData
 }

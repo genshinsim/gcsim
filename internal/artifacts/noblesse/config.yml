@@ -1,2 +1,7 @@
-key: noblesseoblige
-set_id: 15007
+use: pipeline
+kind: artifact
+name: noblesseoblige
+
+shortcuts:
+  - 'no'
+  - noblesse

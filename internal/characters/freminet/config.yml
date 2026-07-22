@@ -1,44 +1,184 @@
-package_name: freminet
-genshin_id: 10000085
-key: freminet
-action_param_keys:
-    low_plunge:
-        - param: "collision"
-    high_plunge:
-        - param: "collision"
-skill_data_mapping:
-    attack:
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        attack_4:
-            - 3 # 4-Hit DMG|{param3:F1P}
-        collision:
-            - 8 # Plunge DMG|{param6:F1P}
-        lowPlunge:
-            - 9 # Low/High Plunge DMG|{param7:P}/{param8:P}
-        highPlunge:
-            - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
-    skill:
-        skillAddNA:
-            - 2 # Frost DMG|{param2:F1P}
-        skillBreath:
-            - 1 # Spiritbreath Thorn DMG|{param1:F1P}
-        skillPressureCryo:
-            - 3 # Level 0 Shattering Pressure DMG|{param3:F1P}
-            - 4 # Level 1 Shattering Pressure DMG|{param4:F1P} Cryo + {param5:F1P} Physical
-            - 6 # Level 2 Shattering Pressure DMG|{param6:F1P} Cryo + {param7:F1P} Physical
-            - 8 # Level 3 Shattering Pressure DMG|{param8:F1P} Cryo + {param9:F1P} Physical
-        skillPressurePhys:
-            - 5 # Level 1 Shattering Pressure DMG|{param4:F1P} Cryo + {param5:F1P} Physical
-            - 7 # Level 2 Shattering Pressure DMG|{param6:F1P} Cryo + {param7:F1P} Physical
-            - 9 # Level 3 Shattering Pressure DMG|{param8:F1P} Cryo + {param9:F1P} Physical
-            - 10 # Level 4 Shattering Pressure DMG|{param10:F1P}
-        skillThrust:
-            - 0 # Upward Thrust DMG|{param0:F1P}
-    burst:
-        burst:
-            - 0 # Skill DMG|{param0:F1P}
+use: pipeline
+kind: character
+name: freminet
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skillThrust: skill(Upward Thrust DMG)
+  - skillBreath: skill(Spiritbreath Thorn DMG)
+  - skillAddNA: skill(Frost DMG)
+  - skillPressureCryo:
+      - skill(Level 0 Shattering Pressure DMG)
+      - skill(Level 1 Shattering Pressure DMG)
+      - skill(Level 2 Shattering Pressure DMG)
+      - skill(Level 3 Shattering Pressure DMG)
+  - skillPressurePhys:
+      - skill(Level 1 Shattering Pressure DMG|1)
+      - skill(Level 2 Shattering Pressure DMG|1)
+      - skill(Level 3 Shattering Pressure DMG|1)
+      - skill(Level 4 Shattering Pressure DMG)
+
+  - burst: burst(Skill DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1_uf2P0q9X19lAF4QG82_fz3QnphAbKi3MeZfcNUcPFw/edit?usp=sharing
+      count_credit: solo#8829
+      video: https://youtu.be/Ky-8k4DS0hQ
+      video_credit: solo#8829
+    - count: https://docs.google.com/spreadsheets/d/1HN27QpER7lhgWJr_t2HxsdnTc0i135lxqzLXhveEsD0/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/4eJgjaZ8pck
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1HN27QpER7lhgWJr_t2HxsdnTc0i135lxqzLXhveEsD0/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/DuS_sVD_dsc
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/16ZDmEBZOD4xeUcodxFJVuLC7IIqM9LGLilkct65mElg/edit?usp=sharing
+      count_credit: kolibri._.
+      video: https://youtu.be/v7zyi95e4hU
+      video_credit: kolibri._.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2.2
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2.2
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: N3
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [2, 3]
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: N4
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2.4
+        hitlag: {time: 0.09, scale: 0.01, defense_halt: true}
+
+  - name: charge
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    hitbox:
+      - name: E-UpwardThrust
+        shape: Circle
+        center: Player
+        offset: [0, 2]
+        radius: 2.5
+        hitlag: {time: 0.08, scale: 0.01}
+
+      - name: E-Aligned
+        shape: Circle
+        center: Player
+        offset: [0, 2]
+        radius: 2.5
+
+      - name: E-Lv.0
+        shape: Circle
+        center: Player
+        offset: [0, 2]
+        radius: 2.5
+        hitlag: {time: 0.1, scale: 0.01}
+
+      - name: E-Lv.1/2/3-Cryo
+        shape: Circle
+        center: Player
+        offset: [0, 2]
+        radius: 2.5
+        hitlag: {time: 0.1, scale: 0.01}
+
+      - name: E-Lv.1/2/3-Physical
+        shape: Circle
+        center: Player
+        offset: [0, 2]
+        radius: 2.5
+
+      - name: E-Lv.4
+        shape: Box
+        center: Player
+        offset: [0.5, 0.5]
+        box: [3, 7]
+        hitlag: {time: 0.09, scale: 0.01}
+
+      - name: E-Frost-N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2.2
+
+      - name: E-Frost-N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2.2
+
+      - name: E-Frost-N3
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [2, 3]
+
+      - name: E-Frost-N4
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2.4
+
+  - name: burst
+    hitbox:
+      - name: Q-Initial
+        shape: Circle
+        center: Player
+        radius: 5

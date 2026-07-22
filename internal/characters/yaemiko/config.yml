@@ -1,42 +1,128 @@
-package_name: yaemiko
-genshin_id: 10000058
-key: yaemiko
-key_var_name: YaeMiko
-action_param_keys:
-  attack:
-    - param: "travel"
-  low_plunge:
-    - param: "collision"
-  high_plunge:
-    - param: "collision"
-skill_data_mapping:
-  attack:
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}
-    charge:
-      - 3 # Charged Attack DMG|{param3:F1P}
-    collision:
-      - 5 # Plunge DMG|{param6:F1P}
-    lowPlunge:
-      - 6 # Low/High Plunge DMG|{param7:P}/{param8:P}
-    highPlunge:
-      - 7 # Low/High Plunge DMG|{param7:P}/{param8:P}
-  skill:
-    skill:
-      - 0 # Sesshou Sakura DMG: Level 1|{param0:F1P}
-      - 1 # Sesshou Sakura DMG: Level 2|{param1:F1P}
-      - 2 # Sesshou Sakura DMG: Level 3|{param2:F1P}
-      - 3 # Sesshou Sakura DMG: Level 4|{param3:F1P}
-  burst:
-    burst:
-      - 0 # Skill DMG|{param0:P}
-      - 1 # Tenko Thunderbolt DMG|{param1:P}
-icd_groups:
-  - group_name: ICDGroupYaeCharged
-    reset_timer: 30
-    ele_app_sequence: [1, 0, 0, 0, 0, 0, 0]
-    damage_sequence: [1, 0, 0, 0, 0, 0, 0]
+use: pipeline
+kind: character
+name: yaemiko
+
+override:
+  icd_group:
+    YaeCharged:
+      name: Yae_ExtraAttack
+
+shortcuts:
+  - yae
+
+combat:
+  icd_groups:
+    - YaeCharged
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skill:
+      - 'skill(Sesshou Sakura DMG: Level 1)'
+      - 'skill(Sesshou Sakura DMG: Level 2)'
+      - 'skill(Sesshou Sakura DMG: Level 3)'
+      - 'skill(Sesshou Sakura DMG: Level 4)'
+
+  - burst:
+      - burst(Skill DMG)
+      - burst(Tenko Thunderbolt DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1G8_pp_NFtM1wteo_xRZaG-lTcS3NZ1vADVmjFFp_SOk/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/UUcbZDh4oIA
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1zCwdd6_KYFqMD4OQ_llGLdDshoZTu_1pmAMysxGDQvs/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/KlgZlck5kQQ?t=1644
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/16ZDmEBZOD4xeUcodxFJVuLC7IIqM9LGLilkct65mElg/edit?usp=sharing
+      count_credit: kolibri._.
+      video: https://youtu.be/xh7HAIYruI8
+      video_credit: kolibri._.
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: Player
+        box: [2, 8]
+
+      - name: N2
+        shape: Box
+        center: Player
+        box: [2, 8]
+
+      - name: N3
+        shape: Box
+        center: Player
+        box: [2, 8]
+
+  - name: charge
+    hitbox:
+      - name: CA
+        note: 'This is a moving hitbox. It moves at 1.65m in Y direction per attack and starts at Y: 1.65m.'
+        shape: Box
+        center: Player
+        box: [2, 2]
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        radius: 1.5
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        radius: 3.5
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    hitbox:
+      - name: E
+        note: E has a detection area of 12.5/20m (C2) around the position of this hitbox.
+        shape: Circle
+        center: Player
+        radius: 0.5
+
+  - name: burst
+    hitbox:
+      - name: Q-Initial
+        shape: Circle
+        center: PrimaryTarget
+        radius: 7
+
+      - name: Q-TenkoThunderbolt
+        shape: Circle
+        center: PrimaryTarget
+        radius: 7
+
+  - name: walk
+    note: No action followed by walk (except low_plunge and high_plunge) has proper frames.

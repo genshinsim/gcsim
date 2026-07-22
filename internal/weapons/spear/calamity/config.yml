@@ -1,3 +1,6 @@
-package_name: calamity
-genshin_id: 13507
-key: calamityqueller
+use: pipeline
+kind: weapon
+name: calamityqueller
+
+shortcuts:
+  - calamity

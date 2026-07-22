@@ -15,10 +15,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-func init() {
-	core.RegisterSetFunc(keys.NoblesseOblige, NewSet)
-}
-
 type Set struct {
 	core              *core.Core
 	Index             int

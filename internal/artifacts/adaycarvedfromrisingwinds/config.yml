@@ -1,2 +1,6 @@
-key: adaycarvedfromrisingwinds
-set_id: 15044
+use: pipeline
+kind: artifact
+name: adaycarvedfromrisingwinds
+
+shortcuts:
+  - risingwinds

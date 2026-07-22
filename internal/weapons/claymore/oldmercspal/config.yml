@@ -1,4 +1,3 @@
-package_name: oldmercspal
-genshin_id: 12201
-key: oldmercspal
-skip_data_func: true
+use: pipeline
+kind: weapon
+name: oldmercspal

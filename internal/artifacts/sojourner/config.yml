@@ -1,2 +1,6 @@
-key: resolutionofsojourner
-set_id: 10001
+use: pipeline
+kind: artifact
+name: resolutionofsojourner
+
+shortcuts:
+  - sojourner

@@ -19,7 +19,7 @@ func (c *char) ReceiveHeal(hi *info.HealInfo, healAmt float64) float64 {
 	}
 
 	// amount is converted into bol
-	factor := healingBOL[c.TalentLvlSkill()]
+	factor := healingBOL
 	if c.Base.Ascension >= 4 {
 		factor = 1
 	}

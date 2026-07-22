@@ -51,7 +51,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(skillStateKey) {
 		return c.skillDash(p)
 	}
-	c.AddStatus(skillStateKey, skillStart+int(60*skillStateDuration[0]), true)
+	c.AddStatus(skillStateKey, skillStart+skillStateDuration*60, true)
 	c.QueueCharTask(c.c6skill, 0)
 	c.SetCDWithDelay(action.ActionSkill, skillCD, skillStart)
 
@@ -79,7 +79,7 @@ func (c *char) skillDash(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) gainBOLOnAttack() {
-	c.ModifyHPDebtByRatio(skillBOLGain[c.TalentLvlSkill()])
+	c.ModifyHPDebtByRatio(skillBOLGain)
 }
 
 func (c *char) skillDashNoBOL(_ map[string]int) (action.Info, error) {
@@ -129,7 +129,7 @@ func (c *char) skillDashFullBOL(_ map[string]int) (action.Info, error) {
 	}
 
 	c.QueueCharTask(func() {
-		c.skillHeal(skillLungeFullBOLHeal[0], "Impale the Night (100%+ BoL)")
+		c.skillHeal(skillLungeFullBOLHeal, "Impale the Night (100%+ BoL)")
 	}, skillHealFrame)
 
 	if c.Base.Cons >= 6 && c.c6Stacks > 0 {
@@ -167,7 +167,7 @@ func (c *char) skillDashRegular(_ map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(ai, ap, skillDashHitmark, skillDashHitmark, c.particleCB)
 
 	c.QueueCharTask(func() {
-		c.skillHeal(skillLungeLowBOLHeal[0], "Impale the Night (<100% BoL)")
+		c.skillHeal(skillLungeLowBOLHeal, "Impale the Night (<100% BoL)")
 	}, skillHealFrame)
 
 	return action.Info{

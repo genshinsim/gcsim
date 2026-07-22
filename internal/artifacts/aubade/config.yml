@@ -1,2 +1,7 @@
-key: aubadeofmorningstarandmoon
-set_id: 15043
+use: pipeline
+kind: artifact
+name: aubadeofmorningstarandmoon
+
+shortcuts:
+  - aubade
+  - aubadeofmorningstar

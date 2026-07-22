@@ -1,46 +1,170 @@
-package_name: qiqi
-genshin_id: 10000035
-key: qiqi
-skill_data_mapping:
-    attack:
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}+{param2:F1P}
-            - 2 # 3-Hit DMG|{param2:F1P}+{param2:F1P}
-        attack_4:
-            - 3 # 4-Hit DMG|{param3:F1P}+{param3:F1P}
-            - 3 # 4-Hit DMG|{param3:F1P}+{param3:F1P}
-        attack_5:
-            - 4 # 5-Hit DMG|{param4:F1P}
-        charge:
-            - 5 # Charged Attack DMG|{param5:F1P}+{param5:F1P}
-            - 5 # Charged Attack DMG|{param5:F1P}+{param5:F1P}
-        collision:
-            - 7 # Plunge DMG|{param7:F1P}
-        lowPlunge:
-            - 8 # Low/High Plunge DMG|{param8:P}/{param9:P}
-        highPlunge:
-            - 9 # Low/High Plunge DMG|{param8:P}/{param9:P}
-    skill:
-        skillDmgCont:
-            - 4 # Herald of Frost DMG|{param4:F1P}
-        skillHealContFlat:
-            - 3 # Continuous Regeneration|{param2:F2P} ATK+{param3:I}
-        skillHealContPer:
-            - 2 # Continuous Regeneration|{param2:F2P} ATK+{param3:I}
-        skillHealOnHitFlat:
-            - 1 # Regeneration on Hit|{param0:F2P} ATK+{param1:I}
-        skillHealOnHitPer:
-            - 0 # Regeneration on Hit|{param0:F2P} ATK+{param1:I}
-        skillInitialDmg:
-            - 7 # Skill DMG|{param7:P}
-    burst:
-        burstDmg:
-            - 2 # Skill DMG|{param2:P}
-        burstHealFlat:
-            - 1 # Healing|{param0:F1P} ATK+{param1:I}
-        burstHealPer:
-            - 0 # Healing|{param0:F1P} ATK+{param1:I}
+use: pipeline
+kind: character
+name: qiqi
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG)
+      - - attack(4-Hit DMG)
+        - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+  - charge:
+      - attack(Charged Attack DMG)
+      - attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skillHealOnHitPer: skill(Regeneration on Hit)
+  - skillHealOnHitFlat: skill(Regeneration on Hit|1)
+  - skillHealContPer: skill(Continuous Regeneration)
+  - skillHealContFlat: skill(Continuous Regeneration|1)
+  - skillDmgCont: skill(Herald of Frost DMG)
+  - skillInitialDmg: skill(Skill DMG)
+
+  - burstHealPer: burst(Healing)
+  - burstHealFlat: burst(Healing|1)
+  - burstDmg: burst(Skill DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1uS_n16mlfdfzjBiVG3w6TmR9H7YqSSFOoyox_9bn-Kk/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/56yh-6WqN-I
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1uS_n16mlfdfzjBiVG3w6TmR9H7YqSSFOoyox_9bn-Kk/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/tb1bGGVNJoA?t=68
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1zCwdd6_KYFqMD4OQ_llGLdDshoZTu_1pmAMysxGDQvs/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/KlgZlck5kQQ?t=1159
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1hVAGm-h3aVDwWuc7GzGyAjvpnUPZBNK2w1tsyije7ZQ/edit?usp=sharing
+      count_credit: ectobiologist
+      video: https://youtu.be/ZiDn8452bUc
+      video_credit: ectobiologist
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.8]
+        radius: 1.2
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Box
+        center: Player
+        box: [1.4, 2.2]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N3-1
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        fan_angle: 30
+        radius: 1.6
+        hitlag: {time: 0.03, scale: 0.05, defense_halt: true}
+
+      - name: N3-2
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        radius: 1.6
+        hitlag: {time: 0.03, scale: 0.05, defense_halt: true}
+
+      - name: N4-1
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        radius: 1.6
+        hitlag: {time: 0.03, scale: 0.05, defense_halt: true}
+
+      - name: N4-2
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        radius: 1.6
+        hitlag: {time: 0.03, scale: 0.05, defense_halt: true}
+
+      - name: N5
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 2.2
+        hitlag: {time: 0.12, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA-1
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2
+
+      - name: CA-2
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 2.8
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    hitbox:
+      - name: E-Skill
+        shape: Circle
+        center: Player
+        radius: 2.5
+        hitlag: {time: 0.05, scale: 0.05, defense_halt: true}
+
+      - name: E-HeraldOfFrost
+        shape: Circle
+        center: Player
+        radius: 2.5
+        hitlag: {time: 0.05, scale: 0.05, defense_halt: true, deployable: true}
+
+  - name: burst
+    hitbox:
+      - name: Q-ElementalBurst
+        shape: Circle
+        center: Player
+        radius: 7
+
+  - name: walk
+    note: No action followed by walk (except low_plunge and high_plunge) has proper frames.

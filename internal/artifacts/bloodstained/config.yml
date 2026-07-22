@@ -1,2 +1,7 @@
-key: bloodstainedchivalry
-set_id: 15008
+use: pipeline
+kind: artifact
+name: bloodstainedchivalry
+
+shortcuts:
+  - bloodstained
+  - bsc

@@ -9,16 +9,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
 const icdKey = "sequence-of-solitude-icd"
-
-func init() {
-	core.RegisterWeaponFunc(keys.SequenceOfSolitude, NewWeapon)
-}
 
 type Weapon struct {
 	Index int

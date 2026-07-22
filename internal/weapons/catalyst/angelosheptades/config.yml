@@ -1,3 +1,7 @@
-package_name: angelosheptades
-genshin_id: 14523
-key: angelosheptades
+use: pipeline
+kind: weapon
+name: angelosheptades
+
+shortcuts:
+  - angelos
+  - heptades

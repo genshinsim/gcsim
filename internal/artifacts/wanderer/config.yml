@@ -1,2 +1,7 @@
-key: wandererstroupe
-set_id: 15003
+use: pipeline
+kind: artifact
+name: wandererstroupe
+
+shortcuts:
+  - wanderers
+  - wt

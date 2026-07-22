@@ -1,16 +1,18 @@
 {
   "aquasimulacra": [
     {
-      "ability": "Aqua Simulacra Enemy Detection",
+      "ability": "-",
+      "name": "Aqua Simulacra Enemy Detection",
+      "note": "It looks for enemies within this hitbox.",
       "shape": "Circle",
       "center": "Player",
-      "radius": 8,
-      "notes": "It looks for enemies within this hitbox."
+      "radius": 8
     }
   ],
   "aquilafavonia": [
     {
-      "ability": "Aquila Favonia",
+      "ability": "-",
+      "name": "Aquila Favonia",
       "shape": "Circle",
       "center": "Player",
       "radius": 6
@@ -18,254 +20,283 @@
   ],
   "ashgravendrinkinghorn": [
     {
-      "ability": "Ash-Graven Drinking Horn",
+      "ability": "-",
+      "name": "Ash-Graven Drinking Horn",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 3,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "radius": 3
     }
   ],
   "crescentpike": [
     {
-      "ability": "Crescent Pike",
+      "ability": "-",
+      "name": "Crescent Pike",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Single",
-      "center": "GlobalValue",
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "center": "GlobalValue"
     }
   ],
   "deathmatch": [
     {
-      "ability": "Deathmatch Enemy Detection",
+      "ability": "-",
+      "name": "Deathmatch Enemy Detection",
+      "note": "It looks for enemies within this hitbox.",
       "shape": "Circle",
       "center": "Player",
-      "radius": 8,
-      "notes": "It looks for enemies within this hitbox."
+      "radius": 8
     }
   ],
   "debateclub": [
     {
-      "ability": "Debate Club",
+      "ability": "-",
+      "name": "Debate Club",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 3,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "radius": 3
     }
   ],
   "dragonspinespear": [
     {
-      "ability": "Dragonspine Spear",
+      "ability": "-",
+      "name": "Dragonspine Spear",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 3,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "radius": 3
     }
   ],
   "endoftheline": [
     {
-      "ability": "End of the Line",
+      "ability": "-",
+      "name": "End of the Line",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 2.5,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "radius": 2.5
     }
   ],
   "eyeofperception": [
     {
-      "ability": "Eye of Perception Enemy Detection",
+      "ability": "-",
+      "name": "Eye of Perception Enemy Detection",
+      "note": "It looks for enemies within this hitbox. At the start, the center is Player and starting with the first bounce it's always the enemy that the Bolt is at.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 8,
-      "notes": "It looks for enemies within this hitbox. At the start, the center is Player and starting with the first bounce it's always the enemy that the Bolt is at."
+      "radius": 8
     },
     {
-      "ability": "Eye of Perception",
+      "ability": "-",
+      "name": "Eye of Perception",
+      "note": "Is done as a chain of attacks starting at the target hit (marking the target for 0.6s) and moving on to the closest enemy that is not marked yet if such an enemy exists.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 0.6,
-      "notes": "Is done as a chain of attacks starting at the target hit (marking the target for 0.6s) and moving on to the closest enemy that is not marked yet if such an enemy exists."
+      "radius": 0.6
     }
   ],
   "filletblade": [
     {
-      "ability": "Fillet Blade",
+      "ability": "-",
+      "name": "Fillet Blade",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Single",
-      "center": "GlobalValue",
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "center": "GlobalValue"
     }
   ],
   "frostbearer": [
     {
-      "ability": "Frostbearer",
+      "ability": "-",
+      "name": "Frostbearer",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 3,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "radius": 3
     }
   ],
   "halberd": [
     {
-      "ability": "Halberd",
+      "ability": "-",
+      "name": "Halberd",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Single",
-      "center": "GlobalValue",
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "center": "GlobalValue"
     }
   ],
   "kagotsurubeisshin": [
     {
-      "ability": "Kagotsurube Isshin",
+      "ability": "-",
+      "name": "Kagotsurube Isshin",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 3,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "radius": 3
     }
   ],
   "kingssquire": [
     {
-      "ability": "King's Squire Enemy Detection",
+      "ability": "-",
+      "name": "King's Squire Enemy Detection",
+      "note": "It looks for the closest enemy within this hitbox.",
       "shape": "Circle",
       "center": "Player",
-      "radius": 15,
-      "notes": "It looks for the closest enemy within this hitbox."
+      "radius": 15
     },
     {
-      "ability": "King's Squire",
+      "ability": "-",
+      "name": "King's Squire",
+      "note": "Spawns on the closest enemy found if such an enemy exists.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 1.6,
-      "notes": "Spawns on the closest enemy found if such an enemy exists."
+      "radius": 1.6
     }
   ],
   "luxurioussealord": [
     {
-      "ability": "Luxurious Sea-Lord",
+      "ability": "-",
+      "name": "Luxurious Sea-Lord",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 3,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "radius": 3
     }
   ],
   "messenger": [
     {
-      "ability": "Messenger",
+      "ability": "-",
+      "name": "Messenger",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Single",
-      "center": "GlobalValue",
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "center": "GlobalValue"
     }
   ],
   "prototypearchaic": [
     {
-      "ability": "Prototype Archaic",
+      "ability": "-",
+      "name": "Prototype Archaic",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 3,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "radius": 3
     }
   ],
   "scionoftheblazingsun": [
     {
-      "ability": "Scion of the Blazing Sun",
+      "ability": "-",
+      "name": "Scion of the Blazing Sun",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 3.5,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "radius": 3.5
     }
   ],
   "sequenceofsolitude": [
     {
-      "ability": "Sequence of Solitude",
+      "ability": "-",
+      "name": "Sequence of Solitude",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 3,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "radius": 3
     }
   ],
   "skywardatlas": [
     {
-      "ability": "Skyward Atlas Enemy Detection",
+      "ability": "-",
+      "name": "Skyward Atlas Enemy Detection",
+      "note": "It looks for enemies within this hitbox. At every tick: Spawn an attack on the closest one.",
       "shape": "Circle",
       "center": "Player",
-      "radius": 15,
-      "notes": "It looks for enemies within this hitbox. At every tick: Spawn an attack on the closest one."
+      "radius": 15
     },
     {
-      "ability": "Skyward Atlas",
+      "ability": "-",
+      "name": "Skyward Atlas",
+      "note": "Spawns on the closest enemy found if such an enemy exists.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 1.2,
-      "notes": "Spawns on the closest enemy found if such an enemy exists."
+      "radius": 1.2
     }
   ],
   "skywardblade": [
     {
-      "ability": "Skyward Blade",
+      "ability": "-",
+      "name": "Skyward Blade",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Single",
-      "center": "GlobalValue",
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "center": "GlobalValue"
     }
   ],
   "skywardharp": [
     {
-      "ability": "Skyward Harp",
+      "ability": "-",
+      "name": "Skyward Harp",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 3,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "radius": 3
     }
   ],
   "skywardpride": [
     {
-      "ability": "Skyward Pride",
+      "ability": "-",
+      "name": "Skyward Pride",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Box",
       "center": "GlobalValue",
-      "boxX": 0.1,
-      "boxY": 0.1,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "box_x": 0.1,
+      "box_y": 0.1
     }
   ],
   "skywardspine": [
     {
-      "ability": "Skyward Spine",
+      "ability": "-",
+      "name": "Skyward Spine",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Box",
       "center": "GlobalValue",
-      "boxX": 0.1,
-      "boxY": 0.1,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "box_x": 0.1,
+      "box_y": 0.1
     }
   ],
   "snowtombedstarsilver": [
     {
-      "ability": "Snow-Tombed Starsilver",
+      "ability": "-",
+      "name": "Snow-Tombed Starsilver",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 3,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "radius": 3
     }
   ],
   "swordofdescension": [
     {
-      "ability": "Sword of Descension",
+      "ability": "-",
+      "name": "Sword of Descension",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 1.5,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "radius": 1.5
     }
   ],
   "theflute": [
     {
-      "ability": "The Flute",
+      "ability": "-",
+      "name": "The Flute",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 4,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "radius": 4
     }
   ],
   "theviridescenthunt": [
     {
-      "ability": "The Viridescent Hunt",
+      "ability": "-",
+      "name": "The Viridescent Hunt",
+      "note": "Spawns on the enemy that the weapon proc'd on.",
       "shape": "Circle",
       "center": "GlobalValue",
-      "radius": 3,
-      "notes": "Spawns on the enemy that the weapon proc'd on."
+      "radius": 3
     }
   ]
 }

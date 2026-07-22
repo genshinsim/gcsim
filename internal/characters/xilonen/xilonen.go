@@ -14,10 +14,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
-func init() {
-	core.RegisterCharFunc(keys.Xilonen, NewChar)
-}
-
 type char struct {
 	*tmpl.Character
 

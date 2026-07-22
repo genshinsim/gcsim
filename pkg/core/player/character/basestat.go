@@ -11,7 +11,7 @@ import (
 )
 
 func (c *CharWrapper) UpdateBaseStats() error {
-	data := c.Data()
+	data := catalog.CharacterMap[c.Base.Key]
 	if data == nil {
 		return fmt.Errorf("unexpected nil char data for %v", c.Base.Key)
 	}
@@ -25,7 +25,7 @@ func (c *CharWrapper) UpdateBaseStats() error {
 	asc := AvatarAsc(c.Base.MaxLevel, data)
 	c.Base.Ascension = asc
 
-	wdata := c.Equip.Weapon.Data()
+	wdata := catalog.WeaponMap[c.Weapon.Key]
 	if wdata == nil {
 		return fmt.Errorf("unexpected nil weapon data for %v", c.Weapon.Key)
 	}
@@ -74,9 +74,9 @@ func AvatarBaseStat(char info.CharacterBase, data *model.AvatarData) ([]float64,
 	res := make([]float64, attributes.EndStatType)
 
 	lvl := min(max(char.Level-1, 0), 99)
-	res[attributes.BaseHP] = data.Stats.BaseHp * catalog.AvatarGrowCurveByLvl[lvl][data.Stats.HpCurve]
-	res[attributes.BaseATK] = data.Stats.BaseAtk * catalog.AvatarGrowCurveByLvl[lvl][data.Stats.AtkCurve]
-	res[attributes.BaseDEF] = data.Stats.BaseDef * catalog.AvatarGrowCurveByLvl[lvl][data.Stats.DefCruve]
+	res[attributes.BaseHP] = data.Stats.BaseHp * catalog.GrowCurve[data.Stats.HpCurve][lvl]
+	res[attributes.BaseATK] = data.Stats.BaseAtk * catalog.GrowCurve[data.Stats.AtkCurve][lvl]
+	res[attributes.BaseDEF] = data.Stats.BaseDef * catalog.GrowCurve[data.Stats.DefCruve][lvl]
 	res[attributes.EM] = data.Stats.ElementMastery
 	// default er/cr/cd
 	res[attributes.ER] += 1
@@ -107,7 +107,7 @@ func WeaponBaseStat(weap info.WeaponProfile, data *model.WeaponData) ([]float64,
 	for _, v := range data.BaseStats.BaseProps {
 		s := info.ConvertProtoStat(v.PropType)
 		// TODO: should this be cumulative?
-		res[s] = v.InitialValue * catalog.WeaponGrowCurveByLvl[lvl][v.Curve]
+		res[s] = v.InitialValue * catalog.GrowCurve[v.Curve][lvl]
 	}
 
 	// calculate promotion bonus

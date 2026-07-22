@@ -1,3 +1,15 @@
-package_name: ashgraven
-genshin_id: 14427
-key: ashgravendrinkinghorn
+use: pipeline
+kind: weapon
+name: ashgravendrinkinghorn
+
+shortcuts:
+  - ashgraven
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Ash-Graven Drinking Horn
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 3

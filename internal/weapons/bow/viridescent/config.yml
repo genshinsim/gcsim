@@ -1,3 +1,16 @@
-package_name: viridescent
-genshin_id: 15409
-key: theviridescenthunt
+use: pipeline
+kind: weapon
+name: theviridescenthunt
+
+shortcuts:
+  - vhunt
+  - viridescenthunt
+
+abilities:
+  - name: default
+    hitbox:
+      - name: The Viridescent Hunt
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 3

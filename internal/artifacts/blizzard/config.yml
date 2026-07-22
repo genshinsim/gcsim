@@ -1,2 +1,7 @@
-key: blizzardstrayer
-set_id: 14001
+use: pipeline
+kind: artifact
+name: blizzardstrayer
+
+shortcuts:
+  - blizzard
+  - bs

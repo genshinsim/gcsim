@@ -1,3 +1,11 @@
-package_name: forestregalia
-genshin_id: 12417
-key: forestregalia
+use: pipeline
+kind: weapon
+name: forestregalia
+
+shortcuts:
+  - regalia
+
+abilities:
+  - name: default
+    params:
+      pickup_delay: Number of frames until the Leaf is picked up by the active character after every proc.

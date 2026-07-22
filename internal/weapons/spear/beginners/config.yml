@@ -1,4 +1,7 @@
-package_name: beginners
-genshin_id: 13101
-key: beginnersprotector
-skip_data_func: true
+use: pipeline
+kind: weapon
+name: beginnersprotector
+
+shortcuts:
+  - beginner
+  - beginners

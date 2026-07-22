@@ -1,2 +1,7 @@
-key: silkenmoonsserenade
-set_id: 15042
+use: pipeline
+kind: artifact
+name: silkenmoonsserenade
+
+shortcuts:
+  - silkenmoon
+  - sms

@@ -192,8 +192,7 @@ func (e *Enemy) tryHPDropParticle() (float64, attributes.Element) {
 		}
 		e.particleDropIndex++
 		// 22010017: 1 particle geo
-		diff := info.DropId - 22010000
-		if diff < 0 || diff >= 100 {
+		if info.DropId <= 22010000 || info.DropId >= 22010100 {
 			return 0, attributes.NoElement
 		}
 		count := (info.DropId / 10) % 10 // 2nd digit is particle count

@@ -1,47 +1,136 @@
-package_name: diona
-genshin_id: 10000039
-key: diona
-action_param_keys:
-    attack:
-        - param: "travel"
-    aim:
-        - param: "hold"
-        - param: "travel"
-        - param: "weakspot"
-    skill:
-        - param: "hold"
-        - param: "travel"
-skill_data_mapping:
-    attack:
-        aim:
-            - 6 # Aimed Shot|{param6:F1P}
-        auto_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        auto_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        auto_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        auto_4:
-            - 3 # 4-Hit DMG|{param3:F1P}
-        auto_5:
-            - 4 # 5-Hit DMG|{param4:F1P}
-        fullaim:
-            - 7 # Fully-Charged Aimed Shot|{param7:P}
-    skill:
-        paw:
-            - 0 # Icy Paw DMG|{param0:F1P} per Paw
-        pawShieldFlat:
-            - 2 # Base Shield DMG Absorption|{param1:F1P} Max HP+{param2:I}
-        pawShieldPer:
-            - 1 # Base Shield DMG Absorption|{param1:F1P} Max HP+{param2:I}
-        pawDur:
-            - 5 # Duration|{param5:F1}s per Paw
-    burst:
-        burst:
-            - 0 # Skill DMG|{param0:P}
-        burstDot:
-            - 1 # Continuous Field DMG|{param1:F1P}
-        burstHealFlat:
-            - 3 # HP Regeneration Over Time|{param2:F2P} Max HP+{param3:I}
-        burstHealPer:
-            - 2 # HP Regeneration Over Time|{param2:F2P} Max HP+{param3:I}
+use: pipeline
+kind: character
+name: diona
+
+talents:
+  - auto:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Fully-Charged Aimed Shot)
+
+  - paw: skill(Icy Paw DMG)
+  - pawShieldPer: skill(Base Shield DMG Absorption)
+  - pawShieldFlat: skill(Base Shield DMG Absorption|1)
+  - pawDur: skill(Duration)
+
+  - burst: burst(Skill DMG)
+  - burstDot: burst(Continuous Field DMG)
+  - burstHealPer: burst(HP Regeneration Over Time)
+  - burstHealFlat: burst(HP Regeneration Over Time|1)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/178Y92g19FlBIb1hIPHKvjByk_NztZ7854pjkkt4fEV4/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/iPphkHE5U5g
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/KUeL7pbUMvw
+      video_credit: xsylent
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/ndqKU1_tOFo
+      video_credit: xsylent
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/OGafm-ojvhM
+      video_credit: xsylent
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N4
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N5
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: aim
+    params:
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default).
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+  - name: skill
+    params:
+      hold: 0 for Tap (default), 1 for Hold.
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: E-Skill
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.5
+
+  - name: burst
+    hitbox:
+      - name: Q-Initial
+        note: Q/C4/C6 has a detection area of 7m around the position of this hitbox.
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
+
+      - name: Q-ContinuousField
+        note: Spawns at the Q-Initial position.
+        shape: Circle
+        center: GlobalValue
+        radius: 6.5
+
+  - name: walk
+    note: Only aim followed by walk has proper frames.

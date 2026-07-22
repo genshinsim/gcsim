@@ -1,64 +1,270 @@
-package_name: tartaglia
-genshin_id: 10000033
-key: tartaglia
-action_param_keys:
-  attack:
-    - param: "travel"
-  aim:
-    - param: "hold"
-    - param: "travel"
-    - param: "weakspot"
-  charge:
-    - param: "hitWeakPoint"
-icd_tags:
-  - ICDTagTartagliaRiptideFlash
-skill_data_mapping:
-  attack:
-    aim:
-      - 6 # Aimed Shot|{param6:F1P}
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}
-    attack_4:
-      - 3 # 4-Hit DMG|{param3:F1P}
-    attack_5:
-      - 4 # 5-Hit DMG|{param4:F1P}
-    attack_6:
-      - 5 # 6-Hit DMG|{param5:F1P}
-    fullaim:
-      - 7 # Fully-Charged Aimed Shot|{param7:P}
-    rtBurst:
-      - 9 # Riptide Burst DMG|{param9:F1P}
-    rtFlash:
-      - 8 # Riptide Flash DMG|{param8:F1P}×3
-  skill:
-    attackE_1:
-      - 1 # 1-Hit DMG|{param1:F1P}
-    attackE_2:
-      - 2 # 2-Hit DMG|{param2:F1P}
-    attackE_3:
-      - 3 # 3-Hit DMG|{param3:F1P}
-    attackE_4:
-      - 4 # 4-Hit DMG|{param4:F1P}
-    attackE_5:
-      - 5 # 5-Hit DMG|{param5:F1P}
-    attackE_6:
-      - 6 # 6-Hit DMG|{param6:F1P}+{param7:F1P}
-      - 7 # 6-Hit DMG|{param6:F1P}+{param7:F1P}
-    eCharge:
-      - 8 # Charged Attack DMG|{param8:F1P}+{param9:F1P}
-      - 9 # Charged Attack DMG|{param8:F1P}+{param9:F1P}
-    rtSlash:
-      - 8 # Charged Attack DMG|{param8:F1P}+{param9:F1P}
-    skill:
-      - 0 # Stance Change DMG|{param0:P}
-  burst:
-    burst:
-      - 2 # Skill DMG: Ranged|{param2:P}
-    meleeBurst:
-      - 0 # Skill DMG: Melee|{param0:P}
-    rtBlast:
-      - 1 # Riptide Blast DMG|{param1:P}
+use: pipeline
+kind: character
+name: tartaglia
+
+shortcuts:
+  - childe
+
+combat:
+  icd_tags:
+    - TartagliaRiptideFlash
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+      - attack(6-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Fully-Charged Aimed Shot)
+  - rtFlash: attack(Riptide Flash DMG)
+  - rtBurst: attack(Riptide Burst DMG)
+
+  - skill: skill(Stance Change DMG)
+  - attackE:
+      - skill(1-Hit DMG)
+      - skill(2-Hit DMG)
+      - skill(3-Hit DMG)
+      - skill(4-Hit DMG)
+      - skill(5-Hit DMG)
+      - - skill(6-Hit DMG)
+        - skill(6-Hit DMG|1)
+  - eCharge:
+      - skill(Charged Attack DMG)
+      - skill(Charged Attack DMG|1)
+  - rtSlash: skill(Charged Attack DMG)
+
+  - meleeBurst: 'burst(Skill DMG: Melee)'
+  - rtBlast: burst(Riptide Blast DMG)
+  - burst: 'burst(Skill DMG: Ranged)'
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1TDAItxWT_p76Z84EMpk2oIAN2etTWR0DiubllnWBnbc/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/FSE7NhQSbHE
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1TDAItxWT_p76Z84EMpk2oIAN2etTWR0DiubllnWBnbc/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/rpVDDq-F5ZM
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1TDAItxWT_p76Z84EMpk2oIAN2etTWR0DiubllnWBnbc/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/tb1bGGVNJoA?t=142
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1zCwdd6_KYFqMD4OQ_llGLdDshoZTu_1pmAMysxGDQvs/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/KlgZlck5kQQ?t=1357
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/tQoeGNjuvYY
+      video_credit: xsylent
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/XF78Z_SRAIc
+      video_credit: xsylent
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {deployable: true}
+
+      - name: N2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {deployable: true}
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {deployable: true}
+
+      - name: N4
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {deployable: true}
+
+      - name: N5
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {deployable: true}
+
+      - name: N6
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {deployable: true}
+
+      - name: E-N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.8]
+        fan_angle: 300
+        radius: 1.8
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: E-N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.8]
+        fan_angle: 270
+        radius: 1.8
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: E-N3
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        fan_angle: 300
+        radius: 2
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: E-N4
+        shape: Circle
+        center: Player
+        offset: [0, 0.9]
+        fan_angle: 300
+        radius: 2
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: E-N5
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        radius: 2.2
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: E-N6-1
+        shape: Box
+        center: Player
+        offset: [0, 0.3]
+        box: [2, 3.2]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: E-N6-2
+        shape: Circle
+        center: Player
+        offset: [0, 1.5]
+        radius: 2.2
+        hitlag: {time: 0.12, scale: 0.01, defense_halt: true}
+
+      - name: RiptideBurst
+        note: Spawns on targets affected Riptide on death.
+        shape: Circle
+        center: Player
+        radius: 5
+
+  - name: aim
+    note: Only available if not in skill state.
+    params:
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default).
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: RiptideFlash-Range
+        note: Spawns on target affected by Riptide that was hit by FullAim.
+        shape: Circle
+        center: GlobalValue
+        radius: 3
+
+  - name: charge
+    note: Only available if in skill state. Need to use attack right before charge.
+    params:
+      hitWeakPoint: Hit weakspot for Charge Attack in Melee mode. Default 0 (false), 1 for true.
+    hitbox:
+      - name: E-CA-1
+        shape: Circle
+        center: Player
+        radius: 2.2
+
+      - name: E-CA-2
+        shape: Circle
+        center: Player
+        radius: 2.2
+
+  - name: skill
+    hitbox:
+      - name: E-StanceChange
+        shape: Circle
+        center: Player
+        radius: 3
+
+      - name: RiptideSlash-Melee
+        note: Spawns on target affected by Riptide that was hit by a NA in E.
+        shape: Circle
+        center: GlobalValue
+        radius: 3
+
+  - name: burst
+    hitbox:
+      - name: Q-Melee
+        shape: Circle
+        center: Player
+        radius: 8
+
+      - name: Q-Ranged
+        shape: Circle
+        center: PrimaryTarget
+        radius: 6
+
+      - name: RiptideBlast
+        note: Spawns on all enemies affected by Riptide that were hit by Q-Melee.
+        shape: Circle
+        center: GlobalValue
+        radius: 5
+
+  - name: cons
+    hitbox:
+      - name: RiptideFlash-C4
+        note: Spawns on all enemies affected by Riptide.
+        shape: Circle
+        center: GlobalValue
+        radius: 3
+
+  - name: walk
+    note: Only aim followed by walk and walk followed by skill have proper frames.

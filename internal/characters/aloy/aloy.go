@@ -10,7 +10,6 @@ import (
 )
 
 func init() {
-	core.RegisterCharFunc(keys.Aloy, NewChar)
 	hacks.RegisterNOSpecialChar(keys.Aloy)
 }
 

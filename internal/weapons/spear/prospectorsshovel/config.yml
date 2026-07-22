@@ -1,3 +1,3 @@
-package_name: prospectorsshovel
-genshin_id: 13433
-key: prospectorsshovel
+use: pipeline
+kind: weapon
+name: prospectorsshovel

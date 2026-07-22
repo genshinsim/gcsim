@@ -1,2 +1,7 @@
-key: gladiatorsfinale
-set_id: 15001
+use: pipeline
+kind: artifact
+name: gladiatorsfinale
+
+shortcuts:
+  - glad
+  - gladiators

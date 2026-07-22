@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -14,10 +13,6 @@ const (
 	yaeTotemCount  = "totems"
 	yaeTotemStatus = "yae_oldest_totem_expiry"
 )
-
-func init() {
-	core.RegisterCharFunc(keys.YaeMiko, NewChar)
-}
 
 type char struct {
 	*tmpl.Character

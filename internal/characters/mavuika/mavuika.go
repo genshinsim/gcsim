@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -35,10 +34,6 @@ type char struct {
 	savedNormalCounter int
 	caState            ChargeState
 	canBikePlunge      bool
-}
-
-func init() {
-	core.RegisterCharFunc(keys.Mavuika, NewChar)
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {

@@ -11,7 +11,6 @@ import (
 )
 
 func init() {
-	core.RegisterCharFunc(keys.Ganyu, NewChar)
 	hacks.RegisterNOSpecialChar(keys.Ganyu)
 }
 

@@ -1,44 +1,194 @@
-package_name: xiangling
-genshin_id: 10000023
-key: xiangling
-action_param_keys:
-    skill:
-        - param: "a4_delay"
-    low_plunge:
-        - param: "collision"
-    high_plunge:
-        - param: "collision"
-skill_data_mapping:
-    attack:
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}+{param2:F1P}
-            - 2 # 3-Hit DMG|{param2:F1P}+{param2:F1P}
-        attack_4:
-            - 3 # 4-Hit DMG|{param3:F1P}*4
-            - 3 # 4-Hit DMG|{param3:F1P}*4
-            - 3 # 4-Hit DMG|{param3:F1P}*4
-            - 3 # 4-Hit DMG|{param3:F1P}*4
-        attack_5:
-            - 4 # 5-Hit DMG|{param4:F1P}
-        nc:
-            - 5 # Charged Attack DMG|{param5:P}
-        collision:
-            - 7 # Plunge DMG|{param6:F1P}
-        lowPlunge:
-            - 8 # Low/High Plunge DMG|{param7:P}/{param8:P}
-        highPlunge:
-            - 9 # Low/High Plunge DMG|{param7:P}/{param8:P}
-    skill:
-        guobaTick:
-            - 0 # Flame DMG|{param0:P}
-    burst:
-        pyronadoInitial:
-            - 0 # 1-Hit Swing DMG|{param0:F1P}
-            - 1 # 2-Hit Swing DMG|{param1:F1P}
-            - 2 # 3-Hit Swing DMG|{param2:P}
-        pyronadoSpin:
-            - 3 # Pyronado DMG|{param3:P}
+use: pipeline
+kind: character
+name: xiangling
+
+shortcuts:
+  - xl
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG)
+      - - attack(4-Hit DMG)
+        - attack(4-Hit DMG)
+        - attack(4-Hit DMG)
+        - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+  - nc: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - guobaTick: skill(Flame DMG)
+
+  - pyronadoInitial:
+      - burst(1-Hit Swing DMG)
+      - burst(2-Hit Swing DMG)
+      - burst(3-Hit Swing DMG)
+  - pyronadoSpin: burst(Pyronado DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1tWMpn1M34w0rCutUQ5cem28fIVoFVp7YjOXtIm2Rvow/edit?usp=sharing
+      count_credit: Kurt#5846
+      video: https://youtu.be/ibZji4bP7Gs
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1tWMpn1M34w0rCutUQ5cem28fIVoFVp7YjOXtIm2Rvow/edit?usp=sharing
+      count_credit: Kurt#5846
+      video: https://youtu.be/tb1bGGVNJoA?t=159
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/16ZDmEBZOD4xeUcodxFJVuLC7IIqM9LGLilkct65mElg/edit?usp=sharing
+      count_credit: charliex3000
+      video: https://youtu.be/WkPMCWW4NNs
+      video_credit: charliex3000
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Box
+        center: Player
+        box: [1.2, 3]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Box
+        center: Player
+        box: [1.6, 3.3]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N3-1
+        shape: Box
+        center: Player
+        box: [1.6, 3.3]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N3-2
+        shape: Box
+        center: Player
+        box: [1.2, 3.3]
+        hitlag: {scale: 0.01, defense_halt: true}
+
+      - name: N4-1
+        shape: Box
+        center: Player
+        box: [1.2, 3.3]
+        hitlag: {scale: 0.01, defense_halt: true}
+
+      - name: N4-2
+        shape: Box
+        center: Player
+        box: [1.2, 3.3]
+        hitlag: {scale: 0.01, defense_halt: true}
+
+      - name: N4-3
+        shape: Box
+        center: Player
+        box: [1.2, 3.3]
+        hitlag: {scale: 0.01, defense_halt: true}
+
+      - name: N4-4
+        shape: Box
+        center: Player
+        box: [1.2, 3.3]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N5
+        shape: Box
+        center: Player
+        box: [1.6, 3.3]
+        hitlag: {time: 0.09, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.8
+        hitlag: {scale: 0.01, defense_halt: true, deployable: true}
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    params:
+      a4_delay: Number of frames until the active character picks up the Chili Pepper (A4) relative to Guoba Expiry. A negative value indicates that it is not picked up. Default -1, maximum 600.
+    hitbox:
+      - name: E-Flame
+        shape: Circle
+        center: Player
+        fan_angle: 60
+        radius: 5
+
+      - name: E-Flame-A1
+        shape: Circle
+        center: Player
+        fan_angle: 60
+        radius: 6
+
+  - name: burst
+    hitbox:
+      - name: Q-Hit-1
+        shape: Circle
+        center: Player
+        radius: 2.5
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: Q-Hit-2
+        shape: Circle
+        center: Player
+        radius: 2.5
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: Q-Hit-3
+        shape: Circle
+        center: Player
+        radius: 3
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: Q-Pyronado
+        note: Pyronado mechanics (collision) are not properly implemented yet.
+        shape: Circle
+        center: Player
+        radius: 2.5
+
+  - name: cons
+    hitbox:
+      - name: C2
+        note: Spawns on target marked for explosion.
+        shape: Circle
+        center: GlobalValue
+        radius: 2
+
+  - name: walk
+    note: No action followed by walk (except low_plunge and high_plunge) has proper frames.

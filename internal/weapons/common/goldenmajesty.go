@@ -8,21 +8,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 type GoldenMajesty struct {
 	Index int
-	data  *model.WeaponData
 }
 
-func (g *GoldenMajesty) SetIndex(idx int)        { g.Index = idx }
-func (g *GoldenMajesty) Init() error             { return nil }
-func (g *GoldenMajesty) Data() *model.WeaponData { return g.data }
+func (g *GoldenMajesty) SetIndex(idx int) { g.Index = idx }
+func (g *GoldenMajesty) Init() error      { return nil }
 
-func NewGoldenMajesty(data *model.WeaponData) *GoldenMajesty {
-	return &GoldenMajesty{data: data}
+func NewGoldenMajesty() *GoldenMajesty {
+	return &GoldenMajesty{}
 }
 
 func (g *GoldenMajesty) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {

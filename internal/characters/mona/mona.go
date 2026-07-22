@@ -15,10 +15,6 @@ const (
 	omenKey   = "omen-debuff"
 )
 
-func init() {
-	core.RegisterCharFunc(keys.Mona, NewChar)
-}
-
 type char struct {
 	*tmpl.Character
 	a4Stats          []float64

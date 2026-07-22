@@ -1,40 +1,113 @@
-package_name: columbina
-genshin_id: 10000125
-key: columbina
-skill_data_mapping:
-    attack:
-        # Moondew Cascade
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        charge:
-            - 3 # Charged Attack DMG|{param3:F1P}
-        chargeLB:
-            - 5 # Moondew Cleanse DMG|{param5:F2P} Max HP ×3
-    skill:
-        # Eternal Tides
-        skill:
-            - 0 # Skill DMG|{param0:F1P} Max HP
-        skillDoT:
-            - 1 # Gravity Ripple: Continuous DMG|{param1:F1P} Max HP
-        skillLC:
-            - 2 # Gravity Interference: Lunar-Charged DMG|{param2:F2P} Max HP
-        skillLB:
-            - 3 # Gravity Interference: Lunar-Bloom DMG|{param3:F2P} Max HP ×5
-        skillLCr:
-            - 4 # Gravity Interference: Lunar-Crystallize DMG|{param4:F2P} Max HP
-    burst:
-        # Moonlit Melancholy
-        burst:
-            - 0 # Skill DMG|{param0:F1P} Max HP
-        burstBuff:
-            - 1 # Lunar Reaction DMG Bonus|{param1:F1P}
-documentation:
-    fields_data:
-        - fields: [.columbina.gravity]
-          desc: Amount of gravity accumulated.
-        - fields: [.columbina.a1-stacks]
-          desc: Number of A1 stacks.
+use: pipeline
+kind: character
+name: columbina
+
+shortcuts:
+  - bina
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - chargeLB: attack(Moondew Cleanse DMG)
+
+  - skill: skill(Skill DMG)
+  - skillDoT: 'skill(Gravity Ripple: Continuous DMG)'
+  - skillLC: 'skill(Gravity Interference: Lunar-Charged DMG)'
+  - skillLB: 'skill(Gravity Interference: Lunar-Bloom DMG)'
+  - skillLCr: 'skill(Gravity Interference: Lunar-Crystallize DMG)'
+
+  - burst: burst(Skill DMG)
+  - burstBuff: burst(Lunar Reaction DMG Bonus)
+
+docs:
+  fields:
+    .columbina.a1-stacks: Number of A1 stacks.
+    .columbina.gravity: Amount of gravity accumulated.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1dS2l7jwSQYMs6U9D8fBrq-foG2k3s1QV0fIC16uYJU4/edit?usp=sharing
+      count_credit: charliex3000
+      video: https://youtu.be/fw4ll8DuwlU
+      video_credit: charliex3000
+    - count: https://docs.google.com/spreadsheets/d/1dS2l7jwSQYMs6U9D8fBrq-foG2k3s1QV0fIC16uYJU4/edit?usp=sharing
+      count_credit: charliex3000
+      video: https://youtu.be/OMvsffxne9Y
+      video_credit: charliex3000
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: N2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: N3
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2.5
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3.5
+
+      - name: CA-Moondew-Cleanse
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3.3
+
+  - name: skill
+    hitbox:
+      - name: E-Initial
+        shape: Circle
+        center: Player
+        radius: 6
+
+      - name: E-Tick
+        shape: Circle
+        center: Player
+        radius: 4
+
+      - name: E-Tick-Gleam
+        shape: Circle
+        center: Player
+        radius: 6
+
+      - name: E-Gravity-LC
+        shape: Circle
+        center: PrimaryTarget
+        radius: 6
+
+      - name: E-Gravity-LB
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.5
+
+      - name: E-Gravity-LCr
+        shape: Circle
+        center: PrimaryTarget
+        radius: 6
+
+  - name: burst
+    hitbox:
+      - name: Q
+        shape: Circle
+        center: Self
+        offset: [0, 0.5]
+        radius: 6.5
+
+      - name: Q-field
+        shape: Circle
+        center: Self
+        offset: [0, 0.5]
+        radius: 20

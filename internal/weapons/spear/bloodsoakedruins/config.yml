@@ -1,3 +1,6 @@
-package_name: bloodsoakedruins
-genshin_id: 13516
-key: bloodsoakedruins
+use: pipeline
+kind: weapon
+name: bloodsoakedruins
+
+shortcuts:
+  - bloodsoaked

@@ -52,7 +52,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.a1()
 
-	c.SetCD(action.ActionBurst, int(burstCD[c.TalentLvlBurst()])*60)
+	c.SetCD(action.ActionBurst, burstCD*60)
 	c.ConsumeEnergy(5)
 
 	c.c1()

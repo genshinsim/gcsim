@@ -4,7 +4,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -15,10 +14,6 @@ type char struct {
 	shieldLevel3Requirement int
 	c2Buff                  []float64
 	shieldTickSrc           int
-}
-
-func init() {
-	core.RegisterCharFunc(keys.Xinyan, NewChar)
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

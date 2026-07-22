@@ -8,22 +8,19 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 type Lithic struct {
 	Index int
-	data  *model.WeaponData
 }
 
-func (l *Lithic) SetIndex(idx int)        { l.Index = idx }
-func (l *Lithic) Init() error             { return nil }
-func (l *Lithic) Data() *model.WeaponData { return l.data }
+func (l *Lithic) SetIndex(idx int) { l.Index = idx }
+func (l *Lithic) Init() error      { return nil }
 
-func NewLithic(data *model.WeaponData) *Lithic {
-	return &Lithic{data: data}
+func NewLithic() *Lithic {
+	return &Lithic{}
 }
 
 func (l *Lithic) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {

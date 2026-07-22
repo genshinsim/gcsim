@@ -64,7 +64,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.c6()
 	}, lumidouceSpawn)
 	c.arkheAttack()
-	c.SetCD(action.ActionSkill, int(skillCD[c.TalentLvlSkill()]*60))
+	c.SetCD(action.ActionSkill, skillCD*60)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -78,7 +78,7 @@ func (c *char) arkheAttack() {
 	if c.StatusIsActive(lumidouceArkheCD) {
 		return
 	}
-	c.AddStatus(lumidouceArkheCD, int(skillArkeCD[c.TalentLvlSkill()]*60), true)
+	c.AddStatus(lumidouceArkheCD, skillArkeCD*60, true)
 
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),

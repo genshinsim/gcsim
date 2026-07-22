@@ -27,7 +27,7 @@ func (stats *SubstatOptimizerDetails) calculateERBaseline() {
 		// TODO: Don't think there's a better solution without an expensive recursive solution to check across all Raiden ER states
 		// Practically high ER substat Raiden is always currently unoptimal, so we just set her initial stacks lowish
 		erSubs := 0
-		if stats.charProfilesInitial[i].Base.Key == keys.Raiden {
+		if stats.charProfilesInitial[i].Base.Key == keys.RaidenShogun {
 			erSubs = 4
 		}
 		stats.charSubstatFinal[i][attributes.ER] = erSubs

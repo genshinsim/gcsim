@@ -24,11 +24,11 @@ const TH = styled.th`
 function AbilHitlag({ data }) {
   const rows = data.map((e) => {
     return (
-      <tr key={e.ability}>
-        <TD>{e.ability}</TD>
-        <TD>{e.hitHaltTime}</TD>
-        <TD>{e.hitHaltTimeScale}</TD>
-        <TD>{e.canBeDefenseHalt ? "true" : "false"}</TD>
+      <tr key={e.name}>
+        <TD>{e.name}</TD>
+        <TD>{e.time}</TD>
+        <TD>{e.scale}</TD>
+        <TD>{e.defense_halt ? "true" : "false"}</TD>
         <TD>{e.deployable ? "true" : "false"}</TD>
       </tr>
     );
@@ -52,37 +52,37 @@ function AbilHitlag({ data }) {
   );
 }
 
-const abils = ["normal", "charge", "aim", "skill", "burst", "asc", "cons"];
-const abilLabels = [
-  "Normal",
-  "Charge Attack",
-  "Aimed Shot",
-  "Skill",
-  "Burst",
-  "Ascension",
-  "Cons",
-];
+const labels = {
+  ["attack"]: "Normal",
+  ["charge"]: "Charge",
+  ["plunge"]: "Plunge",
+  ["aim"]: "Aimed",
+  ["skill"]: "Skill",
+  ["burst"]: "Burst",
+  ["asc"]: "Ascension",
+  ["cons"]: "Constellation",
+  ["-"]: "Other",
+};
 
 export default function HitlagTable({ item_key }) {
-  if (!(item_key in character_data)) {
+  let data = character_data;
+  if (!(item_key in data)) {
     return <div>No hitlag data for character</div>;
   }
-  const char = character_data[item_key];
+  let abil_data = {};
+  data[item_key].forEach((e) => {
+    abil_data[e.ability] = abil_data[e.ability] ?? [];
+    abil_data[e.ability].push(e);
+  });
   let tabs = [];
-  let count = 0;
-  abils.forEach((a, i) => {
-    //skip if no data for this tab
-    if (!(a in char)) {
-      return;
-    }
-    count++;
+  for (let abil in abil_data) {
     tabs.push(
-      <TabItem value={a} label={abilLabels[i]} key={a}>
-        <AbilHitlag data={char[a]} />
+      <TabItem key={abil} value={abil} label={labels[abil]}>
+        <AbilHitlag data={abil_data[abil]} />
       </TabItem>
     );
-  });
-  if (count == 0) {
+  }
+  if (tabs.length == 0) {
     return <div>No hitlag data for character</div>;
   }
   return <Tabs>{tabs}</Tabs>;

@@ -1,3 +1,3 @@
-package_name: cloudforged
-genshin_id: 15426
-key: cloudforged
+use: pipeline
+kind: weapon
+name: cloudforged
