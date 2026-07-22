@@ -6,9 +6,9 @@
 //
 // set4: Disenchantment in Deep Shadow # Relic_6.6_Superconductor
 //
-//	Increases Superconduct Reaction DMG by 80%. When the equipping character attacks
-//	opponents affected by Superconduct, this attack's CRIT Rate is increased by 16%.
-//	An all-new blessing may be obtained as you make your way toward Snezhnaya...
+//	Increases Superconduct Reaction DMG by 80% and Stellar-Conduct Reaction DMG by 40%.
+//	When the wielder attacks opponents affected by Superconduct or Stellar-Conduct, this
+//	attack's CRIT Rate is increased by 16%.
 package disenchantmentinthedeepshadow
 
 import (

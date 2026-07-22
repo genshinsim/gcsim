@@ -2,8 +2,9 @@
 
 // passive: Overloaded # Weapon_Sword_AttacktUpAfterReaction
 //
-//	Upon causing an Overloaded, Superconduct, Electro-Charged, Quicken, Aggravate, Hyperbloom,
-//	Lunar-Charged, or Electro-infused Swirl reaction, ATK is increased by 20% for 12s.
+//	Upon causing an Overloaded, Superconduct, Stellar-Conduct, Electro-Charged, Quicken,
+//	Aggravate, Hyperbloom, Lunar-Charged, or Electro-infused Swirl reaction, ATK is increased
+//	by 20% for 12s.
 package darkironsword
 
 import (
