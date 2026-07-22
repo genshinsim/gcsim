@@ -2,8 +2,44 @@
 
 package keys
 
-//go:generate go tool github.com/dmarkham/enumer -text -json -linecomment -type=Set -output artifact.enumer.dm.go -- artifact.dm.go
+import (
+	"encoding/json"
+	"fmt"
+	"slices"
+	"strings"
+)
+
 type Set int
+
+func (v Set) String() string               { return _SetNames[v] }
+func (v Set) MarshalJSON() ([]byte, error) { return json.Marshal(v.String()) }
+func SetStrings() []string                 { return _SetNames[:] }
+func SetValues() []Set                     { return _SetValues[:] }
+
+func SetString(s string) (Set, error) {
+	s = strings.ToLower(s)
+	ind := slices.IndexFunc(_SetNames[:], func(i string) bool { return i == s })
+	if ind == -1 {
+		return 0, fmt.Errorf("%s does not belong to Set", s)
+	}
+	return _SetValues[ind], nil
+}
+
+func (v *Set) UnmarshalJSON(in []byte) error {
+	var s string
+	if err := json.Unmarshal(in, &s); err != nil {
+		return err
+	}
+	var err error
+	*v, err = SetString(s)
+	return err
+}
+
+func _comptime_Set() {
+	var x [1]struct{}
+	_ = x[int(InvalidSet+1)-len(_SetNames)]
+	_ = x[int(InvalidSet+1)-len(_SetValues)]
+}
 
 const (
 	NoSet                              Set = iota //
@@ -62,3 +98,119 @@ const (
 	WanderersTroupe                               // wandererstroupe
 	InvalidSet                                    // invalidset
 )
+
+var _SetNames = [...]string{
+	"",
+	"adaycarvedfromrisingwinds",
+	"archaicpetra",
+	"aubadeofmorningstarandmoon",
+	"berserker",
+	"blizzardstrayer",
+	"bloodstainedchivalry",
+	"braveheart",
+	"celestialgift",
+	"crimsonwitchofflames",
+	"deepwoodmemories",
+	"defenderswill",
+	"desertpavilionchronicle",
+	"disenchantmentindeepshadow",
+	"echoesofanoffering",
+	"emblemofseveredfate",
+	"finaleofthedeepgalleries",
+	"flowerofparadiselost",
+	"fragmentofharmonicwhimsy",
+	"gambler",
+	"gildeddreams",
+	"gladiatorsfinale",
+	"goldentroupe",
+	"heartofdepth",
+	"huskofopulentdreams",
+	"instructor",
+	"lavawalker",
+	"longnightsoath",
+	"maidenbeloved",
+	"marechausseehunter",
+	"martialartist",
+	"nightoftheskysunveiling",
+	"nighttimewhispersintheechoingwoods",
+	"noblesseoblige",
+	"nymphsdream",
+	"obsidiancodex",
+	"oceanhuedclam",
+	"paleflame",
+	"resolutionofsojourner",
+	"retracingbolide",
+	"scholar",
+	"scrolloftheheroofcindercity",
+	"shimenawasreminiscence",
+	"silkenmoonsserenade",
+	"songofdayspast",
+	"tenacityofthemillelith",
+	"theexile",
+	"thunderingfury",
+	"thundersoother",
+	"unfinishedreverie",
+	"vermillionhereafter",
+	"viridescentvenerer",
+	"vourukashasglow",
+	"wandererstroupe",
+	"invalidset",
+}
+
+var _SetValues = [...]Set{
+	NoSet,
+	ADayCarvedFromRisingWinds,
+	ArchaicPetra,
+	AubadeOfMorningstarAndMoon,
+	Berserker,
+	BlizzardStrayer,
+	BloodstainedChivalry,
+	BraveHeart,
+	CelestialGift,
+	CrimsonWitchOfFlames,
+	DeepwoodMemories,
+	DefendersWill,
+	DesertPavilionChronicle,
+	DisenchantmentInDeepShadow,
+	EchoesOfAnOffering,
+	EmblemOfSeveredFate,
+	FinaleOfTheDeepGalleries,
+	FlowerOfParadiseLost,
+	FragmentOfHarmonicWhimsy,
+	Gambler,
+	GildedDreams,
+	GladiatorsFinale,
+	GoldenTroupe,
+	HeartOfDepth,
+	HuskOfOpulentDreams,
+	Instructor,
+	Lavawalker,
+	LongNightsOath,
+	MaidenBeloved,
+	MarechausseeHunter,
+	MartialArtist,
+	NightOfTheSkysUnveiling,
+	NighttimeWhispersInTheEchoingWoods,
+	NoblesseOblige,
+	NymphsDream,
+	ObsidianCodex,
+	OceanHuedClam,
+	PaleFlame,
+	ResolutionOfSojourner,
+	RetracingBolide,
+	Scholar,
+	ScrollOfTheHeroOfCinderCity,
+	ShimenawasReminiscence,
+	SilkenMoonsSerenade,
+	SongOfDaysPast,
+	TenacityOfTheMillelith,
+	TheExile,
+	ThunderingFury,
+	Thundersoother,
+	UnfinishedReverie,
+	VermillionHereafter,
+	ViridescentVenerer,
+	VourukashasGlow,
+	WanderersTroupe,
+	InvalidSet,
+}
