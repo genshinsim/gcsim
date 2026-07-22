@@ -59,7 +59,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillTapHitmark,
+		CanQueueAfter:   skillFrames[action.ActionSwap],
 		State:           action.SkillState,
 	}, nil
 }
