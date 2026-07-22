@@ -199,6 +199,7 @@ var weaponMap = map[string]string{
 	"thebell":                         "UI_EquipIcon_Claymore_Troupe_Awaken",
 	"theblacksword":                   "UI_EquipIcon_Sword_Bloodstained_Awaken",
 	"thecatch":                        "UI_EquipIcon_Pole_Mori_Awaken",
+	"thedaybreakchronicles":           "UI_EquipIcon_Bow_Arianna_Awaken",
 	"thedockhandsassistant":           "UI_EquipIcon_Sword_Mechanic_Awaken",
 	"thefirstgreatmagic":              "UI_EquipIcon_Bow_Pledge_Awaken",
 	"theflute":                        "UI_EquipIcon_Sword_Troupe_Awaken",

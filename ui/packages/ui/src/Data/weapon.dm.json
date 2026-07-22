@@ -1377,8 +1377,7 @@
       "key": "thedaybreakchronicles",
       "rarity": 5,
       "weapon_class": "WEAPON_BOW",
-      "image_name": "UI_EquipIcon_Bow_Arianna",
-      "name_text_hash_map ": "1235520915"
+      "image_name": "UI_EquipIcon_Bow_Arianna_Awaken"
     },
     "thedockhandsassistant": {
       "id": 11427,

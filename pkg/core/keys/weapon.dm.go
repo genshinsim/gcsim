@@ -239,6 +239,7 @@ const (
 	TheBell                                       // thebell
 	TheBlackSword                                 // theblacksword
 	TheCatch                                      // thecatch
+	TheDaybreakChronicles                         // thedaybreakchronicles
 	TheDockhandsAssistant                         // thedockhandsassistant
 	TheFirstGreatMagic                            // thefirstgreatmagic
 	TheFlute                                      // theflute
@@ -472,6 +473,7 @@ var _WeaponNames = [...]string{
 	"thebell",
 	"theblacksword",
 	"thecatch",
+	"thedaybreakchronicles",
 	"thedockhandsassistant",
 	"thefirstgreatmagic",
 	"theflute",
@@ -705,6 +707,7 @@ var _WeaponValues = [...]Weapon{
 	TheBell,
 	TheBlackSword,
 	TheCatch,
+	TheDaybreakChronicles,
 	TheDockhandsAssistant,
 	TheFirstGreatMagic,
 	TheFlute,
