@@ -59,7 +59,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 
 	// Only applies when preceded and followed by a charge, otherwise does nothing
 	// If Mav is within the "clock lockout" of being able to cdc,
-	//   early cancel will be forced to false
+	// early cancel will be forced to false
 	c.chargeCancel = false
 	chargeCancel, ok := p["charge_cancel"]
 	if !ok {
