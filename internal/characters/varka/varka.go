@@ -77,7 +77,7 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	if a == action.ActionCharge {
-		if c.StatusIsActive(skillKey) {
+		if c.StatusIsActive(skillKey) && c.fourWindsCharges() > 0 {
 			return 0
 		}
 		return 50
@@ -86,11 +86,8 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 }
 
 func (c *char) Charges(a action.Action) int {
-	if a == action.ActionSkill {
-		fourWinds := c.fourWindsCharges()
-		if fourWinds >= 0 {
-			return fourWinds
-		}
+	if a == action.ActionSkill && c.StatusIsActive(skillKey) {
+		return c.fourWindsCharges()
 	}
 	return c.Character.Charges(a)
 }
