@@ -11,47 +11,48 @@ import (
 
 var (
 	chargeFrames             []int
-	chargeHitmarks           = []int{30, 40}
-	chargeHitlagHaltFrames   = []float64{0.0, 0.1}
+	chargeHitmarks           = []int{41, 41}
+	chargeHitlagHaltFrames   = []float64{0.0, 0.09}
 	chargeCanBeDefenseHalted = []bool{false, true}
-
-	skillChargeFrames             []int
-	skillChargeHitmarks           = []int{30, 40}
-	skillChargeHitlagHaltFrames   = []float64{0.0, 0.1}
-	skillChargeCanBeDefenseHalted = []bool{false, true}
+	chargePoiseDmg           = []float64{78, 42}
 
 	azureDevourFrames             []int
-	azureDevourHitmarks           = []int{28, 36, 50, 58}
-	azureDevourHitlagHaltFrames   = []float64{0.0, 0.1, 0.0, 0.1}
+	azureDevourHitmarks           = []int{40, 40, 40 + 20, 40 + 20}
+	azureDevourHitlagHaltFrames   = []float64{0.0, 0.9, 0.0, 0.9}
 	azureDevourCanBeDefenseHalted = []bool{false, true, false, true}
+	azureDevourPoiseDmg           = []float64{39, 21, 39, 21}
 )
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(48)
+	chargeFrames = frames.InitAbilSlice(67)
+	chargeFrames[action.ActionAttack] = 58
 	chargeFrames[action.ActionBurst] = 50
+	chargeFrames[action.ActionSkill] = 59
+	chargeFrames[action.ActionBurst] = 58
 	chargeFrames[action.ActionDash] = chargeHitmarks[1]
 	chargeFrames[action.ActionJump] = chargeHitmarks[1]
-	chargeFrames[action.ActionSwap] = 50
-	chargeFrames[action.ActionWalk] = 60
+	chargeFrames[action.ActionSwap] = 49
+	chargeFrames[action.ActionWalk] = 49
 
-	skillChargeFrames = frames.InitAbilSlice(80)
-	skillChargeFrames[action.ActionBurst] = 60
-	skillChargeFrames[action.ActionDash] = skillChargeHitmarks[1]
-	skillChargeFrames[action.ActionJump] = skillChargeHitmarks[1]
-	skillChargeFrames[action.ActionSwap] = 60
-	skillChargeFrames[action.ActionWalk] = 60
-
-	azureDevourFrames = frames.InitAbilSlice(80)
-	azureDevourFrames[action.ActionBurst] = 60
+	azureDevourFrames = frames.InitAbilSlice(75)
+	azureDevourFrames[action.ActionAttack] = 64
+	azureDevourFrames[action.ActionCharge] = 74
+	azureDevourFrames[action.ActionSkill] = 66
+	azureDevourFrames[action.ActionBurst] = 65
 	azureDevourFrames[action.ActionDash] = azureDevourHitmarks[3]
 	azureDevourFrames[action.ActionJump] = azureDevourHitmarks[3]
-	azureDevourFrames[action.ActionSwap] = 60
-	azureDevourFrames[action.ActionWalk] = 60
+	azureDevourFrames[action.ActionSwap] = azureDevourHitmarks[3]
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(skillKey) {
 		return c.skillCharge()
+	}
+
+	windup := 14
+	switch c.Core.Player.CurrentState() {
+	case action.NormalAttackState, action.ChargeAttackState:
+		windup = 0
 	}
 
 	for i, hitmark := range chargeHitmarks {
@@ -62,7 +63,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			ICDTag:             attacks.ICDTagNormalAttack,
 			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeBlunt,
-			PoiseDMG:           120.0,
+			PoiseDMG:           chargePoiseDmg[i],
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               charge[i][c.TalentLvlAttack()],
@@ -75,8 +76,8 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			ai,
 			combat.NewCircleHitOnTarget(
 				c.Core.Combat.Player(),
-				info.Point{Y: 0.3},
-				3.3,
+				info.Point{Y: 1},
+				2.5,
 			),
 			hitmark,
 			hitmark,
@@ -84,9 +85,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(chargeFrames),
-		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeHitmarks[1],
+		Frames:          frames.NewAbilFuncWithOffset(chargeFrames, windup),
+		AnimationLength: chargeFrames[action.InvalidAction] + windup,
+		CanQueueAfter:   chargeHitmarks[1] + windup,
 		State:           action.ChargeAttackState,
 	}, nil
 }
@@ -94,6 +95,12 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 func (c *char) skillCharge() (action.Info, error) {
 	if c.fourWindsCharges() > 0 || c.c6FreeCA() {
 		return c.skillAzureDevour(c.c6FreeCA())
+	}
+
+	windup := 14
+	switch c.Core.Player.CurrentState() {
+	case action.NormalAttackState, action.ChargeAttackState:
+		windup = 0
 	}
 
 	ele := []attributes.Element{c.conversionElem, attributes.Anemo}
@@ -105,21 +112,21 @@ func (c *char) skillCharge() (action.Info, error) {
 			ICDTag:             attacks.ICDTagNormalAttack,
 			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeBlunt,
-			PoiseDMG:           120.0,
+			PoiseDMG:           chargePoiseDmg[i],
 			Element:            ele[i],
 			Durability:         25,
-			Mult:               skillCharge[i][c.TalentLvlSkill()] * c.a1SkillMulti(),
-			HitlagHaltFrames:   skillChargeHitlagHaltFrames[i] * 60,
+			Mult:               charge[i][c.TalentLvlSkill()] * c.a1SkillMulti(),
+			HitlagHaltFrames:   chargeHitlagHaltFrames[i] * 60,
 			HitlagFactor:       0.01,
-			CanBeDefenseHalted: skillChargeCanBeDefenseHalted[i],
+			CanBeDefenseHalted: chargeCanBeDefenseHalted[i],
 		}
 
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(
 				c.Core.Combat.Player(),
-				info.Point{Y: 0.3},
-				3.3,
+				info.Point{Y: 1},
+				2.5,
 			),
 			hitmark,
 			hitmark,
@@ -127,15 +134,19 @@ func (c *char) skillCharge() (action.Info, error) {
 	}
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillChargeFrames),
-		AnimationLength: skillChargeFrames[action.InvalidAction],
-		CanQueueAfter:   skillChargeHitmarks[1],
+		Frames:          frames.NewAbilFuncWithOffset(chargeFrames, windup),
+		AnimationLength: chargeFrames[action.InvalidAction] + windup,
+		CanQueueAfter:   chargeHitmarks[1] + windup,
 		State:           action.ChargeAttackState,
 	}, nil
 }
 
 func (c *char) skillAzureDevour(c6Free bool) (action.Info, error) {
-	// TODO: Windup?
+	windup := 14
+	switch c.Core.Player.CurrentState() {
+	case action.NormalAttackState, action.ChargeAttackState:
+		windup = 0
+	}
 
 	ele := []attributes.Element{c.conversionElem, attributes.Anemo, c.conversionElem, attributes.Anemo}
 
@@ -148,7 +159,7 @@ func (c *char) skillAzureDevour(c6Free bool) (action.Info, error) {
 			ICDTag:             attacks.ICDTagNormalAttack,
 			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeBlunt,
-			PoiseDMG:           120.0,
+			PoiseDMG:           azureDevourPoiseDmg[i],
 			Element:            ele[i],
 			Durability:         25,
 			Mult:               skillAzureDevour[i][c.TalentLvlSkill()] * c.a1SkillMulti() * c1Mult,
@@ -161,8 +172,8 @@ func (c *char) skillAzureDevour(c6Free bool) (action.Info, error) {
 			ai,
 			combat.NewCircleHitOnTarget(
 				c.Core.Combat.Player(),
-				info.Point{Y: 0.3},
-				3.3,
+				info.Point{Y: 1},
+				3,
 			),
 			hitmark,
 			hitmark,
@@ -176,9 +187,9 @@ func (c *char) skillAzureDevour(c6Free bool) (action.Info, error) {
 	c.c2OnSpecialSkill()
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(azureDevourFrames),
-		AnimationLength: azureDevourFrames[action.InvalidAction],
-		CanQueueAfter:   azureDevourHitmarks[3],
+		Frames:          frames.NewAbilFuncWithOffset(azureDevourFrames, windup),
+		AnimationLength: azureDevourFrames[action.InvalidAction] + windup,
+		CanQueueAfter:   azureDevourHitmarks[3] + windup,
 		State:           action.ChargeAttackState,
 	}, nil
 }

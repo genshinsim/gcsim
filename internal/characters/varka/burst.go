@@ -10,17 +10,19 @@ import (
 )
 
 var (
-	burstFrames  []int
-	burstHitmark = []int{95, 100}
+	burstFrames   []int
+	burstHitmark  = []int{112, 112 + 19}
+	burstPoiseDmg = []float64{130, 70}
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(110) // Q -> E
-	burstFrames[action.ActionAttack] = 105  // Q -> N1
-	burstFrames[action.ActionDash] = 105    // Q -> D
-	burstFrames[action.ActionJump] = 105    // Q -> J
-	burstFrames[action.ActionWalk] = 105    // Q -> Walk
-	burstFrames[action.ActionSwap] = 105    // Q -> Swap
+	burstFrames = frames.InitAbilSlice(152)   // Q -> CA
+	burstFrames[action.ActionAttack] = 137    // Q -> N1
+	burstFrames[action.ActionSkill] = 138     // Q -> E
+	burstFrames[action.ActionDash] = 157 - 19 // Q -> D
+	burstFrames[action.ActionJump] = 167 - 30 // Q -> J
+	burstFrames[action.ActionWalk] = 140      // Q -> Walk
+	burstFrames[action.ActionSwap] = 136      // Q -> Swap
 }
 
 // Burst attack damage queue generator
@@ -29,21 +31,20 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	for i, hitmark := range burstHitmark {
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
-			Abil:       "Divine Maiden's Deliverance (Initial)",
+			Abil:       "Northwind Avatar",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeBlunt,
-			PoiseDMG:   250,
+			PoiseDMG:   burstPoiseDmg[i],
 			Element:    ele[i],
 			Durability: 25,
 			Mult:       burst[i][c.TalentLvlBurst()],
 		}
-		burstArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 8)
-		burstPos := burstArea.Shape.Pos()
+
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTargetFanAngle(burstPos, nil, 8, 120),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 7),
 			hitmark,
 			hitmark,
 		)

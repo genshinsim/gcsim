@@ -12,19 +12,13 @@ import (
 )
 
 var (
-	attackFrames          [][]int
-	attackHitmarks        = [][]int{{21}, {14, 26}, {28, 33}, {28, 33}, {30, 30}}
-	attackPoiseDMG        = []float64{107.0, 48.8, 44.43, 49.9, 155.4}
-	attackHitlagHaltFrame = []float64{0.05, 0.05, 0.05, 0.05, 0.1}
-	attackHitboxes        = [][]float64{{2.2}, {3.3, 4.3}, {2.8, 5.0}, {2.8, 5.0}, {3.2}}
-	attackOffsets         = []float64{0.5, -1.3, 0.5, 0.5, -0.8}
-
-	skillAttackFrames          [][]int
-	skillAttackHitmarks        = [][]int{{21}, {14, 26}, {28, 33}, {28, 33}, {30, 30}}
-	skillAttackPoiseDMG        = []float64{107.0, 48.8, 44.43, 49.9, 155.4}
-	skillAttackHitlagHaltFrame = []float64{0.05, 0.05, 0.05, 0.05, 0.1}
-	skillAttackHitboxes        = [][]float64{{2.2}, {3.3, 4.3}, {2.8, 5.0}, {2.8, 5.0}, {3.2}}
-	skillAttackOffsets         = []float64{0.5, -1.3, 0.5, 0.5, -0.8}
+	attackFrames             [][]int
+	attackHitmarks           = [][]int{{19}, {18, 18 + 10}, {27, 27 + 16}, {19, 19 + 5}, {44, 44 + 1}}
+	attackPoiseDMG           = [][]float64{{87.5334}, {32.0776, 59.5728}, {43.3742, 80.5521}, {74.1236, 39.9127}, {93.2701, 50.2223}}
+	attackHitlagHaltFrame    = [][]float64{{0.03}, {0, 0.06}, {0, 0.06}, {0, 0.09}, {0, 0.1}}
+	attackCanBeDefenseHalted = [][]bool{{true}, {false, true}, {false, true}, {false, true}, {false, true}}
+	attackHitboxes           = [][]float64{{2, 3.2}, {2.5}, {3}, {2.8}, {2.8}}
+	attackOffsets            = [][]float64{{-0.5}, {0.5, 0.5}, {1, 1.5}, {1.2, 1.2}, {0.6, 0.6}}
 )
 
 const (
@@ -34,57 +28,37 @@ const (
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 40) // N1 -> Walk
-	attackFrames[0][action.ActionAttack] = 31                                // N1 -> N2
-	attackFrames[0][action.ActionCharge] = 31                                // N1 -> CA
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 46) // N1 -> Walk
+	attackFrames[0][action.ActionAttack] = 23                                // N1 -> N2
+	attackFrames[0][action.ActionCharge] = 22                                // N1 -> CA
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][1], 50) // N2 -> Walk
-	attackFrames[1][action.ActionAttack] = 42                                // N2 -> N3
-	attackFrames[1][action.ActionCharge] = 42                                // N2 -> CA
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][1], 46) // N2 -> Walk
+	attackFrames[1][action.ActionAttack] = 29                                // N2 -> N3
+	attackFrames[1][action.ActionCharge] = 30                                // N2 -> CA
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 59) // N3 -> Walk
-	attackFrames[2][action.ActionAttack] = 46                                // N3 -> N4
-	attackFrames[2][action.ActionCharge] = 47                                // N3 -> CA
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 60) // N3 -> Walk
+	attackFrames[2][action.ActionAttack] = 55                                // N3 -> N4
+	attackFrames[2][action.ActionCharge] = 48                                // N3 -> CA
 
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][1], 59) // N3 -> Walk
-	attackFrames[3][action.ActionAttack] = 46                                // N3 -> N4
-	attackFrames[3][action.ActionCharge] = 47                                // N3 -> CA
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][1], 47) // N3 -> Walk
+	attackFrames[3][action.ActionAttack] = 40                                // N3 -> N4
+	attackFrames[3][action.ActionCharge] = 28                                // N3 -> CA
 
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][1], 61) // N4 -> Walk
-	attackFrames[4][action.ActionAttack] = 60                                // N4 -> N1
-	attackFrames[4][action.ActionCharge] = 61                                // N4 -> CA
-
-	skillAttackFrames = make([][]int, normalHitNum)
-	skillAttackFrames[0] = frames.InitNormalCancelSlice(skillAttackHitmarks[0][0], 40) // N1 -> Walk
-	skillAttackFrames[0][action.ActionAttack] = 31                                     // N1 -> N2
-	skillAttackFrames[0][action.ActionCharge] = 31                                     // N1 -> CA
-
-	skillAttackFrames[1] = frames.InitNormalCancelSlice(skillAttackHitmarks[1][1], 50) // N2 -> Walk
-	skillAttackFrames[1][action.ActionAttack] = 42                                     // N2 -> N3
-	skillAttackFrames[1][action.ActionCharge] = 42                                     // N2 -> CA
-
-	skillAttackFrames[2] = frames.InitNormalCancelSlice(skillAttackHitmarks[2][1], 59) // N3 -> Walk
-	skillAttackFrames[2][action.ActionAttack] = 46                                     // N3 -> N4
-	skillAttackFrames[2][action.ActionCharge] = 47                                     // N3 -> CA
-
-	skillAttackFrames[3] = frames.InitNormalCancelSlice(skillAttackHitmarks[3][1], 59) // N3 -> Walk
-	skillAttackFrames[3][action.ActionAttack] = 46                                     // N3 -> N4
-	skillAttackFrames[3][action.ActionCharge] = 47                                     // N3 -> CA
-
-	skillAttackFrames[4] = frames.InitNormalCancelSlice(skillAttackHitmarks[4][1], 61) // N4 -> Walk
-	skillAttackFrames[4][action.ActionAttack] = 60                                     // N4 -> N1
-	skillAttackFrames[4][action.ActionCharge] = 61                                     // N4 -> CA
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][1], 82) // N4 -> Walk
+	attackFrames[4][action.ActionAttack] = 73                                // N4 -> N1
+	attackFrames[4][action.ActionCharge] = 48                                // N4 -> CA
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(skillKey) {
 		return c.skillAttack()
 	}
-	ap := combat.NewCircleHitOnTarget(
-		c.Core.Combat.Player(),
-		info.Point{Y: attackOffsets[c.NormalCounter]},
-		attackHitboxes[c.NormalCounter][0],
-	)
+
+	windup := 0
+	switch c.Core.Player.CurrentState() {
+	case action.Idle, action.SwapState, action.JumpState, action.DashState:
+		windup = 5
+	}
 
 	for i, delay := range attackHitmarks[c.NormalCounter] {
 		ai := info.AttackInfo{
@@ -94,34 +68,49 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			ICDTag:             attacks.ICDTagNormalAttack,
 			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeBlunt,
-			PoiseDMG:           attackPoiseDMG[c.NormalCounter],
+			PoiseDMG:           attackPoiseDMG[c.NormalCounter][i],
 			Element:            attributes.Physical,
 			Durability:         25,
 			Mult:               attack[c.NormalCounter][i][c.TalentLvlAttack()],
 			HitlagFactor:       0.01,
-			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter] * 60,
-			CanBeDefenseHalted: true,
+			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
+			CanBeDefenseHalted: attackCanBeDefenseHalted[c.NormalCounter][i],
 		}
-		c.Core.QueueAttack(ai, ap, delay, delay)
+		var ap info.AttackPattern
+		hitbox := attackHitboxes[c.NormalCounter]
+		switch len(hitbox) {
+		case 1:
+			ap = combat.NewCircleHitOnTarget(
+				c.Core.Combat.Player(),
+				info.Point{Y: attackOffsets[c.NormalCounter][i]},
+				hitbox[0],
+			)
+		case 2:
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				info.Point{Y: attackOffsets[c.NormalCounter][i]},
+				hitbox[0],
+				hitbox[1],
+			)
+		default:
+			panic("varka NA hitbox array incorrect size")
+		}
+		c.Core.QueueAttack(ai, ap, delay+windup, delay+windup)
 	}
+
+	normalCounter := c.NormalCounter
 
 	defer c.AdvanceNormalIndex()
 
 	return action.Info{
-		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
-		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+		Frames:          frames.NewAttackFuncWithOffset(c.Character, attackFrames, windup),
+		AnimationLength: attackFrames[normalCounter][action.InvalidAction] + windup,
+		CanQueueAfter:   attackHitmarks[normalCounter][len(attackHitmarks[c.NormalCounter])-1] + windup,
 		State:           action.NormalAttackState,
 	}, nil
 }
 
 func (c *char) skillAttack() (action.Info, error) {
-	ap := combat.NewCircleHitOnTarget(
-		c.Core.Combat.Player(),
-		info.Point{Y: skillAttackOffsets[c.NormalCounter]},
-		skillAttackHitboxes[c.NormalCounter][0],
-	)
-
 	ele := []attributes.Element{c.conversionElem, attributes.Anemo}
 	offset := 0
 	switch c.NormalCounter {
@@ -129,7 +118,13 @@ func (c *char) skillAttack() (action.Info, error) {
 		offset = 1
 	}
 
-	for i, delay := range skillAttackHitmarks[c.NormalCounter] {
+	windup := 0
+	switch c.Core.Player.CurrentState() {
+	case action.Idle, action.SwapState, action.JumpState, action.DashState, action.WalkState:
+		windup = 5
+	}
+
+	for i, delay := range attackHitmarks[c.NormalCounter] {
 		ai := info.AttackInfo{
 			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Sturm und Drang Normal %v", c.NormalCounter),
@@ -137,23 +132,45 @@ func (c *char) skillAttack() (action.Info, error) {
 			ICDTag:             attacks.ICDTagNormalAttack,
 			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeBlunt,
-			PoiseDMG:           skillAttackPoiseDMG[c.NormalCounter],
+			PoiseDMG:           attackPoiseDMG[c.NormalCounter][i],
 			Element:            ele[(i+offset)%2],
 			Durability:         25,
 			Mult:               skillAttack[c.NormalCounter][i][c.TalentLvlSkill()] * c.a1SkillMulti(),
 			HitlagFactor:       0.01,
-			HitlagHaltFrames:   skillAttackHitlagHaltFrame[c.NormalCounter] * 60,
-			CanBeDefenseHalted: true,
+			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
+			CanBeDefenseHalted: attackCanBeDefenseHalted[c.NormalCounter][i],
 		}
-		c.Core.QueueAttack(ai, ap, delay, delay, c.fourWindsCDRedCB())
+		var ap info.AttackPattern
+		hitbox := attackHitboxes[c.NormalCounter]
+		switch len(hitbox) {
+		case 1:
+			ap = combat.NewCircleHitOnTarget(
+				c.Core.Combat.Player(),
+				info.Point{Y: attackOffsets[c.NormalCounter][i]},
+				hitbox[0],
+			)
+		case 2:
+			ap = combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				info.Point{Y: attackOffsets[c.NormalCounter][i]},
+				hitbox[0],
+				hitbox[1],
+			)
+		default:
+			panic("varka NA hitbox array incorrect size")
+		}
+
+		c.Core.QueueAttack(ai, ap, delay+windup, delay+windup, c.fourWindsCDRedCB())
 	}
+
+	normalCounter := c.NormalCounter
 
 	defer c.AdvanceNormalIndex()
 
 	return action.Info{
-		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
-		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+		Frames:          frames.NewAttackFuncWithOffset(c.Character, attackFrames, windup),
+		AnimationLength: attackFrames[normalCounter][action.InvalidAction] + windup,
+		CanQueueAfter:   attackHitmarks[normalCounter][len(attackHitmarks[c.NormalCounter])-1] + windup,
 		State:           action.NormalAttackState,
 	}, nil
 }
