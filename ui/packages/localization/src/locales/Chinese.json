@@ -359,7 +359,7 @@
     },
     "warnings": {
         "incomplete_char_title": "使用的角色不完整",
-        "incomplete_char_body": "该模拟包含处于早期发布状态的角色！这些角色已完全实现，但可能没有与游戏中动画一致的最佳帧数据。我们正在积极收集数据，以改进其执行情况。如果您希望提供帮助，请通过 <0>gcsim Discord</0> 联系我们！",
+        "incomplete_char_body": "该模拟包含处于早期发布状态的角色！这些角色已完全实现，但可能没有游戏中最佳数据。我们正在积极收集数据，以改进其执行情况。如果您希望提供帮助，请通过 <0>gcsim Discord</0> 联系我们！",
         "incomplete_char_data_header": "不完整的角色",
         "position_overlap_title": "目标位置重叠",
         "position_overlap_body": "目标位置至少在一次迭代中重叠。确认是否有意这样做，并根据需要更新位置以避免重叠。位置重叠可能导致模拟不准确。",
