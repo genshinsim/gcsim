@@ -59,11 +59,12 @@ func (c *char) a1Init() {
 	twoAnemo := elementCount[attributes.Anemo] >= 2
 	twoPHEC := elementCount[attributes.Pyro] >= 2 || elementCount[attributes.Hydro] >= 2 || elementCount[attributes.Electro] >= 2 || elementCount[attributes.Cryo] >= 2
 
-	if twoAnemo && twoPHEC {
+	switch {
+	case twoAnemo && twoPHEC:
 		c.a1Multiplier = a1Multiplier[2]
-	} else if twoAnemo || twoPHEC {
+	case twoAnemo || twoPHEC:
 		c.a1Multiplier = a1Multiplier[1]
-	} else {
+	default:
 		c.a1Multiplier = a1Multiplier[0]
 	}
 }
