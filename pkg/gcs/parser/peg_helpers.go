@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/genshinsim/gcsim/pkg/catalog"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -97,10 +98,10 @@ type addStatItem struct {
 }
 
 type charDetailData struct {
-	kind      string
-	intVal    int64
-	intVal2   int64
-	intVal3   int64
+	kind    string
+	intVal  int64
+	intVal2 int64
+	intVal3 int64
 	mapVal  map[string]int
 }
 
@@ -112,9 +113,9 @@ type addWeaponItem struct {
 }
 
 type addSetItem struct {
-	kind    string
-	intVal  int64
-	mapVal  map[string]int
+	kind   string
+	intVal int64
+	mapVal map[string]int
 }
 
 type randomStatItem struct {
@@ -428,7 +429,7 @@ func (p *Parser) ensureChar(key keys.Char) {
 		r.Sets = make(map[keys.Set]int)
 		r.SetParams = make(map[keys.Set]map[string]int)
 		r.Weapon.Params = make(map[string]int)
-		r.Base.Element = keys.CharKeyToEle[key]
+		r.Base.Element = info.ConvertProtoElement(catalog.CharacterMap[key].Element)
 		p.chars[key] = &r
 		p.charOrder = append(p.charOrder, key)
 	}

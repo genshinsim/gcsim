@@ -8,11 +8,8 @@ ignore (
 )
 
 tool (
-<<<<<<< HEAD
 	github.com/dmarkham/enumer
-=======
 	github.com/mna/pigeon
->>>>>>> ab74c7860 (refactor: migrate gcsl parser to pigeon PEG grammar)
 	github.com/tinylib/msgp
 )
 

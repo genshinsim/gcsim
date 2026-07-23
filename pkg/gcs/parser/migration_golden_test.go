@@ -20,10 +20,10 @@ import (
 var updateGolden = flag.Bool("update-golden", false, "rewrite testdata/migration_golden.txt")
 
 var goldenSpew = spew.ConfigState{
-	SortKeys:               true,
-	SpewKeys:               true,
+	SortKeys:                true,
+	SpewKeys:                true,
 	DisablePointerAddresses: true,
-	DisableCapacities:      true,
+	DisableCapacities:       true,
 	// Do not use String() methods: ast.MapExpr.String() iterates a Go map,
 	// which is non-deterministic. Structural dumps also capture Pos values.
 	DisableMethods: true,
@@ -49,7 +49,7 @@ var migrationCorpus = []struct {
 	name string
 	src  string // if starts with "@", read from file path instead
 }{
-	{"sample_gcsim", "@../../../editors/zed/examples/sample.gcsim"},
+	{"sample_gcsim", "@testdata/corpus/sample.gcsim"},
 	{"basic_cfg", cfg},
 	{"char_action", charaction},
 	{"char_stats", charstats},

@@ -1,0 +1,82 @@
+mualani char lvl=90/90 cons=0 talent=9,9,9;
+mualani add weapon="widsith" refine=3 lvl=90/90;
+mualani add set="obsidiancodex" count=5;
+mualani add stats hp=4780 atk=311 hp%=0.466 hp%=0.466 cd=0.622 ; #main
+mualani add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0496*6 atk=33.08 atk%=0.0992 er=0.1102 em=19.82*6 cr=0.0331*6 cd=0.0662*10;
+
+mona char lvl=90/90 cons=4 talent=9,9,9;
+mona add weapon="prototypeamber" refine=5 lvl=90/90;
+mona add set="celestialgift" count=4;
+mona add stats hp=4780 atk=311 er=0.518 hydro%=0.466 cr=0.311 ; #main
+mona add stats def%=0.062*2 def=19.68*2 hp=253.94*2 hp%=0.0496*2 atk=16.54*2 atk%=0.0496*4 er=0.0551*2 em=19.82*2 cr=0.0331*10 cd=0.0662*12;
+
+sucrose char lvl=90/90 cons=6 talent=9,9,9;
+sucrose add weapon="serpentspine" refine=3 lvl=90/90;
+sucrose add set="viridescentvenerer" count=4;
+sucrose add stats hp=4780 atk=311 em=187 em=187 em=187 ; #main
+sucrose add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.3968 er=0.6612 em=118.92 cr=0.0662 cd=0.1324;
+
+mavuika char lvl=90/90 cons=0 talent=9,9,9;
+mavuika add weapon="serpentspine" refine=1 lvl=90/90 +params=[stacks=5];
+mavuika add set="scroll" count=4;
+mavuika add stats hp=4780 atk=311 atk%=0.466 pyro%=0.466 cr=0.311; #main
+mavuika add stats def%=0.124 def=39.36 hp=507.88 hp%=0.0992 atk=33.08 atk%=0.1984 er=0.1102 em=39.64 cr=0.331 cd=0.7944;
+
+options swap_delay=12 iteration=1000;
+
+active mavuika;
+
+target lvl=100 resist=0.1 radius=2 pos=0,2.4 hp=999999999;
+energy every interval=480,720 amount=1;
+
+fn mualani_combo2() {
+  #doing 2[3-stacked bite]
+  while .mualani.nightsoul.state {
+    for let k=0; k<2; k=k+1 {
+      while .mualani.momentum < 3 {
+        mualani walk[f=1];
+      }
+      mualani attack;
+    }
+    break;
+  }
+}
+
+fn mualani_combo3() {
+  #doing 3[3-stacked bite]
+  while .mualani.nightsoul.state {
+    for let k=0; k<3; k=k+1 {
+      while .mualani.momentum < 3 {
+        mualani walk[f=1];
+      }
+      mualani attack;
+    }
+    break;
+  }
+}
+
+for let i=0; i<6; i=i+1 {
+
+  mona skill;
+
+  if .mav.burst.ready {
+    mav burst, skill, attack;
+  } else {
+    mav charge, skill[hold=1];
+  }
+  mona burst, attack;
+  sucrose skill, dash;
+  if .sucrose.burst.ready {
+    sucrose burst;
+  }
+  mualani skill;
+  if .mualani.burst.ready {
+    mualani walk, burst;
+    mualani_combo2();
+  }
+  else {
+    mualani_combo3();
+  }
+
+
+}

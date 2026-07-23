@@ -382,7 +382,7 @@ func checkIdentifier(word string) TokenType {
 	if _, ok := shortcut.CharNameToKey[word]; ok {
 		return ItemCharacterKey
 	}
-	if _, ok := actionKeys[word]; ok {
+	if _, ok := ActionKeys[word]; ok {
 		return ItemActionKey
 	}
 	return ItemIdentifier
