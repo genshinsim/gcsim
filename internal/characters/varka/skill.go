@@ -12,13 +12,16 @@ import (
 )
 
 var (
-	skillFrames      []int
-	spearStormFrames []int
-	fourWindsHitmark = []int{23, 25}
+	skillFrames             []int
+	specialSkillFrames      []int
+	fourWindsHitmark        = []int{34, 34 + 9}
+	fourWindsHitHaltFrame   = []float64{0.09, 0}
+	fourWindsCanBeDefHalted = []bool{true, false}
+	fourWindsPoiseDmg       = []float64{65, 35}
 )
 
 const (
-	skillHitmark   = 19
+	skillHitmark   = 40
 	particleICDKey = "varka-particle-icd"
 	skillKey       = "sturm-und-drang"
 	skillCD        = 16 * 60
@@ -27,20 +30,23 @@ const (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(44)
-	skillFrames[action.ActionAttack] = 19
-	skillFrames[action.ActionSkill] = 22
-	skillFrames[action.ActionBurst] = 19
-	skillFrames[action.ActionDash] = 17
-	skillFrames[action.ActionJump] = 18
-	skillFrames[action.ActionSwap] = 17
+	skillFrames = frames.InitAbilSlice(55)
+	skillFrames[action.ActionAttack] = 49
+	skillFrames[action.ActionCharge] = 49 // Assumed same as NA
+	skillFrames[action.ActionBurst] = 44
+	skillFrames[action.ActionSkill] = 44 // Assumed same as Q
+	skillFrames[action.ActionDash] = 65 - 19
+	skillFrames[action.ActionJump] = 73 - 30
+	skillFrames[action.ActionSwap] = 49
 
-	spearStormFrames = frames.InitAbilSlice(42)
-	spearStormFrames[action.ActionAttack] = 28
-	spearStormFrames[action.ActionBurst] = 28
-	spearStormFrames[action.ActionDash] = 26
-	spearStormFrames[action.ActionJump] = 26
-	spearStormFrames[action.ActionWalk] = 32
+	specialSkillFrames = frames.InitAbilSlice(68)
+	specialSkillFrames[action.ActionAttack] = 55
+	specialSkillFrames[action.ActionCharge] = 64
+	specialSkillFrames[action.ActionSkill] = 56
+	specialSkillFrames[action.ActionBurst] = 55
+	specialSkillFrames[action.ActionDash] = 75 - 19
+	specialSkillFrames[action.ActionJump] = 85 - 30
+	specialSkillFrames[action.ActionWalk] = 65
 }
 
 func (c *char) onExitField() {
@@ -79,17 +85,21 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex: c.Index(),
-		Abil:       "Windbound Execution",
-		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Anemo,
-		Durability: 25,
-		Mult:       skillInitial[c.TalentLvlSkill()],
+		ActorIndex:         c.Index(),
+		Abil:               "Windbound Execution",
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeBlunt,
+		PoiseDMG:           100,
+		Element:            attributes.Anemo,
+		Durability:         25,
+		Mult:               skillInitial[c.TalentLvlSkill()],
+		HitlagHaltFrames:   0.09 * 60,
+		HitlagFactor:       0.01,
+		CanBeDefenseHalted: true,
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3), skillHitmark, skillHitmark, c.particleCB)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), skillHitmark, skillHitmark, c.particleCB)
 
 	// c.SetCDWithDelay(action.ActionSkill, 16*60, skillHitmark)
 	c.QueueCharTask(func() {
@@ -102,13 +112,12 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			c.c1OnSkill()
 			c.startFourWindsCD()
 		}
-		c.SetCD(action.ActionSkill, skillCD)
 	}, skillHitmark)
-
+	c.SetCDWithDelay(action.ActionSkill, skillCD, 39)
 	return action.Info{
 		Frames:          func(next action.Action) int { return skillFrames[next] },
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillFrames[action.ActionBurst], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }
@@ -119,32 +128,38 @@ func (c *char) fourWinds(c6Free bool) (action.Info, error) {
 	c1Mult := c.c1OnSpecialSkill()
 	for i := range 2 {
 		ai := info.AttackInfo{
-			ActorIndex:     c.Index(),
-			Abil:           "Four Winds' Ascension",
-			AttackTag:      attacks.AttackTagElementalArt,
-			ICDTag:         attacks.ICDTagNone,
-			ICDGroup:       attacks.ICDGroupDefault,
-			StrikeType:     attacks.StrikeTypeDefault,
-			Element:        ele[i],
-			Durability:     25,
-			Mult:           skillAscension[i][c.TalentLvlSkill()] * c.a1SkillMulti() * c1Mult,
-			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagVarkaSpecial},
+			ActorIndex:         c.Index(),
+			Abil:               "Four Winds' Ascension",
+			AttackTag:          attacks.AttackTagElementalArt,
+			ICDTag:             attacks.ICDTagNone,
+			ICDGroup:           attacks.ICDGroupDefault,
+			StrikeType:         attacks.StrikeTypeBlunt,
+			PoiseDMG:           fourWindsPoiseDmg[i],
+			Element:            ele[i],
+			Durability:         25,
+			Mult:               skillAscension[i][c.TalentLvlSkill()] * c.a1SkillMulti() * c1Mult,
+			AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagVarkaSpecial},
+			HitlagHaltFrames:   fourWindsHitHaltFrame[i] * 60,
+			HitlagFactor:       0.01,
+			CanBeDefenseHalted: fourWindsCanBeDefHalted[i],
 		}
-		ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 4, 6)
+		ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6.5)
 		c.Core.QueueAttack(ai, ap, fourWindsHitmark[i], fourWindsHitmark[i])
 	}
 
 	if !c6Free {
-		c.useFourWindsCharge()
-		c.c6OnSkill()
+		c.QueueCharTask(func() {
+			c.useFourWindsCharge()
+			c.c6OnSkill()
+		}, 39)
 	}
 
 	c.c2OnSpecialSkill()
 
 	return action.Info{
-		Frames:          func(next action.Action) int { return spearStormFrames[next] },
-		AnimationLength: spearStormFrames[action.InvalidAction],
-		CanQueueAfter:   spearStormFrames[action.ActionDash], // earliest cancel
+		Frames:          func(next action.Action) int { return specialSkillFrames[next] },
+		AnimationLength: specialSkillFrames[action.InvalidAction],
+		CanQueueAfter:   specialSkillFrames[action.ActionBurst], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }

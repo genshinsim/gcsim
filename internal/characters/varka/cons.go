@@ -49,13 +49,15 @@ func (c *char) c2OnSpecialSkill() {
 		AttackTag:      attacks.AttackTagElementalArt,
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
-		StrikeType:     attacks.StrikeTypeDefault,
+		StrikeType:     attacks.StrikeTypeBlunt,
+		PoiseDMG:       20,
 		Element:        attributes.Anemo,
 		Durability:     25,
 		Mult:           8,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagVarkaSpecial},
 	}
-	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 4, 6)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7)
+	// TODO: Get c2 hitmark
 	c.Core.QueueAttack(ai, ap, 10, 10)
 }
 
