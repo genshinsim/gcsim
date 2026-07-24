@@ -110,6 +110,7 @@ const (
 	FesteringDesire                               // festeringdesire
 	FilletBlade                                   // filletblade
 	FinaleOfTheDeep                               // finaleofthedeep
+	FlameForgedInsight                            // flameforgedinsight
 	FleuveCendreFerryman                          // fleuvecendreferryman
 	FlowerWreathedFeathers                        // flowerwreathedfeathers
 	FlowingPurity                                 // flowingpurity
@@ -343,6 +344,7 @@ var _WeaponNames = [...]string{
 	"festeringdesire",
 	"filletblade",
 	"finaleofthedeep",
+	"flameforgedinsight",
 	"fleuvecendreferryman",
 	"flowerwreathedfeathers",
 	"flowingpurity",
@@ -576,6 +578,7 @@ var _WeaponValues = [...]Weapon{
 	FesteringDesire,
 	FilletBlade,
 	FinaleOfTheDeep,
+	FlameForgedInsight,
 	FleuveCendreFerryman,
 	FlowerWreathedFeathers,
 	FlowingPurity,
