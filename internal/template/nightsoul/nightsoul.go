@@ -153,6 +153,7 @@ func (s *State) ConsumePoints(amount float64) {
 func (s *State) ClearPoints() {
 	amt := s.nightsoulPoints
 	s.nightsoulPoints = 0
+	s.c.Events.Emit(event.OnNightsoulConsume, s.char.Index(), amt)
 	s.c.Log.NewEvent("clear nightsoul points", glog.LogCharacterEvent, s.char.Index()).
 		Write("previous points", amt)
 }

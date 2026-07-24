@@ -49,6 +49,7 @@ var avatarMap = map[string]string{
 	"ganyu":             "UI_AvatarIcon_Ganyu",
 	"gorou":             "UI_AvatarIcon_Gorou",
 	"hutao":             "UI_AvatarIcon_Hutao",
+	"ifa":               "UI_AvatarIcon_Ifa",
 	"ineffa":            "UI_AvatarIcon_Ineffa",
 	"jean":              "UI_AvatarIcon_Qin",
 	"kaedeharakazuha":   "UI_AvatarIcon_Kazuha",
