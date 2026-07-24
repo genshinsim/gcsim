@@ -137,6 +137,11 @@ func (c *char) c6Init() {
 				if !c.StatusIsActive(c6Key) {
 					return 0
 				}
+
+				if c.Core.Player.Active() != char.Index() {
+					return 0
+				}
+
 				buff := 0.15
 				if c.Core.Player.GetMoonsignLevel() >= 2 {
 					buff += 0.2
