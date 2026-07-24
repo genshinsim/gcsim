@@ -383,7 +383,7 @@ func (c *CharWrapper) ReactBonus(atk info.AttackInfo) float64 {
 			amt += val
 			c.mods[n] = v
 			n++
-			if val > 0 {
+			if val != 0 {
 				evt.Write(m.ModKey, val)
 			}
 		}
