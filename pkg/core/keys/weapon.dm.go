@@ -122,6 +122,7 @@ const (
 	FruitfulHook                                  // fruitfulhook
 	FruitOfFulfillment                            // fruitoffulfillment
 	GestOfTheMightyWolf                           // gestofthemightywolf
+	GoldenFrostboundOath                          // goldenfrostboundoath
 	HakushinRing                                  // hakushinring
 	Halberd                                       // halberd
 	Hamayumi                                      // hamayumi
@@ -355,6 +356,7 @@ var _WeaponNames = [...]string{
 	"fruitfulhook",
 	"fruitoffulfillment",
 	"gestofthemightywolf",
+	"goldenfrostboundoath",
 	"hakushinring",
 	"halberd",
 	"hamayumi",
@@ -588,6 +590,7 @@ var _WeaponValues = [...]Weapon{
 	FruitfulHook,
 	FruitOfFulfillment,
 	GestOfTheMightyWolf,
+	GoldenFrostboundOath,
 	HakushinRing,
 	Halberd,
 	Hamayumi,
