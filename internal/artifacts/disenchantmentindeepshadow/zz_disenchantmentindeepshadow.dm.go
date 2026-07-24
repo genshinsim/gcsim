@@ -9,7 +9,7 @@
 //	Increases Superconduct Reaction DMG by 80% and Stellar-Conduct Reaction DMG by 40%.
 //	When the wielder attacks opponents affected by Superconduct or Stellar-Conduct, this
 //	attack's CRIT Rate is increased by 16%.
-package disenchantmentinthedeepshadow
+package disenchantmentindeepshadow
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
