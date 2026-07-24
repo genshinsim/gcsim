@@ -19,6 +19,7 @@ func init() {
 		action.ActionLowPlunge:  {"collision"},
 		action.ActionHighPlunge: {"collision"},
 		action.ActionSkill:      {"hold", "recast"},
+		action.ActionDash:       {"charge_cancel", "collision", "travel"},
 	}
 	validation.RegisterCharParamValidationFunc(keys.Mavuika, func(a action.Action, keys []string) error {
 		valid, ok := paramsFor[a]

@@ -1294,23 +1294,6 @@
       "desc": "0 for no collision dmg (default), 1 for collision dmg. Flamestrider plunge has no collision."
     },
     {
-      "ability": "dash",
-      "param": "collision",
-      "desc": "0 for no collision dmg, 1 for collision dmg (default). Only applies to Flamestrider dash."
-    },
-    {
-      "ability": "dash",
-      "param": "travel",
-      "desc": "Duration before Flamestrider hits the enemy. Values between 6 (default) and 24 inclusive. Only applies to Flamestrider dash. If collision is not set to 0, all abilities must wait at least <travel> frames before they can cancel dash."
-    },
-    {
-      "ability": "dash",
-      "param": "charge_cancel",
-      "desc": "1 to allow an early cancel (cdc), 0 for no early cancel (default). An early-cancelled dash allows a Flamestrider Charge Attack to begin as soon as the dash hitmark (or 2f, if collision is skipped). Only applies to Flamestrider dash following a charge attack or finisher. Note: after Mavuika has completed a revolution, when she is between 12:00 and 1:30 as the hourhand on a clock (approx) she is unable to perform an early cancel. An error is thrown if this param is used and the dash is not preceded by and followed by a biked charge (cyclic or finisher)."
-    }
-  ],
-  "mika": [
-    {
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), 1 for Hold."
@@ -1319,6 +1302,21 @@
       "ability": "skill",
       "param": "recast",
       "desc": "0 to use E (default), 1 to use Recast E. Recast E is only possible if Nightsoul Blessing is active and Recast E is not on cooldown."
+    },
+    {
+      "ability": "dash",
+      "param": "charge_cancel",
+      "desc": "1 to allow an early cancel (cdc), 0 for no early cancel (default). An early-cancelled dash allows a Flamestrider Charge Attack to begin as soon as the dash hitmark (or 2f, if collision is skipped). Only applies to Flamestrider dash following a charge attack or finisher. Note: after Mavuika has completed a revolution, when she is between 12:00 and 1:30 as the hourhand on a clock (approx) she is unable to perform an early cancel. An error is thrown if this param is used and the dash is not preceded by and followed by a biked charge (cyclic or finisher)."
+    },
+    {
+      "ability": "dash",
+      "param": "collision",
+      "desc": "0 for no collision dmg, 1 for collision dmg (default). Only applies to Flamestrider dash."
+    },
+    {
+      "ability": "dash",
+      "param": "travel",
+      "desc": "Duration before Flamestrider hits the enemy. Values between 6 (default) and 24 inclusive. Only applies to Flamestrider dash. If collision is not set to 0, all abilities must wait at least <travel> frames before they can cancel dash."
     }
   ],
   "mika": [

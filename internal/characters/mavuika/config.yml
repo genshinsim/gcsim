@@ -287,10 +287,10 @@ abilities:
         radius: 6
 
   - name: dash
-  params:
-      charge_cancel: 1 to allow an early cancel (cdc), 0 for no early cancel (default). An early-cancelled dash allows a Flamestrider Charge Attack to begin as soon as the dash hitmark (or 2f, if collision is skipped). Only applies to Flamestrider dash following a charge attack or finisher. Note: after Mavuika has completed a revolution, when she is between 12:00 and 1:30 as the hourhand on a clock (approx) she is unable to perform an early cancel. An error is thrown if this param is used and the dash is not preceded by and followed by a biked charge (cyclic or finisher).
-      travel: Duration before Flamestrider hits the enemy. Values between 6 (default) and 24 inclusive. Only applies to Flamestrider dash. If collision is not set to 0, all abilities must wait at least <travel> frames before they can cancel dash.
-      collision: 0 for no collision dmg, 1 for collision dmg (default). Only applies to Flamestrider dash.
+    params:
+      charge_cancel: "1 to allow an early cancel (cdc), 0 for no early cancel (default). An early-cancelled dash allows a Flamestrider Charge Attack to begin as soon as the dash hitmark (or 2f, if collision is skipped). Only applies to Flamestrider dash following a charge attack or finisher. Note: after Mavuika has completed a revolution, when she is between 12:00 and 1:30 as the hourhand on a clock (approx) she is unable to perform an early cancel. An error is thrown if this param is used and the dash is not preceded by and followed by a biked charge (cyclic or finisher)."
+      travel: "Duration before Flamestrider hits the enemy. Values between 6 (default) and 24 inclusive. Only applies to Flamestrider dash. If collision is not set to 0, all abilities must wait at least <travel> frames before they can cancel dash."
+      collision: "0 for no collision dmg, 1 for collision dmg (default). Only applies to Flamestrider dash."
     hitbox:
       - name: Dash
         shape: Circle
