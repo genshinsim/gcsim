@@ -1,0 +1,25 @@
+use: pipeline
+kind: character
+name: illuga
+
+talents:
+  - attack: # Oathkeeper's Spear
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG) # {}+{}
+        - attack(3-Hit DMG|1) # {}+{}
+      - attack(4-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - plunge_low: attack(Low/High Plunge DMG) # {}/{}
+  - plunge_high: attack(Low/High Plunge DMG|1) # {}/{}
+
+  - skill_tap_em: skill(Press DMG) # {} Elemental Mastery+{} DEF
+  - skill_tap_def: skill(Press DMG|1) # {} Elemental Mastery+{} DEF
+  - hold_tap_em: skill(Hold DMG) # {} Elemental Mastery+{} DEF
+  - hold_tap_def: skill(Hold DMG|1) # {} Elemental Mastery+{} DEF
+
+  - burst_em: burst(Skill DMG) # {} Elemental Mastery+{} DEF
+  - burst_def: burst(Skill DMG|1) # {} Elemental Mastery+{} DEF
+  - burst_buff_geo: burst(Geo DMG Bonus)
+  - burst_buff_lcr: burst(Lunar-Crystallize Reaction DMG Bonus)

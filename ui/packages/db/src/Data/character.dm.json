@@ -782,6 +782,23 @@
         "burst_energy_cost": 60
       }
     },
+    "illuga": {
+      "id": 10000127,
+      "sub_id": 12701,
+      "key": "illuga",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_NODKRAI",
+      "element": "Rock",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Illuga",
+      "skill_details": {
+        "skill": 11272,
+        "burst": 11275,
+        "attack": 11271,
+        "burst_energy_cost": 60
+      }
+    },
     "ineffa": {
       "id": 10000116,
       "sub_id": 11601,
