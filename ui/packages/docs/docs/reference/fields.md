@@ -13,7 +13,11 @@ All fields evaluate to a number.
 
 ## Available Fields
 
-:::tip Most of the specific tags can be located in their respective character/weapon/artifact page. For example, if you are looking for the tag for Lisa's A4 (defense shred), then look in Lisa's character page. :::
+:::tip
+
+Most of the specific tags can be located in their respective character/weapon/artifact page. For example, if you are looking for the tag for Lisa's A4 (defense shred), then look in Lisa's character page.
+
+:::
 
 <!-- prettier-ignore -->
 | field1 | field2 | field3 | field4 | description |
@@ -33,10 +37,10 @@ All fields evaluate to a number.
 | `keys` | `char`/`weapon`/`artifact` | char/weapon/artifact name | - | Evaluates to the key for the specified char/weapon/artifact name. See the relevant character/weapon/artifact page for acceptable names. |
 | `keys` | `element` | element name | - | Evaluates to the key for the specified element name. Element names are `electro`, `pyro`, `cryo`, `hydro`, `dendro`, `quicken`, `frozen`, `anemo`, `geo`, `physical`. |
 | `action` |  `skill`/`burst`/`attack`/`charge`/`high_plunge`/`low_plunge`/`aim`/`dash`/`jump`/`swap`/`walk`/`wait` | - | Evaluates to the key for the specified action name. |
-| `state` | - | - | - | Evaluates to the current state of the player. | 
-| `previous-char` | - | - | - | Evaluates to the char that executed the previous action. Use `.keys.char.<char name>` for comparison. | 
-| `previous-action` | - | - | - | Evaluates to the previously executed action. Use `.action.<action name>` for comparison. | 
-| `airborne` | - | - | - | `1` if the player is airborne (via buffed jump from Xianyun Q for example), `0` otherwise. | 
+| `state` | - | - | - | Evaluates to the current state of the player. |
+| `previous-char` | - | - | - | Evaluates to the char that executed the previous action. Use `.keys.char.<char name>` for comparison. |
+| `previous-action` | - | - | - | Evaluates to the previously executed action. Use `.action.<action name>` for comparison. |
+| `airborne` | - | - | - | `1` if the player is airborne (via buffed jump from Xianyun Q for example), `0` otherwise. |
 | character name | `cons` | - | - | Evaluates to the character's constellation count. |
 | character name | `energy` | - | - | Evaluates to the character's current energy. |
 | character name | `energymax` | - | - | Evaluates to the character's maximum energy. |
@@ -48,11 +52,11 @@ All fields evaluate to a number.
 | character name | `normal` | - | - | Evaluates to the character's next normal counter. Example: If the character is in idle or just performed their last normal attack, then the next normal counter is `1` (N1). |
 | character name | `onfield` | - | - | `1` if the character is on the field, `0` otherwise. |
 | character name | `weapon` | - | - | Evaluates to the character's weapon. Use `.keys.weapon.<weapon name>` for comparison purposes.
-| character name | `mods`/`status` | mod/status name | - | Evaluates to the remaining duration of the mod/status on the character. See the relevant character page for acceptable mod/status names. | 
+| character name | `mods`/`status` | mod/status name | - | Evaluates to the remaining duration of the mod/status on the character. See the relevant character page for acceptable mod/status names. |
 | character name | `infusion` | infusion name | - | Evaluates to the remaining duration of the weapon infusion on the character. See the relevant character page for acceptable infusion names. |
 | character name | `tags` | tag name | - | Evaluates to the value of the tag on the character. See the relevant character page for acceptable tag names. |
 | character name | `sets` | set name | - | Evaluates to the count of the set on the character. |
-| character name | `stats` | `def%`/`def`/`hp`/`hp%`/`atk`/`atk%`/`er`/`em`/`cr`/`cd`/`heal`/`pyro%`/`hydro%`/`cryo%`/`electro%`/`anemo%`/`geo%`/`dendro%`/`phys%`/`atkspd%`/`dmg%` | - | Evaluates to the value of the stat on the character. | 
+| character name | `stats` | `def%`/`def`/`hp`/`hp%`/`atk`/`atk%`/`er`/`em`/`cr`/`cd`/`heal`/`pyro%`/`hydro%`/`cryo%`/`electro%`/`anemo%`/`geo%`/`dendro%`/`phys%`/`atkspd%`/`dmg%` | - | Evaluates to the value of the stat on the character. |
 | character name | `skill`/`burst`/`attack`/`charge`/`high_plunge`/`low_plunge`/`aim`/`dash`/`jump`/`swap`/`walk`/`wait` | `cd`/`charge`/`ready` | - | Evaluates to the following things for the specified action of the character: remaining cooldown / remaining charges (example: Sucrose Skill) / `1` if the action is ready, `0` otherwise. |
 | character name | `nightsoul` | `state` | - | `1` if the character is in Nightsoul's Blessing state, `0` otherwise. |
 | character name | `nightsoul` | `points` | - | Evaluates to the character's Nightsoul points. |
