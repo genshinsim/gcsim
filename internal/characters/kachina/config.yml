@@ -1,0 +1,108 @@
+use: pipeline
+kind: character
+name: kachina
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack#1
+      - attack#2
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - charge_attack: attack(Charged Attack DMG)
+  - mounted:
+      - skill#0
+      - skill#0
+  - independent:
+      - skill#1
+      - skill#1
+  - nightsoul: skill#2
+  - skill: skill#3
+  - burst:
+      - burst#0
+      - burst#2
+      - burst#3
+  - field: burst#1
+  - a1:
+      - a1#0
+      - a1#1
+  - a4: a4#0
+  - c1:
+      - c1#0
+      - c1#1
+  - c2: c2#0
+  - c4:
+      - c4#0
+      - c4#1
+      - c4#2
+      - c4#3
+  - c6:
+      - c6#0
+      - c6#1
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1JHBn0s2bgj5gFqjeY8CyZaBSUs59dWWm669Gnz6Hyd8/edit?gid=0#gid=0
+      count_credit: caramielle
+      video: https://youtu.be/OuCjdLQ3Jos
+      video_credit: caramielle
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        radius: 2.5
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+      - name: N2-1
+        shape: Circle
+        center: Player
+        radius: 2.5
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+      - name: N2-2
+        shape: Circle
+        center: Player
+        radius: 2.5
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+      - name: N3
+        shape: Circle
+        center: Player
+        radius: 2.5
+      - name: N4
+        shape: Circle
+        center: Player
+        radius: 2.5
+        hitlag: {time: 0.01, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: Player
+        radius: 3.5
+        hitlag: {scale: 0.01}
+
+  - name: skill
+    params:
+      hold: 0 for Tap, 1 for Hold.
+      recast: 0 for summon, 1 for Turbo Twirly recast.
+    hitbox:
+      - name: E
+        shape: Circle
+        center: Player
+        radius: 4
+
+  - name: burst
+    hitbox:
+      - name: Q
+        shape: Circle
+        center: PrimaryTarget
+        radius: 5.2
+
+  - name: c6
+    hitbox:
+      - name: C6
+        shape: Circle
+        center: PrimaryTarget
+        radius: 5
