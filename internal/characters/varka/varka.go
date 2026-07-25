@@ -41,6 +41,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 		hex = 1
 	}
 	c.IsHexerei = (hex != 0)
+	c.fourWindsCDDoneF = -1
 
 	w.Character = &c
 

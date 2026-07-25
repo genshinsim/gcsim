@@ -11,6 +11,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
+const defaultConversionElement = attributes.Physical
+
 var (
 	skillFrames             []int
 	specialSkillFrames      []int
@@ -65,7 +67,7 @@ func (c *char) onExitField() {
 }
 
 func (c *char) convertToFourWinds() bool {
-	return c.conversionElem != attributes.NoElement
+	return c.conversionElem != defaultConversionElement
 }
 
 func (c *char) getConversionElem(prio ...attributes.Element) attributes.Element {
@@ -76,7 +78,7 @@ func (c *char) getConversionElem(prio ...attributes.Element) attributes.Element 
 			}
 		}
 	}
-	return attributes.Anemo
+	return defaultConversionElement
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {

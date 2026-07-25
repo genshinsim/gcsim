@@ -112,6 +112,11 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 func (c *char) skillAttack() (action.Info, error) {
 	ele := []attributes.Element{c.conversionElem, attributes.Anemo}
+	icdTag := []attacks.ICDTag{attacks.ICDTagVarkaNormalAttackElem, attacks.ICDTagVarkaNormalAttackWind}
+	if ele[0] == defaultConversionElement {
+		icdTag[0] = attacks.ICDTagNormalAttack
+	}
+
 	offset := 0
 	switch c.NormalCounter {
 	case 1, 2:
@@ -129,11 +134,12 @@ func (c *char) skillAttack() (action.Info, error) {
 			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Sturm und Drang Normal %v", c.NormalCounter),
 			AttackTag:          attacks.AttackTagNormal,
-			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDTag:             icdTag[(i+offset)%2],
 			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeBlunt,
 			PoiseDMG:           attackPoiseDMG[c.NormalCounter][i],
 			Element:            ele[(i+offset)%2],
+			IgnoreInfusion:     ele[(i+offset)%2] != attributes.Physical,
 			Durability:         25,
 			Mult:               skillAttack[c.NormalCounter][i][c.TalentLvlSkill()] * c.a1SkillMulti(),
 			HitlagFactor:       0.01,

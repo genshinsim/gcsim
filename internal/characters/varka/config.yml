@@ -2,6 +2,13 @@ use: pipeline
 kind: character
 name: varka
 
+combat:
+  icd_tags:
+    - VarkaNormalAttackElem
+    - VarkaNormalAttackWind
+    - VarkaExtraAttackElem
+    - VarkaExtraAttackWind
+
 talents:
   - attack:
       - attack(1-Hit DMG)
