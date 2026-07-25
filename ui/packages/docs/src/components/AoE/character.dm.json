@@ -11967,6 +11967,102 @@
       "radius": 7.5
     }
   ],
+  "varka": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "shape": "Box",
+      "center": "Player",
+      "offset_y": -0.5,
+      "box_x": 2,
+      "box_y": 3.2
+    },
+    {
+      "ability": "attack",
+      "name": "N2",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.5,
+      "radius": 2.5
+    },
+    {
+      "ability": "attack",
+      "name": "N3-1",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1,
+      "radius": 3
+    },
+    {
+      "ability": "attack",
+      "name": "N3-2",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1.5,
+      "radius": 3
+    },
+    {
+      "ability": "attack",
+      "name": "N4",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1.2,
+      "radius": 2.8
+    },
+    {
+      "ability": "attack",
+      "name": "N5",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.6,
+      "radius": 2.8
+    },
+    {
+      "ability": "charge",
+      "name": "CA",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1,
+      "radius": 2.5
+    },
+    {
+      "ability": "charge",
+      "name": "AzureDevour",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1,
+      "radius": 3
+    },
+    {
+      "ability": "skill",
+      "name": "E-Initial",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 5
+    },
+    {
+      "ability": "skill",
+      "name": "E-FourWinds",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 6.5
+    },
+    {
+      "ability": "burst",
+      "name": "Q",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 2,
+      "radius": 7
+    },
+    {
+      "ability": "cons",
+      "name": "C2",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 7
+    }
+  ],
   "venti": [
     {
       "ability": "attack",
