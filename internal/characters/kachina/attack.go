@@ -44,7 +44,6 @@ func init() {
 	chargeFrames[action.ActionDash] = 50
 	chargeFrames[action.ActionJump] = 50
 	chargeFrames[action.ActionSwap] = 49
-
 }
 
 func (c *char) Attack(_ map[string]int) (action.Info, error) {
@@ -52,18 +51,7 @@ func (c *char) Attack(_ map[string]int) (action.Info, error) {
 		return c.mountedAttack(), nil
 	}
 
-	var multipliers [][]float64
-	switch c.NormalCounter {
-	case 0:
-		multipliers = [][]float64{attack[0]}
-	case 1:
-		multipliers = [][]float64{attack[1], attack[2]}
-	case 2:
-		multipliers = [][]float64{attack[3]}
-	default:
-		multipliers = [][]float64{attack[4]}
-	}
-	for i, mult := range multipliers {
+	for i, mult := range attack[c.NormalCounter] {
 		ai := info.AttackInfo{
 			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter+1),
@@ -91,7 +79,7 @@ func (c *char) Attack(_ map[string]int) (action.Info, error) {
 }
 
 func (c *char) mountedAttack() action.Info {
-	ai := c.twirlyAttackInfo(fmt.Sprintf("Turbo Twirly Normal %v", c.NormalCounter+1), mounted[0][c.TalentLvlSkill()])
+	ai := c.twirlyAttackInfo(fmt.Sprintf("Turbo Twirly Normal %v", c.NormalCounter+1), mounted[c.TalentLvlSkill()])
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, c.twirlyRadius()), mountedHitmark(c.NormalCounter), mountedHitmark(c.NormalCounter), c.twirlyParticleCB, func(info.AttackCB) {
 		c.consumeTwirlyPoints(10)
 	})
@@ -125,7 +113,7 @@ func (c *char) ChargeAttack(_ map[string]int) (action.Info, error) {
 		StrikeType: attacks.StrikeTypeSpear,
 		Element:    attributes.Physical,
 		Durability: 25,
-		Mult:       charge_attack[c.TalentLvlAttack()],
+		Mult:       charge[c.TalentLvlAttack()],
 		PoiseDMG:   120,
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3.5), 20, 20)

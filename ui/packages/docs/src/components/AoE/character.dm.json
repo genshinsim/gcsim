@@ -5836,6 +5836,71 @@
       "center": "GlobalValue"
     }
   ],
+  "kachina": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 2.5
+    },
+    {
+      "ability": "attack",
+      "name": "N2-1",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 2.5
+    },
+    {
+      "ability": "attack",
+      "name": "N2-2",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 2.5
+    },
+    {
+      "ability": "attack",
+      "name": "N3",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 2.5
+    },
+    {
+      "ability": "attack",
+      "name": "N4",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 2.5
+    },
+    {
+      "ability": "charge",
+      "name": "CA",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 3.5
+    },
+    {
+      "ability": "skill",
+      "name": "E",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 4
+    },
+    {
+      "ability": "burst",
+      "name": "Q",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 5.2
+    },
+    {
+      "ability": "c6",
+      "name": "C6",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 5
+    }
+  ],
   "kaedeharakazuha": [
     {
       "ability": "attack",

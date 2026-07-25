@@ -86,7 +86,7 @@ func (c *char) queueIndependent(src, delay int) {
 		if c.twirlySrc != src || !c.StatusIsActive(twirlyKey) || c.mounted {
 			return
 		}
-		ai := c.twirlyIndependentAttackInfo("Turbo Twirly", independent[0][c.TalentLvlSkill()])
+		ai := c.twirlyIndependentAttackInfo("Turbo Twirly", independent[c.TalentLvlSkill()])
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, c.twirlyRadius()),
