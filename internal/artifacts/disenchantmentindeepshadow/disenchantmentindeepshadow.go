@@ -1,4 +1,4 @@
-package disenchantmentinthedeepshadow
+package disenchantmentindeepshadow
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
