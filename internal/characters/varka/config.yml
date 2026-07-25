@@ -1,0 +1,143 @@
+use: pipeline
+kind: character
+name: varka
+
+combat:
+  icd_tags:
+    - VarkaNormalAttackElem
+    - VarkaNormalAttackWind
+    - VarkaExtraAttackElem
+    - VarkaExtraAttackWind
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - - attack(2-Hit DMG) # {}+{}
+        - attack(2-Hit DMG|1) # {}+{}
+        - attack(3-Hit DMG|1) # {}+{}
+      - - attack(3-Hit DMG) # {}+{}
+      - - attack(4-Hit DMG) # {}+{}
+        - attack(4-Hit DMG|1) # {}+{}
+      - - attack(5-Hit DMG) # {}+{}
+        - attack(5-Hit DMG|1) # {}+{}
+
+  - charge:
+      - attack(Charged Attack DMG) # {}+{}
+      - attack(Charged Attack DMG|1) # {}+{}
+
+  - skillInitial: skill(Skill DMG)
+  - skillAttack:
+      - skill(Sturm und Drang 1-Hit DMG)
+      - - skill(Sturm und Drang 2-Hit DMG) # {}+{}
+        - skill(Sturm und Drang 2-Hit DMG|1) # {}+{}
+      - - skill(Sturm und Drang 3-Hit DMG) # {}+{}
+        - skill(Sturm und Drang 3-Hit DMG|1) # {}+{}
+      - - skill(Sturm und Drang 4-Hit DMG) # {}+{}
+        - skill(Sturm und Drang 4-Hit DMG|1) # {}+{}
+      - - skill(Sturm und Drang 5-Hit DMG) # {}+{}
+        - skill(Sturm und Drang 5-Hit DMG|1) # {}+{}
+  - skillCharge:
+      - skill(Sturm und Drang Charged Attack DMG) # {}+{}
+      - skill(Sturm und Drang Charged Attack DMG|1) # {}+{}
+  - skillAscension:
+      - skill(Four Winds' Ascension DMG) # {}+{}
+      - skill(Four Winds' Ascension DMG|1) # {}+{}
+  - skillAzureDevour:
+      - skill(Azure Devour DMG) # {}×2+{}×2
+      - skill(Azure Devour DMG|1) # {}×2+{}×2
+      - skill(Azure Devour DMG) # {}×2+{}×2
+      - skill(Azure Devour DMG|1) # {}×2+{}×2
+
+  - burst:
+      - burst(Skill 1-Hit DMG)
+      - burst(Skill 2-Hit DMG)
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1UVYs8kvZzwubh1BhsWSd63uW7RJVh7jlbLU5FEFFTAA/
+      count_credit: acerbus114
+      video: https://youtu.be/dsUqRF73myU
+      video_credit: acerbus114
+    - count: https://docs.google.com/spreadsheets/d/1UVYs8kvZzwubh1BhsWSd63uW7RJVh7jlbLU5FEFFTAA/
+      count_credit: acerbus114
+      video: https://youtu.be/Uegnb_gW1D8
+      video_credit: acerbus114
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [2, 3.2]
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2.5
+
+      - name: N3-1
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: N3-2
+        shape: Circle
+        center: Player
+        offset: [0, 1.5]
+        radius: 3
+
+      - name: N4
+        shape: Circle
+        center: Player
+        offset: [0, 1.2]
+        radius: 2.8
+
+      - name: N5
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        radius: 2.8
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 2.5
+
+      - name: AzureDevour
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+  - name: skill
+    hitbox:
+      - name: E-Initial
+        shape: Circle
+        center: Player
+        radius: 5
+
+      - name: E-FourWinds
+        shape: Circle
+        center: Player
+        radius: 6.5
+
+  - name: burst
+    hitbox:
+      - name: Q
+        shape: Circle
+        center: Player
+        offset: [0, 2]
+        radius: 7
+  - name: cons
+    hitbox:
+      - name: C2
+        shape: Circle
+        center: Player
+        offset: [0, 0]
+        radius: 7

@@ -142,6 +142,7 @@ const (
 	Thoma                         // thoma
 	Tighnari                      // tighnari
 	Varesa                        // varesa
+	Varka                         // varka
 	Venti                         // venti
 	Wanderer                      // wanderer
 	Wriothesley                   // wriothesley
@@ -263,6 +264,7 @@ var _CharNames = [...]string{
 	"thoma",
 	"tighnari",
 	"varesa",
+	"varka",
 	"venti",
 	"wanderer",
 	"wriothesley",
@@ -384,6 +386,7 @@ var _CharValues = [...]Char{
 	Thoma,
 	Tighnari,
 	Varesa,
+	Varka,
 	Venti,
 	Wanderer,
 	Wriothesley,

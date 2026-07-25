@@ -222,6 +222,7 @@ ace.define(
         'thoma',
         'tighnari',
         'varesa',
+        'varka',
         'venti',
         'wanderer',
         'kabukimono',
