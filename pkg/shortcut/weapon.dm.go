@@ -147,6 +147,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"fof":                             keys.FruitOfFulfillment,
 	"fruit":                           keys.FruitOfFulfillment,
 	"gestofthemightywolf":             keys.GestOfTheMightyWolf,
+	"goldenfrostboundoath":            keys.GoldenFrostboundOath,
 	"hakushinring":                    keys.HakushinRing,
 	"hakushin":                        keys.HakushinRing,
 	"halberd":                         keys.Halberd,
