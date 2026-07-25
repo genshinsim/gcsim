@@ -20,7 +20,10 @@ import {
 
 const charIDToKeyLookup = Object.values(CharDataGen.data).reduce((acc, val) => {
   //this concat here is to handle traveler which has the same id but diff sub_id
-  const id_str = `${val.id}${'sub_id' in val ? '-' + val['sub_id'] : ''}`;
+  var id_str = val.id.toString();
+  if (val.id === 10000007 || val.id === 10000005) {
+    id_str += '-' + val.sub_id.toString();
+  }
   acc[id_str] = val.key;
   return acc;
 }, {} as {[id_str: string]: string});
