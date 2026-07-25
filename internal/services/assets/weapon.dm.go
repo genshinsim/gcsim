@@ -70,6 +70,7 @@ var weaponMap = map[string]string{
 	"festeringdesire":                 "UI_EquipIcon_Sword_Magnum_Awaken",
 	"filletblade":                     "UI_EquipIcon_Sword_Sashimi_Awaken",
 	"finaleofthedeep":                 "UI_EquipIcon_Sword_Vorpal_Awaken",
+	"flameforgedinsight":              "UI_EquipIcon_Claymore_Polilith_Awaken",
 	"fleuvecendreferryman":            "UI_EquipIcon_Sword_Machination_Awaken",
 	"flowerwreathedfeathers":          "UI_EquipIcon_Bow_Umpakati_Awaken",
 	"flowingpurity":                   "UI_EquipIcon_Catalyst_Vorpal_Awaken",

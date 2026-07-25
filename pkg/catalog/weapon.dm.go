@@ -5299,6 +5299,86 @@ var WeaponMap = map[keys.Weapon]*model.WeaponData{
 			},
 		},
 	},
+	keys.FlameForgedInsight: {
+		Id:          12432,
+		Key:         "flameforgedinsight",
+		Rarity:      4,
+		WeaponClass: model.WeaponType_WEAPON_CLAYMORE,
+		ImageName:   "UI_EquipIcon_Claymore_Polilith_Awaken",
+		BaseStats: &model.WeaponStatsData{
+			BaseProps: []*model.WeaponProp{
+				{
+					PropType:     model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+					InitialValue: 42.401,
+					Curve:        model.GrowCurveType_GROW_CURVE_ATTACK_201,
+				},
+				{
+					PropType:     model.FightPropType_FIGHT_PROP_ELEMENT_MASTERY,
+					InitialValue: 36.0,
+					Curve:        model.GrowCurveType_GROW_CURVE_CRITICAL_201,
+				},
+			},
+			PromoData: []*model.PromotionData{
+				{
+					MaxLevel: 20,
+				},
+				{
+					MaxLevel: 40,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    25.9,
+						},
+					},
+				},
+				{
+					MaxLevel: 50,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    51.9,
+						},
+					},
+				},
+				{
+					MaxLevel: 60,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    77.8,
+						},
+					},
+				},
+				{
+					MaxLevel: 70,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    103.7,
+						},
+					},
+				},
+				{
+					MaxLevel: 80,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    129.7,
+						},
+					},
+				},
+				{
+					MaxLevel: 90,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    155.6,
+						},
+					},
+				},
+			},
+		},
+	},
 	keys.FleuveCendreFerryman: {
 		Id:          11426,
 		Key:         "fleuvecendreferryman",
