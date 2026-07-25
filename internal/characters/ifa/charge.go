@@ -86,7 +86,7 @@ func (c *char) attackHoldSkillState(p map[string]int) action.Info {
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Anemo,
 		Durability:     25,
-		Mult:           skill_dmg[c.TalentLvlSkill()],
+		Mult:           skillDmg[c.TalentLvlSkill()],
 	}
 
 	travel, ok := p["travel"]

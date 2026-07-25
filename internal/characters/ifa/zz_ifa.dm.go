@@ -102,7 +102,7 @@ var (
 		3.4922,
 	}
 	// attack: RiteOfDispellingWinds - Plunge DMG: {5}
-	plunge_collision = []float64{
+	collision = []float64{
 		0.568288,
 		0.614544,
 		0.6608,
@@ -120,7 +120,7 @@ var (
 		1.51984,
 	}
 	// attack: RiteOfDispellingWinds - Low/High Plunge DMG: {6}/{7}
-	plunge_low = []float64{
+	plungeLow = []float64{
 		1.136335,
 		1.228828,
 		1.32132,
@@ -138,7 +138,7 @@ var (
 		3.039036,
 	}
 	// attack: RiteOfDispellingWinds - Low/High Plunge DMG: {6}/{7}
-	plunge_high = []float64{
+	plungeHigh = []float64{
 		1.419344,
 		1.534872,
 		1.6504,
@@ -156,7 +156,7 @@ var (
 		3.79592,
 	}
 	// skill: AirborneDiseasePrevention - Tonicshot DMG: {0}
-	skill_dmg = []float64{
+	skillDmg = []float64{
 		1.3336,
 		1.43362,
 		1.53364,
@@ -174,7 +174,7 @@ var (
 		3.1673,
 	}
 	// skill: AirborneDiseasePrevention - Tonicshot Healing On Hit: {1} Elemental Mastery+{2}
-	skill_heal = []float64{
+	skillHeal = []float64{
 		0.2016,
 		0.21672,
 		0.23184,
@@ -192,7 +192,7 @@ var (
 		0.4788,
 	}
 	// skill: AirborneDiseasePrevention - Tonicshot Healing On Hit: {1} Elemental Mastery+{2}
-	skill_heal_flat = []float64{
+	skillHealFlat = []float64{
 		48.14847,
 		52.96399,
 		58.180798,
@@ -210,7 +210,7 @@ var (
 		152.08337,
 	}
 	// burst: CompoundSedationField - Skill DMG: {0}
-	burst_dmg = []float64{
+	burstDmg = []float64{
 		5.0848,
 		5.46616,
 		5.84752,
@@ -228,7 +228,7 @@ var (
 		12.0764,
 	}
 	// burst: CompoundSedationField - Sedation Mark DMG: {1}
-	burst_mark = []float64{
+	burstMark = []float64{
 		1.0896,
 		1.17132,
 		1.25304,

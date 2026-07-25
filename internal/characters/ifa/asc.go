@@ -23,14 +23,14 @@ func (c *char) a1Init() {
 					return 0
 				}
 
-				m := c.getTeamNightsoul()
+				ns := c.getTeamNightsoul()
 
-				m += c.c2BonusPoints(m)
+				ns += c.c2BonusPoints(ns)
 
-				m = min(m, 150.0+c.c2CapIncrease())
+				ns = min(ns, 150.0+c.c2CapIncrease())
 
 				c.Core.Log.NewEvent("ifa a1 stacks", glog.LogCharacterEvent, char.Index()).
-					Write("stacks", m)
+					Write("stacks", ns)
 
 				switch ai.AttackTag {
 				case attacks.AttackTagSwirlPyro,
@@ -38,10 +38,10 @@ func (c *char) a1Init() {
 					attacks.AttackTagSwirlElectro,
 					attacks.AttackTagSwirlCryo,
 					attacks.AttackTagECDamage:
-					return 0.015 * m
+					return 0.015 * ns
 				case attacks.AttackTagReactionLunarCharge,
 					attacks.AttackTagDirectLunarCharged:
-					return 0.002 * m
+					return 0.002 * ns
 				}
 				return 0
 			},

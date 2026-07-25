@@ -19,6 +19,7 @@ const (
 	burstHitmark        = 41
 	sedationMarkHitmark = 38
 	burstNSFall         = 102
+	sedationMarkCap     = 4
 )
 
 func init() {
@@ -48,16 +49,24 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Anemo,
 		Durability:     25,
-		Mult:           burst_dmg[c.TalentLvlBurst()],
+		Mult:           burstDmg[c.TalentLvlBurst()],
 	}
 
+	c.sedationMarkCounter = 0
+
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6.0)
+
+	c.Core.Tasks.Add(func() {
+		for _, t := range c.Core.Combat.EnemiesWithinArea(ap, nil) {
+			c.sedationMark(t)
+		}
+	}, burstHitmark)
+
 	c.Core.QueueAttack(
 		ai,
 		ap,
 		burstHitmark,
 		burstHitmark,
-		c.sedationMarkCB,
 	)
 
 	c.c4OnBurst()
@@ -79,8 +88,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) sedationMarkCB(a info.AttackCB) {
-	t := a.Target
+func (c *char) sedationMark(t info.Target) {
+	if sedationMarkCap <= c.sedationMarkCounter {
+		return
+	}
+
+	c.sedationMarkCounter++
 
 	x, ok := t.(info.TargetWithAura)
 
@@ -96,8 +109,9 @@ func (c *char) sedationMarkCB(a info.AttackCB) {
 		ICDTag:         attacks.ICDTagIfaSedationMark,
 		ICDGroup:       attacks.ICDGroupIfaSedationMark,
 		StrikeType:     attacks.StrikeTypeDefault,
+		Element:        attributes.NoElement,
 		Durability:     25,
-		Mult:           burst_mark[c.TalentLvlBurst()],
+		Mult:           burstMark[c.TalentLvlBurst()],
 	}
 
 	auraPriority := []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}

@@ -11,10 +11,11 @@ import (
 
 type char struct {
 	*tmpl.Character
-	nightsoulState   *nightsoul.State
-	nightsoulSrc     int
-	skillParticleICD bool
-	skillLastStamF   int
+	nightsoulState      *nightsoul.State
+	nightsoulSrc        int
+	skillParticleICD    bool
+	skillLastStamF      int
+	sedationMarkCounter int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

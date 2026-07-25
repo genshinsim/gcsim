@@ -22,13 +22,13 @@ talents:
       - attack(2-Hit DMG)
       - attack(3-Hit DMG)
   - charge: attack(Charged Attack DMG)
-  - plunge_collision: attack(Plunge DMG)
-  - plunge_low: attack(Low/High Plunge DMG) # {}/{}
-  - plunge_high: attack(Low/High Plunge DMG|1) # {}/{}
+  - collision: attack(Plunge DMG)
+  - plungeLow: attack(Low/High Plunge DMG) # {}/{}
+  - plungeHigh: attack(Low/High Plunge DMG|1) # {}/{}
 
-  - skill_dmg: skill(Tonicshot DMG)
-  - skill_heal: skill(Tonicshot Healing On Hit) # {} Elemental Mastery+{}
-  - skill_heal_flat: skill(Tonicshot Healing On Hit|1) # {} Elemental Mastery+{}
+  - skillDmg: skill(Tonicshot DMG)
+  - skillHeal: skill(Tonicshot Healing On Hit) # {} Elemental Mastery+{}
+  - skillHealFlat: skill(Tonicshot Healing On Hit|1) # {} Elemental Mastery+{}
 
-  - burst_dmg: burst(Skill DMG)
-  - burst_mark: burst(Sedation Mark DMG)
+  - burstDmg: burst(Skill DMG)
+  - burstMark: burst(Sedation Mark DMG)

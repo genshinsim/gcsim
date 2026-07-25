@@ -148,7 +148,7 @@ func (c *char) skillPlunge(p map[string]int) (action.Info, error) {
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Anemo,
 		Durability:     25,
-		Mult:           plunge_low[c.TalentLvlAttack()],
+		Mult:           plungeLow[c.TalentLvlAttack()],
 	}
 
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
@@ -192,7 +192,7 @@ func (c *char) healHoldCB(a info.AttackCB) {
 
 func (c *char) healSkill() {
 	em := c.Stat(attributes.EM)
-	healAmt := skill_heal[c.TalentLvlSkill()]*em + skill_heal_flat[c.TalentLvlSkill()]
+	healAmt := skillHeal[c.TalentLvlSkill()]*em + skillHealFlat[c.TalentLvlSkill()]
 	healBonus := c.Stat(attributes.Heal)
 
 	hi := info.HealInfo{

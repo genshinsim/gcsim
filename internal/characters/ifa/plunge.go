@@ -54,7 +54,7 @@ func (c *char) LowPlungeAttack(p map[string]int) (action.Info, error) {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
-		Mult:       plunge_low[c.TalentLvlAttack()],
+		Mult:       plungeLow[c.TalentLvlAttack()],
 	}
 
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 3),
@@ -78,7 +78,7 @@ func (c *char) plungeCollision(fullDelay int) {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 0,
-		Mult:       plunge_collision[c.TalentLvlAttack()],
+		Mult:       collision[c.TalentLvlAttack()],
 	}
 
 	if c.nightsoulState.HasBlessing() {
