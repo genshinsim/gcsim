@@ -372,7 +372,7 @@
     },
     "warnings": {
         "incomplete_char_title": "Personajes Incompletos Utilizados",
-        "incomplete_char_body": "¡Esta simulación contiene personajes en un estado de lanzamiento anticipado! Estos personajes están completamente implementados, pero pueden no tener datos de fotogramas óptimos alineados con las animaciones en el juego. Estamos recopilando datos activamente para mejorar su implementación. Si desea ayudar, ¡comuníquese en el <0>Discord de gcsim</0>!",
+        "incomplete_char_body": "¡Esta simulación contiene personajes en una fase temprana de lanzamiento! Estos personajes están completamente implementados, pero es posible que sus datos no estén optimizados con las mecánicas del juego. Estamos recopilando datos activamente para mejorar su implementación. Si quieres ayudar, ¡únete al <0>Discord de gcsim</0>!",
         "incomplete_char_data_header": "Personajes Incompletos",
         "position_overlap_title": "Superposición de Posiciones del Objetivo",
         "position_overlap_body": "Las posiciones del objetivo se superponen en al menos una iteración. Confirme si esto es intencional y actualice las posiciones para evitar superposiciones según sea necesario. Las posiciones superpuestas pueden dar lugar a simulaciones inexactas.",
