@@ -78,6 +78,10 @@ const (
 	ICDTagTravelerScorchingThreshold
 	ICDTagTravelerWakeOfEarth
 	ICDTagVaresaCombatCycle
+	ICDTagVarkaExtraAttackElem
+	ICDTagVarkaExtraAttackWind
+	ICDTagVarkaNormalAttackElem
+	ICDTagVarkaNormalAttackWind
 	ICDTagWandererA4
 	ICDTagWandererC6
 	ICDTagXilonenSkate

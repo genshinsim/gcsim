@@ -132,5 +132,8 @@ func (c *char) hexSkillCDReduction() int {
 	if !c.IsHexerei {
 		return 0.5 * 60
 	}
+	if c.Core.Player.GetHexereiCount() < 2 {
+		return 0.5 * 60
+	}
 	return 1.0 * 60
 }

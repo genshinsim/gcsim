@@ -46,13 +46,12 @@ func (c *char) c2OnSpecialSkill() {
 	ai := info.AttackInfo{
 		ActorIndex:     c.Index(),
 		Abil:           "Varka C2",
-		AttackTag:      attacks.AttackTagElementalArt,
+		AttackTag:      attacks.AttackTagNone,
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeBlunt,
 		PoiseDMG:       20,
 		Element:        attributes.Anemo,
-		Durability:     25,
 		Mult:           8,
 		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagVarkaSpecial},
 	}

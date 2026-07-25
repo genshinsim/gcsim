@@ -28,6 +28,10 @@ func init() {
 // Burst attack damage queue generator
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ele := []attributes.Element{c.conversionElem, attributes.Anemo}
+	if ele[0] == defaultConversionElement {
+		ele[0] = attributes.Anemo
+	}
+
 	for i, hitmark := range burstHitmark {
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),

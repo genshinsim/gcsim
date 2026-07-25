@@ -104,16 +104,22 @@ func (c *char) skillCharge() (action.Info, error) {
 	}
 
 	ele := []attributes.Element{c.conversionElem, attributes.Anemo}
+	icdTag := []attacks.ICDTag{attacks.ICDTagVarkaExtraAttackElem, attacks.ICDTagVarkaExtraAttackWind}
+	if ele[0] == defaultConversionElement {
+		icdTag[0] = attacks.ICDTagExtraAttack
+	}
+
 	for i, hitmark := range chargeHitmarks {
 		ai := info.AttackInfo{
 			ActorIndex:         c.Index(),
 			Abil:               "Sturm und Drang Charge",
 			AttackTag:          attacks.AttackTagExtra,
-			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDTag:             icdTag[i],
 			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeBlunt,
 			PoiseDMG:           chargePoiseDmg[i],
 			Element:            ele[i],
+			IgnoreInfusion:     ele[i] != attributes.Physical,
 			Durability:         25,
 			Mult:               charge[i][c.TalentLvlSkill()] * c.a1SkillMulti(),
 			HitlagHaltFrames:   chargeHitlagHaltFrames[i] * 60,
@@ -149,6 +155,14 @@ func (c *char) skillAzureDevour(c6Free bool) (action.Info, error) {
 	}
 
 	ele := []attributes.Element{c.conversionElem, attributes.Anemo, c.conversionElem, attributes.Anemo}
+	icdTag := []attacks.ICDTag{
+		attacks.ICDTagVarkaExtraAttackElem,
+		attacks.ICDTagVarkaExtraAttackWind,
+		attacks.ICDTagVarkaExtraAttackElem,
+		attacks.ICDTagVarkaExtraAttackWind,
+	}
+
+	// Can't do azure devour without converting elem, so c.conversionElem is always non phys
 
 	c1Mult := c.c1OnSpecialSkill()
 	for i, hitmark := range azureDevourHitmarks {
@@ -156,11 +170,12 @@ func (c *char) skillAzureDevour(c6Free bool) (action.Info, error) {
 			ActorIndex:         c.Index(),
 			Abil:               "Azure Devour",
 			AttackTag:          attacks.AttackTagExtra,
-			ICDTag:             attacks.ICDTagNormalAttack,
+			ICDTag:             icdTag[i],
 			ICDGroup:           attacks.ICDGroupDefault,
 			StrikeType:         attacks.StrikeTypeBlunt,
 			PoiseDMG:           azureDevourPoiseDmg[i],
 			Element:            ele[i],
+			IgnoreInfusion:     ele[i] != attributes.Physical,
 			Durability:         25,
 			Mult:               skillAzureDevour[i][c.TalentLvlSkill()] * c.a1SkillMulti() * c1Mult,
 			HitlagHaltFrames:   azureDevourHitlagHaltFrames[i] * 60,
