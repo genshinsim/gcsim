@@ -29,6 +29,10 @@ docs:
       count_credit: GaspNAwe
       video: https://youtu.be/6bDIKtm7ZDY
       video_credit: GaspNAwe
+    - count: https://docs.google.com/spreadsheets/d/1p_XlfW1JB5yPf1nq8Ht49u6QKavGUNaZKR-qBMyfS3w/edit?usp=sharing
+      count_credit: matoba004
+      video: https://youtu.be/PJTbCPKEeQU
+      video_credit: matoba004
 
 abilities:
   - name: attack
