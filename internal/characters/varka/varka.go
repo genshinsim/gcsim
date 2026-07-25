@@ -60,8 +60,11 @@ func (c *char) Init() error {
 
 func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	// TODO: Adjust this value based on if windup happened for the NA
-	if k == info.AnimationXingqiuN0StartDelay {
-		return 12
+	switch k {
+	case info.AnimationXingqiuN0StartDelay:
+		return 21
+	case info.AnimationYelanN0StartDelay:
+		return 4
 	}
 	return c.Character.AnimationStartDelay(k)
 }
