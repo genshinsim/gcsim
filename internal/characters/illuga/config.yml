@@ -16,8 +16,8 @@ talents:
 
   - skill_tap_em: skill(Press DMG) # {} Elemental Mastery+{} DEF
   - skill_tap_def: skill(Press DMG|1) # {} Elemental Mastery+{} DEF
-  - hold_tap_em: skill(Hold DMG) # {} Elemental Mastery+{} DEF
-  - hold_tap_def: skill(Hold DMG|1) # {} Elemental Mastery+{} DEF
+  - skill_hold_em: skill(Hold DMG) # {} Elemental Mastery+{} DEF
+  - skill_hold_def: skill(Hold DMG|1) # {} Elemental Mastery+{} DEF
 
   - burst_em: burst(Skill DMG) # {} Elemental Mastery+{} DEF
   - burst_def: burst(Skill DMG|1) # {} Elemental Mastery+{} DEF
