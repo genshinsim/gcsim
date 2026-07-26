@@ -228,7 +228,7 @@ var (
 		5.7304,
 	}
 	// skill: DawnbearingSongbird - Hold DMG: {2} Elemental Mastery+{3} DEF
-	hold_tap_em = []float64{
+	skill_hold_em = []float64{
 		6.032,
 		6.4844,
 		6.9368,
@@ -246,7 +246,7 @@ var (
 		14.326,
 	}
 	// skill: DawnbearingSongbird - Hold DMG: {2} Elemental Mastery+{3} DEF
-	hold_tap_def = []float64{
+	skill_hold_def = []float64{
 		3.016,
 		3.2422,
 		3.4684,
