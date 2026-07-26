@@ -29,11 +29,11 @@ func init() {
 	skillTapFrames[action.ActionSwap] = 36
 
 	skillHoldFrames = frames.InitAbilSlice(58) // E -> walk
-	skillTapFrames[action.ActionAttack] = 50
-	skillTapFrames[action.ActionBurst] = 50
-	skillTapFrames[action.ActionDash] = 50
-	skillTapFrames[action.ActionJump] = 49
-	skillTapFrames[action.ActionSwap] = 49
+	skillHoldFrames[action.ActionAttack] = 50
+	skillHoldFrames[action.ActionBurst] = 50
+	skillHoldFrames[action.ActionDash] = 50
+	skillHoldFrames[action.ActionJump] = 49
+	skillHoldFrames[action.ActionSwap] = 49
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
