@@ -9,24 +9,38 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var skillFrames []int
+var (
+	skillTapFrames  []int
+	skillHoldFrames []int
+)
 
 const (
 	skillTapHitmark  = 27
-	skillHoldHitmark = 50
+	skillHoldHitmark = 36
 	particleICDKey   = "illuga-particle-icd"
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(47) // E -> walk
-	skillFrames[action.ActionAttack] = 38
-	skillFrames[action.ActionBurst] = 38
-	skillFrames[action.ActionDash] = 37
-	skillFrames[action.ActionJump] = 39
-	skillFrames[action.ActionSwap] = 36
+	skillTapFrames = frames.InitAbilSlice(47) // E -> walk
+	skillTapFrames[action.ActionAttack] = 38
+	skillTapFrames[action.ActionBurst] = 38
+	skillTapFrames[action.ActionDash] = 37
+	skillTapFrames[action.ActionJump] = 39
+	skillTapFrames[action.ActionSwap] = 36
+
+	skillHoldFrames = frames.InitAbilSlice(58) // E -> walk
+	skillTapFrames[action.ActionAttack] = 50
+	skillTapFrames[action.ActionBurst] = 50
+	skillTapFrames[action.ActionDash] = 50
+	skillTapFrames[action.ActionJump] = 49
+	skillTapFrames[action.ActionSwap] = 49
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
+	if p["hold"] == 1 {
+		return c.skillHold()
+	}
+
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
 		Abil:       "Dawnbearing Songbird Tap",
@@ -57,9 +71,47 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 24)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillFrames),
-		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionSwap],
+		Frames:          frames.NewAbilFunc(skillTapFrames),
+		AnimationLength: skillTapFrames[action.InvalidAction],
+		CanQueueAfter:   skillTapFrames[action.ActionSwap],
+		State:           action.SkillState,
+	}, nil
+}
+
+func (c *char) skillHold() (action.Info, error) {
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       "Dawnbearing Songbird Hold",
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
+		Element:    attributes.Geo,
+		Durability: 25,
+		UseEM:      true,
+		Mult:       skill_hold_em[c.TalentLvlSkill()],
+	}
+
+	ai.FlatDmg += skill_hold_def[c.TalentLvlSkill()] + c.TotalDef(false)
+
+	ap := combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.5}, 3, 7) // taken from chevreuse
+
+	c.Core.QueueAttack(
+		ai,
+		ap,
+		skillHoldHitmark,
+		skillHoldHitmark,
+		c.particleCB,
+	)
+
+	c.a1()
+
+	c.SetCDWithDelay(action.ActionSkill, 15*60, 33)
+
+	return action.Info{
+		Frames:          frames.NewAbilFunc(skillHoldFrames),
+		AnimationLength: skillHoldFrames[action.InvalidAction],
+		CanQueueAfter:   skillHoldFrames[action.ActionSwap],
 		State:           action.SkillState,
 	}, nil
 }
