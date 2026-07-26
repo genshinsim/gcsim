@@ -109,7 +109,7 @@ func (c *char) skillAttack() (action.Info, error) {
 			StrikeType:         attacks.StrikeTypeSlash,
 			Element:            attributes.Electro,
 			Durability:         25,
-			Mult:               mult[c.TalentLvlAttack()],
+			Mult:               mult[c.TalentLvlSkill()],
 			HitlagFactor:       0.01,
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackDefHalt[c.NormalCounter][i],
