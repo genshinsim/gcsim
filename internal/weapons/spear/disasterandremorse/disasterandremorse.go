@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -20,10 +19,6 @@ const (
 	irreparable    = "irreparable"
 	procICD        = "disaster-remorse-proc"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.DisasterAndRemorse, NewWeapon)
-}
 
 type Weapon struct {
 	Index int

@@ -26,30 +26,3 @@ import (
 func init() {
 	core.RegisterWeaponFunc(keys.DisasterAndRemorse, NewWeapon)
 }
-
-const (
-	_passive = 17   // passive: DolorousStroke
-	_passive = 3    // passive: DolorousStroke
-	_passive = 1    // passive: DolorousStroke
-	_passive = 0.75 // passive: DolorousStroke
-	_passive = 18   // passive: DolorousStroke
-)
-
-var (
-	// passive: DolorousStroke
-	_passive = []float64{
-		0.4,
-		0.5,
-		0.6,
-		0.7,
-		0.8,
-	}
-	// passive: DolorousStroke
-	_passive = []float64{
-		0.4,
-		0.5,
-		0.6,
-		0.7,
-		0.8,
-	}
-)
