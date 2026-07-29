@@ -14,8 +14,8 @@ talents:
       - attack(1-Hit DMG)
       - - attack(2-Hit DMG) # {}+{}
         - attack(2-Hit DMG|1) # {}+{}
-        - attack(3-Hit DMG|1) # {}+{}
       - - attack(3-Hit DMG) # {}+{}
+        - attack(3-Hit DMG|1) # {}+{}
       - - attack(4-Hit DMG) # {}+{}
         - attack(4-Hit DMG|1) # {}+{}
       - - attack(5-Hit DMG) # {}+{}

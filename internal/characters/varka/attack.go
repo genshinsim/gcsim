@@ -60,7 +60,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		windup = 5
 	}
 
-	for i, delay := range attackHitmarks[c.NormalCounter] {
+	for i, mult := range attack[c.NormalCounter] {
 		ai := info.AttackInfo{
 			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
@@ -71,7 +71,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			PoiseDMG:           attackPoiseDMG[c.NormalCounter][i],
 			Element:            attributes.Physical,
 			Durability:         25,
-			Mult:               attack[c.NormalCounter][i][c.TalentLvlAttack()],
+			Mult:               mult[c.TalentLvlAttack()],
 			HitlagFactor:       0.01,
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: attackCanBeDefenseHalted[c.NormalCounter][i],
@@ -95,7 +95,9 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		default:
 			panic("varka NA hitbox array incorrect size")
 		}
-		c.Core.QueueAttack(ai, ap, delay+windup, delay+windup)
+		c.QueueCharTask(func() {
+			c.Core.QueueAttack(ai, ap, 0, 0)
+		}, windup+attackHitmarks[c.NormalCounter][i])
 	}
 
 	normalCounter := c.NormalCounter
