@@ -184,29 +184,6 @@ export function GOODChartoSrlChar(
 }
 
 export function GOODKeytoGCSIMKey(goodKey: GOODArtifactSetKey | GOODCharacterKey | GOODWeaponKey) {
-  switch (goodKey) {
-    case 'KaedeharaKazuha':
-      return 'kazuha';
-    case 'KamisatoAyaka':
-      return 'ayaka';
-    case 'KamisatoAyato':
-      return 'ayato';
-    case 'KujouSara':
-      return 'sara';
-    case 'RaidenShogun':
-      return 'raiden';
-    case 'SangonomiyaKokomi':
-      return 'kokomi';
-    case 'YaeMiko':
-      return 'yaemiko';
-    case 'AratakiItto':
-      return 'itto';
-    case 'ShikanoinHeizou':
-      return 'heizou';
-    case 'KukiShinobu':
-      return 'kuki';
-  }
-
   const result = goodKey
     .toString()
     .replace(/[^0-9a-z]/gi, "")
