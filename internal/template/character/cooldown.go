@@ -84,12 +84,8 @@ func (c *Character) SetCDWithDelay(a action.Action, dur, delay int) {
 }
 
 func (c *Character) Cooldown(a action.Action) int {
-	// remaining cooldown is src + first item in queue - current frame
-	if c.AvailableCDCharge[a] > 0 {
-		return 0
-	}
 	// otherwise check our queue; if zero then it's ready
-	if len(c.cdQueue) == 0 {
+	if len(c.cdQueue[a]) == 0 {
 		// panic("queue length is somehow 0??")
 		return 0
 	}
