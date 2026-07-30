@@ -1,0 +1,21 @@
+use: pipeline
+kind: character
+name: kachina
+source: community
+version: 6.7.54
+override:
+  id: 10000100
+
+# Exact local labels used by the community-data generator.
+talents:
+  - attack:
+      - 'attack(1-Hit DMG|{param1:F1P})'
+      - 'attack(2-Hit DMG|{param2:F1P}+{param3:F1P})'
+      - 'attack(3-Hit DMG|{param4:F1P})'
+      - 'attack(4-Hit DMG|{param5:F1P})'
+  - charge: 'attack(Charged Attack DMG|{param6:F1P})'
+  - collision: 'attack(Plunge DMG|{param8:F1P})'
+  - lowPlunge: 'attack(Low/High Plunge DMG|{param9:P}/{param10:P}|0)'
+  - highPlunge: 'attack(Low/High Plunge DMG|{param9:P}/{param10:P}|1)'
+  - skill: 'skill(Turbo Twirly Mounted DMG|{param1:F1P} DEF)'
+  - burst: 'burst(Skill DMG|{param1:F1P} DEF)'

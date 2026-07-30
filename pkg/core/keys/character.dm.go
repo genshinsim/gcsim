@@ -160,6 +160,19 @@ const (
 	YumemizukiMizuki              // yumemizukimizuki
 	YunJin                        // yunjin
 	Zhongli                       // zhongli
+	Alyosha                       // alyosha
+	Iansan                        // iansan
+	Ifa                           // ifa
+	Illuga                        // illuga
+	Jahoda                        // jahoda
+	Kachina                       // kachina
+	Linnea                        // linnea
+	Lohen                         // lohen
+	Nefer                         // nefer
+	Odette                        // odette
+	Prune                         // prune
+	Sandrone                      // sandrone
+	Zibai                         // zibai
 	InvalidChar                   // invalidchar
 )
 
@@ -282,6 +295,19 @@ var _CharNames = [...]string{
 	"yumemizukimizuki",
 	"yunjin",
 	"zhongli",
+	"alyosha",
+	"iansan",
+	"ifa",
+	"illuga",
+	"jahoda",
+	"kachina",
+	"linnea",
+	"lohen",
+	"nefer",
+	"odette",
+	"prune",
+	"sandrone",
+	"zibai",
 	"invalidchar",
 }
 
@@ -404,5 +430,18 @@ var _CharValues = [...]Char{
 	YumemizukiMizuki,
 	YunJin,
 	Zhongli,
+	Alyosha,
+	Iansan,
+	Ifa,
+	Illuga,
+	Jahoda,
+	Kachina,
+	Linnea,
+	Lohen,
+	Nefer,
+	Odette,
+	Prune,
+	Sandrone,
+	Zibai,
 	InvalidChar,
 }

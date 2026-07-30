@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "source": "pipeline/community/data",
+  "characters": [
+    {
+      "id": 10000148,
+      "name": "alyosha",
+      "display_name": "Alyosha",
+      "element": "Electro",
+      "weapon": "Polearm",
+      "data_version": "6.7.54",
+      "source_path": "pipeline/community/data/6.7.54/characters/10000148.json",
+      "lunaris_url": "https://lunaris.moe/character/10000148",
+      "nanoka_query": "Alyosha 10000148",
+      "status": "compile-ready",
+      "simulation_level": "basic-simulation-ready",
+      "missing_local_fields": [
+        "action frames, hit marks, cancel windows, and hitlag",
+        "hitbox geometry, targeting, travel time, and multi-target behavior",
+        "runtime state-machine ordering, snapshot timing, and server-only logic",
+        "particle observations pending verification; Lunaris is the temporary default"
+      ],
+      "missing_core_support": [],
+      "references": [],
+      "todos": [
+        "Implement confirmed passives and constellations beyond the conservative direct-damage baseline",
+        "Verify frames, hitboxes, ICD, hitlag, particle behavior, and runtime state ordering"
+      ]
+    },
+    {
+      "id": 10000110,
+      "name": "iansan",
+      "display_name": "Iansan",
+      "element": "Electro",
+      "weapon": "Polearm",
+      "data_version": "6.7.54",
+      "source_path": "pipeline/community/data/6.7.54/characters/10000110.json",
+      "lunaris_url": "https://lunaris.moe/character/10000110",
+      "nanoka_query": "Iansan 10000110",
+      "status": "compile-ready",
+      "simulation_level": "basic-simulation-ready",
+      "missing_local_fields": [
+        "action frames, hit marks, cancel windows, and hitlag",
+        "hitbox geometry, targeting, travel time, and multi-target behavior",
+        "runtime state-machine ordering, snapshot timing, and server-only logic",
+        "particle observations pending verification; Lunaris is the temporary default"
+      ],
+      "missing_core_support": [],
+      "references": [],
+      "todos": [
+        "Implement confirmed passives and constellations beyond the conservative direct-damage baseline",
+        "Verify frames, hitboxes, ICD, hitlag, particle behavior, and runtime state ordering"
+      ]
+    },
+    {
+      "id": 10000113,
+      "name": "ifa",
+      "display_name": "Ifa",
+      "element": "Anemo",
+      "weapon": "Catalyst",
+      "data_version": "6.7.54",
+      "source_path": "pipeline/community/data/6.7.54/characters/10000113.json",
+      "lunaris_url": "https://lunaris.moe/character/10000113",
+      "nanoka_query": "Ifa 10000113",
+      "status": "compile-ready",
+      "simulation_level": "basic-simulation-ready",
+      "missing_local_fields": [
+        "action frames, hit marks, cancel windows, and hitlag",
+        "hitbox geometry, targeting, travel time, and multi-target behavior",
+        "runtime state-machine ordering, snapshot timing, and server-only logic",
+        "particle observations pending verification; Lunaris is the temporary default"
+      ],
+      "missing_core_support": [],
+      "references": [],
+      "todos": [
+        "Implement confirmed passives and constellations beyond the conservative direct-damage baseline",
+        "Verify frames, hitboxes, ICD, hitlag, particle behavior, and runtime state ordering"
+      ]
+    },
+    {
+      "id": 10000127,
+      "name": "illuga",
+      "display_name": "Illuga",
+      "element": "Geo",
+      "weapon": "Polearm",
+      "data_version": "6.7.54",
+      "source_path": "pipeline/community/data/6.7.54/characters/10000127.json",
+      "lunaris_url": "https://lunaris.moe/character/10000127",
+      "nanoka_query": "Illuga 10000127",
+      "status": "compile-ready",
+      "simulation_level": "partial-simulation",
+      "missing_local_fields": [
+        "action frames, hit marks, cancel windows, and hitlag",
+        "hitbox geometry, targeting, travel time, and multi-target behavior",
+        "runtime state-machine ordering, snapshot timing, and server-only logic",
+        "particle observations pending verification; Lunaris is the temporary default"
+      ],
+      "missing_core_support": [
+        "Moonsign state/query",
+        "Ascendant Gleam state"
+      ],
+      "references": [],
+      "todos": [
+        "Implement confirmed passives and constellations beyond the conservative direct-damage baseline",
+        "Verify frames, hitboxes, ICD, hitlag, particle behavior, and runtime state ordering"
+      ]
+    },
+    {
+      "id": 10000124,
+      "name": "jahoda",
+      "display_name": "Jahoda",
+      "element": "Anemo",
+      "weapon": "Bow",
+      "data_version": "6.7.54",
+      "source_path": "pipeline/community/data/6.7.54/characters/10000124.json",
+      "lunaris_url": "https://lunaris.moe/character/10000124",
+      "nanoka_query": "Jahoda 10000124",
+      "status": "compile-ready",
+      "simulation_level": "partial-simulation",
+      "missing_local_fields": [
+        "action frames, hit marks, cancel windows, and hitlag",
+        "hitbox geometry, targeting, travel time, and multi-target behavior",
+        "runtime state-machine ordering, snapshot timing, and server-only logic",
+        "particle observations pending verification; Lunaris is the temporary default"
+      ],
+      "missing_core_support": [
+        "Moonsign state/query",
+        "Ascendant Gleam state"
+      ],
+      "references": [],
+      "todos": [
+        "Implement confirmed passives and constellations beyond the conservative direct-damage baseline",
+        "Verify frames, hitboxes, ICD, hitlag, particle behavior, and runtime state ordering"
+      ]
+    },
+    {
+      "id": 10000100,
+      "name": "kachina",
+      "display_name": "Kachina",
+      "element": "Geo",
+      "weapon": "Polearm",
+      "data_version": "6.7.54",
+      "source_path": "pipeline/community/data/6.7.54/characters/10000100.json",
+      "lunaris_url": "https://lunaris.moe/character/10000100",
+      "nanoka_query": "Kachina 10000100",
+      "status": "compile-ready",
+      "simulation_level": "basic-simulation-ready",
+      "missing_local_fields": [
+        "action frames, hit marks, cancel windows, and hitlag",
+        "hitbox geometry, targeting, travel time, and multi-target behavior",
+        "runtime state-machine ordering, snapshot timing, and server-only logic",
+        "particle observations pending verification; Lunaris is the temporary default"
+      ],
+      "missing_core_support": [],
+      "references": [],
+      "todos": [
+        "Implement confirmed passives and constellations beyond the conservative direct-damage baseline",
+        "Verify frames, hitboxes, ICD, hitlag, particle behavior, and runtime state ordering"
+      ]
+    },
+    {
+      "id": 10000130,
+      "name": "linnea",
+      "display_name": "Linnea",
+      "element": "Geo",
+      "weapon": "Bow",
+      "data_version": "6.7.54",
+      "source_path": "pipeline/community/data/6.7.54/characters/10000130.json",
+      "lunaris_url": "https://lunaris.moe/character/10000130",
+      "nanoka_query": "Linnea 10000130",
+      "status": "compile-ready",
+      "simulation_level": "partial-simulation",
+      "missing_local_fields": [
+        "action frames, hit marks, cancel windows, and hitlag",
+        "hitbox geometry, targeting, travel time, and multi-target behavior",
+        "runtime state-machine ordering, snapshot timing, and server-only logic",
+        "particle observations pending verification; Lunaris is the temporary default"
+      ],
+      "missing_core_support": [
+        "Moonsign state/query",
+        "Ascendant Gleam state"
+      ],
+      "references": [],
+      "todos": [
+        "Implement confirmed passives and constellations beyond the conservative direct-damage baseline",
+        "Verify frames, hitboxes, ICD, hitlag, particle behavior, and runtime state ordering"
+      ]
+    },
+    {
+      "id": 10000129,
+      "name": "lohen",
+      "display_name": "Lohen",
+      "element": "Cryo",
+      "weapon": "Polearm",
+      "data_version": "6.7.54",
+      "source_path": "pipeline/community/data/6.7.54/character

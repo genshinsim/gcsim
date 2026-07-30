@@ -1,0 +1,20 @@
+use: pipeline
+kind: character
+name: iansan
+source: community
+version: 6.7.54
+override:
+  id: 10000110
+
+# Exact local labels used by the community-data generator.
+talents:
+  - attack:
+      - 'attack(1-Hit DMG|{param1:F1P})'
+      - 'attack(2-Hit DMG|{param2:F1P})'
+      - 'attack(3-Hit DMG|{param3:F1P})'
+  - charge: 'attack(Charged Attack DMG|{param4:F1P})'
+  - collision: 'attack(Plunge DMG|{param7:F1P})'
+  - lowPlunge: 'attack(Low/High Plunge DMG|{param8:P}/{param9:P}|0)'
+  - highPlunge: 'attack(Low/High Plunge DMG|{param8:P}/{param9:P}|1)'
+  - skill: 'skill(Skill DMG|{param1:F1P})'
+  - burst: 'burst(Skill DMG|{param1:F1P})'

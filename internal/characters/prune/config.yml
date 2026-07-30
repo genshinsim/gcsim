@@ -1,0 +1,20 @@
+use: pipeline
+kind: character
+name: prune
+source: community
+version: 6.7.54
+override:
+  id: 10000132
+
+# Exact local labels used by the community-data generator.
+talents:
+  - attack:
+      - 'attack(1-Hit DMG|{param1:F1P})'
+      - 'attack(2-Hit DMG|{param2:F1P})'
+      - 'attack(3-Hit DMG|{param3:F1P})'
+  - charge: 'attack(Charged Attack DMG|{param4:F1P})'
+  - collision: 'attack(Plunge DMG|{param6:F1P})'
+  - lowPlunge: 'attack(Low/High Plunge DMG|{param7:F1P}/{param8:F1P}|0)'
+  - highPlunge: 'attack(Low/High Plunge DMG|{param7:F1P}/{param8:F1P}|1)'
+  - skill: 'skill(Ring-A-Ding-Ding! Hexhunter Chime DMG|{param1:F1P})'
+  - burst: 'burst(Skill DMG|{param1:F1P})'

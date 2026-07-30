@@ -1,0 +1,22 @@
+use: pipeline
+kind: character
+name: lohen
+source: community
+version: 6.7.54
+override:
+  id: 10000129
+
+# Exact local labels used by the community-data generator.
+talents:
+  - attack:
+      - 'attack(1-Hit DMG|{param1:F1P})'
+      - 'attack(2-Hit DMG|{param2:F1P})'
+      - 'attack(3-Hit DMG|{param3:F1P}×3)'
+      - 'attack(4-Hit DMG|{param4:F1P})'
+      - 'attack(5-Hit DMG|{param5:F1P}+{param6:F1P})'
+  - charge: 'attack(Charged Attack DMG|{param7:F1P}×2)'
+  - collision: 'attack(Plunge DMG|{param9:F1P})'
+  - lowPlunge: 'attack(Low/High Plunge DMG|{param10:P}/{param11:P}|0)'
+  - highPlunge: 'attack(Low/High Plunge DMG|{param10:P}/{param11:P}|1)'
+  - skill: 'skill(1-Hit DMG|{param1:F1P})'
+  - burst: 'burst(Skill DMG|{param1:F1P}×6)'

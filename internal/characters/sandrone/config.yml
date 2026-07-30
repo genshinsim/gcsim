@@ -1,0 +1,19 @@
+use: pipeline
+kind: character
+name: sandrone
+source: community
+version: 6.7.54
+override:
+  id: 10000133
+
+# Exact local labels used by the community-data generator.
+talents:
+  - attack:
+      - 'attack(1-Hit DMG|{param1:F1P})'
+      - 'attack(2-Hit DMG|{param2:F1P})'
+      - 'attack(3-Hit DMG|{param3:F1P})'
+  - collision: 'attack(Plunge DMG|{param8:F1P})'
+  - lowPlunge: 'attack(Low/High Plunge DMG|{param9:P}/{param10:P}|0)'
+  - highPlunge: 'attack(Low/High Plunge DMG|{param9:P}/{param10:P}|1)'
+  - skill: 'skill(Prism Shot DMG|{param1:F1P})'
+  - burst: 'burst(Bombardment DMG|{param1:F1P} ×3)'

@@ -1,0 +1,21 @@
+use: pipeline
+kind: character
+name: nefer
+source: community
+version: 6.7.54
+override:
+  id: 10000122
+
+# Exact local labels used by the community-data generator.
+talents:
+  - attack:
+      - 'attack(1-Hit DMG|{param1:F1P})'
+      - 'attack(2-Hit DMG|{param2:F1P})'
+      - 'attack(3-Hit DMG|{param3:F1P}×2)'
+      - 'attack(4-Hit DMG|{param4:F1P})'
+  - charge: 'attack(Charged Attack DMG|{param5:F1P})'
+  - collision: 'attack(Plunge DMG|{param8:F1P})'
+  - lowPlunge: 'attack(Low/High Plunge DMG|{param9:P}/{param10:P}|0)'
+  - highPlunge: 'attack(Low/High Plunge DMG|{param9:P}/{param10:P}|1)'
+  - skill: 'skill(Skill DMG|{param1:F1P} ATK+{param2:F1P} Elemental Mastery)'
+  - burst: 'burst(1-Hit DMG|{param1:F1P} ATK+{param2:F1P} Elemental Mastery)'
