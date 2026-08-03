@@ -127,7 +127,7 @@ func (c *char) omenRefreshCB(a info.AttackCB) {
 
 	omenRefreshCount := t.GetTag(omenKey)
 
-	if omenRefreshCount < 0 {
+	if omenRefreshCount < 1 {
 		return
 	}
 
@@ -149,10 +149,8 @@ func (c *char) omenRefreshCB(a info.AttackCB) {
 
 	t.AddStatus(omenKey, newDur, true)
 
-	omenRefreshCount++
-
 	c.Core.Log.NewEvent("mona hexerei proc: omen refresh", glog.LogCharacterEvent, c.Index()).
-		Write("refreshCount", omenRefreshCount)
+		Write("refreshCount", 5-omenRefreshCount)
 }
 
 func (c *char) hexInit() {
