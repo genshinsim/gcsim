@@ -295,6 +295,11 @@ func (c *char) HoldBikeChargeAttack(cAtkFrames, skippedWindupFrames int, hittabl
 func (c *char) CountBikeChargeAttack(maxHitCount, skippedWindupFrames int, hittableEntities []HittableEntity, nsDur int) int {
 	// Return remaining CA time between nightsoul duration (account for skipped windup) and max CA duration for attempting hit
 	dur := min(nsDur+skippedWindupFrames, bikeChargeAttackMaximumDuration-c.caState.cAtkFrames)
+	// if just starting a charge attack, duration can last beyond ns duration
+	if c.caState.StartFrame == c.Core.F {
+		dur = max(bikeChargeAttackMinimumDuration, dur)
+	}
+
 	hitCounter := 0
 
 	for i := range hittableEntities {
