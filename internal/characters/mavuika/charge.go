@@ -179,6 +179,10 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 		}
 		c.bikeChargeAttackHook()
 		skippedWindupFrames = c.GetSkippedWindupFrames(bufferedFrames)
+		// If the full windup is not skipped, mav's ca windup will proc n0 abilities like Yelan/XQ
+		if skippedWindupFrames < 15 {
+			c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState)
+		}
 		c.caState.skippedWindupF = skippedWindupFrames // Used for syncing CA frames on CA hook
 
 		c.DeleteStatus(cdcLockoutStatus)
@@ -505,10 +509,6 @@ func (c *char) GetSkippedWindupFrames(bufferedFrames int) int {
 		skippedWindupFrames = 13
 	}
 	skippedWindupFrames = min(skippedWindupFrames, bufferedFrames)
-	// If the full windup is not skipped, mav's ca windup will proc n0 abilities like Yelan/XQ
-	if skippedWindupFrames < 15 {
-		c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState)
-	}
 	return skippedWindupFrames
 }
 

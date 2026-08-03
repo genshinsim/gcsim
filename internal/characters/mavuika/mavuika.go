@@ -107,6 +107,20 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 			return true, action.NoFailure
 		}
 		return c.Character.ActionReady(a, p)
+	case action.ActionCharge:
+		if c.nightsoulState.HasBlessing() && c.armamentState == bike {
+			if c.Core.Player.CurrentState() != action.ChargeAttackState || c.caState.StartFrame == 0 {
+				bufferedFrames, ok := p["buffered"]
+				if !ok {
+					bufferedFrames = maxBufferedBikeChargeFrames
+				}
+				bufferedFrames = maxBufferedBikeChargeFrames - c.GetSkippedWindupFrames(bufferedFrames)
+				if c.GetRemainingNightSoulDuration() < bufferedFrames {
+					// If unable to perform a biked charge, must wait until physical charge is ready
+					return false, action.Failure(action.ActionDelay)
+				}
+			}
+		}
 	}
 	return c.Character.ActionReady(a, p)
 }
