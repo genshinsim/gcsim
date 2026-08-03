@@ -110,7 +110,7 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 	case action.ActionCharge:
 		if c.nightsoulState.HasBlessing() && c.armamentState == bike {
 			if !c.canBeginBikedCharge(p) {
-				return false, action.Failure(action.InsufficientEnergy)
+				return false, action.InsufficientStamina
 			}
 		}
 	}
