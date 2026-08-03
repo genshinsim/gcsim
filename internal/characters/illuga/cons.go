@@ -66,7 +66,7 @@ func (c *char) c2() {
 
 func (c *char) c4(src int) func() {
 	if c.Base.Cons < 4 {
-		return nil
+		return func() {}
 	}
 
 	m := make([]float64, attributes.EndStatType)
