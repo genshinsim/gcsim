@@ -426,11 +426,6 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 
 	nightSoulDuration := c.GetRemainingNightSoulDuration()
 	if nightSoulDuration <= adjustedBikeChargeFinalHitmark {
-		// Exiting at hitmark to account for dash cancel
-		c.QueueCharTask(func() {
-			c.exitBike()
-		}, adjustedBikeChargeFinalHitmark)
-
 		c.QueueCharTask(func() {
 			c.nightsoulState.ConsumePoints(c.nightsoulState.Points())
 			c.exitNightsoul()

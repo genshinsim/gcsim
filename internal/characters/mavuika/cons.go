@@ -128,7 +128,7 @@ func (c *char) c4DecayRate() int {
 // this is just used for c2
 func (c *char) isRingFollowing() bool {
 	if c.Base.Cons < 6 {
-		return c.armamentState == ring
+		return c.armamentState == ring && c.nightsoulState.HasBlessing()
 	}
 	return true
 }
