@@ -19,6 +19,7 @@ const (
 	GadgetTypSourcewaterDropletSigewinne
 	GadgetTypCrystallizeShard
 	GadgetTypYumemiSnack
+	GadgetTypPolestarField
 	GadgetTypTest
 	EndGadgetTyp
 )
