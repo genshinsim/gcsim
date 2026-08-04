@@ -35,11 +35,11 @@ func (c *char) c6() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase(c6Key, 20*60),
 			AffectedStat: attributes.CR,
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				if char.Moonsign < 1 {
-					return nil, false
+					return nil
 				}
-				return c.c6Buff, true
+				return c.c6Buff
 			},
 		})
 
