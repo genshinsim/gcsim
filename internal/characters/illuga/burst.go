@@ -122,10 +122,10 @@ func (c *char) burstBuffInit() {
 			attacks.AttackTagNormal,
 			attacks.AttackTagExtra,
 			attacks.AttackTagPlunge:
-			amt = burst_buff_geo[c.TalentLvlBurst()]*c.Stat(attributes.EM) + c.a4GeoBonus()
+			amt = (burst_buff_geo[c.TalentLvlBurst()] + c.a4GeoBonus()) * c.Stat(attributes.EM)
 		case attacks.AttackTagDirectLunarCrystallize,
 			attacks.AttackTagReactionLunarCrystallize:
-			amt = burst_buff_lcr[c.TalentLvlBurst()]*c.Stat(attributes.EM) + c.a4LcrBonus()
+			amt = (burst_buff_lcr[c.TalentLvlBurst()] + c.a4LcrBonus()) * c.Stat(attributes.EM)
 		default:
 			return
 		}
