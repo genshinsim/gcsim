@@ -36,6 +36,7 @@ func (c *char) a1() {
 	c.Core.Events.Subscribe(event.OnElectroCharged, c.a1CB, "clorinde-a1-ec")
 	c.Core.Events.Subscribe(event.OnLunarCharged, c.a1CB, "clorinde-a1-lc")
 	c.Core.Events.Subscribe(event.OnSuperconduct, c.a1CB, "clorinde-a1-superconduct")
+	c.Core.Events.Subscribe(event.OnStellarConduct, c.a1CB, "clorinde-a1-ssc")
 	c.Core.Events.Subscribe(event.OnAggravate, c.a1CB, "clorinde-a1-aggravate")
 	c.Core.Events.Subscribe(event.OnQuicken, c.a1CB, "clorinde-a1-quicken")
 	c.Core.Events.Subscribe(event.OnHyperbloom, c.a1CBGadget, "clorinde-a1-hyperbloom")

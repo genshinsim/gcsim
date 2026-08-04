@@ -48,7 +48,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 		// add a new action that deals % dmg immediately
-		// superconduct attack
 		ai := info.AttackInfo{
 			ActorIndex: char.Index(),
 			Abil:       "Fillet Blade Proc",
