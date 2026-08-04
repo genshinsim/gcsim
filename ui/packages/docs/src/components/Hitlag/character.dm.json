@@ -1987,6 +1987,24 @@
       "deployable": false
     }
   ],
+  "jahoda": [
+    {
+      "ability": "aim",
+      "name": "Aim-Head",
+      "time": 0.12,
+      "scale": 0.01,
+      "defense_halt": false,
+      "deployable": true
+    },
+    {
+      "ability": "aim",
+      "name": "FullAim-Head",
+      "time": 0.12,
+      "scale": 0.01,
+      "defense_halt": false,
+      "deployable": true
+    }
+  ],
   "jean": [
     {
       "ability": "attack",

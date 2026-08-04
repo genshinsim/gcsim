@@ -801,6 +801,7 @@
     },
     "jahoda": {
       "id": 10000124,
+      "sub_id": 12401,
       "key": "jahoda",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_GIRL",
@@ -813,8 +814,7 @@
         "burst": 11245,
         "attack": 11241,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "1438964522"
+      }
     },
     "jean": {
       "id": 10000003,

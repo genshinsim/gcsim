@@ -1,57 +1,156 @@
-package_name: jahoda
-genshin_id: 10000124
-key: jahoda
-action_param_keys:
-  attack:
-    - param: "travel"
-  aim:
-    - param: "hold"
-    - param: "travel"
-    - param: "weakspot"
-  skill:
-    - param: "travel"
-icd_groups:
-  - group_name: ICDGroupJahodaBurst
-    reset_timer: 900
-    ele_app_sequence: [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-  - group_name: ICDGroupJahodaCons
-    reset_timer: 900
-    ele_app_sequence: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-icd_tags:
-  - ICDTagJahodaCons
-skill_data_mapping:
-    attack:
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        aim:
-            - 3 # Aimed Shot|{param3:F1P}
-        fullaim:
-            - 4 # Fully-Charged Aimed Shot|{param4:P}
-    skill:
-        unfilledFlask:
-            - 1 # Unfilled Treasure Flask DMG|{param1:F1P}
-        filledFlask:
-            - 2 # Filled Treasure Flask DMG|{param2:F1P}
-        meowball:
-            - 4 # Meowball DMG|{param4:F1P}
-    burst:
-        burst:
-            - 0 # Skill DMG|{param0:F1P}
-        burstSkill:
-            - 1 # Purrsonal Coordinated Assistance Robot DMG|{param1:F1P}
-        burstHealPP:
-            - 3 # Purrsonal Coordinated Assistance Robot Healing|{param3:F1P} ATK+{param4:I}
-        burstHealFlat:
-            - 4 # Purrsonal Coordinated Assistance Robot Healing|{param3:F1P} ATK+{param4:I}
-        burstAdditionalHealPP:
-            - 5 # Lowest HP Character Additional Healing|{param5:F1P} ATK+{param6:I}
-        burstAdditionalHealFlat:
-            - 6 # Lowest HP Character Additional Healing|{param5:F1P} ATK+{param6:I}
-        
+use: pipeline
+kind: character
+name: jahoda
+
+override:
+  icd_group:
+    JahodaBurst:
+      name: Jahoda_Elemental_Burst
+    JahodaCons:
+      name: Jahoda_Constellation_1
+
+combat:
+  icd_tags:
+    - JahodaCons
+  icd_groups:
+    - JahodaCons
+
+talents:
+  - attack: 
+    - attack(1-Hit DMG)
+    - - attack(2-Hit DMG)
+      - attack(2-Hit DMG)
+    - attack(3-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Fully-Charged Aimed Shot)
+
+  - skill: 
+    - skill(Unfilled Treasure Flask DMG)
+    - skill(Filled Treasure Flask DMG)
+    - skill(Treasure Flask Duration)
+    - skill(Meowball DMG)
+
+  - burst: 
+    - burst(Skill DMG)
+    - burst(Purrsonal Coordinated Assistance Robot DMG)
+    - burst(Purrsonal Coordinated Assistance Robot Healing) # {} ATK+{}
+    - burst(Purrsonal Coordinated Assistance Robot Healing|1) # {} ATK+{}
+    - burst(Lowest HP Character Additional Healing) # {} ATK+{}
+    - burst(Lowest HP Character Additional Healing|1) # {} ATK+{}
+
+docs:
+  issues:
+    - Smoke Bomb skill is not implemented, since it only trigger when no enemies are nearby.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/18YvIoV1Ym1jDhlcTK_DOnKoKFRjkCyElpFCD8p8jncY/edit?usp=sharing
+      count_credit: yamitoka.
+      video: https://www.youtube.com/z4zaCN_dWwA
+      video_credit: yamitoka.
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2-1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2-2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: aim
+    params:
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default).
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+  - name: skill
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: E-Unfill
+        shape: Circle
+        center: Player
+        offset: [0, 2.5]
+        radius: 5
+      - name: E-Fill
+        shape: Circle
+        center: Player
+        offset: [0, 2.5]
+        radius: 5
+      - name: E-DoT
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4
+      - name: E-AbsorbCheck
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4
+
+  - name: burst
+    hitbox:
+      - name: Q-Cast
+        shape: Circle
+        center: Player
+        radius: 5
+      - name: Q-Dot
+        shape: Circle
+        center: GlobalValue
+        radius: 1.2
+        note: "Spawns on 3 closest enemies to the player. The detection area is not implemented. The exact radius of the hitbox is not known."
+      - name: Q-AbsorbCheck
+        shape: Circle
+        center: Player
+        radius: 1.2
+        note: "The exact radius of the hitbox is not known."
+
+  - name: cons
+    hitbox:
+      - name: C1-Bounce
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4
