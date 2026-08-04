@@ -30,7 +30,7 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Dawnbearing Songbird Tap",
+		Abil:       "Shadowless Reflection",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -122,10 +122,10 @@ func (c *char) burstBuffInit() {
 			attacks.AttackTagNormal,
 			attacks.AttackTagExtra,
 			attacks.AttackTagPlunge:
-			amt = burst_buff_geo[c.TalentLvlSkill()]*c.Stat(attributes.EM) + c.a4GeoBonus()
+			amt = burst_buff_geo[c.TalentLvlBurst()]*c.Stat(attributes.EM) + c.a4GeoBonus()
 		case attacks.AttackTagDirectLunarCrystallize,
 			attacks.AttackTagReactionLunarCrystallize:
-			amt = burst_buff_lcr[c.TalentLvlSkill()]*c.Stat(attributes.EM) + c.a4LcrBonus()
+			amt = burst_buff_lcr[c.TalentLvlBurst()]*c.Stat(attributes.EM) + c.a4LcrBonus()
 		default:
 			return
 		}
