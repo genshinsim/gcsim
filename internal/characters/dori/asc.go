@@ -44,6 +44,7 @@ func (c *char) a1() {
 	c.Core.Events.Subscribe(event.OnElectroCharged, reduceNoGadget, "dori-a1")
 	c.Core.Events.Subscribe(event.OnLunarCharged, reduceNoGadget, "dori-a1")
 	c.Core.Events.Subscribe(event.OnSuperconduct, reduceNoGadget, "dori-a1")
+	c.Core.Events.Subscribe(event.OnStellarConduct, reduceNoGadget, "dori-a1")
 	c.Core.Events.Subscribe(event.OnQuicken, reduceNoGadget, "dori-a1")
 	c.Core.Events.Subscribe(event.OnAggravate, reduceNoGadget, "dori-a1")
 	c.Core.Events.Subscribe(event.OnHyperbloom, reduce, "dori-a1")

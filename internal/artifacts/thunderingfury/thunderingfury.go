@@ -63,7 +63,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				attacks.AttackTagSuperconductDamage,
 				attacks.AttackTagHyperbloom:
 				return 0.4
-			case attacks.AttackTagDirectLunarCharged, attacks.AttackTagReactionLunarCharge:
+			case attacks.AttackTagDirectLunarCharged,
+				attacks.AttackTagReactionLunarCharge,
+				attacks.AttackTagDirectStellarConduct:
 				return 0.2
 			}
 			return 0
@@ -97,6 +99,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	c.Events.Subscribe(event.OnElectroCharged, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnLunarCharged, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnSuperconduct, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnStellarConduct, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnHyperbloom, reduce, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnQuicken, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnAggravate, reduceNoGadget, fmt.Sprintf("tf-4pc-%v", char.Base.Key.String()))

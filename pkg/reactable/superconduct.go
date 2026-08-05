@@ -8,9 +8,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-const SuperConductShredKey = "superconduct-phys-shred"
+const (
+	StellarConductEnableKey = "stellar-conduct-enabled"
+	SuperConductShredKey    = "superconduct-phys-shred"
+)
 
 func (r *Reactable) TrySuperconduct(a *info.AttackEvent) bool {
+	if _, ok := r.core.Flags.Custom[StellarConductEnableKey]; ok {
+		return r.TryStellarConduct(a)
+	}
+
 	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
@@ -43,6 +50,10 @@ func (r *Reactable) TrySuperconduct(a *info.AttackEvent) bool {
 }
 
 func (r *Reactable) TryFrozenSuperconduct(a *info.AttackEvent) bool {
+	if _, ok := r.core.Flags.Custom[StellarConductEnableKey]; ok {
+		return r.TryFrozenStellarConduct(a)
+	}
+
 	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
