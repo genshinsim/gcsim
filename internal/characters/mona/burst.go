@@ -147,7 +147,7 @@ func (c *char) triggerBubbleBurst(t *enemy.Enemy) {
 	dur := int(omenDuration[c.TalentLvlBurst()] * 60)
 	t.AddStatus(omenKey, dur, true)
 	if c.IsHexerei {
-		t.SetTag(omenKey, 4)
+		t.SetTag(omenKey, omenRefreshCap)
 	}
 	// trigger dmg
 	ai := info.AttackInfo{

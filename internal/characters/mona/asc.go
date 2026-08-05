@@ -16,6 +16,7 @@ const (
 	astralGlowKey     = "mona-astral-glow"
 	astralGlowICDKey  = "mona-astral-glow-icd"
 	omenRefreshICDKey = "mona-omen-refresh-icd"
+	omenRefreshCap    = 4
 )
 
 // After she has used Illusory Torrent for 2s, if there are any opponents nearby,
@@ -127,7 +128,7 @@ func (c *char) omenRefreshCB(a info.AttackCB) {
 
 	omenRefreshCount := t.GetTag(omenKey)
 
-	if omenRefreshCount < 1 {
+	if omenRefreshCount <= 0 {
 		return
 	}
 
@@ -136,10 +137,6 @@ func (c *char) omenRefreshCB(a info.AttackCB) {
 	}
 
 	t.SetTag(omenKey, omenRefreshCount-1)
-
-	if omenRefreshCount-1 < 0 {
-		t.RemoveTag(omenKey)
-	}
 
 	c.AddStatus(omenRefreshICDKey, 0.5*60, false) // 0.5s ICD
 
@@ -150,7 +147,7 @@ func (c *char) omenRefreshCB(a info.AttackCB) {
 	t.AddStatus(omenKey, newDur, true)
 
 	c.Core.Log.NewEvent("mona hexerei proc: omen refresh", glog.LogCharacterEvent, c.Index()).
-		Write("refreshCount", 5-omenRefreshCount)
+		Write("refreshCount", omenRefreshCount-1)
 }
 
 func (c *char) hexInit() {
