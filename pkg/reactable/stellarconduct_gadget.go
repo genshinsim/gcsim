@@ -48,7 +48,7 @@ type PolestarField struct {
 func (r *Reactable) newPolestarField() *PolestarField {
 	p := &PolestarField{}
 
-	p.Gadget = gadget.New(r.core, r.self.Pos(), 1, info.GadgetTypPolestarField)
+	p.Gadget = gadget.New(r.core, r.core.Combat.Player().Pos(), 1, info.GadgetTypPolestarField)
 	p.ThinkInterval = thinkInterval
 	p.Duration = fieldDur
 	p.mCryo = make([]float64, attributes.EndStatType)
