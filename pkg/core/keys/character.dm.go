@@ -126,6 +126,7 @@ const (
 	Ningguang                     // ningguang
 	Noelle                        // noelle
 	Ororon                        // ororon
+	Prune                         // prune
 	Qiqi                          // qiqi
 	RaidenShogun                  // raidenshogun
 	Razor                         // razor
@@ -248,6 +249,7 @@ var _CharNames = [...]string{
 	"ningguang",
 	"noelle",
 	"ororon",
+	"prune",
 	"qiqi",
 	"raidenshogun",
 	"razor",
@@ -370,6 +372,7 @@ var _CharValues = [...]Char{
 	Ningguang,
 	Noelle,
 	Ororon,
+	Prune,
 	Qiqi,
 	RaidenShogun,
 	Razor,
