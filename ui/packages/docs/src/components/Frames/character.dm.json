@@ -1587,6 +1587,20 @@
       "video_credit": "Mystathi"
     }
   ],
+  "prune": [
+    {
+      "count": "https://docs.google.com/spreadsheets/d/1VuV6vKu9V6P6VUFYopiiJXx6eJmwP3fX_3j16NmGGqk/edit?usp=sharing",
+      "count_credit": "caramielle",
+      "video": "https://youtu.be/omulge6015U",
+      "video_credit": "caramielle"
+    },
+    {
+      "count": "",
+      "count_credit": "",
+      "video": "https://youtu.be/HrYTIyPpZdI",
+      "video_credit": "caramielle"
+    }
+  ],
   "qiqi": [
     {
       "count": "https://docs.google.com/spreadsheets/d/1uS_n16mlfdfzjBiVG3w6TmR9H7YqSSFOoyox_9bn-Kk/edit?usp=sharing",

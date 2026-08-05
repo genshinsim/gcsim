@@ -1,0 +1,128 @@
+use: pipeline
+kind: character
+name: prune
+
+talents:
+  - attack: 
+    - attack(1-Hit DMG)
+    - attack(2-Hit DMG)
+    - attack(3-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG) # {}/{}
+  - highPlunge: attack(Low/High Plunge DMG|1) # {}/{}
+
+  - skill: skill(Ring-A-Ding-Ding! Hexhunter Chime DMG)
+  - skillConvert: skill(Clang Clang! Witch-tribution Comes! DMG)
+
+  - burst: burst(Skill DMG)
+  - burstDot: burst(Witchlure Bell DMG)
+  
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1VuV6vKu9V6P6VUFYopiiJXx6eJmwP3fX_3j16NmGGqk/edit?usp=sharing
+      count_credit: caramielle
+      video: https://youtu.be/omulge6015U
+      video_credit: caramielle
+    - video: https://youtu.be/HrYTIyPpZdI
+      video_credit: caramielle
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 1.6
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 1.6
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N3
+        shape: Circle
+        center: Player
+        offset: [0, 0.85]
+        radius: 2.3
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Box
+        center: PrimaryTarget
+        box: [3, 3.5]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        radius: 1.5
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        radius: 3.5
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    hitbox:
+      - name: E
+        shape: Circle
+        center: Player
+        offset: [0, 1.4]
+        radius: 2.5
+        hitlag: {time: 0.02, scale: 0.05}
+
+      - name: E-Convert
+        shape: Circle
+        center: Player
+        offset: [0, 1.5]
+        radius: 2.5
+        hitlag: {time: 0.05, scale: 0.01, defense_halt: true}
+
+  - name: burst
+    hitbox:
+      - name: Q-Cast
+        shape: Circle
+        center: Player
+        radius: 6.5
+
+      - name: Q-Dot
+        shape: Circle
+        center: GlobalValue
+        radius: 1.6
+        hitlag: {scale: 0.01}
+
+      - name: Q-Convert
+        shape: Circle
+        center: GlobalValue
+        radius: 2.3
+
+  - name: cons
+    hitbox:
+      - name: C4-Ricochet
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1.5
