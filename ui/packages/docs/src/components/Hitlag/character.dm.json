@@ -2029,6 +2029,40 @@
       "deployable": false
     }
   ],
+  "kachina": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "time": 0.06,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N2-1",
+      "time": 0.06,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N2-2",
+      "time": 0.06,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N4",
+      "time": 0.01,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    }
+  ],
   "kaedeharakazuha": [
     {
       "ability": "attack",
