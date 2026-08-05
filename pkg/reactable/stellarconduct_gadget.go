@@ -40,13 +40,10 @@ var stellarConductBuff = []float64{
 
 type PolestarField struct {
 	*gadget.Gadget
-	stackGainIcdFrame int
-	mCryo             []float64
-	mElectro          []float64
-	fieldArea         info.AttackPattern
+	mCryo     []float64
+	mElectro  []float64
+	fieldArea info.AttackPattern
 }
-
-func (b *PolestarField) HandleAttack(atk *info.AttackEvent) float64 { return 0 }
 
 func (r *Reactable) newPolestarField() *PolestarField {
 	p := &PolestarField{}
@@ -99,6 +96,8 @@ func (r *Reactable) newPolestarField() *PolestarField {
 	r.core.Combat.AddGadget(p)
 	return p
 }
+
+func (p *PolestarField) HandleAttack(atk *info.AttackEvent) float64 { return 0 }
 
 func (p *PolestarField) resetDuration() {
 	p.Duration = fieldDur
