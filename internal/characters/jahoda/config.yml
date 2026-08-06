@@ -41,9 +41,11 @@ docs:
     - Smoke Bomb skill is not implemented, since it only trigger when no enemies are nearby.
   frames:
     - count: https://docs.google.com/spreadsheets/d/18YvIoV1Ym1jDhlcTK_DOnKoKFRjkCyElpFCD8p8jncY/edit?usp=sharing
-      count_credit: yamitoka.
-      video: https://www.youtube.com/z4zaCN_dWwA
-      video_credit: yamitoka.
+      count_credit: yamitoka
+      video: https://www.youtube.com/watch?v=z4zaCN_dWwA
+      video_credit: yamitoka
+    - video: https://www.youtube.com/watch?v=ypF3osO9S4o
+      video_credit: yamitoka
 
 abilities:
   - name: attack
@@ -139,12 +141,12 @@ abilities:
         shape: Circle
         center: GlobalValue
         radius: 1.2
-        note: "Spawns on 3 closest enemies to the player. The detection area is not implemented. The exact radius of the hitbox is not known."
+        note: "Spawns on 3 closest enemies to the player. The detection area radius and the hitbox radius are not known."
       - name: Q-AbsorbCheck
         shape: Circle
         center: Player
         radius: 1.2
-        note: "The exact radius of the hitbox is not known."
+        note: "The exact radius of is not known."
 
   - name: cons
     hitbox:

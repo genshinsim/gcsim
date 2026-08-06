@@ -190,7 +190,7 @@ func (c *char) drainFlask(src int) func() {
 				Mult:       filledFlask[c.TalentLvlSkill()],
 			}
 
-			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: 2.5}, 5), 0, fillHitmark, c.ParticleCB)
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2.5}, 5), 0, fillHitmark, c.ParticleCB)
 
 			// if in ascendent gleam, do meowball damage
 			if c.Core.Player.GetMoonsignLevel() >= 2 {
@@ -227,7 +227,7 @@ func (c *char) drainFlask(src int) func() {
 				Mult:       unfilledFlask[c.TalentLvlSkill()],
 			}
 
-			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: 2.5}, 5), 0, unfillHitmark, c.ParticleCB)
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2.5}, 5), 0, unfillHitmark, c.ParticleCB)
 		}
 	}
 }
