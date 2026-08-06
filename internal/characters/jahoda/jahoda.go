@@ -39,7 +39,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.SkillCon = 5
 
 	c.Moonsign = 1
-	c.HasArkhe = false
 
 	c.flaskAbsorb = attributes.NoElement
 	c.flaskGauge = 0

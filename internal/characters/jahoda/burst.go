@@ -3,6 +3,7 @@ package jahoda
 import (
 	"errors"
 	"sort"
+	"strconv"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -16,15 +17,15 @@ import (
 var burstFrames []int
 
 const (
-	burstDuration        = 790
-	firstAbsorbtionDelay = 6
-	absorptionInterval   = 41
-	firstrobotHitmark    = 45
-	robotDelay           = 94
-	firsHealTickDelay    = 12
-	healInterval         = 87
-	burstCD              = 18 * 60
-	burstKey             = "jahoda-burst-dot"
+	burstDuration           = 790
+	burstHitmark            = 43
+	firstAbsorptionDelay    = 6
+	robotAbsorptionInterval = 41 // exclude the outlier in trial 3
+	firstRobotHitmark       = 41
+	firsHealTickDelay       = 12
+	healInterval            = 87
+	burstCD                 = 18 * 60
+	burstKey                = "jahoda-burst-dot"
 )
 
 func init() {
@@ -45,11 +46,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.robotHitmarkInterval = 140
 	c.burstSrc = c.Core.F
 	src := c.burstSrc
-	c.burstAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1.2) // Couldn't find anywhere in dm, assume top be the same as Sayu
+	c.burstAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1.2) // couldn't find anywhere in dm, assume top be the same as Sayu
 
 	c.AddStatus(burstKey, burstDuration, false)
 
-	// Initial hit damage
+	// initial hit damage
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
 		Abil:       "Hidden Aces: Seven Tools of the Hunter",
@@ -66,10 +67,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 5),
 		0,
-		0)
+		burstHitmark)
 
-	// Define Info
-	c.robotAi = info.AttackInfo{
+	// define base info
+	baseRobotAi := info.AttackInfo{
 		ActorIndex: c.Index(),
 		Abil:       "Purrsonal Coordinated Assistance Robot DMG",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -92,10 +93,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.robotCount = 2
 
-	// Apply A1 buff
+	// apply a1 buff
 	c.a1()
 
-	// Heal ticks
+	// heal ticks
 	c.QueueCharTask(func() {
 		for i := 0; i < burstDuration-firsHealTickDelay; i += healInterval {
 			c.Core.Tasks.Add(func() {
@@ -126,9 +127,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 	}, firsHealTickDelay)
 
-	// Dmg ticks
+	// dmg ticks
 	if c.Core.Player.GetMoonsignLevel() >= 2 {
-		c.Core.Tasks.Add(c.absorbCheck(src, 0, burstDuration/absorptionInterval), firstAbsorbtionDelay+firstrobotHitmark)
+		for robot := 0; robot < c.robotCount; robot++ {
+			ai := baseRobotAi
+			c.Core.Tasks.Add(c.absorbCheck(src, robot, ai, 0, burstDuration/18), firstAbsorptionDelay+robotAbsorptionInterval*robot)
+		}
 	}
 
 	c.SetCDWithDelay(action.ActionBurst, burstCD, 1)
@@ -137,7 +141,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionSwap], // Earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }
@@ -165,59 +169,66 @@ func (c *char) lowestHPChar() int {
 	return lowestIdx
 }
 
-func (c *char) absorbCheck(src, count, maxcount int) func() {
+func (c *char) absorbCheck(src int, robot int, ai info.AttackInfo, count int, maxCount int) func() {
 	return func() {
-		if src != c.burstSrc {
+		if src != c.burstSrc || !c.StatusIsActive(burstKey) {
+			return
+		}
+		if count >= maxCount {
 			return
 		}
 
-		if count == maxcount {
-			return
-		}
+		ele := c.Core.Combat.AbsorbCheck(c.Index(), c.burstAbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 
-		c.robotAi.Element = c.Core.Combat.AbsorbCheck(c.Index(), c.burstAbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
-		if c.robotAi.Element != attributes.NoElement {
-			switch c.robotAi.Element {
-			case attributes.Pyro:
-				c.robotAi.ICDTag = attacks.ICDTagElementalBurstPyro
-			case attributes.Hydro:
-				c.robotAi.ICDTag = attacks.ICDTagElementalBurstHydro
-			case attributes.Electro:
-				c.robotAi.ICDTag = attacks.ICDTagElementalBurstElectro
-			case attributes.Cryo:
-				c.robotAi.ICDTag = attacks.ICDTagElementalBurstCryo
-			}
-
-			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(),
-				"jahoda burst absorbed ", c.robotAi.Element.String(),
+		if ele == attributes.NoElement {
+			c.Core.Tasks.Add(
+				c.absorbCheck(src, robot, ai, count+1, maxCount),
+				18,
 			)
-
-			c.c4()
-
-			for i := 0; i < burstDuration-firstrobotHitmark; i += int(c.robotHitmarkInterval) {
-				c.Core.Tasks.Add(c.robotAtkTick(src), i)
-			}
-
 			return
 		}
-		c.Core.Tasks.Add(c.absorbCheck(src, count+1, maxcount), absorptionInterval)
+
+		ai.Element = ele
+
+		switch ele {
+		case attributes.Pyro:
+			ai.ICDTag = attacks.ICDTagElementalBurstPyro
+		case attributes.Hydro:
+			ai.ICDTag = attacks.ICDTagElementalBurstHydro
+		case attributes.Electro:
+			ai.ICDTag = attacks.ICDTagElementalBurstElectro
+		case attributes.Cryo:
+			ai.ICDTag = attacks.ICDTagElementalBurstCryo
+		default:
+			ai.ICDTag = attacks.ICDTagElementalBurst
+		}
+
+		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), "jahoda robot ", strconv.Itoa(robot), " absorbed ", ele.String())
+
+		c.c4()
+		c.Core.Tasks.Add(c.robotAtkTick(src, ai), firstRobotHitmark)
 	}
 }
 
-func (c *char) robotAtkTick(src int) func() {
+func (c *char) robotAtkTick(src int, ai info.AttackInfo) func() {
 	return func() {
 		if src != c.burstSrc {
 			return
 		}
 
-		// For each robot, trigger an instance of damage on 3 closest enemies
-		for i := 0; i < c.robotCount; i++ {
-			c.queueOn3Closest(c.Core.Combat.Player().Pos(), c.robotAi, robotDelay*i)
+		if !c.StatusIsActive(burstKey) {
+			return
 		}
+
+		// trigger an instance of damage on 3 closest enemies
+		c.queueOn3Closest(c.Core.Combat.Player().Pos(), ai, 0)
+
+		// schedule another attack
+		c.Core.Tasks.Add(c.robotAtkTick(src, ai), int(c.robotHitmarkInterval))
 	}
 }
 
-// Helper to sort 3 closest enemies and attack them simultaneously
+// helper to sort 3 closest enemies and attack them simultaneously
 func (c *char) queueOn3Closest(origin info.Point, ai info.AttackInfo, hitDelay int) {
 	enemies := c.Core.Combat.Enemies()
 	type cand struct {
@@ -226,7 +237,7 @@ func (c *char) queueOn3Closest(origin info.Point, ai info.AttackInfo, hitDelay i
 	}
 	cands := make([]cand, 0, len(enemies))
 
-	// Compute distance
+	// compute distance
 	for _, e := range enemies {
 		if e == nil {
 			continue
@@ -256,7 +267,7 @@ func (c *char) queueOn3Closest(origin info.Point, ai info.AttackInfo, hitDelay i
 	}
 	for i := 0; i < n; i++ {
 		t := cands[i].t
-		ap := combat.NewCircleHitOnTarget(t, nil, 1.2) // Couldn't find anywhere in dm
+		ap := combat.NewCircleHitOnTarget(t, nil, 1.2) // couldn't find anywhere in dm
 		c.Core.QueueAttack(ai, ap, hitDelay, hitDelay)
 	}
 }
