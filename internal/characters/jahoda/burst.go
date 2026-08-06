@@ -104,7 +104,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					return
 				}
 
-				c.Core.Player.Heal(c.robotHi)
+				// make sure that the tick heal active character
+				hi := c.robotHi
+				hi.Target = c.Core.Player.Active()
+				c.Core.Player.Heal(hi)
 
 				if c.Core.Player.ActiveChar().CurrentHPRatio() > 0.7 {
 					c.a4()
