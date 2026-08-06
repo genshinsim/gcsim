@@ -43,6 +43,17 @@ func (c *char) c6() {
 			},
 		})
 
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase(c6Key, 20*60),
+			AffectedStat: attributes.CD,
+			Amount: func() []float64 {
+				if char.Moonsign < 1 {
+					return nil
+				}
+				return c.c6Buff
+			},
+		})
+
 		c.Core.Log.NewEvent("jahoda c6 triggered", glog.LogCharacterEvent, c.Index()).
 			Write("cr", c.c6Buff[attributes.CR]).
 			Write("cd", c.c6Buff[attributes.CD]).
