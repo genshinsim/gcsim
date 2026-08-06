@@ -30,7 +30,7 @@ func (c *char) a1Init() {
 		c.a1HighestEle = attributes.NoElement
 	}
 
-	if c.Base.Cons >= 2 && c.Core.Player.GetMoonsignLevel() > 2 {
+	if c.Base.Cons >= 2 && c.Core.Player.GetMoonsignLevel() >= 2 {
 		secondHighestEleCount := 0
 
 		for _, ele := range priority {
@@ -57,7 +57,7 @@ func (c *char) a1() {
 
 	c.applyA1Buff(c.a1HighestEle)
 
-	if c.Base.Cons >= 2 && c.Core.Player.GetMoonsignLevel() > 2 {
+	if c.Base.Cons >= 2 && c.Core.Player.GetMoonsignLevel() >= 2 {
 		c.applyA1Buff(c.c2NextHighestEle)
 	}
 }
