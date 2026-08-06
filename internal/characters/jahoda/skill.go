@@ -278,32 +278,8 @@ func (c *char) meowballTick(src int) func() {
 			0,
 			c.meowballTravel,
 			c.meowballEnergyCB,
+			c.makeA1CB,
 		)
 
-		// 50% hit twice
-		if c.Base.Cons >= 1 {
-			if c.Core.Rand.Float64() < 0.5 {
-
-				aiC1 := info.AttackInfo{
-					ActorIndex: c.Index(),
-					Abil:       "Meowball (C1)",
-					AttackTag:  attacks.AttackTagElementalArt,
-					ICDTag:     attacks.ICDTagJahodaCons,
-					ICDGroup:   attacks.ICDGroupJahodaCons,
-					StrikeType: attacks.StrikeTypeDefault,
-					Element:    c.flaskAbsorb,
-					Durability: 25,
-					Mult:       meowball[c.TalentLvlSkill()],
-				}
-
-				c.Core.QueueAttack(
-					aiC1,
-					combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 4),
-					0,
-					c.meowballTravel+c1BounceHitmark,
-					nil,
-				)
-			}
-		}
 	}
 }
