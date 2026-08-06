@@ -92,7 +92,7 @@ func (c *char) applyA1Buff(ele attributes.Element) {
 	case attributes.Pyro:
 		c.robotAi.FlatDmg *= 1.3
 	case attributes.Hydro:
-		c.robotHi.Src *= 1.2
+		c.robotHealCoeff = 1.2
 	case attributes.Electro:
 		c.robotCount += 1
 	case attributes.Cryo:

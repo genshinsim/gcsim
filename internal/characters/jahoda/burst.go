@@ -82,15 +82,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		FlatDmg:    burstSkill[c.TalentLvlBurst()] * c.TotalAtk(),
 	}
 
-	heal := burstHealFlat[c.TalentLvlBurst()] + burstHealPP[c.TalentLvlBurst()]*c.TotalAtk()
-	c.robotHi = info.HealInfo{
-		Caller:  c.Index(),
-		Target:  c.Core.Player.Active(),
-		Message: "Purrsonal Coordinated Assistance Robot Healing",
-		Src:     heal,
-		Bonus:   c.Stat(attributes.Heal),
-	}
-
 	c.robotCount = 2
 
 	// apply a1 buff
@@ -104,17 +95,23 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					return
 				}
 
-				// make sure that the tick heal active character
-				hi := c.robotHi
-				hi.Target = c.Core.Player.Active()
-				c.Core.Player.Heal(hi)
+				heal := (burstHealFlat[c.TalentLvlBurst()] + burstHealPP[c.TalentLvlBurst()]*c.TotalAtk()) * c.robotHealCoeff
+				robotHi := info.HealInfo{
+					Caller:  c.Index(),
+					Target:  c.Core.Player.Active(),
+					Message: "Purrsonal Coordinated Assistance Robot Healing",
+					Src:     heal,
+					Bonus:   c.Stat(attributes.Heal),
+				}
+
+				c.Core.Player.Heal(robotHi)
 
 				if c.Core.Player.ActiveChar().CurrentHPRatio() > 0.7 {
 					c.a4()
 
 					low := c.lowestHPChar()
 					if low >= 0 {
-						healOffField := burstAdditionalHealFlat[c.TalentLvlBurst()] + burstAdditionalHealPP[c.TalentLvlBurst()]*c.TotalAtk()
+						healOffField := (burstAdditionalHealFlat[c.TalentLvlBurst()] + burstAdditionalHealPP[c.TalentLvlBurst()]*c.TotalAtk()) * c.robotHealCoeff
 
 						c.Core.Player.Heal(info.HealInfo{
 							Caller:  c.Index(),

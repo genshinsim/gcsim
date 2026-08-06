@@ -21,7 +21,7 @@ type char struct {
 	burstSrc                 int
 	a1HighestEle             attributes.Element
 	robotAi                  info.AttackInfo
-	robotHi                  info.HealInfo
+	robotHealCoeff           float64
 	robotCount               int
 	robotHitmarkInterval     float64
 	c2NextHighestEle         attributes.Element
@@ -56,6 +56,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 func (c *char) Init() error {
 	c.a1Init()
 
+	c.robotHealCoeff = 1.0
 	c.a4Buff = make([]float64, attributes.EndStatType)
 	c.a4Buff[attributes.EM] = 100
 
