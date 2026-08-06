@@ -22,7 +22,7 @@ const (
 	shadowPursuitMaxDuration  = 334
 	firstFillFlaskDelay       = 19
 	fillFlaskInterval         = 29
-	drainFlask                = 22
+	drainFlaskHitmark         = 22
 	unfillHitmark             = 4
 	fillHitmark               = 2
 	firstMeowballFirstHitmark = 129
@@ -124,12 +124,6 @@ func (c *char) fillFlask(src int) func() {
 
 		c.pursuitDuration = c.Core.F - c.skillSrc
 
-		// If the flask is full OR the max duration of the state is reached, drain the flask
-		if c.flaskGauge >= c.flaskGaugeMax || !c.StatusIsActive(shadowPursuitKey) || c.Core.F >= shadowPursuitMaxDuration+c.skillSrc {
-			c.Core.Tasks.Add(c.drainFlask(c.skillSrc), 0)
-			return
-		}
-
 		// Check elemental aura in the area
 		objectElem := c.Core.Combat.AbsorbCheck(c.Index(), c.flaskAbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 		if objectElem != attributes.NoElement {
@@ -148,6 +142,7 @@ func (c *char) fillFlask(src int) func() {
 				"jahoda flask absorbed ", c.flaskAbsorb.String(),
 			)
 		}
+
 		c.Core.Tasks.Add(c.fillFlask(c.skillSrc), fillFlaskInterval)
 	}
 }
@@ -156,9 +151,15 @@ func (c *char) changeFlaskGauge(amount int) func() {
 	return func() {
 		prevFlaskGauge := c.flaskGauge
 		c.flaskGauge += amount
-		c.Core.Log.NewEvent("Flask Gauge Change", glog.LogCharacterEvent, c.Index()).
+		c.Core.Log.NewEvent("flask gauge change", glog.LogCharacterEvent, c.Index()).
 			Write("previous flask gauge", prevFlaskGauge).
 			Write("current flask gauge", c.flaskGauge)
+
+		// If the flask is full OR the max duration of the state is reached, drain the flask
+		if c.flaskGauge >= c.flaskGaugeMax || !c.StatusIsActive(shadowPursuitKey) || c.Core.F >= shadowPursuitMaxDuration+c.skillSrc {
+			c.Core.Tasks.Add(c.drainFlask(c.skillSrc), drainFlaskHitmark)
+			return
+		}
 	}
 }
 
@@ -186,7 +187,7 @@ func (c *char) drainFlask(src int) func() {
 				Mult:       filledFlask[c.TalentLvlSkill()],
 			}
 
-			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: 2.5}, 5), 0, drainFlask+fillHitmark, c.ParticleCB)
+			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: 2.5}, 5), 0, fillHitmark, c.ParticleCB)
 
 			// If in Ascendent Gleam, do meowball damage
 			if c.Core.Player.GetMoonsignLevel() >= 2 {
