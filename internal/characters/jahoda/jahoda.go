@@ -16,7 +16,8 @@ type char struct {
 	flaskGaugeMax            int
 	pursuitDuration          int
 	skillSrc                 int
-	skillTravel              int
+	meowballSrc              int
+	meowballTravel           int
 	burstAbsorbCheckLocation info.AttackPattern
 	burstSrc                 int
 	a1HighestEle             attributes.Element

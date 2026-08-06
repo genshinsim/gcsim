@@ -60,20 +60,23 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	c.Core.Player.SwapCD = math.MaxInt16
+
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 13
 	}
-
-	c.skillTravel = travel
+	c.meowballTravel = travel
 
 	c.skillSrc = c.Core.F
+	c.meowballSrc = c.Core.F
+	c.DeleteStatus(meowballKey)
+
 	c.flaskAbsorb = attributes.NoElement
 	c.flaskGauge = 0
 	c.flaskGaugeMax = 100
 	c.flaskAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4)
 
-	// Enter shadow pursuit
+	// enter shadow pursuit
 	c.pursuitDuration = shadowPursuitMaxDuration
 	c.Core.Tasks.Add(func() {
 		c.AddStatus(shadowPursuitKey, shadowPursuitMaxDuration, false)
@@ -99,7 +102,7 @@ func (c *char) ParticleCB(a info.AttackCB) {
 	if c.StatusIsActive(particleICDKey) {
 		return
 	}
-	c.AddStatus(particleICDKey, 0.5*60, false) // Couldn't find anywhere in dm, assume to be the same as Sayu
+	c.AddStatus(particleICDKey, 0.5*60, false) // couldn't find anywhere in dm, assume to be the same as Sayu
 	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Anemo, c.ParticleDelay)
 }
 
@@ -124,19 +127,19 @@ func (c *char) fillFlask(src int) func() {
 
 		c.pursuitDuration = c.Core.F - c.skillSrc
 
-		// Check elemental aura in the area
+		// check elemental aura in the area
 		objectElem := c.Core.Combat.AbsorbCheck(c.Index(), c.flaskAbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 		if objectElem != attributes.NoElement {
 			if c.flaskAbsorb == attributes.NoElement {
-				// If there are an element to absorb AND the flask has not absorbed any elements, the flask absorb that element and increase its gauge
+				// ff there are an element to absorb AND the flask has not absorbed any elements, the flask absorb that element and increase its gauge
 				c.flaskAbsorb = objectElem
 				c.Core.Tasks.Add(c.changeFlaskGauge(c.flaskGaugeMax/4), 0)
 			} else if objectElem == c.flaskAbsorb {
-				// Else if there are an element to absorb AND if that element is the same as that the flask has absorbed the flask absorb that element
+				// else if there are an element to absorb AND if that element is the same as that the flask has absorbed the flask absorb that element
 				// and increase its gauge
 				c.Core.Tasks.Add(c.changeFlaskGauge(c.flaskGaugeMax/4), 0)
 			}
-			// Otherwise nothing happend since the flask will not change its elemental absorption mid way
+			// otherwise nothing happend since the flask will not change its elemental absorption mid way
 
 			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(),
 				"jahoda flask absorbed ", c.flaskAbsorb.String(),
@@ -155,7 +158,7 @@ func (c *char) changeFlaskGauge(amount int) func() {
 			Write("previous flask gauge", prevFlaskGauge).
 			Write("current flask gauge", c.flaskGauge)
 
-		// If the flask is full OR the max duration of the state is reached, drain the flask
+		// if the flask is full OR the max duration of the state is reached, drain the flask
 		if c.flaskGauge >= c.flaskGaugeMax || !c.StatusIsActive(shadowPursuitKey) || c.Core.F >= shadowPursuitMaxDuration+c.skillSrc {
 			c.Core.Tasks.Add(c.drainFlask(c.skillSrc), drainFlaskHitmark)
 			return
@@ -169,12 +172,12 @@ func (c *char) drainFlask(src int) func() {
 			return
 		}
 
-		c.cancelPursuit() // Exit state
+		c.cancelPursuit() // exit state
 
 		if c.flaskGauge >= c.flaskGaugeMax {
 			c.flaskGauge = c.flaskGaugeMax
 
-			// If the flask is full, do filled flask damage
+			// if the flask is full, do filled flask damage
 			ai := info.AttackInfo{
 				ActorIndex: c.Index(),
 				Abil:       "Filled Treasure Flask",
@@ -189,15 +192,15 @@ func (c *char) drainFlask(src int) func() {
 
 			c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: 2.5}, 5), 0, fillHitmark, c.ParticleCB)
 
-			// If in Ascendent Gleam, do meowball damage
+			// if in ascendent gleam, do meowball damage
 			if c.Core.Player.GetMoonsignLevel() >= 2 {
-				c.c6() // Apply buff from C6
+				c.c6()
 
 				ticks := c.flaskGaugeMax / 10
 
 				for i := range ticks {
 					c.Core.Tasks.Add(
-						c.meowballTick(c.skillSrc),
+						c.meowballTick(c.meowballSrc),
 						firstMeowballFirstHitmark+i*meowballHitmarkInterval,
 					)
 					c.Core.Tasks.Add(c.changeFlaskGauge(-10), firstMeowballFirstHitmark+i*meowballHitmarkInterval)
@@ -211,7 +214,7 @@ func (c *char) drainFlask(src int) func() {
 			}
 
 		} else {
-			// If the flask is not full (early cancel or no furation expired), do unfill damage
+			// if the flask is not full (early cancel or no furation expired), do unfill damage
 			ai := info.AttackInfo{
 				ActorIndex: c.Index(),
 				Abil:       "Unfilled Treasure Flask",
@@ -241,7 +244,11 @@ func (c *char) cancelPursuit() {
 
 func (c *char) meowballTick(src int) func() {
 	return func() {
-		if src != c.skillSrc {
+		if src != c.meowballSrc {
+			return
+		}
+
+		if !c.StatusIsActive(meowballKey) {
 			return
 		}
 
@@ -269,13 +276,14 @@ func (c *char) meowballTick(src int) func() {
 			ai,
 			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 4),
 			0,
-			c.skillTravel,
+			c.meowballTravel,
 			c.meowballEnergyCB,
 		)
 
 		// 50% hit twice
 		if c.Base.Cons >= 1 {
 			if c.Core.Rand.Float64() < 0.5 {
+
 				aiC1 := info.AttackInfo{
 					ActorIndex: c.Index(),
 					Abil:       "Meowball (C1)",
@@ -292,7 +300,7 @@ func (c *char) meowballTick(src int) func() {
 					aiC1,
 					combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 4),
 					0,
-					c.skillTravel+c1BounceHitmark,
+					c.meowballTravel+c1BounceHitmark,
 					nil,
 				)
 			}
