@@ -49,6 +49,7 @@ func (c *char) c2() {
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   75,
 		Element:    attributes.Geo,
 		Durability: 25,
 	}
