@@ -90,6 +90,7 @@ const (
 	Gorou                         // gorou
 	HuTao                         // hutao
 	Ineffa                        // ineffa
+	Jahoda                        // jahoda
 	Jean                          // jean
 	KaedeharaKazuha               // kaedeharakazuha
 	Kaeya                         // kaeya
@@ -212,6 +213,7 @@ var _CharNames = [...]string{
 	"gorou",
 	"hutao",
 	"ineffa",
+	"jahoda",
 	"jean",
 	"kaedeharakazuha",
 	"kaeya",
@@ -334,6 +336,7 @@ var _CharValues = [...]Char{
 	Gorou,
 	HuTao,
 	Ineffa,
+	Jahoda,
 	Jean,
 	KaedeharaKazuha,
 	Kaeya,
