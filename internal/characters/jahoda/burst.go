@@ -17,15 +17,19 @@ import (
 var burstFrames []int
 
 const (
-	burstDuration           = 790
-	burstHitmark            = 43
-	firstAbsorptionDelay    = 6
+	burstDuration = 790
+	burstHitmark  = 43
+
+	firstRobotHitmarkDelay = 41
+
+	firstRobotAbsorbDelay   = 6
 	robotAbsorptionInterval = 41 // exclude the outlier in trial 3
-	firstRobotHitmark       = 41
-	firsHealTickDelay       = 12
-	healInterval            = 87
-	burstCD                 = 18 * 60
-	burstKey                = "jahoda-burst-dot"
+
+	firsHealTickDelay = 12
+	healInterval      = 87
+
+	burstCD  = 18 * 60
+	burstKey = "jahoda-burst-dot"
 )
 
 func init() {
@@ -43,10 +47,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		return action.Info{}, errors.New("burst called in skill state")
 	}
 
-	c.robotHitmarkInterval = 140
 	c.burstSrc = c.Core.F
 	src := c.burstSrc
-	c.burstAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1.2) // couldn't find anywhere in dm, assume top be the same as Sayu
+	c.burstAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
+	c.robotHitmarkInterval = 140
 
 	c.AddStatus(burstKey, burstDuration, false)
 
@@ -131,7 +135,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if c.Core.Player.GetMoonsignLevel() >= 2 {
 		for robot := 0; robot < c.robotCount; robot++ {
 			ai := baseRobotAi
-			c.Core.Tasks.Add(c.absorbCheck(src, robot, ai, 0, burstDuration/18), firstAbsorptionDelay+robotAbsorptionInterval*robot)
+			c.Core.Tasks.Add(c.absorbCheck(src, robot, ai), firstRobotAbsorbDelay+robotAbsorptionInterval*robot)
 		}
 	}
 
@@ -169,22 +173,16 @@ func (c *char) lowestHPChar() int {
 	return lowestIdx
 }
 
-func (c *char) absorbCheck(src int, robot int, ai info.AttackInfo, count int, maxCount int) func() {
+func (c *char) absorbCheck(src int, robot int, ai info.AttackInfo) func() {
 	return func() {
 		if src != c.burstSrc || !c.StatusIsActive(burstKey) {
 			return
 		}
-		if count >= maxCount {
-			return
-		}
 
-		ele := c.Core.Combat.AbsorbCheck(c.Index(), c.burstAbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		ele := c.enemyAuraInArea(c.burstAbsorbCheckLocation, c.absorbPriority)
 
 		if ele == attributes.NoElement {
-			c.Core.Tasks.Add(
-				c.absorbCheck(src, robot, ai, count+1, maxCount),
-				18,
-			)
+			c.Core.Tasks.Add(c.absorbCheck(src, robot, ai), int(c.robotHitmarkInterval/3)) // formular from dm
 			return
 		}
 
@@ -206,7 +204,7 @@ func (c *char) absorbCheck(src int, robot int, ai info.AttackInfo, count int, ma
 		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), "jahoda robot ", strconv.Itoa(robot), " absorbed ", ele.String())
 
 		c.c4()
-		c.Core.Tasks.Add(c.robotAtkTick(src, ai), firstRobotHitmark)
+		c.Core.Tasks.Add(c.robotAtkTick(src, ai), firstRobotHitmarkDelay)
 	}
 }
 

@@ -10,14 +10,16 @@ import (
 
 type char struct {
 	*tmpl.Character
+	absorbPriority []attributes.Element
+
 	flaskAbsorbCheckLocation info.AttackPattern
 	flaskAbsorb              attributes.Element
 	flaskGauge               int
-	flaskGaugeMax            int
 	pursuitDuration          int
 	skillSrc                 int
 	meowballSrc              int
 	meowballTravel           int
+
 	burstAbsorbCheckLocation info.AttackPattern
 	burstSrc                 int
 	a1HighestEle             attributes.Element
@@ -25,9 +27,10 @@ type char struct {
 	robotHealCoeff           float64
 	robotCount               int
 	robotHitmarkInterval     float64
-	c2NextHighestEle         attributes.Element
-	a4Buff                   []float64
-	c6Buff                   []float64
+
+	c2NextHighestEle attributes.Element
+	a4Buff           []float64
+	c6Buff           []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -41,12 +44,11 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	c.Moonsign = 1
 
+	//c.absorbPriority = make([]attributes.Element, 4)
+	c.absorbPriority = append(c.absorbPriority, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+
 	c.flaskAbsorb = attributes.NoElement
-	c.flaskGauge = 0
-	c.flaskGaugeMax = 100
-
 	c.a1HighestEle = attributes.NoElement
-
 	c.c2NextHighestEle = attributes.NoElement
 
 	w.Character = &c
@@ -72,4 +74,30 @@ func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 		return 11
 	}
 	return c.Character.AnimationStartDelay(k)
+}
+
+func (c *char) enemyAuraInArea(area info.AttackPattern, priority []attributes.Element) attributes.Element {
+	for _, ele := range priority {
+		for _, enemy := range c.Core.Combat.Enemies() {
+			if enemy == nil || !enemy.IsAlive() {
+				continue
+			}
+
+			target, ok := enemy.(info.TargetWithAura)
+			if !ok {
+				continue
+			}
+
+			collision, _ := target.AttackWillLand(area)
+			if !collision {
+				continue
+			}
+
+			if target.AuraContains(ele) {
+				return ele
+			}
+		}
+	}
+
+	return attributes.NoElement
 }

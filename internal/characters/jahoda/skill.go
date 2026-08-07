@@ -18,22 +18,31 @@ var (
 )
 
 const (
-	skillWindup               = 30
-	shadowPursuitMaxDuration  = 334
-	firstFillFlaskDelay       = 19
-	fillFlaskInterval         = 29
-	drainFlaskHitmark         = 22
-	unfillHitmark             = 4
-	fillHitmark               = 2
+	skillWindup              = 30
+	shadowPursuitMaxDuration = 334
+
+	firstFlaskFillDelay = 7
+	flaskFillInterval   = 30
+	flaskFillValue      = 20
+	flaskFillWeakValue  = flaskFillValue / 2
+	flaskGaugeMax       = 100
+
+	drainFlaskHitmark = 4
+	unfillHitmark     = 4
+	fillHitmark       = 2
+
 	firstMeowballFirstHitmark = 129
 	meowballHitmarkInterval   = 116
-	skillCD                   = 15 * 60
-	c1BounceHitmark           = 32
-	shadowPursuitKey          = "jahoda-shadow-pursuit"
-	meowballKey               = "jahoda-meowball"
-	meowballFlatEnergyKey     = "jahoda-meowball-flat-energy"
-	meowballFlatEnergyICDKey  = "jahoda-meowball-flat-energy-icd"
-	particleICDKey            = "jahoda-particle-icd"
+
+	skillCD = 15 * 60
+
+	c1BounceHitmark = 32
+
+	shadowPursuitKey         = "jahoda-shadow-pursuit"
+	meowballKey              = "jahoda-meowball"
+	meowballFlatEnergyKey    = "jahoda-meowball-flat-energy"
+	meowballFlatEnergyICDKey = "jahoda-meowball-flat-energy-icd"
+	particleICDKey           = "jahoda-particle-icd"
 )
 
 func init() {
@@ -73,8 +82,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.flaskAbsorb = attributes.NoElement
 	c.flaskGauge = 0
-	c.flaskGaugeMax = 100
-	c.flaskAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4)
+	c.flaskAbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
 
 	// enter shadow pursuit
 	c.pursuitDuration = shadowPursuitMaxDuration
@@ -83,7 +91,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.Core.Player.SwapCD = math.MaxInt16
 		c.Core.Tasks.Add(
 			c.fillFlask(c.skillSrc),
-			firstFillFlaskDelay,
+			firstFlaskFillDelay,
 		)
 	}, skillWindup)
 
@@ -125,28 +133,51 @@ func (c *char) fillFlask(src int) func() {
 			return
 		}
 
+		// determine which element should be absorbed
+		priority := make([]attributes.Element, 0, len(c.absorbPriority))
+
+		if c.flaskAbsorb != attributes.NoElement {
+			priority = append(priority, c.flaskAbsorb)
+		}
+
+		for _, ele := range c.absorbPriority {
+			if ele != c.flaskAbsorb {
+				priority = append(priority, ele)
+			}
+		}
+
+		// check the prioritized elemental aura on the enemy
+		objectElem := c.enemyAuraInArea(c.flaskAbsorbCheckLocation, priority)
+
 		c.pursuitDuration = c.Core.F - c.skillSrc
 
-		// check elemental aura in the area
-		objectElem := c.Core.Combat.AbsorbCheck(c.Index(), c.flaskAbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 		if objectElem != attributes.NoElement {
-			if c.flaskAbsorb == attributes.NoElement {
-				// ff there are an element to absorb AND the flask has not absorbed any elements, the flask absorb that element and increase its gauge
+			amount := flaskFillWeakValue
+
+			switch {
+			case c.flaskAbsorb == attributes.NoElement:
+				// if there is an element to absorb AND the flask has not absorbed any element,
+				// the flask fill up its gauge by full value
 				c.flaskAbsorb = objectElem
-				c.Core.Tasks.Add(c.changeFlaskGauge(c.flaskGaugeMax/4), 0)
-			} else if objectElem == c.flaskAbsorb {
-				// else if there are an element to absorb AND if that element is the same as that the flask has absorbed the flask absorb that element
-				// and increase its gauge
-				c.Core.Tasks.Add(c.changeFlaskGauge(c.flaskGaugeMax/4), 0)
+				amount = flaskFillValue
+
+			case objectElem == c.flaskAbsorb:
+				// if there is an element to absorb AND the flask has absorbed an element,
+				// the flask fill up its gauge by full value
+				amount = flaskFillValue
+
+			default:
+				// otherwise the flask fill up its gauge by half of its full value
 			}
-			// otherwise nothing happend since the flask will not change its elemental absorption mid way
 
 			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(),
 				"jahoda flask absorbed ", c.flaskAbsorb.String(),
 			)
+
+			c.Core.Tasks.Add(c.changeFlaskGauge(amount), 0)
 		}
 
-		c.Core.Tasks.Add(c.fillFlask(c.skillSrc), fillFlaskInterval)
+		c.Core.Tasks.Add(c.fillFlask(src), flaskFillInterval)
 	}
 }
 
@@ -154,12 +185,13 @@ func (c *char) changeFlaskGauge(amount int) func() {
 	return func() {
 		prevFlaskGauge := c.flaskGauge
 		c.flaskGauge += amount
-		c.Core.Log.NewEvent("flask gauge change", glog.LogCharacterEvent, c.Index()).
+		c.Core.Log.NewEvent("jahoda flask gauge change", glog.LogCharacterEvent, c.Index()).
 			Write("previous flask gauge", prevFlaskGauge).
 			Write("current flask gauge", c.flaskGauge)
 
-		// if the flask is full OR the max duration of the state is reached, drain the flask
-		if c.flaskGauge >= c.flaskGaugeMax || !c.StatusIsActive(shadowPursuitKey) || c.Core.F >= shadowPursuitMaxDuration+c.skillSrc {
+		// if the flask is full OR the max duration of the state is reached
+		// OR the skill is rescast, drain the flask
+		if c.flaskGauge >= flaskGaugeMax || !c.StatusIsActive(shadowPursuitKey) || c.Core.F >= shadowPursuitMaxDuration+c.skillSrc {
 			c.Core.Tasks.Add(c.drainFlask(c.skillSrc), drainFlaskHitmark)
 			return
 		}
@@ -174,8 +206,8 @@ func (c *char) drainFlask(src int) func() {
 
 		c.cancelPursuit() // exit state
 
-		if c.flaskGauge >= c.flaskGaugeMax {
-			c.flaskGauge = c.flaskGaugeMax
+		if c.flaskGauge >= flaskGaugeMax {
+			c.flaskGauge = flaskGaugeMax
 
 			// if the flask is full, do filled flask damage
 			ai := info.AttackInfo{
@@ -196,7 +228,7 @@ func (c *char) drainFlask(src int) func() {
 			if c.Core.Player.GetMoonsignLevel() >= 2 {
 				c.c6()
 
-				ticks := c.flaskGaugeMax / 10
+				ticks := flaskGaugeMax / 10
 
 				for i := range ticks {
 					c.Core.Tasks.Add(
