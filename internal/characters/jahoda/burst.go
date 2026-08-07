@@ -73,8 +73,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		0,
 		burstHitmark)
 
-	// define base info
-	baseRobotAi := info.AttackInfo{
+	// define attack info
+	c.robotAi = info.AttackInfo{
 		ActorIndex: c.Index(),
 		Abil:       "Purrsonal Coordinated Assistance Robot DMG",
 		AttackTag:  attacks.AttackTagElementalBurst,
@@ -134,7 +134,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// dmg ticks
 	if c.Core.Player.GetMoonsignLevel() >= 2 {
 		for robot := 0; robot < c.robotCount; robot++ {
-			ai := baseRobotAi
+			ai := c.robotAi
 			c.Core.Tasks.Add(c.absorbCheck(src, robot, ai), firstRobotAbsorbDelay+robotAbsorptionInterval*robot)
 		}
 	}

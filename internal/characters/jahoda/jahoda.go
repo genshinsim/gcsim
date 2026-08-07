@@ -44,7 +44,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	c.Moonsign = 1
 
-	//c.absorbPriority = make([]attributes.Element, 4)
 	c.absorbPriority = append(c.absorbPriority, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 
 	c.flaskAbsorb = attributes.NoElement

@@ -89,10 +89,19 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.Core.Tasks.Add(func() {
 		c.AddStatus(shadowPursuitKey, shadowPursuitMaxDuration, false)
 		c.Core.Player.SwapCD = math.MaxInt16
+
 		c.Core.Tasks.Add(
 			c.fillFlask(c.skillSrc),
 			firstFlaskFillDelay,
 		)
+
+		// schedule drain flask after max duration to avoid skill end abruptly
+		// without doing damage when there are no elemental aura on enemy
+		c.Core.Tasks.Add(
+			c.drainFlask(c.skillSrc),
+			shadowPursuitMaxDuration,
+		)
+
 	}, skillWindup)
 
 	return action.Info{
@@ -174,18 +183,18 @@ func (c *char) fillFlask(src int) func() {
 				"jahoda flask absorbed ", c.flaskAbsorb.String(),
 			)
 
-			c.Core.Tasks.Add(c.changeFlaskGauge(amount), 0)
+			c.Core.Tasks.Add(c.fillFlaskGauge(amount), 0)
 		}
 
 		c.Core.Tasks.Add(c.fillFlask(src), flaskFillInterval)
 	}
 }
 
-func (c *char) changeFlaskGauge(amount int) func() {
+func (c *char) fillFlaskGauge(amount int) func() {
 	return func() {
 		prevFlaskGauge := c.flaskGauge
 		c.flaskGauge += amount
-		c.Core.Log.NewEvent("jahoda flask gauge change", glog.LogCharacterEvent, c.Index()).
+		c.Core.Log.NewEvent("jahoda flask gauge increase", glog.LogCharacterEvent, c.Index()).
 			Write("previous flask gauge", prevFlaskGauge).
 			Write("current flask gauge", c.flaskGauge)
 
@@ -194,6 +203,19 @@ func (c *char) changeFlaskGauge(amount int) func() {
 		if c.flaskGauge >= flaskGaugeMax || !c.StatusIsActive(shadowPursuitKey) || c.Core.F >= shadowPursuitMaxDuration+c.skillSrc {
 			c.Core.Tasks.Add(c.drainFlask(c.skillSrc), drainFlaskHitmark)
 			return
+		}
+	}
+}
+
+func (c *char) consumeFlaskGauge(amount int) func() {
+	return func() {
+		prevFlaskGauge := c.flaskGauge
+		c.flaskGauge -= amount
+		c.Core.Log.NewEvent("jahoda flask gauge decrease", glog.LogCharacterEvent, c.Index()).
+			Write("previous flask gauge", prevFlaskGauge).
+			Write("current flask gauge", c.flaskGauge)
+		if c.flaskGauge < 0 {
+			c.flaskGauge = 0
 		}
 	}
 }
@@ -235,7 +257,7 @@ func (c *char) drainFlask(src int) func() {
 						c.meowballTick(c.meowballSrc),
 						firstMeowballFirstHitmark+i*meowballHitmarkInterval,
 					)
-					c.Core.Tasks.Add(c.changeFlaskGauge(-10), firstMeowballFirstHitmark+i*meowballHitmarkInterval)
+					c.Core.Tasks.Add(c.consumeFlaskGauge(10), firstMeowballFirstHitmark+i*meowballHitmarkInterval)
 				}
 
 				c.AddStatus(
@@ -246,7 +268,7 @@ func (c *char) drainFlask(src int) func() {
 			}
 
 		} else {
-			// if the flask is not full (early cancel or no furation expired), do unfill damage
+			// if the flask is not full (early cancel or the duration expired), do unfill damage
 			ai := info.AttackInfo{
 				ActorIndex: c.Index(),
 				Abil:       "Unfilled Treasure Flask",
@@ -284,12 +306,12 @@ func (c *char) meowballTick(src int) func() {
 			return
 		}
 
-		if c.flaskGauge <= 0 {
-			return
-		}
-
 		if c.flaskGauge < 0 {
 			c.flaskGauge = 0
+		}
+
+		if c.flaskGauge <= 0 {
+			return
 		}
 
 		ai := info.AttackInfo{

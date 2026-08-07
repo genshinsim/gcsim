@@ -83,7 +83,6 @@ func (c *char) c6() {
 	}
 
 	c.c6Buff = make([]float64, attributes.EndStatType)
-	c.c6Buff = make([]float64, attributes.EndStatType)
 
 	c.c6Buff[attributes.CR] = 0.05
 	c.c6Buff[attributes.CD] = 0.40
