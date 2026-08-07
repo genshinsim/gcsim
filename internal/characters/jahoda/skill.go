@@ -198,9 +198,8 @@ func (c *char) fillFlaskGauge(amount int) func() {
 			Write("previous flask gauge", prevFlaskGauge).
 			Write("current flask gauge", c.flaskGauge)
 
-		// if the flask is full OR the max duration of the state is reached
-		// OR the skill is rescast, drain the flask
-		if c.flaskGauge >= flaskGaugeMax || !c.StatusIsActive(shadowPursuitKey) || c.Core.F >= shadowPursuitMaxDuration+c.skillSrc {
+		// if the flask is full drain the flask
+		if c.flaskGauge >= flaskGaugeMax {
 			c.Core.Tasks.Add(c.drainFlask(c.skillSrc), drainFlaskHitmark)
 			return
 		}
