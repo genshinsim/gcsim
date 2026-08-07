@@ -2253,7 +2253,7 @@
   "illuga": [
     {
       "ability": "attack",
-      "invalid": true
+      "invalid": false
     },
     {
       "ability": "aim",
@@ -2261,7 +2261,8 @@
     },
     {
       "ability": "charge",
-      "invalid": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
@@ -2273,11 +2274,11 @@
     },
     {
       "ability": "skill",
-      "invalid": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "invalid": true
+      "invalid": false
     },
     {
       "ability": "dash",
@@ -2289,6 +2290,7 @@
     },
     {
       "ability": "walk",
+      "note": "Everything except normal followed by walk has proper frames.",
       "invalid": false
     },
     {

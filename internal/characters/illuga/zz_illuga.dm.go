@@ -14,7 +14,9 @@ import (
 
 func init() {
 	core.RegisterCharFunc(keys.Illuga, NewChar)
-	paramsFor := map[action.Action][]string{}
+	paramsFor := map[action.Action][]string{
+		action.ActionSkill: {"hold"},
+	}
 	validation.RegisterCharParamValidationFunc(keys.Illuga, func(a action.Action, keys []string) error {
 		valid, ok := paramsFor[a]
 		if !ok {
