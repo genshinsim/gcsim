@@ -791,6 +791,13 @@
       "desc": "0 for no collision dmg (default), 1 for collision dmg."
     }
   ],
+  "illuga": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), 1 for Hold."
+    }
+  ],
   "jean": [
     {
       "ability": "skill",
