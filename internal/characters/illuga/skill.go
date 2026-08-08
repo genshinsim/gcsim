@@ -55,7 +55,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Mult:       skill_tap_em[c.TalentLvlSkill()],
 	}
 
-	ai.FlatDmg += skill_tap_def[c.TalentLvlSkill()] + c.TotalDef(false)
+	ai.FlatDmg += skill_tap_def[c.TalentLvlSkill()] * c.TotalDef(false)
 
 	ap := combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.5}, 3, 7) // taken from chevreuse
 
@@ -94,7 +94,7 @@ func (c *char) skillHold() (action.Info, error) {
 		Mult:       skill_hold_em[c.TalentLvlSkill()],
 	}
 
-	ai.FlatDmg += skill_hold_def[c.TalentLvlSkill()] + c.TotalDef(false)
+	ai.FlatDmg += skill_hold_def[c.TalentLvlSkill()] * c.TotalDef(false)
 
 	ap := combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.5}, 3, 7) // taken from chevreuse
 
