@@ -17,6 +17,9 @@ const (
 	c1ICDKey         = "illuga-c1-icd"
 	c2QuillThreshold = 7
 	c2Hitmark        = 50
+	c6CR             = 0.1
+	c6CD             = 0.3
+	c6EM             = 80
 )
 
 func (c *char) c1Init() {
@@ -107,7 +110,7 @@ func (c *char) c6CR() float64 {
 		return 0
 	}
 
-	return 0.1
+	return c6CR - aiCR
 }
 
 func (c *char) c6CD() float64 {
@@ -115,7 +118,7 @@ func (c *char) c6CD() float64 {
 		return 0
 	}
 
-	return 0.3
+	return c6CD - aiCD
 }
 
 func (c *char) c6EM() float64 {
@@ -123,5 +126,5 @@ func (c *char) c6EM() float64 {
 		return 0
 	}
 
-	return 80
+	return c6EM - aiEM
 }

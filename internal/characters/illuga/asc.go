@@ -11,17 +11,23 @@ var (
 	a4LcrBuff = []float64{0, 0.48, 0.96, 1.6}
 )
 
+const (
+	aiCR = 0.05
+	aiCD = 0.1
+	aiEM = 50
+)
+
 func (c *char) a1() {
 	if c.Base.Ascension < 1 {
 		return
 	}
 
 	m := make([]float64, attributes.EndStatType)
-	m[attributes.CR] = 0.05 + c.c6CR()
-	m[attributes.CD] = 0.1 + c.c6CD()
+	m[attributes.CR] = aiCR + c.c6CR()
+	m[attributes.CD] = aiCD + c.c6CD()
 
 	if c.Core.Player.GetMoonsignLevel() >= 2 {
-		m[attributes.EM] = 50 + c.c6EM()
+		m[attributes.EM] = aiEM + c.c6EM()
 	}
 
 	for _, char := range c.Core.Player.Chars() {
