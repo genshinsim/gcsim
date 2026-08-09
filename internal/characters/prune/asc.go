@@ -90,11 +90,10 @@ func (c *char) a1Init() {
 
 }
 
-func (c *char) a4() {
-	if c.Base.Ascension < 4 {
+func (c *char) makeA4CB(a info.AttackCB) {
+	if c.Base.Ascension < 4 || a.Target.Type() != info.TargettableEnemy {
 		return
 	}
-
 	c.a4Buff = make([]float64, attributes.EndStatType)
 	atk := c.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK).TotalATK()
 	c.a4Buff[attributes.DmgP] = math.Min(math.Max(atk-2000, 0)*0.00025, 0.5)
@@ -122,13 +121,6 @@ func (c *char) a4() {
 	c.Core.Log.NewEvent("prune a4 triggered", glog.LogCharacterEvent, c.Index()).
 		Write("dmg bonus", c.a4Buff[attributes.DmgP]).
 		Write("expiry", c.Core.F+5*60)
-}
-
-func (c *char) makeA4CB(a info.AttackCB) {
-	if a.Target.Type() != info.TargettableEnemy {
-		return
-	}
-	c.a4()
 }
 
 func (c *char) hexInit() {
