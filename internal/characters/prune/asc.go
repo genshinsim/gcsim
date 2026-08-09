@@ -141,15 +141,6 @@ func (c *char) hexInit() {
 
 	chars := c.Core.Player.Chars()
 
-	// separate values are needed because a swirl should be able to apply both buffs on the same frame
-	lastSelfTriggerFrame := make([]int, len(chars))
-	lastTeamTriggerFrame := make([]int, len(chars))
-
-	for i := range chars {
-		lastSelfTriggerFrame[i] = -1
-		lastTeamTriggerFrame[i] = -1
-	}
-
 	selfBuff := make([]float64, attributes.EndStatType)
 	selfBuff[attributes.ATKP] = 0.60
 
@@ -186,32 +177,23 @@ func (c *char) hexInit() {
 			}
 
 			// any qualifying reaction grants prune's self buff
-			if lastSelfTriggerFrame[triggererIndex] != c.Core.F {
-				lastSelfTriggerFrame[triggererIndex] = c.Core.F
+			c.AddStatMod(character.StatMod{
+				Base:         modifier.NewBaseWithHitlag("prune-hex-self-buff", 5*60),
+				AffectedStat: attributes.ATKP,
+				Amount: func() []float64 {
+					return selfBuff
+				},
+			})
 
-				c.AddStatMod(character.StatMod{
-					Base:         modifier.NewBaseWithHitlag("prune-hex-self-buff", 5*60),
-					AffectedStat: attributes.ATKP,
-					Amount: func() []float64 {
-						return selfBuff
-					},
-				})
-
-				c.Core.Log.NewEvent("prune hex self buff triggered", glog.LogCharacterEvent, c.Index()).
-					Write("triggerer", triggererIndex).
-					Write("atk percent", selfBuff[attributes.ATKP]).
-					Write("expiry", c.Core.F+5*60)
-			}
+			c.Core.Log.NewEvent("prune hex self buff triggered", glog.LogCharacterEvent, c.Index()).
+				Write("triggerer", triggererIndex).
+				Write("atk percent", selfBuff[attributes.ATKP]).
+				Write("expiry", c.Core.F+5*60)
 
 			// only swirl grants the triggering character's team buff
 			if !isSwirl {
 				return
 			}
-
-			if lastTeamTriggerFrame[triggererIndex] == c.Core.F {
-				return
-			}
-			lastTeamTriggerFrame[triggererIndex] = c.Core.F
 
 			triggerer.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag("prune-hex-team-buff", 5*60),
