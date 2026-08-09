@@ -12,11 +12,12 @@ import (
 const (
 	iceStormHitmark = 118
 
-	// the logic is cast -> 1s delay -> nyxadd+initial hit
-	// -> 0.95s + random [0.5,1.0] delay -> 2nd nyxadd+burst hit
+	// after Q hitmark, random [0.5,1.0] delay -> skull summon
+	// After field tick (c4) -> immediate skull summon
+	// Skull summon -> 0.95s delay -> NS point restore + skull hitmark
 	// From testing, the random delay is uniform
 	// const is relative to skull summoning- burst hitmark on q, field hitmark for c4
-	spiritVesselSkullHitmarkBase = 87
+	spiritVesselSkullHitmark = 57
 
 	iceStormAbil = "Ice Storm DMG"
 )
@@ -24,7 +25,7 @@ const (
 var burstFrames []int
 
 func (c *char) spiritVesselSkullRandHitmark() int {
-	return spiritVesselSkullHitmarkBase + c.Core.Rand.Intn(31)
+	return spiritVesselSkullHitmark + 30 + c.Core.Rand.Intn(31)
 }
 
 func init() {
