@@ -73,7 +73,7 @@ func (c *char) a1Init() {
 				45,
 				c.makeA4CB,
 				c.makeC1CB,
-				c.c4Ricochet(c.a1ConvertEle, attacks.AttackTagElementalBurst),
+				c.c4Ricochet(ele, attacks.AttackTagElementalBurst),
 				c.makeC2CB,
 			)
 
