@@ -71,14 +71,11 @@ func (c *char) a1Init() {
 				combat.NewCircleHitOnTarget(target, nil, 2.3),
 				0,
 				45,
-				c.c4Ricochet(c.a1ConvertEle, attacks.AttackTagElementalBurst),
 				c.makeA4CB,
 				c.makeC1CB,
+				c.c4Ricochet(c.a1ConvertEle, attacks.AttackTagElementalBurst),
+				c.makeC2CB,
 			)
-
-			if c.Base.Cons >= 2 {
-				c.c2Buff[attributes.ATKP] = math.Min(c.c2Buff[attributes.ATKP]+0.05, 0.40)
-			}
 
 			// swirl burst has different energy drain delay frame
 			c.burstEnergyDrainDelay = 19

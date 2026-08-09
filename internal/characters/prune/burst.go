@@ -1,14 +1,14 @@
 package prune
 
 import (
-	"math"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -36,6 +36,17 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.AddStatus(burstKey, duration, false)
 
+	if c.Base.Cons >= 2 {
+		c.c2Buff[attributes.ATKP] = 0.10
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("prune-c2", duration),
+			AffectedStat: attributes.ATKP,
+			Amount: func() []float64 {
+				return c.c2Buff
+			},
+		})
+	}
+
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
 		Abil:       "The Bell Tolls! The Hunt Is On!",
@@ -62,10 +73,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.SetCD(action.ActionBurst, 18*60)
 	c.ConsumeEnergy(c.burstEnergyDrainDelay)
-
-	if c.Base.Cons >= 2 {
-		c.c2Buff[attributes.ATKP] = 0.1
-	}
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
@@ -101,10 +108,7 @@ func (c *char) burstTick(src int) func() {
 			combat.NewCircleHitOnTarget(target, nil, 1.6),
 			0,
 			0,
+			c.makeC2CB,
 		)
-
-		if c.Base.Cons >= 2 {
-			c.c2Buff[attributes.ATKP] = math.Min(c.c2Buff[attributes.ATKP]+0.05, 0.40)
-		}
 	}
 }

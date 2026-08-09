@@ -1,6 +1,8 @@
 package prune
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -21,6 +23,15 @@ func (c *char) makeC1CB(a info.AttackCB) {
 
 	c.AddStatus(c1ICDKey, 108, false)
 	c.AddEnergy("prune-c1", 2)
+}
+
+func (c *char) makeC2CB(a info.AttackCB) {
+	if c.Base.Cons < 2 || a.Target.Type() != info.TargettableEnemy || !c.StatusIsActive(burstKey) {
+		return
+	}
+
+	c.c2Buff[attributes.ATKP] =
+		math.Min(c.c2Buff[attributes.ATKP]+0.05, 0.40)
 }
 
 func (c *char) c4Ricochet(ele attributes.Element, tag attacks.AttackTag) info.AttackCBFunc {
