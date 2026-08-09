@@ -12,7 +12,6 @@ import (
 type char struct {
 	*tmpl.Character
 	skillConvertEle       attributes.Element
-	a1ConvertEle          attributes.Element
 	burstSrc              int
 	burstEnergyDrainDelay int
 	a1Src                 int

@@ -26,7 +26,6 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	c.a1ConvertEle = attributes.NoElement
 	c.burstEnergyDrainDelay = 16
 
 	duration := 813
