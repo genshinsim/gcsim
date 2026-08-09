@@ -147,9 +147,10 @@ func (c *char) skillConvert() (action.Info, error) {
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1.5}, 2.5),
 		0,
 		30,
-		c.c4Ricochet(c.skillConvertEle, attacks.AttackTagElementalArt),
 		c.makeA4CB,
 		c.makeC1CB,
+		c.makeC2CB,
+		c.c4Ricochet(c.skillConvertEle, attacks.AttackTagElementalArt),
 	)
 
 	c.DeleteStatus(skillRecastWindowKey)
