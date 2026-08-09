@@ -133,15 +133,23 @@ func (c *char) c6Init() {
 		c.c6Buff = make([]float64, attributes.EndStatType)
 		c.c6Buff[attributes.ATK] = 350
 
-		for _, char := range chars {
-			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("prune-c6-buff", 5*60), // 5 s
-				AffectedStat: attributes.ATK,
-				Amount: func() []float64 {
-					return c.c6Buff
-				},
-			})
-		}
+		// for prune
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("prune-c6-buff", 5*60), // 5 s
+			AffectedStat: attributes.ATK,
+			Amount: func() []float64 {
+				return c.c6Buff
+			},
+		})
+
+		// for active character
+		c.Core.Player.ActiveChar().AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("prune-c6-buff", 5*60), // 5 s
+			AffectedStat: attributes.ATK,
+			Amount: func() []float64 {
+				return c.c6Buff
+			},
+		})
 
 		c.Core.Log.NewEvent("prune c6 triggered", glog.LogCharacterEvent, c.Index()).
 			Write("atk", c.c6Buff[attributes.ATK]).
