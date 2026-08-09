@@ -74,6 +74,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.c4Src = c.Core.F
 
+	c.a1()
+
 	c.c4(c.Core.F)()
 
 	c.SetCD(action.ActionBurst, 15*60)
