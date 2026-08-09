@@ -15,8 +15,9 @@ import (
 )
 
 const (
-	c4ICDKey = "prune-c4-icd"
-	c1ICDKey = "prune-c1-icd"
+	c1ICDKey    = "prune-c1-icd"
+	c4ICDKey    = "prune-c4-icd"
+	c6WindowKey = "prune-c6-window"
 )
 
 func (c *char) makeC1CB(a info.AttackCB) {
@@ -97,12 +98,50 @@ func (c *char) c6Init() {
 		return
 	}
 
-	lastTriggerFrame := make([]int, len(c.Core.Player.Chars()))
-	for i := range lastTriggerFrame {
-		lastTriggerFrame[i] = -1
-	}
-
 	chars := c.Core.Player.Chars()
+
+	c.c6Buff = make([]float64, attributes.EndStatType)
+	c.c6Buff[attributes.ATK] = 350
+
+	// prune always gets the C6 ATK buff while the C6 window is active
+	c.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("prune-c6-self-buff", -1),
+		AffectedStat: attributes.ATK,
+		Amount: func() []float64 {
+			if !c.StatusIsActive(c6WindowKey) {
+				return nil
+			}
+			return c.c6Buff
+		},
+	})
+
+	// give the currently active character 350 ATK
+	for _, ch := range chars {
+		char := ch
+
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("prune-c6-active-buff", -1),
+			AffectedStat: attributes.ATK,
+			Amount: func() []float64 {
+				// C6 must currently be active
+				if !c.StatusIsActive(c6WindowKey) {
+					return nil
+				}
+
+				// this character must currently be on field
+				if c.Core.Player.Active() != char.Index() {
+					return nil
+				}
+
+				// current active character must have Tolling Rally
+				if !char.StatusIsActive(a4Key) {
+					return nil
+				}
+
+				return c.c6Buff
+			},
+		})
+	}
 
 	buff := func(args ...any) {
 		// reaction target must be an enemy
@@ -116,32 +155,13 @@ func (c *char) c6Init() {
 			return
 		}
 
-		// prevent multiple qualifying reactions on the same frame from triggering again
-		triggererIndex := atk.Info.ActorIndex
-		if lastTriggerFrame[triggererIndex] == c.Core.F {
-			return
-		}
-		lastTriggerFrame[triggererIndex] = c.Core.F
-
 		// triggerer must be affected by tolling rally
 		triggerer := chars[atk.Info.ActorIndex]
 		if !triggerer.StatusIsActive(a4Key) {
 			return
 		}
 
-		// apply buff
-		c.c6Buff = make([]float64, attributes.EndStatType)
-		c.c6Buff[attributes.ATK] = 350
-
-		for _, char := range chars {
-			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("prune-c6-buff", 5*60), // 5 s
-				AffectedStat: attributes.ATK,
-				Amount: func() []float64 {
-					return c.c6Buff
-				},
-			})
-		}
+		c.AddStatus(c6WindowKey, 5*60, false)
 
 		c.Core.Log.NewEvent("prune c6 triggered", glog.LogCharacterEvent, c.Index()).
 			Write("atk", c.c6Buff[attributes.ATK]).
