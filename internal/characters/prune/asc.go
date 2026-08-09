@@ -110,6 +110,9 @@ func (c *char) a4() {
 				atk *info.AttackEvent,
 				target info.Target,
 			) []float64 {
+				if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra && atk.Info.AttackTag != attacks.AttackTagPlunge && atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalBurst {
+					return nil
+				}
 				return c.a4Buff
 			},
 		})
