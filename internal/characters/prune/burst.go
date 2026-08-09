@@ -102,6 +102,10 @@ func (c *char) burstTick(src int) func() {
 		detectionArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10)
 		target := c.Core.Combat.ClosestEnemyWithinArea(detectionArea, nil)
 
+		if target == nil {
+			return
+		}
+
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(target, nil, 1.6),
