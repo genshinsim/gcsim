@@ -14,7 +14,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c1ICDKey = "prune-c1-icd"
+const (
+	c4ICDKey = "prune-c4-icd"
+	c1ICDKey = "prune-c1-icd"
+)
 
 func (c *char) makeC1CB(a info.AttackCB) {
 	if c.Base.Cons < 1 || a.Target.Type() != info.TargettableEnemy || c.StatusIsActive(c1ICDKey) {
@@ -39,16 +42,17 @@ func (c *char) c4Ricochet(ele attributes.Element, tag attacks.AttackTag) info.At
 		return nil
 	}
 
-	triggered := false
-
 	return func(a info.AttackCB) {
-		if triggered {
-			return
-		}
+		// has to be on the enemy hit by the attack that call this
 		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
-		triggered = true
+
+		// C1 has 0.1s ICD
+		if c.StatusIsActive(c4ICDKey) {
+			return
+		}
+		c.AddStatus(c4ICDKey, 6, false)
 
 		// default to ricocheting onto the enemy that the hammer hit
 		var target info.Target = a.Target
@@ -70,9 +74,9 @@ func (c *char) c4Ricochet(ele attributes.Element, tag attacks.AttackTag) info.At
 			AttackTag:  tag,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
+			StrikeType: attacks.StrikeTypeBlunt,
 			Element:    ele,
-			Durability: 25,
+			Durability: 0,
 			Mult:       0.8,
 		}
 
@@ -81,6 +85,9 @@ func (c *char) c4Ricochet(ele attributes.Element, tag attacks.AttackTag) info.At
 			combat.NewCircleHitOnTarget(target, nil, 1.5),
 			0,
 			0, // need to check frame
+			c.makeA4CB,
+			c.makeC1CB,
+			c.makeC2CB,
 		)
 	}
 }
