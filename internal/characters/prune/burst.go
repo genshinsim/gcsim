@@ -93,9 +93,12 @@ func (c *char) burstTick(src int) func() {
 			HitlagFactor: 0.01,
 		}
 
+		detectionArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10)
+		target := c.Core.Combat.ClosestEnemyWithinArea(detectionArea, nil)
+
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.6),
+			combat.NewCircleHitOnTarget(target, nil, 1.6),
 			0,
 			0,
 		)
