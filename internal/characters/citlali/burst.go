@@ -10,13 +10,22 @@ import (
 )
 
 const (
-	iceStormHitmark          = 118
-	spiritVesselSkullHitmark = 210
+	iceStormHitmark = 118
+
+	// the logic is cast -> 1s delay -> nyxadd+initial hit
+	// -> 0.95s + random [0.5,1.0] delay -> 2nd nyxadd+burst hit
+	// From testing, the random delay is uniform
+	// const is relative to skull summoning- burst hitmark on q, field hitmark for c4
+	spiritVesselSkullHitmarkBase = 87
 
 	iceStormAbil = "Ice Storm DMG"
 )
 
 var burstFrames []int
+
+func (c *char) spiritVesselSkullRandHitmark() int {
+	return spiritVesselSkullHitmarkBase + c.Core.Rand.Intn(31)
+}
 
 func init() {
 	burstFrames = frames.InitAbilSlice(113) // Q -> Jump
@@ -66,18 +75,16 @@ func (c *char) Burst(_ map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(aiIceStorm, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6.5), iceStormHitmark, iceStormHitmark)
 
 	// skull hits
-	c.QueueCharTask(func() {
-		enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7), nil)
-		points := 0.0
-		for i, enemy := range enemies {
-			if i > 2 {
-				break
-			}
-			points += 3.0
-			c.Core.QueueAttack(aiSpiritVesselSkull, combat.NewCircleHitOnTarget(enemy.Pos(), nil, 3.5), 0, 0)
+	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7), nil)
+	for i, enemy := range enemies {
+		if i > 2 {
+			break
 		}
-		c.generateNightsoulPoints(points)
-	}, spiritVesselSkullHitmark)
+		c.QueueCharTask(func() {
+			c.generateNightsoulPoints(3.0)
+			c.Core.QueueAttack(aiSpiritVesselSkull, combat.NewCircleHitOnTarget(enemy.Pos(), nil, 3.5), 0, 0)
+		}, iceStormHitmark+c.spiritVesselSkullRandHitmark())
+	}
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
