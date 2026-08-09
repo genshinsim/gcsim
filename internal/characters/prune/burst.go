@@ -100,8 +100,6 @@ func (c *char) burstTick(src int) func() {
 			0,
 		)
 
-		c.a1()
-
 		if c.Base.Cons >= 2 {
 			c.c2Buff[attributes.ATKP] = math.Min(c.c2Buff[attributes.ATKP]+0.05, 0.40)
 		}

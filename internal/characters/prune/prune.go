@@ -48,6 +48,7 @@ func (c *char) Init() error {
 	if c.Base.Cons >= 2 {
 		c.c2Buff = make([]float64, attributes.EndStatType)
 	}
+	c.a1Init()
 	c.hexInit()
 	c.c6Init()
 

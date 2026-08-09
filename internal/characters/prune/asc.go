@@ -14,20 +14,21 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var burstDotSwirl = false
+const (
+	a1SwirlCheckICDKey = "prune-a1-swirl-check-icd"
+	a4Key              = "prune-tolling-rally"
+)
 
-const a4Key = "prune-tolling-rally"
-
-func (c *char) a1() {
+func (c *char) a1Init() {
 	if c.Base.Ascension < 1 {
 		return
 	}
 
 	swirlfunc := func(ele attributes.Element) func(args ...any) {
-		lastTriggerFrame := -1
 		return func(args ...any) {
 			// reaction target must be an enemy
-			if _, ok := args[0].(*enemy.Enemy); !ok {
+			target, ok := args[0].(*enemy.Enemy)
+			if !ok {
 				return
 			}
 
@@ -46,15 +47,38 @@ func (c *char) a1() {
 				return
 			}
 
-			// prevent multiple qualifying swirls on the same frame from triggering again
-			if c.Core.F == lastTriggerFrame {
+			// A1 has a shared 1.2s ICD across all four swirl elements
+			if c.StatusIsActive(a1SwirlCheckICDKey) {
 				return
 			}
-			lastTriggerFrame = c.Core.F
+			c.AddStatus(a1SwirlCheckICDKey, 72, false)
 
-			// allow passive to hit
-			burstDotSwirl = true
-			c.a1ConvertEle = ele
+			// queue passive
+			ai := info.AttackInfo{
+				ActorIndex: c.Index(),
+				Abil:       "Verdict and Punishment (A1)",
+				AttackTag:  attacks.AttackTagElementalBurst,
+				ICDTag:     attacks.ICDTagNone,
+				ICDGroup:   attacks.ICDGroupDefault,
+				StrikeType: attacks.StrikeTypeBlunt,
+				Element:    ele,
+				Durability: 0,
+				Mult:       1.5,
+			}
+
+			c.Core.QueueAttack(
+				ai,
+				combat.NewCircleHitOnTarget(target, nil, 2.3),
+				0,
+				45,
+				c.c4Ricochet(c.a1ConvertEle, attacks.AttackTagElementalBurst),
+				c.makeA4CB,
+				c.makeC1CB,
+			)
+
+			if c.Base.Cons >= 2 {
+				c.c2Buff[attributes.ATKP] = math.Min(c.c2Buff[attributes.ATKP]+0.05, 0.40)
+			}
 
 			// swirl burst has different energy drain delay frame
 			c.burstEnergyDrainDelay = 19
@@ -66,34 +90,6 @@ func (c *char) a1() {
 	c.Core.Events.Subscribe(event.OnSwirlElectro, swirlfunc(attributes.Electro), "prune-burst-electro")
 	c.Core.Events.Subscribe(event.OnSwirlHydro, swirlfunc(attributes.Hydro), "prune-burst-hydro")
 	c.Core.Events.Subscribe(event.OnSwirlPyro, swirlfunc(attributes.Pyro), "prune-burst-pyro")
-
-	if burstDotSwirl {
-		ai := info.AttackInfo{
-			ActorIndex: c.Index(),
-			Abil:       "Verdict and Punishment (A1)",
-			AttackTag:  attacks.AttackTagElementalBurst,
-			ICDTag:     attacks.ICDTagNone,
-			ICDGroup:   attacks.ICDGroupDefault,
-			Element:    c.a1ConvertEle,
-			Durability: 0,
-			Mult:       1.5,
-		}
-
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 2.3),
-			0,
-			45,
-			c.c4Ricochet(c.a1ConvertEle, attacks.AttackTagElementalBurst),
-			c.makeA4CB,
-			c.makeC1CB,
-		)
-
-		if c.Base.Cons >= 2 {
-			c.c2Buff[attributes.ATKP] = math.Min(c.c2Buff[attributes.ATKP]+0.05, 0.40)
-		}
-
-	}
 
 }
 
