@@ -17,8 +17,9 @@ var (
 )
 
 const (
-	particleICDKey       = "prune-particle-icd"
-	skillRecastWindowKey = "prune-skill-recast-window"
+	particleICDKey        = "prune-particle-icd"
+	skillRecastWindowKey  = "prune-skill-recast-window"
+	skillSwirlCheckICDKey = "prune-skill-swirl-check-icd"
 )
 
 func init() {
@@ -47,6 +48,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return c.skillConvert()
 	}
 
+	skillFrames[action.ActionSkill] = 41
 	c.skillConvertEle = attributes.NoElement
 
 	ai := info.AttackInfo{
@@ -72,7 +74,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	)
 
 	swirlfunc := func(ele attributes.Element) func(args ...any) {
-		lastTriggerFrame := -1
 		return func(args ...any) {
 			// reaction target must be an enemy
 			if _, ok := args[0].(*enemy.Enemy); !ok {
@@ -94,11 +95,11 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				return
 			}
 
-			// prevent multiple qualifying swirls on the same frame from triggering again
-			if c.Core.F == lastTriggerFrame {
+			// A1 has a shared 1.2s ICD across all four swirl elements
+			if c.StatusIsActive(skillSwirlCheckICDKey) {
 				return
 			}
-			lastTriggerFrame = c.Core.F
+			c.AddStatus(skillSwirlCheckICDKey, 12, false)
 
 			// allow skill to be recasted
 			c.skillConvertEle = ele
