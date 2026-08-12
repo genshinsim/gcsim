@@ -91,13 +91,11 @@ func (c *char) a4Init() {
 
 func (c *char) moonsignInit() {
 	c.Core.Flags.Custom[reactable.LunarCrystallizeEnableKey] = 1
-	f := func(args ...any) {
+
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 
-		switch atk.Info.AttackTag {
-		case attacks.AttackTagDirectLunarCrystallize:
-		case attacks.AttackTagReactionLunarCrystallize:
-		default:
+		if atk.Info.AttackTag != attacks.AttackTagDirectLunarCrystallize {
 			return
 		}
 
@@ -108,7 +106,21 @@ func (c *char) moonsignInit() {
 		}
 
 		atk.Info.BaseDmgBonus += bonus
-	}
-	c.Core.Events.Subscribe(event.OnEnemyHit, f, lunarcrystallizeBonusKey)
-	c.Core.Events.Subscribe(event.OnLunarReactionAttack, f, lunarcrystallizeBonusKey)
+	}, lunarcrystallizeBonusKey)
+
+	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+
+		if atk.Info.AttackTag != attacks.AttackTagReactionLunarCrystallize {
+			return
+		}
+
+		bonus := min(c.TotalDef(false)/100.0*0.007, 0.14)
+
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("linnea adding lunar crystallize base damage", glog.LogCharacterEvent, c.Index()).Write("bonus", bonus)
+		}
+
+		atk.Info.BaseDmgBonus += bonus
+	}, lunarcrystallizeBonusKey)
 }
