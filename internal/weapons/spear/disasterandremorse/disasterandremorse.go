@@ -1,8 +1,6 @@
 package disasterandremorse
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -18,6 +16,8 @@ const (
 	unforgivable   = "unforgivable"
 	irreparable    = "irreparable"
 	procICD        = "disaster-remorse-proc"
+	naCaICD        = "disaster-remorse-na-ca-icd"
+	skillBurstICD  = "disaster-remorse-skill-burst-icd"
 )
 
 type Weapon struct {
@@ -30,44 +30,18 @@ func (w *Weapon) Init() error      { return nil }
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := p.Refine
-
 	bonus := 0.40 + 0.10*float64(r-1)
 
 	naCaVal := make([]float64, attributes.EndStatType)
 	skillBurstVal := make([]float64, attributes.EndStatType)
 
-	key := fmt.Sprintf("disaster-remorse-%v", char.Base.Key.String())
-	c.Events.Subscribe(event.OnSkill, func(args ...any) {
-		if c.Player.Active() != char.Index() {
-			return
-		}
+	key := "disaster-remorse-" + char.Base.Key.String()
 
-		if char.StatusIsActive(procICD) {
-			return
-		}
-
-		char.AddStatus(procICD, 18*60, true)
-
-		char.AddStatus(pathOfConflict, 17*60, true)
-		char.AddStatus(unforgivable, 3*60, true)
-		char.AddStatus(irreparable, 3*60, true)
-
-		c.Tasks.Add(func() {
-			char.DeleteStatus(unforgivable)
-			char.DeleteStatus(irreparable)
-		}, 17*60)
-	}, key)
-
-	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(unforgivable, -1),
+	unforgivableMod := character.AttackMod{
+		Base: modifier.NewBase(unforgivable, 3*60),
 		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
-			if !char.StatusIsActive(unforgivable) {
-				return nil
-			}
-
 			switch atk.Info.AttackTag {
-			case attacks.AttackTagNormal:
-			case attacks.AttackTagExtra:
+			case attacks.AttackTagNormal, attacks.AttackTagExtra:
 			default:
 				return nil
 			}
@@ -80,18 +54,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 			return naCaVal
 		},
-	})
-	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase(irreparable, -1),
-		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
-			if !char.StatusIsActive(irreparable) {
-				return nil
-			}
+	}
 
+	irreparableMod := character.AttackMod{
+		Base: modifier.NewBase(irreparable, 3*60),
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch atk.Info.AttackTag {
-			case attacks.AttackTagElementalArt:
-			case attacks.AttackTagElementalArtHold:
-			case attacks.AttackTagElementalBurst:
+			case attacks.AttackTagElementalArt,
+				attacks.AttackTagElementalArtHold,
+				attacks.AttackTagElementalBurst:
 			default:
 				return nil
 			}
@@ -104,11 +75,31 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 			return skillBurstVal
 		},
-	})
+	}
+
+	c.Events.Subscribe(event.OnSkill, func(args ...any) {
+		if c.Player.Active() != char.Index() {
+			return
+		}
+
+		if char.StatusIsActive(procICD) {
+			return
+		}
+
+		char.AddStatus(procICD, 18*60, true)
+		char.AddStatus(pathOfConflict, 17*60, true)
+
+		char.AddAttackMod(unforgivableMod)
+		char.AddAttackMod(irreparableMod)
+
+		char.QueueCharTask(func() {
+			char.DeleteAttackMod(unforgivable)
+			char.DeleteAttackMod(irreparable)
+		}, 17*60)
+	}, key)
 
 	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
-		_, ok := args[0].(*enemy.Enemy)
-		if !ok {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return
 		}
 
@@ -124,22 +115,21 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal, attacks.AttackTagExtra:
-			if char.StatusIsActive("disaster-remorse-na-ca-icd") {
+			if char.StatusIsActive(naCaICD) {
 				return
 			}
 
-			char.AddStatus("disaster-remorse-na-ca-icd", 6, false)
+			char.AddStatus(naCaICD, 0.1*60, true)
 			char.ExtendStatus(irreparable, 60)
 
 		case attacks.AttackTagElementalArt,
 			attacks.AttackTagElementalArtHold,
 			attacks.AttackTagElementalBurst:
-
-			if char.StatusIsActive("disaster-remorse-skill-burst-icd") {
+			if char.StatusIsActive(skillBurstICD) {
 				return
 			}
 
-			char.AddStatus("disaster-remorse-skill-burst-icd", 6, false)
+			char.AddStatus(skillBurstICD, 0.1*60, true)
 			char.ExtendStatus(unforgivable, 60)
 		}
 	}, key+"-extend")
@@ -151,8 +141,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 
-		char.DeleteStatus(unforgivable)
-		char.DeleteStatus(irreparable)
+		char.DeleteAttackMod(unforgivable)
+		char.DeleteAttackMod(irreparable)
+		char.DeleteStatus(pathOfConflict)
 	}, key+"-swap")
+
 	return w, nil
 }
