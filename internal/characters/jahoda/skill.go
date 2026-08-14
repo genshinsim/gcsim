@@ -101,9 +101,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			c.drainFlask(c.skillSrc),
 			shadowPursuitMaxDuration,
 		)
-
 	}, skillWindup)
-
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
@@ -265,7 +263,6 @@ func (c *char) drainFlask(src int) func() {
 					false,
 				)
 			}
-
 		} else {
 			// if the flask is not full (early cancel or the duration expired), do unfill damage
 			ai := info.AttackInfo{
@@ -333,6 +330,5 @@ func (c *char) meowballTick(src int) func() {
 			c.meowballEnergyCB,
 			c.makeA1CB,
 		)
-
 	}
 }

@@ -22,18 +22,12 @@ func (c *char) makeA1CB(a info.AttackCB) {
 
 	// 50% to bounce
 	if c.Core.Rand.Float64() < 0.5 {
-		triggered := false
-
-		if triggered {
-			return
-		}
 		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
-		triggered = true
 
 		// default to bounce onto the original enemy
-		var target info.Target = a.Target
+		target := a.Target
 
 		// prefer a different nearby enemy when one exists, the exact radius of detection is unknown
 		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 8), func(t info.Enemy) bool {
@@ -66,14 +60,12 @@ func (c *char) makeA1CB(a info.AttackCB) {
 			nil,
 		)
 	}
-
 }
 
 func (c *char) c4() {
 	if c.Base.Cons < 4 {
 		return
 	}
-
 	c.AddEnergy(c4Key, 4)
 }
 
@@ -114,6 +106,5 @@ func (c *char) c6() {
 			Write("cr", c.c6Buff[attributes.CR]).
 			Write("cd", c.c6Buff[attributes.CD]).
 			Write("expiry", c.Core.F+20*60)
-
 	}
 }

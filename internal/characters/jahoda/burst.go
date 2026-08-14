@@ -125,7 +125,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 							Bonus:   c.Stat(attributes.Heal),
 						})
 					}
-
 				}
 			}, i)
 		}
@@ -173,7 +172,7 @@ func (c *char) lowestHPChar() int {
 	return lowestIdx
 }
 
-func (c *char) absorbCheck(src int, robot int, ai info.AttackInfo) func() {
+func (c *char) absorbCheck(src, robot int, ai info.AttackInfo) func() {
 	return func() {
 		if src != c.burstSrc || !c.StatusIsActive(burstKey) {
 			return
