@@ -5,15 +5,18 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event, grpMult float64) (float64, bool) {
 	var isCrit bool
 
-	if atk.Info.AttackTag == attacks.AttackTagDirectLunarCharged ||
-		atk.Info.AttackTag == attacks.AttackTagDirectLunarBloom ||
-		atk.Info.AttackTag == attacks.AttackTagDirectLunarCrystallize {
-		return e.calcDirectLunar(atk, evt, grpMult)
+	switch atk.Info.AttackTag {
+	case attacks.AttackTagDirectLunarCharged,
+		attacks.AttackTagDirectLunarBloom,
+		attacks.AttackTagDirectLunarCrystallize,
+		attacks.AttackTagDirectStellarConduct:
+		return e.calcDirectReaction(atk, evt, grpMult)
 	}
 
 	elePer := 0.0
@@ -182,10 +185,10 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event, grpMult float64) (fl
 	return damage, isCrit
 }
 
-func (e *Enemy) calcDirectLunar(atk *info.AttackEvent, evt glog.Event, grpMult float64) (float64, bool) {
+func (e *Enemy) calcDirectReaction(atk *info.AttackEvent, evt glog.Event, grpMult float64) (float64, bool) {
 	var isCrit bool
 
-	// no DMG% for direct lunar damage
+	// no DMG% for direct reaction damage
 
 	// calculate using HP/Def/EM/Atk
 	var a float64
@@ -210,6 +213,10 @@ func (e *Enemy) calcDirectLunar(atk *info.AttackEvent, evt glog.Event, grpMult f
 		mult = 3
 	case attacks.AttackTagDirectLunarCrystallize:
 		mult = 1.6
+	case attacks.AttackTagDirectStellarConduct:
+		char := e.Core.Player.Chars()[atk.Info.ActorIndex]
+		stacks := char.Tags[reactable.PolestarFieldStacksKey]
+		mult = reactable.StellarconductMult[stacks]
 	}
 	damage *= mult
 
@@ -226,7 +233,7 @@ func (e *Enemy) calcDirectLunar(atk *info.AttackEvent, evt glog.Event, grpMult f
 	damage += atk.Info.FlatDmg
 
 	// apply def mod
-	// TODO: Should we check this? lunar reaction damage is supposed to ignore def
+	// TODO: Should we check this? reaction damage is supposed to ignore def
 	defadj := e.defAdj(evt)
 	if defadj > 0.9 {
 		defadj = 0.9

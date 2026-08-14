@@ -50,6 +50,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 	c.Events.Subscribe(event.OnOverload, buffNoGadget, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnSuperconduct, buffNoGadget, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnStellarConduct, buffNoGadget, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnElectroCharged, buffNoGadget, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnLunarCharged, buffNoGadget, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnQuicken, buffNoGadget, fmt.Sprintf("darkironsword-%v", char.Base.Key.String()))
