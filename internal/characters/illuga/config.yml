@@ -87,14 +87,14 @@ abilities:
       - name: E-Tap
         shape: Box
         center: PrimaryTarget
-        offset: [0, -0.5]
-        box: [3, 7]
+        offset: [0, -0.3]
+        box: [2, 12]
 
       - name: E-Hold
         shape: Box
         center: PrimaryTarget
-        offset: [0, -0.5]
-        box: [3, 7]
+        offset: [0, -0.3]
+        box: [2, 35]
 
   - name: burst
     hitbox:
@@ -108,6 +108,3 @@ abilities:
       - name: C2
         shape: Single
         center: PrimaryTarget
-
-  - name: walk
-    note: Everything except normal followed by walk has proper frames.

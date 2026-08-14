@@ -2290,7 +2290,6 @@
     },
     {
       "ability": "walk",
-      "note": "Everything except normal followed by walk has proper frames.",
       "invalid": false
     },
     {
