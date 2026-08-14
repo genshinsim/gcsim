@@ -51,13 +51,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		PoiseDMG:   75,
 		Element:    attributes.Geo,
 		Durability: 25,
-		UseEM:      true,
-		Mult:       skill_tap_em[c.TalentLvlSkill()],
 	}
+	c.Core.Tasks.Add(func() {
+		ai.FlatDmg += skill_tap_em[c.TalentLvlSkill()] * c.Stat(attributes.EM)
+		ai.FlatDmg += skill_tap_def[c.TalentLvlSkill()] * c.TotalDef(false)
+	}, skillTapHitmark)
 
-	ai.FlatDmg += skill_tap_def[c.TalentLvlSkill()] * c.TotalDef(false)
-
-	ap := combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.5}, 3, 7) // taken from chevreuse
+	ap := combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.3}, 2, 12) // measured in science lab, miliastra stage
 
 	c.Core.QueueAttack(
 		ai,
@@ -90,13 +90,13 @@ func (c *char) skillHold() (action.Info, error) {
 		PoiseDMG:   100,
 		Element:    attributes.Geo,
 		Durability: 25,
-		UseEM:      true,
-		Mult:       skill_hold_em[c.TalentLvlSkill()],
 	}
+	c.Core.Tasks.Add(func() {
+		ai.FlatDmg += skill_hold_em[c.TalentLvlSkill()] * c.Stat(attributes.EM)
+		ai.FlatDmg += skill_hold_def[c.TalentLvlSkill()] * c.TotalDef(false)
+	}, skillHoldHitmark)
 
-	ai.FlatDmg += skill_hold_def[c.TalentLvlSkill()] * c.TotalDef(false)
-
-	ap := combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.5}, 3, 7) // taken from chevreuse
+	ap := combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.3}, 2, 35) // measured in science lab, miliastra stage
 
 	c.Core.QueueAttack(
 		ai,

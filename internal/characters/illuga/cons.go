@@ -31,6 +31,16 @@ func (c *char) c1Init() {
 		if c.StatusIsActive(c1ICDKey) {
 			return
 		}
+		char := args[0].(*character.CharWrapper)
+
+		if char.Index() != c.Index() {
+			return
+		}
+
+		if char.Index() != c.Core.Player.Active() {
+			return
+		}
+
 		c.AddStatus(c1ICDKey, 15*60, true)
 		c.AddEnergy(c1EnergyKey, 12)
 	}
@@ -40,7 +50,28 @@ func (c *char) c1Init() {
 	}
 }
 
-func (c *char) c2() {
+func (c *char) c2Reset() {
+	if c.Base.Cons < 2 {
+		return
+	}
+
+	c.c2QuillCounter = 0
+}
+
+func (c *char) c2Increment() {
+	if c.Base.Cons < 2 {
+		return
+	}
+
+	c.c2QuillCounter++
+
+	if c.c2QuillCounter >= c2QuillThreshold {
+		c.c2QuillCounter -= c2QuillThreshold
+		c.c2Hit()
+	}
+}
+
+func (c *char) c2Hit() {
 	if c.Base.Cons < 2 {
 		return
 	}
@@ -77,11 +108,16 @@ func (c *char) c4(src int) func() {
 	m[attributes.DEF] = 200
 
 	return func() {
-		if src != c.c4Src {
+		if src < c.c4Src {
 			return
 		}
 
-		if !c.StatusIsActive(orioleSongKey) {
+		// new source will alway be higher than the previous one
+		if src > c.c4Src {
+			c.c4Src = src
+		}
+
+		if !c.StatusIsActive(burstKey) {
 			return
 		}
 
@@ -89,13 +125,9 @@ func (c *char) c4(src int) func() {
 			if char.Index() == c.Index() {
 				continue
 			}
-			char.AddAttackMod(character.AttackMod{
+			char.AddStatMod(character.StatMod{
 				Base: modifier.NewBaseWithHitlag("illuga-c4", 1.1*60),
-				Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
-					if atk.Info.ActorIndex != c.Core.Player.Active() {
-						return nil
-					}
-
+				Amount: func() []float64 {
 					return m
 				},
 			})
@@ -110,7 +142,7 @@ func (c *char) c6CR() float64 {
 		return 0
 	}
 
-	return c6CR - aiCR
+	return c6CR - a1CR
 }
 
 func (c *char) c6CD() float64 {
@@ -118,7 +150,7 @@ func (c *char) c6CD() float64 {
 		return 0
 	}
 
-	return c6CD - aiCD
+	return c6CD - a1CD
 }
 
 func (c *char) c6EM() float64 {
@@ -126,5 +158,5 @@ func (c *char) c6EM() float64 {
 		return 0
 	}
 
-	return c6EM - aiEM
+	return c6EM - a1EM
 }

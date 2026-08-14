@@ -15,8 +15,8 @@ import (
 var burstFrames []int
 
 const (
-	orioleSongKey = "haunted-night-oriole-song"
-	burstHitmark  = 48
+	burstKey     = "haunted-night-oriole-song"
+	burstHitmark = 48
 )
 
 func init() {
@@ -38,17 +38,16 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		PoiseDMG:   150,
 		Element:    attributes.Geo,
 		Durability: 25,
-		UseEM:      true,
-		Mult:       burst_em[c.TalentLvlBurst()],
 	}
 
+	ai.FlatDmg += burst_em[c.TalentLvlBurst()] * c.Stat(attributes.EM)
 	ai.FlatDmg += burst_def[c.TalentLvlBurst()] * c.TotalDef(false)
 
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6.5)
 
-	c.AddStatus(orioleSongKey, 20*60, true)
+	c.AddStatus(burstKey, 20*60, true)
 
-	c.c2QuillCounter = 0
+	c.c2Reset()
 
 	c.nightingalesSong = 21
 
@@ -71,8 +70,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 		c.nightingalesSong += 5
 	}
-
-	c.c4Src = c.Core.F
 
 	c.a1()
 
@@ -108,7 +105,7 @@ func (c *char) burstBuffInit() {
 			return
 		}
 
-		if !c.StatusIsActive(orioleSongKey) {
+		if !c.StatusIsActive(burstKey) {
 			return
 		}
 
@@ -126,8 +123,7 @@ func (c *char) burstBuffInit() {
 			attacks.AttackTagExtra,
 			attacks.AttackTagPlunge:
 			amt = (burst_buff_geo[c.TalentLvlBurst()] + c.a4GeoBonus()) * c.Stat(attributes.EM)
-		case attacks.AttackTagDirectLunarCrystallize,
-			attacks.AttackTagReactionLunarCrystallize:
+		case attacks.AttackTagDirectLunarCrystallize:
 			amt = (burst_buff_lcr[c.TalentLvlBurst()] + c.a4LcrBonus()) * c.Stat(attributes.EM)
 		default:
 			return
@@ -135,24 +131,19 @@ func (c *char) burstBuffInit() {
 
 		c.nightingalesSong--
 
-		c.c2QuillCounter++
-
 		atk.Info.FlatDmg += amt
 
-		if c.c2QuillCounter >= c2QuillThreshold {
-			c.c2QuillCounter -= c2QuillThreshold
-			c.c2()
-		}
+		c.c2Increment()
 
 		if c.nightingalesSong < 1 {
-			c.DeleteStatus(orioleSongKey)
+			c.DeleteStatus(burstKey)
 		}
 
 		if c.Core.Flags.LogDebug {
 			c.Core.Log.NewEvent("Illuga Quill proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
 				Write("before", atk.Info.FlatDmg).
 				Write("addition", amt).
-				Write("effect_ends_at", c.StatusExpiry(orioleSongKey)).
+				Write("effect_ends_at", c.StatusExpiry(burstKey)).
 				Write("quill_left", c.nightingalesSong)
 		}
 	}, "illuga-burst-quill")
@@ -162,7 +153,7 @@ func (c *char) burstBuffInit() {
 			return
 		}
 
-		if c.StatusIsActive(orioleSongKey) {
+		if c.StatusIsActive(burstKey) {
 			return
 		}
 
