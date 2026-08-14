@@ -5718,18 +5718,18 @@
       "name": "E-Tap",
       "shape": "Box",
       "center": "PrimaryTarget",
-      "offset_y": -0.5,
-      "box_x": 3,
-      "box_y": 7
+      "offset_y": -0.3,
+      "box_x": 2,
+      "box_y": 12
     },
     {
       "ability": "skill",
       "name": "E-Hold",
       "shape": "Box",
       "center": "PrimaryTarget",
-      "offset_y": -0.5,
-      "box_x": 3,
-      "box_y": 7
+      "offset_y": -0.3,
+      "box_x": 2,
+      "box_y": 35
     },
     {
       "ability": "burst",

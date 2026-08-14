@@ -1,7 +1,10 @@
 package illuga
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -12,9 +15,9 @@ var (
 )
 
 const (
-	aiCR = 0.05
-	aiCD = 0.1
-	aiEM = 50
+	a1CR = 0.05
+	a1CD = 0.1
+	a1EM = 50
 )
 
 func (c *char) a1() {
@@ -23,24 +26,54 @@ func (c *char) a1() {
 	}
 
 	m := make([]float64, attributes.EndStatType)
-	m[attributes.CR] = aiCR + c.c6CR()
-	m[attributes.CD] = aiCD + c.c6CD()
+	m[attributes.CR] = a1CR + c.c6CR()
+	m[attributes.CD] = a1CD + c.c6CD()
+
+	n := make([]float64, attributes.EndStatType)
 
 	if c.Core.Player.GetMoonsignLevel() >= 2 {
-		m[attributes.EM] = aiEM + c.c6EM()
+		n[attributes.EM] = a1EM + c.c6EM()
 	}
 
 	for _, char := range c.Core.Player.Chars() {
 		if char.Index() == c.Index() {
 			continue
 		}
-		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag("illuga-a1", 20*60),
-			Amount: func() []float64 {
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBaseWithHitlag("illuga-a1-crit", 20*60),
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+				if atk.Info.Element != attributes.Geo {
+					return nil
+				}
+
 				return m
 			},
 		})
+
+		if c.Core.Player.GetMoonsignLevel() >= 2 {
+			char.AddStatMod(character.StatMod{
+				Base: modifier.NewBaseWithHitlag("illuga-a1-em", 20*60),
+				Amount: func() []float64 {
+					return n
+				},
+			})
+		}
 	}
+
+	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
+		char := args[0].(*character.CharWrapper)
+		if char.Index() == c.Index() {
+			return
+		}
+
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.AttackTag != attacks.AttackTagReactionLunarCrystallize {
+			return
+		}
+
+		atk.Snapshot.Stats[attributes.CR] += a1CR + c.c6CR()
+		atk.Snapshot.Stats[attributes.CD] += a1CD + c.c6CD()
+	}, "illuga-a1-lunarcrystallize")
 }
 
 func (c *char) a4Count() int {
