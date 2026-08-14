@@ -8,6 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
+const StellarSwirlEnableKey = "stellar-swirl-enabled"
+
 func calcSwirlAtkDurability(consumed, src info.Durability) info.Durability {
 	if consumed < src {
 		return 1.25*(0.5*consumed-1) + 25

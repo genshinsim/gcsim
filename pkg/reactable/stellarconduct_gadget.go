@@ -13,13 +13,13 @@ import (
 
 const (
 	PolestarFieldStacksKey = PolestarFieldKey + "-stacks"
-	recordKey              = PolestarFieldKey + "-recorded"
-	fieldDur               = 6 * 60
-	stackICDKey            = PolestarFieldKey + "-icd"
-	stackICDDur            = 0.1 * 60
-	maxStacks              = 12
-	thinkInterval          = 4 * 60
-	buffDur                = thinkInterval + 1 // one frame higher so it isn't constantly expiring and then reapplying on the same frame
+	sscRecordKey           = PolestarFieldKey + "-recorded"
+	sscFieldDur            = 6 * 60
+	sscStackICDKey         = PolestarFieldKey + "-icd"
+	sscStackICDDur         = 0.1 * 60
+	sscMaxStacks           = 12
+	sscThinkInterval       = 4 * 60
+	sscBuffDur             = sscThinkInterval + 1 // one frame higher so it isn't constantly expiring and then reapplying on the same frame
 )
 
 var stellarConductBuff = []float64{
@@ -49,8 +49,8 @@ func (r *Reactable) newPolestarField() *PolestarField {
 	p := &PolestarField{}
 
 	p.Gadget = gadget.New(r.core, r.core.Combat.Player().Pos(), 1, info.GadgetTypPolestarField)
-	p.ThinkInterval = thinkInterval
-	p.Duration = fieldDur
+	p.ThinkInterval = sscThinkInterval
+	p.Duration = sscFieldDur
 	p.mCryo = make([]float64, attributes.EndStatType)
 	p.mElectro = make([]float64, attributes.EndStatType)
 	p.OnThinkInterval = p.refreshBuffs
@@ -80,14 +80,14 @@ func (r *Reactable) newPolestarField() *PolestarField {
 		}
 
 		char := p.Core.Player.Chars()[ai.ActorIndex]
-		if char.StatusIsActive(stackICDKey) {
+		if char.StatusIsActive(sscStackICDKey) {
 			return
 		}
 
-		char.AddStatus(stackICDKey, stackICDDur, true)
+		char.AddStatus(sscStackICDKey, sscStackICDDur, true)
 
-		p.Core.Flags.Custom[recordKey] = min(p.Core.Flags.Custom[recordKey]+1, maxStacks)
-		p.Core.Log.NewEvent("Adding polestar field stored stacks", glog.LogElementEvent, -1).Write("new_stacks", int(p.Core.Flags.Custom[recordKey]))
+		p.Core.Flags.Custom[sscRecordKey] = min(p.Core.Flags.Custom[sscRecordKey]+1, sscMaxStacks)
+		p.Core.Log.NewEvent("Adding polestar field stored stacks", glog.LogElementEvent, -1).Write("new_stacks", int(p.Core.Flags.Custom[sscRecordKey]))
 	}, p.subscriptionKey())
 
 	p.refreshBuffs()
@@ -99,7 +99,7 @@ func (r *Reactable) newPolestarField() *PolestarField {
 func (p *PolestarField) HandleAttack(atk *info.AttackEvent) float64 { return 0 }
 
 func (p *PolestarField) resetDuration() {
-	p.Duration = fieldDur
+	p.Duration = sscFieldDur
 }
 
 func (p *PolestarField) subscriptionKey() string {
@@ -112,14 +112,14 @@ func (p *PolestarField) unsub() {
 
 func (p *PolestarField) refreshBuffs() {
 	oldStacks := int(p.Core.Flags.Custom[PolestarFieldStacksKey])
-	newStacks := int(p.Core.Flags.Custom[recordKey])
+	newStacks := int(p.Core.Flags.Custom[sscRecordKey])
 	p.Core.Flags.Custom[PolestarFieldStacksKey] = float64(newStacks)
-	p.Core.Flags.Custom[recordKey] = 0
+	p.Core.Flags.Custom[sscRecordKey] = 0
 	p.Core.Log.NewEvent("Updating polestar field buff stacks", glog.LogElementEvent, -1).Write("old_stacks", oldStacks).Write("new_stacks", newStacks)
 
 	for _, e := range p.Core.Combat.EnemiesWithinArea(p.fieldArea, nil) {
 		e.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag(StellarConductShredKey, buffDur),
+			Base:  modifier.NewBaseWithHitlag(StellarConductShredKey, sscBuffDur),
 			Ele:   attributes.Physical,
 			Value: -0.40,
 		})
@@ -130,7 +130,7 @@ func (p *PolestarField) refreshBuffs() {
 	}
 	for _, char := range p.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(PolestarFieldKey+"-cryo", buffDur),
+			Base:         modifier.NewBaseWithHitlag(PolestarFieldKey+"-cryo", sscBuffDur),
 			AffectedStat: attributes.CryoP,
 			Amount: func() []float64 {
 				if !char.StatusIsActive(PolestarFieldKey) {
@@ -144,7 +144,7 @@ func (p *PolestarField) refreshBuffs() {
 		})
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(PolestarFieldKey+"-electro", buffDur),
+			Base:         modifier.NewBaseWithHitlag(PolestarFieldKey+"-electro", sscBuffDur),
 			AffectedStat: attributes.ElectroP,
 			Amount: func() []float64 {
 				if !char.StatusIsActive(PolestarFieldKey) {
@@ -157,7 +157,7 @@ func (p *PolestarField) refreshBuffs() {
 			},
 		})
 
-		char.AddStatus(PolestarFieldKey, buffDur, true)
+		char.AddStatus(PolestarFieldKey, sscBuffDur, true)
 		char.SetTag(PolestarFieldStacksKey, newStacks)
 	}
 }
