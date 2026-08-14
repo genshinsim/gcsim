@@ -71,7 +71,6 @@ func (r *Reactable) newPolestarField() *PolestarField {
 		switch ai.Element {
 		case attributes.Electro:
 		case attributes.Cryo:
-		// TODO: does adding frozen aura count?
 		default:
 			return
 		}
