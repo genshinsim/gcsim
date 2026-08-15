@@ -40,6 +40,7 @@ var weaponMap = map[string]string{
 	"cloudforged":                     "UI_EquipIcon_Bow_Ultimatum_Awaken",
 	"compoundbow":                     "UI_EquipIcon_Bow_Exotic_Awaken",
 	"coolsteel":                       "UI_EquipIcon_Sword_Steel_Awaken",
+	"covenantoffrostandsnow":          "UI_EquipIcon_Bow_GlintstoneBow_Awaken",
 	"cranesechoingcall":               "UI_EquipIcon_Catalyst_MountainGale_Awaken",
 	"crescentpike":                    "UI_EquipIcon_Pole_Exotic_Awaken",
 	"crimsonmoonssemblance":           "UI_EquipIcon_Pole_BloodMoon_Awaken",

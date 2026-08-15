@@ -80,6 +80,7 @@ const (
 	Cloudforged                                   // cloudforged
 	CompoundBow                                   // compoundbow
 	CoolSteel                                     // coolsteel
+	CovenantOfFrostAndSnow                        // covenantoffrostandsnow
 	CranesEchoingCall                             // cranesechoingcall
 	CrescentPike                                  // crescentpike
 	CrimsonMoonsSemblance                         // crimsonmoonssemblance
@@ -320,6 +321,7 @@ var _WeaponNames = [...]string{
 	"cloudforged",
 	"compoundbow",
 	"coolsteel",
+	"covenantoffrostandsnow",
 	"cranesechoingcall",
 	"crescentpike",
 	"crimsonmoonssemblance",
@@ -560,6 +562,7 @@ var _WeaponValues = [...]Weapon{
 	Cloudforged,
 	CompoundBow,
 	CoolSteel,
+	CovenantOfFrostAndSnow,
 	CranesEchoingCall,
 	CrescentPike,
 	CrimsonMoonsSemblance,

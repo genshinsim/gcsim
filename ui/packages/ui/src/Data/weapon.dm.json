@@ -259,6 +259,13 @@
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Steel_Awaken"
     },
+    "covenantoffrostandsnow": {
+      "id": 15436,
+      "key": "covenantoffrostandsnow",
+      "rarity": 4,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_GlintstoneBow_Awaken"
+    },
     "cranesechoingcall": {
       "id": 14515,
       "key": "cranesechoingcall",
