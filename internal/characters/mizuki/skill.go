@@ -155,7 +155,7 @@ func (c *char) skillInit() {
 					return 0
 				}
 
-				return swirlDMG[c.TalentLvlSkill()] * c.Stat(attributes.EM)
+				return swirlDMG[c.TalentLvlSkill()] * c.Stat(attributes.EM) * 0.01
 			},
 		})
 	}
