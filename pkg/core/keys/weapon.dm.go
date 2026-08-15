@@ -121,6 +121,7 @@ const (
 	FracturedHalo                                 // fracturedhalo
 	FreedomSworn                                  // freedomsworn
 	Frostbearer                                   // frostbearer
+	Frostbreath                                   // frostbreath
 	FruitfulHook                                  // fruitfulhook
 	FruitOfFulfillment                            // fruitoffulfillment
 	GestOfTheMightyWolf                           // gestofthemightywolf
@@ -359,6 +360,7 @@ var _WeaponNames = [...]string{
 	"fracturedhalo",
 	"freedomsworn",
 	"frostbearer",
+	"frostbreath",
 	"fruitfulhook",
 	"fruitoffulfillment",
 	"gestofthemightywolf",
@@ -597,6 +599,7 @@ var _WeaponValues = [...]Weapon{
 	FracturedHalo,
 	FreedomSworn,
 	Frostbearer,
+	Frostbreath,
 	FruitfulHook,
 	FruitOfFulfillment,
 	GestOfTheMightyWolf,

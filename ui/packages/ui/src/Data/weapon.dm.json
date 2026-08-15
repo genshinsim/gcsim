@@ -546,6 +546,13 @@
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Everfrost_Awaken"
     },
+    "frostbreath": {
+      "id": 13435,
+      "key": "frostbreath",
+      "rarity": 4,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_FaesCrystalle_Awaken"
+    },
     "fruitfulhook": {
       "id": 12430,
       "key": "fruitfulhook",

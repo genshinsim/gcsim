@@ -81,6 +81,7 @@ var weaponMap = map[string]string{
 	"fracturedhalo":                   "UI_EquipIcon_Pole_Perdix_Awaken",
 	"freedomsworn":                    "UI_EquipIcon_Sword_Widsith_Awaken",
 	"frostbearer":                     "UI_EquipIcon_Catalyst_Everfrost_Awaken",
+	"frostbreath":                     "UI_EquipIcon_Pole_FaesCrystalle_Awaken",
 	"fruitfulhook":                    "UI_EquipIcon_Claymore_Umpakati_Awaken",
 	"fruitoffulfillment":              "UI_EquipIcon_Catalyst_Arakalari_Awaken",
 	"gestofthemightywolf":             "UI_EquipIcon_Claymore_EnsisAquilonis_Awaken",
