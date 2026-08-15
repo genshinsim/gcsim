@@ -186,6 +186,7 @@ var weaponMap = map[string]string{
 	"solarpearl":                      "UI_EquipIcon_Catalyst_Resurrection_Awaken",
 	"songofbrokenpines":               "UI_EquipIcon_Claymore_Widsith_Awaken",
 	"songofstillness":                 "UI_EquipIcon_Bow_Vorpal_Awaken",
+	"songofthevigil":                  "UI_EquipIcon_Pole_GlintstonePolearm_Awaken",
 	"splendoroftranquilwaters":        "UI_EquipIcon_Sword_Regalis_Awaken",
 	"staffofhoma":                     "UI_EquipIcon_Pole_Homa_Awaken",
 	"staffofthescarletsands":          "UI_EquipIcon_Pole_Deshret_Awaken",
