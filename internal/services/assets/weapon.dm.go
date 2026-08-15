@@ -54,6 +54,7 @@ var weaponMap = map[string]string{
 	"dullblade":                       "UI_EquipIcon_Sword_Blunt_Awaken",
 	"earthshaker":                     "UI_EquipIcon_Claymore_Isikhulu_Awaken",
 	"elegyfortheend":                  "UI_EquipIcon_Bow_Widsith_Awaken",
+	"emberwell":                       "UI_EquipIcon_Sword_GlintstoneSword_Awaken",
 	"emeraldorb":                      "UI_EquipIcon_Catalyst_Jade_Awaken",
 	"endoftheline":                    "UI_EquipIcon_Bow_Fin_Awaken",
 	"engulfinglightning":              "UI_EquipIcon_Pole_Narukami_Awaken",

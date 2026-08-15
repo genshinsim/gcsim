@@ -94,6 +94,7 @@ const (
 	DullBlade                                     // dullblade
 	EarthShaker                                   // earthshaker
 	ElegyForTheEnd                                // elegyfortheend
+	Emberwell                                     // emberwell
 	EmeraldOrb                                    // emeraldorb
 	EndOfTheLine                                  // endoftheline
 	EngulfingLightning                            // engulfinglightning
@@ -332,6 +333,7 @@ var _WeaponNames = [...]string{
 	"dullblade",
 	"earthshaker",
 	"elegyfortheend",
+	"emberwell",
 	"emeraldorb",
 	"endoftheline",
 	"engulfinglightning",
@@ -570,6 +572,7 @@ var _WeaponValues = [...]Weapon{
 	DullBlade,
 	EarthShaker,
 	ElegyForTheEnd,
+	Emberwell,
 	EmeraldOrb,
 	EndOfTheLine,
 	EngulfingLightning,
