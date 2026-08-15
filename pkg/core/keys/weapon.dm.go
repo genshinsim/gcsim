@@ -69,6 +69,7 @@ const (
 	BlackcliffWarbow                              // blackcliffwarbow
 	BlackmarrowLantern                            // blackmarrowlantern
 	BlackTassel                                   // blacktassel
+	BladeOfAtonement                              // bladeofatonement
 	BloodsoakedRuins                              // bloodsoakedruins
 	BloodtaintedGreatsword                        // bloodtaintedgreatsword
 	CalamityOfEshu                                // calamityofeshu
@@ -307,6 +308,7 @@ var _WeaponNames = [...]string{
 	"blackcliffwarbow",
 	"blackmarrowlantern",
 	"blacktassel",
+	"bladeofatonement",
 	"bloodsoakedruins",
 	"bloodtaintedgreatsword",
 	"calamityofeshu",
@@ -545,6 +547,7 @@ var _WeaponValues = [...]Weapon{
 	BlackcliffWarbow,
 	BlackmarrowLantern,
 	BlackTassel,
+	BladeOfAtonement,
 	BloodsoakedRuins,
 	BloodtaintedGreatsword,
 	CalamityOfEshu,

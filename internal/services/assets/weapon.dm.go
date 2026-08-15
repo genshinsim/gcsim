@@ -29,6 +29,7 @@ var weaponMap = map[string]string{
 	"blackcliffwarbow":                "UI_EquipIcon_Bow_Blackrock_Awaken",
 	"blackmarrowlantern":              "UI_EquipIcon_Catalyst_Ilmarinen_Awaken",
 	"blacktassel":                     "UI_EquipIcon_Pole_Noire_Awaken",
+	"bladeofatonement":                "UI_EquipIcon_Claymore_GlintstoneClaymore_Awaken",
 	"bloodsoakedruins":                "UI_EquipIcon_Pole_TummaLyhty_Awaken",
 	"bloodtaintedgreatsword":          "UI_EquipIcon_Claymore_Siegfry_Awaken",
 	"calamityofeshu":                  "UI_EquipIcon_Sword_SacrificialNgombe_Awaken",
