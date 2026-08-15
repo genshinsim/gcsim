@@ -39,9 +39,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Element:    attributes.Geo,
 		Durability: 25,
 	}
-
-	ai.FlatDmg += burst_em[c.TalentLvlBurst()] * c.Stat(attributes.EM)
-	ai.FlatDmg += burst_def[c.TalentLvlBurst()] * c.TotalDef(false)
+	c.Core.Tasks.Add(func() {
+		ai.FlatDmg += burst_em[c.TalentLvlBurst()] * c.Stat(attributes.EM)
+		ai.FlatDmg += burst_def[c.TalentLvlBurst()] * c.TotalDef(false)
+	}, burstHitmark)
 
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6.5)
 
