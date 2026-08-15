@@ -2203,6 +2203,53 @@
       "invalid": false
     }
   ],
+  "illuga": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "note": "Need to use attack right before charge.",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
+    }
+  ],
   "ineffa": [
     {
       "ability": "attack",
