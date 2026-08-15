@@ -44,8 +44,8 @@ func (p *StellarVortex) explode() {
 		DamageSrc:        p.Key(),
 		Abil:             "Stellar Swirl Detonation",
 		AttackTag:        attacks.AttackTagReactionStellarSwirl,
-		ICDTag:           attacks.ICDTagNone,
-		ICDGroup:         attacks.ICDGroupDefault,
+		ICDTag:           attacks.ICDTagNone,      // TODO: use stellar swirl ICD tag
+		ICDGroup:         attacks.ICDGroupDefault, // TODO: use stellar swirl ICD group
 		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Cryo,
 		Durability:       25,
