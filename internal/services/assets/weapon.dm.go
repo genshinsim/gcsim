@@ -96,6 +96,7 @@ var weaponMap = map[string]string{
 	"ironpoint":                       "UI_EquipIcon_Pole_Rod_Awaken",
 	"ironsting":                       "UI_EquipIcon_Sword_Exotic_Awaken",
 	"jadefallssplendor":               "UI_EquipIcon_Catalyst_Morax_Awaken",
+	"jadevista":                       "UI_EquipIcon_Bow_ShatteredMirror_Awaken",
 	"kagotsurubeisshin":               "UI_EquipIcon_Sword_Youtou_Awaken",
 	"kagurasverity":                   "UI_EquipIcon_Catalyst_Narukami_Awaken",
 	"katsuragikirinagamasa":           "UI_EquipIcon_Claymore_Bakufu_Awaken",

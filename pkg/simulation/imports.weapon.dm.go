@@ -23,6 +23,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/huntersbow"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/hunterspath"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/ibispiercer"
+	_ "github.com/genshinsim/gcsim/internal/weapons/bow/jadevista"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/kingssquire"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/messenger"
 	_ "github.com/genshinsim/gcsim/internal/weapons/bow/mitternachtswaltz"
