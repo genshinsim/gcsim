@@ -97,6 +97,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"echoesoftheheart":                keys.EchoesOfTheHeart,
 	"elegyfortheend":                  keys.ElegyForTheEnd,
 	"elegy":                           keys.ElegyForTheEnd,
+	"emberwell":                       keys.Emberwell,
 	"emeraldorb":                      keys.EmeraldOrb,
 	"endoftheline":                    keys.EndOfTheLine,
 	"engulfinglightning":              keys.EngulfingLightning,

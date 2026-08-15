@@ -97,6 +97,7 @@ const (
 	EarthShaker                                   // earthshaker
 	EchoesOfTheHeart                              // echoesoftheheart
 	ElegyForTheEnd                                // elegyfortheend
+	Emberwell                                     // emberwell
 	EmeraldOrb                                    // emeraldorb
 	EndOfTheLine                                  // endoftheline
 	EngulfingLightning                            // engulfinglightning
@@ -340,6 +341,7 @@ var _WeaponNames = [...]string{
 	"earthshaker",
 	"echoesoftheheart",
 	"elegyfortheend",
+	"emberwell",
 	"emeraldorb",
 	"endoftheline",
 	"engulfinglightning",
@@ -583,6 +585,7 @@ var _WeaponValues = [...]Weapon{
 	EarthShaker,
 	EchoesOfTheHeart,
 	ElegyForTheEnd,
+	Emberwell,
 	EmeraldOrb,
 	EndOfTheLine,
 	EngulfingLightning,
