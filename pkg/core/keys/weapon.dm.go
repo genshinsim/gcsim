@@ -93,6 +93,7 @@ const (
 	DragonspineSpear                              // dragonspinespear
 	DullBlade                                     // dullblade
 	EarthShaker                                   // earthshaker
+	EchoesOfTheHeart                              // echoesoftheheart
 	ElegyForTheEnd                                // elegyfortheend
 	EmeraldOrb                                    // emeraldorb
 	EndOfTheLine                                  // endoftheline
@@ -331,6 +332,7 @@ var _WeaponNames = [...]string{
 	"dragonspinespear",
 	"dullblade",
 	"earthshaker",
+	"echoesoftheheart",
 	"elegyfortheend",
 	"emeraldorb",
 	"endoftheline",
@@ -569,6 +571,7 @@ var _WeaponValues = [...]Weapon{
 	DragonspineSpear,
 	DullBlade,
 	EarthShaker,
+	EchoesOfTheHeart,
 	ElegyForTheEnd,
 	EmeraldOrb,
 	EndOfTheLine,
