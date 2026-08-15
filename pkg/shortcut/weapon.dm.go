@@ -67,6 +67,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"chainbreaker":                    keys.ChainBreaker,
 	"cinnabarspindle":                 keys.CinnabarSpindle,
 	"cinnabar":                        keys.CinnabarSpindle,
+	"clashofkings":                    keys.ClashOfKings,
 	"cloudforged":                     keys.Cloudforged,
 	"compoundbow":                     keys.CompoundBow,
 	"compound":                        keys.CompoundBow,
