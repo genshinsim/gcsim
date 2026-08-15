@@ -12,18 +12,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var (
-	sswContributorMult = []float64{0.6, 0.3, 0.05, 0.05}
-	sswMultStack       = []float64{0, 2, 2, 3, 3, 3, 3}
-)
+var sswContributorMult = []float64{0.6, 0.3, 0.05, 0.05}
 
 const (
 	StellarSwirlKey    = "stellar-swirl"
 	sswStackKey        = StellarSwirlKey + "-stacks"
-	maxStacks          = 6
+	sswMaxStacks       = 6
 	sswContributionKey = "stellar-swirl-contribution"
 	sswOwnerKey        = "stellar-swirl-owner"
-	sswSrcKey          = "stellar-swirl-src"
 )
 
 type sswContribution = struct {
@@ -66,36 +62,37 @@ func (r *Reactable) queueStellarSwirl(charIndex int) {
 		contribMap[charInd] = true
 	}
 
-	ai, snap := r.calcStellarSwirlDmg(ai, ap, contribMap, 0.75)
-
-	ai.ActorIndex = charIndex
-
-	r.core.QueueAttackWithSnap(ai, snap, ap, 3)
+	for _, e := range r.core.Combat.EnemiesWithinArea(ap, nil) {
+		ai, snap := r.calcStellarSwirlDmg(e, ai, ap, contribMap, 0.75)
+		ai.ActorIndex = charIndex
+		r.core.QueueAttackWithSnap(ai, snap, combat.NewSingleTargetHit(e.Key()), 3)
+	}
 
 	r.addSSwContributor(contribMap)
-	r.core.Flags.Custom[sswOwnerKey] = float64(charIndex)
+	r.setSSwOwner(charIndex)
 
-	if r.core.Status.Duration(StellarSwirlKey) > 0 {
-		r.core.Flags.Custom[sswStackKey] += 1
-		if r.core.Flags.Custom[sswStackKey] == maxStacks {
-			r.detonateSSW(charIndex)
-		}
-	} else {
-		r.core.Status.Add(StellarSwirlKey, 3*60)
-		r.core.Flags.Custom[sswStackKey] = 1
-		src := float64(r.core.F)
-		r.core.Flags.Custom[sswSrcKey] = src
-		r.core.Tasks.Add(func() {
-			if r.core.Flags.Custom[sswSrcKey] != src {
-				return
-			}
-			owner := int(r.core.Flags.Custom[sswOwnerKey])
-			r.detonateSSW(owner)
-		}, 3*60+1)
+	r.addSSwStack()
+
+	vortex := r.nearbySSwVortex()
+	if vortex == nil {
+		vortex = r.newStellarVortex()
+	}
+
+	if r.sswStacks() >= sswMaxStacks {
+		vortex.Kill()
 	}
 }
 
-func (r *Reactable) calcStellarSwirlDmg(ai info.AttackInfo, ap info.AttackPattern, contribMap [info.MaxChars]bool, mult float64) (info.AttackInfo, info.Snapshot) {
+func (r *Reactable) nearbySSwVortex() info.Gadget {
+	for _, g := range r.core.Combat.Gadgets() {
+		if g.GadgetTyp() == info.GadgetTypStellarVortex {
+			return g
+		}
+	}
+	return nil
+}
+
+func (r *Reactable) calcStellarSwirlDmg(target info.Target, ai info.AttackInfo, ap info.AttackPattern, contribMap [info.MaxChars]bool, mult float64) (info.AttackInfo, info.Snapshot) {
 	contributions := []sswContribution{}
 	for charInd, char := range r.core.Player.Chars() {
 		if !contribMap[charInd] {
@@ -112,8 +109,8 @@ func (r *Reactable) calcStellarSwirlDmg(ai info.AttackInfo, ap info.AttackPatter
 			Snapshot:    snap,
 		}
 
-		// Emit event so PreDamageMods can be applied to the individual LCr contributions
-		r.core.Events.Emit(event.OnLunarReactionAttack, r.self, &ae)
+		// Emit event so PreDamageMods can be applied to the individual contributions
+		r.core.Events.Emit(event.OnLunarReactionAttack, target, &ae)
 
 		em := ae.Snapshot.Stats[attributes.EM]
 		cr := ae.Snapshot.Stats[attributes.CR]
@@ -149,7 +146,7 @@ func (r *Reactable) calcStellarSwirlDmg(ai info.AttackInfo, ap info.AttackPatter
 	for i := range contributions {
 		contr := &contributions[i]
 		r.core.Combat.Log.NewEvent(fmt.Sprint("stellar swirl contributor ", (i+1)), glog.LogElementEvent, contr.charInd).
-			Write("target", r.self.Key()).
+			Write("target", target).
 			Write("damage", &contr.dmg).
 			Write("crit", &contr.isCrit).
 			Write("mult", sswContributorMult[i]).
@@ -201,38 +198,6 @@ func (r *Reactable) tryStellarSwirl(a *info.AttackEvent, mod info.ReactionModKey
 	return true
 }
 
-func (r *Reactable) detonateSSW(owner int) {
-	detonate := func() {
-		contribMap := r.sswContributors()
-		r.removeSSwContributors()
-		ai := info.AttackInfo{
-			ActorIndex:       owner,
-			DamageSrc:        r.self.Key(),
-			Abil:             "Stellar Swirl Detonation",
-			AttackTag:        attacks.AttackTagReactionStellarSwirl,
-			ICDTag:           attacks.ICDTagNone,
-			ICDGroup:         attacks.ICDGroupDefault,
-			StrikeType:       attacks.StrikeTypeDefault,
-			Element:          attributes.Cryo,
-			Durability:       25,
-			IgnoreDefPercent: 1,
-		}
-		ap := combat.NewCircleHitOnTarget(r.self, nil, 5)
-
-		stacks := min(int(r.core.Flags.Custom[sswStackKey]), maxStacks)
-
-		ai, snap := r.calcStellarSwirlDmg(ai, ap, contribMap, sswMultStack[stacks])
-
-		ai.ActorIndex = owner
-
-		r.core.QueueAttackWithSnap(ai, snap, ap, 0)
-
-		r.core.Status.Delete(StellarSwirlKey)
-		r.core.Flags.Custom[sswStackKey] = 0
-	}
-	r.core.Tasks.Add(detonate, 5)
-}
-
 func sswContributorKey(charInd int) string {
 	return fmt.Sprintf("%v-%v", sswContributionKey, charInd)
 }
@@ -258,4 +223,20 @@ func (r *Reactable) sswContributors() [info.MaxChars]bool {
 		contributors[char.Index()] = r.core.Flags.Custom[sswContributorKey(char.Index())] == 1
 	}
 	return contributors
+}
+
+func (r *Reactable) addSSwStack() {
+	r.core.Flags.Custom[sswStackKey] += min(r.core.Flags.Custom[sswStackKey]+1, sswMaxStacks)
+}
+
+func (r *Reactable) sswStacks() int {
+	return min(int(r.core.Flags.Custom[sswStackKey]), sswMaxStacks)
+}
+
+func (r *Reactable) setSSwOwner(char int) {
+	r.core.Flags.Custom[sswOwnerKey] = float64(char)
+}
+
+func (r *Reactable) sswOwner() int {
+	return int(r.core.Flags.Custom[sswOwnerKey])
 }
