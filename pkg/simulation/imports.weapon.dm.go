@@ -154,6 +154,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/crimsonmoonssemblance"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/deathmatch"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/dialoguesofthedesertsages"
+	_ "github.com/genshinsim/gcsim/internal/weapons/spear/disasterandremorse"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/dragonbane"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/dragonspine"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/engulfing"
