@@ -118,6 +118,7 @@ const (
 	FluteOfEzpitzal                               // fluteofezpitzal
 	FootprintOfTheRainbow                         // footprintoftherainbow
 	ForestRegalia                                 // forestregalia
+	ForgedByTheGoldenMelody                       // forgedbythegoldenmelody
 	FracturedHalo                                 // fracturedhalo
 	FreedomSworn                                  // freedomsworn
 	Frostbearer                                   // frostbearer
@@ -356,6 +357,7 @@ var _WeaponNames = [...]string{
 	"fluteofezpitzal",
 	"footprintoftherainbow",
 	"forestregalia",
+	"forgedbythegoldenmelody",
 	"fracturedhalo",
 	"freedomsworn",
 	"frostbearer",
@@ -594,6 +596,7 @@ var _WeaponValues = [...]Weapon{
 	FluteOfEzpitzal,
 	FootprintOfTheRainbow,
 	ForestRegalia,
+	ForgedByTheGoldenMelody,
 	FracturedHalo,
 	FreedomSworn,
 	Frostbearer,

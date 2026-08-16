@@ -78,6 +78,7 @@ var weaponMap = map[string]string{
 	"fluteofezpitzal":                 "UI_EquipIcon_Sword_Isikhulu_Awaken",
 	"footprintoftherainbow":           "UI_EquipIcon_Pole_Isikhulu_Awaken",
 	"forestregalia":                   "UI_EquipIcon_Claymore_Arakalari_Awaken",
+	"forgedbythegoldenmelody":         "UI_EquipIcon_Claymore_EscapeWheel_Awaken",
 	"fracturedhalo":                   "UI_EquipIcon_Pole_Perdix_Awaken",
 	"freedomsworn":                    "UI_EquipIcon_Sword_Widsith_Awaken",
 	"frostbearer":                     "UI_EquipIcon_Catalyst_Everfrost_Awaken",

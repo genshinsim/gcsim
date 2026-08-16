@@ -115,6 +115,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/ferrousshadow"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/flameforgedinsight"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/forestregalia"
+	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/forgedbythegoldenmelody"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/fruitfulhook"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/gestofthemightywolf"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/lithic"

@@ -525,6 +525,13 @@
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Arakalari_Awaken"
     },
+    "forgedbythegoldenmelody": {
+      "id": 12435,
+      "key": "forgedbythegoldenmelody",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CLAYMORE",
+      "image_name": "UI_EquipIcon_Claymore_EscapeWheel_Awaken"
+    },
     "fracturedhalo": {
       "id": 13515,
       "key": "fracturedhalo",
