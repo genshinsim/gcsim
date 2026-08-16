@@ -59,6 +59,7 @@ var weaponMap = map[string]string{
 	"engulfinglightning":              "UI_EquipIcon_Pole_Narukami_Awaken",
 	"etherlightspindlelute":           "UI_EquipIcon_Catalyst_SeeliesLute_Awaken",
 	"everlastingmoonglow":             "UI_EquipIcon_Catalyst_Kaleido_Awaken",
+	"exaiphanesblade":                 "UI_EquipIcon_Sword_WeaponQuestSnezhnaya",
 	"eyeofperception":                 "UI_EquipIcon_Catalyst_Truelens_Awaken",
 	"fadingtwilight":                  "UI_EquipIcon_Bow_Fallensun_Awaken",
 	"fangofthemountainking":           "UI_EquipIcon_Claymore_EmeraldSword_Awaken",

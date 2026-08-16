@@ -99,6 +99,7 @@ const (
 	EngulfingLightning                            // engulfinglightning
 	EtherlightSpindlelute                         // etherlightspindlelute
 	EverlastingMoonglow                           // everlastingmoonglow
+	ExaiphanesBlade                               // exaiphanesblade
 	EyeOfPerception                               // eyeofperception
 	FadingTwilight                                // fadingtwilight
 	FangOfTheMountainKing                         // fangofthemountainking
@@ -337,6 +338,7 @@ var _WeaponNames = [...]string{
 	"engulfinglightning",
 	"etherlightspindlelute",
 	"everlastingmoonglow",
+	"exaiphanesblade",
 	"eyeofperception",
 	"fadingtwilight",
 	"fangofthemountainking",
@@ -575,6 +577,7 @@ var _WeaponValues = [...]Weapon{
 	EngulfingLightning,
 	EtherlightSpindlelute,
 	EverlastingMoonglow,
+	ExaiphanesBlade,
 	EyeOfPerception,
 	FadingTwilight,
 	FangOfTheMountainKing,
