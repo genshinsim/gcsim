@@ -30,7 +30,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	duration := 813
 	if c.Base.Cons >= 6 {
-		duration += 4 * 60 // check frame
+		duration = 1053
 	}
 
 	c.AddStatus(burstKey, duration, false)
@@ -66,7 +66,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	)
 
 	c.burstSrc = c.Core.F
-	for i := 137; i < duration; i = i + 117 {
+	for i := 137; i < duration; i += 117 {
 		c.Core.Tasks.Add(c.burstTick(c.burstSrc), i)
 	}
 

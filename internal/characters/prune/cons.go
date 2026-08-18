@@ -34,8 +34,7 @@ func (c *char) makeC2CB(a info.AttackCB) {
 		return
 	}
 
-	c.c2Buff[attributes.ATKP] =
-		math.Min(c.c2Buff[attributes.ATKP]+0.05, 0.40)
+	c.c2Buff[attributes.ATKP] = math.Min(c.c2Buff[attributes.ATKP]+0.05, 0.40)
 }
 
 func (c *char) c4Ricochet(ele attributes.Element, tag attacks.AttackTag) info.AttackCBFunc {
@@ -56,7 +55,7 @@ func (c *char) c4Ricochet(ele attributes.Element, tag attacks.AttackTag) info.At
 		c.AddStatus(c4ICDKey, 6, false)
 
 		// default to ricocheting onto the enemy that the hammer hit
-		var target info.Target = a.Target
+		target := a.Target
 
 		// prefer a different nearby enemy when one exists, the exact radius of detection is unknown
 		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 8), func(t info.Enemy) bool {
@@ -85,7 +84,7 @@ func (c *char) c4Ricochet(ele attributes.Element, tag attacks.AttackTag) info.At
 			ai,
 			combat.NewCircleHitOnTarget(target, nil, 1.5),
 			0,
-			0, // need to check frame
+			63,
 			c.makeA4CB,
 			c.makeC1CB,
 			c.makeC2CB,
@@ -166,11 +165,9 @@ func (c *char) c6Init() {
 		c.Core.Log.NewEvent("prune c6 triggered", glog.LogCharacterEvent, c.Index()).
 			Write("atk", c.c6Buff[attributes.ATK]).
 			Write("expiry", c.Core.F+5*60)
-
 	}
 
 	for i := event.ReactionEventStartDelim + 1; i < event.ReactionEventEndDelim; i++ {
 		c.Core.Events.Subscribe(i, buff, "prune-c6-buff")
 	}
-
 }

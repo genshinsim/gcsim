@@ -30,7 +30,6 @@ func init() {
 	attackFrames[1][action.ActionCharge] = 50
 
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 63) // attack
-
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {

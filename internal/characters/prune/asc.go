@@ -79,7 +79,6 @@ func (c *char) a1Init() {
 
 			// swirl burst has different energy drain delay frame
 			c.burstEnergyDrainDelay = 19
-
 		}
 	}
 
@@ -87,7 +86,6 @@ func (c *char) a1Init() {
 	c.Core.Events.Subscribe(event.OnSwirlElectro, swirlfunc(attributes.Electro), "prune-burst-electro")
 	c.Core.Events.Subscribe(event.OnSwirlHydro, swirlfunc(attributes.Hydro), "prune-burst-hydro")
 	c.Core.Events.Subscribe(event.OnSwirlPyro, swirlfunc(attributes.Pyro), "prune-burst-pyro")
-
 }
 
 func (c *char) makeA4CB(a info.AttackCB) {
@@ -115,9 +113,7 @@ func (c *char) makeA4CB(a info.AttackCB) {
 				return c.a4Buff
 			},
 		})
-
 	}
-
 	c.Core.Log.NewEvent("prune a4 triggered", glog.LogCharacterEvent, c.Index()).
 		Write("dmg bonus", c.a4Buff[attributes.DmgP]).
 		Write("expiry", c.Core.F+5*60)
@@ -133,11 +129,11 @@ func (c *char) hexInit() {
 
 	chars := c.Core.Player.Chars()
 
-	selfBuff := make([]float64, attributes.EndStatType)
-	selfBuff[attributes.ATKP] = 0.60
+	c.hexSelfBuff = make([]float64, attributes.EndStatType)
+	c.hexSelfBuff[attributes.ATKP] = 0.60
 
-	teamBuff := make([]float64, attributes.EndStatType)
-	teamBuff[attributes.ATKP] = 0.30
+	c.hexTeamBuff = make([]float64, attributes.EndStatType)
+	c.hexTeamBuff[attributes.ATKP] = 0.30
 
 	reactionCB := func(isSwirl bool) func(args ...any) {
 		return func(args ...any) {
@@ -173,13 +169,13 @@ func (c *char) hexInit() {
 				Base:         modifier.NewBaseWithHitlag("prune-hex-self-buff", 5*60),
 				AffectedStat: attributes.ATKP,
 				Amount: func() []float64 {
-					return selfBuff
+					return c.hexSelfBuff
 				},
 			})
 
 			c.Core.Log.NewEvent("prune hex self buff triggered", glog.LogCharacterEvent, c.Index()).
 				Write("triggerer", triggererIndex).
-				Write("atk percent", selfBuff[attributes.ATKP]).
+				Write("atk percent", c.hexSelfBuff[attributes.ATKP]).
 				Write("expiry", c.Core.F+5*60)
 
 			// only swirl grants the triggering character's team buff
@@ -191,13 +187,13 @@ func (c *char) hexInit() {
 				Base:         modifier.NewBaseWithHitlag("prune-hex-team-buff", 5*60),
 				AffectedStat: attributes.ATKP,
 				Amount: func() []float64 {
-					return teamBuff
+					return c.hexTeamBuff
 				},
 			})
 
 			c.Core.Log.NewEvent("prune hex team buff triggered", glog.LogCharacterEvent, c.Index()).
 				Write("triggerer", triggererIndex).
-				Write("atk percent", teamBuff[attributes.ATKP]).
+				Write("atk percent", c.hexTeamBuff[attributes.ATKP]).
 				Write("expiry", c.Core.F+5*60)
 		}
 	}

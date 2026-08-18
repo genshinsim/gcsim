@@ -14,7 +14,6 @@ type char struct {
 	skillConvertEle       attributes.Element
 	burstSrc              int
 	burstEnergyDrainDelay int
-	a1Src                 int
 	a4Buff                []float64
 	hexSelfBuff           []float64
 	hexTeamBuff           []float64

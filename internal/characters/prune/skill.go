@@ -103,11 +103,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 			// allow skill to be recasted
 			c.skillConvertEle = ele
-			c.AddStatus(skillRecastWindowKey, 6.5*60, true) // estimated, need to check frame
+			c.AddStatus(skillRecastWindowKey, 364, true)
 
 			// skill recast has different cancel frame
 			skillFrames[action.ActionSkill] = 28
-
 		}
 	}
 
