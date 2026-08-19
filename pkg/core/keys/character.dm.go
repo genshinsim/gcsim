@@ -89,6 +89,7 @@ const (
 	Ganyu                         // ganyu
 	Gorou                         // gorou
 	HuTao                         // hutao
+	Ifa                           // ifa
 	Ineffa                        // ineffa
 	Jean                          // jean
 	KaedeharaKazuha               // kaedeharakazuha
@@ -211,6 +212,7 @@ var _CharNames = [...]string{
 	"ganyu",
 	"gorou",
 	"hutao",
+	"ifa",
 	"ineffa",
 	"jean",
 	"kaedeharakazuha",
@@ -333,6 +335,7 @@ var _CharValues = [...]Char{
 	Ganyu,
 	Gorou,
 	HuTao,
+	Ifa,
 	Ineffa,
 	Jean,
 	KaedeharaKazuha,
