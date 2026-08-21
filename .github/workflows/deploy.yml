@@ -163,3 +163,4 @@ jobs:
             server_darwin_arm64
             server_darwin_amd64
             server_linux_amd64
+            gcsim_server.apk
