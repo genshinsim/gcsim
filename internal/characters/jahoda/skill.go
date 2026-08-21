@@ -68,8 +68,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		}, nil
 	}
 
-	c.Core.Player.SwapCD = math.MaxInt16
-
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 13

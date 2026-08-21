@@ -36,16 +36,6 @@ func init() {
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
-	if c.StatusIsActive(shadowPursuitKey) {
-		c.Core.Tasks.Add(c.drainFlask(c.skillSrc), 0)
-		return action.Info{
-			Frames:          frames.NewAbilFunc(skillCancelFrames),
-			AnimationLength: skillCancelFrames[action.InvalidAction],
-			CanQueueAfter:   skillCancelFrames[action.ActionDash], // earliest cancel
-			State:           action.SkillState,
-		}, nil
-	}
-
 	travel, ok := p["travel"]
 	if !ok {
 		travel = 10

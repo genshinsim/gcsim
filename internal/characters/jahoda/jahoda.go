@@ -3,6 +3,7 @@ package jahoda
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -103,4 +104,18 @@ func (c *char) enemyAuraInArea(area info.AttackPattern, priority []attributes.El
 	}
 
 	return attributes.NoElement
+}
+
+func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
+	if c.StatusIsActive(shadowPursuitKey) {
+		switch a {
+		case action.ActionAttack,
+			action.ActionAim,
+			action.ActionDash,
+			action.ActionJump:
+			return false, action.NoFailure
+		}
+	}
+
+	return c.Character.ActionReady(a, p)
 }
