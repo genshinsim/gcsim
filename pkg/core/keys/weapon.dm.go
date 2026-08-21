@@ -141,6 +141,7 @@ const (
 	KeyOfKhajNisut                                // keyofkhajnisut
 	KingsSquire                                   // kingssquire
 	KitainCrossSpear                              // kitaincrossspear
+	LightbearingMoonshard                         // lightbearingmoonshard
 	LightOfFoliarIncision                         // lightoffoliarincision
 	LionsRoar                                     // lionsroar
 	LithicBlade                                   // lithicblade
@@ -377,6 +378,7 @@ var _WeaponNames = [...]string{
 	"keyofkhajnisut",
 	"kingssquire",
 	"kitaincrossspear",
+	"lightbearingmoonshard",
 	"lightoffoliarincision",
 	"lionsroar",
 	"lithicblade",
@@ -613,6 +615,7 @@ var _WeaponValues = [...]Weapon{
 	KeyOfKhajNisut,
 	KingsSquire,
 	KitainCrossSpear,
+	LightbearingMoonshard,
 	LightOfFoliarIncision,
 	LionsRoar,
 	LithicBlade,
