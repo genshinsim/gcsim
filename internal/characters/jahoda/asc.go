@@ -106,7 +106,7 @@ func (c *char) a4() {
 	}
 
 	c.Core.Player.ActiveChar().AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("jahoda-a4", 6*60),
+		Base:         modifier.NewBaseWithHitlag("jahoda-a4", 6*60),
 		AffectedStat: attributes.EM,
 		Amount: func() []float64 {
 			return c.a4Buff

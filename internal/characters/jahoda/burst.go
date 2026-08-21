@@ -155,10 +155,6 @@ func (c *char) lowestHPChar() int {
 
 	for i := 0; i < len(c.Core.Player.Chars()); i++ {
 		ch := c.Core.Player.Chars()[i]
-		if ch == nil {
-			continue
-		}
-
 		if ch.CurrentHP() <= 0 {
 			continue
 		}
