@@ -5,6 +5,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
@@ -55,13 +56,22 @@ func (p *StellarVortex) explode() {
 	stacks := p.r.sswStacks()
 	ap := combat.NewCircleHitOnTarget(p, nil, sswStackRadius[stacks])
 
-	for _, e := range p.r.core.Combat.EnemiesWithinArea(ap, nil) {
+	for _, e := range p.r.core.Combat.Enemies() {
+		if willHit, _ := e.AttackWillLand(ap); !willHit {
+			continue
+		}
 		ai, snap := p.r.calcStellarSwirlDmg(e, ai, ap, contribMap, sswStackMult[stacks])
 		ai.ActorIndex = owner
-		p.r.core.QueueAttackWithSnap(ai, snap, combat.NewSingleTargetHit(e.Key()), 3)
+		p.r.core.QueueAttackWithSnap(ai, snap, combat.NewSingleTargetHit(e.Key()), 0)
 	}
 
 	p.r.core.Flags.Custom[sswStackKey] = 0
+
+	for _, c := range p.r.core.Player.Chars() {
+		// TODO: find exact duration of jump buff
+		// TODO: if chars are currently jumping, need to make the jump boosted height
+		c.AddStatus(player.StellarSwirlAirborneBuff, 6*60, true) // buff needs to be removed on jump?
+	}
 }
 
 func (p *StellarVortex) HandleAttack(atk *info.AttackEvent) float64 { return 0 }

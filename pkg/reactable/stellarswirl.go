@@ -62,7 +62,10 @@ func (r *Reactable) queueStellarSwirl(charIndex int) {
 		contribMap[charInd] = true
 	}
 
-	for _, e := range r.core.Combat.EnemiesWithinArea(ap, nil) {
+	for _, e := range r.core.Combat.Enemies() {
+		if willHit, _ := e.AttackWillLand(ap); !willHit {
+			continue
+		}
 		ai, snap := r.calcStellarSwirlDmg(e, ai, ap, contribMap, 0.75)
 		ai.ActorIndex = charIndex
 		r.core.QueueAttackWithSnap(ai, snap, combat.NewSingleTargetHit(e.Key()), 3)

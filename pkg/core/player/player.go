@@ -332,6 +332,7 @@ const (
 	AirborneVenti
 	AirborneKazuha
 	AirborneXianyun
+	AirborneStellarSwirl
 	TerminateAirborne
 )
 
@@ -349,7 +350,8 @@ func (h *Handler) Airborne() AirborneSource {
 }
 
 const (
-	XianyunAirborneBuff = "xianyun-airborne-buff"
+	XianyunAirborneBuff      = "xianyun-airborne-buff"
+	StellarSwirlAirborneBuff = "ssw-airborne-buff"
 )
 
 func (h *Handler) GetMoonsignLevel() int {

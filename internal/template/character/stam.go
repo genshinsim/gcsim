@@ -142,6 +142,36 @@ func (c *Character) Jump(p map[string]int) (action.Info, error) {
 			State:           action.JumpState,
 		}, nil
 	}
+
+	if c.StatusIsActive(player.StellarSwirlAirborneBuff) {
+		c.Core.Player.SetAirborne(player.AirborneStellarSwirl)
+		// 4/8 for claymore/bow/catalyst and 5/9 for sword/polearm
+		lowPlunge := 4
+		highPlunge := 8
+		switch c.Weapon.Class {
+		case info.WeaponClassSword, info.WeaponClassSpear:
+			lowPlunge = 5
+			highPlunge = 9
+		}
+
+		animLength := 60 // Upperbound for jump for high/low plunge
+		return action.Info{
+			Frames: func(a action.Action) int {
+				switch a {
+				case action.ActionLowPlunge:
+					return lowPlunge
+				case action.ActionHighPlunge:
+					return highPlunge
+				default:
+					return animLength // This is expected to later lead to action error because no other action besides plunges can be done while AirborneStellarSwirl
+				}
+			},
+			AnimationLength: animLength,
+			CanQueueAfter:   lowPlunge, // earliest cancel
+			State:           action.JumpState,
+		}, nil
+	}
+
 	f := c.JumpLength()
 	return action.Info{
 		Frames:          func(action.Action) int { return f },
