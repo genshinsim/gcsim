@@ -7304,6 +7304,158 @@ var CharacterMap = map[keys.Char]*model.AvatarData{
 			BurstEnergyCost: 80.0,
 		},
 	},
+	keys.Kachina: {
+		Id:          10000100,
+		SubId:       10001,
+		Key:         "kachina",
+		Rarity:      model.QualityType_QUALITY_PURPLE,
+		Body:        model.BodyType_BODY_LOLI,
+		Region:      model.AssocType_ASSOC_TYPE_NATLAN,
+		Element:     model.ElementType_Rock,
+		WeaponClass: model.WeaponType_WEAPON_POLE,
+		IconName:    "UI_AvatarIcon_Kachina",
+		Stats: &model.AvatarStatsData{
+			BaseHp:   989.2932,
+			BaseAtk:  18.16416,
+			BaseDef:  66.438225,
+			HpCurve:  model.GrowCurveType_GROW_CURVE_HP_S4,
+			AtkCurve: model.GrowCurveType_GROW_CURVE_ATTACK_S4,
+			DefCruve: model.GrowCurveType_GROW_CURVE_HP_S4,
+			PromoData: []*model.PromotionData{
+				{
+					MaxLevel: 20,
+				},
+				{
+					MaxLevel: 40,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    739.0527,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    49.63275,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    13.569876,
+						},
+					},
+				},
+				{
+					MaxLevel: 50,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    1264.1691,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    84.898125,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    23.21163,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_ROCK_ADD_HURT,
+							Value:    0.06,
+						},
+					},
+				},
+				{
+					MaxLevel: 60,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    1964.3242,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    131.91862,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    36.067303,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_ROCK_ADD_HURT,
+							Value:    0.12,
+						},
+					},
+				},
+				{
+					MaxLevel: 70,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    2489.4407,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    167.184,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    45.709057,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_ROCK_ADD_HURT,
+							Value:    0.12,
+						},
+					},
+				},
+				{
+					MaxLevel: 80,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    3014.5571,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    202.44937,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    55.35081,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_ROCK_ADD_HURT,
+							Value:    0.18,
+						},
+					},
+				},
+				{
+					MaxLevel: 90,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    3539.6733,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    237.71475,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    64.99256,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_ROCK_ADD_HURT,
+							Value:    0.24,
+						},
+					},
+				},
+			},
+		},
+		SkillDetails: &model.AvatarSkillsData{
+			Skill:           11002,
+			Burst:           11005,
+			Attack:          11001,
+			BurstEnergyCost: 70.0,
+		},
+	},
 	keys.KaedeharaKazuha: {
 		Id:          10000047,
 		SubId:       4701,

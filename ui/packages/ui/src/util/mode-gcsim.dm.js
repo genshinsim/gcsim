@@ -142,6 +142,7 @@ ace.define(
         'tao',
         'ineffa',
         'jean',
+        'kachina',
         'kaedeharakazuha',
         'kaz',
         'kazuha',
