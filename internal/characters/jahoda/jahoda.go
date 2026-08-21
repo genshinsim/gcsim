@@ -62,6 +62,10 @@ func (c *char) Init() error {
 	c.a4Buff = make([]float64, attributes.EndStatType)
 	c.a4Buff[attributes.EM] = 100
 
+	c.c6Buff = make([]float64, attributes.EndStatType)
+	c.c6Buff[attributes.CR] = 0.05
+	c.c6Buff[attributes.CD] = 0.40
+
 	return nil
 }
 

@@ -11,8 +11,9 @@ import (
 )
 
 const (
-	c4Key = "jahoda-c4-flat-energy"
-	c6Key = "jahoda-c6"
+	c4Key   = "jahoda-c4-flat-energy"
+	c6CRKey = "jahoda-c6-cr"
+	c6CDKey = "jahoda-c6-cd"
 )
 
 func (c *char) makeA1CB(a info.AttackCB) {
@@ -74,30 +75,23 @@ func (c *char) c6() {
 		return
 	}
 
-	c.c6Buff = make([]float64, attributes.EndStatType)
-
-	c.c6Buff[attributes.CR] = 0.05
-	c.c6Buff[attributes.CD] = 0.40
-
 	for _, char := range c.Core.Player.Chars() {
+		if char.Moonsign < 1 {
+			continue
+		}
+
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(c6Key, 20*60),
+			Base:         modifier.NewBase(c6CRKey, 20*60),
 			AffectedStat: attributes.CR,
 			Amount: func() []float64 {
-				if char.Moonsign < 1 {
-					return nil
-				}
 				return c.c6Buff
 			},
 		})
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(c6Key, 20*60),
+			Base:         modifier.NewBase(c6CDKey, 20*60),
 			AffectedStat: attributes.CD,
 			Amount: func() []float64 {
-				if char.Moonsign < 1 {
-					return nil
-				}
 				return c.c6Buff
 			},
 		})
