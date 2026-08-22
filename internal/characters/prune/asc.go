@@ -56,11 +56,12 @@ func (c *char) a1Init() {
 			// queue passive
 			ai := info.AttackInfo{
 				ActorIndex: c.Index(),
-				Abil:       "Verdict and Punishment (A1)",
+				Abil:       "Banehunter Oathhammer (A1)",
 				AttackTag:  attacks.AttackTagElementalBurst,
 				ICDTag:     attacks.ICDTagNone,
 				ICDGroup:   attacks.ICDGroupDefault,
 				StrikeType: attacks.StrikeTypeBlunt,
+				PoiseDMG:   20,
 				Element:    ele,
 				Durability: 0,
 				Mult:       1.5,
@@ -76,9 +77,6 @@ func (c *char) a1Init() {
 				c.c4Ricochet(ele, attacks.AttackTagElementalBurst),
 				c.makeC2CB,
 			)
-
-			// swirl burst has different energy drain delay frame
-			c.burstEnergyDrainDelay = 19
 		}
 	}
 
@@ -86,6 +84,7 @@ func (c *char) a1Init() {
 	c.Core.Events.Subscribe(event.OnSwirlElectro, swirlfunc(attributes.Electro), "prune-burst-electro")
 	c.Core.Events.Subscribe(event.OnSwirlHydro, swirlfunc(attributes.Hydro), "prune-burst-hydro")
 	c.Core.Events.Subscribe(event.OnSwirlPyro, swirlfunc(attributes.Pyro), "prune-burst-pyro")
+	// TODO: Add subscriptions for stellar-swirl when it's implemented
 }
 
 func (c *char) makeA4CB(a info.AttackCB) {
@@ -100,9 +99,8 @@ func (c *char) makeA4CB(a info.AttackCB) {
 		if i == c.Index() {
 			continue // nothing for prune, need testing
 		}
-		char.AddStatus(a4Key, 5*60, true)
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("prune-a4", 5*60), // 5 s
+			Base: modifier.NewBaseWithHitlag(a4Key, 5*60), // 5 s
 			Amount: func(
 				atk *info.AttackEvent,
 				target info.Target,

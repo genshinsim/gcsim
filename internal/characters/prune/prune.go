@@ -11,14 +11,13 @@ import (
 
 type char struct {
 	*tmpl.Character
-	skillConvertEle       attributes.Element
-	burstSrc              int
-	burstEnergyDrainDelay int
-	a4Buff                []float64
-	hexSelfBuff           []float64
-	hexTeamBuff           []float64
-	c2Buff                []float64
-	c6Buff                []float64
+	skillConvertEle attributes.Element
+	burstSrc        int
+	a4Buff          []float64
+	hexSelfBuff     []float64
+	hexTeamBuff     []float64
+	c2Buff          []float64
+	c6Buff          []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {

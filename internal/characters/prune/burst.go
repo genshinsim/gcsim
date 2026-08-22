@@ -26,8 +26,6 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	c.burstEnergyDrainDelay = 16
-
 	duration := 813
 	if c.Base.Cons >= 6 {
 		duration = 1053
@@ -71,7 +69,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	c.SetCD(action.ActionBurst, 18*60)
-	c.ConsumeEnergy(c.burstEnergyDrainDelay)
+	c.ConsumeEnergy(18) // average of 6 trials
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),

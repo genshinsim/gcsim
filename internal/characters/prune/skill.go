@@ -114,6 +114,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.Core.Events.Subscribe(event.OnSwirlElectro, swirlfunc(attributes.Electro), "prune-skill-electro")
 	c.Core.Events.Subscribe(event.OnSwirlHydro, swirlfunc(attributes.Hydro), "prune-skill-hydro")
 	c.Core.Events.Subscribe(event.OnSwirlPyro, swirlfunc(attributes.Pyro), "prune-skill-pyro")
+	// TODO: Add subscriptions for stellar-swirl when it's implemented
 
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 25)
 
