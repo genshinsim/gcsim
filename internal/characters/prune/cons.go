@@ -38,11 +38,11 @@ func (c *char) makeC2CB(a info.AttackCB) {
 }
 
 func (c *char) c4Ricochet(ele attributes.Element, tag attacks.AttackTag) info.AttackCBFunc {
-	if c.Base.Cons < 4 {
-		return nil
-	}
-
 	return func(a info.AttackCB) {
+		if c.Base.Cons < 4 {
+			return
+		}
+
 		// has to be on the enemy hit by the attack that call this
 		if a.Target.Type() != info.TargettableEnemy {
 			return
