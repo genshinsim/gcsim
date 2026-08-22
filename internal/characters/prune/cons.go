@@ -75,6 +75,7 @@ func (c *char) c4Ricochet(ele attributes.Element, tag attacks.AttackTag) info.At
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeBlunt,
+			PoiseDMG:   15,
 			Element:    ele,
 			Durability: 0,
 			Mult:       0.8,
