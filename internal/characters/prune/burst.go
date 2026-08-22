@@ -33,17 +33,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.AddStatus(burstKey, duration, false)
 
-	if c.Base.Cons >= 2 {
-		c.c2Buff[attributes.ATKP] = 0.10
-		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("prune-c2", duration),
-			AffectedStat: attributes.ATKP,
-			Amount: func() []float64 {
-				return c.c2Buff
-			},
-		})
-	}
-
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
 		Abil:       "The Bell Tolls! The Hunt Is On!",
@@ -62,6 +51,17 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		0,
 		34,
 	)
+
+	if c.Base.Cons >= 2 {
+		c.c2Buff[attributes.ATKP] = 0.10
+		c.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase("prune-c2", duration),
+			AffectedStat: attributes.ATKP,
+			Amount: func() []float64 {
+				return c.c2Buff
+			},
+		})
+	}
 
 	c.burstSrc = c.Core.F
 	for i := 137; i < duration; i += 117 {
