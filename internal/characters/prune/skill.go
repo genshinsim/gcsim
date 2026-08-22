@@ -95,7 +95,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				return
 			}
 
-			// A1 has a shared 1.2s ICD across all four swirl elements
+			// skill has a shared 1.2s ICD across all four swirl elements
 			if c.StatusIsActive(skillSwirlCheckICDKey) {
 				return
 			}

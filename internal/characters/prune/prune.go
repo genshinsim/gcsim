@@ -26,8 +26,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 
 	c.EnergyMax = 70
 	c.NormalHitNum = normalHitNum
-	c.SkillCon = 3
-	c.BurstCon = 5
+	c.BurstCon = 3
+	c.SkillCon = 5
 
 	hex, ok := p.Params["hexerei"]
 	if !ok {

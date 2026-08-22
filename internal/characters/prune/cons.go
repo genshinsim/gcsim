@@ -48,7 +48,7 @@ func (c *char) c4Ricochet(ele attributes.Element, tag attacks.AttackTag) info.At
 			return
 		}
 
-		// C1 has 0.1s ICD
+		// C4 has 0.1s ICD
 		if c.StatusIsActive(c4ICDKey) {
 			return
 		}
@@ -161,7 +161,7 @@ func (c *char) c6Init() {
 			return
 		}
 
-		c.AddStatus(c6WindowKey, 5*60, false)
+		c.AddStatus(c6WindowKey, 5*60, true)
 
 		c.Core.Log.NewEvent("prune c6 triggered", glog.LogCharacterEvent, c.Index()).
 			Write("atk", c.c6Buff[attributes.ATK]).
