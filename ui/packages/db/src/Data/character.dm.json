@@ -1410,6 +1410,23 @@
         "burst_energy_cost": 60
       }
     },
+    "prune": {
+      "id": 10000132,
+      "sub_id": 13201,
+      "key": "prune",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_LOLI",
+      "region": "ASSOC_TYPE_MONDSTADT",
+      "element": "Wind",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Prune",
+      "skill_details": {
+        "skill": 11322,
+        "burst": 11325,
+        "attack": 11321,
+        "burst_energy_cost": 70
+      }
+    },
     "qiqi": {
       "id": 10000035,
       "sub_id": 3501,

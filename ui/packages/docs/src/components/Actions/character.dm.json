@@ -3977,6 +3977,54 @@
       "invalid": false
     }
   ],
+  "prune": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "invalid": false
+    },
+    {
+      "ability": "low_plunge",
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "high_plunge",
+      "note": "Previous action must be a jump buffed via Xianyun's burst for example.",
+      "invalid": false
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
+    }
+  ],
   "qiqi": [
     {
       "ability": "attack",

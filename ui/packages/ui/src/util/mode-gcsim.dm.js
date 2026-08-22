@@ -199,6 +199,7 @@ ace.define(
         'noelle',
         'ororon',
         'olorun',
+        'prune',
         'qiqi',
         'raidenshogun',
         'herexcellencythealmightynarukamiogoshogodofthunder',
