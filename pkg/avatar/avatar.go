@@ -139,7 +139,7 @@ func (p *Player) calc(atk *info.AttackEvent) (float64, bool) {
 	resmod := 1 - res/2
 	if res >= 0 && res < 0.75 {
 		resmod = 1 - res
-	} else if res > 0.75 {
+	} else if res >= 0.75 {
 		resmod = 1 / (4*res + 1)
 	}
 	damage *= resmod
