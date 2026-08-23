@@ -89,7 +89,7 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event, grpMult float64) (fl
 	resmod := 1 - res/2
 	if res >= 0 && res < 0.75 {
 		resmod = 1 - res
-	} else if res > 0.75 {
+	} else if res >= 0.75 {
 		resmod = 1 / (4*res + 1)
 	}
 	damage *= resmod
@@ -249,7 +249,7 @@ func (e *Enemy) calcDirectReaction(atk *info.AttackEvent, evt glog.Event, grpMul
 	resmod := 1 - res/2
 	if res >= 0 && res < 0.75 {
 		resmod = 1 - res
-	} else if res > 0.75 {
+	} else if res >= 0.75 {
 		resmod = 1 / (4*res + 1)
 	}
 	damage *= resmod
