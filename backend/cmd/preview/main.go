@@ -17,7 +17,7 @@ var content embed.FS
 func main() {
 	server, err := preview.New(preview.Config{
 		Files:        content,
-		AssetsFolder: os.Getenv(("ASSETS_DATA_PATH")),
+		AssetsFolder: os.Getenv("ASSETS_DATA_PATH"),
 	})
 	if err != nil {
 		panic(err)

@@ -110,7 +110,7 @@ func (r *Reactable) extendNearbyLunarCrystallizeConstructDur() {
 	matched, _ := r.core.Constructs.ConstructsByType(construct.GeoConstructLunarCrystallize)
 	playerPos := r.core.Combat.Player().Pos()
 	for _, construct := range matched {
-		c, ok := (construct).(*LunarCrystallizeConstruct)
+		c, ok := construct.(*LunarCrystallizeConstruct)
 		if !ok {
 			continue
 		}
