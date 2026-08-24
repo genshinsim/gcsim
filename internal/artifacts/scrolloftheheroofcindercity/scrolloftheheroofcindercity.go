@@ -16,6 +16,7 @@ import (
 var reactToElements = map[info.ReactionType][]attributes.Element{
 	info.ReactionTypeOverload:           {attributes.Electro, attributes.Pyro},
 	info.ReactionTypeSuperconduct:       {attributes.Electro, attributes.Cryo},
+	info.ReactionTypeStellarConduct:     {attributes.Electro, attributes.Cryo},
 	info.ReactionTypeMelt:               {attributes.Pyro, attributes.Cryo},
 	info.ReactionTypeVaporize:           {attributes.Pyro, attributes.Hydro},
 	info.ReactionTypeFreeze:             {attributes.Cryo, attributes.Hydro},
@@ -128,6 +129,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		for evt, react := range map[event.Event]info.ReactionType{
 			event.OnOverload:           info.ReactionTypeOverload,
 			event.OnSuperconduct:       info.ReactionTypeSuperconduct,
+			event.OnStellarConduct:     info.ReactionTypeStellarConduct,
 			event.OnMelt:               info.ReactionTypeMelt,
 			event.OnVaporize:           info.ReactionTypeVaporize,
 			event.OnFrozen:             info.ReactionTypeFreeze,

@@ -1,0 +1,34 @@
+use: pipeline
+kind: character
+name: ifa
+
+override:
+  icd_group:
+    IfaSkillHit:
+      name: Ifa_Eart_Bullet
+    IfaSedationMark:
+      name: Ifa_Burst_ExtraHit
+combat:
+  icd_tags:
+    - IfaSkill
+    - IfaSedationMark
+  icd_groups:
+    - IfaSkillHit
+    - IfaSedationMark
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - plungeLow: attack(Low/High Plunge DMG) # {}/{}
+  - plungeHigh: attack(Low/High Plunge DMG|1) # {}/{}
+
+  - skillDmg: skill(Tonicshot DMG)
+  - skillHeal: skill(Tonicshot Healing On Hit) # {} Elemental Mastery+{}
+  - skillHealFlat: skill(Tonicshot Healing On Hit|1) # {} Elemental Mastery+{}
+
+  - burstDmg: burst(Skill DMG)
+  - burstMark: burst(Sedation Mark DMG)

@@ -110,7 +110,7 @@ func (c *char) c6(generated int) {
 			c.Core.Log.NewEvent("c6 buff extended", glog.LogCharacterEvent, c.Index()).Write("c6 expiry on", c.StatusExpiry(c6key))
 		} else {
 			c.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag((c6key), 360), // 6s
+				Base:         modifier.NewBaseWithHitlag(c6key, 360), // 6s
 				AffectedStat: attributes.CR,
 				Amount: func() []float64 {
 					return m

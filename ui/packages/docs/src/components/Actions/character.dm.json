@@ -2203,6 +2203,52 @@
       "invalid": false
     }
   ],
+  "ifa": [
+    {
+      "ability": "attack",
+      "invalid": true
+    },
+    {
+      "ability": "aim",
+      "invalid": true
+    },
+    {
+      "ability": "charge",
+      "invalid": true
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": true
+    },
+    {
+      "ability": "burst",
+      "invalid": true
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
+    }
+  ],
   "ineffa": [
     {
       "ability": "attack",

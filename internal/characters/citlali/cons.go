@@ -121,8 +121,8 @@ func (c *char) c4SkullCB(a info.AttackCB) {
 		Durability:     25,
 		FlatDmg:        18 * c.Stat(attributes.EM),
 	}
-	// TODO: the actual hitmark
-	hitmark := spiritVesselSkullHitmark - iceStormHitmark
+
+	hitmark := spiritVesselSkullHitmark
 	c.Core.QueueAttack(
 		aiSpiritVesselSkull,
 		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.5),
