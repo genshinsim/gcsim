@@ -4,7 +4,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -16,17 +15,17 @@ const (
 	c6CDKey = "jahoda-c6-cd"
 )
 
-func (c *char) makeA1CB(a info.AttackCB) {
+func (c *char) makeC1CB(a info.AttackCB) {
 	if c.Base.Cons < 1 {
+		return
+	}
+
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 
 	// 50% to bounce
 	if c.Core.Rand.Float64() < 0.5 {
-		if a.Target.Type() != info.TargettableEnemy {
-			return
-		}
-
 		// default to bounce onto the original enemy
 		target := a.Target
 
@@ -53,6 +52,7 @@ func (c *char) makeA1CB(a info.AttackCB) {
 			Mult:       meowball[c.TalentLvlSkill()],
 		}
 
+		// TODO: C1 use the same snapshot as original meowball, not tested
 		c.Core.QueueAttack(
 			aiC1,
 			combat.NewCircleHitOnTarget(target, nil, 4),
@@ -63,15 +63,73 @@ func (c *char) makeA1CB(a info.AttackCB) {
 	}
 }
 
+func (c *char) c2Init(eleCountMap map[attributes.Element]int) {
+	if c.Base.Cons < 2 {
+		return
+	}
+
+	if c.Core.Player.GetMoonsignLevel() < 2 {
+		return
+	}
+
+	secondHighestEleCount := 0
+
+	for _, ele := range elePriority {
+		if ele == c.a1HighestEle {
+			continue
+		}
+
+		if eleCountMap[ele] > secondHighestEleCount {
+			secondHighestEleCount = eleCountMap[ele]
+			c.c2NextHighestEle = ele
+		}
+	}
+
+	if secondHighestEleCount == 0 {
+		c.c2NextHighestEle = attributes.NoElement
+	}
+}
+
+func (c *char) c2() {
+	if c.Base.Cons < 2 {
+		return
+	}
+
+	if c.Core.Player.GetMoonsignLevel() < 2 {
+		return
+	}
+
+	c.applyA1Buff(c.c2NextHighestEle)
+}
+
 func (c *char) c4() {
 	if c.Base.Cons < 4 {
 		return
 	}
+
 	c.AddEnergy(c4Key, 4)
+}
+
+func (c *char) c6Init() {
+	if c.Base.Cons < 6 {
+		return
+	}
+
+	if c.Core.Player.GetMoonsignLevel() < 2 {
+		return
+	}
+
+	c.c6Buff = make([]float64, attributes.EndStatType)
+	c.c6Buff[attributes.CR] = 0.05
+	c.c6Buff[attributes.CD] = 0.40
 }
 
 func (c *char) c6() {
 	if c.Base.Cons < 6 {
+		return
+	}
+
+	if c.Core.Player.GetMoonsignLevel() < 2 {
 		return
 	}
 
@@ -81,7 +139,7 @@ func (c *char) c6() {
 		}
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(c6CRKey, 20*60),
+			Base:         modifier.NewBaseWithHitlag(c6CRKey, 20*60),
 			AffectedStat: attributes.CR,
 			Amount: func() []float64 {
 				return c.c6Buff
@@ -89,16 +147,11 @@ func (c *char) c6() {
 		})
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(c6CDKey, 20*60),
+			Base:         modifier.NewBaseWithHitlag(c6CDKey, 20*60),
 			AffectedStat: attributes.CD,
 			Amount: func() []float64 {
 				return c.c6Buff
 			},
 		})
-
-		c.Core.Log.NewEvent("jahoda c6 triggered", glog.LogCharacterEvent, c.Index()).
-			Write("cr", c.c6Buff[attributes.CR]).
-			Write("cd", c.c6Buff[attributes.CD]).
-			Write("expiry", c.Core.F+20*60)
 	}
 }

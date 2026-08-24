@@ -75,7 +75,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.meowballTravel = travel
 
 	c.skillSrc = c.Core.F
-	c.meowballSrc = c.Core.F
+	c.meowballSrc = -1
 	c.DeleteStatus(meowballKey)
 
 	c.flaskAbsorb = attributes.NoElement
@@ -88,10 +88,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.AddStatus(shadowPursuitKey, shadowPursuitMaxDuration, false)
 		c.Core.Player.SwapCD = math.MaxInt16
 
-		c.Core.Tasks.Add(
-			c.fillFlask(c.skillSrc),
-			firstFlaskFillDelay,
-		)
+		c.QueueCharTask(c.fillFlask(c.skillSrc), firstFlaskFillDelay)
 
 		// schedule drain flask after max duration to avoid skill end abruptly
 		// without doing damage when there are no elemental aura on enemy
@@ -115,7 +112,7 @@ func (c *char) ParticleCB(a info.AttackCB) {
 	if c.StatusIsActive(particleICDKey) {
 		return
 	}
-	c.AddStatus(particleICDKey, 0.5*60, false) // couldn't find anywhere in dm, assume to be the same as Sayu
+	c.AddStatus(particleICDKey, 0.5*60, false)
 	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Anemo, c.ParticleDelay)
 }
 
@@ -129,7 +126,7 @@ func (c *char) meowballEnergyCB(a info.AttackCB) {
 	}
 
 	c.AddEnergy(meowballFlatEnergyKey, 2)
-	c.AddStatus(meowballFlatEnergyICDKey, int(3.5*60), true)
+	c.AddStatus(meowballFlatEnergyICDKey, 3.5*60, true)
 }
 
 func (c *char) fillFlask(src int) func() {
@@ -139,13 +136,13 @@ func (c *char) fillFlask(src int) func() {
 		}
 
 		// determine which element should be absorbed
-		priority := make([]attributes.Element, 0, len(c.absorbPriority))
+		priority := make([]attributes.Element, 0, len(elePriority))
 
 		if c.flaskAbsorb != attributes.NoElement {
 			priority = append(priority, c.flaskAbsorb)
 		}
 
-		for _, ele := range c.absorbPriority {
+		for _, ele := range elePriority {
 			if ele != c.flaskAbsorb {
 				priority = append(priority, ele)
 			}
@@ -175,35 +172,39 @@ func (c *char) fillFlask(src int) func() {
 				// otherwise the flask fill up its gauge by half of its full value
 			}
 
-			c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(),
-				"jahoda flask absorbed ", c.flaskAbsorb.String(),
-			)
-
-			c.Core.Tasks.Add(c.fillFlaskGauge(amount), 0)
+			c.fillFlaskGauge(src, amount, c.flaskAbsorb)
 		}
 
-		c.Core.Tasks.Add(c.fillFlask(src), flaskFillInterval)
+		c.QueueCharTask(c.fillFlask(src), flaskFillInterval)
 	}
 }
 
-func (c *char) fillFlaskGauge(amount int) func() {
-	return func() {
-		prevFlaskGauge := c.flaskGauge
-		c.flaskGauge += amount
-		c.Core.Log.NewEvent("jahoda flask gauge increase", glog.LogCharacterEvent, c.Index()).
-			Write("previous flask gauge", prevFlaskGauge).
-			Write("current flask gauge", c.flaskGauge)
+func (c *char) fillFlaskGauge(src, amount int, ele attributes.Element) {
+	if src != c.skillSrc {
+		return
+	}
 
-		// if the flask is full drain the flask
-		if c.flaskGauge >= flaskGaugeMax {
-			c.Core.Tasks.Add(c.drainFlask(c.skillSrc), drainFlaskHitmark)
+	prevFlaskGauge := c.flaskGauge
+	c.flaskGauge = min(c.flaskGauge+amount, flaskGaugeMax)
+	c.Core.Log.NewEvent("jahoda flask gauge increase", glog.LogCharacterEvent, c.Index()).
+		Write("element", ele.String()).
+		Write("amount", amount).
+		Write("previous flask gauge", prevFlaskGauge).
+		Write("current flask gauge", c.flaskGauge)
+
+	// if the flask is full drain the flask
+	if c.flaskGauge >= flaskGaugeMax {
+		c.Core.Tasks.Add(c.drainFlask(c.skillSrc), drainFlaskHitmark)
+		return
+	}
+}
+
+func (c *char) consumeFlaskGauge(src, amount int) func() {
+	return func() {
+		if src != c.meowballSrc {
 			return
 		}
-	}
-}
 
-func (c *char) consumeFlaskGauge(amount int) func() {
-	return func() {
 		prevFlaskGauge := c.flaskGauge
 		c.flaskGauge -= amount
 		c.Core.Log.NewEvent("jahoda flask gauge decrease", glog.LogCharacterEvent, c.Index()).
@@ -225,6 +226,7 @@ func (c *char) drainFlask(src int) func() {
 
 		if c.flaskGauge >= flaskGaugeMax {
 			c.flaskGauge = flaskGaugeMax
+			c.meowballSrc = c.Core.F
 
 			// if the flask is full, do filled flask damage
 			ai := info.AttackInfo{
@@ -245,16 +247,12 @@ func (c *char) drainFlask(src int) func() {
 			if c.Core.Player.GetMoonsignLevel() >= 2 {
 				c.c6()
 
+				c.Core.Tasks.Add(
+					c.meowballTick(c.meowballSrc),
+					firstMeowballFirstHitmark,
+				)
+
 				ticks := flaskGaugeMax / 10
-
-				for i := range ticks {
-					c.Core.Tasks.Add(
-						c.meowballTick(c.meowballSrc),
-						firstMeowballFirstHitmark+i*meowballHitmarkInterval,
-					)
-					c.Core.Tasks.Add(c.consumeFlaskGauge(10), firstMeowballFirstHitmark+i*meowballHitmarkInterval)
-				}
-
 				c.AddStatus(
 					meowballKey,
 					firstMeowballFirstHitmark+(ticks-1)*meowballHitmarkInterval,
@@ -308,6 +306,8 @@ func (c *char) meowballTick(src int) func() {
 			return
 		}
 
+		c.Core.Tasks.Add(c.consumeFlaskGauge(src, 10), 0)
+
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
 			Abil:       "Meowball",
@@ -326,7 +326,12 @@ func (c *char) meowballTick(src int) func() {
 			0,
 			c.meowballTravel,
 			c.meowballEnergyCB,
-			c.makeA1CB,
+			c.makeC1CB,
+		)
+
+		c.Core.Tasks.Add(
+			c.meowballTick(c.meowballSrc),
+			meowballHitmarkInterval,
 		)
 	}
 }

@@ -9,9 +9,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
+var elePriority = []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo}
+
 type char struct {
 	*tmpl.Character
-	absorbPriority []attributes.Element
 
 	flaskAbsorbCheckLocation info.AttackPattern
 	flaskAbsorb              attributes.Element
@@ -45,8 +46,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	c.Moonsign = 1
 
-	c.absorbPriority = append(c.absorbPriority, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
-
 	c.flaskAbsorb = attributes.NoElement
 	c.a1HighestEle = attributes.NoElement
 	c.c2NextHighestEle = attributes.NoElement
@@ -57,24 +56,18 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	c.a1Init()
-
 	c.robotHealCoeff = 1.0
-	c.a4Buff = make([]float64, attributes.EndStatType)
-	c.a4Buff[attributes.EM] = 100
-
-	c.c6Buff = make([]float64, attributes.EndStatType)
-	c.c6Buff[attributes.CR] = 0.05
-	c.c6Buff[attributes.CD] = 0.40
-
+	c.a1Init()
+	c.a4Init()
+	c.c6Init()
 	return nil
 }
 
 func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
-	if k == info.AnimationXingqiuN0StartDelay {
+	switch k {
+	case info.AnimationXingqiuN0StartDelay:
 		return 13
-	}
-	if k == info.AnimationYelanN0StartDelay {
+	case info.AnimationYelanN0StartDelay:
 		return 11
 	}
 	return c.Character.AnimationStartDelay(k)

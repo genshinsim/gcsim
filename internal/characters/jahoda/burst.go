@@ -2,8 +2,8 @@ package jahoda
 
 import (
 	"errors"
+	"fmt"
 	"sort"
-	"strconv"
 
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
@@ -73,19 +73,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		0,
 		burstHitmark)
 
-	// define attack info
-	c.robotAi = info.AttackInfo{
-		ActorIndex: c.Index(),
-		Abil:       "Purrsonal Coordinated Assistance Robot DMG",
-		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagElementalBurst,
-		ICDGroup:   attacks.ICDGroupJahodaBurst, // special icd, 15s/4 hits
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.NoElement,
-		Durability: 25,
-		FlatDmg:    burstSkill[c.TalentLvlBurst()] * c.TotalAtk(),
-	}
-
 	c.robotCount = 2
 
 	// apply a1 buff
@@ -98,17 +85,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				if src != c.burstSrc {
 					return
 				}
-
-				heal := (burstHealFlat[c.TalentLvlBurst()] + burstHealPP[c.TalentLvlBurst()]*c.TotalAtk()) * c.robotHealCoeff
-				robotHi := info.HealInfo{
-					Caller:  c.Index(),
-					Target:  c.Core.Player.Active(),
-					Message: "Purrsonal Coordinated Assistance Robot Healing",
-					Src:     heal,
-					Bonus:   c.Stat(attributes.Heal),
-				}
-
-				c.Core.Player.Heal(robotHi)
 
 				if c.Core.Player.ActiveChar().CurrentHPRatio() > 0.7 {
 					c.a4()
@@ -126,6 +102,17 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 						})
 					}
 				}
+
+				heal := (burstHealFlat[c.TalentLvlBurst()] + burstHealPP[c.TalentLvlBurst()]*c.TotalAtk()) * c.robotHealCoeff
+				robotHi := info.HealInfo{
+					Caller:  c.Index(),
+					Target:  c.Core.Player.Active(),
+					Message: "Purrsonal Coordinated Assistance Robot Healing",
+					Src:     heal,
+					Bonus:   c.Stat(attributes.Heal),
+				}
+
+				c.Core.Player.Heal(robotHi)
 			}, i)
 		}
 	}, firsHealTickDelay)
@@ -133,8 +120,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// dmg ticks
 	if c.Core.Player.GetMoonsignLevel() >= 2 {
 		for robot := 0; robot < c.robotCount; robot++ {
-			ai := c.robotAi
-			c.Core.Tasks.Add(c.absorbCheck(src, robot, ai), firstRobotAbsorbDelay+robotAbsorptionInterval*robot)
+			c.Core.Tasks.Add(c.absorbCheckTask(src, robot), firstRobotAbsorbDelay+robotAbsorptionInterval*robot)
 		}
 	}
 
@@ -168,38 +154,51 @@ func (c *char) lowestHPChar() int {
 	return lowestIdx
 }
 
-func (c *char) absorbCheck(src, robot int, ai info.AttackInfo) func() {
+func (c *char) absorbCheckTask(src, robot int) func() {
 	return func() {
 		if src != c.burstSrc || !c.StatusIsActive(burstKey) {
 			return
 		}
 
-		ele := c.enemyAuraInArea(c.burstAbsorbCheckLocation, c.absorbPriority)
+		ele := c.enemyAuraInArea(c.burstAbsorbCheckLocation, elePriority)
+
+		// define attack info
+		c.robotAi = info.AttackInfo{
+			ActorIndex: c.Index(),
+			Abil:       "Purrsonal Coordinated Assistance Robot DMG",
+			AttackTag:  attacks.AttackTagElementalBurst,
+			ICDTag:     attacks.ICDTagElementalBurst,
+			ICDGroup:   attacks.ICDGroupJahodaBurst, // special icd, 15s/4 hits
+			StrikeType: attacks.StrikeTypeDefault,
+			Element:    attributes.NoElement,
+			Durability: 25,
+			FlatDmg:    burstSkill[c.TalentLvlBurst()] * c.TotalAtk(),
+		}
 
 		if ele == attributes.NoElement {
-			c.Core.Tasks.Add(c.absorbCheck(src, robot, ai), int(c.robotHitmarkInterval/3)) // formular from dm
+			c.Core.Tasks.Add(c.absorbCheckTask(src, robot), int(c.robotHitmarkInterval/3)) // formular from dm
 			return
 		}
 
-		ai.Element = ele
+		c.robotAi.Element = ele
 
 		switch ele {
 		case attributes.Pyro:
-			ai.ICDTag = attacks.ICDTagElementalBurstPyro
+			c.robotAi.ICDTag = attacks.ICDTagElementalBurstPyro
 		case attributes.Hydro:
-			ai.ICDTag = attacks.ICDTagElementalBurstHydro
+			c.robotAi.ICDTag = attacks.ICDTagElementalBurstHydro
 		case attributes.Electro:
-			ai.ICDTag = attacks.ICDTagElementalBurstElectro
+			c.robotAi.ICDTag = attacks.ICDTagElementalBurstElectro
 		case attributes.Cryo:
-			ai.ICDTag = attacks.ICDTagElementalBurstCryo
+			c.robotAi.ICDTag = attacks.ICDTagElementalBurstCryo
 		default:
-			ai.ICDTag = attacks.ICDTagElementalBurst
+			c.robotAi.ICDTag = attacks.ICDTagElementalBurst
 		}
 
-		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), "jahoda robot ", strconv.Itoa(robot), " absorbed ", ele.String())
+		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), fmt.Sprintf("jahoda robot %d absorbed %v", robot, ele.String()))
 
 		c.c4()
-		c.Core.Tasks.Add(c.robotAtkTick(src, ai), firstRobotHitmarkDelay)
+		c.Core.Tasks.Add(c.robotAtkTick(src, c.robotAi), firstRobotHitmarkDelay)
 	}
 }
 
@@ -243,9 +242,7 @@ func (c *char) queueOn3Closest(origin info.Point, ai info.AttackInfo, hitDelay i
 		}
 
 		p := e.Pos()
-		dx := p.X - origin.X
-		dy := p.Y - origin.Y
-		d := dx*dx + dy*dy // squared distance is enough for sorting (no sqrt)
+		d := p.Sub(origin).MagnitudeSquared()
 
 		cands = append(cands, cand{t: e, d: d})
 	}

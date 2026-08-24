@@ -2,24 +2,20 @@ package jahoda
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 func (c *char) a1Init() {
-	eleCountMap := c.countElements()
-
-	priority := []attributes.Element{
-		attributes.Pyro,
-		attributes.Hydro,
-		attributes.Electro,
-		attributes.Cryo,
+	if c.Base.Ascension < 1 {
+		return
 	}
+
+	eleCountMap := c.countElements()
 
 	highestEleCount := 0
 
-	for _, ele := range priority {
+	for _, ele := range elePriority {
 		if eleCountMap[ele] > highestEleCount {
 			highestEleCount = eleCountMap[ele]
 			c.a1HighestEle = ele
@@ -30,24 +26,7 @@ func (c *char) a1Init() {
 		c.a1HighestEle = attributes.NoElement
 	}
 
-	if c.Base.Cons >= 2 && c.Core.Player.GetMoonsignLevel() >= 2 {
-		secondHighestEleCount := 0
-
-		for _, ele := range priority {
-			if ele == c.a1HighestEle {
-				continue
-			}
-
-			if eleCountMap[ele] > secondHighestEleCount {
-				secondHighestEleCount = eleCountMap[ele]
-				c.c2NextHighestEle = ele
-			}
-		}
-
-		if secondHighestEleCount == 0 {
-			c.c2NextHighestEle = attributes.NoElement
-		}
-	}
+	c.c2Init(eleCountMap)
 }
 
 func (c *char) a1() {
@@ -56,10 +35,7 @@ func (c *char) a1() {
 	}
 
 	c.applyA1Buff(c.a1HighestEle)
-
-	if c.Base.Cons >= 2 && c.Core.Player.GetMoonsignLevel() >= 2 {
-		c.applyA1Buff(c.c2NextHighestEle)
-	}
+	c.c2()
 }
 
 func (c *char) countElements() map[attributes.Element]int {
@@ -100,6 +76,11 @@ func (c *char) applyA1Buff(ele attributes.Element) {
 	}
 }
 
+func (c *char) a4Init() {
+	c.a4Buff = make([]float64, attributes.EndStatType)
+	c.a4Buff[attributes.EM] = 100
+}
+
 func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
@@ -112,6 +93,4 @@ func (c *char) a4() {
 			return c.a4Buff
 		},
 	})
-
-	c.Core.Log.NewEvent("jahoda a4 triggered", glog.LogCharacterEvent, c.Index()).Write("em snapshot", c.a4Buff[attributes.EM]).Write("expiry", c.Core.F+6*60)
 }
