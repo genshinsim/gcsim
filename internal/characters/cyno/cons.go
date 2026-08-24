@@ -111,6 +111,7 @@ func (c *char) c4() {
 	c.Core.Events.Subscribe(event.OnElectroCharged, restoreNoGadget, "cyno-c4")
 	c.Core.Events.Subscribe(event.OnLunarCharged, restoreNoGadget, "cyno-c4")
 	c.Core.Events.Subscribe(event.OnSuperconduct, restoreNoGadget, "cyno-c4")
+	c.Core.Events.Subscribe(event.OnStellarConduct, restoreNoGadget, "cyno-c4")
 	c.Core.Events.Subscribe(event.OnQuicken, restoreNoGadget, "cyno-c4")
 	c.Core.Events.Subscribe(event.OnAggravate, restoreNoGadget, "cyno-c4")
 	c.Core.Events.Subscribe(event.OnHyperbloom, restore, "cyno-c4")

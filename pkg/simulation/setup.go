@@ -199,6 +199,7 @@ func SetupResonance(s *core.Core) {
 			}
 			s.Events.Subscribe(event.OnOverload, recoverNoGadget, "electro-res")
 			s.Events.Subscribe(event.OnSuperconduct, recoverNoGadget, "electro-res")
+			s.Events.Subscribe(event.OnStellarConduct, recoverNoGadget, "electro-res")
 			s.Events.Subscribe(event.OnElectroCharged, recoverNoGadget, "electro-res")
 			s.Events.Subscribe(event.OnLunarCharged, recoverNoGadget, "electro-res")
 			s.Events.Subscribe(event.OnQuicken, recoverNoGadget, "electro-res")

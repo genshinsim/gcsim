@@ -43,31 +43,35 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 		return &s, nil
 	}
 
-	c4Buff := make([]float64, attributes.EndStatType)
-	c4Buff[attributes.CR] = 0.16
-
 	char.AddReactBonusMod(character.ReactBonusMod{
-		Base: modifier.NewBase("disenchantment-reaction-bonus-4pc", -1),
+		Base: modifier.NewBase("disenchantment-4pc-dmg", -1),
 		Amount: func(ai info.AttackInfo) float64 {
-			if ai.AttackTag != attacks.AttackTagSuperconductDamage {
-				return 0
+			switch ai.AttackTag {
+			case attacks.AttackTagSuperconductDamage:
+				return 0.8
+			case attacks.AttackTagDirectStellarConduct:
+				return 0.4
 			}
 
-			return 0.8
+			return 0
 		},
 	})
 
-	// TODO: check if it works while character is off-field
-
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.CR] = 0.16
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBase("disenchantment-on-superconduct-4pc", -1),
+		Base: modifier.NewBase("disenchantment-4pc-cr", -1),
 		Amount: func(_ *info.AttackEvent, t info.Target) []float64 {
 			e, ok := t.(*enemy.Enemy)
 			if !ok {
 				return nil
 			}
 			if e.StatusIsActive(reactable.SuperConductShredKey) {
-				return c4Buff
+				return m
+			}
+
+			if e.StatusIsActive(reactable.StellarConductShredKey) {
+				return m
 			}
 			return nil
 		},
@@ -84,7 +88,7 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 			return
 		}
 
-		if r.StatusIsActive(reactable.SuperConductShredKey) {
+		if r.StatusIsActive(reactable.SuperConductShredKey) || r.StatusIsActive(reactable.StellarConductShredKey) {
 			ae.Snapshot.Stats[attributes.CR] += 0.16
 		}
 	}, "disenchantment-4pc-superconduct-"+char.Base.Key.String())

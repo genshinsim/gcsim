@@ -13,7 +13,7 @@ const (
 	// OnReactionOccured // target, AttackEvent
 	// OnTransReaction   // target, AttackEvent
 	// OnAmpReaction     // target, AttackEvent
-
+	OnElementApplied         // target, AttackEvent
 	OnAuraDurabilityAdded    // target, ele, durability
 	OnAuraDurabilityDepleted // target, ele
 	// OnReaction               // target, AttackEvent, ReactionType
@@ -42,6 +42,7 @@ const (
 	OnLunarCharged       // target, AttackEvent
 	OnLunarBloom         // target, AttackEvent
 	OnLunarCrystallize   // target, AttackEvent
+	OnStellarConduct     // target, AttackEvent
 	OnShatter            // target, AttackEvent; at the end to simplify all reaction event subs since it's normally not considered as an elemental reaction
 	ReactionEventEndDelim
 	OnDendroCore // Gadget

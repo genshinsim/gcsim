@@ -179,6 +179,10 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 		}
 		c.bikeChargeAttackHook()
 		skippedWindupFrames = c.GetSkippedWindupFrames(bufferedFrames)
+		// If the full windup is not skipped, mav's ca windup will proc n0 abilities like Yelan/XQ
+		if skippedWindupFrames < 15 {
+			c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState)
+		}
 		c.caState.skippedWindupF = skippedWindupFrames // Used for syncing CA frames on CA hook
 
 		c.DeleteStatus(cdcLockoutStatus)
@@ -291,6 +295,11 @@ func (c *char) HoldBikeChargeAttack(cAtkFrames, skippedWindupFrames int, hittabl
 func (c *char) CountBikeChargeAttack(maxHitCount, skippedWindupFrames int, hittableEntities []HittableEntity, nsDur int) int {
 	// Return remaining CA time between nightsoul duration (account for skipped windup) and max CA duration for attempting hit
 	dur := min(nsDur+skippedWindupFrames, bikeChargeAttackMaximumDuration-c.caState.cAtkFrames)
+	// if just starting a charge attack, duration can last beyond ns duration
+	if c.caState.StartFrame == c.Core.F {
+		dur = max(bikeChargeAttackMinimumDuration, dur)
+	}
+
 	hitCounter := 0
 
 	for i := range hittableEntities {
@@ -426,11 +435,6 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 
 	nightSoulDuration := c.GetRemainingNightSoulDuration()
 	if nightSoulDuration <= adjustedBikeChargeFinalHitmark {
-		// Exiting at hitmark to account for dash cancel
-		c.QueueCharTask(func() {
-			c.exitBike()
-		}, adjustedBikeChargeFinalHitmark)
-
 		c.QueueCharTask(func() {
 			c.nightsoulState.ConsumePoints(c.nightsoulState.Points())
 			c.exitNightsoul()
@@ -510,10 +514,6 @@ func (c *char) GetSkippedWindupFrames(bufferedFrames int) int {
 		skippedWindupFrames = 13
 	}
 	skippedWindupFrames = min(skippedWindupFrames, bufferedFrames)
-	// If the full windup is not skipped, mav's ca windup will proc n0 abilities like Yelan/XQ
-	if skippedWindupFrames < 15 {
-		c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState)
-	}
 	return skippedWindupFrames
 }
 

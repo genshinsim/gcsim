@@ -59,6 +59,8 @@ const (
 
 	bulletBoxLength = 11.5
 
+	lcrShrapnelICDKey = "navia-lcr-shrapnel-icd"
+
 	particleICDKey = "navia-particle-icd"
 	arkheICDKey    = "navia-arkhe-icd"
 )
@@ -259,9 +261,15 @@ func (c *char) addShrapnelBuffs(snap *info.Snapshot, count int) {
 // Each time Crystal Shrapnel gain is triggered, the duration of the Shards you have already will be reset.
 func (c *char) shrapnelInit() {
 	c.Core.Events.Subscribe(event.OnLunarCrystallize, func(args ...any) {
+		if c.StatusIsActive(lcrShrapnelICDKey) {
+			return
+		}
+
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return
 		}
+
+		c.AddStatus(lcrShrapnelICDKey, 1*60, true)
 
 		c.gainShrapnel("Lunar Crystallize")
 	}, "shrapnel-gain")

@@ -32,6 +32,7 @@ const (
 	ReactionTypeLunarCharged       ReactionType = "lunarcharged"
 	ReactionTypeLunarBloom         ReactionType = "lunarbloom"
 	ReactionTypeLunarCrystallize   ReactionType = "lunarcrystallize"
+	ReactionTypeStellarConduct     ReactionType = "stellar-conduct"
 	ReactionTypeNoReaction         ReactionType = ""
 	ReactionTypeFreezeExtend       ReactionType = "freeze-extend"
 )
@@ -71,6 +72,7 @@ type Reactable interface {
 	ReactableLunarCharged
 	ReactableLunarBloom
 	ReactableLunarCrystallize
+	ReactableStellarConduct
 }
 
 type ReactableBloom interface {
@@ -144,4 +146,9 @@ type ReactableLunarBloom interface {
 type ReactableLunarCrystallize interface {
 	TryAddLCr(a *AttackEvent) bool
 	DoLCrAttack(owner int)
+}
+
+type ReactableStellarConduct interface {
+	TryStellarConduct(a *AttackEvent) bool
+	TryFrozenStellarConduct(a *AttackEvent) bool
 }
