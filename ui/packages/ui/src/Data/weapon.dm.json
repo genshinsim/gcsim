@@ -308,6 +308,13 @@
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Caduceus_Awaken"
     },
+    "disasterandremorse": {
+      "id": 13517,
+      "key": "disasterandremorse",
+      "rarity": 5,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_Carbine_Awaken"
+    },
     "dodocotales": {
       "id": 14413,
       "key": "dodocotales",
