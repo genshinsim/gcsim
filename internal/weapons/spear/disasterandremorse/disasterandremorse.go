@@ -38,7 +38,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	key := "disaster-remorse-" + char.Base.Key.String()
 
 	unforgivableMod := character.AttackMod{
-		Base: modifier.NewBase(unforgivable, 3*60),
+		Base: modifier.NewBaseWithHitlag(unforgivable, 3*60),
 		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagNormal, attacks.AttackTagExtra:
@@ -57,7 +57,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 
 	irreparableMod := character.AttackMod{
-		Base: modifier.NewBase(irreparable, 3*60),
+		Base: modifier.NewBaseWithHitlag(irreparable, 3*60),
 		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			switch atk.Info.AttackTag {
 			case attacks.AttackTagElementalArt,
