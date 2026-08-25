@@ -1,8 +1,6 @@
 package jahoda
 
 import (
-	"math"
-
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
@@ -75,6 +73,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.meowballTravel = travel
 
 	c.skillSrc = c.Core.F
+	src := c.skillSrc
 	c.meowballSrc = -1
 	c.DeleteStatus(meowballKey)
 
@@ -86,7 +85,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.pursuitDuration = shadowPursuitMaxDuration
 	c.Core.Tasks.Add(func() {
 		c.AddStatus(shadowPursuitKey, shadowPursuitMaxDuration, false)
-		c.Core.Player.SwapCD = math.MaxInt16
 
 		c.QueueCharTask(c.fillFlask(c.skillSrc), firstFlaskFillDelay)
 
@@ -98,8 +96,20 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		)
 	}, skillWindup)
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillFrames),
-		AnimationLength: skillFrames[action.InvalidAction],
+		Frames: func(next action.Action) int {
+			// during pursuit state, allow the frames to increase from current src
+			if src == c.skillSrc {
+				// except for E -> E, as it uses the cancel frames for the skill
+				if next == action.ActionSkill {
+					return skillFrames[action.ActionSkill]
+				}
+				return (c.Core.F - src) + skillCancelFrames[next]
+			}
+
+			// after pursuit state ended, pursuit duration freeze and the frames becomes fix
+			return c.pursuitDuration + skillCancelFrames[next]
+		},
+		AnimationLength: skillWindup + shadowPursuitMaxDuration + skillCancelFrames[action.ActionJump],
 		CanQueueAfter:   skillFrames[action.ActionSkill],
 		State:           action.SkillState,
 	}, nil
@@ -222,6 +232,7 @@ func (c *char) drainFlask(src int) func() {
 			return
 		}
 
+		c.pursuitDuration = c.Core.F - src
 		c.cancelPursuit() // exit state
 
 		if c.flaskGauge >= flaskGaugeMax {
@@ -284,7 +295,6 @@ func (c *char) cancelPursuit() {
 	}
 	c.SetCD(action.ActionSkill, skillCD+skillWindup)
 	c.DeleteStatus(shadowPursuitKey)
-	c.Core.Player.SwapCD = skillCancelFrames[action.ActionSwap]
 	c.skillSrc = -1
 }
 
