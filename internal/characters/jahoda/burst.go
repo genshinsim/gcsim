@@ -163,6 +163,11 @@ func (c *char) absorbCheckTask(src, robot int) func() {
 		ele := c.enemyAuraInArea(c.burstAbsorbCheckLocation, elePriority)
 
 		// define attack info
+		if ele == attributes.NoElement {
+			c.Core.Tasks.Add(c.absorbCheckTask(src, robot), int(c.robotHitmarkInterval/3)) // formular from dm
+			return
+		}
+
 		c.robotAi = info.AttackInfo{
 			ActorIndex: c.Index(),
 			Abil:       "Purrsonal Coordinated Assistance Robot DMG",
@@ -170,14 +175,9 @@ func (c *char) absorbCheckTask(src, robot int) func() {
 			ICDTag:     attacks.ICDTagElementalBurst,
 			ICDGroup:   attacks.ICDGroupJahodaBurst, // special icd, 15s/4 hits
 			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.NoElement,
+			Element:    ele,
 			Durability: 25,
 			FlatDmg:    burstSkill[c.TalentLvlBurst()] * c.TotalAtk(),
-		}
-
-		if ele == attributes.NoElement {
-			c.Core.Tasks.Add(c.absorbCheckTask(src, robot), int(c.robotHitmarkInterval/3)) // formular from dm
-			return
 		}
 
 		c.robotAi.Element = ele
