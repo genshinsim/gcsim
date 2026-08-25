@@ -110,7 +110,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			return c.pursuitDuration + skillCancelFrames[next]
 		},
 		AnimationLength: skillWindup + shadowPursuitMaxDuration + skillCancelFrames[action.ActionJump],
-		CanQueueAfter:   skillFrames[action.ActionSkill],
+		CanQueueAfter:   skillCancelFrames[action.ActionDash], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }
