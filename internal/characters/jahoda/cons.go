@@ -23,49 +23,46 @@ func (c *char) makeC1CB(a info.AttackCB) {
 	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
-	if a.Target.Type() != info.TargettableEnemy {
-		return
-	}
 
 	// 50% to bounce
 	if c.Core.Rand.Float64() < 0.5 {
 		return
 	}
-		// default to bounce onto the original enemy
-		target := a.Target
 
-		// prefer a different nearby enemy when one exists, the exact radius of detection is unknown
-		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 8), func(t info.Enemy) bool {
-			return t.Key() != a.Target.Key()
-		},
-		)
+	// default to bounce onto the original enemy
+	target := a.Target
 
-		if next != nil {
-			target = next
-		}
+	// prefer a different nearby enemy when one exists, the exact radius of detection is unknown
+	next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(a.Target, nil, 8), func(t info.Enemy) bool {
+		return t.Key() != a.Target.Key()
+	},
+	)
 
-		// queue the attack
-		aiC1 := info.AttackInfo{
-			ActorIndex: c.Index(),
-			Abil:       "Meowball (C1)",
-			AttackTag:  attacks.AttackTagElementalArt,
-			ICDTag:     attacks.ICDTagJahodaCons,
-			ICDGroup:   attacks.ICDGroupJahodaCons,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    c.flaskAbsorb,
-			Durability: 25,
-			Mult:       meowball[c.TalentLvlSkill()],
-		}
-
-		// TODO: C1 use the same snapshot as original meowball, not tested
-		c.Core.QueueAttack(
-			aiC1,
-			combat.NewCircleHitOnTarget(target, nil, 4),
-			0,
-			c.meowballTravel+c1BounceHitmark,
-			nil,
-		)
+	if next != nil {
+		target = next
 	}
+
+	// queue the attack
+	aiC1 := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       "Meowball (C1)",
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagJahodaCons,
+		ICDGroup:   attacks.ICDGroupJahodaCons,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    c.flaskAbsorb,
+		Durability: 25,
+		Mult:       meowball[c.TalentLvlSkill()],
+	}
+
+	// TODO: C1 use the same snapshot as original meowball, not tested
+	c.Core.QueueAttack(
+		aiC1,
+		combat.NewCircleHitOnTarget(target, nil, 4),
+		0,
+		c.meowballTravel+c1BounceHitmark,
+		nil,
+	)
 }
 
 func (c *char) c2Init(eleCountMap map[attributes.Element]int) {
