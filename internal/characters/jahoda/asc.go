@@ -77,6 +77,9 @@ func (c *char) applyA1Buff(ele attributes.Element) {
 }
 
 func (c *char) a4Init() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	c.a4Buff = make([]float64, attributes.EndStatType)
 	c.a4Buff[attributes.EM] = 100
 }

@@ -23,9 +23,14 @@ func (c *char) makeC1CB(a info.AttackCB) {
 	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
+	if a.Target.Type() != info.TargettableEnemy {
+		return
+	}
 
 	// 50% to bounce
 	if c.Core.Rand.Float64() < 0.5 {
+		return
+	}
 		// default to bounce onto the original enemy
 		target := a.Target
 
