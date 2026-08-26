@@ -28,7 +28,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 
 	def := make([]float64, attributes.EndStatType)
-	def[attributes.DEFP] = 0.20 + 0.05*float64(r)
+	def[attributes.DEFP] = 0.15 + 0.05*float64(r)
 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("lightbearing-moonshard-def", -1),
