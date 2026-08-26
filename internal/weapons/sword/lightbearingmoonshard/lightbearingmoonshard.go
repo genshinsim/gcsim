@@ -38,7 +38,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
-	bonus := 0.64 + 0.16*float64(r)
+	bonus := 0.48 + 0.16*float64(r)
 
 	moonshard := func(args ...any) {
 		if c.Player.Active() != char.Index() {
