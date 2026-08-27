@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "pins": {
+    "go_1_25": {
+      "rev": "56c02bc00adcf003215cc4bd996d6efaf4cff188",
+      "label": "2026-08-23-56c02bc00adc",
+      "version": "1.25.13",
+      "date": "2026-08-23"
+    },
+    "golangci-lint": {
+      "rev": "56c02bc00adcf003215cc4bd996d6efaf4cff188",
+      "label": "2026-08-23-56c02bc00adc",
+      "version": "2.13.1",
+      "date": "2026-08-23"
+    },
+    "protobuf": {
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "label": "2026-07-05-d407951447dc",
+      "version": "34.1",
+      "date": "2026-07-05",
+      "constraint": "34.1"
+    },
+    "protoc-gen-go": {
+      "rev": "d407951447dcd00442e97087bf374aad70c04cea",
+      "label": "2026-07-05-d407951447dc",
+      "version": "1.36.11",
+      "date": "2026-07-05",
+      "constraint": "1.36.11"
+    },
+    "protoc-gen-go-grpc": {
+      "rev": "56c02bc00adcf003215cc4bd996d6efaf4cff188",
+      "label": "2026-08-23-56c02bc00adc",
+      "version": "1.6.2",
+      "date": "2026-08-23",
+      "constraint": "1.6.2"
+    }
+  }
+}
