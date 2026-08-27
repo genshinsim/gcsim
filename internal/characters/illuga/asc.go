@@ -61,13 +61,12 @@ func (c *char) a1() {
 	}
 
 	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
-		char := args[0].(*character.CharWrapper)
-		if char.Index() == c.Index() {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.AttackTag != attacks.AttackTagReactionLunarCrystallize {
 			return
 		}
 
-		atk := args[1].(*info.AttackEvent)
-		if atk.Info.AttackTag != attacks.AttackTagReactionLunarCrystallize {
+		if atk.Info.ActorIndex == c.Index() {
 			return
 		}
 
