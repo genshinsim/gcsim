@@ -31,13 +31,13 @@ func (c *char) c1Init() {
 		if c.StatusIsActive(c1ICDKey) {
 			return
 		}
-		char := args[0].(*character.CharWrapper)
+		atk := args[1].(*info.AttackEvent)
 
-		if char.Index() != c.Index() {
+		if atk.Info.ActorIndex != c.Index() {
 			return
 		}
 
-		if char.Index() != c.Core.Player.Active() {
+		if atk.Info.ActorIndex != c.Core.Player.Active() {
 			return
 		}
 
