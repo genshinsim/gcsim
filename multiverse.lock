@@ -1,10 +1,10 @@
 {
   "version": 1,
   "pins": {
-    "go_1_25": {
+    "go_1_27": {
       "rev": "56c02bc00adcf003215cc4bd996d6efaf4cff188",
       "label": "2026-08-23-56c02bc00adc",
-      "version": "1.25.13",
+      "version": "1.27.0",
       "date": "2026-08-23"
     },
     "golangci-lint": {
