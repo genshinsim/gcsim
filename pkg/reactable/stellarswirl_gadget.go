@@ -22,8 +22,7 @@ const (
 
 type StellarVortex struct {
 	*gadget.Gadget
-	r         *Reactable
-	fieldArea info.AttackPattern
+	r *Reactable
 }
 
 func (r *Reactable) newStellarVortex() *StellarVortex {
