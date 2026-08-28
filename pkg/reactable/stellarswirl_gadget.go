@@ -68,11 +68,7 @@ func (p *StellarVortex) explode() {
 
 	p.r.core.Flags.Custom[sswStackKey] = 0
 
-	for _, c := range p.r.core.Player.Chars() {
-		// TODO: find exact duration of jump buff
-		// TODO: if chars are currently jumping, need to make the jump boosted height
-		c.AddStatus(player.StellarSwirlAirborneBuff, 6*60, true) // buff needs to be removed on jump?
-	}
+	p.r.core.Status.Add(player.StellarSwirlAirborneBuff, 5*60)
 
 	p.Core.Events.Emit(event.OnStellarVortexDetonate, owner, &contribMap, &ap)
 }

@@ -145,9 +145,9 @@ func (c *Character) Jump(p map[string]int) (action.Info, error) {
 		}, nil
 	}
 
-	if c.StatusIsActive(player.StellarSwirlAirborneBuff) {
+	if c.Core.Status.Duration(player.StellarSwirlAirborneBuff) > 0 {
 		c.Core.Player.SetAirborne(player.AirborneStellarSwirl)
-		c.DeleteStatus(player.StellarSwirlAirborneBuff)
+		c.Core.Status.Delete(player.StellarSwirlAirborneBuff)
 		return action.Info{
 			Frames: func(a action.Action) int {
 				switch a {
