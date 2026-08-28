@@ -149,7 +149,7 @@ func (r *Reactable) calcStellarSwirlDmg(target info.Target, ai info.AttackInfo, 
 	for i := range contributions {
 		contr := &contributions[i]
 		r.core.Combat.Log.NewEvent(fmt.Sprint("stellar swirl contributor ", (i+1)), glog.LogElementEvent, contr.charInd).
-			Write("target", target).
+			Write("target", target.Key()).
 			Write("damage", &contr.dmg).
 			Write("crit", &contr.isCrit).
 			Write("mult", sswContributorMult[i]).

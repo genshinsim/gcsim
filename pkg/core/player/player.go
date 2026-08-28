@@ -341,6 +341,13 @@ func (h *Handler) SetAirborne(src AirborneSource) error {
 		// do nothing
 		return fmt.Errorf("invalid airborne source: %v", src)
 	}
+
+	if src == Grounded {
+		h.Log.NewEvent("gained grounded", glog.LogCharacterEvent, h.active)
+	} else {
+		h.Log.NewEvent("gained airborne", glog.LogCharacterEvent, h.active)
+	}
+
 	h.airborne = src
 	return nil
 }

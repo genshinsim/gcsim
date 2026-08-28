@@ -14,7 +14,7 @@ type Gadget struct {
 	src             int
 	gadgetTyp       info.GadgetTyp
 	core            *core.Core
-	OnKill          func()
+	OnKill          func() // only called if the gadget is explicitly killed
 	OnExpiry        func() // only called if gadget dies from expiry
 	ThinkInterval   int    // should be > 0
 	OnThinkInterval func()

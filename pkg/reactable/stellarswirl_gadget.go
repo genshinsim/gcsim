@@ -4,6 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/gadget"
@@ -32,6 +33,7 @@ func (r *Reactable) newStellarVortex() *StellarVortex {
 	p.ThinkInterval = sswThinkInterval
 	p.Duration = sswDuration
 	p.OnKill = p.explode
+	p.OnExpiry = p.explode
 	r.core.Combat.AddGadget(p)
 	return p
 }
@@ -72,6 +74,8 @@ func (p *StellarVortex) explode() {
 		// TODO: if chars are currently jumping, need to make the jump boosted height
 		c.AddStatus(player.StellarSwirlAirborneBuff, 6*60, true) // buff needs to be removed on jump?
 	}
+
+	p.Core.Events.Emit(event.OnStellarVortexDetonate, owner, &contribMap, &ap)
 }
 
 func (p *StellarVortex) HandleAttack(atk *info.AttackEvent) float64 { return 0 }
