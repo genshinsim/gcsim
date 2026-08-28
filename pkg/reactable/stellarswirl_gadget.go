@@ -12,7 +12,7 @@ import (
 
 var (
 	sswStackMult   = []float64{0, 2, 2, 3, 3, 3, 3}
-	sswStackRadius = []float64{0, 4, 4, 6, 6, 6, 6}
+	sswStackRadius = []float64{0, 6, 6, 8, 8, 8, 8}
 )
 
 const (
