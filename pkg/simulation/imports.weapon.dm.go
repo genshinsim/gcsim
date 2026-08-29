@@ -212,6 +212,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/ironsting"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/kagotsurubeisshin"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/keyofkhajnisut"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/lightbearingmoonshard"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/lion"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/mistsplitter"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/moonweaversdawn"
