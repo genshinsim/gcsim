@@ -90,5 +90,4 @@ const (
 	ICDTagYanfeiFire
 	ICDTagYelanBreakthrough
 	ICDTagYelanBurst
-	ICDTagLength
 )
