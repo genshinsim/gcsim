@@ -2,7 +2,6 @@ package nightoftheskysunveiling
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -81,7 +80,7 @@ func (s *Set) Init() error {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBase(gleamingMoonIntentReactKey, -1),
 			Amount: func(ai info.AttackInfo) float64 {
-				if !attacks.AttackTagIsLunar(ai.AttackTag) {
+				if !ai.AttackTag.IsLunar() {
 					return 0
 				}
 

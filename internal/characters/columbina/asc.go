@@ -1,7 +1,6 @@
 package columbina
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -25,9 +24,7 @@ func (c *char) moonsignInit() {
 	c.Core.Flags.Custom[reactable.LunarCrystallizeEnableKey] = 1
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
-		tag := atk.Info.AttackTag
-		isDirect := attacks.DirectLunarReactionStartDelim < tag && tag < attacks.DirectLunarReactionEndDelim
-		if !isDirect {
+		if !atk.Info.AttackTag.IsLunarDirect() {
 			return
 		}
 
@@ -42,10 +39,7 @@ func (c *char) moonsignInit() {
 
 	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
-
-		tag := atk.Info.AttackTag
-		isLunarReact := attacks.LunarReactionStartDelim < tag && tag < attacks.LunarReactionEndDelim
-		if !isLunarReact {
+		if !atk.Info.AttackTag.IsLunarReact() {
 			return
 		}
 

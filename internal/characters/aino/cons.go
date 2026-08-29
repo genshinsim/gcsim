@@ -147,7 +147,7 @@ func (c *char) c6Init() {
 					buff += 0.2
 				}
 
-				if !attacks.AttackTagIsLunar(ai.AttackTag) &&
+				if !ai.AttackTag.IsLunar() &&
 					ai.AttackTag != attacks.AttackTagECDamage &&
 					ai.AttackTag != attacks.AttackTagBloom &&
 					ai.AttackTag != attacks.AttackTagBountifulCore {
