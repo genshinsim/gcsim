@@ -11,7 +11,7 @@ import (
 
 const (
 	c4Key   = "jahoda-c4-flat-energy"
-	c6Key   = "jahoda-c6"
+	c6Key = "jahoda-c6"
 )
 
 func (c *char) makeC1CB(a info.AttackCB) {
@@ -145,7 +145,5 @@ func (c *char) c6() {
 				return c.c6Buff
 			},
 		})
-
-		
 	}
 }
