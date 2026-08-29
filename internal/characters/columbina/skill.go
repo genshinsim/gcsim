@@ -75,7 +75,7 @@ func (c *char) skillInit() {
 
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
-		if !attacks.AttackTagIsLunar(atk.Info.AttackTag) {
+		if !atk.Info.AttackTag.IsLunar() {
 			return
 		}
 		if !c.StatusIsActive(skillKey) {

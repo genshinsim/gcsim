@@ -92,7 +92,7 @@ func (c *char) applyBurstBuff() {
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBaseWithHitlag(burstBuffKey, withinTimer),
 			Amount: func(ai info.AttackInfo) float64 {
-				if !attacks.AttackTagIsLunar(ai.AttackTag) {
+				if !ai.AttackTag.IsLunar() {
 					return 0
 				}
 

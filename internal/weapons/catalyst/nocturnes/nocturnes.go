@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -50,7 +49,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if atk.Info.ActorIndex != char.Index() {
 			return
 		}
-		if !attacks.AttackTagIsLunar(atk.Info.AttackTag) {
+		if !atk.Info.AttackTag.IsLunar() {
 			return
 		}
 		nocturneBuff(char, energy, hpBuff, critBuff)
@@ -101,7 +100,7 @@ func nocturneBuff(char *character.CharWrapper, energy float64, hpBuff, critBuff 
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(fmt.Sprintf("%v-cd", buffKey), 12*60),
 		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
-			if !attacks.AttackTagIsLunar(atk.Info.AttackTag) {
+			if !atk.Info.AttackTag.IsLunar() {
 				return nil
 			}
 			return critBuff
