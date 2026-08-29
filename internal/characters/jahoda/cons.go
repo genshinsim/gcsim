@@ -10,9 +10,8 @@ import (
 )
 
 const (
-	c4Key   = "jahoda-c4-flat-energy"
-	c6CRKey = "jahoda-c6-cr"
-	c6CDKey = "jahoda-c6-cd"
+	c4Key = "jahoda-c4-flat-energy"
+	c6Key = "jahoda-c6"
 )
 
 func (c *char) makeC1CB(a info.AttackCB) {
@@ -141,16 +140,7 @@ func (c *char) c6() {
 		}
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(c6CRKey, 20*60),
-			AffectedStat: attributes.CR,
-			Amount: func() []float64 {
-				return c.c6Buff
-			},
-		})
-
-		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(c6CDKey, 20*60),
-			AffectedStat: attributes.CD,
+			Base: modifier.NewBaseWithHitlag(c6Key, 20*60),
 			Amount: func() []float64 {
 				return c.c6Buff
 			},
