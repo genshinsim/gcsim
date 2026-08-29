@@ -65,6 +65,7 @@ const (
 	ICDGroupYaoyaoRadishSkill
 	ICDGroupYelanBreakthrough
 	ICDGroupYelanBurst
+	ICDGroupLength
 )
 
 var ICDGroupResetTimer = []int{
