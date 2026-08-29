@@ -395,6 +395,39 @@
     "physical": 0.1,
     "freeze": 0
   },
+  "battlehardenedchimericburrowbeast": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.3,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "battlehardenedchimericvolkodlakarcher": {
+    "pyro": -0.2,
+    "dendro": 0.4,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.4,
+    "geo": 0.4,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "battlehardeneddomovoysculptor": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.3,
+    "cryo": 0.3,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
   "battlehardenedelitetreasurehoarder": {
     "pyro": 0.1,
     "dendro": 0.1,
@@ -714,6 +747,17 @@
     "physical": 0.1,
     "freeze": 0
   },
+  "channelcontact": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
   "cherubicseahare": {
     "pyro": 0.1,
     "dendro": 0.1,
@@ -734,6 +778,61 @@
     "cryo": 0,
     "geo": 0,
     "physical": 0,
+    "freeze": 1
+  },
+  "chimericarmoredbeast": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.2,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "chimericburrowbeast": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.2,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "chimerichornedbear": {
+    "pyro": 0.3,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "chimericwingedelephant": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.2,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "chimericwingedlion": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.5,
+    "anemo": 0.5,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
     "freeze": 1
   },
   "closecombatscoutlandcruiser": {
@@ -854,7 +953,7 @@
     "anemo": 0.1,
     "cryo": 0.5,
     "geo": 0.1,
-    "physical": -0.5,
+    "physical": 0.1,
     "freeze": 0
   },
   "cryohilichurlgrenadier": {
@@ -1085,7 +1184,7 @@
     "anemo": 0.1,
     "cryo": 0.1,
     "geo": 0.1,
-    "physical": -0.5,
+    "physical": 0.1,
     "freeze": 0
   },
   "electrohilichurlgrenadier": {
@@ -1330,6 +1429,28 @@
     "physical": 0.1,
     "freeze": 0
   },
+  "everburningillusion": {
+    "pyro": 0.5,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 1
+  },
+  "everlingeringillusion": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.5,
+    "anemo": 0.5,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 1
+  },
   "experimentalfieldgenerator": {
     "pyro": 0.1,
     "dendro": 0.1,
@@ -1343,6 +1464,17 @@
   },
   "eyeofthestorm": {
     "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "fangedzealot": {
+    "pyro": 0.3,
     "dendro": 0.1,
     "hydro": 0.1,
     "electro": 0.1,
@@ -1429,6 +1561,17 @@
     "physical": -0.2,
     "freeze": 0
   },
+  "fatuiskirmisherhydrogunner": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
   "fatuiskirmisherhydrogunnerlegionnaire": {
     "pyro": 0.1,
     "dendro": 0.1,
@@ -1438,6 +1581,17 @@
     "cryo": 0.1,
     "geo": 0.1,
     "physical": -0.2,
+    "freeze": 0
+  },
+  "fatuiskirmisherpyroslinger": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
     "freeze": 0
   },
   "fatuiskirmisherpyroslingerbracer": {
@@ -1789,6 +1943,28 @@
     "anemo": 0.1,
     "cryo": 0.1,
     "geo": 0.5,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "glacialwarden": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.3,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "glaciomancer": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.3,
+    "geo": 0.1,
     "physical": 0.1,
     "freeze": 0
   },
@@ -2254,6 +2430,17 @@
     "physical": 0.1,
     "freeze": 1
   },
+  "immortalconstruct": {
+    "pyro": 0.5,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 1
+  },
   "infinitesimal": {
     "pyro": 0.1,
     "dendro": 0.1,
@@ -2286,6 +2473,17 @@
     "geo": 0.25,
     "physical": 0.25,
     "freeze": 1
+  },
+  "juveniletreesegment": {
+    "pyro": -0.2,
+    "dendro": 0.2,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.2,
+    "physical": 0.1,
+    "freeze": 0
   },
   "kairagidancingthunder": {
     "pyro": 0.1,
@@ -2496,6 +2694,17 @@
     "physical": 0.1,
     "freeze": 1
   },
+  "leomastiffguard": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
   "liam": {
     "pyro": 0.1,
     "dendro": 0.1,
@@ -2552,6 +2761,17 @@
     "freeze": 0
   },
   "locallegendhuntersray": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "longearedstriker": {
     "pyro": 0.1,
     "dendro": 0.1,
     "hydro": 0.1,
@@ -2804,6 +3024,17 @@
     "physical": -0.2,
     "freeze": 0
   },
+  "oprichnikiengineer": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
   "oprichnikifirebladeshocktrooper": {
     "pyro": 0.1,
     "dendro": 0.1,
@@ -2812,7 +3043,7 @@
     "anemo": 0.1,
     "cryo": 0.1,
     "geo": 0.1,
-    "physical": -0.2,
+    "physical": 0.1,
     "freeze": 0
   },
   "oprichnikigrenadier": {
@@ -2834,7 +3065,7 @@
     "anemo": 0.1,
     "cryo": 0.1,
     "geo": 0.1,
-    "physical": -0.2,
+    "physical": 0.1,
     "freeze": 0
   },
   "oprichnikilinetrooper": {
@@ -2856,7 +3087,18 @@
     "anemo": 0.1,
     "cryo": 0.1,
     "geo": 0.1,
-    "physical": -0.2,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "oprichnikisniper": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
     "freeze": 0
   },
   "oprichnikisupporttrooper": {
@@ -2867,7 +3109,7 @@
     "anemo": 0.1,
     "cryo": 0.1,
     "geo": 0.1,
-    "physical": -0.2,
+    "physical": 0.1,
     "freeze": 0
   },
   "oprichnikithunderblitzgvardiya": {
@@ -2878,7 +3120,7 @@
     "anemo": 0.1,
     "cryo": 0.1,
     "geo": 0.1,
-    "physical": -0.2,
+    "physical": 0.1,
     "freeze": 0
   },
   "oprichnikivanguard": {
@@ -2889,7 +3131,7 @@
     "anemo": 0.1,
     "cryo": 0.1,
     "geo": 0.1,
-    "physical": -0.2,
+    "physical": 0.1,
     "freeze": 0
   },
   "overgrownbreacherprimus": {
@@ -3211,6 +3453,17 @@
     "physical": 0.3,
     "freeze": 1
   },
+  "roaringthunderselfdestructingroamingdevice": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
   "rockcavernouswayobmanifestation": {
     "pyro": 0.1,
     "dendro": 0.1,
@@ -3275,6 +3528,17 @@
     "cryo": 0.1,
     "geo": 0.1,
     "physical": -0.2,
+    "freeze": 0
+  },
+  "ruggedelderleshy": {
+    "pyro": -0.2,
+    "dendro": 0.3,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.3,
+    "physical": 0.1,
     "freeze": 0
   },
   "ruincruiser": {
@@ -4366,6 +4630,61 @@
     "physical": -0.2,
     "freeze": 0
   },
+  "volkodlakbasher": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "volkodlaklobber": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "volkodlakraider": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "volkodlaksharpshooter": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "voywolfhunter": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.3,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
   "watcherdeepmelancholy": {
     "pyro": 0.1,
     "dendro": 0.1,
@@ -4493,6 +4812,28 @@
     "hydro": 0.1,
     "electro": 0.1,
     "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "wingedhalberdknight": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.2,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "wingedsoarerknight": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.2,
     "cryo": 0.1,
     "geo": 0.1,
     "physical": 0.1,

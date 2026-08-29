@@ -2,9 +2,10 @@
 
 // passive: Bathhouses, Hawks, and Narukami # Weapon_Catalyst_SakuraFan
 //
-//	Elemental Mastery increases by 120 for 6s after triggering Swirl. Elemental Mastery
-//	increases by 96 for 9s after the wielder's Elemental Skill hits an opponent. Elemental
-//	Mastery increases by 32 for 30s after the wielder's Elemental Burst hits an opponent.
+//	Elemental Mastery increases by 120 for 6s after triggering Swirl or Stellar Swirl.
+//	Elemental Mastery increases by 96 for 9s after the wielder's Elemental Skill hits
+//	an opponent. Elemental Mastery increases by 32 for 30s after the wielder's Elemental
+//	Burst hits an opponent.
 package sunnymorning
 
 import (
