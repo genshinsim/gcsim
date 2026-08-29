@@ -64,7 +64,9 @@ func (e *Enemy) HandleAttack(atk *info.AttackEvent) float64 {
 		// apply the damage
 		actualDmg := e.applyDamage(atk, dmg)
 		e.Core.Combat.TotalDamage += actualDmg
-		e.Core.Combat.Events.Emit(event.OnEnemyDamage, e, atk, actualDmg, crit)
+		if grpMult > 0 {
+			e.Core.Combat.Events.Emit(event.OnEnemyDamage, e, atk, actualDmg, crit)
+		}
 		// callbacks
 		cb := info.AttackCB{
 			Target:      e,
