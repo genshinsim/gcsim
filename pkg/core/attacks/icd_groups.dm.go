@@ -38,10 +38,10 @@ const (
 	ICDGroupEscoffierSkill
 	ICDGroupFischl
 	ICDGroupFurinaSalonSolitaire
-	ICDGroupJahodaBurst
-	ICDGroupJahodaCons
 	ICDGroupIfaSedationMark
 	ICDGroupIfaSkillHit
+	ICDGroupJahodaBurst
+	ICDGroupJahodaCons
 	ICDGroupKinichLoopShot
 	ICDGroupKinichScalespikerCannon
 	ICDGroupLanyanRingAttack
@@ -103,10 +103,10 @@ var ICDGroupResetTimer = []int{
 	ICDGroupEscoffierSkill:            90,   // 1.5s
 	ICDGroupFischl:                    300,  // 5s
 	ICDGroupFurinaSalonSolitaire:      1800, // 30s
-	ICDGroupJahodaBurst:               900,  // 15s
-	ICDGroupJahodaCons:                900,  // 15s
 	ICDGroupIfaSedationMark:           120,  // 2s
 	ICDGroupIfaSkillHit:               720,  // 12s
+	ICDGroupJahodaBurst:               900,  // 15s
+	ICDGroupJahodaCons:                900,  // 15s
 	ICDGroupKinichLoopShot:            120,  // 2s
 	ICDGroupKinichScalespikerCannon:   72,   // 1.2s
 	ICDGroupLanyanRingAttack:          150,  // 2.5s
@@ -168,10 +168,10 @@ var ICDGroupEleApplicationSequence = [][]float64{
 	ICDGroupEscoffierSkill:            {1.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	ICDGroupFischl:                    {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
 	ICDGroupFurinaSalonSolitaire:      {1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0},
-	ICDGroupJahodaBurst:               {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
-	ICDGroupJahodaCons:                {1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0},
 	ICDGroupIfaSedationMark:           {1.0, 0.0},
 	ICDGroupIfaSkillHit:               {1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0},
+	ICDGroupJahodaBurst:               {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
+	ICDGroupJahodaCons:                {1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0, 1.0, 0.0},
 	ICDGroupKinichLoopShot:            {1.0, 0.0, 0.0, 0.0},
 	ICDGroupKinichScalespikerCannon:   {1.0, 0.0, 0.0, 0.0},
 	ICDGroupLanyanRingAttack:          {1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0},
@@ -233,10 +233,10 @@ var ICDGroupDamageSequence = [][]float64{
 	ICDGroupEscoffierSkill:            {1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupFischl:                    {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupFurinaSalonSolitaire:      {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
-	ICDGroupJahodaBurst:               {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
-	ICDGroupJahodaCons:                {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupIfaSedationMark:           {1.0, 1.0},
 	ICDGroupIfaSkillHit:               {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
+	ICDGroupJahodaBurst:               {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
+	ICDGroupJahodaCons:                {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupKinichLoopShot:            {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupKinichScalespikerCannon:   {1.0, 1.0, 1.0, 1.0},
 	ICDGroupLanyanRingAttack:          {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
