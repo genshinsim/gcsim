@@ -49,6 +49,7 @@ const (
 	ICDTagHyperbloomDamage
 	ICDTagIfaSedationMark
 	ICDTagIfaSkill
+	ICDTagJahodaCons
 	ICDTagKinichLoopShot
 	ICDTagKinichScalespikerCannon
 	ICDTagKleeFireDamage
