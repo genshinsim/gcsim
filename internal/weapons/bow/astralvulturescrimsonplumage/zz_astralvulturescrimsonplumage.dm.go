@@ -2,10 +2,10 @@
 
 // passive: The Moonring Sighted # Weapon_Bow_Qoyllorsnova
 //
-//	For 12s after triggering a Swirl reaction, ATK increases by 24%. In addition, when
-//	1/2 or more characters in the party are of a different Elemental Type from the equipping
-//	character, the DMG dealt by the equipping character's Charged Attacks is increased
-//	by 20%/48% and Elemental Burst DMG dealt is increased by 10%/24%.
+//	For 12s after triggering a Swirl or Stellar Swirl reaction, ATK increases by 24%.
+//	In addition, when 1/2 or more characters in the party are of a different Elemental
+//	Type from the equipping character, the DMG dealt by the equipping character's Charged
+//	Attacks is increased by 20%/48%, and Elemental Burst DMG dealt is increased by 10%/24%.
 package astralvulturescrimsonplumage
 
 import (

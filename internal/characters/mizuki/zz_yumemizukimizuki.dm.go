@@ -176,23 +176,23 @@ var (
 		1.01052,
 		1.06666,
 	}
-	// skill: AisaUtamakuraPilgrimage - Elemental Mastery-Based Swirl DMG Increase: {1} per Point
+	// skill: AisaUtamakuraPilgrimage - Elemental Mastery-Based Swirl DMG Increase: {1} per 100 Points
 	swirlDMG = []float64{
-		0.0018,
-		0.0021,
-		0.0024,
-		0.0027,
-		0.003,
-		0.0033,
-		0.0036,
-		0.0039,
-		0.0042,
-		0.0045,
-		0.0048,
-		0.0051,
-		0.0054,
-		0.0057,
-		0.006,
+		0.18,
+		0.21,
+		0.24,
+		0.27,
+		0.3,
+		0.33,
+		0.36,
+		0.39,
+		0.42,
+		0.45,
+		0.48,
+		0.51,
+		0.54,
+		0.57,
+		0.6,
 	}
 	// skill: AisaUtamakuraPilgrimage - Skill DMG: {3}
 	skill = []float64{
