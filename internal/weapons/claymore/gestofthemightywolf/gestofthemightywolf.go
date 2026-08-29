@@ -75,12 +75,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("gest-of-the-mighty-wolf-on-normal-attack-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnChargeAttack, func(args ...any) {
+		if w.core.Player.Active() != char.Index() {
+			return
+		}
 		w.addStacks(2)
 		c.Log.NewEvent("gest adding stack- charge on start", glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks)
 	}, fmt.Sprintf("gest-of-the-mighty-wolf-on-charge-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnSkill, func(args ...any) {
+		if w.core.Player.Active() != char.Index() {
+			return
+		}
 		w.addStacks(2)
 		c.Log.NewEvent("gest adding stack- skill on cast", glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks)
