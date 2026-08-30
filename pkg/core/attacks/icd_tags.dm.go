@@ -49,6 +49,7 @@ const (
 	ICDTagHyperbloomDamage
 	ICDTagIfaSedationMark
 	ICDTagIfaSkill
+	ICDTagJahodaCons
 	ICDTagKinichLoopShot
 	ICDTagKinichScalespikerCannon
 	ICDTagKleeFireDamage
@@ -90,5 +91,4 @@ const (
 	ICDTagYanfeiFire
 	ICDTagYelanBreakthrough
 	ICDTagYelanBurst
-	ICDTagLength
 )

@@ -1,6 +1,6 @@
 module github.com/genshinsim/gcsim
 
-go 1.25.0
+go 1.27.0
 
 ignore (
 	./ui

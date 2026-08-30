@@ -2296,6 +2296,52 @@
       "invalid": false
     }
   ],
+  "jahoda": [
+    {
+      "ability": "attack",
+      "invalid": false
+    },
+    {
+      "ability": "aim",
+      "invalid": false
+    },
+    {
+      "ability": "charge",
+      "invalid": true
+    },
+    {
+      "ability": "low_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "high_plunge",
+      "invalid": true
+    },
+    {
+      "ability": "skill",
+      "invalid": false
+    },
+    {
+      "ability": "burst",
+      "invalid": false
+    },
+    {
+      "ability": "dash",
+      "invalid": false
+    },
+    {
+      "ability": "jump",
+      "invalid": false
+    },
+    {
+      "ability": "walk",
+      "invalid": false
+    },
+    {
+      "ability": "swap",
+      "invalid": false
+    }
+  ],
   "jean": [
     {
       "ability": "attack",

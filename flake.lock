@@ -7,38 +7,51 @@
         ]
       },
       "locked": {
-        "lastModified": 1778716662,
-        "narHash": "sha256-m1Yf0wZ8j1OHjTc2UwHwyQRSnNeSgLJOd7q5Y45hzi4=",
+        "lastModified": 1787559586,
+        "narHash": "sha256-onL0VLf9vPllmT0H/OlURIU5r5t5WIEl7t4tVNKT0Nw=",
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "rev": "f7c1a2d347e4c52d5fb8d10cb4d94b5884e546fb",
+        "rev": "9d0d87172c374f89da73c1cfe6d81ae62feac1f1",
         "type": "github"
       },
       "original": {
         "owner": "hercules-ci",
         "repo": "flake-parts",
+        "type": "github"
+      }
+    },
+    "multiverse": {
+      "locked": {
+        "lastModified": 1787857250,
+        "narHash": "sha256-3jPGj0n70b/0uDMkzpDsabGRRwlOgSsrH8nNLzGzq7c=",
+        "owner": "fzakaria",
+        "repo": "nixpkgs-multiverse",
+        "rev": "ed426f4555a7ae6700ec1a2173933d997790677d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "fzakaria",
+        "repo": "nixpkgs-multiverse",
         "type": "github"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1779877693,
-        "narHash": "sha256-NOF9NAREhxr50bbBfVcVOq+ArCMSoe8dP79Pk2uyARk=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "4100e830e085863741bc69b156ec4ccd53ab5be0",
-        "type": "github"
+        "lastModified": 1787736819,
+        "narHash": "sha256-IkjmqLoWzeqBAi1VIkdhDLMGjQDJ4suEDp59Zwxpswg=",
+        "rev": "9fbb54b33e91ee4ca368e35a78e0613c720600b3",
+        "type": "tarball",
+        "url": "https://releases.nixos.org/nixos/unstable/nixos-26.11pre1062397.9fbb54b33e91/nixexprs.tar.xz"
       },
       "original": {
-        "owner": "nixos",
-        "ref": "nixpkgs-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
+        "type": "tarball",
+        "url": "https://channels.nixos.org/nixos-unstable/nixexprs.tar.xz"
       }
     },
     "root": {
       "inputs": {
         "flake-parts": "flake-parts",
+        "multiverse": "multiverse",
         "nixpkgs": "nixpkgs",
         "systems": "systems"
       }

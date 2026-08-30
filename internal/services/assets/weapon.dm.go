@@ -102,6 +102,7 @@ var weaponMap = map[string]string{
 	"keyofkhajnisut":                  "UI_EquipIcon_Sword_Deshret_Awaken",
 	"kingssquire":                     "UI_EquipIcon_Bow_Arakalari_Awaken",
 	"kitaincrossspear":                "UI_EquipIcon_Pole_Bakufu_Awaken",
+	"lightbearingmoonshard":           "UI_EquipIcon_Sword_SilverwareSaw_Awaken",
 	"lightoffoliarincision":           "UI_EquipIcon_Sword_Ayus_Awaken",
 	"lionsroar":                       "UI_EquipIcon_Sword_Rockkiller_Awaken",
 	"lithicblade":                     "UI_EquipIcon_Claymore_Lapis_Awaken",

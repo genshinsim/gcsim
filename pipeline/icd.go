@@ -116,7 +116,6 @@ func (c *Compiled) GenerateICDTag() error {
 	var sorted []string
 	sorted = append(sorted, typ+"None")
 	sorted = append(sorted, slices.Sorted(maps.Keys(tags))...)
-	sorted = append(sorted, typ+"Length")
 
 	b := bytes.NewBuffer(nil)
 	b.WriteString("package attacks\n")

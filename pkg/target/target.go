@@ -20,10 +20,10 @@ type Target struct {
 	Alive bool
 
 	// icd related
-	icdTagOnTimer       [info.MaxChars][attacks.ICDTagLength]bool
-	icdTagCounter       [info.MaxChars][attacks.ICDTagLength]int
-	icdDamageTagOnTimer [info.MaxChars][attacks.ICDTagLength]bool
-	icdDamageTagCounter [info.MaxChars][attacks.ICDTagLength]int
+	icdTagOnTimer       map[IcdKey]bool
+	icdTagCounter       map[IcdKey]int
+	icdDamageTagOnTimer map[IcdKey]bool
+	icdDamageTagCounter map[IcdKey]int
 
 	direction info.Point
 }
@@ -37,6 +37,10 @@ func New(core *core.Core, p info.Point, r float64) *Target {
 	t.Tags = make(map[string]int)
 	t.Alive = true
 
+	t.icdTagOnTimer = make(map[IcdKey]bool)
+	t.icdTagCounter = make(map[IcdKey]int)
+	t.icdDamageTagOnTimer = make(map[IcdKey]bool)
+	t.icdDamageTagCounter = make(map[IcdKey]int)
 	return t
 }
 
@@ -155,4 +159,14 @@ func (t *Target) CalcTempDirection(trg info.Point) info.Point {
 		Write("direction", t.direction).
 		Write("temporary direction", direction)
 	return direction
+}
+
+type IcdKey struct {
+	Char     int
+	IcdTag   attacks.ICDTag
+	IcdGroup attacks.ICDGroup
+}
+
+func NewIcdKey(char int, icdTag attacks.ICDTag, icdGroup attacks.ICDGroup) IcdKey {
+	return IcdKey{Char: char, IcdTag: icdTag, IcdGroup: icdGroup}
 }

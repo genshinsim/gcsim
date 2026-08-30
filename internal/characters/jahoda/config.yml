@@ -1,0 +1,156 @@
+use: pipeline
+kind: character
+name: jahoda
+
+override:
+  icd_group:
+    JahodaBurst:
+      name: Jahoda_ElementBurst
+    JahodaCons:
+      name: Jahoda_Constellation_1
+
+combat:
+  icd_tags:
+    - JahodaCons
+  icd_groups:
+    - JahodaBurst
+    - JahodaCons
+
+talents:
+  - attack: 
+    - attack(1-Hit DMG)
+    - - attack(2-Hit DMG)
+      - attack(2-Hit DMG)
+    - attack(3-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Fully-Charged Aimed Shot)
+
+  - unfilledFlask: skill(Unfilled Treasure Flask DMG)
+  - filledFlask: skill(Filled Treasure Flask DMG)
+  - meowball: skill(Meowball DMG)
+
+  - burst: burst(Skill DMG)
+  - burstSkill: burst(Purrsonal Coordinated Assistance Robot DMG)
+  - burstHealPP: burst(Purrsonal Coordinated Assistance Robot Healing) # {} ATK+{}
+  - burstHealFlat: burst(Purrsonal Coordinated Assistance Robot Healing|1) # {} ATK+{}
+  - burstAdditionalHealPP: burst(Lowest HP Character Additional Healing) # {} ATK+{}
+  - burstAdditionalHealFlat: burst(Lowest HP Character Additional Healing|1) # {} ATK+{}
+
+docs:
+  issues:
+    - Smoke Bomb skill is not implemented, since it only trigger when no enemies are nearby.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/18YvIoV1Ym1jDhlcTK_DOnKoKFRjkCyElpFCD8p8jncY/edit?usp=sharing
+      count_credit: yamitoka
+      video: https://www.youtube.com/watch?v=z4zaCN_dWwA
+      video_credit: yamitoka
+    - video: https://www.youtube.com/watch?v=ypF3osO9S4o
+      video_credit: yamitoka
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2-1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2-2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: aim
+    params:
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default).
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+  - name: skill
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: E-Unfill
+        shape: Circle
+        center: Player
+        offset: [0, 2.5]
+        radius: 5
+      - name: E-Fill
+        shape: Circle
+        center: Player
+        offset: [0, 2.5]
+        radius: 5
+      - name: E-DoT
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4
+      - name: E-AbsorbCheck
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4
+
+  - name: burst
+    hitbox:
+      - name: Q-Cast
+        shape: Circle
+        center: Player
+        radius: 5
+      - name: Q-Dot
+        shape: Circle
+        center: GlobalValue
+        radius: 1.2
+        note: "Spawns on 3 closest enemies to the player. The detection area radius and the hitbox radius are not known."
+      - name: Q-AbsorbCheck
+        shape: Circle
+        center: Player
+        radius: 1.2
+        note: "The exact radius of is not known."
+
+  - name: cons
+    hitbox:
+      - name: C1-Bounce
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4

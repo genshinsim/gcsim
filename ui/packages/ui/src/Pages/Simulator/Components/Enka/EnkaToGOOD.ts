@@ -242,7 +242,7 @@ export default function EnkaToGOOD(enkaData: EnkaData): {
           name: characterData.key,
           level: parseInt(propMap['4001'].val) ?? 1,
           element: DMElementToKey[characterData.element],
-          max_level: ascToMaxLvl(parseInt(propMap['1002'].val) ?? 1),
+          max_level: Math.max(parseInt(propMap['4001'].val) ?? 1, ascToMaxLvl(parseInt(propMap['1002'].val) ?? 1)),
           cons: talentIdList?.length ?? 0,
           talents: getCharacterTalentV2(
             characterData.skill_details,

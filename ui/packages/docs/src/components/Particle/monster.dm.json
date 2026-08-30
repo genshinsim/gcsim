@@ -237,6 +237,48 @@
       "hp_percent": 0
     }
   ],
+  "battlehardenedchimericburrowbeast": [
+    {
+      "drop_id": 22010024,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010024,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010044,
+      "hp_percent": 0
+    }
+  ],
+  "battlehardenedchimericvolkodlakarcher": [
+    {
+      "drop_id": 22010026,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010026,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010046,
+      "hp_percent": 0
+    }
+  ],
+  "battlehardeneddomovoysculptor": [
+    {
+      "drop_id": 22010030,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010030,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010050,
+      "hp_percent": 0
+    }
+  ],
   "battlehardenedelitetreasurehoarder": [
     {
       "drop_id": 22010010,
@@ -603,6 +645,54 @@
       "hp_percent": 0
     }
   ],
+  "channelcontact": [
+    {
+      "drop_id": 22010013,
+      "hp_percent": 0
+    }
+  ],
+  "chimericarmoredbeast": [
+    {
+      "drop_id": 22010017,
+      "hp_percent": 0
+    }
+  ],
+  "chimericburrowbeast": [
+    {
+      "drop_id": 22010014,
+      "hp_percent": 0
+    }
+  ],
+  "chimerichornedbear": [
+    {
+      "drop_id": 22010011,
+      "hp_percent": 0.6
+    },
+    {
+      "drop_id": 22010011,
+      "hp_percent": 0
+    }
+  ],
+  "chimericwingedelephant": [
+    {
+      "drop_id": 22010015,
+      "hp_percent": 0
+    }
+  ],
+  "chimericwingedlion": [
+    {
+      "drop_id": 22010034,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010034,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010024,
+      "hp_percent": 0
+    }
+  ],
   "closecombatscoutlandcruiser": [
     {
       "drop_id": 22010010,
@@ -747,16 +837,6 @@
       "hp_percent": 0
     }
   ],
-  "cryocicin": [
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0
-    }
-  ],
   "cryohilichurlgrenadier": [
     {
       "drop_id": 22010010,
@@ -857,35 +937,7 @@
       "hp_percent": 0
     }
   ],
-  "cuttingedgeallpurposescoutlandcruiser": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0
-    }
-  ],
   "cuttingedgeallpurposestormlandcruiser": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0
-    }
-  ],
-  "cuttingedgefiresupportgroundeffectlandcruiser": [
     {
       "drop_id": 22010010,
       "hp_percent": 0.66
@@ -980,16 +1032,6 @@
     },
     {
       "drop_id": 22010034,
-      "hp_percent": 0
-    }
-  ],
-  "electrocicin": [
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010014,
       "hp_percent": 0
     }
   ],
@@ -1333,6 +1375,20 @@
       "hp_percent": 0
     }
   ],
+  "fangedzealot": [
+    {
+      "drop_id": 22010011,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010011,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010011,
+      "hp_percent": 0
+    }
+  ],
   "fatuicryocicinmage": [
     {
       "drop_id": 22010030,
@@ -1585,26 +1641,6 @@
       "hp_percent": 0
     }
   ],
-  "forcerecongroundeffectlandcruiser": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0
-    }
-  ],
-  "forcereconscoutlandcruiser": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0
-    }
-  ],
   "forcereconstormlandcruiser": [
     {
       "drop_id": 22010010,
@@ -1810,6 +1846,26 @@
     },
     {
       "drop_id": 22010027,
+      "hp_percent": 0
+    }
+  ],
+  "glacialwarden": [
+    {
+      "drop_id": 22010016,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010016,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010016,
+      "hp_percent": 0
+    }
+  ],
+  "glaciomancer": [
+    {
+      "drop_id": 22010016,
       "hp_percent": 0
     }
   ],
@@ -2233,6 +2289,24 @@
       "hp_percent": 0
     }
   ],
+  "immortalconstruct": [
+    {
+      "drop_id": 22010030,
+      "hp_percent": 0.75
+    },
+    {
+      "drop_id": 22010030,
+      "hp_percent": 0.5
+    },
+    {
+      "drop_id": 22010030,
+      "hp_percent": 0.25
+    },
+    {
+      "drop_id": 22010030,
+      "hp_percent": 0
+    }
+  ],
   "infinitesimal": [
     {
       "drop_id": 22010010,
@@ -2280,6 +2354,12 @@
     },
     {
       "drop_id": 22010043,
+      "hp_percent": 0
+    }
+  ],
+  "juveniletreesegment": [
+    {
+      "drop_id": 22010017,
       "hp_percent": 0
     }
   ],
@@ -2533,6 +2613,12 @@
       "hp_percent": 0
     }
   ],
+  "leomastiffguard": [
+    {
+      "drop_id": 22010012,
+      "hp_percent": 0
+    }
+  ],
   "liam": [
     {
       "drop_id": 22010010,
@@ -2548,6 +2634,12 @@
     },
     {
       "drop_id": 22010050,
+      "hp_percent": 0
+    }
+  ],
+  "longearedstriker": [
+    {
+      "drop_id": 22010015,
       "hp_percent": 0
     }
   ],
@@ -2825,75 +2917,15 @@
       "hp_percent": 0
     }
   ],
-  "oprichnikifirebladeshocktrooper": [
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0
-    }
-  ],
   "oprichnikigrenadier": [
     {
       "drop_id": 22010015,
       "hp_percent": 0
     }
   ],
-  "oprichnikihailstormcannoneer": [
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0
-    }
-  ],
   "oprichnikilinetrooper": [
     {
       "drop_id": 22010016,
-      "hp_percent": 0
-    }
-  ],
-  "oprichnikimedic": [
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0
-    }
-  ],
-  "oprichnikisupporttrooper": [
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0
-    }
-  ],
-  "oprichnikithunderblitzgvardiya": [
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0
-    }
-  ],
-  "oprichnikivanguard": [
-    {
-      "drop_id": 22010014,
       "hp_percent": 0
     }
   ],
@@ -3390,6 +3422,20 @@
     },
     {
       "drop_id": 22010050,
+      "hp_percent": 0
+    }
+  ],
+  "ruggedelderleshy": [
+    {
+      "drop_id": 22010017,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010017,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010017,
       "hp_percent": 0
     }
   ],
@@ -4611,6 +4657,40 @@
       "hp_percent": 0
     }
   ],
+  "volkodlakbasher": [
+    {
+      "drop_id": 22010010,
+      "hp_percent": 0
+    }
+  ],
+  "volkodlaklobber": [
+    {
+      "drop_id": 22010010,
+      "hp_percent": 0
+    }
+  ],
+  "volkodlakraider": [
+    {
+      "drop_id": 22010010,
+      "hp_percent": 0
+    }
+  ],
+  "volkodlaksharpshooter": [
+    {
+      "drop_id": 22010010,
+      "hp_percent": 0
+    }
+  ],
+  "voywolfhunter": [
+    {
+      "drop_id": 22010016,
+      "hp_percent": 0.6
+    },
+    {
+      "drop_id": 22010016,
+      "hp_percent": 0
+    }
+  ],
   "watcherfallenvigil": [
     {
       "drop_id": 22010040,
@@ -4728,6 +4808,18 @@
     },
     {
       "drop_id": 22010013,
+      "hp_percent": 0
+    }
+  ],
+  "wingedhalberdknight": [
+    {
+      "drop_id": 22010015,
+      "hp_percent": 0
+    }
+  ],
+  "wingedsoarerknight": [
+    {
+      "drop_id": 22010015,
       "hp_percent": 0
     }
   ],

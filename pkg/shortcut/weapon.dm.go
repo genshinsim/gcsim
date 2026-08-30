@@ -177,6 +177,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"kingssquire":                     keys.KingsSquire,
 	"kitaincrossspear":                keys.KitainCrossSpear,
 	"kitain":                          keys.KitainCrossSpear,
+	"lightbearingmoonshard":           keys.LightbearingMoonshard,
+	"lightbearing":                    keys.LightbearingMoonshard,
 	"lightoffoliarincision":           keys.LightOfFoliarIncision,
 	"foliar":                          keys.LightOfFoliarIncision,
 	"foliarincision":                  keys.LightOfFoliarIncision,
