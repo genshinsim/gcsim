@@ -22,6 +22,7 @@ func init() {
 	chargeFrames[action.ActionBurst] = 97
 	chargeFrames[action.ActionDash] = chargeHitmark
 	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames[action.ActionWalk] = 116
 	chargeFrames[action.ActionSwap] = 95
 }
 

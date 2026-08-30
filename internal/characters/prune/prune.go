@@ -18,6 +18,7 @@ type char struct {
 	hexTeamBuff     []float64
 	c2Buff          []float64
 	c6Buff          []float64
+	c6TickSrc       int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
@@ -42,11 +43,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	if c.Base.Cons >= 2 {
-		c.c2Buff = make([]float64, attributes.EndStatType)
-	}
 	c.a1Init()
+	c.a4Init()
 	c.hexInit()
+	c.c2Init()
 	c.c6Init()
 
 	return nil

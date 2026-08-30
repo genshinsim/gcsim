@@ -7,8 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 var burstFrames []int
@@ -26,12 +24,7 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	duration := 813
-	if c.Base.Cons >= 6 {
-		duration = 1053
-	}
-
-	c.AddStatus(burstKey, duration, false)
+	duration := 813 + c.c6BurstBonusDur()
 
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
@@ -48,20 +41,16 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6.5),
-		0,
+		34,
 		34,
 	)
 
-	if c.Base.Cons >= 2 {
-		c.c2Buff[attributes.ATKP] = 0.10
-		c.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("prune-c2", duration),
-			AffectedStat: attributes.ATKP,
-			Amount: func() []float64 {
-				return c.c2Buff
-			},
-		})
-	}
+	// burst status delay based on dm calculation of burst status duration, assume to be affected by hitlag
+	burstStatusDelay := 57
+	c.QueueCharTask(func() {
+		c.AddStatus(burstKey, duration-burstStatusDelay, false)
+		c.c2(duration - burstStatusDelay)
+	}, burstStatusDelay)
 
 	c.burstSrc = c.Core.F
 	for i := 137; i < duration; i += 117 {
@@ -86,15 +75,14 @@ func (c *char) burstTick(src int) func() {
 		}
 
 		ai := info.AttackInfo{
-			ActorIndex:   c.Index(),
-			Abil:         "Witchlure Bell",
-			AttackTag:    attacks.AttackTagElementalBurst,
-			ICDTag:       attacks.ICDTagNone,
-			ICDGroup:     attacks.ICDGroupDefault,
-			Element:      attributes.Anemo,
-			Durability:   25,
-			Mult:         burstDot[c.TalentLvlBurst()],
-			HitlagFactor: 0.01,
+			ActorIndex: c.Index(),
+			Abil:       "Witchlure Bell",
+			AttackTag:  attacks.AttackTagElementalBurst,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			Element:    attributes.Anemo,
+			Durability: 25,
+			Mult:       burstDot[c.TalentLvlBurst()],
 		}
 
 		detectionArea := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 10)

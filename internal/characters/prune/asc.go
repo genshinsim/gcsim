@@ -51,7 +51,7 @@ func (c *char) a1Init() {
 			if c.StatusIsActive(a1SwirlCheckICDKey) {
 				return
 			}
-			c.AddStatus(a1SwirlCheckICDKey, 72, false)
+			c.AddStatus(a1SwirlCheckICDKey, 1.2*60, false)
 
 			// queue passive
 			ai := info.AttackInfo{
@@ -70,7 +70,7 @@ func (c *char) a1Init() {
 			c.Core.QueueAttack(
 				ai,
 				combat.NewCircleHitOnTarget(target, nil, 2.3),
-				0,
+				45,
 				45,
 				c.makeA4CB,
 				c.makeC1CB,
@@ -80,24 +80,30 @@ func (c *char) a1Init() {
 		}
 	}
 
-	c.Core.Events.Subscribe(event.OnSwirlCryo, swirlfunc(attributes.Cryo), "prune-burst-cryo")
-	c.Core.Events.Subscribe(event.OnSwirlElectro, swirlfunc(attributes.Electro), "prune-burst-electro")
-	c.Core.Events.Subscribe(event.OnSwirlHydro, swirlfunc(attributes.Hydro), "prune-burst-hydro")
-	c.Core.Events.Subscribe(event.OnSwirlPyro, swirlfunc(attributes.Pyro), "prune-burst-pyro")
+	c.Core.Events.Subscribe(event.OnSwirlCryo, swirlfunc(attributes.Cryo), "prune-a1-cryo")
+	c.Core.Events.Subscribe(event.OnSwirlElectro, swirlfunc(attributes.Electro), "prune-a1-electro")
+	c.Core.Events.Subscribe(event.OnSwirlHydro, swirlfunc(attributes.Hydro), "prune-a1-hydro")
+	c.Core.Events.Subscribe(event.OnSwirlPyro, swirlfunc(attributes.Pyro), "prune-a1-pyro")
 	// TODO: Add subscriptions for stellar-swirl when it's implemented
+}
+
+func (c *char) a4Init() {
+	if c.Base.Ascension < 4 {
+		return
+	}
+	c.a4Buff = make([]float64, attributes.EndStatType)
 }
 
 func (c *char) makeA4CB(a info.AttackCB) {
 	if c.Base.Ascension < 4 || a.Target.Type() != info.TargettableEnemy {
 		return
 	}
-	c.a4Buff = make([]float64, attributes.EndStatType)
 	atk := c.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK).TotalATK()
 	c.a4Buff[attributes.DmgP] = math.Min(math.Max(atk-2000, 0)*0.00025, 0.5)
 
 	for i, char := range c.Core.Player.Chars() {
 		if i == c.Index() {
-			continue // nothing for prune, need testing
+			continue // nothing for prune
 		}
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(a4Key, 5*60), // 5 s
@@ -144,17 +150,12 @@ func (c *char) hexInit() {
 				return
 			}
 
-			// reaction must have been triggered by a character attack
 			atk, ok := args[1].(*info.AttackEvent)
 			if !ok {
 				return
 			}
 
 			triggererIndex := atk.Info.ActorIndex
-			if triggererIndex < 0 || triggererIndex >= len(chars) {
-				return
-			}
-
 			triggerer := chars[triggererIndex]
 
 			// triggerer must be a hexerei character affected by tolling rally
@@ -171,11 +172,6 @@ func (c *char) hexInit() {
 				},
 			})
 
-			c.Core.Log.NewEvent("prune hex self buff triggered", glog.LogCharacterEvent, c.Index()).
-				Write("triggerer", triggererIndex).
-				Write("atk percent", c.hexSelfBuff[attributes.ATKP]).
-				Write("expiry", c.Core.F+5*60)
-
 			// only swirl grants the triggering character's team buff
 			if !isSwirl {
 				return
@@ -188,11 +184,6 @@ func (c *char) hexInit() {
 					return c.hexTeamBuff
 				},
 			})
-
-			c.Core.Log.NewEvent("prune hex team buff triggered", glog.LogCharacterEvent, c.Index()).
-				Write("triggerer", triggererIndex).
-				Write("atk percent", c.hexTeamBuff[attributes.ATKP]).
-				Write("expiry", c.Core.F+5*60)
 		}
 	}
 

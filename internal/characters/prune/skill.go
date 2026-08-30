@@ -48,7 +48,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return c.skillConvert()
 	}
 
-	skillFrames[action.ActionSkill] = 41
 	c.skillConvertEle = attributes.NoElement
 
 	ai := info.AttackInfo{
@@ -68,7 +67,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1.4}, 2.5),
-		0,
+		26,
 		26,
 		c.particleCB,
 	)
@@ -95,18 +94,15 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				return
 			}
 
-			// skill has a shared 1.2s ICD across all four swirl elements
+			// skill has a shared 0.2s ICD across all four swirl elements
 			if c.StatusIsActive(skillSwirlCheckICDKey) {
 				return
 			}
-			c.AddStatus(skillSwirlCheckICDKey, 12, false)
+			c.AddStatus(skillSwirlCheckICDKey, 0.2*60, false)
 
 			// allow skill to be recasted
 			c.skillConvertEle = ele
 			c.AddStatus(skillRecastWindowKey, 364, true)
-
-			// skill recast has different cancel frame
-			skillFrames[action.ActionSkill] = 28
 		}
 	}
 
@@ -119,9 +115,15 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 25)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(skillFrames),
+		Frames: func(next action.Action) int {
+			// skill recast has different cancel frame
+			if next == action.ActionSkill && c.StatusIsActive(skillRecastWindowKey) {
+				return 28
+			}
+			return skillFrames[next]
+		},
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionSwap], // earliest cancel
+		CanQueueAfter:   skillFrames[action.ActionSwap],
 		State:           action.SkillState,
 	}, nil
 }
@@ -146,7 +148,7 @@ func (c *char) skillConvert() (action.Info, error) {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1.5}, 2.5),
-		0,
+		30,
 		30,
 		c.makeA4CB,
 		c.makeC1CB,
