@@ -21,7 +21,15 @@ const (
 )
 
 func (c *char) makeC1CB(a info.AttackCB) {
-	if c.Base.Cons < 1 || a.Target.Type() != info.TargettableEnemy || c.StatusIsActive(c1ICDKey) {
+	if c.Base.Cons < 1 {
+		return
+	}
+
+	if a.Target.Type() != info.TargettableEnemy {
+		return
+	}
+
+	if c.StatusIsActive(c1ICDKey) {
 		return
 	}
 
@@ -53,7 +61,15 @@ func (c *char) c2Init() {
 }
 
 func (c *char) makeC2CB(a info.AttackCB) {
-	if c.Base.Cons < 2 || a.Target.Type() != info.TargettableEnemy || !c.StatusIsActive(burstKey) {
+	if c.Base.Cons < 2 {
+		return
+	}
+
+	if a.Target.Type() != info.TargettableEnemy {
+		return
+	}
+
+	if !c.StatusIsActive(burstKey) {
 		return
 	}
 

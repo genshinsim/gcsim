@@ -95,7 +95,11 @@ func (c *char) a4Init() {
 }
 
 func (c *char) makeA4CB(a info.AttackCB) {
-	if c.Base.Ascension < 4 || a.Target.Type() != info.TargettableEnemy {
+	if c.Base.Ascension < 4 {
+		return
+	}
+	
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	atk := c.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK).TotalATK()
@@ -111,9 +115,17 @@ func (c *char) makeA4CB(a info.AttackCB) {
 				atk *info.AttackEvent,
 				target info.Target,
 			) []float64 {
-				if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra && atk.Info.AttackTag != attacks.AttackTagPlunge && atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalBurst {
-					return nil
-				}
+		switch atk.Info.AttackTag {
+		case attacks.AttackTagElementalBurst:
+		case attacks.AttackTagElementalArt:
+		case attacks.AttackTagElementalArtHold:
+		case attacks.AttackTagNormal:
+		case attacks.AttackTagExtra:
+		case attacks.AttackTagPlunge:
+		default:
+			return nil
+		}
+  		return c.a4Buff
 				return c.a4Buff
 			},
 		})
