@@ -98,7 +98,7 @@ func (c *char) makeA4CB(a info.AttackCB) {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	
+
 	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
@@ -115,17 +115,16 @@ func (c *char) makeA4CB(a info.AttackCB) {
 				atk *info.AttackEvent,
 				target info.Target,
 			) []float64 {
-		switch atk.Info.AttackTag {
-		case attacks.AttackTagElementalBurst:
-		case attacks.AttackTagElementalArt:
-		case attacks.AttackTagElementalArtHold:
-		case attacks.AttackTagNormal:
-		case attacks.AttackTagExtra:
-		case attacks.AttackTagPlunge:
-		default:
-			return nil
-		}
-  		return c.a4Buff
+				switch atk.Info.AttackTag {
+				case attacks.AttackTagElementalBurst:
+				case attacks.AttackTagElementalArt:
+				case attacks.AttackTagElementalArtHold:
+				case attacks.AttackTagNormal:
+				case attacks.AttackTagExtra:
+				case attacks.AttackTagPlunge:
+				default:
+					return nil
+				}
 				return c.a4Buff
 			},
 		})

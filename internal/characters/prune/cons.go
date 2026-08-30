@@ -203,7 +203,6 @@ func (c *char) c6Tick(src int) {
 
 		// has to be the active character with tolling rally
 		if char.Index() == active && c.StatusIsActive(c6WindowKey) && char.StatusIsActive(a4Key) {
-
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBase(c6ActiveBuffKey, -1),
 				AffectedStat: attributes.ATK,
