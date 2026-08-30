@@ -21,7 +21,15 @@ const (
 )
 
 func (c *char) makeC1CB(a info.AttackCB) {
-	if c.Base.Cons < 1 || a.Target.Type() != info.TargettableEnemy || c.StatusIsActive(c1ICDKey) {
+	if c.Base.Cons < 1 {
+		return
+	}
+	
+	if a.Target.Type() != info.TargettableEnemy {
+		return
+	}
+	
+	if c.StatusIsActive(c1ICDKey) {
 		return
 	}
 
@@ -30,7 +38,15 @@ func (c *char) makeC1CB(a info.AttackCB) {
 }
 
 func (c *char) makeC2CB(a info.AttackCB) {
-	if c.Base.Cons < 2 || a.Target.Type() != info.TargettableEnemy || !c.StatusIsActive(burstKey) {
+	if c.Base.Cons < 2 {
+		return
+	}
+	
+	if a.Target.Type() != info.TargettableEnemy {
+		return
+	}
+	
+	if !c.StatusIsActive(burstKey) {
 		return
 	}
 
@@ -116,8 +132,7 @@ func (c *char) c6Init() {
 	})
 
 	// give the currently active character 350 ATK
-	for _, ch := range chars {
-		char := ch
+	for _, char := range chars {
 
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("prune-c6-active-buff", -1),

@@ -64,9 +64,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	c.burstSrc = c.Core.F
-	for i := 137; i < duration; i += 117 {
-		c.Core.Tasks.Add(c.burstTick(c.burstSrc), i)
-	}
+	c.Core.Tasks.Add(c.burstTick(c.burstSrc), 137)
 
 	c.SetCD(action.ActionBurst, 18*60)
 	c.ConsumeEnergy(18) // average of 6 trials
@@ -111,5 +109,6 @@ func (c *char) burstTick(src int) func() {
 			0,
 			c.makeC2CB,
 		)
+		c.Core.Tasks.Add(c.burstTick(src), 117)
 	}
 }
