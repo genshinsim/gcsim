@@ -66,9 +66,9 @@ func (c *char) countElements() map[attributes.Element]int {
 func (c *char) applyA1Buff(ele attributes.Element) {
 	switch ele {
 	case attributes.Pyro:
-		c.robotAi.FlatDmg *= 1.3
+		c.a1DmgMult = 1.3
 	case attributes.Hydro:
-		c.robotHealCoeff = 1.2
+		c.a1HealMult = 1.2
 	case attributes.Electro:
 		c.robotCount += 1
 	case attributes.Cryo:

@@ -91,7 +91,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 					low := c.lowestHPChar()
 					if low >= 0 {
-						healOffField := (burstAdditionalHealFlat[c.TalentLvlBurst()] + burstAdditionalHealPP[c.TalentLvlBurst()]*c.TotalAtk()) * c.robotHealCoeff
+						healOffField := (burstAdditionalHealFlat[c.TalentLvlBurst()] + burstAdditionalHealPP[c.TalentLvlBurst()]*c.TotalAtk()) * c.a1HealMult
 
 						c.Core.Player.Heal(info.HealInfo{
 							Caller:  c.Index(),
@@ -103,7 +103,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 					}
 				}
 
-				heal := (burstHealFlat[c.TalentLvlBurst()] + burstHealPP[c.TalentLvlBurst()]*c.TotalAtk()) * c.robotHealCoeff
+				heal := (burstHealFlat[c.TalentLvlBurst()] + burstHealPP[c.TalentLvlBurst()]*c.TotalAtk()) * c.a1HealMult
 				robotHi := info.HealInfo{
 					Caller:  c.Index(),
 					Target:  c.Core.Player.Active(),
@@ -168,7 +168,7 @@ func (c *char) absorbCheckTask(src, robot int) func() {
 			return
 		}
 
-		c.robotAi = info.AttackInfo{
+		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
 			Abil:       "Purrsonal Coordinated Assistance Robot DMG",
 			AttackTag:  attacks.AttackTagElementalBurst,
@@ -177,28 +177,26 @@ func (c *char) absorbCheckTask(src, robot int) func() {
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    ele,
 			Durability: 25,
-			FlatDmg:    burstSkill[c.TalentLvlBurst()] * c.TotalAtk(),
+			FlatDmg:    burstSkill[c.TalentLvlBurst()] * c.TotalAtk() * c.a1DmgMult,
 		}
-
-		c.robotAi.Element = ele
 
 		switch ele {
 		case attributes.Pyro:
-			c.robotAi.ICDTag = attacks.ICDTagElementalBurstPyro
+			ai.ICDTag = attacks.ICDTagElementalBurstPyro
 		case attributes.Hydro:
-			c.robotAi.ICDTag = attacks.ICDTagElementalBurstHydro
+			ai.ICDTag = attacks.ICDTagElementalBurstHydro
 		case attributes.Electro:
-			c.robotAi.ICDTag = attacks.ICDTagElementalBurstElectro
+			ai.ICDTag = attacks.ICDTagElementalBurstElectro
 		case attributes.Cryo:
-			c.robotAi.ICDTag = attacks.ICDTagElementalBurstCryo
+			ai.ICDTag = attacks.ICDTagElementalBurstCryo
 		default:
-			c.robotAi.ICDTag = attacks.ICDTagElementalBurst
+			ai.ICDTag = attacks.ICDTagElementalBurst
 		}
 
 		c.Core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), fmt.Sprintf("jahoda robot %d absorbed %v", robot, ele.String()))
 
 		c.c4()
-		c.Core.Tasks.Add(c.robotAtkTick(src, c.robotAi), firstRobotHitmarkDelay)
+		c.Core.Tasks.Add(c.robotAtkTick(src, ai), firstRobotHitmarkDelay)
 	}
 }
 
