@@ -131,7 +131,7 @@ func (c *char) applyBurstBuff(char *character.CharWrapper) {
 	m[attributes.AnemoP] = burstBuff[c.TalentLvlBurst()]
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(burstBuffKey, 240),
-		AffectedStat: attributes.CR,
+		AffectedStat: attributes.AnemoP,
 		Amount: func() []float64 {
 			return m
 		},
