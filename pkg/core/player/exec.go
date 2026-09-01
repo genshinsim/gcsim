@@ -3,6 +3,10 @@ package player
 import (
 	"errors"
 	"fmt"
+	"maps"
+	"slices"
+	"strconv"
+	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -202,13 +206,28 @@ func (h *Handler) useAbility(
 	h.LastAction.Param = param
 	h.LastAction.Char = h.active
 
-	h.Log.NewEventBuildMsg(
-		glog.LogActionEvent,
-		h.active,
-		"executed ", t.String(),
-	).
-		Write("action", t.String()).
-		Write("stam_post", h.Stam).
-		Write("swap_cd_post", h.SwapCD)
+	if h.Debug {
+		var b strings.Builder
+		b.WriteString("executed ")
+		b.WriteString(t.String())
+		for i, k := range slices.Sorted(maps.Keys(param)) {
+			if i == 0 {
+				b.WriteString("[")
+			}
+			b.WriteString(k)
+			b.WriteString("=")
+			b.WriteString(strconv.Itoa(param[k]))
+			if i == len(param)-1 {
+				b.WriteString("]")
+			} else {
+				b.WriteString(",")
+			}
+		}
+		h.Log.NewEvent(b.String(), glog.LogActionEvent, h.active).
+			Write("action", t.String()).
+			Write("stam_post", h.Stam).
+			Write("swap_cd_post", h.SwapCD)
+	}
+
 	return nil
 }
