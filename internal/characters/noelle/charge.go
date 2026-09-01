@@ -15,12 +15,12 @@ const chargeHitNum = 1
 
 var (
 	chargeFrames          []int
-	chargeHitmarks        = []int{23, 26}
+	chargeHitmarks        = []int{23, 26} // last index is windup->final
 	chargePoiseDMG        = []float64{60, 120}
 	chargeHitlagHaltFrame = []float64{0.03, 0.15}
 	chargeHitboxes        = [][]float64{{3, 3.5}, {5, 5.5}}
 	chargeOffsets         = []float64{0.3, 0}
-	chargeFinalDelay      = []int{39 - 26}
+	chargeFinalDelay      = []int{39 - 26} // spin->final transition
 )
 
 type ChargeState struct {
@@ -32,7 +32,7 @@ type ChargeState struct {
 
 func init() {
 	// dash/jump/swap cancels are in frames func
-	// charge -> x
+	// final -> x
 	chargeFrames = frames.InitAbilSlice(108) // CA
 	chargeFrames[action.ActionAttack] = 106
 	chargeFrames[action.ActionSkill] = 63
@@ -80,10 +80,12 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 	hitmark := chargeHitmarks[hitIndex]
 
-	var spinFrames, transFrames int // transition frames for spin -> final
+	var spinFrames, transFrames int // transition frames
 	if c.caState.StartF != 0 && final {
+		// spin(prev) -> final(explicit)
 		transFrames = chargeFinalDelay[(c.caState.Counter-1)%chargeHitNum]
 	} else if !final {
+		// spin(this) -> final(implicit)
 		transFrames = chargeFinalDelay[hitIndex]
 	}
 
@@ -123,6 +125,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 	act.QueueAction(func() { c.caState.Error = !final }, act.CanQueueAfter+1) // hitmark+1
 
+	// start a spin
 	if c.caState.StartF == 0 && !final {
 		src := c.Core.F
 		c.caState.StartF = src
@@ -132,7 +135,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 				if c.caState.StartF == src {
 					c.caState.Ended = true
 				}
-			}, 60*5)
+			}, 60*5) // CA duration limit
 		}
 
 		act.QueueAction(func() {
@@ -145,8 +148,9 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		c.Core.Tasks.Add(func() { c.queueChargeAttack(hitIndex) }, 0)
 	}, windup+hitmark)
 
+	// queue up cancellable tasks for when there is no explicit CAF
 	finalStart := windup + spinFrames + transFrames
-	act.QueueAction(func() { c.caState = ChargeState{} }, finalStart)
+	act.QueueAction(func() { c.caState = ChargeState{} }, finalStart) // ends stamina task and clear state for CAF->CA
 	if !final {
 		act.QueueAction(func() {
 			c.Core.Tasks.Add(func() { c.queueChargeAttack(chargeHitNum) }, 0)
