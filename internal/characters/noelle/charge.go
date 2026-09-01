@@ -121,6 +121,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		},
 		AnimationLength: windup + spinFrames + transFrames + chargeFrames[action.InvalidAction],
 		CanQueueAfter:   windup + hitmark,
+		Segmented:       c.caState.StartF != 0,
 		State:           action.ChargeAttackState,
 	}
 	act.QueueAction(func() { c.caState.Error = !final }, act.CanQueueAfter+1) // hitmark+1

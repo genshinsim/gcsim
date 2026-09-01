@@ -80,7 +80,7 @@ const (
 	OnMoondriftHarmony    // target, AttackEvent;
 	// sim stuff
 	OnInitialize  // nil
-	OnStateChange // prev, next
+	OnStateChange // prev, next, segmented
 	OnEnemyAdded  // t
 	OnTick
 	OnSimEndedSuccessfully // nil

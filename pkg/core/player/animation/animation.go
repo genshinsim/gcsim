@@ -79,7 +79,7 @@ func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *actio
 	h.char = char
 	h.started = *h.f
 	h.aniEvt = evt
-	h.events.Emit(event.OnStateChange, h.state, evt.State)
+	h.events.Emit(event.OnStateChange, h.state, evt.State, evt.Segmented)
 	h.state = evt.State
 	h.stateExpiry = *h.f + evt.AnimationLength
 	h.lastAct = act

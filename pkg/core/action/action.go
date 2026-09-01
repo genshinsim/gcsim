@@ -14,6 +14,7 @@ type Info struct {
 	Frames              func(next Action) int `json:"-"`
 	AnimationLength     int
 	CanQueueAfter       int
+	Segmented           bool
 	State               AnimationState
 	FramePausedOnHitlag func() bool               `json:"-"`
 	OnRemoved           func(next AnimationState) `json:"-"`
