@@ -42,7 +42,10 @@ func (c *char) a1Init() {
 				case attacks.AttackTagReactionLunarCharge,
 					attacks.AttackTagDirectLunarCharged:
 					return 0.002 * ns
+				case attacks.AttackTagReactionStellarSwirl,
+					attacks.AttackTagDirectStellarSwirl:
 				}
+
 				return 0
 			},
 		})

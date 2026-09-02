@@ -178,7 +178,7 @@ func doSingleLCrAttack(contribMap [info.MaxChars]bool, target info.Target, core 
 		}
 
 		// Emit event so PreDamageMods can be applied to the individual LCr contributions
-		core.Events.Emit(event.OnLunarReactionAttack, target, &ae)
+		core.Events.Emit(event.OnSpecialReactionAttack, target, &ae)
 
 		em := ae.Snapshot.Stats[attributes.EM]
 		cr := ae.Snapshot.Stats[attributes.CR]

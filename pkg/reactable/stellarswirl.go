@@ -120,7 +120,7 @@ func (r *Reactable) calcStellarSwirlDmg(target info.Target, ai info.AttackInfo, 
 		}
 
 		// Emit event so PreDamageMods can be applied to the individual contributions
-		r.core.Events.Emit(event.OnLunarReactionAttack, target, &ae)
+		r.core.Events.Emit(event.OnSpecialReactionAttack, target, &ae)
 
 		em := ae.Snapshot.Stats[attributes.EM]
 		cr := ae.Snapshot.Stats[attributes.CR]

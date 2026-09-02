@@ -137,6 +137,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			event.OnLunarCharged:       info.ReactionTypeLunarCharged,
 			event.OnSwirlHydro:         info.ReactionTypeSwirlHydro,
 			event.OnSwirlCryo:          info.ReactionTypeSwirlCryo,
+			event.OnStellarSwirl:       info.ReactionTypeStellarSwirl,
 			event.OnSwirlElectro:       info.ReactionTypeSwirlElectro,
 			event.OnSwirlPyro:          info.ReactionTypeSwirlPyro,
 			event.OnCrystallizeHydro:   info.ReactionTypeCrystallizeHydro,

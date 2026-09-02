@@ -42,7 +42,7 @@ func (c *char) consElevationInit() {
 		}
 	}, elevationKey+"-direct")
 
-	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
+	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if attacks.AttackTagIsLunar(atk.Info.AttackTag) {
 			atk.Info.Elevation += amt
@@ -203,7 +203,7 @@ func (c *char) c6Init() {
 	c.c6Buff = make([]float64, attributes.EndStatType)
 	c.c6Buff[attributes.CD] = 0.8
 
-	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
+	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
 		ae, ok := args[1].(*info.AttackEvent)
 		if !ok {
 			return

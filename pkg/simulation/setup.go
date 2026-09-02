@@ -164,7 +164,7 @@ func SetupResonance(s *core.Core) {
 			}
 
 			// workaround for giving lunarcharge the 15% CR
-			s.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
+			s.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
 				e, ok := args[0].(*enemy.Enemy)
 				if !ok {
 					return

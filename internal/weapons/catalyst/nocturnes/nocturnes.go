@@ -76,7 +76,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 	}
 
-	c.Events.Subscribe(event.OnLunarReactionAttack, onLunarReactionAttackF, buffKey)
+	c.Events.Subscribe(event.OnSpecialReactionAttack, onLunarReactionAttackF, buffKey)
 	c.Events.Subscribe(event.OnEnemyDamage, onDmgF, buffKey)
 	c.Events.Subscribe(event.OnLunarCharged, onReactF, buffKey)
 	c.Events.Subscribe(event.OnLunarBloom, onReactF, buffKey)

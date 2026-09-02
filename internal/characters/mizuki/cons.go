@@ -56,6 +56,8 @@ func (c *char) c1() {
 		case attacks.AttackTagSwirlElectro:
 		case attacks.AttackTagSwirlHydro:
 		case attacks.AttackTagSwirlPyro:
+		case attacks.AttackTagDirectStellarSwirl:
+		case attacks.AttackTagReactionStellarSwirl:
 		default:
 			return
 		}
@@ -158,6 +160,29 @@ func (c *char) c4() {
 	}
 }
 
+func (c *char) c6Init() {
+	if c.Base.Cons < 6 {
+		return
+	}
+
+	c.c6Buff = make([]float64, attributes.EndStatType)
+	c.c6Buff[attributes.CR] = 0.1
+	c.c6Buff[attributes.CD] = 0.2
+
+	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
+		ae, ok := args[1].(*info.AttackEvent)
+		if !ok {
+			return
+		}
+		if ae.Info.AttackTag != attacks.AttackTagReactionStellarSwirl {
+			return
+		}
+
+		ae.Snapshot.Stats[attributes.CR] += 0.1
+		ae.Snapshot.Stats[attributes.CD] += 0.2
+	}, c6Key+"-lunarcharged")
+}
+
 // While Yumemizuki Mizuki is in the Dreamdrifter state, Swirl DMG dealt by nearby party members can Crit,
 // with CRIT Rate fixed at 30%, and CRIT DMG fixed at 100%.
 func (c *char) c6() {
@@ -173,23 +198,36 @@ func (c *char) c6() {
 
 		ae := args[1].(*info.AttackEvent)
 
-		// Only on swirls. The swirl source does not matter, it can be either mizuki or other anemo char.
-		switch ae.Info.AttackTag {
-		case attacks.AttackTagSwirlPyro:
-		case attacks.AttackTagSwirlCryo:
-		case attacks.AttackTagSwirlHydro:
-		case attacks.AttackTagSwirlElectro:
-		default:
-			return
-		}
-
 		// The effect is only when mizuki is in dreamDrifter state
 		if !c.StatusIsActive(dreamDrifterStateKey) {
 			return
 		}
 
+		// Only on swirls. The swirl source does not matter, it can be either mizuki or other anemo char.
+		switch ae.Info.AttackTag {
+		case attacks.AttackTagSwirlPyro,
+			attacks.AttackTagSwirlCryo,
+			attacks.AttackTagSwirlHydro,
+			attacks.AttackTagSwirlElectro:
+
+		default:
+			return
+		}
 		// Crit rate/DMG is fixed to 30% CR and 100% CD
 		ae.Snapshot.Stats[attributes.CR] = c6CR
 		ae.Snapshot.Stats[attributes.CD] = c6CD
 	}, c6Key)
+
+	for _, char := range c.Core.Player.Chars() {
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase(c6Key, -1),
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+				if atk.Info.AttackTag != attacks.AttackTagDirectStellarSwirl {
+					return nil
+				}
+
+				return c.c6Buff
+			},
+		})
+	}
 }

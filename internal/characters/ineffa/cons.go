@@ -159,7 +159,7 @@ func (c *char) c6Init() {
 		IgnoreDefPercent: 1,
 	}
 
-	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
+	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagReactionLunarCharge {
 			return
