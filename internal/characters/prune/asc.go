@@ -84,7 +84,7 @@ func (c *char) a1Init() {
 	c.Core.Events.Subscribe(event.OnSwirlElectro, swirlfunc(attributes.Electro), "prune-a1-electro")
 	c.Core.Events.Subscribe(event.OnSwirlHydro, swirlfunc(attributes.Hydro), "prune-a1-hydro")
 	c.Core.Events.Subscribe(event.OnSwirlPyro, swirlfunc(attributes.Pyro), "prune-a1-pyro")
-	// TODO: Add subscriptions for stellar-swirl when it's implemented
+	c.Core.Events.Subscribe(event.OnStellarSwirl, swirlfunc(attributes.Cryo), "prune-a1-stellar-swirl")
 }
 
 func (c *char) a4Init() {
