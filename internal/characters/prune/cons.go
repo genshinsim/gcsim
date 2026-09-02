@@ -37,12 +37,20 @@ func (c *char) makeC1CB(a info.AttackCB) {
 	c.AddEnergy("prune-c1", 2)
 }
 
+func (c *char) c2Init() {
+	if c.Base.Cons < 2 {
+		return
+	}
+
+	c.c2Buff = make([]float64, attributes.EndStatType)
+	c.c2Buff[attributes.ATKP] = 0.10
+}
+
 func (c *char) c2(duration int) {
 	if c.Base.Cons < 2 {
 		return
 	}
 
-	c.c2Buff[attributes.ATKP] = 0.10
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("prune-c2", duration),
 		AffectedStat: attributes.ATKP,
@@ -50,14 +58,6 @@ func (c *char) c2(duration int) {
 			return c.c2Buff
 		},
 	})
-}
-
-func (c *char) c2Init() {
-	if c.Base.Cons < 2 {
-		return
-	}
-
-	c.c2Buff = make([]float64, attributes.EndStatType)
 }
 
 func (c *char) makeC2CB(a info.AttackCB) {
@@ -120,10 +120,10 @@ func (c *char) c4Ricochet(ele attributes.Element, tag attacks.AttackTag) info.At
 			Mult:       0.8,
 		}
 
-		c.Core.QueueAttack(
+		c.Core.QueueAttackWithSnap(
 			ai,
+			a.AttackEvent.Snapshot,
 			combat.NewCircleHitOnTarget(target, nil, 1.5),
-			0,
 			63,
 			c.makeA4CB,
 			c.makeC1CB,
