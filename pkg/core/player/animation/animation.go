@@ -79,7 +79,7 @@ func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *actio
 	h.char = char
 	h.started = *h.f
 	h.aniEvt = evt
-	h.events.Emit(event.OnStateChange, h.state, evt.State)
+	h.events.Emit(event.OnStateChange, h.state, evt.State, evt.Segmented)
 	h.state = evt.State
 	h.stateExpiry = *h.f + evt.AnimationLength
 	h.lastAct = act
@@ -87,6 +87,7 @@ func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *actio
 		h.event = h.log.NewEvent(fmt.Sprintf("%v started", act.String()), glog.LogHitlagEvent, char).
 			Write("AnimationLength", evt.AnimationLength).
 			Write("CanQueueAfter", evt.CanQueueAfter).
+			Write("Segmented", evt.Segmented).
 			Write("State", evt.State.String())
 		for i := range action.EndActionType {
 			h.event.Write(i.String(), evt.Frames(i))
