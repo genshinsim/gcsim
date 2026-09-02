@@ -44,7 +44,7 @@ func (c *char) makeC4Callback() func(info.AttackCB) {
 
 func (c *char) c6() {
 	stat := attributes.EleToDmgP(c.qAbsorb)
-
+	clear(c.c6buff)
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("sucrose-c6", 60*10),
@@ -52,7 +52,7 @@ func (c *char) c6() {
 			Amount: func() []float64 {
 				c.c6buff[stat] = .20
 				if char.IsHexerei {
-					c.c6buff[stat] += 0.0857142
+					c.c6buff[stat] += 0.085714
 				}
 				return c.c6buff
 			},

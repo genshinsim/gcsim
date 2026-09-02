@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -26,15 +27,45 @@ type Character struct {
 	// hp
 	currentHPRatio float64
 	currentHPDebt  float64
+
+	// jump acceleration during the jump
+	JumpModified  player.AirborneSource
+	JumpModifiedF int
 }
 
 func NewWithWrapper(c *core.Core, w *character.CharWrapper) *Character {
-	r := New(c)
+	r := newChar(c)
 	r.CharWrapper = w
+
+	c.Events.Subscribe(event.OnStellarVortexDetonate, func(args ...any) {
+		ap, ok := args[2].(*info.AttackPattern)
+		if !ok {
+			return
+		}
+		if !c.Combat.Player().IsWithinArea(*ap) {
+			return
+		}
+		if c.Player.CurrentState() != action.JumpState {
+			return
+		}
+
+		if c.Player.Airborne() != player.Grounded {
+			return
+		}
+
+		r.JumpModified = player.AirborneStellarSwirl
+		r.JumpModifiedF = c.F - c.Player.CurrentStateStart()
+
+		// TODO: Find what frames where SSW vortex still gives enough vertical velocity to give airborne
+		if c.F-c.Player.CurrentStateStart() > 10 {
+			return
+		}
+		c.Player.SetAirborne(r.JumpModified)
+	}, "ssw-jump-"+r.Base.Key.String())
 	return r
 }
 
-func New(c *core.Core) *Character {
+func newChar(c *core.Core) *Character {
 	t := &Character{
 		Core:                   c,
 		ActionCD:               make([]int, action.EndActionType),

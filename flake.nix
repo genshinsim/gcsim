@@ -58,6 +58,10 @@
                 # ui
                 nodejs_24
                 yarn-berry_3
+
+                # github-actions
+                goss
+                dgoss
               ]);
           };
         };
