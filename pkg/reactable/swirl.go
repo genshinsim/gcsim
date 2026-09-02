@@ -8,6 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
+const StellarSwirlEnableKey = "stellar-swirl-enabled"
+
 func calcSwirlAtkDurability(consumed, src info.Durability) info.Durability {
 	if consumed < src {
 		return 1.25*(0.5*consumed-1) + 25
@@ -125,6 +127,10 @@ func (r *Reactable) TrySwirlHydro(a *info.AttackEvent) bool {
 }
 
 func (r *Reactable) TrySwirlCryo(a *info.AttackEvent) bool {
+	if _, ok := r.core.Flags.Custom[StellarSwirlEnableKey]; ok {
+		return r.TryStellarSwirlCryo(a)
+	}
+
 	if a.Info.Durability < info.ZeroDur {
 		return false
 	}
@@ -186,6 +192,10 @@ func (r *Reactable) TrySwirlPyro(a *info.AttackEvent) bool {
 }
 
 func (r *Reactable) TrySwirlFrozen(a *info.AttackEvent) bool {
+	if _, ok := r.core.Flags.Custom[StellarSwirlEnableKey]; ok {
+		return r.TryStellarSwirlFrozen(a)
+	}
+
 	if a.Info.Durability < info.ZeroDur {
 		return false
 	}

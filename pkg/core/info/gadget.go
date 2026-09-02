@@ -20,6 +20,7 @@ const (
 	GadgetTypCrystallizeShard
 	GadgetTypYumemiSnack
 	GadgetTypPolestarField
+	GadgetTypStellarVortex
 	GadgetTypTest
 	EndGadgetTyp
 )

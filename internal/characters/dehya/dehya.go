@@ -30,8 +30,7 @@ type char struct {
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
-	t := tmpl.New(s)
-	t.CharWrapper = w
+	t := tmpl.NewWithWrapper(s, w)
 	c.Character = t
 
 	c.EnergyMax = 70

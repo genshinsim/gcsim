@@ -114,18 +114,20 @@ func (c *Character) DashToJumpLength() int {
 }
 
 func (c *Character) Jump(p map[string]int) (action.Info, error) {
+	animLength := 60 // Upperbound for jump for high/low plunge
+
+	// 4/8 for claymore/bow/catalyst and 5/9 for sword/polearm
+	lowPlunge := 4
+	highPlunge := 8
+	switch c.Weapon.Class {
+	case info.WeaponClassSword, info.WeaponClassSpear:
+		lowPlunge = 5
+		highPlunge = 9
+	}
+
 	if c.StatusIsActive(player.XianyunAirborneBuff) {
 		c.Core.Player.SetAirborne(player.AirborneXianyun)
-		// 4/8 for claymore/bow/catalyst and 5/9 for sword/polearm
-		lowPlunge := 4
-		highPlunge := 8
-		switch c.Weapon.Class {
-		case info.WeaponClassSword, info.WeaponClassSpear:
-			lowPlunge = 5
-			highPlunge = 9
-		}
 
-		animLength := 60 // Upperbound for jump for high/low plunge
 		return action.Info{
 			Frames: func(a action.Action) int {
 				switch a {
@@ -142,11 +144,49 @@ func (c *Character) Jump(p map[string]int) (action.Info, error) {
 			State:           action.JumpState,
 		}, nil
 	}
+
+	if c.Core.Status.Duration(player.StellarSwirlAirborneBuff) > 0 {
+		c.Core.Player.SetAirborne(player.AirborneStellarSwirl)
+		c.Core.Status.Delete(player.StellarSwirlAirborneBuff)
+		return action.Info{
+			Frames: func(a action.Action) int {
+				switch a {
+				case action.ActionLowPlunge:
+					return lowPlunge
+				case action.ActionHighPlunge:
+					return highPlunge
+				default:
+					return animLength // This is expected to later lead to action error because no other action besides plunges can be done while AirborneStellarSwirl
+				}
+			},
+			AnimationLength: animLength,
+			CanQueueAfter:   lowPlunge, // earliest cancel
+			State:           action.JumpState,
+		}, nil
+	}
+
+	// The "normal" jump gets upgraded into a boosted jump when a Stellar Vortex explodes while the character is jumping upwards
 	f := c.JumpLength()
 	return action.Info{
-		Frames:          func(action.Action) int { return f },
-		AnimationLength: f,
-		CanQueueAfter:   f,
+		// TODO: The height you jump to varies based on when during your jump the SSW vortex explodes at.
+		// If it's towards the end of the jump it only makes the jump last a bit longer
+		// therefore we need a function that is duration_of_jump(frame_when_ssw_explodes), as well
+		// as which frame the player can plunge at after the ssw explosion
+		Frames: func(a action.Action) int {
+			if c.JumpModified == player.AirborneStellarSwirl && c.Core.Player.Airborne() == player.AirborneStellarSwirl {
+				switch a {
+				case action.ActionLowPlunge:
+					return lowPlunge
+				case action.ActionHighPlunge:
+					return highPlunge
+				default:
+					return animLength // This is expected to later lead to action error because no other action besides plunges can be done while AirborneStellarSwirl
+				}
+			}
+			return f
+		},
+		AnimationLength: animLength,
+		CanQueueAfter:   lowPlunge,
 		State:           action.JumpState,
 	}, nil
 }
