@@ -59,6 +59,13 @@ func (r *Reactable) queueStellarSwirl(charIndex int) {
 		if dur <= info.ZeroDur {
 			continue
 		}
+
+		// Based on testing, only Cryo characters that trigger frozen can contribute
+		// even if a non Cryo character triggers frozen with a cryo attack via Chongyun,
+		// they won't contribute to the reaction
+		if r.core.Player.Chars()[charInd].Base.Element != attributes.Cryo {
+			continue
+		}
 		contribMap[charInd] = true
 	}
 
