@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
@@ -33,6 +34,7 @@ func parseHurtOnce(p *Parser) (parseFn, error) {
 	var err error
 	p.res.HurtSettings.Active = true
 	p.res.HurtSettings.Once = true
+	p.res.HurtSettings.Element = attributes.NoElement
 
 	for n := p.next(); n.Typ != ast.ItemEOF; n = p.next() {
 		switch n.Typ {
@@ -73,6 +75,7 @@ func parseHurtEvery(p *Parser) (parseFn, error) {
 	var err error
 	p.res.HurtSettings.Active = true
 	p.res.HurtSettings.Once = false
+	p.res.HurtSettings.Element = attributes.NoElement
 
 	for n := p.next(); n.Typ != ast.ItemEOF; n = p.next() {
 		switch n.Typ {
