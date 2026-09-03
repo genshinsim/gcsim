@@ -4,6 +4,7 @@ package assets
 
 var avatarMap = map[string]string{
 	"aetheranemo":       "UI_AvatarIcon_PlayerBoy",
+	"aethercryo":        "UI_AvatarIcon_PlayerBoy",
 	"aetherdendro":      "UI_AvatarIcon_PlayerBoy",
 	"aetherelectro":     "UI_AvatarIcon_PlayerBoy",
 	"aethergeo":         "UI_AvatarIcon_PlayerBoy",
@@ -69,6 +70,7 @@ var avatarMap = map[string]string{
 	"layla":             "UI_AvatarIcon_Layla",
 	"lisa":              "UI_AvatarIcon_Lisa",
 	"lumineanemo":       "UI_AvatarIcon_PlayerGirl",
+	"luminecryo":        "UI_AvatarIcon_PlayerGirl",
 	"luminedendro":      "UI_AvatarIcon_PlayerGirl",
 	"lumineelectro":     "UI_AvatarIcon_PlayerGirl",
 	"luminegeo":         "UI_AvatarIcon_PlayerGirl",
