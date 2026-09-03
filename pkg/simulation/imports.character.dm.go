@@ -94,6 +94,8 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/tighnari"
 	_ "github.com/genshinsim/gcsim/internal/characters/traveler/anemo/aether"
 	_ "github.com/genshinsim/gcsim/internal/characters/traveler/anemo/lumine"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/cryo/aether"
+	_ "github.com/genshinsim/gcsim/internal/characters/traveler/cryo/lumine"
 	_ "github.com/genshinsim/gcsim/internal/characters/traveler/dendro/aether"
 	_ "github.com/genshinsim/gcsim/internal/characters/traveler/dendro/lumine"
 	_ "github.com/genshinsim/gcsim/internal/characters/traveler/electro/aether"
