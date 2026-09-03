@@ -24,8 +24,8 @@ type char struct {
 	burstAbsorbCheckLocation info.AttackPattern
 	burstSrc                 int
 	a1HighestEle             attributes.Element
-	robotAi                  info.AttackInfo
-	robotHealCoeff           float64
+	a1DmgMult                float64
+	a1HealMult               float64
 	robotCount               int
 	robotHitmarkInterval     float64
 
@@ -55,7 +55,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	c.robotHealCoeff = 1.0
+	c.a1HealMult = 1.0
 	c.a1Init()
 	c.a4Init()
 	c.c6Init()
