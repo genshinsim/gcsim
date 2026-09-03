@@ -27,6 +27,11 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
+	windup := 10
+	if c.Core.Player.CurrentState() == action.Idle || c.Core.Player.CurrentState() == action.SwapState {
+		windup = 0
+	}
+
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
 		Abil:               "Charge Attack",
@@ -46,14 +51,14 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewBoxHitOnTarget(c.Core.Combat.Player(), nil, 3, 3.5),
-		chargeHitmark,
-		chargeHitmark,
+		chargeHitmark-windup,
+		chargeHitmark-windup,
 	)
 
 	return action.Info{
-		Frames:          frames.NewAbilFunc(chargeFrames),
+		Frames:          func(next action.Action) int { return chargeFrames[next] - windup },
 		AnimationLength: chargeFrames[action.InvalidAction],
-		CanQueueAfter:   chargeHitmark,
+		CanQueueAfter:   chargeHitmark - windup,
 		State:           action.ChargeAttackState,
 	}, nil
 }
