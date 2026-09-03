@@ -160,29 +160,6 @@ func (c *char) c4() {
 	}
 }
 
-func (c *char) c6Init() {
-	if c.Base.Cons < 6 {
-		return
-	}
-
-	c.c6Buff = make([]float64, attributes.EndStatType)
-	c.c6Buff[attributes.CR] = 0.1
-	c.c6Buff[attributes.CD] = 0.2
-
-	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
-		ae, ok := args[1].(*info.AttackEvent)
-		if !ok {
-			return
-		}
-		if ae.Info.AttackTag != attacks.AttackTagReactionStellarSwirl {
-			return
-		}
-
-		ae.Snapshot.Stats[attributes.CR] += 0.1
-		ae.Snapshot.Stats[attributes.CD] += 0.2
-	}, c6Key+"-lunarcharged")
-}
-
 // While Yumemizuki Mizuki is in the Dreamdrifter state, Swirl DMG dealt by nearby party members can Crit,
 // with CRIT Rate fixed at 30%, and CRIT DMG fixed at 100%.
 func (c *char) c6() {
@@ -230,4 +207,21 @@ func (c *char) c6() {
 			},
 		})
 	}
+
+	c.c6Buff = make([]float64, attributes.EndStatType)
+	c.c6Buff[attributes.CR] = 0.1
+	c.c6Buff[attributes.CD] = 0.2
+
+	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
+		ae, ok := args[1].(*info.AttackEvent)
+		if !ok {
+			return
+		}
+		if ae.Info.AttackTag != attacks.AttackTagReactionStellarSwirl {
+			return
+		}
+
+		ae.Snapshot.Stats[attributes.CR] += 0.1
+		ae.Snapshot.Stats[attributes.CD] += 0.2
+	}, c6Key+"-lunarcharged")
 }
