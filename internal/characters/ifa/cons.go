@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	c1EnergyKey    = "ifa-c1-energy"
-	c1EnergyICDKey = "ifa-c1-energy-icd"
+	c1EnergyKey      = "ifa-c1-energy"
+	c1EnergyICDKey   = "ifa-c1-energy-icd"
 	c6ExtensionFrame = 11
 )
 

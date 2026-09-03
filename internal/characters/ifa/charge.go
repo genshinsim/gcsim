@@ -124,7 +124,7 @@ func (c *char) attackHoldSkillState(p map[string]int) action.Info {
 		Frames: func(next action.Action) int {
 			return frames.AtkSpdAdjust(skillAttackHoldFrames[next]+c6Extension, atkspd)
 		},
-		AnimationLength: attackSkillInterval+c6Extension,
+		AnimationLength: attackSkillInterval + c6Extension,
 		CanQueueAfter:   0, // can run out of nightsoul and start falling earlier
 		State:           action.NormalAttackState,
 	}
