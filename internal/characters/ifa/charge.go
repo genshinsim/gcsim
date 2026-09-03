@@ -33,7 +33,7 @@ func init() {
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.nightsoulState.HasBlessing() {
-		return c.attackTapSkillState(p), nil
+		return c.attackHoldSkillState(p), nil
 	}
 
 	ai := info.AttackInfo{
@@ -116,15 +116,15 @@ func (c *char) attackHoldSkillState(p map[string]int) action.Info {
 		)
 	}, 1)
 
-	c.c6OnHoldAttackSkill()
+	c6Extension := c.c6OnHoldAttackSkill()
 
 	atkspd := c.Stat(attributes.AtkSpd)
 
 	return action.Info{
 		Frames: func(next action.Action) int {
-			return frames.AtkSpdAdjust(skillAttackHoldFrames[next], atkspd)
+			return frames.AtkSpdAdjust(skillAttackHoldFrames[next]+c6Extension, atkspd)
 		},
-		AnimationLength: attackSkillInterval,
+		AnimationLength: attackSkillInterval+c6Extension,
 		CanQueueAfter:   0, // can run out of nightsoul and start falling earlier
 		State:           action.NormalAttackState,
 	}
