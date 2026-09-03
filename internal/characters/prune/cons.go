@@ -43,16 +43,17 @@ func (c *char) c2Init() {
 	}
 
 	c.c2Buff = make([]float64, attributes.EndStatType)
-	c.c2Buff[attributes.ATKP] = 0.10
 }
 
-func (c *char) c2(duration int) {
+func (c *char) c2OnBurst(duration int) {
 	if c.Base.Cons < 2 {
 		return
 	}
 
+	c.c2Buff[attributes.ATKP] = 0.10
+
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase("prune-c2", duration),
+		Base:         modifier.NewBaseWithHitlag("prune-c2", duration),
 		AffectedStat: attributes.ATKP,
 		Amount: func() []float64 {
 			return c.c2Buff

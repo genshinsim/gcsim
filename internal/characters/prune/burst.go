@@ -49,7 +49,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	burstStatusDelay := 57
 	c.QueueCharTask(func() {
 		c.AddStatus(burstKey, duration-burstStatusDelay, false)
-		c.c2(duration - burstStatusDelay)
+		c.c2OnBurst(duration - burstStatusDelay)
 	}, burstStatusDelay)
 
 	c.burstSrc = c.Core.F
