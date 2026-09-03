@@ -95,6 +95,17 @@ With the exception of the stats (i.e. `hp`, `atk`, etc...), all other fields not
 :::danger
 
 :::info
+The mandatory fields are restricted to the following ranges:
+
+- `cons`: 0 to 6
+- `talent`: 1 to 10, for each of attack, skill and burst
+- `refine`: 1 to 5
+- `lvl`: the base level cannot be higher than the max (ascension) level
+
+A config using a value outside of these ranges will fail to parse.
+:::
+
+:::info
 An optional param flag may be added to the character/weapon/artifact set via the `+params` flag. This optional param is defined by each character/weapon/artifact set.
 :::
 
