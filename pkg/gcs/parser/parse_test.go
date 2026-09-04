@@ -255,3 +255,28 @@ func TestCharFieldRanges(t *testing.T) {
 		})
 	}
 }
+
+func TestIgnoreSkillCooldownOption(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  bool
+	}{
+		{"unset", `xiangling char lvl=90/90 cons=0 talent=9,9,9;`, false},
+		{"true", `options ignore_skill_cooldown=true;`, true},
+		{"false", `options ignore_skill_cooldown=false;`, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			file := ast.NewFile()
+			p := New(file, tt.input)
+			cfg, _, err := p.Parse()
+			if err != nil {
+				t.Fatalf("%v: unexpected error: %v", tt.input, err)
+			}
+			if cfg.Settings.IgnoreSkillCooldown != tt.want {
+				t.Errorf("%v: got %v, want %v", tt.input, cfg.Settings.IgnoreSkillCooldown, tt.want)
+			}
+		})
+	}
+}

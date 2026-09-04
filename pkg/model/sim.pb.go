@@ -434,17 +434,18 @@ func (x *Coord) GetR() float64 {
 }
 
 type SimulatorSettings struct {
-	state             protoimpl.MessageState `protogen:"open.v1"`
-	Duration          float64                `protobuf:"fixed64,1,opt,name=duration,proto3" json:"duration,omitempty" bson:"duration,omitempty"`
-	DamageMode        bool                   `protobuf:"varint,2,opt,name=damage_mode,proto3" json:"damage_mode,omitempty" bson:"damage_mode,omitempty"`
-	EnableHitlag      bool                   `protobuf:"varint,3,opt,name=enable_hitlag,proto3" json:"enable_hitlag,omitempty" bson:"enable_hitlag,omitempty"`
-	DefHalt           bool                   `protobuf:"varint,4,opt,name=def_halt,proto3" json:"def_halt,omitempty" bson:"def_halt,omitempty"`
-	NumberOfWorkers   uint32                 `protobuf:"varint,5,opt,name=number_of_workers,proto3" json:"number_of_workers,omitempty" bson:"number_of_workers,omitempty"`
-	Iterations        uint32                 `protobuf:"varint,6,opt,name=iterations,proto3" json:"iterations,omitempty" bson:"iterations,omitempty"`
-	Delays            *Delays                `protobuf:"bytes,7,opt,name=delays,proto3" json:"delays,omitempty" bson:"delays,omitempty"`
-	IgnoreBurstEnergy bool                   `protobuf:"varint,8,opt,name=ignore_burst_energy,proto3" json:"ignore_burst_energy,omitempty" bson:"ignore_burst_energy,omitempty"`
-	unknownFields     protoimpl.UnknownFields
-	sizeCache         protoimpl.SizeCache
+	state               protoimpl.MessageState `protogen:"open.v1"`
+	Duration            float64                `protobuf:"fixed64,1,opt,name=duration,proto3" json:"duration,omitempty" bson:"duration,omitempty"`
+	DamageMode          bool                   `protobuf:"varint,2,opt,name=damage_mode,proto3" json:"damage_mode,omitempty" bson:"damage_mode,omitempty"`
+	EnableHitlag        bool                   `protobuf:"varint,3,opt,name=enable_hitlag,proto3" json:"enable_hitlag,omitempty" bson:"enable_hitlag,omitempty"`
+	DefHalt             bool                   `protobuf:"varint,4,opt,name=def_halt,proto3" json:"def_halt,omitempty" bson:"def_halt,omitempty"`
+	NumberOfWorkers     uint32                 `protobuf:"varint,5,opt,name=number_of_workers,proto3" json:"number_of_workers,omitempty" bson:"number_of_workers,omitempty"`
+	Iterations          uint32                 `protobuf:"varint,6,opt,name=iterations,proto3" json:"iterations,omitempty" bson:"iterations,omitempty"`
+	Delays              *Delays                `protobuf:"bytes,7,opt,name=delays,proto3" json:"delays,omitempty" bson:"delays,omitempty"`
+	IgnoreBurstEnergy   bool                   `protobuf:"varint,8,opt,name=ignore_burst_energy,proto3" json:"ignore_burst_energy,omitempty" bson:"ignore_burst_energy,omitempty"`
+	IgnoreSkillCooldown bool                   `protobuf:"varint,9,opt,name=ignore_skill_cooldown,proto3" json:"ignore_skill_cooldown,omitempty" bson:"ignore_skill_cooldown,omitempty"`
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
 }
 
 func (x *SimulatorSettings) Reset() {
@@ -529,6 +530,13 @@ func (x *SimulatorSettings) GetDelays() *Delays {
 func (x *SimulatorSettings) GetIgnoreBurstEnergy() bool {
 	if x != nil {
 		return x.IgnoreBurstEnergy
+	}
+	return false
+}
+
+func (x *SimulatorSettings) GetIgnoreSkillCooldown() bool {
+	if x != nil {
+		return x.IgnoreSkillCooldown
 	}
 	return false
 }
@@ -762,7 +770,7 @@ const file_protos_model_sim_proto_rawDesc = "" +
 	"\x05Coord\x12\f\n" +
 	"\x01x\x18\x01 \x01(\x01R\x01x\x12\f\n" +
 	"\x01y\x18\x02 \x01(\x01R\x01y\x12\f\n" +
-	"\x01r\x18\x03 \x01(\x01R\x01r\"\xba\x02\n" +
+	"\x01r\x18\x03 \x01(\x01R\x01r\"\xf0\x02\n" +
 	"\x11SimulatorSettings\x12\x1a\n" +
 	"\bduration\x18\x01 \x01(\x01R\bduration\x12 \n" +
 	"\vdamage_mode\x18\x02 \x01(\bR\vdamage_mode\x12$\n" +
@@ -773,7 +781,8 @@ const file_protos_model_sim_proto_rawDesc = "" +
 	"iterations\x18\x06 \x01(\rR\n" +
 	"iterations\x12%\n" +
 	"\x06delays\x18\a \x01(\v2\r.model.DelaysR\x06delays\x120\n" +
-	"\x13ignore_burst_energy\x18\b \x01(\bR\x13ignore_burst_energy\"\xb2\x01\n" +
+	"\x13ignore_burst_energy\x18\b \x01(\bR\x13ignore_burst_energy\x124\n" +
+	"\x15ignore_skill_cooldown\x18\t \x01(\bR\x15ignore_skill_cooldown\"\xb2\x01\n" +
 	"\x06Delays\x12\x14\n" +
 	"\x05skill\x18\x01 \x01(\x05R\x05skill\x12\x14\n" +
 	"\x05burst\x18\x02 \x01(\x05R\x05burst\x12\x16\n" +

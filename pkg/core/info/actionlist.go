@@ -46,6 +46,8 @@ type SimulatorSettings struct {
 	EnableHitlag      bool    `json:"enable_hitlag"`
 	DefHalt           bool    `json:"def_halt"` // for hitlag
 	IgnoreBurstEnergy bool    `json:"ignore_burst_energy"`
+	// skill can be used while on cooldown
+	IgnoreSkillCooldown bool `json:"ignore_skill_cooldown"`
 	// other stuff
 	NumberOfWorkers int    `json:"-"`          // how many workers to run the simulation
 	Iterations      int    `json:"iterations"` // how many iterations to run
