@@ -850,6 +850,23 @@
         "burst_energy_cost": 80
       }
     },
+    "kachina": {
+      "id": 10000100,
+      "sub_id": 10001,
+      "key": "kachina",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_LOLI",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Rock",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Kachina",
+      "skill_details": {
+        "skill": 11002,
+        "burst": 11005,
+        "attack": 11001,
+        "burst_energy_cost": 70
+      }
+    },
     "kaedeharakazuha": {
       "id": 10000047,
       "sub_id": 4701,

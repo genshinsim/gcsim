@@ -835,6 +835,18 @@
       "desc": "Time between enter/leave hits. Default 600 / enter (frames)."
     }
   ],
+  "kachina": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap, 1 for Hold."
+    },
+    {
+      "ability": "skill",
+      "param": "recast",
+      "desc": "0 for summon, 1 for Turbo Twirly recast."
+    }
+  ],
   "kaedeharakazuha": [
     {
       "ability": "low_plunge",
