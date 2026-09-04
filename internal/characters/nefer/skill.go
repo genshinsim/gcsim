@@ -28,25 +28,26 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index(),
-		Abil:       "Senet Strategy: Dance of a Thousand Nights",
-		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagElementalArt,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
-		Element:    attributes.Dendro,
-		Durability: 25,
-		Mult:       skill[0][c.TalentLvlSkill()],
-		FlatDmg:    c.Stat(attributes.EM) * skill[1][c.TalentLvlSkill()],
+		ActorIndex:   c.Index(),
+		Abil:         "Senet Strategy: Dance of a Thousand Nights",
+		AttackTag:    attacks.AttackTagElementalArt,
+		ICDTag:       attacks.ICDTagElementalArt,
+		ICDGroup:     attacks.ICDGroupDefault,
+		StrikeType:   attacks.StrikeTypeBlunt,
+		Element:      attributes.Dendro,
+		HitlagFactor: 0.01,
+		Durability:   25,
+		Mult:         skill_att[c.TalentLvlSkill()],
+		FlatDmg:      c.Stat(attributes.EM) * skill_em[c.TalentLvlSkill()],
 	}
 
 	c.Core.QueueAttack(ai, combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), info.Point{Y: 1}, 3), skillHitmark, skillHitmark, c.skillParticleCB)
 	c.AddStatus(shadowDanceKey, 9*60, true)
-	c.phantasmCharges = phantasmChargesPerSkill
+	c.phantasmCharges = 3
 	c.startSeedWindow()
 	c.SetCDWithDelay(action.ActionSkill, 9*60, 22)
 
-	if c.Base.Cons >= 2 && c.ascendantGleam {
+	if c.Base.Cons >= 2 && c.Core.Player.GetMoonsignLevel() >= 2 {
 		c.addVeilStacks(2)
 	}
 

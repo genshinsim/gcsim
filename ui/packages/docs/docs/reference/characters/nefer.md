@@ -1,18 +1,23 @@
 ---
-title: >
-  Nefer
+title: "Nefer"
 ---
 
-<!-- markdownlint-disable MD033 -->
-
-import HitlagTable from "@site/src/components/Hitlag/HitlagTable";
-import FieldsTable from "@site/src/components/Fields/FieldsTable";
-import ParamsTable from "@site/src/components/Params/ParamsTable";
-import FramesTable from "@site/src/components/Frames/FramesTable";
-import IssuesTable from "@site/src/components/Issues/IssuesTable";
-import AoETable from "@site/src/components/AoE/AoETable";
-import NamesList from "@site/src/components/Names/NamesList";
 import ActionsTable from "@site/src/components/Actions/ActionsTable";
+import AoETable from "@site/src/components/AoE/AoETable";
+import FieldsTable from "@site/src/components/Fields/FieldsTable";
+import FramesTable from "@site/src/components/Frames/FramesTable";
+import HitlagTable from "@site/src/components/Hitlag/HitlagTable";
+import IssuesTable from "@site/src/components/Issues/IssuesTable";
+import NamesList from "@site/src/components/Names/NamesList";
+import ParamsTable from "@site/src/components/Params/ParamsTable";
+
+## Known issues
+
+<IssuesTable item_key="nefer" />
+
+## Names
+
+<NamesList item_key="nefer" />
 
 ## Frames
 
@@ -26,14 +31,6 @@ import ActionsTable from "@site/src/components/Actions/ActionsTable";
 
 <AoETable item_key="nefer" />
 
-## Known issues
-
-<IssuesTable item_key="nefer" />
-
-## Names
-
-<NamesList item_key="nefer" />
-
 ## Legal Actions
 
 <ActionsTable item_key="nefer" />
@@ -45,5 +42,3 @@ import ActionsTable from "@site/src/components/Actions/ActionsTable";
 ## Fields
 
 <FieldsTable item_key="nefer" />
-
-<!-- markdownlint-enable MD033 -->

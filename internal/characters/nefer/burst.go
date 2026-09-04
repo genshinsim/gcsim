@@ -11,46 +11,37 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var burstFrames []int
-
-const neferBurstBonusKey = "nefer-burst-veil-bonus"
-
-const (
-	burstAttackCancelFrame         = 119
-	burstNormalChargeCancelFrame   = 131
-	burstPhantasmChargeCancelFrame = 124
-	burstSkillCancelFrame          = 119
-	burstDashCancelFrame           = 120
-	burstJumpCancelFrame           = 120
-	burstSwapCancelFrame           = 118
-	burstWalkCancelFrame           = 119
-	burstAnimationLength           = 131
+var (
+	burstFrames   []int
+	burstHitmarks = []int{101, 101 + 44}
 )
 
+const burstBonusKey = "nefer-burst-veil-bonus"
+
 func init() {
-	burstFrames = frames.InitAbilSlice(burstAnimationLength)
-	burstFrames[action.ActionAttack] = burstAttackCancelFrame
-	burstFrames[action.ActionSkill] = burstSkillCancelFrame
-	burstFrames[action.ActionDash] = burstDashCancelFrame
-	burstFrames[action.ActionJump] = burstJumpCancelFrame
-	burstFrames[action.ActionSwap] = burstSwapCancelFrame
-	burstFrames[action.ActionWalk] = burstWalkCancelFrame
+	burstFrames = frames.InitAbilSlice(131)
+	burstFrames[action.ActionAttack] = 119
+	burstFrames[action.ActionSkill] = 119
+	burstFrames[action.ActionDash] = 120
+	burstFrames[action.ActionJump] = 120
+	burstFrames[action.ActionSwap] = 118
+	burstFrames[action.ActionWalk] = 119
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	stacks := c.consumeVeilStacks()
 	bonus := 0.0
 	if stacks > 0 {
-		bonus = float64(stacks) * veil[0][c.TalentLvlBurst()]
+		bonus = float64(stacks) * veil_bonus[c.TalentLvlBurst()]
 	}
 
 	if bonus > 0 {
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = bonus
 		c.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase(neferBurstBonusKey, 90),
+			Base: modifier.NewBaseWithHitlag(burstBonusKey, 10*60),
 			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
-				if atk.Info.Abil != "Sacred Vow: True Eye's Phantasm (Hit 1)" && atk.Info.Abil != "Sacred Vow: True Eye's Phantasm (Hit 2)" {
+				if atk.Info.AttackTag != attacks.AttackTagElementalBurst {
 					return nil
 				}
 				return m
@@ -62,41 +53,40 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		ActorIndex: c.Index(),
 		Abil:       "Sacred Vow: True Eye's Phantasm (Hit 1)",
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDTag:     attacks.ICDTagNeferElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
-		Mult:       vow[0][c.TalentLvlBurst()],
-		FlatDmg:    c.Stat(attributes.EM) * vow[1][c.TalentLvlBurst()],
+		Mult:       vow_1_att[c.TalentLvlBurst()],
+		FlatDmg:    c.Stat(attributes.EM) * vow_1_em[c.TalentLvlBurst()],
 	}
 	ai2 := info.AttackInfo{
 		ActorIndex: c.Index(),
 		Abil:       "Sacred Vow: True Eye's Phantasm (Hit 2)",
 		AttackTag:  attacks.AttackTagElementalBurst,
-		ICDTag:     attacks.ICDTagElementalBurst,
+		ICDTag:     attacks.ICDTagNeferElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
-		Mult:       vow[2][c.TalentLvlBurst()],
-		FlatDmg:    c.Stat(attributes.EM) * vow[3][c.TalentLvlBurst()],
+		Mult:       vow_2_att[c.TalentLvlBurst()],
+		FlatDmg:    c.Stat(attributes.EM) * vow_2_em[c.TalentLvlBurst()],
 	}
 
-	ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6, 10)
-	c.Core.QueueAttack(ai1, ap, 26, 26)
-	c.Core.QueueAttack(ai2, ap, 46, 46)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6.5)
+	c.Core.QueueAttack(ai1, ap, burstHitmarks[0], burstHitmarks[0])
+	c.Core.QueueAttack(ai2, ap, burstHitmarks[1], burstHitmarks[1])
 
 	c.SetCD(action.ActionBurst, 15*60)
-	c.ConsumeEnergy(60)
+	c.ConsumeEnergy(7)
 
 	return action.Info{
 		Frames: func(next action.Action) int {
 			if next == action.ActionCharge {
 				if c.canTriggerPhantasm() {
-					return burstPhantasmChargeCancelFrame
+					return 124
 				}
-				return burstNormalChargeCancelFrame
 			}
 			return burstFrames[next]
 		},

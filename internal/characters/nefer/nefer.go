@@ -7,43 +7,35 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/stacks"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-func init() {
-	core.RegisterCharFunc(keys.Nefer, NewChar)
-}
-
 const (
-	shadowDanceKey          = "nefer-shadow-dance"
-	slitherKey              = "nefer-slither"
-	seedWindowKey           = "nefer-seed-window"
-	veilEMBuffKey           = "nefer-veil-em-buff"
-	seedAbsorbRadius        = 6
-	veilBaseDuration        = 9 * 60
-	c2VeilDurationBonus     = 5 * 60
-	phantasmChargesPerSkill = 3
+	shadowDanceKey   = "nefer-shadow-dance"
+	slitherKey       = "nefer-slither"
+	seedWindowKey    = "nefer-seed-window"
+	veilEMBuffKey    = "nefer-veil-em-buff"
+	seedAbsorbRadius = 6
 )
 
 type char struct {
 	*tmpl.Character
-	ascendantGleam    bool
-	veilstacks        int
-	veilTracker       *stacks.MultipleRefreshNoRemove
-	maxVeilStacks     int
-	phantasmCharges   int
-	chargeRoute       chargeRouteState
+	veilTracker     *stacks.MultipleRefreshNoRemove
+	maxVeilStacks   int
+	phantasmCharges int
+	a4BuffSrc       int
+	a4BuffAmt       float64
+	chargeRoute     chargeRouteState
 }
 
 type chargeRouteState struct {
-	src               int
-	slitherSrc        int
-	releaseStartFrame int
+	src                int
+	slitherSrc         int
+	releaseStartFrame  int
 	phantasmStartFrame int
-	phantasmEndFrame  int
+	phantasmEndFrame   int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -56,24 +48,20 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.BurstCon = 5
 	c.Moonsign = 1
 	c.SetNumCharges(action.ActionSkill, 2)
-	c.maxVeilStacks = 3
 
 	w.Character = &c
 	return nil
 }
 
 func (c *char) Init() error {
-	c.ascendantGleam = c.Core.Player.GetMoonsignLevel() >= 2
-	if c.Base.Cons >= 2 {
-		c.maxVeilStacks = 5
-	}
-	c.initVeilTracker()
 	c.swapResetInit()
 	c.lunarbloomInit()
-	c.p1Init()
-	c.p2Init()
+	c.a1Init()
+	c.a4Init()
+	c.c2VeilStackInit()
 	c.c4Init()
 	c.c6Init()
+	c.initVeilTracker()
 	return nil
 }
 
@@ -147,12 +135,9 @@ func (c *char) addVeilStacks(count int) {
 	if count <= 0 {
 		return
 	}
-	prev := c.currentVeilStacks()
 	for range count {
-		c.veilTracker.Add(c.veilStackDuration())
-		next := c.currentVeilStacks()
-		c.applyVeilThresholdBuff(prev, next, 1)
-		prev = next
+		c.veilTracker.Add(9*60 + c.c2VeilDurationBonus())
+		c.applyVeilThresholdBuff(c.currentVeilStacks())
 	}
 }
 
@@ -165,54 +150,42 @@ func (c *char) consumeVeilStacks() int {
 func (c *char) phantasmVeilBonus() float64 {
 	stacks := c.currentVeilStacks()
 	if stacks <= 0 {
-		return 0
+		return 1
 	}
-	return float64(stacks) * 0.08
+	return 1 + float64(stacks)*0.08
 }
 
 func (c *char) initVeilTracker() {
 	c.veilTracker = stacks.NewMultipleRefreshNoRemove(c.maxVeilStacks, c.QueueCharTask, &c.Core.F)
-	c.veilstacks = 0
 }
 
 func (c *char) currentVeilStacks() int {
 	if c.veilTracker == nil {
-		return c.veilstacks
+		return 0
 	}
-	c.veilstacks = c.veilTracker.Count()
-	return c.veilstacks
+
+	return c.veilTracker.Count()
 }
 
-func (c *char) veilStackDuration() int {
-	dur := veilBaseDuration
-	if c.Base.Cons >= 2 {
-		dur += c2VeilDurationBonus
-	}
-	return dur
+func (c *char) veilStackFull(count int) bool {
+	return count >= c.maxVeilStacks
 }
 
-func (c *char) applyVeilThresholdBuff(prev, next, count int) {
-	if count <= 0 {
-		return
-	}
-
-	triggerFive := c.Base.Cons >= 2 && next >= 5 && (prev < 5 || prev == 5)
-	triggerThree := next >= 3 && (prev < 3 || prev == 3)
-
-	amount := 0.0
-	if triggerFive {
-		amount = 200
-	} else if triggerThree {
-		amount = 100
-	}
-	if amount <= 0 {
-		return
-	}
-
+func (c *char) applyVeilThresholdBuff(count int) {
 	buff := make([]float64, attributes.EndStatType)
-	buff[attributes.EM] = amount
+	key := veilEMBuffKey
+	switch {
+	case c.c2VeilStackFull(count):
+		buff[attributes.EM] = 200
+		key = veilEMBuffKey + "-c2"
+	case c.veilStackFull(count):
+		buff[attributes.EM] = 100
+	default:
+		return
+	}
+
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(veilEMBuffKey, 8*60),
+		Base:         modifier.NewBaseWithHitlag(key, 8*60),
 		AffectedStat: attributes.EM,
 		Amount: func() []float64 {
 			return buff

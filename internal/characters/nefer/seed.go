@@ -1,40 +1,34 @@
 package nefer
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/gadget"
 )
 
-func (c *char) p1Active() bool {
-	return c.Base.Ascension >= 1 && c.ascendantGleam
+const seedDuration = 12 * 60
+
+type seedGadget struct {
+	*gadget.Gadget
 }
 
-func (c *char) p1Init() {
-	if !c.p1Active() {
-		return
-	}
+func newSeedGadget(c *core.Core, pos info.Point) *seedGadget {
+	g := &seedGadget{}
+	g.Gadget = gadget.New(c, pos, 2, info.GadgetTypDendroCore) // ~~~
+	g.Duration = seedDuration
+	return g
+}
 
-	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...any) {
-		if !c.StatusIsActive(seedWindowKey) {
-			return
-		}
-
-		core, ok := args[0].(info.Gadget)
-		if !ok || core.GadgetTyp() != info.GadgetTypDendroCore {
-			return
-		}
-		if c.isSeedOfDeceit(core) {
-			return
-		}
-
-		c.replaceDendroCoreWithSeed(core)
-	}, "nefer-p1-seed-conversion")
+func (g *seedGadget) HandleAttack(atk *info.AttackEvent) float64 {
+	g.Core.Events.Emit(event.OnGadgetHit, g, atk)
+	return 0
 }
 
 func (c *char) startSeedWindow() {
-	if !c.p1Active() {
+	if c.Core.Player.GetMoonsignLevel() < 2 {
 		return
 	}
 
@@ -43,8 +37,11 @@ func (c *char) startSeedWindow() {
 }
 
 func (c *char) convertExistingDendroCores() {
-	for _, gadget := range c.Core.Combat.Gadgets() {
-		if gadget == nil || gadget.GadgetTyp() != info.GadgetTypDendroCore {
+	for _, gadget := range c.Core.Combat.GadgetsWithinArea(combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.Player(), nil, 20), nil) {
+		if gadget == nil {
+			continue
+		}
+		if gadget.GadgetTyp() != info.GadgetTypDendroCore {
 			continue
 		}
 		if c.isSeedOfDeceit(gadget) {
@@ -73,9 +70,16 @@ func (c *char) isSeedOfDeceit(g info.Gadget) bool {
 }
 
 func (c *char) absorbSeedsOfDeceit() {
-	seeds := c.Core.Combat.GadgetsWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, seedAbsorbRadius), func(g info.Gadget) bool {
-		return c.isSeedOfDeceit(g)
-	})
+	seeds := c.Core.Combat.GadgetsWithinArea(
+		combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			nil,
+			seedAbsorbRadius,
+		),
+		func(g info.Gadget) bool {
+			return c.isSeedOfDeceit(g)
+		},
+	)
 	if len(seeds) == 0 {
 		return
 	}

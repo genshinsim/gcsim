@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	basicChargeWindup        = 20
-	basicChargeHitmark       = 44
+	chargeWindup             = 20
+	chargeHitmark            = 24
 	phantasmPostAttackCancel = 69
 	phantasmPostChargeCancel = 65
 	slitherMaxDuration       = 150
@@ -23,16 +23,18 @@ const (
 	slitherStamTickCost      = 18.15 / 60.0
 	phantasmAnimationLength  = 106
 	phantasmConsumeDewFrame  = 9
-	phantasmHit1             = 10
-	phantasmHit2             = 15
-	phantasmHit3             = 23
-	phantasmHit4             = 24
-	phantasmHit5             = 25
 	c6PhantasmHit2EM         = 0.85
 	c6PhantasmEndEM          = 1.20
 )
 
-var chargeFrames []int
+var (
+	chargeFrames       []int
+	phantasmFrames     []int
+	phantasmHitmarks   = []int{10, 10 + 19, 10 + 19 + 8, 10 + 19 + 8 + 24, 10 + 19 + 8 + 24}
+	phantasmHitboxes   = []float64{1, 3.3, 3.3, 2.75, 4}
+	phantasmOffsets    = [][]float64{{0, 1}, {0.3, 1}, {-0.3, 1}, {0, 2.75}, {0, 2.75}}
+	chargeHitlagFrames = []float64{0.06, 0.08}
+)
 
 func basicChargeCanQueueAfter() int {
 	return min(chargeFrames[action.ActionAttack], chargeFrames[action.ActionSwap])
@@ -51,6 +53,15 @@ func init() {
 	chargeFrames[action.ActionJump] = 48
 	chargeFrames[action.ActionSwap] = 28
 	chargeFrames[action.ActionWalk] = 71
+
+	phantasmFrames = frames.InitAbilSlice(105)
+	phantasmFrames[action.ActionAttack] = 69
+	phantasmFrames[action.ActionCharge] = 65
+	phantasmFrames[action.ActionSkill] = phantasmHitmarks[0]
+	phantasmFrames[action.ActionBurst] = phantasmHitmarks[0]
+	phantasmFrames[action.ActionDash] = phantasmHitmarks[0]
+	phantasmFrames[action.ActionJump] = phantasmHitmarks[0]
+	phantasmFrames[action.ActionSwap] = phantasmHitmarks[0]
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
@@ -136,23 +147,26 @@ func (c *char) tapPhantasmChargeAttack() (action.Info, error) {
 	c.clearPhantasmChargeLoop()
 	src := c.Core.F
 	c.chargeRoute.src = src
+	windup := 0
+
+	if c.Core.Player.CurrentState() == action.NormalAttackState {
+		windup = chargeWindup
+	}
+
+	if c.Core.Player.CurrentState() == action.BurstState {
+		windup = chargeWindup
+	}
+
 	c.QueueCharTask(func() {
 		c.startPhantasmPhase(src)
-	}, basicChargeWindup)
+	}, chargeWindup-windup)
 
 	return action.Info{
 		Frames: func(next action.Action) int {
-			switch next {
-			case action.ActionAttack:
-				return basicChargeWindup + phantasmPostAttackCancel
-			case action.ActionCharge:
-				return basicChargeWindup + phantasmPostChargeCancel
-			default:
-				return basicChargeWindup + phantasmAnimationLength
-			}
+			return chargeWindup - windup + phantasmFrames[next]
 		},
-		AnimationLength: basicChargeWindup + phantasmAnimationLength,
-		CanQueueAfter:   basicChargeWindup + 1,
+		AnimationLength: chargeWindup - windup + phantasmAnimationLength,
+		CanQueueAfter:   chargeWindup - windup + 1,
 		State:           action.ChargeAttackState,
 		OnRemoved: func(next action.AnimationState) {
 			if c.chargeRoute.src != src {
@@ -173,18 +187,23 @@ func (c *char) heldChargeAttack(p map[string]int) (action.Info, error) {
 
 	c.clearPhantasmChargeLoop()
 	src := c.Core.F
-	windup := basicChargeWindup
+	windup := 0
 	slitherDuration := heldChargeDuration(p)
 	c.chargeRoute.src = src
+
+	if c.Core.Player.CurrentState() == action.NormalAttackState {
+		windup = chargeWindup
+	}
+
 	c.QueueCharTask(func() {
 		if c.chargeRouteInterrupted(src) {
 			return
 		}
 		c.startSlitherPhase(src)
-	}, windup)
+	}, chargeWindup-windup)
 	c.QueueCharTask(func() {
 		c.finishHeldCharge(src)
-	}, windup+slitherDuration)
+	}, chargeWindup-windup+slitherDuration)
 
 	return action.Info{
 		Frames: func(next action.Action) int {
@@ -201,19 +220,19 @@ func (c *char) heldChargeAttack(p map[string]int) (action.Info, error) {
 			}
 			if c.chargeRoute.releaseStartFrame > 0 {
 				phaseStartOffset := c.chargeRoute.releaseStartFrame - src
-				return phaseStartOffset + chargeFrames[next]
+				return phaseStartOffset + phantasmFrames[next]
 			}
 			switch next {
 			case action.ActionCharge:
-				return windup + slitherDuration + chargeFrames[next]
+				return chargeWindup - windup + slitherDuration + phantasmFrames[next]
 			case action.ActionAttack, action.ActionSkill, action.ActionBurst, action.ActionDash, action.ActionJump, action.ActionSwap, action.ActionWalk:
-				return windup + slitherMinCancelFrames
+				return chargeWindup - windup + slitherMinCancelFrames
 			default:
-				return windup + slitherDuration + chargeFrames[action.InvalidAction]
+				return chargeWindup - windup + slitherDuration + phantasmFrames[action.InvalidAction]
 			}
 		},
-		AnimationLength: windup + slitherDuration + chargeFrames[action.InvalidAction],
-		CanQueueAfter:   windup + 1,
+		AnimationLength: chargeWindup - windup + slitherDuration + phantasmFrames[action.InvalidAction],
+		CanQueueAfter:   chargeWindup - windup + 1,
 		State:           action.ChargeAttackState,
 		OnRemoved: func(next action.AnimationState) {
 			if next != action.ChargeAttackState {
@@ -334,71 +353,60 @@ func (c *char) basicChargeAttack() (action.Info, error) {
 
 func (c *char) queueBasicChargeRelease() {
 	ai := info.AttackInfo{
-		ActorIndex: c.Index(),
-		Abil:       "Charge Attack",
-		AttackTag:  attacks.AttackTagExtra,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Dendro,
-		Durability: 25,
-		Mult:       charge[0][c.TalentLvlAttack()],
+		ActorIndex:       c.Index(),
+		Abil:             "Charge Attack",
+		AttackTag:        attacks.AttackTagExtra,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
+		Element:          attributes.Dendro,
+		Durability:       25,
+		HitlagFactor:     0.01,
+		HitlagHaltFrames: 0.07 * 60,
+		Mult:             charge[c.TalentLvlAttack()],
 	}
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), info.Point{Y: -2}, 3, 9),
-		basicChargeHitmark,
-		basicChargeHitmark,
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 3),
+		chargeHitmark,
+		chargeHitmark,
 	)
-	c.QueueCharTask(c.absorbSeedsOfDeceit, basicChargeHitmark)
+	c.QueueCharTask(c.absorbSeedsOfDeceit, chargeHitmark)
 }
 
 func (c *char) queuePhantasmPerformance(src int) {
-	consumeFrame := phantasmConsumeDewFrame
 	c.QueueCharTask(func() {
 		if c.chargeRoute.src != src {
 			return
 		}
-		c.Core.Player.ConsumeVerdantDew(1)
+		c.Core.Player.ConsumeDew(1)
 		c.absorbSeedsOfDeceit()
-	}, consumeFrame)
-
-	shadeScaleBonus := c.c1ShadeScaleBonus()
-	phantasmVeilMultiplier := 1 + c.phantasmVeilBonus()
+	}, phantasmConsumeDewFrame)
 
 	neferHit1 := info.AttackInfo{
-		ActorIndex: c.Index(),
-		Abil:       "Phantasm Performance (Nefer 1)",
-		AttackTag:  attacks.AttackTagExtra,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Dendro,
-		Durability: 25,
-		Mult:       phantasm[0][c.TalentLvlSkill()] * phantasmVeilMultiplier,
-		FlatDmg:    c.Stat(attributes.EM) * phantasm[1][c.TalentLvlSkill()] * phantasmVeilMultiplier,
+		ActorIndex:       c.Index(),
+		Abil:             "Phantasm Performance (Nefer 1)",
+		AttackTag:        attacks.AttackTagExtra,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
+		Element:          attributes.Dendro,
+		Durability:       25,
+		HitlagFactor:     0.01,
+		HitlagHaltFrames: chargeHitlagFrames[0] * 60,
+		Mult:             phantasm_nefer_1_att[c.TalentLvlSkill()],
+		FlatDmg:          c.Stat(attributes.EM) * phantasm_nefer_1_em[c.TalentLvlSkill()],
 	}
-	neferHit2 := info.AttackInfo{
-		ActorIndex: c.Index(),
-		Abil:       "Phantasm Performance (Nefer 2)",
-		AttackTag:  attacks.AttackTagExtra,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
-		Element:    attributes.Dendro,
-		Durability: 25,
-		Mult:       phantasm[2][c.TalentLvlSkill()] * phantasmVeilMultiplier,
-		FlatDmg:    c.Stat(attributes.EM) * phantasm[3][c.TalentLvlSkill()] * phantasmVeilMultiplier,
-	}
-	if c.Base.Cons >= 6 {
-		neferHit2.AttackTag = attacks.AttackTagDirectLunarBloom
-		neferHit2.Durability = 0
-		neferHit2.UseEM = true
-		neferHit2.IgnoreDefPercent = 1
-		neferHit2.Mult = c6PhantasmHit2EM * phantasmVeilMultiplier
-		neferHit2.FlatDmg = 0
-	}
+
+	neferHit2 := neferHit1
+	neferHit2.Abil = "Phantasm Performance (Nefer 2)"
+	neferHit2.HitlagHaltFrames = chargeHitlagFrames[1] * 60
+	neferHit2.Mult = phantasm_nefer_2_att[c.TalentLvlSkill()]
+	neferHit2.FlatDmg = c.Stat(attributes.EM) * phantasm_nefer_2_em[c.TalentLvlSkill()]
+
+	c.c6Charge(&neferHit2)
+
 	shadeHit1 := info.AttackInfo{
 		ActorIndex:       c.Index(),
 		Abil:             "Phantasm Performance (Shade 1)",
@@ -408,35 +416,32 @@ func (c *char) queuePhantasmPerformance(src int) {
 		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Dendro,
 		UseEM:            true,
+		HitlagFactor:     0.01,
 		IgnoreDefPercent: 1,
-		Mult:             (phantasm[4][c.TalentLvlSkill()] + shadeScaleBonus) * phantasmVeilMultiplier,
+		Mult:             phantasm_shade_1_em[c.TalentLvlSkill()],
+		FlatDmg:          c.Stat(attributes.EM) * c.c1ShadeScaleBonus(),
 	}
+
 	shadeHit2 := shadeHit1
 	shadeHit2.Abil = "Phantasm Performance (Shade 2)"
-	shadeHit2.Mult = (phantasm[5][c.TalentLvlSkill()] + shadeScaleBonus) * phantasmVeilMultiplier
+	shadeHit2.Mult = phantasm_shade_2_em[c.TalentLvlSkill()]
+
 	shadeHit3 := shadeHit1
 	shadeHit3.Abil = "Phantasm Performance (Shade 3)"
-	shadeHit3.Mult = (phantasm[6][c.TalentLvlSkill()] + shadeScaleBonus) * phantasmVeilMultiplier
+	shadeHit3.HitlagHaltFrames = 0.08 * 60
+	shadeHit3.Mult = phantasm_shade_3_em[c.TalentLvlSkill()]
 
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
-	c.Core.QueueAttack(neferHit1, ap, phantasmHit1, phantasmHit1)
-	c.Core.QueueAttack(shadeHit1, ap, phantasmHit2, phantasmHit2)
-	c.Core.QueueAttack(shadeHit2, ap, phantasmHit3, phantasmHit3)
-	c.Core.QueueAttack(neferHit2, ap, phantasmHit4, phantasmHit4)
-	c.Core.QueueAttack(shadeHit3, ap, phantasmHit5, phantasmHit5)
-	if c.Base.Cons >= 6 {
-		c6EndHit := info.AttackInfo{
-			ActorIndex:       c.Index(),
-			Abil:             "Phantasm Performance (C6 End Hit)",
-			AttackTag:        attacks.AttackTagDirectLunarBloom,
-			ICDTag:           attacks.ICDTagNone,
-			ICDGroup:         attacks.ICDGroupDefault,
-			StrikeType:       attacks.StrikeTypeDefault,
-			Element:          attributes.Dendro,
-			UseEM:            true,
-			IgnoreDefPercent: 1,
-			Mult:             c6PhantasmEndEM * phantasmVeilMultiplier,
-		}
-		c.Core.QueueAttack(c6EndHit, ap, phantasmAnimationLength, phantasmAnimationLength)
+	phantasmHits := []*info.AttackInfo{&neferHit1, &shadeHit1, &shadeHit2, &neferHit2, &shadeHit3}
+
+	for i, ai := range phantasmHits {
+		c.Core.Tasks.Add(func() {
+			ai.Mult *= c.phantasmVeilBonus()
+			ai.FlatDmg *= c.phantasmVeilBonus()
+			offset := info.Point{X: phantasmOffsets[i][0], Y: phantasmOffsets[i][1]}
+			c.Core.QueueAttack(*ai,
+				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), offset, phantasmHitboxes[i]),
+				0,
+				0)
+		}, phantasmHitmarks[i])
 	}
 }

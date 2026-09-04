@@ -1,41 +1,57 @@
 package nefer
 
 import (
-	"math"
-
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 const (
 	lunarbloomBonusKey = "nefer-lunarbloom-bonus"
-	p2DewWindowKey     = "nefer-p2-dew-window"
-	p2DewRateKey       = "nefer-p2-dew-rate"
-	p2DewWindowDur     = 5 * 60
+	a4DewWindowKey     = "nefer-p2-dew-window"
+	a4DewRateKey       = "nefer-p2-dew-rate"
+	a4DewWindowDur     = 5 * 60
 )
 
-func (c *char) p2Active() bool {
-	return c.Base.Ascension >= 4
-}
-
-func (c *char) p2DewRateBonus() float64 {
-	bonusSteps := math.Floor(max(c.Stat(attributes.EM)-500, 0) / 100)
-	return min(bonusSteps*0.1, 0.5)
-}
-
-func (c *char) p2Init() {
-	if !c.p2Active() {
+func (c *char) a1Init() {
+	if c.Base.Ascension < 1 {
 		return
 	}
 
-	c.Core.Player.AddVerdantDewRateMod(p2DewRateKey, -1, func() (float64, bool) {
-		if !c.StatusIsActive(shadowDanceKey) || !c.slitherActive() || !c.StatusIsActive(p2DewWindowKey) {
+	if c.Core.Player.GetMoonsignLevel() < 2 {
+		return
+	}
+
+	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...any) {
+		if !c.StatusIsActive(seedWindowKey) {
+			return
+		}
+
+		core, ok := args[0].(info.Gadget)
+		if !ok || core.GadgetTyp() != info.GadgetTypDendroCore {
+			return
+		}
+		if c.isSeedOfDeceit(core) {
+			return
+		}
+
+		c.replaceDendroCoreWithSeed(core)
+	}, "nefer-a1-seed-conversion")
+}
+
+func (c *char) a4Init() {
+	if c.Base.Ascension < 4 {
+		return
+	}
+
+	c.Core.Player.AddVerdantDewRateMod(a4DewRateKey, -1, func() (float64, bool) {
+		if !c.StatusIsActive(shadowDanceKey) || !c.StatusIsActive(a4DewWindowKey) {
 			return 0, false
 		}
-		return c.p2DewRateBonus(), false
+		return c.a4BuffAmt, false
 	})
 
 	c.Core.Events.Subscribe(event.OnLunarBloom, func(args ...any) {
@@ -43,8 +59,30 @@ func (c *char) p2Init() {
 		if atk.Info.ActorIndex < 0 || atk.Info.ActorIndex >= len(c.Core.Player.Chars()) {
 			return
 		}
-		c.AddStatus(p2DewWindowKey, p2DewWindowDur, true)
-	}, p2DewWindowKey)
+		c.AddStatus(a4DewWindowKey, a4DewWindowDur, true)
+		c.updateDewRateBonusStart(c.Core.F)
+	}, a4DewWindowKey)
+}
+
+func (c *char) updateDewRateBonusStart(src int) {
+	c.a4BuffSrc = src
+	c.updateDewRateBonus(src)
+}
+
+func (c *char) updateDewRateBonus(src int) {
+	if src != c.a4BuffSrc {
+		return
+	}
+
+	if !c.StatusIsActive(a4DewWindowKey) {
+		return
+	}
+
+	c.a4BuffAmt = min(max(c.Stat(attributes.EM)-500, 0)/1000, 0.5)
+
+	c.QueueCharTask(func() {
+		c.updateDewRateBonus(src)
+	}, 0.5*60)
 }
 
 func (c *char) lunarbloomInit() {
@@ -55,6 +93,12 @@ func (c *char) lunarbloomInit() {
 		if atk.Info.AttackTag != attacks.AttackTagDirectLunarBloom {
 			return
 		}
-		atk.Info.BaseDmgBonus += min(c.Stat(attributes.EM)*0.000175, 0.14)
+		bonus := min(c.Stat(attributes.EM)*0.000175, 0.14)
+
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("nefer adding lunarbloom base damage", glog.LogCharacterEvent, c.Index()).Write("bonus", bonus)
+		}
+
+		atk.Info.BaseDmgBonus += bonus
 	}, lunarbloomBonusKey)
 }
