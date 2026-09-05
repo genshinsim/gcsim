@@ -3425,6 +3425,56 @@
       "deployable": false
     }
   ],
+  "prune": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "time": 0.03,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N2",
+      "time": 0.03,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N3",
+      "time": 0.03,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "charge",
+      "name": "CA",
+      "time": 0.03,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "skill",
+      "name": "E",
+      "time": 0.02,
+      "scale": 0.05,
+      "defense_halt": false,
+      "deployable": false
+    },
+    {
+      "ability": "skill",
+      "name": "E-Convert",
+      "time": 0.05,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    }
+  ],
   "qiqi": [
     {
       "ability": "attack",
