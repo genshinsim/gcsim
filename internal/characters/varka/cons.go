@@ -1,6 +1,7 @@
 package varka
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -23,7 +24,7 @@ func (c *char) c1OnSkill() {
 		return
 	}
 	c.c1Extra = 1
-	c.fourWindsChargesAva = 1
+	c.ResetActionCooldown(action.ActionSpecialSkill)
 }
 
 func (c *char) c1OnSpecialSkill() float64 {

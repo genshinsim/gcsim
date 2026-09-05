@@ -6,19 +6,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
 type char struct {
 	*tmpl.Character
-	conversionElem attributes.Element
-
-	// when readyFrame is -1, it means that the skill was used
-	fourWindsChargesStarted int
-	fourWindsChargesAva     int
-	fourWindsCDDoneF        int
-	fourWindsCDStacks       int
+	conversionElem    attributes.Element
+	fourWindsCDStacks int
 
 	a1Buff       float64
 	a1Multiplier float64
@@ -41,9 +35,10 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 		hex = 1
 	}
 	c.IsHexerei = (hex != 0)
-	c.fourWindsCDDoneF = -1
 
 	w.Character = &c
+
+	c.SetNumCharges(action.ActionSpecialSkill, 2)
 
 	return nil
 }
@@ -70,18 +65,15 @@ func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 }
 
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
-	if a == action.ActionSkill && c.StatusIsActive(skillKey) {
-		if c.fourWindsCharges() <= 0 && !c.c6FreeSkill() {
-			return false, action.SkillCD
-		}
-		return true, action.NoFailure
+	if a == action.ActionSkill && c.StatusIsActive(skillKey) && c.conversionElem != defaultConversionElement {
+		c.Character.ActionReady(action.ActionSpecialSkill, p)
 	}
 	return c.Character.ActionReady(a, p)
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	if a == action.ActionCharge {
-		if c.StatusIsActive(skillKey) && c.fourWindsCharges() > 0 {
+		if c.StatusIsActive(skillKey) && c.Charges(action.ActionSpecialSkill) > 0 && c.conversionElem != defaultConversionElement {
 			return 0
 		}
 		return 50
@@ -90,39 +82,29 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 }
 
 func (c *char) Charges(a action.Action) int {
-	if a == action.ActionSkill && c.StatusIsActive(skillKey) {
-		return c.fourWindsCharges()
+	if a == action.ActionSkill && c.StatusIsActive(skillKey) && c.conversionElem != defaultConversionElement {
+		return c.Character.Charges(action.ActionSpecialSkill)
 	}
 	return c.Character.Charges(a)
 }
 
 func (c *char) Cooldown(a action.Action) int {
-	if a == action.ActionSkill && c.StatusIsActive(skillKey) {
-		if cd := c.fourWindsCD(); cd >= 0 {
-			return cd
-		}
+	if a == action.ActionSkill && c.StatusIsActive(skillKey) && c.conversionElem != defaultConversionElement {
+		return c.Character.Cooldown(action.ActionSpecialSkill)
 	}
 	return c.Character.Cooldown(a)
 }
 
 func (c *char) ReduceActionCooldown(a action.Action, v int) {
-	if a == action.ActionSkill && c.StatusIsActive(skillKey) {
-		c.reduceFourWindsCD(v)
+	if a == action.ActionSkill && c.StatusIsActive(skillKey) && c.conversionElem != defaultConversionElement {
+		c.Character.ReduceActionCooldown(action.ActionSpecialSkill, v)
 	}
 	c.Character.ReduceActionCooldown(a, v)
 }
 
 func (c *char) ResetActionCooldown(a action.Action) {
-	if a == action.ActionSkill && c.StatusIsActive(skillKey) {
-		c.resetFourWindsCD()
+	if a == action.ActionSkill && c.StatusIsActive(skillKey) && c.conversionElem != defaultConversionElement {
+		c.Character.ResetActionCooldown(action.ActionSpecialSkill)
 	}
 	c.Character.ResetActionCooldown(a)
-}
-
-func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
-	// can use charge without attack beforehand unlike most of the other sword users
-	// if a == action.ActionCharge {
-	// 	return nil
-	// }
-	return c.Character.NextQueueItemIsValid(k, a, p)
 }
