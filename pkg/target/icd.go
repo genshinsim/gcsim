@@ -39,6 +39,11 @@ func (t *Target) WillApplyEle(tag attacks.ICDTag, grp attacks.ICDGroup, char int
 }
 
 func (t *Target) GroupTagDamageMult(tag attacks.ICDTag, grp attacks.ICDGroup, char int) float64 {
+	// no icd if no tag
+	if tag == attacks.ICDTagNone {
+		return 1
+	}
+
 	// check if we need to start timer
 	if !t.icdDamageTagOnTimer[NewIcdKey(char, tag, grp)] {
 		t.icdDamageTagOnTimer[NewIcdKey(char, tag, grp)] = true
