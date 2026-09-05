@@ -11,6 +11,11 @@
       "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
     },
     {
+      "ability": "-",
+      "param": "true_moon_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +10% CR, +20% DEF, +20% ER, +60 EM, +20% HP, +20% ATK, +20% CD. Set via '+params=[true_moon_story_buff=...]' in the char's line."
+    },
+    {
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), 1 for Hold."
@@ -31,6 +36,11 @@
       "ability": "-",
       "param": "skirk_story_buff",
       "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "true_moon_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +10% CR, +20% DEF, +20% ER, +60 EM, +20% HP, +20% ATK, +20% CD. Set via '+params=[true_moon_story_buff=...]' in the char's line."
     }
   ],
   "aetherelectro": [
@@ -43,6 +53,11 @@
       "ability": "-",
       "param": "skirk_story_buff",
       "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "true_moon_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +10% CR, +20% DEF, +20% ER, +60 EM, +20% HP, +20% ATK, +20% CD. Set via '+params=[true_moon_story_buff=...]' in the char's line."
     },
     {
       "ability": "skill",
@@ -70,6 +85,11 @@
       "ability": "-",
       "param": "skirk_story_buff",
       "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "true_moon_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +10% CR, +20% DEF, +20% ER, +60 EM, +20% HP, +20% ATK, +20% CD. Set via '+params=[true_moon_story_buff=...]' in the char's line."
     },
     {
       "ability": "skill",
@@ -104,6 +124,11 @@
       "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
     },
     {
+      "ability": "-",
+      "param": "true_moon_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +10% CR, +20% DEF, +20% ER, +60 EM, +20% HP, +20% ATK, +20% CD. Set via '+params=[true_moon_story_buff=...]' in the char's line."
+    },
+    {
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), 1 for Hold."
@@ -134,6 +159,11 @@
       "ability": "-",
       "param": "skirk_story_buff",
       "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "true_moon_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +10% CR, +20% DEF, +20% ER, +60 EM, +20% HP, +20% ATK, +20% CD. Set via '+params=[true_moon_story_buff=...]' in the char's line."
     },
     {
       "ability": "low_plunge",
@@ -1095,6 +1125,11 @@
       "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
     },
     {
+      "ability": "-",
+      "param": "true_moon_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +10% CR, +20% DEF, +20% ER, +60 EM, +20% HP, +20% ATK, +20% CD. Set via '+params=[true_moon_story_buff=...]' in the char's line."
+    },
+    {
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), 1 for Hold."
@@ -1115,6 +1150,11 @@
       "ability": "-",
       "param": "skirk_story_buff",
       "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "true_moon_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +10% CR, +20% DEF, +20% ER, +60 EM, +20% HP, +20% ATK, +20% CD. Set via '+params=[true_moon_story_buff=...]' in the char's line."
     }
   ],
   "lumineelectro": [
@@ -1127,6 +1167,11 @@
       "ability": "-",
       "param": "skirk_story_buff",
       "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "true_moon_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +10% CR, +20% DEF, +20% ER, +60 EM, +20% HP, +20% ATK, +20% CD. Set via '+params=[true_moon_story_buff=...]' in the char's line."
     },
     {
       "ability": "skill",
@@ -1154,6 +1199,11 @@
       "ability": "-",
       "param": "skirk_story_buff",
       "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "true_moon_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +10% CR, +20% DEF, +20% ER, +60 EM, +20% HP, +20% ATK, +20% CD. Set via '+params=[true_moon_story_buff=...]' in the char's line."
     },
     {
       "ability": "skill",
@@ -1188,6 +1238,11 @@
       "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
     },
     {
+      "ability": "-",
+      "param": "true_moon_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +10% CR, +20% DEF, +20% ER, +60 EM, +20% HP, +20% ATK, +20% CD. Set via '+params=[true_moon_story_buff=...]' in the char's line."
+    },
+    {
       "ability": "skill",
       "param": "hold",
       "desc": "0 for Tap (default), 1 for Hold."
@@ -1218,6 +1273,11 @@
       "ability": "-",
       "param": "skirk_story_buff",
       "desc": "0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line."
+    },
+    {
+      "ability": "-",
+      "param": "true_moon_story_buff",
+      "desc": "0 for no buffs, 1 (default) for +10% CR, +20% DEF, +20% ER, +60 EM, +20% HP, +20% ATK, +20% CD. Set via '+params=[true_moon_story_buff=...]' in the char's line."
     },
     {
       "ability": "low_plunge",
