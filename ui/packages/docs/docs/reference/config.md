@@ -24,6 +24,7 @@ options iteration=1000 duration=90 swap_delay=14;
 | `hitlag` | Whether hitlag should be enabled. See the [hitlag page](/mechanics/hitlag) for more details. | true |
 | `defhalt` | Whether to enable `canBeDefenseHalt` for hitlag. See the [hitlag page](/mechanics/hitlag) for more details. | true |
 | `ignore_burst_energy` | Bursts can be used without being at full energy. This will make .char.burst.ready only check for cooldowns. Energy levels for other effects will still work as usual. Enabling this setting will cause a warning to appear on the results page indicating that this setting was active. | false |
+| `ignore_skill_cooldown` | Skills can be used while on cooldown. Cooldowns are never started, so .char.skill.ready is always true and effects that reset or reduce skill cooldown do nothing. Ability windows that are not cooldowns, such as Fischl's Oz recast, still apply. Enabling this setting will cause a warning to appear on the results page indicating that this setting was active. | false |
 
 ### Set energy generation
 
@@ -93,6 +94,17 @@ bennett add stats hp=717 hp%=0.058 atk=121 atk%=0.635 def=102 em=42 er=0.156 cr=
 :::danger
 With the exception of the stats (i.e. `hp`, `atk`, etc...), all other fields not starting with a `+` are mandatory.
 :::danger
+
+:::info
+The mandatory fields are restricted to the following ranges:
+
+- `cons`: 0 to 6
+- `talent`: 1 to 10, for each of attack, skill and burst
+- `refine`: 1 to 5
+- `lvl`: the base level cannot be higher than the max (ascension) level
+
+A config using a value outside of these ranges will fail to parse.
+:::
 
 :::info
 An optional param flag may be added to the character/weapon/artifact set via the `+params` flag. This optional param is defined by each character/weapon/artifact set.

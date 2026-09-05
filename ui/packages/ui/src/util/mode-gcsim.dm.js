@@ -269,7 +269,7 @@ ace.define(
       var gcsimOthers =
         '(interval|every|once|amount|electro%?|element|resist|pyro%?|dendro%?|hydro%?|geo%?|anemo%?|physical|cryo%?|start_hp%?|start_energy|pos|radius|freeze_resist)';
       var gcsimOptions =
-        'iteration|duration|swap_delay|workers|hitlag|defhalt|ignore_burst_energy';
+        'iteration|duration|swap_delay|workers|hitlag|defhalt|ignore_burst_energy|ignore_skill_cooldown';
       var keywordMapper = this.createKeywordMapper(
         {
           keyword: gcsimKeywords,

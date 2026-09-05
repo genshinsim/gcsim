@@ -200,6 +200,7 @@ export interface Settings {
   iterations?: number;
   delays?: Delays;
   ignore_burst_energy?: boolean;
+  ignore_skill_cooldown?: boolean;
 }
 
 export interface EnergySettings {
