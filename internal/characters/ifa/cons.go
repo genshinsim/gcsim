@@ -10,8 +10,9 @@ import (
 )
 
 const (
-	c1EnergyKey    = "ifa-c1-energy"
-	c1EnergyICDKey = "ifa-c1-energy-icd"
+	c1EnergyKey      = "ifa-c1-energy"
+	c1EnergyICDKey   = "ifa-c1-energy-icd"
+	c6ExtensionFrame = 11
 )
 
 func (c *char) c1CB(a info.AttackCB) {
@@ -60,13 +61,13 @@ func (c *char) c4OnBurst() {
 	})
 }
 
-func (c *char) c6OnHoldAttackSkill() {
+func (c *char) c6OnHoldAttackSkill() int {
 	if c.Base.Cons < 6 {
-		return
+		return 0
 	}
 
 	if c.Core.Rand.Float64() > 0.5 {
-		return
+		return 0
 	}
 
 	ai := info.AttackInfo{
@@ -98,5 +99,7 @@ func (c *char) c6OnHoldAttackSkill() {
 			0,
 			0,
 		)
-	}, 1)
+	}, c6ExtensionFrame+1)
+
+	return c6ExtensionFrame
 }
