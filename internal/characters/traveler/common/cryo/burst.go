@@ -29,6 +29,15 @@ func init() {
 	burstFrames[1][action.ActionSwap] = 57 // Q -> Swap
 }
 
+// Generates an ice javelin with the power of Cryo, then directs it at enemies to deal multiple
+// instances of Cryo DMG.
+//
+// When cast, the Traveler consumes all existing stacks of Frostglow, which in turn increases the
+// DMG dealt by this Elemental Burst. When 8 stacks of Frostglow are consumed, the number of DMG
+// instances caused by the javelins is also increased.
+//
+// Radiance: Stellar Glimmer: DMG from the current Elemental Burst is changed to Cryo DMG of the
+// corresponding Stellar Glimmer reaction type.
 func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 	attack := func() {
 		ai := info.AttackInfo{

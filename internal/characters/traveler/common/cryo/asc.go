@@ -11,6 +11,10 @@ const (
 	a4Key = "travelercryo-a4"
 )
 
+// Radiance: Stellar-Conduct: When a Frostpierce Star is on the field, DMG from the Traveler's
+// Normal Attacks, Charged Attacks, and Plunging Attacks are converted to Cryo DMG that cannot be
+// overridden by another elemental infusion, and DMG dealt is also increased by 80% of the
+// Traveler's ATK.
 func (c *Traveler) a1Conversion(ai *info.AttackInfo) {
 	if c.Base.Ascension < 1 {
 		return
@@ -29,6 +33,9 @@ func (c *Traveler) a1Conversion(ai *info.AttackInfo) {
 	ai.Mult += 0.8
 }
 
+// The Traveler's Elemental Mastery is increased by 8% of their ATK. Up to 160 Elemental Mastery can
+//
+//	be gained in this way.
 func (c *Traveler) a4Init() {
 	if c.Base.Ascension < 4 {
 		return

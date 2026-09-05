@@ -18,6 +18,8 @@ const (
 	c6Key        = "travelercryo-c6"
 )
 
+// The Traveler regenerates 5 Elemental Energy when they deal Stellar Glimmer DMG. This effect can
+// trigger once every 0.5s.
 func (c *Traveler) c1Init() {
 	if c.Base.Cons < 1 {
 		return
@@ -50,6 +52,11 @@ func (c *Traveler) c1Init() {
 	}, c1Key)
 }
 
+// The active character's Elemental Mastery is increased by 60 for 5s when an opponent is hit by an
+// ice crystal fired by the Elemental Skill Ice Fog Piercer.
+// Additionally, when a character affected by the aforementioned effect triggers a Stellar Glimmer
+// reaction or deals Stellar Glimmer reaction DMG, the Elemental Mastery boost described above will
+// be increased to 120 for its duration.
 func (c *Traveler) c2Init() {
 	if c.Base.Cons < 2 {
 		return
@@ -90,7 +97,8 @@ func (c *Traveler) c2Init() {
 			return
 		}
 
-		char.AddStatus(c2UpgradeKey, 5*60, true)
+		c2Dur := char.StatusDuration(c2Key)
+		char.AddStatus(c2UpgradeKey, c2Dur, true)
 	}
 
 	c.Core.Events.Subscribe(event.OnStellarConduct, fReactionHook, c2Key)
@@ -121,6 +129,8 @@ func (c *Traveler) c2CB(a info.AttackCB) {
 	})
 }
 
+// The duration of the Frostpierce Star created by the Elemental Skill Ice Fog Piercer is increased
+// by 25%.
 func (c *Traveler) c4SkillBonusDur() int {
 	if c.Base.Cons < 4 {
 		return 0
@@ -129,6 +139,9 @@ func (c *Traveler) c4SkillBonusDur() int {
 	return 3 * 60
 }
 
+// Every stack of Frostglow consumed when using the Elemental Burst Frostbound Javelin increases
+// Stellar Glimmer reaction DMG dealt by other party members by 5% for 15s. A maximum 40% increase
+// can be obtained in this way.
 func (c *Traveler) c6OnBurst(stacks int) {
 	if c.Base.Cons < 6 {
 		return
