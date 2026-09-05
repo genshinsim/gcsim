@@ -160,8 +160,14 @@ func (c *char) c4() {
 	}
 }
 
-// While Yumemizuki Mizuki is in the Dreamdrifter state, Swirl DMG dealt by nearby party members can Crit,
-// with CRIT Rate fixed at 30%, and CRIT DMG fixed at 100%.
+// While Yumemizuki Mizuki is in the Dreamdrifter state, Swirl DMG dealt by nearby party members
+// can score CRIT Hits, with CRIT Rate fixed at 30%, and CRIT DMG fixed at 100%. The CRIT Rate of
+// any Stellar Swirl DMG dealt by these party members is also increased by 10%, while CRIT DMG is
+// increased by 20%.
+
+// Every point of Elemental Mastery Yumemizuki Mizuki has in excess of 500 increases her CRIT Rate
+// by 0.04% and her CRIT DMG by 0.16%. Yumemizuki Mizuki's CRIT Rate and CRIT DMG can be increased
+// by up to 20% and 80% in this way, respectively.
 func (c *char) c6() {
 	if c.Base.Cons < 6 {
 		return
@@ -195,19 +201,6 @@ func (c *char) c6() {
 		ae.Snapshot.Stats[attributes.CD] = c6CD
 	}, c6Key)
 
-	for _, char := range c.Core.Player.Chars() {
-		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBase(c6Key, -1),
-			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
-				if atk.Info.AttackTag != attacks.AttackTagDirectStellarSwirl {
-					return nil
-				}
-
-				return c.c6Buff
-			},
-		})
-	}
-
 	c.c6Buff = make([]float64, attributes.EndStatType)
 	c.c6Buff[attributes.CR] = 0.1
 	c.c6Buff[attributes.CD] = 0.2
@@ -217,11 +210,29 @@ func (c *char) c6() {
 		if !ok {
 			return
 		}
+
 		if ae.Info.AttackTag != attacks.AttackTagReactionStellarSwirl {
+			return
+		}
+
+		// The effect is only when mizuki is in dreamDrifter state
+		if !c.StatusIsActive(dreamDrifterStateKey) {
 			return
 		}
 
 		ae.Snapshot.Stats[attributes.CR] += 0.1
 		ae.Snapshot.Stats[attributes.CD] += 0.2
-	}, c6Key+"-lunarcharged")
+	}, c6Key+"-stellarswirl")
+
+	for _, char := range c.Core.Player.Chars() {
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase(c6Key, -1),
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+				if atk.Info.AttackTag != attacks.AttackTagDirectStellarSwirl {
+					return nil
+				}
+				return c.c6Buff
+			},
+		})
+	}
 }
