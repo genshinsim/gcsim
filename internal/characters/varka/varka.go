@@ -64,16 +64,23 @@ func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	return c.Character.AnimationStartDelay(k)
 }
 
+func (c *char) useSpecialSkill() bool {
+	return c.StatusIsActive(skillKey) && c.convertToFourWinds()
+}
+
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
-	if a == action.ActionSkill && c.StatusIsActive(skillKey) && c.conversionElem != defaultConversionElement {
-		c.Character.ActionReady(action.ActionSpecialSkill, p)
+	if a == action.ActionSkill && c.useSpecialSkill() {
+		if c.Charges(action.ActionSpecialSkill) > 0 {
+			return true, action.NoFailure
+		}
+		return false, action.SkillCD
 	}
 	return c.Character.ActionReady(a, p)
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	if a == action.ActionCharge {
-		if c.StatusIsActive(skillKey) && c.Charges(action.ActionSpecialSkill) > 0 && c.conversionElem != defaultConversionElement {
+		if c.useSpecialSkill() && c.Charges(action.ActionSpecialSkill) > 0 {
 			return 0
 		}
 		return 50
@@ -82,28 +89,28 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 }
 
 func (c *char) Charges(a action.Action) int {
-	if a == action.ActionSkill && c.StatusIsActive(skillKey) && c.conversionElem != defaultConversionElement {
+	if a == action.ActionSkill && c.useSpecialSkill() {
 		return c.Character.Charges(action.ActionSpecialSkill)
 	}
 	return c.Character.Charges(a)
 }
 
 func (c *char) Cooldown(a action.Action) int {
-	if a == action.ActionSkill && c.StatusIsActive(skillKey) && c.conversionElem != defaultConversionElement {
+	if a == action.ActionSkill && c.useSpecialSkill() {
 		return c.Character.Cooldown(action.ActionSpecialSkill)
 	}
 	return c.Character.Cooldown(a)
 }
 
 func (c *char) ReduceActionCooldown(a action.Action, v int) {
-	if a == action.ActionSkill && c.StatusIsActive(skillKey) && c.conversionElem != defaultConversionElement {
+	if a == action.ActionSkill && c.useSpecialSkill() {
 		c.Character.ReduceActionCooldown(action.ActionSpecialSkill, v)
 	}
 	c.Character.ReduceActionCooldown(a, v)
 }
 
 func (c *char) ResetActionCooldown(a action.Action) {
-	if a == action.ActionSkill && c.StatusIsActive(skillKey) && c.conversionElem != defaultConversionElement {
+	if a == action.ActionSkill && c.useSpecialSkill() {
 		c.Character.ResetActionCooldown(action.ActionSpecialSkill)
 	}
 	c.Character.ResetActionCooldown(a)

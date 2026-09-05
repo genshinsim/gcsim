@@ -81,7 +81,7 @@ func (c *char) getConversionElem(prio ...attributes.Element) attributes.Element 
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	if c.StatModIsActive(skillKey) && c.convertToFourWinds() {
+	if c.useSpecialSkill() {
 		return c.fourWinds(c.c6FreeSkill())
 	}
 
@@ -108,15 +108,16 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		if c.convertToFourWinds() {
 			c.fourWindsCDStacks = 0
 
-			c.c1OnSkill()
-
 			// discard any in progress CD queues
 			c.DiscardActionCooldown(action.ActionSpecialSkill, 1*60)
 
 			// discard any ready special skill charges and start a new CD for each charge
 			for range c.AvailableCDCharge[action.ActionSpecialSkill] {
-				c.SetCD(action.ActionSpecialSkill, 11*60)
+				c.SetCD(action.ActionSpecialSkill, fourWindsCD)
 			}
+
+			// must be called after the CDs are reset
+			c.c1OnSkill()
 		}
 	}, skillHitmark-1) // converts to skill state before the skill hitmark, relevant for Sac GS resetting cooldowns
 	c.SetCDWithDelay(action.ActionSkill, skillCD, 39)
@@ -155,7 +156,7 @@ func (c *char) fourWinds(c6Free bool) (action.Info, error) {
 
 	if !c6Free {
 		c.QueueCharTask(func() {
-			c.SetCD(action.ActionSpecialSkill, 11*60)
+			c.SetCD(action.ActionSpecialSkill, fourWindsCD)
 			c.c6OnSkill()
 		}, 39)
 	}
