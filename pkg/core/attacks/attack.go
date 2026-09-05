@@ -1,5 +1,7 @@
 package attacks
 
+import "slices"
+
 type AttackTag int // attacktag is used instead of actions etc..
 
 const (
@@ -10,11 +12,12 @@ const (
 	AttackTagElementalArt
 	AttackTagElementalArtHold
 	AttackTagElementalBurst
+	AttackTagRelicSkill
 	AttackTagWeaponSkill
 	AttackTagMonaBubbleBreak
-	AttackTagNoneStat
 
-	ReactionAttackStartDelim
+	AttackTagNoneStat // ignore attacker stats delim
+
 	AttackTagOverloadDamage
 	AttackTagSuperconductDamage
 	AttackTagECDamage
@@ -28,30 +31,53 @@ const (
 	AttackTagBountifulCore // special tag for nilou
 	AttackTagBurgeon
 	AttackTagHyperbloom
-	ReactionAttackEndDelim
 
-	LunarReactionStartDelim
 	AttackTagReactionLunarCharge
 	AttackTagReactionLunarCrystallize
-	LunarReactionEndDelim
 
-	DirectLunarReactionStartDelim
 	AttackTagDirectLunarCharged
 	AttackTagDirectLunarBloom
 	AttackTagDirectLunarCrystallize
-	DirectLunarReactionEndDelim
 
-	StellarReactionStartDelim
 	AttackTagReactionStellarSwirl
-	StellarReactionEndDelim
 
-	DirectStellarReactionStartDelim
 	AttackTagDirectStellarConduct
 	AttackTagDirectStellarSwirl
-	DirectStellarReactionEndDelim
-
-	AttackTagLength
 )
+
+// TODO: get rid of direct/reaction split
+func (t AttackTag) IsReaction() bool { return t >= AttackTagNoneStat }
+func (t AttackTag) IsDirect() bool   { return t.IsLunarDirect() || t.IsStellarDirect() }
+
+var (
+	lunarReact = []AttackTag{
+		AttackTagReactionLunarCharge,
+		AttackTagReactionLunarCrystallize,
+	}
+	lunarDirect = []AttackTag{
+		AttackTagDirectLunarCharged,
+		AttackTagDirectLunarBloom,
+		AttackTagDirectLunarCrystallize,
+	}
+)
+
+func (t AttackTag) IsLunar() bool       { return t.IsLunarReact() || t.IsLunarDirect() }
+func (t AttackTag) IsLunarReact() bool  { return slices.Contains(lunarReact, t) }
+func (t AttackTag) IsLunarDirect() bool { return slices.Contains(lunarDirect, t) }
+
+var (
+	stellarReact = []AttackTag{
+		AttackTagReactionStellarSwirl,
+	}
+	stellarDirect = []AttackTag{
+		AttackTagDirectStellarConduct,
+		AttackTagDirectStellarSwirl,
+	}
+)
+
+func (t AttackTag) IsStellar() bool       { return t.IsStellarReact() || t.IsStellarDirect() }
+func (t AttackTag) IsStellarReact() bool  { return slices.Contains(stellarReact, t) }
+func (t AttackTag) IsStellarDirect() bool { return slices.Contains(stellarDirect, t) }
 
 type StrikeType int
 
@@ -63,6 +89,7 @@ const (
 	StrikeTypeSpear
 )
 
+// TODO: merge AdditionalTag into AttackTag
 type AdditionalTag int
 
 const (
@@ -71,15 +98,3 @@ const (
 	AdditionalTagKinichCannon
 	AdditionalTagVarkaSpecial
 )
-
-func AttackTagIsLunar(tag AttackTag) bool {
-	isReaction := LunarReactionStartDelim < tag && tag < LunarReactionEndDelim
-	isDirect := DirectLunarReactionStartDelim < tag && tag < DirectLunarReactionEndDelim
-	return isReaction || isDirect
-}
-
-func AttackTagIsStellar(tag AttackTag) bool {
-	isReaction := StellarReactionStartDelim < tag && tag < StellarReactionEndDelim
-	isDirect := DirectStellarReactionStartDelim < tag && tag < DirectStellarReactionEndDelim
-	return isReaction || isDirect
-}
