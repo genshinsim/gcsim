@@ -1,0 +1,102 @@
+use: pipeline
+kind: character
+name: luminecryo
+
+override:
+  id: 10000007
+  depot: 705
+
+shortcuts:
+  - travelercryo
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1S7cJszsMoQF6ShCvA7hMjiXMuOCoDRwgW1rseP0uC8k/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/VaIaa4MW9eI
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1QCtYnC_qdrCYwN5qDJLYYGuvx81z9fTGNzPdZ8H4nrU/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/t6dhmLD6rf0
+      video_credit: Kolibri#7675
+
+abilities:
+  - name: default
+    params:
+      base_atk_buff: 0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line.
+      skirk_story_buff: 0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line.
+      true_moon_story_buff: 0 for no buffs, 1 (default) for +10% CR, +20% DEF, +20% ER, +60 EM, +20% HP, +20% ATK, +20% CD and special CA. Set via '+params=[true_moon_story_buff=...]' in the char's line.
+
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1.6
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
+
+      - name: N2
+        shape: Box
+        center: Player
+        box: [1.4, 2.2]
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
+
+      - name: N3
+        shape: Circle
+        center: Player
+        offset: [0, 0.7]
+        radius: 1.5
+        hitlag: { time: 0.06, scale: 0.01, defense_halt: true }
+
+      - name: N4
+        shape: Circle
+        center: Player
+        offset: [0, 0.7]
+        radius: 1.5
+        hitlag: { time: 0.06, scale: 0.01, defense_halt: true }
+
+      - name: N5
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1.6
+        hitlag: { time: 0.1, scale: 0.01, defense_halt: true }
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA-1
+        shape: Circle
+        center: Player
+        radius: 2.2
+
+      - name: CA-2
+        shape: Circle
+        center: Player
+        radius: 2.2
+
+  - name: skill
+    hitbox:
+      - name: E
+        shape: Circle
+        center: Player
+        fan_angle: 100
+        radius: 6
+
+      - name: E-FrostPierce
+        shape: Circle
+        center: Player
+        fan_angle: 100
+        radius: 6
+
+  - name: burst
+    hitbox:
+      - name: Q
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -1.5]
+        box: [3, 3]
+
+  - name: walk
+    note: No action followed by walk has proper frames.

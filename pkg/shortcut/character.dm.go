@@ -8,6 +8,7 @@ import (
 
 var CharNameToKey = map[string]keys.Char{
 	"aetheranemo":             keys.AetherAnemo,
+	"aethercryo":              keys.AetherCryo,
 	"aetherdendro":            keys.AetherDendro,
 	"aetherelectro":           keys.AetherElectro,
 	"aethergeo":               keys.AetherGeo,
@@ -97,6 +98,8 @@ var CharNameToKey = map[string]keys.Char{
 	"lisa":                    keys.Lisa,
 	"lumineanemo":             keys.LumineAnemo,
 	"traveleranemo":           keys.LumineAnemo,
+	"luminecryo":              keys.LumineCryo,
+	"travelercryo":            keys.LumineCryo,
 	"luminedendro":            keys.LumineDendro,
 	"travelerdendro":          keys.LumineDendro,
 	"lumineelectro":           keys.LumineElectro,

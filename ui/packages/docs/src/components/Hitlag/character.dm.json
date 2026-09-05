@@ -41,6 +41,48 @@
       "deployable": false
     }
   ],
+  "aethercryo": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "time": 0.03,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N2",
+      "time": 0.03,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N3",
+      "time": 0.06,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N4",
+      "time": 0.09,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N5",
+      "time": 0.12,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    }
+  ],
   "aetherdendro": [
     {
       "ability": "attack",
@@ -2706,6 +2748,48 @@
     }
   ],
   "lumineanemo": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "time": 0.03,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N2",
+      "time": 0.03,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N3",
+      "time": 0.06,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N4",
+      "time": 0.06,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N5",
+      "time": 0.1,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    }
+  ],
+  "luminecryo": [
     {
       "ability": "attack",
       "name": "N1",
