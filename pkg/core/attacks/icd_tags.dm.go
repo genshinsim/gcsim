@@ -77,6 +77,7 @@ const (
 	ICDTagTartagliaRiptideFlash
 	ICDTagTravelerBlazingThreshold
 	ICDTagTravelerDewdrop
+	ICDTagTravelerEnhancedCA
 	ICDTagTravelerHoldDMG
 	ICDTagTravelerScorchingThreshold
 	ICDTagTravelerWakeOfEarth
