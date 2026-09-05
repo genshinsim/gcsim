@@ -71,16 +71,22 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 
-		if char.StatusIsActive(buffKey) {
-			atk.Snapshot.Stats[attributes.CD] += 0.4 + float64(r)*0.2
+		if !attacks.AttackTagIsLunar(atk.Info.AttackTag) {
+			return
 		}
+
+		if !char.StatusIsActive(buffKey) {
+			return
+		}
+
+		atk.Snapshot.Stats[attributes.CD] += 0.4 + float64(r)*0.2
 	}
 
-	c.Events.Subscribe(event.OnLunarReactionAttack, onLunarReactionAttackF, buffKey)
+	c.Events.Subscribe(event.OnSpecialReactionAttack, onLunarReactionAttackF, buffKey)
 	c.Events.Subscribe(event.OnEnemyDamage, onDmgF, buffKey)
 	c.Events.Subscribe(event.OnLunarCharged, onReactF, buffKey)
 	c.Events.Subscribe(event.OnLunarBloom, onReactF, buffKey)
-	// c.Events.Subscribe(event.OnLunarCrystallize, onReactF, buffKey)
+	c.Events.Subscribe(event.OnLunarCrystallize, onReactF, buffKey)
 
 	return w, nil
 }

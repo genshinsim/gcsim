@@ -40,9 +40,12 @@ func (c *char) a1Init() {
 					attacks.AttackTagECDamage:
 					return 0.015 * ns
 				case attacks.AttackTagReactionLunarCharge,
-					attacks.AttackTagDirectLunarCharged:
+					attacks.AttackTagDirectLunarCharged,
+					attacks.AttackTagReactionStellarSwirl,
+					attacks.AttackTagDirectStellarSwirl:
 					return 0.002 * ns
 				}
+
 				return 0
 			},
 		})

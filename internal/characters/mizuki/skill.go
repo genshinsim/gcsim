@@ -147,15 +147,17 @@ func (c *char) skillInit() {
 					return 0
 				}
 				switch ai.AttackTag {
-				case attacks.AttackTagSwirlCryo:
-				case attacks.AttackTagSwirlElectro:
-				case attacks.AttackTagSwirlHydro:
-				case attacks.AttackTagSwirlPyro:
+				case attacks.AttackTagSwirlCryo,
+					attacks.AttackTagSwirlElectro,
+					attacks.AttackTagSwirlHydro,
+					attacks.AttackTagSwirlPyro:
+					return swirlDMG[c.TalentLvlSkill()] * c.Stat(attributes.EM) * 0.01
+				case attacks.AttackTagDirectStellarSwirl,
+					attacks.AttackTagReactionStellarSwirl:
+					return stellarSwirlDMG[c.TalentLvlSkill()] * c.Stat(attributes.EM) * 0.01
 				default:
 					return 0
 				}
-
-				return swirlDMG[c.TalentLvlSkill()] * c.Stat(attributes.EM) * 0.01
 			},
 		})
 	}

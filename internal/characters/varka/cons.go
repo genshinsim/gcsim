@@ -69,6 +69,7 @@ func (c *char) c4Init() {
 	c.Core.Events.Subscribe(event.OnSwirlHydro, c.makeC4CB(attributes.Hydro), c4Key)
 	c.Core.Events.Subscribe(event.OnSwirlElectro, c.makeC4CB(attributes.Electro), c4Key)
 	c.Core.Events.Subscribe(event.OnSwirlCryo, c.makeC4CB(attributes.Cryo), c4Key)
+	c.Core.Events.Subscribe(event.OnStellarSwirl, c.makeC4CB(attributes.Cryo), c4Key)
 }
 
 func (c *char) makeC4CB(ele attributes.Element) func(...any) {

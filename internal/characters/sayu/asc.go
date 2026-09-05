@@ -49,6 +49,7 @@ func (c *char) a1() {
 	}
 
 	c.Core.Events.Subscribe(event.OnSwirlCryo, swirlfunc, "sayu-a1-cryo")
+	c.Core.Events.Subscribe(event.OnStellarSwirl, swirlfunc, "sayu-a1-cryo")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, swirlfunc, "sayu-a1-electro")
 	c.Core.Events.Subscribe(event.OnSwirlHydro, swirlfunc, "sayu-a1-hydro")
 	c.Core.Events.Subscribe(event.OnSwirlPyro, swirlfunc, "sayu-a1-pyro")

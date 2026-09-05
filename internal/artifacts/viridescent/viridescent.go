@@ -51,14 +51,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 				return 0
 			}
 			switch ai.AttackTag {
-			case attacks.AttackTagSwirlCryo:
-			case attacks.AttackTagSwirlElectro:
-			case attacks.AttackTagSwirlHydro:
-			case attacks.AttackTagSwirlPyro:
+			case attacks.AttackTagSwirlCryo,
+				attacks.AttackTagSwirlElectro,
+				attacks.AttackTagSwirlHydro,
+				attacks.AttackTagSwirlPyro:
+				return 0.6
+			case attacks.AttackTagDirectStellarSwirl,
+				attacks.AttackTagReactionStellarSwirl:
+				return 0.2
 			default:
 				return 0
 			}
-			return 0.6
 		},
 	})
 
@@ -87,6 +90,7 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		}
 	}
 	c.Events.Subscribe(event.OnSwirlCryo, vvfunc(attributes.Cryo, "vvcryo"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnStellarSwirl, vvfunc(attributes.Cryo, "vvcryo"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnSwirlElectro, vvfunc(attributes.Electro, "vvelectro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnSwirlHydro, vvfunc(attributes.Hydro, "vvhydro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnSwirlPyro, vvfunc(attributes.Pyro, "vvpyro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
