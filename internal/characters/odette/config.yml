@@ -1,0 +1,40 @@
+use: pipeline
+kind: character
+name: odette
+
+override:
+  icd_group:
+    OdetteDanceDuo:
+      name: Odette_ElementalArt_DuoDance
+
+combat:
+  icd_groups:
+    - OdetteDanceDuo
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG|1)
+      - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skill: skill(Skill DMG)
+  - codaDoT: skill(Coda at Dawn's Tolling DoT)
+  - codaSSC: skill(Coda at Dawn's Tolling Stellar-Conduct/Stellar Swirl DMG) # {}/{}
+  - codaSSw: skill(Coda at Dawn's Tolling Stellar-Conduct/Stellar Swirl DMG|1) # {}/{}
+  - plume: skill("Plume" Dance Move DMG)
+  - plumeSSC: skill("Plume" Dance Move Stellar-Conduct/Stellar Swirl DMG) # {}/{}
+  - plumeSSw: skill("Plume" Dance Move Stellar-Conduct/Stellar Swirl DMG|1) # {}/{}
+  - wing: skill("Wing" Dance Move DMG)
+  - wingSSC: skill("Wing" Dance Move Stellar-Conduct/Stellar Swirl DMG) # {}/{}
+  - wingSSw: skill("Wing" Dance Move Stellar-Conduct/Stellar Swirl DMG|1) # {}/{}
+
+  - burst: burst(Slash DMG)
+  - burstFinal: burst(Final Slash DMG)
+  - burstBuff: burst(Snow Swan's Dream Stellar Glimmer Reaction DMG Bonus)
