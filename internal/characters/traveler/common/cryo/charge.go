@@ -81,6 +81,14 @@ func (c *Traveler) ChargeAttack(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
+// Charged Attack: Freezing Ice
+//   - Cryo DMG dealt is increased by 140% of the Traveler's ATK, and the Traveler also gains 2 stacks
+//     of Frostglow.
+//   - Charged Attack: Freezing Ice can be unleashed once every 15s. Additionally, the DMG Bonus from
+//     the Ascension Talent "Ever-Keen Frost" does not apply to Charged Attack: Freezing Ice.
+//
+// Radiance: Stellar Glimmer: DMG from Charged Attack: Freezing Ice is instead considered Cryo DMG
+// of the corresponding Stellar Glimmer reaction type.
 func (c *Traveler) chargeAttackTruemoon() func(*info.AttackInfo, *info.AttackPattern) {
 	if !c.trueMoonBuff {
 		return nil
@@ -132,6 +140,10 @@ func (c *Traveler) chargeAttackTruemoon() func(*info.AttackInfo, *info.AttackPat
 	}
 }
 
+// Additionally, when a nearby party member deals Stellar-Conduct or Stellar Swirl DMG, the Traveler
+// gains 1 stack of "Icepoint." 1 stack of Icepoint can be obtained in this way once every 2s, max 3
+// stacks. When the Traveler unleashes a Charged Attack at 3 stacks of Icepoint, all stacks are
+// consumed to change the attack into a special Charged Attack: Freezing Ice.
 func (c *Traveler) trueMoonInit() {
 	if !c.trueMoonBuff {
 		return

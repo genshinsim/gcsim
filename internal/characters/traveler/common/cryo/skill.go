@@ -43,6 +43,19 @@ func init() {
 	skillFrames[1][action.ActionSwap] = 35    // E -> Swap
 }
 
+// Stabs at the opponent with the Traveler's weapon, which releases an ice-cold fog. This deals Cryo
+// DMG to opponents up ahead and forms a Frostpierce Star next to the Traveler.
+//
+// Frostpierce Star
+//   - Follows your own party members around the field and periodically fires ice crystals at nearby
+//     opponents, dealing Cryo DMG.
+//     Radiance: Stellar-Conduct: The Frostpierce Star will no longer fire ice crystals at opponents
+//     at intervals but will instead fire an ice crystal at opponents in a coordinated attack when
+//     the Traveler hits an opponent with a Normal Attack, Charged Attack, or Plunging Attack. This
+//     effect can trigger once every 0.2s.
+//   - When an opponent is hit with an ice crystal, the Traveler gains 1 stack of
+//     Frostglow (max 8 stacks).
+//   - When not in combat, Frostglow expires after 30s.
 func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
