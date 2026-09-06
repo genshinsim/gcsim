@@ -109,7 +109,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			c.fourWindsCDStacks = 0
 
 			// discard any in progress CD queues
-			c.DiscardActionCooldown(action.ActionSpecialSkill, 1*60)
+			c.DiscardActionCooldown(action.ActionSpecialSkill, fourWindsCD)
 
 			// discard any ready special skill charges and start a new CD for each charge
 			for range c.AvailableCDCharge[action.ActionSpecialSkill] {
