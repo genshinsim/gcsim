@@ -50,7 +50,7 @@ func (c *char) c1OnSkillRecast(tag attacks.AttackTag) {
 		ai.Abil = "Daybreak Finale (C1)" + stellarSwirlText
 		ai.Mult = 4.5 * c.a4StellarGlimmerMult()
 	}
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4.5)
 	c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB)
 }
 
@@ -197,7 +197,9 @@ func (c *char) c4OnBurst(buff float64) {
 	}
 }
 
-// Additionally, when a party member deals Stellar Glimmer reaction DMG to an opponent, Odette will also join in with a coordinated attack, dealing an instance of AoE Cryo DMG. This effect, which can trigger once every 3.5s, will be considered:
+// Additionally, when a party member deals Stellar Glimmer reaction DMG to an opponent, Odette will
+// also join in with a coordinated attack, dealing an instance of AoE Cryo DMG. This effect, which
+// can trigger once every 3.5s, will be considered:
 // - Radiance: Stellar-Conduct or when not in a Radiance state: Stellar-Conduct reaction DMG at 66% of Odette's ATK.
 // - Radiance: Stellar Swirl: Stellar Swirl reaction DMG at 99% of Odette's ATK.
 func (c *char) c4Init() {
@@ -237,6 +239,9 @@ func (c *char) c4Init() {
 			ICDGroup:         attacks.ICDGroupDefault,
 			StrikeType:       attacks.StrikeTypeDefault,
 			Element:          attributes.Cryo,
+			HitlagHaltFrames: 0.04 * 60,
+			HitlagFactor:     0.01,
+			IsDeployable:     true,
 			IgnoreDefPercent: 1,
 		}
 
@@ -254,7 +259,7 @@ func (c *char) c4Init() {
 			return
 		}
 
-		ap := combat.NewCircleHitOnTarget(e, nil, 2)
+		ap := combat.NewCircleHitOnTarget(e, nil, 3)
 		c.Core.QueueAttack(ai, ap, 5, 5)
 	}, c4Key)
 }

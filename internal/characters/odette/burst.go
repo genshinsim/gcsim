@@ -49,20 +49,25 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   30,
 		Element:    attributes.Cryo,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	ap := combat.NewBoxHitOnTarget(
+	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		info.Point{Y: -5},
-		14,
-		12,
+		nil,
+		7,
 	)
 
-	for _, delay := range burstHitmarks {
+	for i, delay := range burstHitmarks {
+		// only first hit is blunt
+		if i > 0 {
+			ai.StrikeType = attacks.StrikeTypeDefault
+			ai.PoiseDMG = 0
+		}
 		c.QueueCharTask(func() { c.Core.QueueAttack(ai, ap, 0, 0) }, delay)
 	}
 

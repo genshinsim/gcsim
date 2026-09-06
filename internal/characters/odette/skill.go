@@ -65,7 +65,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ActorIndex: c.Index(),
 		Abil:       "Adagio: Phantom Night Dancers",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Cryo,
@@ -73,7 +73,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4)
 
 	c.Core.QueueAttack(
 		ai,
@@ -103,14 +103,14 @@ func (c *char) skillRecast(_ map[string]int) (action.Info, error) {
 		ActorIndex: c.Index(),
 		Abil:       "Coda at Dawn's Tolling",
 		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagElementalArt,
+		ICDTag:     attacks.ICDTagOdetteDanceDuo,
 		ICDGroup:   attacks.ICDGroupOdetteDanceDuo,
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Cryo,
 		Durability: 25,
 		Mult:       codaDoT[c.TalentLvlSkill()],
 	}
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, 4.2)
 	for _, delay := range skillRecastDoTHitmarks {
 		c.Core.QueueAttack(ai, ap, delay, delay, c.particleCB)
 	}
@@ -125,6 +125,8 @@ func (c *char) skillRecast(_ map[string]int) (action.Info, error) {
 			StrikeType:       attacks.StrikeTypeDefault,
 			Element:          attributes.Cryo,
 			Mult:             codaSSC[c.TalentLvlSkill()] * c.a4StellarGlimmerMult(),
+			HitlagHaltFrames: 0.04 * 60,
+			HitlagFactor:     0.01,
 			IgnoreDefPercent: 1,
 		}
 		if c.getRadiance() == radianceStellarSwirl {
@@ -133,7 +135,8 @@ func (c *char) skillRecast(_ map[string]int) (action.Info, error) {
 			aiFinal.Mult = codaSSw[c.TalentLvlSkill()] * c.a4StellarGlimmerMult()
 		}
 
-		c.Core.QueueAttack(aiFinal, ap, 0, 0, c.particleCB)
+		apFinal := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4.6)
+		c.Core.QueueAttack(aiFinal, apFinal, 0, 0, c.particleCB)
 		c.AddStatus(danceDoubleUpgradeKey, c.StatusDuration(danceDoubleKey), false)
 
 		c.c1OnSkillRecast(aiFinal.AttackTag)
@@ -184,15 +187,18 @@ func (c *char) danceDoubleTicker(src, count int) {
 		Element:    attributes.Cryo,
 		Durability: 25,
 	}
+
+	var offset info.Point
 	if count%2 == 0 {
 		ai.Abil = "\"Plume\" Dance Move"
 		ai.Mult = plume[c.TalentLvlSkill()]
 	} else {
 		ai.Abil = "\"Wing\" Dance Move"
 		ai.Mult = wing[c.TalentLvlSkill()]
+		offset = info.Point{Y: 1}
 	}
 
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 4)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), offset, 4)
 
 	c.Core.QueueAttack(ai, ap, 0, 0)
 	c.Core.Tasks.Add(func() { c.danceDoubleTicker(src, count+1) }, skillTickDelay[count%2])
@@ -246,6 +252,6 @@ func (c *char) particleCB(a info.AttackCB) {
 		return
 	}
 
-	c.AddStatus(particleICDKey, 6*60, true)
+	c.AddStatus(particleICDKey, 12*60, true)
 	c.Core.QueueParticle(c.Base.Key.String(), 5, attributes.Cryo, c.ParticleDelay)
 }

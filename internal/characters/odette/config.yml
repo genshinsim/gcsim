@@ -8,6 +8,8 @@ override:
       name: Odette_ElementalArt_DuoDance
 
 combat:
+  icd_tags:
+    - OdetteDanceDuo
   icd_groups:
     - OdetteDanceDuo
 
