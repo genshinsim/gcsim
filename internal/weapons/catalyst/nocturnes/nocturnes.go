@@ -70,7 +70,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 
-		if !attacks.AttackTagIsLunar(atk.Info.AttackTag) {
+		if !atk.Info.AttackTag.IsLunar() {
 			return
 		}
 
