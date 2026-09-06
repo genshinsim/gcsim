@@ -47,6 +47,23 @@ func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	return c.Character.AnimationStartDelay(k)
 }
 
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "a1-stacks-self":
+		if !c.StatusIsActive(danceDoubleKey) {
+			return 0, nil
+		}
+		return c.a1StacksSelf, nil
+	case "a1-stacks-others":
+		if !c.StatusIsActive(danceDoubleKey) {
+			return 0, nil
+		}
+		return c.a1StacksOthers, nil
+	default:
+		return c.Character.Condition(fields)
+	}
+}
+
 func (c *char) useSpecialSkill() bool {
 	return c.StatusIsActive(danceDoubleKey) && !c.StatusIsActive(danceDoubleUpgradeKey) && c.StatusIsActive(skillRecastKey)
 }

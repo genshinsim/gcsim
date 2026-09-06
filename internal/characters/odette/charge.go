@@ -29,7 +29,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		Abil:       "Charge",
 		ActorIndex: c.Index(),
 		AttackTag:  attacks.AttackTagExtra,
-		ICDTag:     attacks.ICDTagExtraAttack,
+		ICDTag:     attacks.ICDTagNormalAttack,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Physical,
@@ -39,11 +39,12 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(
+		combat.NewBoxHit(
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
-			nil,
-			0.8,
+			info.Point{X: -0.2, Y: -0.6},
+			3.3,
+			4.8,
 		),
 		chargeHitmark,
 		chargeHitmark,

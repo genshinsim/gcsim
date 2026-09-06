@@ -40,3 +40,114 @@ talents:
   - burst: burst(Slash DMG)
   - burstFinal: burst(Final Slash DMG)
   - burstBuff: burst(Snow Swan's Dream Stellar Glimmer Reaction DMG Bonus)
+
+docs:
+  fields:
+    .odette.a1-stacks-self: Current number of A1 stacks on Odette
+    .odette.a1-stacks-other: Current number of A1 stacks on other characters
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 2
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 1.6
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
+
+      - name: N3-1
+        shape: Circle
+        center: Player
+        offset: [0, 0.4]
+        radius: 1.8
+
+      - name: N3-2
+        shape: Circle
+        center: Player
+        offset: [0, 0.4]
+        radius: 1.8
+        hitlag: { time: 0.03, scale: 0.01 }
+
+      - name: N4
+        shape: Box
+        center: Player
+        offset: [-0.2, -0.6]
+        box: [3.3, 4.5]
+        hitlag: { time: 0.05, scale: 0.01 }
+
+      - name: N5
+        shape: Circle
+        center: Player
+        offset: [0, 0.4]
+        radius: 3.7
+        hitlag: { defense_halt: true }
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Box
+        center: Player
+        offset: [-0.2, -0.6]
+        box: [3.3, 4.8]
+
+  - name: skill
+    hitbox:
+      - name: E-Initial
+        shape: Circle
+        center: Player
+        radius: 4
+
+      - name: E-Recast-DoT
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 4.2
+
+      - name: E-Recast-Final
+        shape: Circle
+        center: Player
+        radius: 4.6
+        hitlag: { time: 0.04, scale: 0.01 }
+
+      - name: E-Dance-Plume
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4
+
+      - name: E-Dance-Wing
+        shape: Circle
+        center: PrimaryTarget
+        offset: [0, 1]
+        radius: 4
+
+  - name: burst
+    hitbox:
+      - name: Q-DoT
+        shape: Circle
+        center: Player
+        radius: 7
+
+      - name: Q-Final
+        shape: Circle
+        center: Player
+        radius: 7
+
+  - name: cons
+    hitbox:
+      - name: C1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4.5
+      - name: C4
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
+        hitlag: { time: 0.04, scale: 0.01, deployable: true }

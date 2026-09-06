@@ -14,16 +14,13 @@ import (
 var (
 	attackFrames          [][]int
 	attackHitmarks        = [][]int{{9}, {9}, {16, 16 + 15}, {15}, {15}}
-	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0, 0}, {0.06}, {0.08}}
-	attackDefHalt         = [][]bool{{true}, {true}, {false, false}, {true}, {true}}
-	attackHitboxes        = [][]float64{{1.7}, {1.7}, {1.6, 2.8}, {2, 2.6}, {6, 2}}
-	attackOffsets         = []float64{0.6, 0.8, 0.3, -0.2, 0.6}
+	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03}, {0, 0.03}, {0.05}, {0.00}}
+	attackDefHalt         = [][]bool{{true}, {true}, {false, false}, {false}, {true}}
+	attackHitboxes        = [][]float64{{2}, {1.6}, {1.8}, {3.3, 4.5}, {3.7}}
+	attackOffsets         = []info.Point{{Y: 1}, {Y: 0.5}, {Y: 0.4}, {X: -0.2, Y: -0.6}, {Y: 0.4}}
 )
 
-const (
-	normalHitNum      = 5
-	shunsuikenHitmark = 5
-)
+const normalHitNum = 5
 
 func init() {
 	// NA cancels
@@ -67,13 +64,13 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			info.Point{Y: attackOffsets[c.NormalCounter]},
+			attackOffsets[c.NormalCounter],
 			attackHitboxes[c.NormalCounter][0],
 		)
-		if c.NormalCounter >= 2 {
+		if c.NormalCounter == 3 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				info.Point{Y: attackOffsets[c.NormalCounter]},
+				attackOffsets[c.NormalCounter],
 				attackHitboxes[c.NormalCounter][0],
 				attackHitboxes[c.NormalCounter][1],
 			)
