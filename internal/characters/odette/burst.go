@@ -13,23 +13,23 @@ import (
 
 var (
 	burstFrames   []int
-	burstHitmarks = []int{113, 113 + 18, 113 + 18}
-	finalHitmark  = 113 + 18
+	burstHitmarks = []int{113, 113 + 5, 113 + 5 + 5}
+	finalHitmark  = 113 + 5 + 5 + 5
 )
 
 const (
-	burstSummonFrame = 99
-	swansDreamKey    = "odette-snow-swans-dream"
+	burstSummonFrame    = 99
+	burstFirstTickDelay = 134
+	swansDreamKey       = "odette-snow-swans-dream"
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(106) // Q -> CA
-	burstFrames[action.ActionAttack] = 101  // Q -> N1
-	burstFrames[action.ActionSkill] = 100   // Q -> E
-	burstFrames[action.ActionDash] = 103    // Q -> D
-	burstFrames[action.ActionJump] = 103    // Q -> J
-	burstFrames[action.ActionWalk] = 105    // Q -> Swap
-	burstFrames[action.ActionSwap] = 102    // Q -> Swap
+	burstFrames = frames.InitAbilSlice(126) // Q -> W
+	burstFrames[action.ActionAttack] = 108  // Q -> N1
+	burstFrames[action.ActionSkill] = 107   // Q -> E
+	burstFrames[action.ActionDash] = 108    // Q -> D
+	burstFrames[action.ActionJump] = 109    // Q -> J
+	burstFrames[action.ActionSwap] = 106    // Q -> Swap
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -73,7 +73,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.addSwansDreamBuff()
 	}, finalHitmark)
 
-	c.QueueCharTask(c.summonDanceDouble, burstSummonFrame)
+	c.QueueCharTask(func() { c.summonDanceDouble(burstFirstTickDelay) }, burstSummonFrame)
 
 	c.ConsumeEnergy(7)
 	c.SetCDWithDelay(action.ActionBurst, 15*60, 0)
@@ -81,7 +81,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
-		CanQueueAfter:   burstFrames[action.ActionSkill], // earliest cancel
+		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }

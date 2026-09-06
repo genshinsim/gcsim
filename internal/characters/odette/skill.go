@@ -15,36 +15,36 @@ var (
 )
 
 const (
-	skillHitmark              = 31
+	skillHitmark              = 23
 	particleICDKey            = "odette-particle-icd"
 	danceDoubleKey            = "odette-dance-double"
 	danceDoubleUpgradeKey     = "odette-dance-double-upgrade"
-	skillFirstTickDelay       = 130
-	skillRecastFinalHitmark   = 75
-	skillRecastFirstTickDelay = 34
+	skillFirstTickDelay       = 134
+	skillRecastFinalHitmark   = 11 + 9 + 8 + 34
+	skillRecastFirstTickDelay = 52
 )
 
 var (
-	skillTickDelay         = []int{110, 130}
-	skillRecastDoTHitmarks = []int{8, 8 + 22, 8 + 22 + 30}
+	skillTickDelay         = []int{109, 125}
+	skillRecastDoTHitmarks = []int{11, 11 + 9, 11 + 9 + 8}
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(38) // E -> Dash
-	skillFrames[action.ActionAttack] = 38
-	skillFrames[action.ActionCharge] = 38
-	skillFrames[action.ActionBurst] = 38
-	skillFrames[action.ActionJump] = 38
-	skillFrames[action.ActionWalk] = 38
-	skillFrames[action.ActionSwap] = 38
+	skillFrames = frames.InitAbilSlice(42) // E -> J
+	skillFrames[action.ActionAttack] = 41
+	skillFrames[action.ActionSkill] = 41
+	skillFrames[action.ActionBurst] = 41
+	skillFrames[action.ActionDash] = 40
+	skillFrames[action.ActionWalk] = 41
+	skillFrames[action.ActionSwap] = 40
 
-	skillRecastFrames = frames.InitAbilSlice(77) // E -> Dash
-	skillRecastFrames[action.ActionAttack] = 77
-	skillRecastFrames[action.ActionCharge] = 77
-	skillRecastFrames[action.ActionBurst] = 77
-	skillRecastFrames[action.ActionJump] = 77
-	skillRecastFrames[action.ActionWalk] = 77
-	skillRecastFrames[action.ActionSwap] = 77
+	skillRecastFrames = frames.InitAbilSlice(76) // E -> Q
+	skillRecastFrames[action.ActionAttack] = 75
+	skillRecastFrames[action.ActionBurst] = 76
+	skillRecastFrames[action.ActionDash] = 74
+	skillRecastFrames[action.ActionJump] = 75
+	skillRecastFrames[action.ActionWalk] = 75
+	skillRecastFrames[action.ActionSwap] = 74
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -73,7 +73,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		skillHitmark,
 		c.particleCB,
 	)
-	c.summonDanceDouble()
+	c.summonDanceDouble(skillFirstTickDelay)
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 14)
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -141,12 +141,12 @@ func (c *char) skillRecast(_ map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) summonDanceDouble() {
+func (c *char) summonDanceDouble(firstTickDelay int) {
 	src := c.Core.F
 	c.danceDoubleSrc = src
 	c.DeleteStatus(danceDoubleUpgradeKey)
 	c.AddStatus(danceDoubleKey, 20*60, false)
-	c.Core.Tasks.Add(func() { c.danceDoubleTicker(src, 0) }, skillFirstTickDelay)
+	c.Core.Tasks.Add(func() { c.danceDoubleTicker(src, 0) }, firstTickDelay)
 
 	c.a1OnDanceSummon()
 	c.c2OnDanceSummon()
@@ -186,6 +186,7 @@ func (c *char) danceDoubleTicker(src, count int) {
 	if !c.StatusIsActive(danceDoubleUpgradeKey) {
 		return
 	}
+
 	radiance := c.getRadiance()
 	if radiance == radianceNone {
 		return
@@ -201,14 +202,15 @@ func (c *char) danceDoubleTicker(src, count int) {
 	}
 
 	baseAbil := "\"Plume\" Dance Move"
-	mults := map[radianceState][]float64{radianceNone: plume, radianceStellarConduct: plumeSSC, radianceStellarSwirl: plumeSSw}
+	mults := map[radianceState][]float64{radianceStellarConduct: plumeSSC, radianceStellarSwirl: plumeSSw}
+
 	if count%2 != 0 {
 		baseAbil = "\"Wing\" Dance Move"
-		mults[radianceNone] = wing
 		mults[radianceStellarConduct] = wingSSC
 		mults[radianceStellarSwirl] = wingSSw
 	}
-	aiStellar.Mult = mults[radianceStellarConduct][c.TalentLvlSkill()] * c.a4StellarGlimmerMult()
+
+	aiStellar.Mult = mults[radiance][c.TalentLvlSkill()] * c.a4StellarGlimmerMult()
 
 	if radiance == radianceStellarConduct {
 		aiStellar.AttackTag = attacks.AttackTagDirectStellarConduct

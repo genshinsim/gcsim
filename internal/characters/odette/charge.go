@@ -11,13 +11,17 @@ import (
 
 var chargeFrames []int
 
-const chargeHitmark = 24
+const chargeHitmark = 30
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(55)
+	chargeFrames = frames.InitAbilSlice(83)
+	chargeFrames[action.ActionAttack] = 83
+	chargeFrames[action.ActionSkill] = 57
+	chargeFrames[action.ActionBurst] = 58
 	chargeFrames[action.ActionDash] = chargeHitmark
 	chargeFrames[action.ActionJump] = chargeHitmark
-	chargeFrames[action.ActionSwap] = 53
+	chargeFrames[action.ActionWalk] = 82
+	chargeFrames[action.ActionSwap] = chargeHitmark
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
@@ -26,7 +30,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		ActorIndex: c.Index(),
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagExtraAttack,
-		ICDGroup:   attacks.ICDGroupPoleExtraAttack,
+		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeSlash,
 		Element:    attributes.Physical,
 		Durability: 25,
