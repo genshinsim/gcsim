@@ -45,6 +45,15 @@ func (c *char) Init() error {
 	return nil
 }
 
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "nightsoul":
+		return c.nightsoulState.Condition(fields)
+	default:
+		return c.Character.Condition(fields)
+	}
+}
+
 func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	if k == info.AnimationXingqiuN0StartDelay {
 		return 14
