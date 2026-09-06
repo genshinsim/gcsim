@@ -358,7 +358,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 
 func makeElementMap() map[string]float64 {
 	out := make(map[string]float64)
-	for _, ele := range attributes.ElementString {
+	for _, ele := range attributes.ElementStrings() {
 		out[ele] = 0
 	}
 	return out

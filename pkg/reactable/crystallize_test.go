@@ -121,7 +121,7 @@ func pickUpCrystallize(c *core.Core, pickupEle attributes.Element) int {
 			continue
 		}
 		// skip if shard not specified element
-		if pickupEle != attributes.UnknownElement && shard.Shield.Ele != pickupEle {
+		if pickupEle != attributes.NoElement && shard.Shield.Ele != pickupEle {
 			continue
 		}
 		// try to pick up shard and stop if succeeded

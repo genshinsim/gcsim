@@ -51,7 +51,7 @@ func (c *char) a1Init() {
 	// the buff updates every 1s
 	c.a1UpdateBuff()
 
-	elementCount := make([]int, attributes.EndEleType)
+	elementCount := make(map[attributes.Element]int)
 	for _, char := range c.Core.Player.Chars() {
 		elementCount[char.Base.Element] += 1
 	}
