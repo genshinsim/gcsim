@@ -87,7 +87,6 @@
     },
     {
       "ability": "walk",
-      "note": "No action followed by walk has proper frames.",
       "invalid": false
     },
     {
@@ -3257,7 +3256,6 @@
     },
     {
       "ability": "walk",
-      "note": "No action followed by walk has proper frames.",
       "invalid": false
     },
     {

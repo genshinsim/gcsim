@@ -24,10 +24,6 @@ docs:
       count_credit: Kolibri#7675
       video: https://youtu.be/VaIaa4MW9eI
       video_credit: Kolibri#7675
-    - count: https://docs.google.com/spreadsheets/d/1QCtYnC_qdrCYwN5qDJLYYGuvx81z9fTGNzPdZ8H4nrU/edit?usp=sharing
-      count_credit: Kolibri#7675
-      video: https://youtu.be/t6dhmLD6rf0
-      video_credit: Kolibri#7675
 
 abilities:
   - name: default
@@ -85,27 +81,35 @@ abilities:
         center: Player
         radius: 2.2
 
+      - name: CA-Enhanced-1
+        shape: Circle
+        center: Player
+        radius: 3.2
+        offset: [0, 1]
+
+      - name: CA-Enhanced-2
+        shape: Circle
+        center: Player
+        radius: 3.2
+        offset: [0, 1]
+
   - name: skill
     hitbox:
       - name: E
         shape: Circle
         center: Player
-        fan_angle: 100
-        radius: 6
+        fan_angle: 60
+        radius: 8
 
       - name: E-FrostPierce
         shape: Circle
-        center: Player
-        fan_angle: 100
-        radius: 6
+        center: PrimaryTarget
+        radius: 1.2
 
   - name: burst
     hitbox:
       - name: Q
-        shape: Box
+        shape: Circle
         center: PrimaryTarget
-        offset: [0, -1.5]
-        box: [3, 3]
-
-  - name: walk
-    note: No action followed by walk has proper frames.
+        offset: [0, -0.3]
+        radius: 4.5
