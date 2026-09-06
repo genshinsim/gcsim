@@ -124,7 +124,7 @@ func (c *char) a1MaxStacks() int {
 // 1.5% of the original DMG. She can deal up to 30% more additional DMG in this way.
 // Does not affect reaction SSW
 func (c *char) a4StellarGlimmerMult() float64 {
-	if c.Base.Ascension < 1 {
+	if c.Base.Ascension < 4 {
 		return 1
 	}
 

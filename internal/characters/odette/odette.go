@@ -54,7 +54,7 @@ func (c *char) Condition(fields []string) (any, error) {
 			return 0, nil
 		}
 		return c.a1StacksSelf, nil
-	case "a1-stacks-others":
+	case "a1-stacks-other":
 		if !c.StatusIsActive(danceDoubleKey) {
 			return 0, nil
 		}
