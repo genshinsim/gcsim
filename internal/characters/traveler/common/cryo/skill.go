@@ -64,21 +64,20 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	c.skillTravel = travel
 
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index(),
-		Abil:           "Ice Fog Piercer",
-		AttackTag:      attacks.AttackTagElementalArt,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
-		ICDTag:         attacks.ICDTagTravelerHoldDMG,
-		ICDGroup:       attacks.ICDGroupDefault,
-		StrikeType:     attacks.StrikeTypeDefault,
-		Element:        attributes.Cryo,
-		Durability:     25,
-		Mult:           skill[c.TalentLvlSkill()],
+		ActorIndex: c.Index(),
+		Abil:       "Ice Fog Piercer",
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagTravelerCryoIcicle,
+		ICDGroup:   attacks.ICDGroupTravelerCryoIcicle,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Cryo,
+		Durability: 25,
+		Mult:       skill[c.TalentLvlSkill()],
 	}
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.0),
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), info.Point{Y: -0.3}, 8.0, 60),
 		skillTapHitmark,
 		skillTapHitmark,
 		c.particleCB,
@@ -130,7 +129,7 @@ func (c *Traveler) queueCrystal(hitmarks ...int) {
 	for _, delay := range hitmarks {
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 3.0),
+			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1.2),
 			delay,
 			delay+c.skillTravel,
 			c.crystalCB,

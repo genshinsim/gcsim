@@ -44,7 +44,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 			ActorIndex: c.Index(),
 			Abil:       "Frostbound Javelin",
 			AttackTag:  attacks.AttackTagElementalBurst,
-			ICDTag:     attacks.ICDTagNone,
+			ICDTag:     attacks.ICDTagElementalBurst,
 			ICDGroup:   attacks.ICDGroupDefault,
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Cryo,
@@ -76,7 +76,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 		for _, delay := range burstTickHitmarks[:hits] {
 			c.Core.QueueAttack(
 				ai,
-				combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 4.5),
+				combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.3}, 4.5),
 				delay-burstSpawnFrame,
 				delay-burstSpawnFrame,
 			)

@@ -77,6 +77,7 @@ const (
 	ICDTagSwirlPyro
 	ICDTagTartagliaRiptideFlash
 	ICDTagTravelerBlazingThreshold
+	ICDTagTravelerCryoIcicle
 	ICDTagTravelerDewdrop
 	ICDTagTravelerEnhancedCA
 	ICDTagTravelerHoldDMG

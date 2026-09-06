@@ -5,9 +5,18 @@ name: luminecryo
 override:
   id: 10000007
   depot: 705
+  icd_group:
+    TravelerCryoIcicle:
+      name: PlayerIce_ElementalArt_Icicle
 
 shortcuts:
   - travelercryo
+
+combat:
+  icd_tags:
+    - TravelerCryoIcicle
+  icd_groups:
+    - TravelerCryoIcicle
 
 docs:
   frames:
