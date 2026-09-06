@@ -116,6 +116,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 				c.SetCD(action.ActionSpecialSkill, fourWindsCD)
 			}
 
+			// we specifically don't discard any previously queued CDs if they haven't started yet.
+			// this aligns with in game tested behaviour with Chongyun C2
+
 			// must be called after the CDs are reset
 			c.c1OnSkill()
 		}
