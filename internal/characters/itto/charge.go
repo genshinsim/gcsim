@@ -202,6 +202,15 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	stacks := c.Tags[strStackKey]
 	c.slashState = prevSlash.Next(stacks, c.c6Proc)
 
+	// check if we're starting a new CA
+	var caStart bool
+	switch prevSlash {
+	case InvalidSlash, SaichiSlash, FinalSlash:
+		c.a1Stacks = 0
+		c.stacksConsumed = 0
+		caStart = true
+	}
+
 	// figure out how many frames we need to skip
 	windup := c.windupFrames(prevSlash, c.slashState)
 
@@ -297,8 +306,16 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 			return frames.AtkSpdAdjust(f-windup, atkspd)
 		},
+		OnRemoved: func(next action.AnimationState) {
+			if next != action.ChargeAttackState {
+				c.slashState = InvalidSlash
+				c.a1Stacks = 0
+				c.stacksConsumed = 0
+			}
+		},
 		AnimationLength: chargeFrames[curSlash][action.InvalidAction] - windup,
 		CanQueueAfter:   chargeHitmarks[curSlash] - windup,
+		Segmented:       !caStart,
 		State:           action.ChargeAttackState,
 	}, nil
 }
