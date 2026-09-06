@@ -49,7 +49,7 @@ tasks:
   wasm:
     dir: cmd/wasm
     cmds:
-      - go build -o '{{.OUT | default "main.wasm"}}' -ldflags="-X 'main.shareKey=${{if eq OS "windows"}}env:{{end}}GCSIM_SHARE_KEY'"
+      - go build -trimpath -o '{{.OUT | default "main.wasm"}}' -ldflags="-X 'main.shareKey=${{if eq OS "windows"}}env:{{end}}GCSIM_SHARE_KEY'"
       - echo "compiled wasm successfully!"
     env:
       GOOS: js
