@@ -12,6 +12,9 @@ docs:
       count_credit: Kolibri#7675
       video: https://youtu.be/2LnpQIVIszY
       video_credit: Kolibri#7675
+  fields:
+    .aethercryo.frostglow: Number of flowglow stacks the traveler has
+    .aethercryo.icepoint: Number of icepoint stacks the traveler has
 
 abilities:
   - name: default
@@ -84,6 +87,8 @@ abilities:
         offset: [0, 1]
 
   - name: skill
+    params:
+      travel: Projectile travel time. Default 10 frames.
     hitbox:
       - name: E
         shape: Circle

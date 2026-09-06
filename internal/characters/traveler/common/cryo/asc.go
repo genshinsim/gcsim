@@ -34,8 +34,7 @@ func (c *Traveler) a1Conversion(ai *info.AttackInfo) {
 }
 
 // The Traveler's Elemental Mastery is increased by 8% of their ATK. Up to 160 Elemental Mastery can
-//
-//	be gained in this way.
+// be gained in this way.
 func (c *Traveler) a4Init() {
 	if c.Base.Ascension < 4 {
 		return
