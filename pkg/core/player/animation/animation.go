@@ -109,7 +109,7 @@ func (h *AnimationHandler) CurrentStateStart() int {
 func (h *AnimationHandler) Tick() {
 	if h.aniEvt != nil && h.aniEvt.Tick() {
 		h.logEnded()
-		h.events.Emit(event.OnStateChange, h.state, action.Idle)
+		h.events.Emit(event.OnStateChange, h.state, action.Idle, false)
 		h.state = action.Idle
 		h.started = *h.f
 		h.aniEvt = nil
