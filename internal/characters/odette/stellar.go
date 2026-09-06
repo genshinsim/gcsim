@@ -37,6 +37,12 @@ func (c *char) getRadiance() radianceState {
 	return radianceNone
 }
 
+// Odette will enter the Radiance: Stellar-Conduct state when she is inside a Polestar Field, or the
+// Radiance: Stellar Swirl state for 8s after a nearby party member triggers a Stellar Swirl
+// reaction.
+// When a party member triggers a Superconduct or Cryo Swirl reaction, it becomes a Stellar-Conduct
+// or Stellar Swirl reaction instead, and the Base DMG of said reaction is also increased by 0.7%
+// for every 100 points of Odette's ATK. A maximum increase of 14% can be obtained in this way.
 func (c *char) stellarInit() {
 	c.Core.Flags.Custom[reactable.StellarConductEnableKey] = 1
 	c.Core.Flags.Custom[reactable.StellarSwirlEnableKey] = 1

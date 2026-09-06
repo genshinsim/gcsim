@@ -48,7 +48,7 @@ func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 }
 
 func (c *char) useSpecialSkill() bool {
-	return c.StatusIsActive(danceDoubleKey) && !c.StatusIsActive(danceDoubleUpgradeKey)
+	return c.StatusIsActive(danceDoubleKey) && !c.StatusIsActive(danceDoubleUpgradeKey) && c.StatusIsActive(skillRecastKey)
 }
 
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {

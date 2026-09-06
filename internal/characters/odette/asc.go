@@ -10,6 +10,14 @@ import (
 
 const a1Key = "odette-a1"
 
+// When Odette summons her Solo Dance Double, she also obtains 4 stacks of Marvelous Splendor.
+// Marvelous Splendor
+// After unlocking the Ascension Talent "Spring Rite of the Chosen One," Odette will obtain a
+// special effect when she summons her Solo Dance Double.
+// Every stack of Marvelous Splendor active increases the character's Stellar Glimmer DMG by 15%.
+// This lasts until her Dance Double exits the field or when she summons her Solo Dance Double again.
+// When Odette is off-field, she loses 1 stack of Marvelous Splendor every 1 second, while other
+// nearby party members gain the corresponding number of Marvelous Splendor stacks at the same time.
 func (c *char) a1Init() {
 	if c.Base.Ascension < 1 {
 		return
@@ -19,8 +27,7 @@ func (c *char) a1Init() {
 		Base: modifier.NewBase(a1Key+"-buff", -1),
 		Amount: func(ai info.AttackInfo) float64 {
 			switch ai.AttackTag {
-			case
-				attacks.AttackTagDirectStellarConduct,
+			case attacks.AttackTagDirectStellarConduct,
 				attacks.AttackTagDirectStellarSwirl,
 				attacks.AttackTagReactionStellarSwirl:
 			default:
@@ -113,6 +120,9 @@ func (c *char) a1MaxStacks() int {
 	return 4 + c.c1a1Stacks()
 }
 
+// For every 100 ATK Odette has over 1,000, her Stellar Glimmer DMG is additionally increased by
+// 1.5% of the original DMG. She can deal up to 30% more additional DMG in this way.
+// Does not affect reaction SSW
 func (c *char) a4StellarGlimmerMult() float64 {
 	if c.Base.Ascension < 1 {
 		return 1

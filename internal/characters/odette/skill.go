@@ -20,6 +20,7 @@ const (
 	danceDoubleKey            = "odette-dance-double"
 	danceDoubleUpgradeKey     = "odette-dance-double-upgrade"
 	skillFirstTickDelay       = 134
+	skillRecastKey            = "odette-skill-recast"
 	skillRecastFinalHitmark   = 11 + 9 + 8 + 34
 	skillRecastFirstTickDelay = 52
 )
@@ -47,6 +48,14 @@ func init() {
 	skillRecastFrames[action.ActionSwap] = 74
 }
 
+// With slow, graceful dance steps, Odette deals AoE Cryo DMG to the opponent, and also summons her
+// Solo Dance Double to the field.
+// If a Dance Double summoned by Odette is already on the field, this will re-summon the Dance
+// Double and reset its duration.
+
+// Solo Dance Double
+// Alternates between the Plume and Wing dance moves, periodically attacking nearby opponents and
+// dealing to them AoE Cryo DMG.
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.useSpecialSkill() {
 		return c.skillRecast(p)
@@ -74,6 +83,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.particleCB,
 	)
 	c.summonDanceDouble(skillFirstTickDelay)
+	c.AddStatus(skillRecastKey, 6*60+skillHitmark, false)
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 14)
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -83,6 +93,11 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
+// Additionally, for 6s after unleashing the Elemental Skill Adagio: Phantom Night Dancers, Odette's
+// Elemental Skill Adagio: Phantom Night Dancers will become the special Elemental Skill Adagio:
+// Coda at Dawn's Tolling instead, where a dance duet deals AoE Cryo DMG to nearby opponents over
+// time. Then, when the duet ends, she deals another instance of AoE Cryo DMG that is considered
+// Stellar-Conduct or Stellar Swirl DMG.
 func (c *char) skillRecast(_ map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
@@ -144,7 +159,6 @@ func (c *char) skillRecast(_ map[string]int) (action.Info, error) {
 func (c *char) summonDanceDouble(firstTickDelay int) {
 	src := c.Core.F
 	c.danceDoubleSrc = src
-	c.DeleteStatus(danceDoubleUpgradeKey)
 	c.AddStatus(danceDoubleKey, 20*60, false)
 	c.Core.Tasks.Add(func() { c.danceDoubleTicker(src, 0) }, firstTickDelay)
 

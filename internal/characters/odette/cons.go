@@ -18,6 +18,15 @@ const (
 	c6Key    = "odette-c6"
 )
 
+// After unleashing the special Elemental Skill Adagio: Coda at Dawn's Tolling, at the dance duet's
+// end Odette will deal an additional instance of Cryo AoE DMG to nearby opponents that is
+// considered:
+// - Radiance: Stellar-Conduct or when not in a Radiance state: Stellar-Conduct reaction DMG at 300% of Odette's ATK;
+// - Radiance: Stellar Swirl: Stellar Swirl reaction DMG at 450% of Odette's ATK.
+
+// Additionally, the Ascension Talent "Spring Rite of the Chosen One" is also enhanced: now, when
+// the Solo Dance Double is summoned, Odette also gains 2 stacks of Marvelous Splendor. When Odette
+// is off-field, the rate at which Marvelous Splendor is removed is sped up to 2 stacks per second.
 func (c *char) c1OnSkillRecast(tag attacks.AttackTag) {
 	if c.Base.Cons < 1 {
 		return
@@ -59,6 +68,13 @@ func (c *char) c1a1Remove() int {
 	return 2
 }
 
+// The Ascension Talent "Spring Rite of the Chosen One" is enhanced as follows: every stack of
+// Marvelous Splendor active also increases the character's ATK by 7%.
+// Additionally, if Odette is in the Radiance: Stellar Glimmer state when there is a Solo Dance
+// Double on the field, opponents near the Dance Double will also have their corresponding Elemental
+// RES lowered by 20%.
+// - Radiance: Stellar-Conduct: Cryo and Electro.
+// - Radiance: Stellar Swirl: Cryo and Anemo.
 func (c *char) c2Init() {
 	if c.Base.Cons < 2 {
 		return
@@ -152,12 +168,18 @@ func (c *char) c2Ticker(src int) {
 	}
 }
 
+// The Elemental Burst Presto: Bluebird Finale is enhanced as follows: when Odette obtains Snow
+// Swan's Dream, Stellar Glimmer reaction DMG dealt by other nearby party members is increased by
+// 50% of Snow Swan Dream's effects.
 func (c *char) c4OnBurst(buff float64) {
 	if c.Base.Cons < 4 {
 		return
 	}
 	buff *= 0.5
 	for _, char := range c.Core.Player.Chars() {
+		if char.Index() == c.Index() {
+			continue
+		}
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBaseWithHitlag(swansDreamKey, 20*60),
 			Amount: func(ai info.AttackInfo) float64 {
@@ -175,6 +197,9 @@ func (c *char) c4OnBurst(buff float64) {
 	}
 }
 
+// Additionally, when a party member deals Stellar Glimmer reaction DMG to an opponent, Odette will also join in with a coordinated attack, dealing an instance of AoE Cryo DMG. This effect, which can trigger once every 3.5s, will be considered:
+// - Radiance: Stellar-Conduct or when not in a Radiance state: Stellar-Conduct reaction DMG at 66% of Odette's ATK.
+// - Radiance: Stellar Swirl: Stellar Swirl reaction DMG at 99% of Odette's ATK.
 func (c *char) c4Init() {
 	if c.Base.Cons < 4 {
 		return
@@ -185,6 +210,20 @@ func (c *char) c4Init() {
 		if !ok {
 			return
 		}
+
+		atk, ok := args[1].(*info.AttackEvent)
+		if !ok {
+			return
+		}
+
+		switch atk.Info.AttackTag {
+		case attacks.AttackTagDirectStellarConduct,
+			attacks.AttackTagDirectStellarSwirl,
+			attacks.AttackTagReactionStellarSwirl:
+		default:
+			return
+		}
+
 		if c.StatusIsActive(c4ICDKey) {
 			return
 		}
@@ -220,6 +259,12 @@ func (c *char) c4Init() {
 	}, c4Key)
 }
 
+// The Ascension Talent "Spring Rite of the Chosen One" is enhanced as follows: When Odette grants
+// Marvelous Splendor to all nearby party members, her own Marvelous Splendor stacks will no longer
+// decrease.
+// Additionally, characters affected by Marvelous Splendor have their Stellar Glimmer reaction DMG
+// dealt to opponents elevated by 25%, and Stellar Glimmer reaction DMG dealt by Odette is elevated
+// by an additional 20%.
 func (c *char) c6Init() {
 	if c.Base.Cons < 6 {
 		return
