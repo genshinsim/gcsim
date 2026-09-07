@@ -40,7 +40,7 @@ func (c *char) a1() {
 			if atk.Info.AttackTag != attacks.AttackTagPlunge && atk.Info.AttackTag != attacks.AttackTagNormal {
 				return nil
 			}
-			if !slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
+			if !slices.Contains(atk.Info.AdditionalTags, attacks.AttackTagNightsoul) {
 				return nil
 			}
 			return m

@@ -173,7 +173,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Abil:               "Yohual's Scratch",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,
-		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags:     []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDGroup:           attacks.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypePierce,
 		Element:            attributes.Geo,

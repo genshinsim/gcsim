@@ -130,7 +130,7 @@ func (c *char) sharkBite(p map[string]int) action.Info {
 			ActorIndex:     c.Index(),
 			Abil:           fmt.Sprintf("Sharky's Bite (%v momentum)", momentumStacks),
 			AttackTag:      attacks.AttackTagNormal,
-			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+			AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 			ICDTag:         attacks.ICDTagNone,
 			ICDGroup:       attacks.ICDGroupDefault,
 			StrikeType:     attacks.StrikeTypeDefault,

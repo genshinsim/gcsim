@@ -116,7 +116,7 @@ func (c *char) skillAttack(p map[string]int) (action.Info, error) {
 		ActorIndex:     c.Index(),
 		Abil:           fmt.Sprintf("Loop Shot %d", c.normalSCounter),
 		AttackTag:      attacks.AttackTagElementalArt,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:         attacks.ICDTagKinichLoopShot,
 		ICDGroup:       attacks.ICDGroupKinichLoopShot,
 		StrikeType:     attacks.StrikeTypeDefault,

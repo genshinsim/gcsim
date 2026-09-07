@@ -148,7 +148,7 @@ func (c *char) fourWinds(c6Free bool) (action.Info, error) {
 			Element:            ele[i],
 			Durability:         25,
 			Mult:               skillAscension[i][c.TalentLvlSkill()] * c.a1SkillMulti() * c1Mult,
-			AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagVarkaSpecial},
+			AdditionalTags:     []attacks.AttackTag{attacks.AttackTagVarkaSpecial},
 			HitlagHaltFrames:   fourWindsHitHaltFrame[i] * 60,
 			HitlagFactor:       0.01,
 			CanBeDefenseHalted: fourWindsCanBeDefHalted[i],

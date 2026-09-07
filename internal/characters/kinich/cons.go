@@ -32,7 +32,7 @@ func (c *char) c1() {
 			default:
 				return nil
 			}
-			if !slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagKinichCannon) {
+			if !slices.Contains(atk.Info.AdditionalTags, attacks.AttackTagKinichCannon) {
 				return nil
 			}
 

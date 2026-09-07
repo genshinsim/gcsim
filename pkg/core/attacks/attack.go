@@ -16,6 +16,11 @@ const (
 	AttackTagWeaponSkill
 	AttackTagMonaBubbleBreak
 
+	// additional tags
+	AttackTagNightsoul
+	AttackTagKinichCannon
+	AttackTagVarkaSpecial
+
 	AttackTagNoneStat // ignore attacker stats delim
 
 	AttackTagOverloadDamage
@@ -87,14 +92,4 @@ const (
 	StrikeTypeBlunt
 	StrikeTypeSlash
 	StrikeTypeSpear
-)
-
-// TODO: merge AdditionalTag into AttackTag
-type AdditionalTag int
-
-const (
-	AdditionalTagNone AdditionalTag = iota
-	AdditionalTagNightsoul
-	AdditionalTagKinichCannon
-	AdditionalTagVarkaSpecial
 )

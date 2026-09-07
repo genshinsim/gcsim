@@ -196,7 +196,7 @@ func (c *char) fireBullets() {
 		ActorIndex:     c.Index(),
 		Abil:           "Shadowhunt Shell",
 		AttackTag:      attacks.AttackTagExtra,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:         attacks.ICDTagChascaShadowhunt,
 		ICDGroup:       attacks.ICDGroupChascaShadowhunt,
 		StrikeType:     attacks.StrikeTypeDefault,

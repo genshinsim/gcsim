@@ -132,7 +132,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ActorIndex:     c.Index(),
 		Abil:           "Spirit Reins, Shadow Hunt",
 		AttackTag:      attacks.AttackTagElementalArt,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeDefault,

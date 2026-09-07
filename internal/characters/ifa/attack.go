@@ -90,7 +90,7 @@ func (c *char) attackTapSkillState(p map[string]int) action.Info {
 		ActorIndex:     c.Index(),
 		Abil:           "Tonic Shot",
 		AttackTag:      attacks.AttackTagNormal,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:         attacks.ICDTagIfaSkill,
 		ICDGroup:       attacks.ICDGroupIfaSkillHit,
 		StrikeType:     attacks.StrikeTypeDefault,

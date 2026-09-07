@@ -165,7 +165,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	if c.canUseNightsoul() {
 		ai.Element = attributes.Geo
 		ai.IgnoreInfusion = true
-		ai.AdditionalTags = []attacks.AdditionalTag{attacks.AdditionalTagNightsoul}
+		ai.AdditionalTags = []attacks.AttackTag{attacks.AttackTagNightsoul}
 
 		highPlungeFrames = skillHighPlungeFrames
 		collisionHitmark = skillCollisionHitmark
@@ -217,7 +217,7 @@ func (c *char) plungeCollision(delay int) {
 	if c.canUseNightsoul() {
 		ai.Element = attributes.Geo
 		ai.IgnoreInfusion = true
-		ai.AdditionalTags = []attacks.AdditionalTag{attacks.AdditionalTagNightsoul}
+		ai.AdditionalTags = []attacks.AttackTag{attacks.AttackTagNightsoul}
 		a1cb = c.a1cb
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 1), delay, delay, a1cb)

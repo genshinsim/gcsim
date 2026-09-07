@@ -142,7 +142,7 @@ func (c *char) skillPlunge(p map[string]int) (action.Info, error) {
 		ActorIndex:     c.Index(),
 		Abil:           "Low Plunge Attack",
 		AttackTag:      attacks.AttackTagPlunge,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeDefault,
@@ -161,7 +161,7 @@ func (c *char) skillPlunge(p map[string]int) (action.Info, error) {
 	}, skillCancelPlungeHitmark)
 
 	if c.nightsoulState.HasBlessing() {
-		ai.AdditionalTags = []attacks.AdditionalTag{attacks.AdditionalTagNightsoul}
+		ai.AdditionalTags = []attacks.AttackTag{attacks.AttackTagNightsoul}
 	}
 
 	return action.Info{

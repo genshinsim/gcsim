@@ -59,7 +59,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			Abil:           "Sunfell Slice",
 			AttackTag:      attacks.AttackTagElementalBurst,
 			ICDTag:         attacks.ICDTagNone,
-			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+			AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 			ICDGroup:       attacks.ICDGroupDefault,
 			StrikeType:     attacks.StrikeTypeBlunt,
 			PoiseDMG:       150,

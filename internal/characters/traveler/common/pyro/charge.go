@@ -48,7 +48,7 @@ func (c *Traveler) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 6 && c.nightsoulState.HasBlessing() {
 		ai.Element = attributes.Pyro
 		ai.IgnoreInfusion = true
-		ai.AdditionalTags = []attacks.AdditionalTag{attacks.AdditionalTagNightsoul}
+		ai.AdditionalTags = []attacks.AttackTag{attacks.AttackTagNightsoul}
 
 		// Lumine PMC's C6 CA shares ICD with the enhanced CA
 		if c.gender == 1 {

@@ -102,7 +102,7 @@ func (c *Traveler) lowPlungeXY(p map[string]int) action.Info {
 	if c.Base.Cons >= 6 && c.nightsoulState.HasBlessing() {
 		ai.Element = attributes.Pyro
 		ai.IgnoreInfusion = true
-		ai.AdditionalTags = []attacks.AdditionalTag{attacks.AdditionalTagNightsoul}
+		ai.AdditionalTags = []attacks.AttackTag{attacks.AttackTagNightsoul}
 	}
 	c.Core.QueueAttack(
 		ai,
@@ -162,7 +162,7 @@ func (c *Traveler) highPlungeXY(p map[string]int) action.Info {
 	if c.Base.Cons >= 6 && c.nightsoulState.HasBlessing() {
 		ai.Element = attributes.Pyro
 		ai.IgnoreInfusion = true
-		ai.AdditionalTags = []attacks.AdditionalTag{attacks.AdditionalTagNightsoul}
+		ai.AdditionalTags = []attacks.AttackTag{attacks.AttackTagNightsoul}
 	}
 	c.Core.QueueAttack(
 		ai,

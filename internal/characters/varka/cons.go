@@ -54,7 +54,7 @@ func (c *char) c2OnSpecialSkill() {
 		PoiseDMG:       20,
 		Element:        attributes.Anemo,
 		Mult:           8,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagVarkaSpecial},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagVarkaSpecial},
 	}
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7)
 	// TODO: Get c2 hitmark

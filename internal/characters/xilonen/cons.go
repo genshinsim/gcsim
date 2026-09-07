@@ -210,7 +210,7 @@ func (c *char) c6FlatDmg() {
 			default:
 				return nil
 			}
-			if !slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
+			if !slices.Contains(atk.Info.AdditionalTags, attacks.AttackTagNightsoul) {
 				return nil
 			}
 

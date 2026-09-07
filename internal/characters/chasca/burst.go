@@ -43,7 +43,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		ActorIndex:     c.Index(),
 		Abil:           "Galesplitting Soulseeker Shell",
 		AttackTag:      attacks.AttackTagElementalBurst,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeDefault,
