@@ -151,15 +151,19 @@ jobs:
           GCSIM_SHARE_KEY: ${{ secrets.AES_KEY }}
 
       - name: Release Binary
-        uses: softprops/action-gh-release@3d0d9888cb7fd7b750713d6e236d1fcb99157228 # v3.0.2
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
           files: |
             LICENSE
+            gcsim_windows_arm64.exe
             gcsim_windows_amd64.exe
             gcsim_darwin_arm64
             gcsim_darwin_amd64
+            gcsim_linux_arm64
             gcsim_linux_amd64
+            server_windows_arm64.exe
             server_windows_amd64.exe
             server_darwin_arm64
             server_darwin_amd64
+            server_linux_arm64
             server_linux_amd64

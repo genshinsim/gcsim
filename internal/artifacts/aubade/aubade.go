@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -67,7 +66,7 @@ func (s *Set) Init() error {
 			if s.core.Player.Active() == s.char.Index() && !s.char.StatusIsActive(aubade4pcOnFieldKey) {
 				return 0
 			}
-			if attacks.AttackTagIsLunar(ai.AttackTag) {
+			if ai.AttackTag.IsLunar() {
 				return buff
 			}
 			return 0

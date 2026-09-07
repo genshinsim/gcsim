@@ -119,6 +119,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnSwirlElectro, swirlFunc, fmt.Sprintf("sunny-morning-%v-electro-swirl", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnSwirlCryo, swirlFunc, fmt.Sprintf("sunny-morning-%v-cryo-swirl", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnStellarSwirl, swirlFunc, fmt.Sprintf("sunny-morning-%v-cryo-swirl", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnSwirlHydro, swirlFunc, fmt.Sprintf("sunny-morning-%v-hydro-swirl", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnSwirlPyro, swirlFunc, fmt.Sprintf("sunny-morning-%v-pyro-swirl", char.Base.Key.String()))
 

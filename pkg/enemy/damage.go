@@ -11,11 +11,7 @@ import (
 func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event, grpMult float64) (float64, bool) {
 	var isCrit bool
 
-	switch atk.Info.AttackTag {
-	case attacks.AttackTagDirectLunarCharged,
-		attacks.AttackTagDirectLunarBloom,
-		attacks.AttackTagDirectLunarCrystallize,
-		attacks.AttackTagDirectStellarConduct:
+	if atk.Info.AttackTag.IsDirect() {
 		return e.calcDirectReaction(atk, evt, grpMult)
 	}
 
@@ -24,12 +20,12 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event, grpMult float64) (fl
 	st := attributes.EleToDmgP(atk.Info.Element)
 
 	// skip DMG% for reaction damage
-	if atk.Info.AttackTag < attacks.AttackTagNoneStat {
+	if !atk.Info.AttackTag.IsReaction() {
 		// if st < 0 {
 		// 	log.Println(atk)
 		// }
 
-		if st > -1 {
+		if st != attributes.NoStat {
 			elePer = atk.Snapshot.Stats[st]
 			// Generally not needed except for sim issues
 			// e.Core.Log.NewEvent("ele lookup ok",

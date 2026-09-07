@@ -135,13 +135,13 @@ func (r *Reactable) doSingleLCAttack(contribMap [info.MaxChars]bool, consumeAura
 		}
 
 		// Emit event so PreDamageMods can be applied to the individual LC contributions
-		r.core.Events.Emit(event.OnLunarReactionAttack, r.self, &ae)
+		r.core.Events.Emit(event.OnSpecialReactionAttack, r.self, &ae)
 
 		em := ae.Snapshot.Stats[attributes.EM]
 		cr := ae.Snapshot.Stats[attributes.CR]
 		cd := ae.Snapshot.Stats[attributes.CD]
 		react := char.ReactBonus(ae.Info)
-		totalDmg := combat.CalcLunarReactionDmg(char.Base.Level, react, ae.Info, em)
+		totalDmg := combat.CalcSpecialReactionDmg(char.Base.Level, react, ae.Info, em)
 		isCrit := false
 
 		if r.core.Rand.Float64() <= cr {

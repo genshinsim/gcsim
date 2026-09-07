@@ -194,6 +194,24 @@ var (
 		0.57,
 		0.6,
 	}
+	// skill: AisaUtamakuraPilgrimage - Elemental Mastery-Based Stellar Swirl DMG Increase: {5} per 100 Points
+	stellarSwirlDMG = []float64{
+		0.018,
+		0.021,
+		0.024,
+		0.027,
+		0.03,
+		0.033,
+		0.036,
+		0.039,
+		0.042,
+		0.045,
+		0.048,
+		0.051,
+		0.054,
+		0.057,
+		0.06,
+	}
 	// skill: AisaUtamakuraPilgrimage - Skill DMG: {3}
 	skill = []float64{
 		0.57744,

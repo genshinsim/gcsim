@@ -47,20 +47,20 @@ var ModifierString = []string{
 }
 
 var modifierElement = []attributes.Element{
-	attributes.UnknownElement,
+	attributes.NoElement,
 	attributes.Electro,
 	attributes.Pyro,
 	attributes.Cryo,
 	attributes.Hydro,
 	attributes.Dendro,
-	attributes.UnknownElement,
+	attributes.NoElement,
 	attributes.Dendro,
 	attributes.Quicken,
 	attributes.Frozen,
 	attributes.Anemo,
 	attributes.Geo,
 	attributes.Pyro,
-	attributes.UnknownElement,
+	attributes.NoElement,
 }
 
 func (r ReactionModKey) Element() attributes.Element { return modifierElement[r] }

@@ -8,7 +8,6 @@ import (
 
 	"github.com/genshinsim/gcsim/internal/template/crystallize"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -312,8 +311,11 @@ func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
 	name := objs[0].(*strval)
 
 	// check if element is vaild
-	pickupEle := attributes.StringToEle(name.str)
-	if pickupEle == attributes.UnknownElement && name.str != "any" {
+	var pickAny bool
+	pickupEle, ok := ast.EleKeys[name.str]
+	if name.str == "any" {
+		pickAny = true
+	} else if !ok {
 		return nil, ast.NewErrorf(e.file.Position(c.Pos), "pick_up_crystallize argument element %v is not a valid element", name.str)
 	}
 
@@ -325,7 +327,7 @@ func (e *Eval) pickUpCrystallize(c *ast.CallExpr, env *Env) (Obj, error) {
 			continue
 		}
 		// skip if shard not specified element
-		if pickupEle != attributes.UnknownElement && shard.Shield.Ele != pickupEle {
+		if !pickAny && shard.Shield.Ele != pickupEle {
 			continue
 		}
 		// try to pick up shard and stop if succeeded

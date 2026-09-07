@@ -26,6 +26,7 @@ talents:
 
   - cloudDMG: skill(Continuous Attack DMG)
   - swirlDMG: skill(Elemental Mastery-Based Swirl DMG Increase)
+  - stellarSwirlDMG: skill(Elemental Mastery-Based Stellar Swirl DMG Increase)
   - skill: skill(Skill DMG)
 
   - burstDMG: burst(Skill DMG)

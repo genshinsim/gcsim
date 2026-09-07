@@ -168,7 +168,9 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 
 	// Check if a continuing CA or new
 	skippedWindupFrames := 0
+	segmented := true
 	if c.Core.Player.CurrentState() != action.ChargeAttackState || c.caState.StartFrame == 0 {
+		segmented = false
 		c.caState = ChargeState{}
 		startFrame := c.Core.F
 		c.caState.StartFrame = startFrame
@@ -181,7 +183,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 		skippedWindupFrames = c.GetSkippedWindupFrames(bufferedFrames)
 		// If the full windup is not skipped, mav's ca windup will proc n0 abilities like Yelan/XQ
 		if skippedWindupFrames < 15 {
-			c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState)
+			c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState, false)
 		}
 		c.caState.skippedWindupF = skippedWindupFrames // Used for syncing CA frames on CA hook
 
@@ -197,7 +199,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	isForceFinalHit := false // Used when exceeding CA duration, forces CAF
 
 	if final == 1 {
-		return c.BikeChargeAttackFinal(0, skippedWindupFrames)
+		return c.BikeChargeAttackFinal(0, skippedWindupFrames, segmented)
 	}
 
 	// Do not allow starting with a partial CA hold
@@ -209,6 +211,8 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	} else {
 		hasValidTarget, ai, err := c.HasValidTargetCheck(bikeHittableEntities)
 		if !hasValidTarget {
+			// Shouldn't matter
+			ai.Segmented = segmented
 			return ai, err
 		}
 		durationCA = c.CountBikeChargeAttack(1, skippedWindupFrames, bikeHittableEntities, nightSoulDuration)
@@ -223,7 +227,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	}
 
 	if isForceFinalHit {
-		return c.BikeChargeAttackFinal(durationCA, skippedWindupFrames)
+		return c.BikeChargeAttackFinal(durationCA, skippedWindupFrames, segmented)
 	}
 
 	// Start queue CAF for invalid actions
@@ -235,7 +239,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 		if c.caState.srcFrame != src {
 			return
 		}
-		c.BikeChargeAttackFinal(0, 0)
+		c.BikeChargeAttackFinal(0, 0, true)
 	}, durationCA+1)
 
 	return action.Info{
@@ -251,6 +255,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 		},
 		AnimationLength: durationCA + newMinSpinDuration + bikeChargeFinalFrames[action.InvalidAction],
 		CanQueueAfter:   durationCA,
+		Segmented:       segmented,
 		State:           action.ChargeAttackState,
 		OnRemoved: func(next action.AnimationState) {
 			if next != action.ChargeAttackState {
@@ -358,7 +363,7 @@ func (c *char) CountBikeChargeAttack(maxHitCount, skippedWindupFrames int, hitta
 }
 
 // CAF occurs after reaching maximum CA duration, exiting NS, or letting go of CA
-func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.Info, error) {
+func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int, segmented bool) (action.Info, error) {
 	bikeChargeAttackElapsedTime := c.caState.cAtkFrames + caFrames
 	var newMinSpinDuration int
 	if bikeChargeAttackElapsedTime > 0 {
@@ -450,6 +455,7 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 		Frames:          func(next action.Action) int { return bikeChargeFinalFrames[next] + caFrames },
 		AnimationLength: bikeChargeFinalFrames[action.InvalidAction] + caFrames,
 		CanQueueAfter:   bikeChargeFinalFrames[action.ActionDash] + caFrames,
+		Segmented:       segmented,
 		State:           action.ChargeAttackState,
 	}, nil
 }

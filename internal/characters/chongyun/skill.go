@@ -132,7 +132,10 @@ func (c *char) infuse(active *character.CharWrapper) {
 		active.AddCooldownMod(character.CooldownMod{
 			Base: modifier.NewBaseWithHitlag("chongyun-c2", dur),
 			Amount: func(a action.Action) float64 {
-				if a == action.ActionSkill || a == action.ActionBurst {
+				switch a {
+				case action.ActionSkill,
+					action.ActionBurst,
+					action.ActionSpecialSkill:
 					return -0.15
 				}
 				return 0

@@ -17,9 +17,11 @@ func CalcReactionBaseDmg(lvl int) float64 {
 	return reactionLvlBase[idx]
 }
 
-func CalcLunarReactionDmg(lvl int, reactBonus float64, atk info.AttackInfo, em float64) float64 {
+func CalcSpecialReactionDmg(lvl int, reactBonus float64, atk info.AttackInfo, em float64) float64 {
 	var reactionMultiplier float64
 	switch atk.AttackTag {
+	case attacks.AttackTagReactionStellarSwirl:
+		reactionMultiplier = 1
 	case attacks.AttackTagReactionLunarCharge:
 		reactionMultiplier = 3
 	case attacks.AttackTagReactionLunarCrystallize:

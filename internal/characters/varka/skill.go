@@ -7,7 +7,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -82,7 +81,7 @@ func (c *char) getConversionElem(prio ...attributes.Element) attributes.Element 
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	if c.StatModIsActive(skillKey) && c.convertToFourWinds() {
+	if c.useSpecialSkill() {
 		return c.fourWinds(c.c6FreeSkill())
 	}
 
@@ -103,18 +102,27 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5), skillHitmark, skillHitmark, c.particleCB)
 
-	// c.SetCDWithDelay(action.ActionSkill, 16*60, skillHitmark)
 	c.QueueCharTask(func() {
 		c.AddStatus(skillKey, 12*60, true)
 
 		if c.convertToFourWinds() {
 			c.fourWindsCDStacks = 0
-			c.fourWindsChargesStarted = 0
-			c.fourWindsChargesAva = 0
+
+			// discard any in progress CD queues
+			c.DiscardActionCooldown(action.ActionSpecialSkill, fourWindsCD)
+
+			// discard any ready special skill charges and start a new CD for each charge
+			for range c.AvailableCDCharge[action.ActionSpecialSkill] {
+				c.SetCD(action.ActionSpecialSkill, fourWindsCD)
+			}
+
+			// we specifically don't discard any previously queued CDs if they haven't started yet.
+			// this aligns with in game tested behaviour with Chongyun C2
+
+			// must be called after the CDs are reset
 			c.c1OnSkill()
-			c.startFourWindsCD()
 		}
-	}, skillHitmark)
+	}, skillHitmark-1) // converts to skill state before the skill hitmark, relevant for Sac GS resetting cooldowns
 	c.SetCDWithDelay(action.ActionSkill, skillCD, 39)
 	return action.Info{
 		Frames:          func(next action.Action) int { return skillFrames[next] },
@@ -151,7 +159,7 @@ func (c *char) fourWinds(c6Free bool) (action.Info, error) {
 
 	if !c6Free {
 		c.QueueCharTask(func() {
-			c.useFourWindsCharge()
+			c.SetCD(action.ActionSpecialSkill, fourWindsCD)
 			c.c6OnSkill()
 		}, 39)
 	}
@@ -184,102 +192,11 @@ func (c *char) fourWindsCDRedCB() func(ac info.AttackCB) {
 		if done {
 			return
 		}
-
-		if c.fourWindsCDDoneF < 0 {
-			return
-		}
 		done = true
 		c.fourWindsCDStacks++
 
 		amt := c.hexSkillCDReduction()
-		c.reduceFourWindsCD(amt)
-	}
-}
-
-func (c *char) reduceFourWindsCD(amt int) {
-	if c.fourWindsCDDoneF < c.Core.F {
-		panic("c.fourWindsCDDoneF should not be less than c.Core.F")
-	}
-	c.fourWindsCDDoneF = max(c.fourWindsCDDoneF-amt, c.Core.F)
-
-	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), action.ActionSkill.String(), " (four winds) cooldown forcefully reduced").
-		Write("type", action.ActionSkill.String()).
-		Write("expiry", c.fourWindsCDDoneF-amt).
-		Write("charges_remain", c.fourWindsCharges()).
-		Write("four_winds_charges_started", c.fourWindsChargesStarted)
-
-	c.queueCDTask()
-}
-
-func (c *char) startFourWindsCD() {
-	modified := c.CDReduction(action.ActionSkill, fourWindsCD)
-	c.fourWindsCDDoneF = c.Core.F + modified
-	c.fourWindsChargesStarted += 1
-	c.queueCDTask()
-}
-
-func (c *char) queueCDTask() {
-	src := c.fourWindsCDDoneF
-	c.Core.Tasks.Add(func() {
-		if c.fourWindsCDDoneF != src {
-			return
-		}
-		c.fourWindsChargesAva += 1
-		c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), action.ActionSkill.String(), " (four winds) cooldown ready").
-			Write("type", action.ActionSkill.String()).
-			Write("charges_remain", c.fourWindsCharges())
-
-		if c.fourWindsChargesStarted < 2 {
-			c.startFourWindsCD()
-			return
-		}
-
-		c.fourWindsCDDoneF = -1
-	}, src-c.Core.F)
-}
-
-func (c *char) resetFourWindsCD() {
-	if c.fourWindsCDDoneF > c.Core.F {
-		c.fourWindsCDDoneF = c.Core.F
-		c.queueCDTask()
-	}
-}
-
-func (c *char) fourWindsCD() int {
-	if !c.StatusIsActive(skillKey) {
-		return -1
-	}
-
-	if c.fourWindsCharges() > 0 {
-		return 0
-	}
-
-	if c.fourWindsCDDoneF < 0 {
-		return -1
-	}
-
-	return c.fourWindsCDDoneF - c.Core.F
-}
-
-func (c *char) fourWindsCharges() int {
-	if !c.StatusIsActive(skillKey) {
-		return 0
-	}
-	return c.fourWindsChargesAva
-}
-
-func (c *char) useFourWindsCharge() {
-	if !c.StatusIsActive(skillKey) {
-		return
-	}
-	if c.fourWindsChargesAva <= 0 {
-		panic("unexpected charges less than 0")
-	}
-	c.fourWindsChargesAva -= 1
-
-	// with C1, it's possible to stack up to 2, so we need to start a CD charge here
-	if c.fourWindsCDDoneF < 0 && c.fourWindsChargesStarted < 2 {
-		c.startFourWindsCD()
+		c.ReduceActionCooldown(action.ActionSpecialSkill, amt)
 	}
 }
 

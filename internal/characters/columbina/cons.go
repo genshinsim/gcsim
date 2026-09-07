@@ -1,7 +1,6 @@
 package columbina
 
 import (
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -37,14 +36,14 @@ func (c *char) consElevationInit() {
 	c.Core.Events.Subscribe(event.OnApplyAttack, func(args ...any) {
 		atk := args[0].(*info.AttackEvent)
 		// do not apply elevation to Reaction damage here because the elevation is already applied at the contributor level
-		if attacks.DirectLunarReactionStartDelim < atk.Info.AttackTag && atk.Info.AttackTag < attacks.DirectLunarReactionEndDelim {
+		if atk.Info.AttackTag.IsLunarDirect() {
 			atk.Info.Elevation += amt
 		}
 	}, elevationKey+"-direct")
 
-	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
+	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
-		if attacks.AttackTagIsLunar(atk.Info.AttackTag) {
+		if atk.Info.AttackTag.IsLunarReact() {
 			atk.Info.Elevation += amt
 		}
 	}, elevationKey+"-reaction")
@@ -203,7 +202,7 @@ func (c *char) c6Init() {
 	c.c6Buff = make([]float64, attributes.EndStatType)
 	c.c6Buff[attributes.CD] = 0.8
 
-	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
+	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
 		ae, ok := args[1].(*info.AttackEvent)
 		if !ok {
 			return

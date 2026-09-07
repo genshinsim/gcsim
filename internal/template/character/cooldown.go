@@ -92,6 +92,7 @@ func (c *Character) Cooldown(a action.Action) int {
 	return c.cdQueueWorkerStartedAt[a] + c.cdQueue[a][0] - c.Core.F
 }
 
+// Reset an in progress cooldown for the specified action and adds an available charge
 func (c *Character) ResetActionCooldown(a action.Action) {
 	// if stacks already maxed then do nothing
 	if c.AvailableCDCharge[a] == 1+c.additionalCDCharge[a] {
@@ -100,7 +101,6 @@ func (c *Character) ResetActionCooldown(a action.Action) {
 	// log.Printf("resetting; frame %v, queue %v\n", c.F, c.cdQueue[a])
 	// otherwise add a stack && pop queue
 	c.AvailableCDCharge[a]++
-	c.Tags["skill_charge"]++
 	c.cdQueue[a] = c.cdQueue[a][1:]
 	// reset worker time
 	c.cdQueueWorkerStartedAt[a] = c.Core.F
@@ -110,7 +110,7 @@ func (c *Character) ResetActionCooldown(a action.Action) {
 		Write("charges_remain", c.AvailableCDCharge[a]).
 		Write("cooldown_queue", c.cdQueueString(a))
 	// check if anymore cd in queue
-	if len(c.cdQueue) > 0 {
+	if len(c.cdQueue[a]) > 0 {
 		c.startCooldownQueueWorker(a)
 	}
 }
@@ -132,10 +132,41 @@ func (c *Character) ReduceActionCooldown(a action.Action, v int) {
 	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), a.String(), " cooldown forcefully reduced").
 		Write("type", a.String()).
 		Write("expiry", c.Cooldown(a)).
-		Write("charges_remain", c.AvailableCDCharge).
+		Write("charges_remain", c.AvailableCDCharge[a]).
 		Write("cooldown_queue", c.cdQueueString(a))
 	c.startCooldownQueueWorker(a)
 	// log.Printf("started: %v, new queue: %v, worker frame: %v\n", c.cdQueueWorkerStartedAt[a], c.cdQueue[a], c.cdQueueWorkerStartedAt[a])
+}
+
+// Discards an in progress cooldown for the specified action and starts a new cooldown.
+// Functionally similar to doing ResetActionCooldown and then SetCD in sequence, but has logs differently.
+func (c *Character) DiscardActionCooldown(a action.Action, dur int) {
+	if c.AvailableCDCharge[a] == 1+c.additionalCDCharge[a] {
+		return
+	}
+
+	if len(c.cdQueue[a]) == 0 {
+		return
+	}
+
+	// Replacing the active cooldown should not change the current charge count.
+	c.cdQueue[a] = c.cdQueue[a][1:]
+	c.cdQueueWorkerStartedAt[a] = c.Core.F
+	c.cdCurrentQueueWorker[a] = nil
+
+	modified := c.CDReduction(a, dur)
+	c.cdQueue[a] = append(c.cdQueue[a], modified)
+	if len(c.cdQueue[a]) > 0 {
+		c.startCooldownQueueWorker(a)
+	}
+
+	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), a.String(), " cooldown forcefully discarded").
+		Write("type", a.String()).
+		Write("expiry", c.Cooldown(a)).
+		Write("original_cd", dur).
+		Write("modified_cd_by_cdr", modified).
+		Write("charges_remain", c.AvailableCDCharge[a]).
+		Write("cooldown_queue", c.cdQueueString(a))
 }
 
 func (c *Character) startCooldownQueueWorker(a action.Action) {
@@ -170,7 +201,6 @@ func (c *Character) startCooldownQueueWorker(a action.Action) {
 		}
 		// otherwise add a stack and pop first item in queue
 		c.AvailableCDCharge[a]++
-		c.Tags["skill_charge"]++
 		c.cdQueue[a] = c.cdQueue[a][1:]
 
 		// c.Log.Debugw("stack restored",  "avail", c.availableCDCharge[a], "queue", c.cdQueue)
@@ -186,7 +216,7 @@ func (c *Character) startCooldownQueueWorker(a action.Action) {
 			Write("cooldown_queue", c.cdQueueString(a))
 
 		// if queue still has len > 0 then call start queue again
-		if len(c.cdQueue) > 0 {
+		if len(c.cdQueue[a]) > 0 {
 			c.startCooldownQueueWorker(a)
 		}
 	}

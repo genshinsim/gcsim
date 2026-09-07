@@ -76,12 +76,12 @@ var StatKeys = map[string]attributes.Stat{
 	"dmg%":    attributes.DmgP,
 }
 
+// excludes frozen/quicken
 var EleKeys = map[string]attributes.Element{
 	"electro":  attributes.Electro,
 	"pyro":     attributes.Pyro,
 	"cryo":     attributes.Cryo,
 	"hydro":    attributes.Hydro,
-	"frozen":   attributes.Frozen,
 	"anemo":    attributes.Anemo,
 	"dendro":   attributes.Dendro,
 	"geo":      attributes.Geo,

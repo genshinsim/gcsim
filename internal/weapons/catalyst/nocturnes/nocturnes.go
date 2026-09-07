@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -50,7 +49,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if atk.Info.ActorIndex != char.Index() {
 			return
 		}
-		if !attacks.AttackTagIsLunar(atk.Info.AttackTag) {
+		if !atk.Info.AttackTag.IsLunar() {
 			return
 		}
 		nocturneBuff(char, energy, hpBuff, critBuff)
@@ -71,16 +70,22 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 
-		if char.StatusIsActive(buffKey) {
-			atk.Snapshot.Stats[attributes.CD] += 0.4 + float64(r)*0.2
+		if !atk.Info.AttackTag.IsLunar() {
+			return
 		}
+
+		if !char.StatusIsActive(buffKey) {
+			return
+		}
+
+		atk.Snapshot.Stats[attributes.CD] += 0.4 + float64(r)*0.2
 	}
 
-	c.Events.Subscribe(event.OnLunarReactionAttack, onLunarReactionAttackF, buffKey)
+	c.Events.Subscribe(event.OnSpecialReactionAttack, onLunarReactionAttackF, buffKey)
 	c.Events.Subscribe(event.OnEnemyDamage, onDmgF, buffKey)
 	c.Events.Subscribe(event.OnLunarCharged, onReactF, buffKey)
 	c.Events.Subscribe(event.OnLunarBloom, onReactF, buffKey)
-	// c.Events.Subscribe(event.OnLunarCrystallize, onReactF, buffKey)
+	c.Events.Subscribe(event.OnLunarCrystallize, onReactF, buffKey)
 
 	return w, nil
 }
@@ -101,7 +106,7 @@ func nocturneBuff(char *character.CharWrapper, energy float64, hpBuff, critBuff 
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(fmt.Sprintf("%v-cd", buffKey), 12*60),
 		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
-			if !attacks.AttackTagIsLunar(atk.Info.AttackTag) {
+			if !atk.Info.AttackTag.IsLunar() {
 				return nil
 			}
 			return critBuff

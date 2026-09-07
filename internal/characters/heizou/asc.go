@@ -35,6 +35,8 @@ func (c *char) a1() {
 			case attacks.AttackTagSwirlHydro:
 			case attacks.AttackTagSwirlElectro:
 			case attacks.AttackTagSwirlCryo:
+			case attacks.AttackTagDirectStellarSwirl:
+			case attacks.AttackTagReactionStellarSwirl:
 			default:
 				return
 			}

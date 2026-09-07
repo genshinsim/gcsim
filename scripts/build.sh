@@ -1,14 +1,23 @@
 #!/bin/bash
 
-# TODO: get from file or env
-SHARE_KEY=$GCSIM_SHARE_KEY
+set -eu
 
-GOOS=windows GOARCH=amd64 go build -ldflags="-X 'main.shareKey=${SHARE_KEY}' -X main.version=`git tag --sort=-version:refname | head -n 1`" -o gcsim_windows_amd64.exe ./cmd/gcsim
-GOOS=darwin GOARCH=arm64 go build -ldflags="-X 'main.shareKey=${SHARE_KEY}' -X main.version=`git tag --sort=-version:refname | head -n 1`" -o gcsim_darwin_arm64 ./cmd/gcsim
-GOOS=darwin GOARCH=amd64 go build -ldflags="-X 'main.shareKey=${SHARE_KEY}' -X main.version=`git tag --sort=-version:refname | head -n 1`" -o gcsim_darwin_amd64 ./cmd/gcsim
-GOOS=linux GOARCH=amd64 go build -ldflags="-X 'main.shareKey=${SHARE_KEY}' -X main.version=`git tag --sort=-version:refname | head -n 1`" -o gcsim_linux_amd64 ./cmd/gcsim
+# shellcheck disable=SC2154
+: "${GCSIM_SHARE_KEY}"
 
-GOOS=windows GOARCH=amd64 go build -ldflags "-X 'main.shareKey=${SHARE_KEY}'  -X main.version=`git tag --sort=-version:refname | head -n 1`" -o server_windows_amd64.exe ./cmd/server
-GOOS=darwin GOARCH=arm64 go build -ldflags "-X 'main.shareKey=${SHARE_KEY}' -X main.version=`git tag --sort=-version:refname | head -n 1`" -o server_darwin_arm64 ./cmd/server 
-GOOS=darwin GOARCH=amd64 go build -ldflags "-X 'main.shareKey=${SHARE_KEY}' -X main.version=`git tag --sort=-version:refname | head -n 1`" -o server_darwin_amd64 ./cmd/server 
-GOOS=linux GOARCH=amd64 go build -ldflags "-X 'main.shareKey=${SHARE_KEY}' -X main.version=`git tag --sort=-version:refname | head -n 1`" -o server_linux_amd64 ./cmd/server 
+release_tag="$(git tag --sort=-version:refname | head -n 1)"
+
+for name in gcsim server; do
+	for os in darwin linux windows; do
+		for arch in amd64 arm64; do
+			out="${name}_${os}_${arch}"
+			[ "${os}" != windows ] || out="${out}.exe"
+
+			echo "building ${out}"
+			CGO_ENABLED=0 GOOS="${os}" GOARCH="${arch}" go build \
+				-trimpath \
+				-ldflags "-X 'main.shareKey=${GCSIM_SHARE_KEY}' -X 'main.version=${release_tag}'" \
+				-o "${out}" "./cmd/${name}"
+		done
+	done
+done

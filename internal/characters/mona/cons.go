@@ -192,7 +192,7 @@ func (c *char) c4Init() {
 	}
 
 	// workaround for giving lunarcharge and lunarcrystallize the 15% CR and 15% CDMG
-	c.Core.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
+	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
 		x, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return

@@ -164,7 +164,7 @@ func SetupResonance(s *core.Core) {
 			}
 
 			// workaround for giving lunarcharge the 15% CR
-			s.Events.Subscribe(event.OnLunarReactionAttack, func(args ...any) {
+			s.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
 				e, ok := args[0].(*enemy.Enemy)
 				if !ok {
 					return
@@ -485,7 +485,7 @@ func setupAscendantGleam(core *core.Core) {
 			c.AddReactBonusMod(character.ReactBonusMod{
 				Base: modifier.NewBase("ascendant-gleam", 20*60),
 				Amount: func(ai info.AttackInfo) float64 {
-					if !attacks.AttackTagIsLunar(ai.AttackTag) {
+					if !ai.AttackTag.IsLunar() {
 						return 0
 					}
 					if core.Flags.LogDebug {

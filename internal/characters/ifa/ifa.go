@@ -65,6 +65,15 @@ func (c *char) getTeamNightsoul() float64 {
 	return sum
 }
 
+func (c *char) Condition(fields []string) (any, error) {
+	switch fields[0] {
+	case "nightsoul":
+		return c.nightsoulState.Condition(fields)
+	default:
+		return c.Character.Condition(fields)
+	}
+}
+
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	if !c.nightsoulState.HasBlessing() {
 		return c.Character.ActionStam(a, p)

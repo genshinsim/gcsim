@@ -51,7 +51,7 @@ func (c *char) a1Init() {
 	// the buff updates every 1s
 	c.a1UpdateBuff()
 
-	elementCount := make([]int, attributes.EndEleType)
+	elementCount := make(map[attributes.Element]int)
 	for _, char := range c.Core.Player.Chars() {
 		elementCount[char.Base.Element] += 1
 	}
@@ -111,6 +111,7 @@ func (c *char) a4Init() {
 	c.Core.Events.Subscribe(event.OnSwirlHydro, a4Hook, "varka-a4-hydro")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, a4Hook, "varka-a4-electro")
 	c.Core.Events.Subscribe(event.OnSwirlCryo, a4Hook, "varka-a4-cryo")
+	c.Core.Events.Subscribe(event.OnStellarSwirl, a4Hook, "varka-a4-cryo")
 
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{

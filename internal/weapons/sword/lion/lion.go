@@ -2,7 +2,6 @@ package lion
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -28,9 +27,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("lionsroar", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
-			if atk.Info.AttackTag > attacks.ReactionAttackStartDelim {
-				return nil
-			}
 			x, ok := t.(*enemy.Enemy)
 			if !ok {
 				return nil

@@ -93,7 +93,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillCharge() (action.Info, error) {
-	if c.fourWindsCharges() > 0 || c.c6FreeCA() {
+	if c.useSpecialSkill() && (c.Charges(action.ActionSpecialSkill) > 0 || c.c6FreeCA()) {
 		return c.skillAzureDevour(c.c6FreeCA())
 	}
 
@@ -195,7 +195,7 @@ func (c *char) skillAzureDevour(c6Free bool) (action.Info, error) {
 		)
 	}
 	if !c6Free {
-		c.useFourWindsCharge()
+		c.SetCD(action.ActionSpecialSkill, 11*60)
 		c.c6OnSkillCA()
 	}
 

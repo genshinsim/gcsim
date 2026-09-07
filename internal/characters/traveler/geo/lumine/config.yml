@@ -29,6 +29,7 @@ abilities:
     params:
       base_atk_buff: 0 for no +3 base atk, 1 (default) for +3 base atk. Set via '+params=[base_atk_buff=...]' in the char's line.
       skirk_story_buff: 0 for no buffs, 1 (default) for +7 base atk, +15 EM, +50 base HP. Set via '+params=[skirk_story_buff=...]' in the char's line.
+      true_moon_story_buff: 0 for no buffs, 1 (default) for +10% CR, +20% DEF, +20% ER, +60 EM, +20% HP, +20% ATK, +20% CD. Set via '+params=[true_moon_story_buff=...]' in the char's line.
 
   - name: attack
     hitbox:
@@ -37,34 +38,34 @@ abilities:
         center: Player
         offset: [0, 1]
         radius: 1.6
-        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
 
       - name: N2
         shape: Box
         center: Player
         box: [1.4, 2.2]
-        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
 
       - name: N3
         shape: Circle
         center: Player
         offset: [0, 0.7]
         radius: 1.5
-        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.06, scale: 0.01, defense_halt: true }
 
       - name: N4
         shape: Circle
         center: Player
         offset: [0, 0.7]
         radius: 1.5
-        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.06, scale: 0.01, defense_halt: true }
 
       - name: N5
         shape: Circle
         center: Player
         offset: [0, 1]
         radius: 1.6
-        hitlag: {time: 0.1, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.1, scale: 0.01, defense_halt: true }
 
   - name: charge
     note: Need to use attack right before charge.
@@ -88,7 +89,8 @@ abilities:
         shape: Circle
         center: PrimaryTarget
         radius: 3
-        hitlag: {time: 0.05, scale: 0.05, defense_halt: true, deployable: true}
+        hitlag:
+          { time: 0.05, scale: 0.05, defense_halt: true, deployable: true }
 
   - name: burst
     params:
@@ -116,7 +118,8 @@ abilities:
         shape: Circle
         center: GlobalValue
         radius: 3
-        hitlag: {time: 0.05, scale: 0.05, defense_halt: true, deployable: true}
+        hitlag:
+          { time: 0.05, scale: 0.05, defense_halt: true, deployable: true }
 
   - name: walk
     note: No action followed by walk has proper frames.

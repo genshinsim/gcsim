@@ -46,10 +46,14 @@ tasks:
       - git rm -f --ignore-unmatch 'ui/packages/docs/docs/reference/*/*.md' > /dev/null
       - git rm -f --ignore-unmatch '*.dm.*'
 
+  enumer:
+    cmds:
+      - go generate ./pkg/core/attributes
+
   wasm:
     dir: cmd/wasm
     cmds:
-      - go build -o '{{.OUT | default "main.wasm"}}' -ldflags="-X 'main.shareKey=${{if eq OS "windows"}}env:{{end}}GCSIM_SHARE_KEY'"
+      - go build -trimpath -o '{{.OUT | default "main.wasm"}}' -ldflags="-X 'main.shareKey=${{if eq OS "windows"}}env:{{end}}GCSIM_SHARE_KEY'"
       - echo "compiled wasm successfully!"
     env:
       GOOS: js

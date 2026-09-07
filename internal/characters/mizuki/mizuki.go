@@ -19,6 +19,7 @@ type char struct {
 	c1EM                            float64
 	c2Buff                          []float64
 	c4EnergyGenerationsRemaining    int
+	c6Buff                          []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -91,7 +90,9 @@ func (c *CharWrapper) AddAttackMod(mod AttackMod) {
 //	char.AddCooldownMod(character.CooldownMod{
 //		Base: modifier.NewBaseWithHitlag("buff", 10*60),
 //		Amount: func(a action.Action) float64 {
-//			if a == action.ActionSkill {
+//			switch a {
+//			case action.ActionSkill,
+//				action.ActionSpecialSkill:
 //				return -0.15
 //			}
 //			return 0
@@ -238,7 +239,7 @@ func (c *CharWrapper) ExtendStatus(key string, ext int) bool { return c.extendMo
 func (c *CharWrapper) ApplyAttackMods(a *info.AttackEvent, t info.Target) []any {
 	// skip if this is normal reaction damage
 	// we still apply attack mods for direct lunar reaction damage
-	if attacks.AttackTagNoneStat <= a.Info.AttackTag && a.Info.AttackTag < attacks.LunarReactionEndDelim {
+	if a.Info.AttackTag.IsReaction() && !a.Info.AttackTag.IsDirect() {
 		return nil
 	}
 

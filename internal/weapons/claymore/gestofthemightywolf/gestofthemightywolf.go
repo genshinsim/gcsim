@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -64,33 +65,32 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if atk.Info.AttackTag != attacks.AttackTagNormal {
 			return
 		}
-		w.addStacks(1)
-		c.Log.NewEvent("gest adding stack- normal on hit", glog.LogWeaponEvent, char.Index()).
-			Write("stacks", w.stacks)
+		w.addStacks("normal", 1)
 	}, fmt.Sprintf("gest-of-the-mighty-wolf-on-normal-attack-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnChargeAttack, func(args ...any) {
+	c.Events.Subscribe(event.OnStateChange, func(args ...any) {
+		next := args[1].(action.AnimationState)
+		segmented := args[2].(bool)
+
 		if w.core.Player.Active() != char.Index() {
 			return
 		}
-		w.addStacks(2)
-		c.Log.NewEvent("gest adding stack- charge on start", glog.LogWeaponEvent, char.Index()).
-			Write("stacks", w.stacks)
+		if next == action.ChargeAttackState && !segmented {
+			w.addStacks("charge", 2)
+		}
 	}, fmt.Sprintf("gest-of-the-mighty-wolf-on-charge-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if w.core.Player.Active() != char.Index() {
 			return
 		}
-		w.addStacks(2)
-		c.Log.NewEvent("gest adding stack- skill on cast", glog.LogWeaponEvent, char.Index()).
-			Write("stacks", w.stacks)
+		w.addStacks("skill", 2)
 	}, fmt.Sprintf("gest-of-the-mighty-wolf-on-skill-%v", char.Base.Key.String()))
 
 	return w, nil
 }
 
-func (w *Weapon) addStacks(amt int) {
+func (w *Weapon) addStacks(src string, amt int) {
 	if !w.char.StatModIsActive(gestStacksKey) {
 		w.stacks = 0
 	}
@@ -111,4 +111,8 @@ func (w *Weapon) addStacks(amt int) {
 	})
 
 	w.stacks = min(4, w.stacks+amt)
+	if w.core.Flags.LogDebug {
+		w.core.Log.NewEvent(fmt.Sprintf("gest adding %v-stack", src), glog.LogWeaponEvent, w.char.Index()).
+			Write("stacks", w.stacks)
+	}
 }

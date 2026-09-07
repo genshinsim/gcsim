@@ -49,6 +49,11 @@ func (c *Traveler) ChargeAttack(p map[string]int) (action.Info, error) {
 		ai.Element = attributes.Pyro
 		ai.IgnoreInfusion = true
 		ai.AdditionalTags = []attacks.AdditionalTag{attacks.AdditionalTagNightsoul}
+
+		// Lumine PMC's C6 CA shares ICD with the enhanced CA
+		if c.gender == 1 {
+			ai.ICDTag = attacks.ICDTagTravelerEnhancedCA
+		}
 	}
 
 	for i, mult := range charge[c.gender] {

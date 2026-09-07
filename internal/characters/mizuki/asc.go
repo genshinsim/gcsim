@@ -69,6 +69,7 @@ func (c *char) a1() {
 	c.Core.Events.Subscribe(event.OnSwirlHydro, swirlFunc, fmt.Sprintf(a1SwirlKey, attributes.Hydro))
 	c.Core.Events.Subscribe(event.OnSwirlElectro, swirlFunc, fmt.Sprintf(a1SwirlKey, attributes.Electro))
 	c.Core.Events.Subscribe(event.OnSwirlCryo, swirlFunc, fmt.Sprintf(a1SwirlKey, attributes.Cryo))
+	c.Core.Events.Subscribe(event.OnStellarSwirl, swirlFunc, fmt.Sprintf(a1SwirlKey, attributes.Cryo))
 }
 
 // While Yumemizuki Mizuki is in the Dreamdrifter state, when other nearby party members hit opponents with
