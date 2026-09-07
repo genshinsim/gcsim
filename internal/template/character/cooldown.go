@@ -32,6 +32,13 @@ import (
 // cdQueueWorkerStartedAt[a] to represent the new worker start frame. This way the old worker can
 // check this value first and then gracefully exit if it no longer matches its starting frame
 func (c *Character) SetCD(a action.Action, dur int) {
+	// skipped here rather than in ActionReady. charges stay at max and the queue stays empty
+	if c.Core.Flags.IgnoreSkillCooldown && a == action.ActionSkill {
+		c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), a.String(), " cooldown skipped").
+			Write("type", a.String()).
+			Write("original_cd", dur)
+		return
+	}
 	// setting cd is just adding a cd to the recovery queue
 	// we need to check for cooldown reduction first to make sure the correct duration gets added
 	modified := c.CDReduction(a, dur)

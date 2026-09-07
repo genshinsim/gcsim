@@ -12,6 +12,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/shortcut"
 )
 
+// valid ranges for character/weapon fields.
+const (
+	minCons   = 0
+	maxCons   = 6
+	minTalent = 1
+	maxTalent = 10
+	minRefine = 1
+	maxRefine = 5
+)
+
 func parseCharacter(p *Parser) (parseFn, error) {
 	// expecting one of:
 	//	char lvl etc
@@ -54,14 +64,14 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 		case ast.KeywordCons:
 			x, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
 			if err == nil {
-				c.Base.Cons, err = itemNumberToInt(x)
+				c.Base.Cons, err = p.acceptIntInRange(x, minCons, maxCons, "cons")
 			}
 		case ast.KeywordTalent:
 			x, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
 			if err != nil {
 				return nil, err
 			}
-			c.Talents.Attack, err = itemNumberToInt(x)
+			c.Talents.Attack, err = p.acceptIntInRange(x, minTalent, maxTalent, "talent")
 			if err != nil {
 				return nil, err
 			}
@@ -70,7 +80,7 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 			if err != nil {
 				return nil, err
 			}
-			c.Talents.Skill, err = itemNumberToInt(x)
+			c.Talents.Skill, err = p.acceptIntInRange(x, minTalent, maxTalent, "talent")
 			if err != nil {
 				return nil, err
 			}
@@ -79,7 +89,7 @@ func parseCharDetails(p *Parser) (parseFn, error) {
 			if err != nil {
 				return nil, err
 			}
-			c.Talents.Burst, err = itemNumberToInt(x)
+			c.Talents.Burst, err = p.acceptIntInRange(x, minTalent, maxTalent, "talent")
 			if err != nil {
 				return nil, err
 			}
@@ -214,7 +224,7 @@ func parseCharAddWeapon(p *Parser) (parseFn, error) {
 		case ast.KeywordRefine:
 			x, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemNumber)
 			if err == nil {
-				c.Weapon.Refine, err = itemNumberToInt(x)
+				c.Weapon.Refine, err = p.acceptIntInRange(x, minRefine, maxRefine, "refine")
 				refineOk = true
 			}
 		case ast.ItemPlus: // optional flags
@@ -358,6 +368,18 @@ func parseCharAddRandomStats(p *Parser) (parseFn, error) {
 		}
 	}
 	return nil, ast.NewError(p.file.Position(n.Pos), "unexpected end of line while parsing character add stats (with random subs)")
+}
+
+// converts a number token to an int and errors if it falls out of defined range.
+func (p *Parser) acceptIntInRange(x ast.Token, minVal, maxVal int, label string) (int, error) {
+	val, err := itemNumberToInt(x)
+	if err != nil {
+		return val, err
+	}
+	if val < minVal || val > maxVal {
+		return val, ast.NewErrorf(p.file.Position(x.Pos), "%v must be between %v and %v, got %v", label, minVal, maxVal, val)
+	}
+	return val, nil
 }
 
 func (p *Parser) acceptLevelReturnBaseMax() (int, int, error) {

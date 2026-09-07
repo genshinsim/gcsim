@@ -39,12 +39,13 @@ type Core struct {
 }
 
 type Flags struct {
-	LogDebug          bool // Used to determine logging level
-	DamageMode        bool // for hp mode
-	DefHalt           bool // for hitlag
-	EnableHitlag      bool // hitlag enabled
-	IgnoreBurstEnergy bool // for ignoring energy when using burst
-	Custom            map[string]float64
+	LogDebug            bool // Used to determine logging level
+	DamageMode          bool // for hp mode
+	DefHalt             bool // for hitlag
+	EnableHitlag        bool // hitlag enabled
+	IgnoreBurstEnergy   bool // for ignoring energy when using burst
+	IgnoreSkillCooldown bool // for ignoring cooldown when using skill
+	Custom              map[string]float64
 }
 
 type Reactable interface {
@@ -63,13 +64,14 @@ type Reactable interface {
 // }
 
 type Opt struct {
-	Seed              int64
-	Debug             bool
-	EnableHitlag      bool
-	DefHalt           bool
-	DamageMode        bool
-	IgnoreBurstEnergy bool
-	Delays            info.Delays
+	Seed                int64
+	Debug               bool
+	EnableHitlag        bool
+	DefHalt             bool
+	DamageMode          bool
+	IgnoreBurstEnergy   bool
+	IgnoreSkillCooldown bool
+	Delays              info.Delays
 }
 
 func New(opt Opt) (*Core, error) {
@@ -88,6 +90,7 @@ func New(opt Opt) (*Core, error) {
 	c.Flags.DefHalt = opt.DefHalt
 	c.Flags.EnableHitlag = opt.EnableHitlag
 	c.Flags.IgnoreBurstEnergy = opt.IgnoreBurstEnergy
+	c.Flags.IgnoreSkillCooldown = opt.IgnoreSkillCooldown
 	c.Events = event.New()
 	c.Status = status.New(&c.F, c.Log)
 	c.Tasks = task.New(&c.F)

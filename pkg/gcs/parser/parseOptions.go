@@ -104,6 +104,11 @@ func parseOptions(p *Parser) (parseFn, error) {
 			case "ignore_burst_energy":
 				n, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemBool)
 				p.res.Settings.IgnoreBurstEnergy = n.Val == ast.TrueVal
+			case "ignore_skill_cooldown":
+				n, err = p.acceptSeqReturnLast(ast.ItemAssign, ast.ItemBool)
+				if err == nil {
+					p.res.Settings.IgnoreSkillCooldown = n.Val == ast.TrueVal
+				}
 			default:
 				return nil, fmt.Errorf("ln%v: unrecognized option specified: %v", n.Line, n.Val)
 			}

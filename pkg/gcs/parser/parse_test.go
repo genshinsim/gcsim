@@ -222,3 +222,61 @@ func parseAndPrint(s string, t *testing.T) {
 	fmt.Println("output:")
 	fmt.Println(prog.String())
 }
+
+func TestCharFieldRanges(t *testing.T) {
+	tests := []struct {
+		name      string
+		input     string
+		expectErr bool
+	}{
+		{"valid refine", `xiangling add weapon="thecatch" refine=5 lvl=90/90;`, false},
+		{"refine too low", `xiangling add weapon="thecatch" refine=0 lvl=90/90;`, true},
+		{"refine too high", `xiangling add weapon="thecatch" refine=6 lvl=90/90;`, true},
+		// refine is serialized as an int32, without a range check this wraps to 5
+		{"refine overflowing int32", `xiangling add weapon="thecatch" refine=4294967301 lvl=90/90;`, true},
+		{"valid cons", `xiangling char lvl=90/90 cons=6 talent=9,9,9;`, false},
+		{"cons too high", `xiangling char lvl=90/90 cons=7 talent=9,9,9;`, true},
+		{"valid talent", `xiangling char lvl=90/90 cons=0 talent=1,10,10;`, false},
+		{"attack talent too low", `xiangling char lvl=90/90 cons=0 talent=0,9,9;`, true},
+		{"skill talent too high", `xiangling char lvl=90/90 cons=0 talent=9,11,9;`, true},
+		{"burst talent too high", `xiangling char lvl=90/90 cons=0 talent=9,9,11;`, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			file := ast.NewFile()
+			p := New(file, tt.input)
+			_, _, err := p.Parse()
+			if tt.expectErr && err == nil {
+				t.Errorf("%v: expected an error, got none", tt.input)
+			}
+			if !tt.expectErr && err != nil {
+				t.Errorf("%v: expected no error, got %v", tt.input, err)
+			}
+		})
+	}
+}
+
+func TestIgnoreSkillCooldownOption(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  bool
+	}{
+		{"unset", `xiangling char lvl=90/90 cons=0 talent=9,9,9;`, false},
+		{"true", `options ignore_skill_cooldown=true;`, true},
+		{"false", `options ignore_skill_cooldown=false;`, false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			file := ast.NewFile()
+			p := New(file, tt.input)
+			cfg, _, err := p.Parse()
+			if err != nil {
+				t.Fatalf("%v: unexpected error: %v", tt.input, err)
+			}
+			if cfg.Settings.IgnoreSkillCooldown != tt.want {
+				t.Errorf("%v: got %v, want %v", tt.input, cfg.Settings.IgnoreSkillCooldown, tt.want)
+			}
+		})
+	}
+}

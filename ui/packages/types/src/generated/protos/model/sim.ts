@@ -64,6 +64,7 @@ export interface SimulatorSettings {
   iterations?: number | undefined;
   delays?: Delays | undefined;
   ignore_burst_energy?: boolean | undefined;
+  ignore_skill_cooldown?: boolean | undefined;
 }
 
 export interface Delays {
@@ -994,6 +995,7 @@ function createBaseSimulatorSettings(): SimulatorSettings {
     iterations: 0,
     delays: undefined,
     ignore_burst_energy: false,
+    ignore_skill_cooldown: false,
   };
 }
 
@@ -1022,6 +1024,9 @@ export const SimulatorSettings = {
     }
     if (message.ignore_burst_energy !== undefined && message.ignore_burst_energy !== false) {
       writer.uint32(64).bool(message.ignore_burst_energy);
+    }
+    if (message.ignore_skill_cooldown !== undefined && message.ignore_skill_cooldown !== false) {
+      writer.uint32(72).bool(message.ignore_skill_cooldown);
     }
     return writer;
   },
@@ -1089,6 +1094,13 @@ export const SimulatorSettings = {
 
           message.ignore_burst_energy = reader.bool();
           continue;
+        case 9:
+          if (tag !== 72) {
+            break;
+          }
+
+          message.ignore_skill_cooldown = reader.bool();
+          continue;
       }
       if ((tag & 7) === 4 || tag === 0) {
         break;
@@ -1108,6 +1120,9 @@ export const SimulatorSettings = {
       iterations: isSet(object.iterations) ? globalThis.Number(object.iterations) : 0,
       delays: isSet(object.delays) ? Delays.fromJSON(object.delays) : undefined,
       ignore_burst_energy: isSet(object.ignore_burst_energy) ? globalThis.Boolean(object.ignore_burst_energy) : false,
+      ignore_skill_cooldown: isSet(object.ignore_skill_cooldown)
+        ? globalThis.Boolean(object.ignore_skill_cooldown)
+        : false,
     };
   },
 
@@ -1137,6 +1152,9 @@ export const SimulatorSettings = {
     if (message.ignore_burst_energy !== undefined && message.ignore_burst_energy !== false) {
       obj.ignore_burst_energy = message.ignore_burst_energy;
     }
+    if (message.ignore_skill_cooldown !== undefined && message.ignore_skill_cooldown !== false) {
+      obj.ignore_skill_cooldown = message.ignore_skill_cooldown;
+    }
     return obj;
   },
 
@@ -1155,6 +1173,7 @@ export const SimulatorSettings = {
       ? Delays.fromPartial(object.delays)
       : undefined;
     message.ignore_burst_energy = object.ignore_burst_energy ?? false;
+    message.ignore_skill_cooldown = object.ignore_skill_cooldown ?? false;
     return message;
   },
 };

@@ -19,7 +19,8 @@ export default (props: WarningProps) => {
     <StaminaWarning key="stamina" {...props} />,
     <SwapWarning key="swap" {...props} />,
     <DashWarning key="dash" {...props} />,
-    <IgnoreBurstEnergyMode key="ignore_burst_energy" {...props} />
+    <IgnoreBurstEnergyMode key="ignore_burst_energy" {...props} />,
+    <IgnoreSkillCooldownMode key="ignore_skill_cooldown" {...props} />
   ];
 
   return (
@@ -220,6 +221,24 @@ const IgnoreBurstEnergyMode = ({ data }: WarningProps) => {
         onDismiss={() => setShow(false)}>
       <p>
         {t<string>("warnings.ignore_burst_energy_body")}
+      </p>
+    </DismissibleCallout>
+  );
+};
+
+const IgnoreSkillCooldownMode = ({ data }: WarningProps) => {
+  const { t } = useTranslation();
+  const [show, setShow] = useState(true);
+  const visible = show && (data?.simulator_settings?.ignore_skill_cooldown ?? false);
+
+  return (
+    <DismissibleCallout
+        title={t<string>("warnings.ignore_skill_cooldown_title")}
+        intent={Intent.DANGER}
+        show={visible}
+        onDismiss={() => setShow(false)}>
+      <p>
+        {t<string>("warnings.ignore_skill_cooldown_body")}
       </p>
     </DismissibleCallout>
   );
