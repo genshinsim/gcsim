@@ -83,7 +83,7 @@ func (p *Player) calc(atk *info.AttackEvent) (float64, bool) {
 	// 	log.Println(atk)
 	// }
 	elePer := 0.0
-	if st > -1 {
+	if st != attributes.NoStat {
 		elePer = atk.Snapshot.Stats[st]
 		// Generally not needed except for sim issues
 		// p.Core.Log.NewEvent("ele lookup ok",

@@ -46,6 +46,10 @@ tasks:
       - git rm -f --ignore-unmatch 'ui/packages/docs/docs/reference/*/*.md' > /dev/null
       - git rm -f --ignore-unmatch '*.dm.*'
 
+  enumer:
+    cmds:
+      - go generate ./pkg/core/attributes
+
   wasm:
     dir: cmd/wasm
     cmds:

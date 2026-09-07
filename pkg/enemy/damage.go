@@ -25,7 +25,7 @@ func (e *Enemy) calc(atk *info.AttackEvent, evt glog.Event, grpMult float64) (fl
 		// 	log.Println(atk)
 		// }
 
-		if st > -1 {
+		if st != attributes.NoStat {
 			elePer = atk.Snapshot.Stats[st]
 			// Generally not needed except for sim issues
 			// e.Core.Log.NewEvent("ele lookup ok",

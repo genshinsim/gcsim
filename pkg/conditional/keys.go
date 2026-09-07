@@ -54,9 +54,8 @@ func evalCharacterKey(name string) (int, error) {
 }
 
 func evalElementKey(name string) (int, error) {
-	key := attributes.StringToEle(name)
-	switch key {
-	case attributes.UnknownElement, attributes.EndEleType, attributes.NoElement:
+	key, err := attributes.ElementString(name)
+	if err != nil {
 		return 0, fmt.Errorf("bad key condition: invalid element %v", name)
 	}
 	return int(key), nil

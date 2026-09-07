@@ -11,16 +11,13 @@ type Shield struct {
 }
 
 func NewShield(index int, typ attributes.Element, src, lvl int, em float64, expiry int) *Shield {
+	if typ == attributes.Frozen {
+		typ = attributes.Cryo
+	}
+	lvl = min(max(lvl-1, 0), 99)
+
 	s := &Shield{}
 	s.Tmpl = &shield.Tmpl{}
-
-	lvl--
-	if lvl > 99 {
-		lvl = 99
-	}
-	if lvl < 0 {
-		lvl = 0
-	}
 
 	s.ActorIndex = index
 	s.Target = -1

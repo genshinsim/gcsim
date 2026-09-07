@@ -252,6 +252,9 @@ func (r *Reactable) addDurability(mod info.ReactionModKey, amt info.Durability, 
 // AuraCountains returns true if any element e is active on the target
 func (r *Reactable) AuraContains(e ...attributes.Element) bool {
 	for _, v := range e {
+		if v == attributes.NoElement {
+			continue
+		}
 		for i := range info.ReactionModKeyEnd {
 			if i.Element() == v && r.GetAuraDurability(i) > info.ZeroDur {
 				return true
