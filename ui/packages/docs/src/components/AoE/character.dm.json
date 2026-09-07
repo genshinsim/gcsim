@@ -10033,6 +10033,105 @@
       "box_y": 0.2
     }
   ],
+  "prune": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.5,
+      "radius": 1.6
+    },
+    {
+      "ability": "attack",
+      "name": "N2",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.5,
+      "radius": 1.6
+    },
+    {
+      "ability": "attack",
+      "name": "N3",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.85,
+      "radius": 2.3
+    },
+    {
+      "ability": "charge",
+      "name": "CA",
+      "shape": "Box",
+      "center": "PrimaryTarget",
+      "box_x": 3,
+      "box_y": 3.5
+    },
+    {
+      "ability": "plunge",
+      "name": "Plunge",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 1.5
+    },
+    {
+      "ability": "plunge",
+      "name": "Low_Plunge",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 3
+    },
+    {
+      "ability": "plunge",
+      "name": "High_Plunge",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 3.5
+    },
+    {
+      "ability": "skill",
+      "name": "E",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1.4,
+      "radius": 2.5
+    },
+    {
+      "ability": "skill",
+      "name": "E-Convert",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1.5,
+      "radius": 2.5
+    },
+    {
+      "ability": "burst",
+      "name": "Q-Cast",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 6.5
+    },
+    {
+      "ability": "burst",
+      "name": "Q-Dot",
+      "shape": "Circle",
+      "center": "GlobalValue",
+      "radius": 1.6
+    },
+    {
+      "ability": "burst",
+      "name": "Q-Convert",
+      "shape": "Circle",
+      "center": "GlobalValue",
+      "radius": 2.3
+    },
+    {
+      "ability": "cons",
+      "name": "C4-Ricochet",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 1.5
+    }
+  ],
   "qiqi": [
     {
       "ability": "attack",
