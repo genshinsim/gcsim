@@ -26,11 +26,14 @@ func init() {
 
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 47) // charge
 	attackFrames[0][action.ActionAttack] = 23
+	attackFrames[0][action.ActionWalk] = 43
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 50) // charge
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 54) // walk
 	attackFrames[1][action.ActionAttack] = 49
+	attackFrames[1][action.ActionCharge] = 50
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 63) // attack
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 84) // walk
+	attackFrames[2][action.ActionAttack] = 63
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
