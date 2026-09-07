@@ -82,7 +82,7 @@ const (
 	OnStellarVortexDetonate // src char, contribMap, AttackPattern;
 	// sim stuff
 	OnInitialize  // nil
-	OnStateChange // prev, next
+	OnStateChange // prev, next, segmented
 	OnEnemyAdded  // t
 	OnTick
 	OnSimEndedSuccessfully // nil
