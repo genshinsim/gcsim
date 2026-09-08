@@ -2206,7 +2206,7 @@
   "ifa": [
     {
       "ability": "attack",
-      "invalid": true
+      "invalid": false
     },
     {
       "ability": "aim",
@@ -2214,11 +2214,13 @@
     },
     {
       "ability": "charge",
-      "invalid": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
-      "invalid": true
+      "note": "Must have just exited Nightsoul Blessing",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
@@ -2226,11 +2228,11 @@
     },
     {
       "ability": "skill",
-      "invalid": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "invalid": true
+      "invalid": false
     },
     {
       "ability": "dash",

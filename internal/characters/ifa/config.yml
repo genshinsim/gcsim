@@ -32,3 +32,104 @@ talents:
 
   - burstDmg: burst(Skill DMG)
   - burstMark: burst(Sedation Mark DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1QeJgGKy5CKKUbmP93USDLnjYQQSVOZjPDGRHFajU9sQ/edit?gid=0#gid=0
+      count_credit: caramielle.
+      video: https://youtu.be/Eds9L3H5BEY
+      video_credit: caramielle.
+    - count: https://docs.google.com/spreadsheets/d/1QeJgGKy5CKKUbmP93USDLnjYQQSVOZjPDGRHFajU9sQ/edit?gid=0#gid=0
+      count_credit: caramielle.
+      video: https://youtu.be/b8xuP-ue_hU
+      video_credit: caramielle.
+    - count: https://docs.google.com/spreadsheets/d/1QeJgGKy5CKKUbmP93USDLnjYQQSVOZjPDGRHFajU9sQ/edit?gid=0#gid=0
+      count_credit: caramielle.
+      video: https://youtu.be/bV8PuyR_VdA
+      video_credit: caramielle.
+    - count: https://docs.google.com/spreadsheets/d/1SzzPCcrK9-IODG8gJUWax-6eR_rfvsXMrmJG2GEWwPY/edit?gid=0#gid=0
+      count_credit: matoba004.
+      video: https://youtu.be/NZbwtcekutU
+      video_credit: matoba004.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.7
+
+      - name: N2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.7
+
+      - name: N3
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.7
+
+      - name: E-N1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1.5
+
+      - name: E-N1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        radius: 1.5
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        radius: 3.5
+
+  - name: low_plunge
+    note: Must have just exited Nightsoul Blessing
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    hitbox:
+      - name: E-Plunge
+        shape: Circle
+        center: Player
+        radius: 3
+
+  - name: burst
+    hitbox:
+      - name: Q
+        shape: Circle
+        center: PrimaryTarget
+        radius: 6
+      - name: SedationMark
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2.5
+  - name: cons
+    hitbox:
+      - name: C6-E-N1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
