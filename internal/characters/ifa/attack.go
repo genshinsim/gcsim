@@ -45,7 +45,7 @@ func init() {
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.nightsoulState.HasBlessing() {
-		return c.attackHoldSkillState(p), nil
+		return c.attackTapSkillState(p), nil
 	}
 
 	ai := info.AttackInfo{

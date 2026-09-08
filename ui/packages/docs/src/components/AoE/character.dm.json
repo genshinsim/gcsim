@@ -5665,6 +5665,99 @@
       "radius": 6
     }
   ],
+  "ifa": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 0.7
+    },
+    {
+      "ability": "attack",
+      "name": "N2",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 0.7
+    },
+    {
+      "ability": "attack",
+      "name": "N3",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 0.7
+    },
+    {
+      "ability": "attack",
+      "name": "E-N1",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 3
+    },
+    {
+      "ability": "charge",
+      "name": "CA",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 1.5
+    },
+    {
+      "ability": "charge",
+      "name": "E-N1",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 3
+    },
+    {
+      "ability": "plunge",
+      "name": "Plunge",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 1.5
+    },
+    {
+      "ability": "plunge",
+      "name": "Low_Plunge",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 3
+    },
+    {
+      "ability": "plunge",
+      "name": "High_Plunge",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 3.5
+    },
+    {
+      "ability": "skill",
+      "name": "E-Plunge",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 3
+    },
+    {
+      "ability": "burst",
+      "name": "Q",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 6
+    },
+    {
+      "ability": "burst",
+      "name": "SedationMark",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 2.5
+    },
+    {
+      "ability": "cons",
+      "name": "C6-E-N1",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 3
+    }
+  ],
   "ineffa": [
     {
       "ability": "attack",

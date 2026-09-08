@@ -14,7 +14,9 @@ import (
 
 func init() {
 	core.RegisterCharFunc(keys.Ifa, NewChar)
-	paramsFor := map[action.Action][]string{}
+	paramsFor := map[action.Action][]string{
+		action.ActionLowPlunge: {"collision"},
+	}
 	validation.RegisterCharParamValidationFunc(keys.Ifa, func(a action.Action, keys []string) error {
 		valid, ok := paramsFor[a]
 		if !ok {
