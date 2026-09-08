@@ -3,10 +3,10 @@ kind: character
 name: prune
 
 talents:
-  - attack: 
-    - attack(1-Hit DMG)
-    - attack(2-Hit DMG)
-    - attack(3-Hit DMG)
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
   - charge: attack(Charged Attack DMG)
   - collision: attack(Plunge DMG)
   - lowPlunge: attack(Low/High Plunge DMG) # {}/{}
@@ -17,14 +17,16 @@ talents:
 
   - burst: burst(Skill DMG)
   - burstDot: burst(Witchlure Bell DMG)
-  
+
 docs:
   frames:
     - count: https://docs.google.com/spreadsheets/d/1VuV6vKu9V6P6VUFYopiiJXx6eJmwP3fX_3j16NmGGqk/edit?usp=sharing
       count_credit: caramielle
       video: https://youtu.be/omulge6015U
       video_credit: caramielle
-    - video: https://youtu.be/HrYTIyPpZdI
+    - count: https://docs.google.com/spreadsheets/d/1VuV6vKu9V6P6VUFYopiiJXx6eJmwP3fX_3j16NmGGqk/edit?usp=sharing
+      count_credit: caramielle
+      video: https://youtu.be/VEEF5BVEVVM
       video_credit: caramielle
 
 abilities:
@@ -35,21 +37,21 @@ abilities:
         center: Player
         offset: [0, 0.5]
         radius: 1.6
-        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
 
       - name: N2
         shape: Circle
         center: Player
         offset: [0, 0.5]
         radius: 1.6
-        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
 
       - name: N3
         shape: Circle
         center: Player
         offset: [0, 0.85]
         radius: 2.3
-        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
 
   - name: charge
     hitbox:
@@ -57,7 +59,7 @@ abilities:
         shape: Box
         center: PrimaryTarget
         box: [3, 3.5]
-        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
 
   - name: plunge
     hitbox:
@@ -93,14 +95,14 @@ abilities:
         center: Player
         offset: [0, 1.4]
         radius: 2.5
-        hitlag: {time: 0.02, scale: 0.05}
+        hitlag: { time: 0.02, scale: 0.05 }
 
       - name: E-Convert
         shape: Circle
         center: Player
         offset: [0, 1.5]
         radius: 2.5
-        hitlag: {time: 0.05, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.05, scale: 0.01, defense_halt: true }
 
   - name: burst
     hitbox:
@@ -113,7 +115,7 @@ abilities:
         shape: Circle
         center: GlobalValue
         radius: 1.6
-        hitlag: {scale: 0.01}
+        hitlag: { scale: 0.01 }
 
       - name: Q-Convert
         shape: Circle
