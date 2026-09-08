@@ -76,7 +76,6 @@ abilities:
         radius: 3
 
   - name: charge
-    note: Need to use attack right before charge.
     hitbox:
       - name: CA
         shape: Circle

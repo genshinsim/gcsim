@@ -2214,7 +2214,6 @@
     },
     {
       "ability": "charge",
-      "note": "Need to use attack right before charge.",
       "invalid": false
     },
     {
