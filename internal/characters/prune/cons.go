@@ -183,9 +183,9 @@ func (c *char) c6Init() {
 
 func (c *char) c6BurstBonusDur() int {
 	if c.Base.Cons >= 6 {
-		return 0
+		return 4 * 60
 	}
-	return 4 * 60
+	return 0
 }
 
 func (c *char) c6Tick(src int) {
