@@ -72,6 +72,10 @@ func (c *char) burstTick(src int) func() {
 			return
 		}
 
+		if !c.StatusIsActive(burstKey) {
+			return
+		}
+
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
 			Abil:       "Witchlure Bell",
