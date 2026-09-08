@@ -62,7 +62,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	atkBuff[attributes.ATKP] = 0.12 + float64(r)*0.04
 
 	energy := 3.0
-	
+
 	if r >= 3 {
 		energy = 5.0
 		atkBuff[attributes.ATKP] = float64(r) * 0.08
