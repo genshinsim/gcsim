@@ -1,8 +1,10 @@
 package main
 
 import (
+	"errors"
 	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/model"
 )
@@ -149,6 +151,19 @@ type Frames struct {
 	CountCredit string `yaml:"count_credit,omitempty"`
 	Video       string `yaml:"video,omitempty"`
 	VideoCredit string `yaml:"video_credit,omitempty"`
+}
+
+func (f Frames) Check() error {
+	if f.CountCredit == "" || f.VideoCredit == "" {
+		return errors.New("credit is empty for count or video")
+	}
+	if !strings.HasPrefix(f.Count, "https://docs.google.com/spreadsheets/d/") {
+		return errors.New("invalid count url")
+	}
+	if !strings.HasPrefix(f.Video, "https://youtu.be/") && !strings.HasPrefix(f.Video, "https://www.youtube.com/watch?v=") {
+		return errors.New("invalid video url")
+	}
+	return nil
 }
 
 type Localization struct {
