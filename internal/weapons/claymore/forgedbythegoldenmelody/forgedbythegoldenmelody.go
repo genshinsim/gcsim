@@ -1,6 +1,8 @@
 package forgedbythegoldenmelody
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -85,8 +87,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 	}
 
-	c.Events.Subscribe(event.OnStellarConduct, onStellar, "forged-by-the-golden-melody-on-stellar")
-	c.Events.Subscribe(event.OnStellarSwirl, onStellar, "forged-by-the-golden-melody-on-stellar")
+	c.Events.Subscribe(event.OnStellarConduct, onStellar, fmt.Sprintf("forged-by-the-golden-melody-on-stellar-conduct-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnStellarSwirl, onStellar, fmt.Sprintf("forged-by-the-golden-melody-on-stellar-swirl-%v", char.Base.Key.String()))
 
 	return w, nil
 }
