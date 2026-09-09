@@ -1,6 +1,8 @@
 package emberwell
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -24,8 +26,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	atkBuff[attributes.ATKP] = 0.12 + float64(r)*0.04
 
 	onReaction := func(args ...any) {
-		atk := args[1].(*info.AttackInfo)
-		if atk.ActorIndex != char.Index() {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return
 		}
 
@@ -41,8 +43,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	stellarBuff := 0.12 + float64(r)*0.04
 
 	onStellar := func(args ...any) {
-		atk := args[1].(*info.AttackInfo)
-		if atk.ActorIndex != char.Index() {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return
 		}
 
@@ -58,11 +60,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 
 	for evt := event.ReactionEventStartDelim + 1; evt < event.ReactionEventEndDelim; evt++ {
-		c.Events.Subscribe(evt, onReaction, "emberwell-on-reaction")
+		c.Events.Subscribe(evt, onReaction, fmt.Sprintf("emberwell-on-reaction-%v", char.Base.Key.String()))
 	}
 
-	c.Events.Subscribe(event.OnStellarConduct, onStellar, "emberwell-stellar")
-	c.Events.Subscribe(event.OnStellarSwirl, onStellar, "emberwell-stellar")
+	c.Events.Subscribe(event.OnStellarConduct, onStellar, fmt.Sprintf("emberwell-stellar-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnStellarSwirl, onStellar, fmt.Sprintf("emberwell-stellar-%v", char.Base.Key.String()))
 
 	return w, nil
 }
