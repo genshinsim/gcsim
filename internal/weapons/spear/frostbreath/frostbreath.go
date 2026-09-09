@@ -1,6 +1,8 @@
 package frostbreath
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -43,8 +45,8 @@ func (w *Weapon) Init() error {
 			return
 		}
 
-		atk := args[1].(*info.AttackInfo)
-		if atk.ActorIndex != w.char.Index() {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != w.char.Index() {
 			return
 		}
 
@@ -63,23 +65,22 @@ func (w *Weapon) Init() error {
 		}
 	}
 
-	w.core.Events.Subscribe(event.OnMelt, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
-	w.core.Events.Subscribe(event.OnFrozen, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
-	w.core.Events.Subscribe(event.OnShatter, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
-	w.core.Events.Subscribe(event.OnSuperconduct, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
-	w.core.Events.Subscribe(event.OnSwirlCryo, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
-	w.core.Events.Subscribe(event.OnSwirlHydro, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
-	w.core.Events.Subscribe(event.OnCrystallizeCryo, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
-	w.core.Events.Subscribe(event.OnCrystallizeHydro, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
-	w.core.Events.Subscribe(event.OnVaporize, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
-	w.core.Events.Subscribe(event.OnElectroCharged, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
-	w.core.Events.Subscribe(event.OnBloom, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
-	w.core.Events.Subscribe(event.OnLunarCharged, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
-	w.core.Events.Subscribe(event.OnLunarBloom, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
-	w.core.Events.Subscribe(event.OnLunarCrystallize, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
-	w.core.Events.Subscribe(event.OnStellarConduct, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
-	w.core.Events.Subscribe(event.OnStellarSwirl, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
-	// w.core.Events.Subscribe(event.OnStellarSwirlAnemo, onHydroOrCryoReaction, "frostbreath-on-hydro-or-cryo-reaction")
+	w.core.Events.Subscribe(event.OnMelt, onHydroOrCryoReaction, fmt.Sprintf("frostbreath-on-melt-%v", w.char.Base.Key.String()))
+	w.core.Events.Subscribe(event.OnFrozen, onHydroOrCryoReaction, fmt.Sprintf("frostbreath-on-frozen-%v", w.char.Base.Key.String()))
+	w.core.Events.Subscribe(event.OnShatter, onHydroOrCryoReaction, fmt.Sprintf("frostbreath-on-shatter-%v", w.char.Base.Key.String()))
+	w.core.Events.Subscribe(event.OnSuperconduct, onHydroOrCryoReaction, fmt.Sprintf("frostbreath-on-superconduct-%v", w.char.Base.Key.String()))
+	w.core.Events.Subscribe(event.OnSwirlCryo, onHydroOrCryoReaction, fmt.Sprintf("frostbreath-on-swirl-cryo-%v", w.char.Base.Key.String()))
+	w.core.Events.Subscribe(event.OnSwirlHydro, onHydroOrCryoReaction, fmt.Sprintf("frostbreath-on-swirl-hydro-%v", w.char.Base.Key.String()))
+	w.core.Events.Subscribe(event.OnCrystallizeCryo, onHydroOrCryoReaction, fmt.Sprintf("frostbreath-on-crystallize-cryo-%v", w.char.Base.Key.String()))
+	w.core.Events.Subscribe(event.OnCrystallizeHydro, onHydroOrCryoReaction, fmt.Sprintf("frostbreath-on-crystallize-hydro-%v", w.char.Base.Key.String()))
+	w.core.Events.Subscribe(event.OnVaporize, onHydroOrCryoReaction, fmt.Sprintf("frostbreath-on-vaporize-%v", w.char.Base.Key.String()))
+	w.core.Events.Subscribe(event.OnElectroCharged, onHydroOrCryoReaction, fmt.Sprintf("frostbreath-on-electro-charged-%v", w.char.Base.Key.String()))
+	w.core.Events.Subscribe(event.OnBloom, onHydroOrCryoReaction, fmt.Sprintf("frostbreath-on-bloom-%v", w.char.Base.Key.String()))
+	w.core.Events.Subscribe(event.OnLunarCharged, onHydroOrCryoReaction, fmt.Sprintf("frostbreath-on-lunar-charged-%v", w.char.Base.Key.String()))
+	w.core.Events.Subscribe(event.OnLunarBloom, onHydroOrCryoReaction, fmt.Sprintf("frostbreath-on-lunar-bloom-%v", w.char.Base.Key.String()))
+	w.core.Events.Subscribe(event.OnLunarCrystallize, onHydroOrCryoReaction, fmt.Sprintf("frostbreath-on-lunar-crystallize-%v", w.char.Base.Key.String()))
+	w.core.Events.Subscribe(event.OnStellarConduct, onHydroOrCryoReaction, fmt.Sprintf("frostbreath-on-stellar-conduct-%v", w.char.Base.Key.String()))
+	w.core.Events.Subscribe(event.OnStellarSwirl, onHydroOrCryoReaction, fmt.Sprintf("frostbreath-on-stellar-swirl-%v", w.char.Base.Key.String()))
 
 	return nil
 }
