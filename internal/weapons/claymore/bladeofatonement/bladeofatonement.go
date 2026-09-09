@@ -1,6 +1,8 @@
 package bladeofatonement
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -24,8 +26,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	emBuff[attributes.EM] = 48 + float64(r)*16
 
 	onReaction := func(args ...any) {
-		atk := args[1].(*info.AttackInfo)
-		if atk.ActorIndex != char.Index() {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return
 		}
 
@@ -42,8 +44,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	atkBuff[attributes.ATKP] = 0.12 + float64(r)*0.04
 
 	onStellar := func(args ...any) {
-		atk := args[1].(*info.AttackInfo)
-		if atk.ActorIndex != char.Index() {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return
 		}
 
@@ -60,8 +62,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		c.Events.Subscribe(evt, onReaction, "blade-of-atonement-on-reaction")
 	}
 
-	c.Events.Subscribe(event.OnStellarConduct, onStellar, "blade-of-atonement-on-stellar")
-	c.Events.Subscribe(event.OnStellarSwirl, onStellar, "blade-of-atonement-on-stellar")
+	c.Events.Subscribe(event.OnStellarConduct, onStellar, fmt.Sprintf("blade-of-atonement-on-stellar-conduct-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnStellarSwirl, onStellar, fmt.Sprintf("blade-of-atonement-on-stellar-swirl-%v", char.Base.Key.String()))
 
 	return w, nil
 }
