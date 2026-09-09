@@ -1,6 +1,8 @@
 package echoesoftheheart
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -24,8 +26,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	emBuff[attributes.EM] = 45 + float64(r)*15
 
 	onReaction := func(args ...any) {
-		atk := args[1].(*info.AttackInfo)
-		if atk.ActorIndex != char.Index() {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return
 		}
 
@@ -61,8 +63,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		c.Events.Subscribe(evt, onReaction, "echoes-of-the-heart-on-reaction")
 	}
 
-	c.Events.Subscribe(event.OnStellarConduct, onStellar, "echoes-of-the-heart-on-stellar")
-	c.Events.Subscribe(event.OnStellarSwirl, onStellar, "echoes-of-the-heart-on-stellar")
+	c.Events.Subscribe(event.OnStellarConduct, onStellar, fmt.Sprintf("echoes-of-the-heart-on-stellar-conduct-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnStellarSwirl, onStellar, fmt.Sprintf("echoes-of-the-heart-on-stellar-swirl-%v", char.Base.Key.String()))
 
 	return w, nil
 }
