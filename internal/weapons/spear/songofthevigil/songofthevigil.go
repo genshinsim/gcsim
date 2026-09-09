@@ -1,6 +1,8 @@
 package songofthevigil
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -23,8 +25,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 
 	onReaction := func(args ...any) {
-		atk := args[1].(*info.AttackInfo)
-		if atk.ActorIndex != char.Index() {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return
 		}
 
@@ -39,8 +41,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	atkBuff[attributes.ATKP] = 0.15 + float64(r)*0.05
 
 	onStellar := func(args ...any) {
-		atk := args[1].(*info.AttackInfo)
-		if atk.ActorIndex != char.Index() {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return
 		}
 
@@ -54,11 +56,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 
 	for evt := event.ReactionEventStartDelim + 1; evt < event.ReactionEventEndDelim; evt++ {
-		c.Events.Subscribe(evt, onReaction, "song-of-the-vigil-on-reaction")
+		c.Events.Subscribe(evt, onReaction, fmt.Sprintf("song-of-the-vigil-on-reaction-%v", char.Base.Key.String()))
 	}
 
-	c.Events.Subscribe(event.OnStellarConduct, onStellar, "song-of-the-vigil-on-stellar")
-	c.Events.Subscribe(event.OnStellarSwirl, onStellar, "song-of-the-vigil-on-stellar")
+	c.Events.Subscribe(event.OnStellarConduct, onStellar, fmt.Sprintf("song-of-the-vigil-on-stellar-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnStellarSwirl, onStellar, fmt.Sprintf("song-of-the-vigil-on-stellar-%v", char.Base.Key.String()))
 
 	return w, nil
 }
