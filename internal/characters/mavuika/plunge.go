@@ -196,7 +196,7 @@ func (c *char) bikePlungeAttack(bikePlungeFrames []int, delay int) action.Info {
 		Abil:           "Flamestrider Plunge",
 		AttackTag:      attacks.AttackTagPlunge,
 		ICDTag:         attacks.ICDTagMavuikaFlamestrider,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeBlunt,
 		PoiseDMG:       bikePlungePoiseDMG,

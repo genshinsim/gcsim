@@ -133,7 +133,7 @@ func (c *char) bikeAttack() action.Info {
 		ActorIndex:       c.Index(),
 		Abil:             fmt.Sprintf("Flamestrider Normal %v", c.NormalCounter),
 		AttackTag:        attacks.AttackTagNormal,
-		AdditionalTags:   []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags:   []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:           attacks.ICDTagMavuikaFlamestrider,
 		ICDGroup:         attacks.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeBlunt,

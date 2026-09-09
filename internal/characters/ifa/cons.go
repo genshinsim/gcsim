@@ -74,7 +74,7 @@ func (c *char) c6OnHoldAttackSkill() int {
 		ActorIndex:     c.Index(),
 		Abil:           "Tonic Shot C6",
 		AttackTag:      attacks.AttackTagNormal,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:         attacks.ICDTagIfaSkill,
 		ICDGroup:       attacks.ICDGroupIfaSkillHit,
 		StrikeType:     attacks.StrikeTypeDefault,

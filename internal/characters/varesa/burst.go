@@ -49,7 +49,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		ActorIndex:     c.Index(),
 		Abil:           "Flying Kick",
 		AttackTag:      attacks.AttackTagElementalBurst,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		PoiseDMG:       100,
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
@@ -97,7 +97,7 @@ func (c *char) volcanicKablam() action.Info {
 	ai := info.AttackInfo{
 		ActorIndex:     c.Index(),
 		Abil:           kablamAbil,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		PoiseDMG:       75,
 		AttackTag:      attacks.AttackTagPlunge,
 		ICDTag:         attacks.ICDTagVaresaCombatCycle,

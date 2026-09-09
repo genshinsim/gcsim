@@ -59,7 +59,7 @@ func (c *char) a4() {
 		ActorIndex:     c.Index(),
 		Abil:           "Burning Shadowhunt Shot",
 		AttackTag:      attacks.AttackTagExtra,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeDefault,

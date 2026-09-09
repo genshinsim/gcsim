@@ -82,7 +82,7 @@ func (c *char) plungeCollision(fullDelay int) {
 	}
 
 	if c.nightsoulState.HasBlessing() {
-		ai.AdditionalTags = []attacks.AdditionalTag{attacks.AdditionalTagNightsoul}
+		ai.AdditionalTags = []attacks.AttackTag{attacks.AttackTagNightsoul}
 	}
 
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 1.5), fullDelay, fullDelay)

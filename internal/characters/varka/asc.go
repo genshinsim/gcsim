@@ -117,7 +117,7 @@ func (c *char) a4Init() {
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("varka-a4", -1),
 		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
-			if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra && !slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagVarkaSpecial) {
+			if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra && !slices.Contains(atk.Info.AdditionalTags, attacks.AttackTagVarkaSpecial) {
 				return nil
 			}
 			if !c.StatusIsActive(a4Key) {

@@ -113,7 +113,7 @@ func (c *char) nightsoulAttack() action.Info {
 		ActorIndex:         c.Index(),
 		Abil:               fmt.Sprintf("Blade Roller %v", c.NormalCounter),
 		AttackTag:          attacks.AttackTagNormal,
-		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags:     []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:             attacks.ICDTagXilonenSkate,
 		ICDGroup:           attacks.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeBlunt,

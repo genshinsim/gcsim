@@ -94,7 +94,7 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 			Abil:           "Flamestrider Sprint",
 			AttackTag:      attacks.AttackTagNone,
 			ICDTag:         attacks.ICDTagMavuikaFlamestrider,
-			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+			AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 			ICDGroup:       attacks.ICDGroupDefault,
 			StrikeType:     attacks.StrikeTypeBlunt,
 			PoiseDMG:       75.0,

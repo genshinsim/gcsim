@@ -107,7 +107,7 @@ func (c *Traveler) c6Init() {
 			default:
 				return nil
 			}
-			if !slices.Contains(ae.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
+			if !slices.Contains(ae.Info.AdditionalTags, attacks.AttackTagNightsoul) {
 				return nil
 			}
 			return mCD

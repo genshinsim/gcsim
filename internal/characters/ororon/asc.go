@@ -91,7 +91,7 @@ func (c *char) a1Init() {
 		if atk.Info.ActorIndex == c.Index() {
 			return
 		}
-		if !slices.Contains(atk.Info.AdditionalTags, attacks.AdditionalTagNightsoul) {
+		if !slices.Contains(atk.Info.AdditionalTags, attacks.AttackTagNightsoul) {
 			return
 		}
 		c.a1NightSoulAttack(atk)
@@ -118,7 +118,7 @@ func (c *char) hypersense(mult float64, abil string, initialTargetPos info.Point
 		ActorIndex:         c.Index(),
 		Abil:               abil,
 		AttackTag:          attacks.AttackTagNone,
-		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags:     []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
 		StrikeType:         attacks.StrikeTypeDefault,

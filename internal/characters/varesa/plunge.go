@@ -160,7 +160,7 @@ func (c *char) highPlungeCA(p map[string]int) action.Info {
 	ai := info.AttackInfo{
 		ActorIndex:     c.Index(),
 		Abil:           "High Plunge",
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		AttackTag:      attacks.AttackTagPlunge,
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
@@ -222,7 +222,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	ai := info.AttackInfo{
 		ActorIndex:     c.Index(),
 		Abil:           "High Plunge",
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		AttackTag:      attacks.AttackTagPlunge,
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
@@ -284,7 +284,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 	ai := info.AttackInfo{
 		ActorIndex:     c.Index(),
 		Abil:           "Low Plunge",
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		AttackTag:      attacks.AttackTagPlunge,
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,

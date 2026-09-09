@@ -34,7 +34,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ActorIndex:     c.Index(),
 		Abil:           "Spirit Orb DMG",
 		AttackTag:      attacks.AttackTagElementalArt,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:         attacks.ICDTagElementalArt,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeDefault,

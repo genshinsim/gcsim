@@ -47,7 +47,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex:         c.Index(),
 		Abil:               "Rush",
-		AdditionalTags:     []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags:     []attacks.AttackTag{attacks.AttackTagNightsoul},
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagVaresaCombatCycle,
 		ICDGroup:           attacks.ICDGroupDefault,

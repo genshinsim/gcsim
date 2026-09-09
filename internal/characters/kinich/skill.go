@@ -125,7 +125,7 @@ func (c *char) ScalespikerCannon(p map[string]int) (action.Info, error) {
 		ActorIndex:     c.Index(),
 		Abil:           "Scalespiker Cannon",
 		AttackTag:      attacks.AttackTagElementalArt,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul, attacks.AdditionalTagKinichCannon},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul, attacks.AttackTagKinichCannon},
 		ICDTag:         attacks.ICDTagKinichScalespikerCannon,
 		ICDGroup:       attacks.ICDGroupKinichScalespikerCannon,
 		StrikeType:     attacks.StrikeTypeDefault,
