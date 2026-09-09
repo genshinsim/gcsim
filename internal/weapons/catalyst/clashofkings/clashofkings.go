@@ -1,6 +1,8 @@
 package clashofkings
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -80,8 +82,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		})
 	}
 
-	c.Events.Subscribe(event.OnEnemyHit, onHit, "clash-of-kings-on-charge-hit")
-	c.Events.Subscribe(event.OnSkill, onSkill, "clash-of-kings-on-skill")
+	c.Events.Subscribe(event.OnEnemyHit, onHit, fmt.Sprintf("clash-of-kings-on-charge-hit-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnSkill, onSkill, fmt.Sprintf("clash-of-kings-on-skill-%v", char.Base.Key.String()))
 
 	return w, nil
 }
