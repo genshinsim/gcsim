@@ -80,7 +80,7 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	if a == action.ActionCharge {
-		if c.useSpecialSkill() && c.Charges(action.ActionSpecialSkill) > 0 {
+		if c.useSpecialSkill() && (c.Charges(action.ActionSpecialSkill) > 0 || c.c6FreeCA()) {
 			return 0
 		}
 		return 50

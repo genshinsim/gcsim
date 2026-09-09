@@ -70,37 +70,63 @@ abilities:
         center: Player
         offset: [0, -0.5]
         box: [2, 3.2]
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
 
-      - name: N2
+      - name: N2-1
         shape: Circle
         center: Player
         offset: [0, 0.5]
         radius: 2.5
+        hitlag: { time: 0, scale: 0.01, defense_halt: false }
+
+      - name: N2-2
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2.5
+        hitlag: { time: 0.06, scale: 0.01, defense_halt: true }
 
       - name: N3-1
         shape: Circle
         center: Player
         offset: [0, 1]
         radius: 3
+        hitlag: { time: 0, scale: 0.01, defense_halt: false }
 
       - name: N3-2
         shape: Circle
         center: Player
         offset: [0, 1.5]
         radius: 3
+        hitlag: { time: 0.06, scale: 0.01, defense_halt: true }
 
-      - name: N4
+      - name: N4-1
         shape: Circle
         center: Player
         offset: [0, 1.2]
         radius: 2.8
+        hitlag: { time: 0, scale: 0.01, defense_halt: false }
 
-      - name: N5
+      - name: N4-2
+        shape: Circle
+        center: Player
+        offset: [0, 1.2]
+        radius: 2.8
+        hitlag: { time: 0.09, scale: 0.01, defense_halt: true }
+
+      - name: N5-1
         shape: Circle
         center: Player
         offset: [0, 0.6]
         radius: 2.8
+        hitlag: { time: 0, scale: 0.01, defense_halt: false }
 
+      - name: N5-2
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        radius: 2.8
+        hitlag: { time: 0.1, scale: 0.01, defense_halt: true }
   - name: charge
     hitbox:
       - name: CA
@@ -108,12 +134,14 @@ abilities:
         center: Player
         offset: [0, 1]
         radius: 2.5
+        hitlag: { time: 0, scale: 0.01, defense_halt: false }
 
       - name: AzureDevour
         shape: Circle
         center: Player
         offset: [0, 1]
         radius: 3
+        hitlag: { time: 0.09, scale: 0.01, defense_halt: true }
 
   - name: skill
     hitbox:
@@ -121,11 +149,13 @@ abilities:
         shape: Circle
         center: Player
         radius: 5
+        hitlag: { time: 0.09, scale: 0.01, defense_halt: true }
 
       - name: E-FourWinds
         shape: Circle
         center: Player
         radius: 6.5
+        hitlag: { time: 0, scale: 0.01, defense_halt: false }
 
   - name: burst
     hitbox:

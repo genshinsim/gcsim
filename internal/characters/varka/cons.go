@@ -45,16 +45,15 @@ func (c *char) c2OnSpecialSkill() {
 	}
 
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index(),
-		Abil:           "Varka C2",
-		AttackTag:      attacks.AttackTagNone,
-		ICDTag:         attacks.ICDTagNone,
-		ICDGroup:       attacks.ICDGroupDefault,
-		StrikeType:     attacks.StrikeTypeBlunt,
-		PoiseDMG:       20,
-		Element:        attributes.Anemo,
-		Mult:           8,
-		AdditionalTags: []attacks.AttackTag{attacks.AttackTagVarkaSpecial},
+		ActorIndex: c.Index(),
+		Abil:       "Varka C2",
+		AttackTag:  attacks.AttackTagNone,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   20,
+		Element:    attributes.Anemo,
+		Mult:       8,
 	}
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7)
 	// TODO: Get c2 hitmark

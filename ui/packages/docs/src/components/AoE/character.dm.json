@@ -12305,7 +12305,15 @@
     },
     {
       "ability": "attack",
-      "name": "N2",
+      "name": "N2-1",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.5,
+      "radius": 2.5
+    },
+    {
+      "ability": "attack",
+      "name": "N2-2",
       "shape": "Circle",
       "center": "Player",
       "offset_y": 0.5,
@@ -12329,7 +12337,7 @@
     },
     {
       "ability": "attack",
-      "name": "N4",
+      "name": "N4-1",
       "shape": "Circle",
       "center": "Player",
       "offset_y": 1.2,
@@ -12337,7 +12345,23 @@
     },
     {
       "ability": "attack",
-      "name": "N5",
+      "name": "N4-2",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1.2,
+      "radius": 2.8
+    },
+    {
+      "ability": "attack",
+      "name": "N5-1",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.6,
+      "radius": 2.8
+    },
+    {
+      "ability": "attack",
+      "name": "N5-2",
       "shape": "Circle",
       "center": "Player",
       "offset_y": 0.6,

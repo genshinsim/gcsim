@@ -4327,6 +4327,64 @@
       "deployable": false
     }
   ],
+  "varka": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "time": 0.03,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N2-2",
+      "time": 0.06,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N3-2",
+      "time": 0.06,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N4-2",
+      "time": 0.09,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N5-2",
+      "time": 0.1,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "charge",
+      "name": "AzureDevour",
+      "time": 0.09,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "skill",
+      "name": "E-Initial",
+      "time": 0.09,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    }
+  ],
   "venti": [
     {
       "ability": "aim",
