@@ -1,6 +1,8 @@
 package covenantoffrostandsnow
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -37,7 +39,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		})
 	}
 
-	c.Events.Subscribe(event.OnSkill, onSkill, "covenant-of-frost-and-snow-on-skill")
+	c.Events.Subscribe(event.OnSkill, onSkill, fmt.Sprintf("covenant-of-frost-and-snow-on-skill-%v", char.Base.Key.String()))
 
 	return w, nil
 }
