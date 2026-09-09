@@ -17,7 +17,7 @@ combat:
     - JahodaCons
 
 talents:
-  - attack: 
+  - attack:
     - attack(1-Hit DMG)
     - - attack(2-Hit DMG)
       - attack(2-Hit DMG)
@@ -44,7 +44,9 @@ docs:
       count_credit: yamitoka
       video: https://www.youtube.com/watch?v=z4zaCN_dWwA
       video_credit: yamitoka
-    - video: https://www.youtube.com/watch?v=ypF3osO9S4o
+    - count: https://docs.google.com/spreadsheets/d/18YvIoV1Ym1jDhlcTK_DOnKoKFRjkCyElpFCD8p8jncY/edit?usp=sharing
+      count_credit: yamitoka
+      video: https://www.youtube.com/watch?v=ypF3osO9S4o
       video_credit: yamitoka
 
 abilities:

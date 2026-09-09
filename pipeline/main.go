@@ -317,6 +317,12 @@ func (c *Compiled) build(config *Config) error {
 		)
 	})
 
+	for i, data := range config.Docs.Frames {
+		if err := data.Check(); err != nil {
+			return fmt.Errorf("frames[%d]: %w", i, err)
+		}
+	}
+
 	return nil
 }
 
