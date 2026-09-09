@@ -89,7 +89,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddEnergy("exaiphanes-blade-energy", energy)
 	}
 
-	c.Events.Subscribe(event.OnEnemyHit, onHit, fmt.Sprintf("exaiphanes-blade-on-hit-%d", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnEnemyHit, onHit, fmt.Sprintf("exaiphanes-blade-on-hit-%v", char.Base.Key.String()))
 
 	return w, nil
 }
