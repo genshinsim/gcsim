@@ -72,8 +72,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if char.StatusIsActive(onHitICDKey) {
 			return
 		}
-		atk := args[1].(*info.AttackInfo)
-		if atk.ActorIndex != char.Index() {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return
 		}
 		char.AddStatus(onHitICDKey, 5*60, true)
