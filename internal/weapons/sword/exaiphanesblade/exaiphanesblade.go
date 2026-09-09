@@ -1,6 +1,8 @@
 package exaiphanesblade
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -87,7 +89,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddEnergy("exaiphanes-blade-energy", energy)
 	}
 
-	c.Events.Subscribe(event.OnEnemyHit, onHit, "exaiphanes-blade-on-hit")
+	c.Events.Subscribe(event.OnEnemyHit, onHit, fmt.Sprintf("exaiphanes-blade-on-hit-%d", char.Base.Key.String()))
 
 	return w, nil
 }
