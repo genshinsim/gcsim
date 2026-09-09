@@ -197,6 +197,8 @@ func (c *char) skillAzureDevour(c6Free bool) (action.Info, error) {
 	if !c6Free {
 		c.SetCD(action.ActionSpecialSkill, 11*60)
 		c.c6OnSkillCA()
+	} else {
+		c.c6OnFreeCA()
 	}
 
 	c.c2OnSpecialSkill()

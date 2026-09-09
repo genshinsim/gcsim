@@ -157,6 +157,14 @@ func (c *char) c6FreeCA() bool {
 	return c.StatusIsActive(c6FreeCAKey)
 }
 
+func (c *char) c6OnFreeCA() {
+	if c.Base.Cons < 6 {
+		return
+	}
+
+	c.DeleteStatus(c6FreeCAKey)
+}
+
 func (c *char) c6FreeSkill() bool {
 	if c.Base.Cons < 6 {
 		return false
@@ -164,4 +172,12 @@ func (c *char) c6FreeSkill() bool {
 
 	// does this also need to be in E state?
 	return c.StatusIsActive(c6FreeSkillKey)
+}
+
+func (c *char) c6OnFreeSkill() {
+	if c.Base.Cons < 6 {
+		return
+	}
+
+	c.DeleteStatus(c6FreeSkillKey)
 }

@@ -70,7 +70,7 @@ func (c *char) useSpecialSkill() bool {
 
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	if a == action.ActionSkill && c.useSpecialSkill() {
-		if c.Charges(action.ActionSpecialSkill) > 0 {
+		if c.Charges(action.ActionSpecialSkill) > 0 || c.c6FreeSkill() {
 			return true, action.NoFailure
 		}
 		return false, action.SkillCD
