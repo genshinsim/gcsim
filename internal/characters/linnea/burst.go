@@ -10,31 +10,31 @@ import (
 var burstFrames []int
 
 const (
-	initialHeal = 97 // depends on ping
-	hitmark     = 92
+	initialHeal        = 96
+	energyDrainDelay   = 4
+	firstSkillHitDelay = 214
 )
 
 func init() {
 	burstFrames = frames.InitAbilSlice(110)
-	burstFrames[action.ActionSkill] = 109
-	burstFrames[action.ActionSwap] = 108
+	burstFrames[action.ActionSkill] = 96
+	burstFrames[action.ActionSwap] = 97
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	c.QueueCharTask(func() {
-		src := c.Core.F
-		c.skillSrc = src
-		switch {
-		case c.StatusIsActive(skillStandardPower):
-			c.AddStatus(skillStandardPower, skillDur, false)
-		case c.StatusIsActive(skillSuperPower):
-			c.AddStatus(skillSuperPower, skillDur, false)
-		default:
-			c.AddStatus(skillSuperPower, skillDur, false)
-			c.a1OnLumi(src)
-			c.Core.Tasks.Add(func() { c.lumiAttack(src) }, skillSuperStart)
-		}
-	}, hitmark)
+	src := c.Core.F
+	c.skillSrc = src
+	switch {
+	case c.StatusIsActive(skillStandardPower):
+		c.AddStatus(skillStandardPower, skillDur, false)
+	case c.StatusIsActive(skillSuperPower):
+		c.AddStatus(skillSuperPower, skillDur, false)
+	default:
+		c.AddStatus(skillSuperPower, skillDur, false)
+		c.a1OnLumi(src)
+		c.advanceSkillIndex() // the first pound pound is skipped right after summoning
+		c.Core.Tasks.Add(func() { c.lumiAttack(src) }, firstSkillHitDelay)
+	}
 
 	// initial heal
 	c.QueueCharTask(func() {
@@ -58,11 +58,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 				Src:     heal,
 				Bonus:   c.Stat(attributes.Heal),
 			})
-		}, initialHeal+i*120+120)
+		}, initialHeal+i*60+60)
 	}
 
 	c.SetCD(action.ActionBurst, 15*60)
-	c.ConsumeEnergy(5)
+	c.ConsumeEnergy(energyDrainDelay)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
