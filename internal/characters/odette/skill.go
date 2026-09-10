@@ -48,6 +48,13 @@ func init() {
 	skillRecastFrames[action.ActionSwap] = 74
 }
 
+type danceDoubleAttackType int
+
+const (
+	danceDoublePlume danceDoubleAttackType = iota
+	danceDoubleWing
+)
+
 // With slow, graceful dance steps, Odette deals AoE Cryo DMG to the opponent, and also summons her
 // Solo Dance Double to the field.
 // If a Dance Double summoned by Odette is already on the field, this will re-summon the Dance
@@ -82,7 +89,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		skillHitmark,
 		c.particleCB,
 	)
-	c.summonDanceDouble(skillFirstTickDelay)
+	c.summonDanceDouble(0, skillFirstTickDelay)
 	c.AddStatus(skillRecastKey, 6*60+skillHitmark, false)
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 14)
 	return action.Info{
@@ -147,7 +154,7 @@ func (c *char) skillRecast(_ map[string]int) (action.Info, error) {
 	c.danceDoubleSrc = src
 	// restart dance double at the end of the recast
 	c.Core.Tasks.Add(func() {
-		c.danceDoubleTicker(src, 0)
+		c.danceDoubleTicker(src, danceDoublePlume)
 	}, skillRecastFinalHitmark+skillRecastFirstTickDelay)
 
 	c.SetCD(action.ActionSpecialSkill, 15*60)
@@ -159,17 +166,17 @@ func (c *char) skillRecast(_ map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) summonDanceDouble(firstTickDelay int) {
+func (c *char) summonDanceDouble(firstTickAttack danceDoubleAttackType, firstTickDelay int) {
 	src := c.Core.F
 	c.danceDoubleSrc = src
 	c.AddStatus(danceDoubleKey, 20*60, false)
-	c.Core.Tasks.Add(func() { c.danceDoubleTicker(src, 0) }, firstTickDelay)
+	c.Core.Tasks.Add(func() { c.danceDoubleTicker(src, firstTickAttack) }, firstTickDelay)
 
 	c.a1OnDanceSummon()
 	c.c2OnDanceSummon()
 }
 
-func (c *char) danceDoubleTicker(src, count int) {
+func (c *char) danceDoubleTicker(src int, attackType danceDoubleAttackType) {
 	if c.danceDoubleSrc != src {
 		return
 	}
@@ -189,7 +196,7 @@ func (c *char) danceDoubleTicker(src, count int) {
 	}
 
 	var offset info.Point
-	if count%2 == 0 {
+	if attackType == danceDoublePlume {
 		ai.Abil = "\"Plume\" Dance Move"
 		ai.Mult = plume[c.TalentLvlSkill()]
 	} else {
@@ -201,7 +208,8 @@ func (c *char) danceDoubleTicker(src, count int) {
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), offset, 4)
 
 	c.Core.QueueAttack(ai, ap, 0, 0)
-	c.Core.Tasks.Add(func() { c.danceDoubleTicker(src, count+1) }, skillTickDelay[count%2])
+	nextAttack := danceDoubleAttackType((int(attackType) + 1) % 2)
+	c.Core.Tasks.Add(func() { c.danceDoubleTicker(src, nextAttack) }, skillTickDelay[int(attackType)])
 
 	if !c.StatusIsActive(danceDoubleUpgradeKey) {
 		return
@@ -224,7 +232,7 @@ func (c *char) danceDoubleTicker(src, count int) {
 	baseAbil := "\"Plume\" Dance Move"
 	mults := map[radianceState][]float64{radianceStellarConduct: plumeSSC, radianceStellarSwirl: plumeSSw}
 
-	if count%2 != 0 {
+	if attackType != danceDoublePlume {
 		baseAbil = "\"Wing\" Dance Move"
 		mults[radianceStellarConduct] = wingSSC
 		mults[radianceStellarSwirl] = wingSSw

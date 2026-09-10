@@ -10,11 +10,12 @@ import (
 
 type char struct {
 	*tmpl.Character
-	danceDoubleSrc int
-	a1StacksSelf   int
-	a1StacksOthers int
-	a1Src          int
-	c2Src          int
+	danceDoubleSrc     int
+	danceDoubleNextAtk danceDoubleAttackType
+	a1StacksSelf       int
+	a1StacksOthers     int
+	a1Src              int
+	c2Src              int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
