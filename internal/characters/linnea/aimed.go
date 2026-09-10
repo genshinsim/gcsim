@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
+// TODO: implement frames
 var aimedFrames [][]int
 
 var aimedHitmarks = []int{15, 86}
