@@ -18,22 +18,21 @@ const (
 var (
 	skillFrames        []int
 	skillRecastFrames  []int
-	skillSuperInterval = []int{111, 63, 144} // time from pound -> heavy, heavy -> pound, pound -> pound
-	skillSequence      = []int{skillPoundAttack, skillHeavyAttack, skillPoundAttack}
+	skillSuperInterval = []int{62, 122, 90}
+	skillSequence      = []int{skillPoundAttack, skillPoundAttack, skillHeavyAttack}
 )
 
 const (
-	skillRecastKey      = "linnea-skill-recast"
-	skillRecastDur      = 0.6 * 60
-	skillDur            = 25 * 60
-	skillSecondHitDelay = 16 // I have observed 16-19f most of the time, and occisionally 22-24
-	skillSuperPower     = "linnea-super-power"
-	skillSuperStart     = 114 - skillRecastDur // 114 since E cast, but 78f after recast expiry
+	skillRecastKey  = "linnea-skill-recast"
+	skillRecastDur  = 0.6 * 60
+	skillDur        = 25 * 60
+	skillSuperPower = "linnea-super-power"
 
 	skillStandardPower     = "linnea-standard-power"
 	skillMillionTonHitmark = 50
 	skillStandardStart     = 48
-	skillStandardInterval  = 340
+	skillStandardInterval  = 120
+	skillSecondHitDelay    = 21
 	skillMillionAbil       = "Lumi Million Ton Crush"
 	skillOverdriveAbil     = "Lumi Heavy Overdrive Hammer"
 
@@ -46,16 +45,17 @@ const (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(33) // E -> D
-	skillFrames[action.ActionAttack] = 20  // E -> recast
-	skillFrames[action.ActionAim] = 20
-	skillFrames[action.ActionSkill] = 20 // E -> recast
-	skillFrames[action.ActionBurst] = 20
-	skillFrames[action.ActionJump] = 20
-	skillFrames[action.ActionWalk] = 33
-	skillFrames[action.ActionSwap] = 20
+	skillFrames = frames.InitAbilSlice(14) // ?
+	skillFrames[action.ActionAttack] = 33
+	skillFrames[action.ActionAim] = 44
+	skillFrames[action.ActionSkill] = 20
+	skillFrames[action.ActionBurst] = 15
+	skillFrames[action.ActionJump] = 14
+	skillFrames[action.ActionWalk] = 32
+	skillFrames[action.ActionDash] = 14
+	skillFrames[action.ActionSwap] = 13
 
-	skillRecastFrames = frames.InitAbilSlice(10) // E -> D
+	skillRecastFrames = frames.InitAbilSlice(10) // ?
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
@@ -79,7 +79,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.AddStatus(skillSuperPower, skillDur, false)
 		c.skillSrc = src
 		c.a1OnLumi(src)
-		c.Core.Tasks.Add(func() { c.lumiAttack(src) }, skillSuperStart)
+		c.advanceSkillIndex() // the first pound pound is skipped right after summoning
+		c.Core.Tasks.Add(func() { c.lumiAttack(src) }, skillSuperInterval[1])
 	}, skillRecastDur)
 
 	c.c1OnSkill()
@@ -163,7 +164,7 @@ func (c *char) skillRecast() action.Info {
 			c.AddStatus(skillSuperPower, skillDur, false)
 			c.skillSrc = src
 			c.a1OnLumi(src)
-			c.Core.Tasks.Add(func() { c.lumiAttack(src) }, skillSuperStart)
+			c.Core.Tasks.Add(func() { c.lumiAttack(src) }, skillSuperInterval[1])
 		}, skillRecastDur)
 	}
 
