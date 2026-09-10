@@ -87,8 +87,10 @@ func (c *char) skillPress() action.Info {
 	}, skillPressHitmark)
 
 	c.Core.Tasks.Add(func() {
-		c.AddStatus(quillKey, 10*60, true) // 10 sec duration
-		c.SetTag(quillKey, 5)              // 5 quill on press
+		for _, other := range c.Core.Player.Chars() {
+			other.AddStatus(quillKey, 10*60, true) // 10 sec duration
+			other.SetTag(quillKey, 5)              // 5 quill on press
+		}
 		c.a4PressBuff()
 	}, skillPressCDStart+1)
 
@@ -142,8 +144,10 @@ func (c *char) skillHold() action.Info {
 	}, skillHoldHitmark)
 
 	c.Core.Tasks.Add(func() {
-		c.AddStatus(quillKey, 15*60, true) // 15 sec duration
-		c.SetTag(quillKey, 7)              // 5 quill on hold
+		for _, other := range c.Core.Player.Chars() {
+			other.AddStatus(quillKey, 15*60, true) // 15 sec duration
+			other.SetTag(quillKey, 7)              // 5 quill on hold
+		}
 		c.a4HoldBuff()
 	}, skillHoldCDStart+1)
 
