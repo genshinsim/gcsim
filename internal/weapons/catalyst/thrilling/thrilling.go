@@ -14,6 +14,7 @@ import (
 const (
 	icdKey = "ttds-icd"
 	icdDur = 20 * 60
+	icdExt = 1 * 60
 )
 
 type Weapon struct {
@@ -32,6 +33,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)
+		next := args[1].(int)
+		if next == char.Index() && char.StatusDuration(icdKey) < icdExt {
+			char.DeleteStatus(icdKey)
+		}
 		if prev != char.Index() {
 			return
 		}
@@ -39,7 +44,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if char.StatusIsActive(icdKey) {
 			return
 		}
-		char.AddStatus(icdKey, icdDur, true)
+		char.AddStatus(icdKey, icdDur+icdExt, true)
 
 		active := c.Player.ActiveChar()
 		// When TTDS mod is active, don't reapply
