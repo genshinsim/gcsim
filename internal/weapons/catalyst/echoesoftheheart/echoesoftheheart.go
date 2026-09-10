@@ -43,8 +43,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	stellarBuff := 0.12 + float64(r)*0.04
 
 	onStellar := func(args ...any) {
-		atk := args[1].(*info.AttackInfo)
-		if atk.ActorIndex != char.Index() {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
 			return
 		}
 
@@ -60,11 +60,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 
 	for evt := event.ReactionEventStartDelim + 1; evt < event.ReactionEventEndDelim; evt++ {
-		c.Events.Subscribe(evt, onReaction, "echoes-of-the-heart-on-reaction")
+		c.Events.Subscribe(evt, onReaction, fmt.Sprintf("echoes-of-the-heart-on-reaction-%v", char.Base.Key.String()))
 	}
 
-	c.Events.Subscribe(event.OnStellarConduct, onStellar, fmt.Sprintf("echoes-of-the-heart-on-stellar-conduct-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnStellarSwirl, onStellar, fmt.Sprintf("echoes-of-the-heart-on-stellar-swirl-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnStellarConduct, onStellar, fmt.Sprintf("echoes-of-the-heart-on-stellar-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnStellarSwirl, onStellar, fmt.Sprintf("echoes-of-the-heart-on-stellar-%v", char.Base.Key.String()))
 
 	return w, nil
 }
