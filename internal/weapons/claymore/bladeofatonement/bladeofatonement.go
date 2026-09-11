@@ -59,11 +59,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 
 	for evt := event.ReactionEventStartDelim + 1; evt < event.ReactionEventEndDelim; evt++ {
-		c.Events.Subscribe(evt, onReaction, "blade-of-atonement-on-reaction")
+		c.Events.Subscribe(evt, onReaction, fmt.Sprintf("blade-of-atonement-on-reaction-%v", char.Base.Key.String()))
 	}
 
-	c.Events.Subscribe(event.OnStellarConduct, onStellar, fmt.Sprintf("blade-of-atonement-on-stellar-conduct-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnStellarSwirl, onStellar, fmt.Sprintf("blade-of-atonement-on-stellar-swirl-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnStellarConduct, onStellar, fmt.Sprintf("blade-of-atonement-on-stellar-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnStellarSwirl, onStellar, fmt.Sprintf("blade-of-atonement-on-stellar-%v", char.Base.Key.String()))
 
 	return w, nil
 }
