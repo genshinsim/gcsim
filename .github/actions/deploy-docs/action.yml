@@ -1,5 +1,5 @@
 name: "Deploy UI"
-description: "builds and deploys the gcsim UI to cloudflare. Assumes yarn setup has already ran"
+description: "builds and deploys the gcsim UI to cloudflare. Assumes pnpm setup has already ran"
 inputs:
   apiToken:
     required: true
@@ -20,7 +20,7 @@ runs:
   - name: Build UI
     working-directory: ./ui
     shell: bash
-    run: yarn build:docs
+    run: pnpm build:docs
 
   - name: List UI dist
     working-directory: ./ui/packages/docs/build
