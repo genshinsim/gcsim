@@ -91,7 +91,7 @@ func (r *Reactable) AuraCount() int {
 }
 
 func (r *Reactable) React(a *info.AttackEvent) {
-	r.core.Events.Emit(event.OnElementApplied, r.self, a.Info)
+	r.core.Events.Emit(event.OnElementApplied, r.self, a)
 
 	// TODO: double check order of reactions
 	switch a.Info.Element {
