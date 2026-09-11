@@ -89,6 +89,24 @@ importers:
 
   packages/components:
     dependencies:
+      '@blueprintjs/core':
+        specifier: ^4.11.4
+        version: 4.20.2(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@blueprintjs/popover2':
+        specifier: ^1.7.4
+        version: 1.14.11(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@gcsim/data':
+        specifier: workspace:^
+        version: link:../data
+      '@gcsim/localization':
+        specifier: workspace:^
+        version: link:../localization
+      '@gcsim/types':
+        specifier: workspace:^
+        version: link:../types
+      '@gcsim/ui':
+        specifier: workspace:^
+        version: link:../ui
       '@radix-ui/react-icons':
         specifier: ^1.3.0
         version: 1.3.2(react@18.3.1)
@@ -104,15 +122,60 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.0.7
         version: 1.2.16(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@visx/axis':
+        specifier: ^3.0.0
+        version: 3.12.0(react@18.3.1)
+      '@visx/curve':
+        specifier: ^3.0.0
+        version: 3.12.0
+      '@visx/grid':
+        specifier: ^3.0.0
+        version: 3.12.0(react@18.3.1)
+      '@visx/group':
+        specifier: ^3.0.0
+        version: 3.12.0(react@18.3.1)
+      '@visx/responsive':
+        specifier: ^3.0.0
+        version: 3.12.0(react@18.3.1)
+      '@visx/scale':
+        specifier: ^3.0.0
+        version: 3.12.0
+      '@visx/shape':
+        specifier: ^3.0.0
+        version: 3.12.0(react@18.3.1)
+      '@visx/stats':
+        specifier: ^3.0.0
+        version: 3.12.0(react@18.3.1)
+      '@visx/text':
+        specifier: ^3.0.0
+        version: 3.12.0(react@18.3.1)
+      '@visx/tooltip':
+        specifier: ^3.0.0
+        version: 3.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       ace-builds:
         specifier: ^1.32.8
         version: 1.44.0
+      axios:
+        specifier: ^1.1.3
+        version: 1.20.0
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.1
+      classnames:
+        specifier: ^2.3.2
+        version: 2.5.1
       clsx:
         specifier: ^2.1.0
         version: 2.1.1
+      d3-scale:
+        specifier: ^4.0.2
+        version: 4.0.2
+      i18next:
+        specifier: ^23.10.1
+        version: 23.16.8
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.18.1
       lucide-react:
         specifier: ^0.360.0
         version: 0.360.0(react@18.3.1)
@@ -128,6 +191,15 @@ importers:
       react-error-boundary:
         specifier: ^4.0.13
         version: 4.1.2(react@18.3.1)
+      react-i18next:
+        specifier: ^12.0.0
+        version: 12.3.1(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-markdown:
+        specifier: ^9.0.1
+        version: 9.1.0(@types/react@18.3.31)(react@18.3.1)
+      remark-gfm:
+        specifier: ^4.0.0
+        version: 4.0.1
       tailwind-merge:
         specifier: ^2.2.2
         version: 2.6.1
@@ -135,6 +207,18 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.19)
     devDependencies:
+      '@storybook/react':
+        specifier: ^8.0.2
+        version: 8.6.18(@storybook/test@8.6.15(storybook@8.6.18(prettier@2.8.8)))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(storybook@8.6.18(prettier@2.8.8))(typescript@5.9.3)
+      '@storybook/test':
+        specifier: ^8.0.2
+        version: 8.6.15(storybook@8.6.18(prettier@2.8.8))
+      '@types/d3-scale':
+        specifier: ^4
+        version: 4.0.2
+      '@types/lodash-es':
+        specifier: ^4
+        version: 4.17.12
       '@types/react':
         specifier: ^18.2.66
         version: 18.3.31
@@ -385,7 +469,15 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
 
-  packages/localization: {}
+  packages/localization:
+    dependencies:
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.18.1
+    devDependencies:
+      '@types/lodash-es':
+        specifier: ^4
+        version: 4.17.12
 
   packages/storybook:
     dependencies:
@@ -560,6 +652,9 @@ importers:
       '@blueprintjs/core':
         specifier: ^4.11.4
         version: 4.20.2(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@blueprintjs/icons':
+        specifier: ^4.16.0
+        version: 4.16.0
       '@blueprintjs/popover2':
         specifier: ^1.7.4
         version: 1.14.11(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -569,12 +664,18 @@ importers:
       '@fontsource/fira-mono':
         specifier: ^4.5.10
         version: 4.5.10
+      '@gcsim/components':
+        specifier: workspace:^
+        version: link:../components
       '@gcsim/db':
         specifier: workspace:^
         version: link:../db
       '@gcsim/executors':
         specifier: workspace:^
         version: link:../executors
+      '@gcsim/localization':
+        specifier: workspace:^
+        version: link:../localization
       '@gcsim/types':
         specifier: workspace:^
         version: link:../types
@@ -635,6 +736,9 @@ importers:
       classnames:
         specifier: ^2.3.2
         version: 2.5.1
+      d3-scale:
+        specifier: ^4.0.2
+        version: 4.0.2
       fast-deep-equal:
         specifier: ^3.1.3
         version: 3.1.3
@@ -714,6 +818,9 @@ importers:
         specifier: ^9.0.0
         version: 9.0.1
     devDependencies:
+      '@types/d3-scale':
+        specifier: ^4
+        version: 4.0.2
       '@types/file-saver':
         specifier: ^2
         version: 2.0.7
@@ -12457,7 +12564,7 @@ snapshots:
       '@motionone/easing': 10.18.0
       '@motionone/types': 10.17.1
       '@motionone/utils': 10.18.0
-      tslib: 2.4.0
+      tslib: 2.8.1
 
   '@motionone/dom@10.18.0':
     dependencies:
@@ -12466,18 +12573,18 @@ snapshots:
       '@motionone/types': 10.17.1
       '@motionone/utils': 10.18.0
       hey-listen: 1.0.8
-      tslib: 2.4.0
+      tslib: 2.8.1
 
   '@motionone/easing@10.18.0':
     dependencies:
       '@motionone/utils': 10.18.0
-      tslib: 2.4.0
+      tslib: 2.8.1
 
   '@motionone/generators@10.18.0':
     dependencies:
       '@motionone/types': 10.17.1
       '@motionone/utils': 10.18.0
-      tslib: 2.4.0
+      tslib: 2.8.1
 
   '@motionone/types@10.17.1': {}
 
@@ -12485,7 +12592,7 @@ snapshots:
     dependencies:
       '@motionone/types': 10.17.1
       hey-listen: 1.0.8
-      tslib: 2.4.0
+      tslib: 2.8.1
 
   '@napi-rs/lzma-linux-x64-gnu@1.5.1':
     optional: true
@@ -14648,7 +14755,7 @@ snapshots:
   capital-case@1.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.8.1
       upper-case-first: 2.0.2
 
   case-anything@2.1.13: {}
@@ -14692,7 +14799,7 @@ snapshots:
       path-case: 3.0.4
       sentence-case: 3.0.4
       snake-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.8.1
 
   character-entities-html4@2.1.0: {}
 
@@ -14899,7 +15006,7 @@ snapshots:
   constant-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.8.1
       upper-case: 2.0.2
 
   content-disposition@0.5.2: {}
@@ -15484,7 +15591,7 @@ snapshots:
   dot-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.8.1
 
   dot-prop@5.3.0:
     dependencies:
@@ -16627,7 +16734,7 @@ snapshots:
   header-case@2.0.4:
     dependencies:
       capital-case: 1.0.4
-      tslib: 2.5.3
+      tslib: 2.8.1
 
   hey-listen@1.0.8: {}
 
@@ -17296,7 +17403,7 @@ snapshots:
 
   lower-case@2.0.2:
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.8.1
 
   lowercase-keys@1.0.1: {}
 
@@ -17929,7 +18036,7 @@ snapshots:
   no-case@3.0.4:
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.5.3
+      tslib: 2.8.1
 
   node-emoji@1.11.0:
     dependencies:
@@ -18198,12 +18305,12 @@ snapshots:
   pascal-case@3.1.2:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.8.1
 
   path-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.8.1
 
   path-exists@3.0.0: {}
 
@@ -19558,7 +19665,7 @@ snapshots:
   sentence-case@3.0.4:
     dependencies:
       no-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.8.1
       upper-case-first: 2.0.2
 
   serialize-javascript@6.0.2:
@@ -19730,7 +19837,7 @@ snapshots:
   snake-case@3.0.4:
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.5.3
+      tslib: 2.8.1
 
   sockjs@0.3.24:
     dependencies:
@@ -20437,11 +20544,11 @@ snapshots:
 
   upper-case-first@2.0.2:
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.8.1
 
   upper-case@2.0.2:
     dependencies:
-      tslib: 2.5.3
+      tslib: 2.8.1
 
   uri-js@4.4.1:
     dependencies:
