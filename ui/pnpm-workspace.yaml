@@ -1,2 +1,15 @@
 packages:
   - "packages/*"
+
+# Dependencies allowed to run install/build (lifecycle) scripts. pnpm v11 blocks
+# these by default and, with strictDepBuilds on (default), FAILS the install
+# (ERR_PNPM_IGNORED_BUILDS) if any are left unresolved. Each must be explicitly
+# allowed (true) or denied (false).
+allowBuilds:
+  "@swc/core": true
+  core-js: true
+  core-js-pure: true
+  esbuild: true
+  protobufjs: true
+  sharp: true
+  workerd: true
