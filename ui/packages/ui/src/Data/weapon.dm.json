@@ -1288,6 +1288,13 @@
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Vorpal_Awaken"
     },
+    "songofthevigil": {
+      "id": 13436,
+      "key": "songofthevigil",
+      "rarity": 4,
+      "weapon_class": "WEAPON_POLE",
+      "image_name": "UI_EquipIcon_Pole_GlintstonePolearm_Awaken"
+    },
     "splendoroftranquilwaters": {
       "id": 11513,
       "key": "splendoroftranquilwaters",

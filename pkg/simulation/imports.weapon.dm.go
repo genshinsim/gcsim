@@ -180,6 +180,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/sacrificersstaff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/scarletsands"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/skyward"
+	_ "github.com/genshinsim/gcsim/internal/weapons/spear/songofthevigil"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/symphonist"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/tamayuratei"
 	_ "github.com/genshinsim/gcsim/internal/weapons/spear/vortex"
