@@ -16,6 +16,16 @@ const (
 	revelationICDKey   = "yae-revelation-icd"
 )
 
+// Extends the duration of the Sesshou Sakura by 10s. When a nearby party member triggers a
+// Superconduct or Stellar-Conduct reaction, the next instance of Sesshou Sakura lightning is
+// enhanced as follows: DMG dealt is increased at 80% of Yae Miko's ATK. This effect can trigger
+// once every 2.5s.
+//
+// Radiance: Stellar-Conduct: An enhanced Sesshou Sakura lightning bolt hit on an opponent will also
+// cause an additional instance of Electro DMG at 200% of Yae Miko's ATK. This DMG is considered
+// Stellar-Conduct DMG.
+//
+// Additionally, when inside a Polestar Field, Yae Miko will enter the Radiance: Stellar-Conduct state.
 func (c *char) revelationInit() {
 	if !c.revelation {
 		return
