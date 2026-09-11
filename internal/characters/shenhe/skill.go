@@ -146,7 +146,7 @@ func (c *char) skillHold() action.Info {
 	c.Core.Tasks.Add(func() {
 		for _, other := range c.Core.Player.Chars() {
 			other.AddStatus(quillKey, 15*60, true) // 15 sec duration
-			other.SetTag(quillKey, 7)              // 5 quill on hold
+			other.SetTag(quillKey, 7)              // 7 quill on hold
 		}
 		c.a4HoldBuff()
 	}, skillHoldCDStart+1)
