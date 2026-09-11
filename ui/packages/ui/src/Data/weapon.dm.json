@@ -182,6 +182,13 @@
       "weapon_class": "WEAPON_POLE",
       "image_name": "UI_EquipIcon_Pole_Noire_Awaken"
     },
+    "bladeofatonement": {
+      "id": 12436,
+      "key": "bladeofatonement",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CLAYMORE",
+      "image_name": "UI_EquipIcon_Claymore_GlintstoneClaymore_Awaken"
+    },
     "bloodsoakedruins": {
       "id": 13516,
       "key": "bloodsoakedruins",
