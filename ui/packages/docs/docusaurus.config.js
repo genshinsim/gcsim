@@ -2,8 +2,9 @@
 // Note: type annotations allow type checking and IDEs autocompletion
 // const math = require('remark-math');
 // const katex = require('rehype-katex');
-const lightCodeTheme = require('prism-react-renderer/themes/github');
-const darkCodeTheme = require('prism-react-renderer/themes/dracula');
+const {themes} = require('prism-react-renderer');
+const lightCodeTheme = themes.github;
+const darkCodeTheme = themes.dracula;
 
 async function createConfig() {
   const katex = (await import('rehype-katex')).default;
@@ -16,7 +17,11 @@ async function createConfig() {
     url: "https://docs.gcsim.app",
     baseUrl: "/",
     onBrokenLinks: 'throw',
-    onBrokenMarkdownLinks: 'warn',
+    markdown: {
+      hooks: {
+        onBrokenMarkdownLinks: 'warn',
+      },
+    },
     // Even if you don't use internalization, you can use this field to set useful
     // metadata like html lang. For example, if your site is Chinese, you may want
     // to replace "en" with "zh-Hans".
@@ -46,10 +51,10 @@ async function createConfig() {
     ],
     stylesheets: [
       {
-        href: 'https://cdn.jsdelivr.net/npm/katex@0.15.2/dist/katex.min.css',
+        href: 'https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css',
         type: 'text/css',
         integrity:
-          'sha384-MlJdn/WNKDGXveldHDdyRP1R4CTHr3FeuDNfhsLPYrq2t0UBkUdK2jyTnXPEK1NQ',
+          'sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV',
         crossorigin: 'anonymous',
       },
     ],
