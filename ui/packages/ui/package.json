@@ -1,6 +1,5 @@
 {
   "name": "@gcsim/ui",
-  "packageManager": "yarn@3.2.4",
   "private": true,
   "main": "src/index.tsx",
   "dependencies": {

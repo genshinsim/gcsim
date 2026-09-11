@@ -1,11 +1,10 @@
 {
   "name": "@gcsim/db",
-  "packageManager": "yarn@3.2.4",
   "private": true,
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "preview": "yarn run build && vite preview --host"
+    "preview": "pnpm run build && vite preview --host"
   },
   "dependencies": {
     "@blueprintjs/core": "^4.11.4",

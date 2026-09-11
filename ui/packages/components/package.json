@@ -1,6 +1,5 @@
 {
   "name": "@gcsim/components",
-  "packageManager": "yarn@3.2.4",
   "private": true,
   "version": "0.0.0",
   "main": "src/index.ts",

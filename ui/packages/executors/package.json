@@ -1,11 +1,10 @@
 {
   "name": "@gcsim/executors",
   "main": "src/index.ts",
-  "packageManager": "yarn@3.2.4",
   "private": true,
   "scripts": {
     "build:wasm:web": "task wasm OUT=../../ui/packages/web/public/main.wasm",
-    "watch:web": "watch \"yarn run build:wasm:web\" ../../../pkg ../../../internal ../../../cmd/wasm"
+    "watch:web": "watch \"pnpm run build:wasm:web\" ../../../pkg ../../../internal ../../../cmd/wasm"
   },
   "dependencies": {
     "@gcsim/types": "workspace:^",
