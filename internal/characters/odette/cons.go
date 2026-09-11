@@ -123,7 +123,8 @@ func (c *char) c2OnDanceSummon() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.c2Ticker(c.danceDoubleSrc)
+	c.c2Src = c.Core.F
+	c.c2Ticker(c.c2Src)
 }
 
 func (c *char) c2Ticker(src int) {
@@ -131,7 +132,7 @@ func (c *char) c2Ticker(src int) {
 		return
 	}
 
-	if c.danceDoubleSrc != src {
+	if c.c2Src != src {
 		return
 	}
 

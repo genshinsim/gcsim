@@ -12,8 +12,10 @@ type char struct {
 	*tmpl.Character
 	danceDoubleSrc     int
 	danceDoubleNextAtk danceDoubleAttackType
+	a1Src              int
 	a1StacksSelf       int
 	a1StacksOthers     int
+	c2Src              int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
