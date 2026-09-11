@@ -257,12 +257,27 @@ importers:
       '@blueprintjs/core':
         specifier: ^4.11.4
         version: 4.20.2(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@blueprintjs/icons':
+        specifier: ^4.16.0
+        version: 4.16.0
+      '@blueprintjs/popover2':
+        specifier: ^1.7.4
+        version: 1.14.11(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@blueprintjs/select':
         specifier: 4.8.4
         version: 4.8.4(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@gcsim/components':
+        specifier: workspace:^
+        version: link:../components
+      '@gcsim/data':
+        specifier: workspace:^
+        version: link:../data
       '@gcsim/executors':
         specifier: workspace:^
         version: link:../executors
+      '@gcsim/localization':
+        specifier: workspace:^
+        version: link:../localization
       '@gcsim/types':
         specifier: workspace:^
         version: link:../types
@@ -281,6 +296,9 @@ importers:
       i18next-browser-languagedetector:
         specifier: ^7.2.0
         version: 7.2.2
+      protobufjs:
+        specifier: ^7.1.2
+        version: 7.6.6
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -394,12 +412,21 @@ importers:
       '@gcsim/components':
         specifier: workspace:^
         version: link:../components
+      '@gcsim/localization':
+        specifier: workspace:^
+        version: link:../localization
       '@gcsim/types':
         specifier: workspace:^
         version: link:../types
       axios:
         specifier: ^1.2.1
         version: 1.20.0
+      i18next:
+        specifier: ^23.10.1
+        version: 23.16.8
+      i18next-browser-languagedetector:
+        specifier: ^7.2.0
+        version: 7.2.2
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -409,6 +436,9 @@ importers:
       react-error-boundary:
         specifier: ^4.0.13
         version: 4.1.2(react@18.3.1)
+      react-i18next:
+        specifier: ^12.0.0
+        version: 12.3.1(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       wouter:
         specifier: ^3.1.0
         version: 3.11.0(react@18.3.1)
@@ -593,18 +623,42 @@ importers:
 
   packages/taghelper:
     dependencies:
+      '@gcsim/components':
+        specifier: workspace:^
+        version: link:../components
+      '@gcsim/localization':
+        specifier: workspace:^
+        version: link:../localization
+      '@gcsim/types':
+        specifier: workspace:^
+        version: link:../types
+      axios:
+        specifier: ^1.1.3
+        version: 1.20.0
+      i18next:
+        specifier: ^23.10.1
+        version: 23.16.8
+      i18next-browser-languagedetector:
+        specifier: ^7.2.0
+        version: 7.2.2
       react:
         specifier: ^18.2.0
         version: 18.3.1
       react-dom:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
+      react-i18next:
+        specifier: ^12.0.0
+        version: 12.3.1(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-router:
         specifier: ^6.22.3
         version: 6.30.6(react@18.3.1)
       react-router-dom:
         specifier: ^6.22.3
         version: 6.30.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      wouter:
+        specifier: ^2.9.0
+        version: 2.12.1(react@18.3.1)
     devDependencies:
       '@types/react':
         specifier: ^18.2.66

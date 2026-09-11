@@ -9,11 +9,15 @@
   },
   "dependencies": {
     "@gcsim/components": "workspace:^",
+    "@gcsim/localization": "workspace:^",
     "@gcsim/types": "workspace:^",
     "axios": "^1.2.1",
+    "i18next": "^23.10.1",
+    "i18next-browser-languagedetector": "^7.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-error-boundary": "^4.0.13",
+    "react-i18next": "^12.0.0",
     "wouter": "^3.1.0"
   },
   "devDependencies": {
