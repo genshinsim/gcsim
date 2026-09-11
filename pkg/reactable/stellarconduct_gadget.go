@@ -66,7 +66,7 @@ func (r *Reactable) newPolestarField() *PolestarField {
 			return
 		}
 
-		ai := args[1].(*info.AttackInfo)
+		ai := args[1].(*info.AttackEvent).Info
 
 		switch ai.Element {
 		case attributes.Electro:
