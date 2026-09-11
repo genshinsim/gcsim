@@ -1,14 +1,18 @@
 package odette
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const a1Key = "odette-a1"
+const (
+	a1Key      = "odette-a1"
+	a1TickRate = float64(59.25)
+)
 
 // When Odette summons her Solo Dance Double, she also obtains 4 stacks of Marvelous Splendor.
 // Marvelous Splendor
@@ -62,24 +66,11 @@ func (c *char) a1Init() {
 			},
 		})
 	}
-
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
-		prev := args[0].(int)
-		next := args[1].(int)
-		if prev == c.Index() {
-			src := c.Core.F
-			c.a1Src = src
-			c.Core.Tasks.Add(func() { c.a1Ticker(src) }, 60)
-		} else if next == c.Index() {
-			// cancel the a1Ticker
-			c.a1Src = -1
-		}
-	}, a1Key)
 }
 
-func (c *char) a1Ticker(src int) {
-	// don't need to check asc because it's only called by a1Init()
-	if c.a1Src != src {
+func (c *char) a1Ticker(src int, frac float64) {
+	// don't need to check asc because it's only called by a1OnDanceSummon
+	if c.danceDoubleSrc != src {
 		return
 	}
 
@@ -91,7 +82,6 @@ func (c *char) a1Ticker(src int) {
 		return
 	}
 
-	// TODO: This check isn't needed because we cancel the task when we swap back to Odette
 	if c.Core.Player.Active() == c.Index() {
 		return
 	}
@@ -104,7 +94,12 @@ func (c *char) a1Ticker(src int) {
 	c.a1StacksSelf -= stacks * c.c6a1ReduceMod()
 	c.a1StacksOthers = min(c.a1StacksOthers+stacks, c.a1MaxStacks())
 
-	c.Core.Tasks.Add(func() { c.a1Ticker(src) }, 60)
+	// extra bit to support the average 59.25 tick rate
+	delayInt, m := math.Modf(a1TickRate)
+	frac += m
+	extraDelayInt, newFrac := math.Modf(frac)
+
+	c.QueueCharTask(func() { c.a1Ticker(src, newFrac) }, int(delayInt+extraDelayInt))
 }
 
 func (c *char) a1OnDanceSummon() {
@@ -114,6 +109,7 @@ func (c *char) a1OnDanceSummon() {
 
 	c.a1StacksSelf = c.a1MaxStacks()
 	c.a1StacksOthers = 0
+	c.a1Ticker(c.danceDoubleSrc, 0)
 }
 
 func (c *char) a1MaxStacks() int {

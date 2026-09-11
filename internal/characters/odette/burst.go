@@ -13,13 +13,13 @@ import (
 
 var (
 	burstFrames   []int
-	burstHitmarks = []int{113, 113 + 5, 113 + 5 + 5}
-	finalHitmark  = 113 + 5 + 5 + 5
+	burstHitmarks = []int{112, 112 + 16, 112 + 16 + 12}
+	finalHitmark  = 112 + 16 + 12 + 4
 )
 
 const (
-	burstSummonFrame    = 99
-	burstFirstTickDelay = 134
+	burstSummonFrame    = 1
+	burstFirstTickDelay = 252
 	swansDreamKey       = "odette-snow-swans-dream"
 )
 
@@ -49,8 +49,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
 		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   30,
+		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Cryo,
 		Durability: 25,
 		Mult:       burst[c.TalentLvlBurst()],
@@ -64,11 +63,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	for i, delay := range burstHitmarks {
 		// only first hit is blunt
-		if i > 0 {
-			ai.StrikeType = attacks.StrikeTypeDefault
-			ai.PoiseDMG = 0
+		aiCopy := ai
+		if i == 0 {
+			aiCopy.StrikeType = attacks.StrikeTypeBlunt
+			aiCopy.PoiseDMG = 30
 		}
-		c.QueueCharTask(func() { c.Core.QueueAttack(ai, ap, 0, 0) }, delay)
+
+		c.QueueCharTask(func() { c.Core.QueueAttack(aiCopy, ap, 0, 0) }, delay)
 	}
 
 	c.QueueCharTask(func() {

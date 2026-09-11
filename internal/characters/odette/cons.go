@@ -123,8 +123,7 @@ func (c *char) c2OnDanceSummon() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.c2Src = c.Core.F
-	c.c2Ticker(c.c2Src)
+	c.c2Ticker(c.danceDoubleSrc)
 }
 
 func (c *char) c2Ticker(src int) {
@@ -132,11 +131,11 @@ func (c *char) c2Ticker(src int) {
 		return
 	}
 
-	if c.c2Src != src {
+	if c.danceDoubleSrc != src {
 		return
 	}
 
-	c.Core.Tasks.Add(func() { c.c2Ticker(src) }, 0.3*60)
+	c.QueueCharTask(func() { c.c2Ticker(src) }, 1*60)
 
 	var otherElem attributes.Element
 	switch c.getRadiance() {
@@ -155,13 +154,13 @@ func (c *char) c2Ticker(src int) {
 			continue
 		}
 		e.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag(c2Key+"-"+attributes.Cryo.String(), 1*60),
+			Base:  modifier.NewBaseWithHitlag(c2Key+"-"+attributes.Cryo.String(), 2*60),
 			Ele:   attributes.Cryo,
 			Value: -0.20,
 		})
 
 		e.AddResistMod(info.ResistMod{
-			Base:  modifier.NewBaseWithHitlag(c2Key+"-"+otherElem.String(), 1*60),
+			Base:  modifier.NewBaseWithHitlag(c2Key+"-"+otherElem.String(), 2*60),
 			Ele:   otherElem,
 			Value: -0.20,
 		})

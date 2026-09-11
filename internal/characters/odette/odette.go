@@ -14,8 +14,6 @@ type char struct {
 	danceDoubleNextAtk danceDoubleAttackType
 	a1StacksSelf       int
 	a1StacksOthers     int
-	a1Src              int
-	c2Src              int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {

@@ -42,6 +42,15 @@ talents:
   - burstBuff: burst(Snow Swan's Dream Stellar Glimmer Reaction DMG Bonus)
 
 docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1J1HoWicrDBr5rsnYc399OzKWH5V--1nC3LT8z_VGTEQ/edit?usp=sharing
+      count_credit: caramielle.
+      video: https://youtu.be/ai36oFLRRyU
+      video_credit: caramielle.
+    - count: https://docs.google.com/spreadsheets/d/1J1HoWicrDBr5rsnYc399OzKWH5V--1nC3LT8z_VGTEQ/edit?usp=sharing
+      count_credit: charliex3000
+      video: https://youtu.be/4O0LxLRf4Nw
+      video_credit: charliex3000
   fields:
     .odette.a1-stacks-self: Current number of A1 stacks on Odette
     .odette.a1-stacks-other: Current number of A1 stacks on other characters

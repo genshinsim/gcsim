@@ -89,8 +89,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		skillHitmark,
 		c.particleCB,
 	)
-	c.summonDanceDouble(0, skillFirstTickDelay)
-	c.AddStatus(skillRecastKey, 6*60+skillHitmark, false)
+
+	c.QueueCharTask(func() {
+		c.summonDanceDouble(0, skillFirstTickDelay)
+	}, 23)
+
+	c.AddStatus(skillRecastKey, 394, true)
+
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 14)
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
@@ -144,7 +149,7 @@ func (c *char) skillRecast(_ map[string]int) (action.Info, error) {
 
 		apFinal := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 4.6)
 		c.Core.QueueAttack(aiFinal, apFinal, 0, 0, c.particleCB)
-		c.AddStatus(danceDoubleUpgradeKey, c.StatusDuration(danceDoubleKey), false)
+		c.AddStatus(danceDoubleUpgradeKey, 20*60, false)
 
 		c.c1OnSkillRecast(aiFinal.AttackTag)
 	}, skillRecastFinalHitmark)
@@ -169,7 +174,7 @@ func (c *char) skillRecast(_ map[string]int) (action.Info, error) {
 func (c *char) summonDanceDouble(firstTickAttack danceDoubleAttackType, firstTickDelay int) {
 	src := c.Core.F
 	c.danceDoubleSrc = src
-	c.AddStatus(danceDoubleKey, 20*60, false)
+	c.AddStatus(danceDoubleKey, 1262, false)
 	c.Core.Tasks.Add(func() { c.danceDoubleTicker(src, firstTickAttack) }, firstTickDelay)
 
 	c.a1OnDanceSummon()
@@ -209,6 +214,7 @@ func (c *char) danceDoubleTicker(src int, attackType danceDoubleAttackType) {
 
 	c.Core.QueueAttack(ai, ap, 0, 0)
 	nextAttack := danceDoubleAttackType((int(attackType) + 1) % 2)
+	c.danceDoubleNextAtk = nextAttack
 	c.Core.Tasks.Add(func() { c.danceDoubleTicker(src, nextAttack) }, skillTickDelay[int(attackType)])
 
 	if !c.StatusIsActive(danceDoubleUpgradeKey) {
