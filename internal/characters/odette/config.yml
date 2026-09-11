@@ -153,7 +153,7 @@ abilities:
     hitbox:
       - name: C1
         shape: Circle
-        center: PrimaryTarget
+        center: Player
         radius: 4.5
       - name: C4
         shape: Circle
