@@ -6,10 +6,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
+)
+
+const (
+	icdKey = "ttds-icd"
+	icdDur = 20 * 60
+	icdExt = 1 * 60
 )
 
 type Weapon struct {
@@ -20,52 +25,40 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	// When switching characters, the new character taking the field has their
-	// ATK increased by 24% for 10s. This effect can only occur once every 20s.
 	w := &Weapon{}
 	r := p.Refine
-
-	const icdKey = "ttds-icd"
-	icd := 1200 // 20s * 60
-	isActive := false
-	key := fmt.Sprintf("ttds-%v", char.Base.Key.String())
-
-	c.Events.Subscribe(event.OnInitialize, func(args ...any) {
-		isActive = c.Player.Active() == char.Index()
-	}, key)
 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = .18 + float64(r)*0.06
 
 	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
-		if !isActive && c.Player.Active() == char.Index() {
-			isActive = true
+		prev := args[0].(int)
+		next := args[1].(int)
+		if next == char.Index() && char.StatusDuration(icdKey) < icdExt {
+			char.DeleteStatus(icdKey)
+		}
+		if prev != char.Index() {
 			return
 		}
 
-		if isActive && c.Player.Active() != char.Index() {
-			isActive = false
-			if char.StatusIsActive(icdKey) {
-				return
-			}
-			char.AddStatus(icdKey, icd, true)
-			active := c.Player.ActiveChar()
-			// When TTDS mod is active, don't reapply
-			if active.StatModIsActive("ttds") {
-				return
-			}
-			active.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("ttds", 600),
-				AffectedStat: attributes.NoStat,
-				Amount: func() []float64 {
-					return m
-				},
-			})
-
-			c.Log.NewEvent("ttds activated", glog.LogWeaponEvent, c.Player.Active()).
-				Write("expiry (without hitlag)", c.F+600)
+		if char.StatusIsActive(icdKey) {
+			return
 		}
-	}, key)
+		char.AddStatus(icdKey, icdDur+icdExt, true)
+
+		active := c.Player.ActiveChar()
+		// When TTDS mod is active, don't reapply
+		if active.StatModIsActive("ttds") {
+			return
+		}
+		active.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("ttds", 600),
+			AffectedStat: attributes.ATKP,
+			Amount: func() []float64 {
+				return m
+			},
+		})
+	}, fmt.Sprintf("ttds-swap-%v", char.Base.Key.String()))
 
 	return w, nil
 }
