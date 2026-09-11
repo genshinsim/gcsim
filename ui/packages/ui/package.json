@@ -1,18 +1,21 @@
 {
   "name": "@gcsim/ui",
-  "packageManager": "yarn@3.2.4",
   "private": true,
   "main": "src/index.tsx",
   "dependencies": {
     "@blueprintjs/core": "^4.11.4",
+    "@blueprintjs/icons": "^4.16.0",
     "@blueprintjs/popover2": "^1.7.4",
     "@blueprintjs/select": "^4.8.4",
     "@fontsource/fira-mono": "^4.5.10",
+    "@gcsim/components": "workspace:^",
     "@gcsim/db": "workspace:^",
     "@gcsim/executors": "workspace:^",
+    "@gcsim/localization": "workspace:^",
     "@gcsim/types": "workspace:^",
     "@gcsim/utils": "workspace:^",
     "@reduxjs/toolkit": "^1.8.6",
+    "d3-scale": "^4.0.2",
     "@visx/annotation": "^3.0.0",
     "@visx/axis": "^3.0.0",
     "@visx/curve": "^3.0.0",
@@ -58,6 +61,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/d3-scale": "^4",
     "@types/file-saver": "^2",
     "@types/lodash-es": "^4",
     "@types/pako": "^2.0.0",

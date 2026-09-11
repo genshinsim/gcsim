@@ -1,0 +1,34 @@
+packages:
+  - "packages/*"
+
+# Dependencies allowed to run install/build (lifecycle) scripts. pnpm v11 blocks
+# these by default and, with strictDepBuilds on (default), FAILS the install
+# (ERR_PNPM_IGNORED_BUILDS) if any are left unresolved. Each must be explicitly
+# allowed (true) or denied (false).
+allowBuilds:
+  "@swc/core": true
+  core-js: true
+  core-js-pure: true
+  esbuild: true
+  protobufjs: true
+  sharp: true
+  workerd: true
+
+# Fail the install on unmet peer dependencies (surfaces real version skew),
+# EXCEPT the entries allowlisted below. Each waiver is a third-party package
+# whose declared peer range is merely stale, or a known internal version skew;
+# none is an actual runtime incompatibility. Verified by a from-scratch
+# `pnpm install --strict-peer-dependencies` on 2026-09-11. Prefer fixing the
+# underlying version over widening this list.
+strictPeerDependencies: true
+peerDependencyRules:
+  allowedVersions:
+    # react-popper v1 predates React 18; range never updated. Works on 18.
+    "react-popper>react": "18"
+    # react-virtual v2 (old @tanstack/react-virtual) declares react 16/17 only.
+    "react-virtual>react": "18"
+    # tsconfck 3.x wants TS 5; monorepo still on TS 4.9 in places. Runs on 4.9.
+    "tsconfck>typescript": "4"
+    # Storybook internal patch skew: @storybook/test 8.6.15 vs wanted 8.6.18.
+    "@storybook/react>@storybook/test": "8.6.15"
+    "@storybook/react-vite>@storybook/test": "8.6.15"

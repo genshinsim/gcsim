@@ -19,7 +19,7 @@ Most of the specific tags can be located in their respective character/weapon/ar
 
 :::
 
-<!-- prettier-ignore -->
+{/* prettier-ignore */}
 | field1 | field2 | field3 | field4 | description |
 | --- | --- | --- | --- | --- |
 | `debuff` | `res`/`def` | `t0`/`t1`/`t2`/... | res/def modifier name | Evaluates to the remaining duration of the specified res/def modifier on the specified target. See the relevant character/weapon/artifact page for acceptable modifier names. |

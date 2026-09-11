@@ -1,20 +1,25 @@
 {
   "name": "@gcsim/db",
-  "packageManager": "yarn@3.2.4",
   "private": true,
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
-    "preview": "yarn run build && vite preview --host"
+    "preview": "pnpm run build && vite preview --host"
   },
   "dependencies": {
     "@blueprintjs/core": "^4.11.4",
+    "@blueprintjs/icons": "^4.16.0",
+    "@blueprintjs/popover2": "^1.7.4",
     "@blueprintjs/select": "4.8.4",
+    "@gcsim/components": "workspace:^",
+    "@gcsim/data": "workspace:^",
     "@gcsim/executors": "workspace:^",
+    "@gcsim/localization": "workspace:^",
     "@gcsim/types": "workspace:^",
     "@gcsim/ui": "workspace:^",
     "@gcsim/utils": "workspace:^",
     "axios": "^1.1.3",
+    "protobufjs": "^7.1.2",
     "i18next": "^23.10.1",
     "i18next-browser-languagedetector": "^7.2.0",
     "react": "^18.2.0",

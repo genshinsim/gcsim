@@ -1,26 +1,33 @@
-name: "Setup Yarn and Run Validation and Tests"
-description: "runs yarn setup and any desired yarn lint and test commands (no build)"
+name: "Setup pnpm and Run Validation and Tests"
+description: "runs pnpm setup and any desired pnpm lint and test commands (no build)"
+# NOTE: directory still named `yarn-setup-and-test` for this PoC to limit churn
+# across workflow files that reference it. Rename to `pnpm-setup-and-test` (and
+# update references in tests.yml / deploy.yml / build-images.yaml) as cleanup.
 runs:
   using: composite
   steps:
-    - uses: actions/setup-node@v3
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
       with:
-        node-version: '20.5.1'
-        cache: yarn
-        cache-dependency-path: "**/yarn.lock"
+        version: 11.5.1
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '24.14.0'
+        cache: pnpm
+        cache-dependency-path: "ui/pnpm-lock.yaml"
     - name: Install
       working-directory: ./ui
       shell: bash
-      run: yarn install --immutable
+      run: pnpm install --frozen-lockfile
     # - name: Lint
     #   working-directory: ./ui
     #   shell: bash
-    #   run: yarn lint-ci
+    #   run: pnpm lint-ci
     # - name: Detect Dependency Version Mismatches
     #   working-directory: ./ui
     #   shell: bash
-    #   run: yarn list-mismatches
+    #   run: pnpm list-mismatches
     # - name: Detect Circular Dependencies
     #   working-directory: ./ui
     #   shell: bash
-    #   run: yarn circular
+    #   run: pnpm circular
