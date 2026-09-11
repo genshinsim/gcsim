@@ -18,7 +18,7 @@ var (
 
 	azureDevourFrames             []int
 	azureDevourHitmarks           = []int{40, 40, 40 + 20, 40 + 20}
-	azureDevourHitlagHaltFrames   = []float64{0.0, 0.9, 0.0, 0.9}
+	azureDevourHitlagHaltFrames   = []float64{0.0, 0.09, 0.0, 0.09}
 	azureDevourCanBeDefenseHalted = []bool{false, true, false, true}
 	azureDevourPoiseDmg           = []float64{39, 21, 39, 21}
 )
@@ -197,6 +197,8 @@ func (c *char) skillAzureDevour(c6Free bool) (action.Info, error) {
 	if !c6Free {
 		c.SetCD(action.ActionSpecialSkill, 11*60)
 		c.c6OnSkillCA()
+	} else {
+		c.c6OnFreeCA()
 	}
 
 	c.c2OnSpecialSkill()

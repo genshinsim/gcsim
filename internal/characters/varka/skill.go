@@ -162,6 +162,8 @@ func (c *char) fourWinds(c6Free bool) (action.Info, error) {
 			c.SetCD(action.ActionSpecialSkill, fourWindsCD)
 			c.c6OnSkill()
 		}, 39)
+	} else {
+		c.c6OnFreeSkill()
 	}
 
 	c.c2OnSpecialSkill()
