@@ -13758,6 +13758,19 @@
       "shape": "Circle",
       "center": "PrimaryTarget",
       "radius": 7
+    },
+    {
+      "ability": "asc",
+      "name": "A1",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 0.5
+    },
+    {
+      "ability": "asc",
+      "name": "Revelation",
+      "shape": "Single",
+      "center": "Target"
     }
   ],
   "yanfei": [

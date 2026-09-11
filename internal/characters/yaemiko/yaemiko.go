@@ -4,7 +4,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
@@ -19,9 +18,10 @@ type char struct {
 	kitsuneDetectionRadius float64
 	kitsunes               []*kitsune
 	c4buff                 []float64
+	revelation             bool
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -34,20 +34,23 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	w.Character = &c
 
+	revelation, ok := p.Params["revelation"]
+	if !ok {
+		revelation = 1
+	}
+	c.revelation = revelation > 0
+
 	return nil
 }
 
 func (c *char) Init() error {
 	c.a4()
-	if c.Base.Cons >= 2 {
-		c.kitsuneDetectionRadius = 20
-	} else {
-		c.kitsuneDetectionRadius = 12.5
-	}
-	if c.Base.Cons >= 4 {
-		c.c4buff = make([]float64, attributes.EndStatType)
-		c.c4buff[attributes.ElectroP] = .20
-	}
+	c.revelationInit()
+	c.c1Init()
+	c.c2Init()
+	c.c4Init()
+	c.c6Init()
+
 	return nil
 }
 
