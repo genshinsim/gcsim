@@ -40,6 +40,7 @@
 				// "warn", not error. Keep the Biome equivalent at "warn" so the
 				// migration is behaviour-preserving rather than auto-rewriting
 				// hook dependency arrays (which can change effect timing).
+				// Raising it back to error is tracked in issue #2790.
 				"useExhaustiveDependencies": "warn"
 			},
 			"suspicious": {
@@ -48,7 +49,7 @@
 				// New signal the old ESLint config never checked (~39 hits).
 				// Deferred to a follow-up tightening pass so this tooling swap
 				// lands clean. Fixing needs stable React keys, not a mechanical
-				// change. See the Biome-tightening follow-up issue.
+				// change. See the Biome-tightening follow-up (issue #2790).
 				"noArrayIndexKey": "off"
 			},
 			// The old ESLint setup had no jsx-a11y plugin, so Biome's
@@ -56,7 +57,7 @@
 			// (missing SVG titles, button types, alt text, keyboard handlers,
 			// valid anchors). Disabled here so the ESLint->Biome swap stays a
 			// clean tooling change; enabling a11y and fixing the violations is
-			// its own follow-up issue.
+			// its own follow-up (issue #2790).
 			"a11y": "off"
 		}
 	},
