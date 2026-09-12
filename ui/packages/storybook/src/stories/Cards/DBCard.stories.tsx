@@ -1,6 +1,6 @@
 import { Button, DBCard } from "@gcsim/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import _ from "lodash";
+import { cloneDeep, merge } from "lodash-es";
 import { dbEntries } from "../samples";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
@@ -78,7 +78,7 @@ export const BGOverride: Story = {
   },
 };
 
-const longDesc = _.merge(_.cloneDeep(dbEntries.data[0]), {
+const longDesc = merge(cloneDeep(dbEntries.data[0]), {
   description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ullamcorper eu felis vitae suscipit. Sed suscipit commodo lectus at rutrum. Integer dictum laoreet augue a tincidunt. Praesent rutrum nunc non sodales vulputate. Nunc eget purus tincidunt, euismod ligula nec, feugiat diam. Sed lobortis scelerisque nulla, at ultrices diam viverra quis. Pellentesque leo justo, venenatis id dapibus sit amet, mollis quis sem. Proin leo nunc, commodo a tempus non, vehicula id felis. Donec accumsan non odio at laoreet.
 
   Vivamus ut tortor lacus. Pellentesque fringilla diam id justo accumsan, eget rutrum eros efficitur. Morbi vel pharetra tellus. Nullam velit libero, efficitur et ultricies vel, auctor sed eros. Fusce facilisis turpis a lacus convallis congue. Aenean in hendrerit diam. Cras nunc magna, efficitur quis mauris quis, lobortis bibendum enim. Duis feugiat tellus id urna commodo varius. In nec tellus augue. Mauris ac pharetra libero.
