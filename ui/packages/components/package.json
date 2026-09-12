@@ -3,10 +3,6 @@
   "private": true,
   "version": "0.0.0",
   "main": "src/index.ts",
-  "scripts": {
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
-  },
   "dependencies": {
     "@blueprintjs/core": "^4.11.4",
     "@blueprintjs/popover2": "^1.7.4",
@@ -49,7 +45,6 @@
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
-    "@storybook/react": "^10.6.0",
     "@types/d3-scale": "^4",
     "@types/lodash-es": "^4",
     "@types/react": "^18.2.66",
@@ -60,7 +55,6 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
-    "storybook": "^10.6.0",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
   }
