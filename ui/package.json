@@ -30,7 +30,8 @@
 		"build:taghelper": "pnpm --filter @gcsim/taghelper build",
 		"deploy:workers": "pnpm --filter @gcsim/workers deploy",
 		"start:workers": "pnpm --filter @gcsim/workers start",
-		"storybook": "pnpm --filter @gcsim/storybook storybook"
+		"storybook": "pnpm --filter @gcsim/storybook storybook",
+		"test:e2e": "pnpm --filter @gcsim/e2e test"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.13",
