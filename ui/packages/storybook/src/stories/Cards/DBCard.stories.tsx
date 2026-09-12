@@ -1,5 +1,5 @@
 import { Button, DBCard } from "@gcsim/components";
-import type { Meta, StoryObj } from "@storybook/react";
+import type { Meta, StoryObj } from "@storybook/react-vite";
 import _ from "lodash";
 import { dbEntries } from "../samples";
 
