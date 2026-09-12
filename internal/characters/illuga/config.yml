@@ -1,0 +1,110 @@
+use: pipeline
+kind: character
+name: illuga
+
+talents:
+  - attack: # Oathkeeper's Spear
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG) # {}+{}
+        - attack(3-Hit DMG|1) # {}+{}
+      - attack(4-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - plunge_low: attack(Low/High Plunge DMG) # {}/{}
+  - plunge_high: attack(Low/High Plunge DMG|1) # {}/{}
+
+  - skill_tap_em: skill(Press DMG) # {} Elemental Mastery+{} DEF
+  - skill_tap_def: skill(Press DMG|1) # {} Elemental Mastery+{} DEF
+  - skill_hold_em: skill(Hold DMG) # {} Elemental Mastery+{} DEF
+  - skill_hold_def: skill(Hold DMG|1) # {} Elemental Mastery+{} DEF
+
+  - burst_em: burst(Skill DMG) # {} Elemental Mastery+{} DEF
+  - burst_def: burst(Skill DMG|1) # {} Elemental Mastery+{} DEF
+  - burst_buff_geo: burst(Geo DMG Bonus)
+  - burst_buff_lcr: burst(Lunar-Crystallize Reaction DMG Bonus)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1OmeqZLmcbfahfX2Q2BL-V722uSVJ2SNpLlMBIsKvzBQ/edit?usp=sharing
+      count_credit: caramielle.
+      video: https://youtu.be/aZBbH_VcrkE
+      video_credit: caramielle.
+    - count: https://docs.google.com/spreadsheets/d/1OmeqZLmcbfahfX2Q2BL-V722uSVJ2SNpLlMBIsKvzBQ/edit?usp=sharing
+      count_credit: caramielle.
+      video: https://youtu.be/M9i1u4xqjUc
+      video_credit: caramielle.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2.5
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
+
+      - name: N2
+        shape: Box
+        center: Player
+        box: [1.5, 3.8]
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
+
+      - name: N3-1
+        shape: Circle
+        center: Player
+        offset: [0, 0.3]
+        radius: 1.7
+        hitlag: { time: 0.06, scale: 0.01, defense_halt: true }
+
+      - name: N3-2
+        shape: Circle
+        center: Player
+        offset: [0, 0.4]
+        radius: 1.5
+
+      - name: N4
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        radius: 2
+        hitlag: { time: 0.09, scale: 0.01, defense_halt: true }
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.8
+        hitlag: { scale: 0.01, defense_halt: true, deployable: true }
+
+  - name: skill
+    params:
+      hold: 0 for Tap (default), 1 for Hold.
+    hitbox:
+      - name: E-Tap
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.3]
+        box: [2, 12]
+
+      - name: E-Hold
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.3]
+        box: [2, 35]
+
+  - name: burst
+    hitbox:
+      - name: Q
+        shape: Circle
+        center: Player
+        radius: 6.5
+
+  - name: cons
+    hitbox:
+      - name: C2
+        shape: Single
+        center: PrimaryTarget

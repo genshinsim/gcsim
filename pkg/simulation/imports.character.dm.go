@@ -46,6 +46,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/heizou"
 	_ "github.com/genshinsim/gcsim/internal/characters/hutao"
 	_ "github.com/genshinsim/gcsim/internal/characters/ifa"
+	_ "github.com/genshinsim/gcsim/internal/characters/illuga"
 	_ "github.com/genshinsim/gcsim/internal/characters/ineffa"
 	_ "github.com/genshinsim/gcsim/internal/characters/itto"
 	_ "github.com/genshinsim/gcsim/internal/characters/jahoda"
