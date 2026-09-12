@@ -66,9 +66,8 @@ export const OuterLabels = <Datum,>({
 			{arcs.map((arc, index) => {
 				const left = midAngle(arc) > Math.PI;
 				return (
-					<Group key={"g-" + index}>
+					<Group key={labelText(arc.data)}>
 						<Group
-							key={"label-" + index}
 							left={labelPositions.get(index)?.x}
 							top={labelPositions.get(index)?.y}
 							onMouseMove={(e) => mouseHover(e, index, arc.data)}
@@ -86,7 +85,6 @@ export const OuterLabels = <Datum,>({
 							</text>
 						</Group>
 						<LinePath<Point>
-							key={"line-" + index}
 							curve={curveBasis}
 							data={linePoints.get(index)}
 							stroke={labelColor(arc.data)}

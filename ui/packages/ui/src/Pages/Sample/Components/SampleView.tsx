@@ -43,12 +43,14 @@ const Row = ({
 	const cols = row.slots.map((slot, ci) => {
 		const events = slot.map((e, ei) => {
 			return (
+				// biome-ignore lint/suspicious/noArrayIndexKey: parsed sample row cells, static once parsed, no unique field
 				<SampleItemView item={e} key={ei} showBuffDuration={showBuffDuration} />
 			);
 		});
 
 		return (
 			<div
+				// biome-ignore lint/suspicious/noArrayIndexKey: fixed positional team slot (0–4)
 				key={ci}
 				className={
 					row.active === ci

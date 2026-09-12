@@ -39,12 +39,7 @@
 			},
 			"suspicious": {
 				"noTsIgnore": "off",
-				"noEmptyBlockStatements": "off",
-				// New signal the old ESLint config never checked (~39 hits).
-				// Deferred to a follow-up tightening pass so this tooling swap
-				// lands clean. Fixing needs stable React keys, not a mechanical
-				// change. See the Biome-tightening follow-up (issue #2790).
-				"noArrayIndexKey": "off"
+				"noEmptyBlockStatements": "off"
 			},
 			// The old ESLint setup had no jsx-a11y plugin, so Biome's
 			// recommended a11y group surfaced ~104 pre-existing violations.

@@ -50,8 +50,8 @@ export const CumulativeLegend = ({ names }: LegendProps) => {
 		>
 			{(labels) => (
 				<div className="flex flex-row">
-					{labels.map((label, i) => (
-						<LegendItem key={"legend-" + i}>
+					{labels.map((label) => (
+						<LegendItem key={label.datum}>
 							<div className="my-[2px] mr-[4px]">
 								<svg width={glpyhSize} height={glpyhSize} aria-hidden="true">
 									<rect
@@ -208,6 +208,7 @@ export const CumulativeGraph = ({
 					/>
 					<HoverLine
 						data={data}
+						names={names}
 						xScale={xScale}
 						yScale={yScale}
 						yMax={yMax}

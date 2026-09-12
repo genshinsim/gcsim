@@ -49,8 +49,8 @@ export const DamageOverTimeLegend = ({ names, glyphs }: LegendProps) => {
 		>
 			{(labels) => (
 				<div className="flex flex-row">
-					{labels.map((label, i) => (
-						<LegendItem key={"legend-" + i}>
+					{labels.map((label) => (
+						<LegendItem key={label.datum}>
 							<div className="my-[2px] mr-[4px]">
 								<svg width={glpyhSize} height={glpyhSize} aria-hidden="true">
 									<rect

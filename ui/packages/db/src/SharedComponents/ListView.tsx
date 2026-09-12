@@ -31,11 +31,11 @@ export function ListView({ data }: { data: db.Entry[] }) {
 	return (
 		<>
 			<div className="flex flex-col gap-2 justify-center align-middle items-center ">
-				{data.map((entry, index) => {
+				{data.map((entry) => {
 					return (
 						<DBCard
 							entry={entry}
-							key={index}
+							key={entry._id}
 							className="min-[1300px]:w-[1100px] border-0"
 							footer={
 								<div className="flex flex-row flex-wrap place-content-end mr-2 gap-4">

@@ -81,6 +81,7 @@ export const Graph = ({
 
 						return (
 							<rect
+								// biome-ignore lint/suspicious/noArrayIndexKey: number[] histogram bins, positional
 								key={"bin-" + i}
 								fill={fill}
 								x={barX}

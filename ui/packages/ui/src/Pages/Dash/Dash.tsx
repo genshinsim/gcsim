@@ -56,10 +56,10 @@ export function Dash() {
 					</h1>
 					<div>
 						{dataIsLoaded
-							? data.map((e, i) => (
+							? data.map((e) => (
 									<DBCard
 										className="border-0"
-										key={"entry-" + i}
+										key={e._id}
 										entry={e}
 										skipTags={-1}
 										footer={

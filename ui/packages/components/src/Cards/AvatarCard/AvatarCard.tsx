@@ -32,7 +32,7 @@ export const AvatarCard = ({
 				}
 				return (
 					<AvatarPortrait
-						key={"char-" + i}
+						key={c?.name ?? "empty-" + i}
 						i={i}
 						char={c}
 						className="min-[420px]:max-w-[96px] min-[420px]:basis-1/4 basis-[45%]"

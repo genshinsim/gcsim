@@ -73,6 +73,7 @@ export function useTooltipHandles(
 
 type HoverLineProps = {
 	data: CumulativePoint[];
+	names: string[];
 	xScale: ScaleLinear<number, number>;
 	yScale: ScaleLinear<number, number>;
 	yMax: number;
@@ -95,7 +96,7 @@ export const HoverLine = (props: HoverLineProps) => {
 		total += val.mean ?? 0;
 		const y = props.yScale(total);
 		return (
-			<g key={"circle-" + char}>
+			<g key={props.names[char]}>
 				<circle
 					cx={x}
 					cy={y + 1}
