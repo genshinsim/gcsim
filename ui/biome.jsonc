@@ -1,0 +1,64 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.5.13/schema.json",
+	"files": {
+		"includes": [
+			"**/*.ts",
+			"**/*.tsx",
+			"**/*.js",
+			"**/*.jsx",
+			"**/*.cjs",
+			"**/*.mjs",
+			"**/*.json",
+			"**/*.jsonc",
+			"!**/dist",
+			"!**/build",
+			"!**/.docusaurus",
+			"!**/storybook-static",
+			"!packages/types/src/generated",
+			"!**/wasm_exec.js",
+			"!**/*.dm.js"
+		]
+	},
+	"formatter": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"noUnusedVariables": {
+					"level": "warn",
+					"options": { "ignoreRestSiblings": true }
+				},
+				"noUnusedFunctionParameters": {
+					"level": "warn",
+					"options": { "ignoreRestSiblings": true }
+				}
+			},
+			"suspicious": {
+				"noTsIgnore": "off",
+				"noEmptyBlockStatements": "off",
+				// New signal the old ESLint config never checked (~39 hits).
+				// Deferred to a follow-up tightening pass so this tooling swap
+				// lands clean. Fixing needs stable React keys, not a mechanical
+				// change. See the Biome-tightening follow-up issue.
+				"noArrayIndexKey": "off"
+			},
+			// The old ESLint setup had no jsx-a11y plugin, so Biome's
+			// recommended a11y group surfaces ~104 pre-existing violations
+			// (missing SVG titles, button types, alt text, keyboard handlers,
+			// valid anchors). Disabled here so the ESLint->Biome swap stays a
+			// clean tooling change; enabling a11y and fixing the violations is
+			// its own follow-up issue.
+			"a11y": "off"
+		}
+	},
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	}
+}
