@@ -34,6 +34,7 @@ export function CharacterQuickSelect() {
 							icon={
 								<img
 									src={`/api/assets/avatar/${charName}.png`}
+									alt=""
 									className="w-6 h-6"
 								/>
 							}
@@ -51,6 +52,7 @@ export function CharacterQuickSelect() {
 					<div className="flex flex-row gap-1" key={charName}>
 						<img
 							className="w-4 h-4"
+							alt=""
 							src={`/api/assets/avatar/${charName}.png`}
 						/>
 						{translateCharName(charName)}

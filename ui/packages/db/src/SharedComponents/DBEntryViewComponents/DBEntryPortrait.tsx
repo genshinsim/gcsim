@@ -20,7 +20,7 @@ function DBEntryDesktopPortrait({ name, sets, weapon, cons }: model.Character) {
 	if (!name) {
 		return (
 			<div className="bg-slate-700 p-2 w-20 flex flex-row  h-fit justify-center">
-				<img src={nahida} className=" object-contain opacity-50 " />
+				<img src={nahida} alt="" className=" object-contain opacity-50 " />
 			</div>
 		);
 	}
@@ -52,7 +52,7 @@ function DBEntryMobilePortrait({ name, sets, weapon, cons }: model.Character) {
 	if (!name) {
 		return (
 			<div className="bg-slate-700 p-2  max-h-20 flex flex-row justify-center">
-				<img src={nahida} className=" object-contain opacity-50" />
+				<img src={nahida} alt="" className=" object-contain opacity-50" />
 			</div>
 		);
 	}

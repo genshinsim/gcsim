@@ -24,6 +24,7 @@ export default function Nav() {
 						<Link href="/" className="flex h-[50px] items-center">
 							<img
 								src={logo}
+								alt=""
 								className="object-scale-down max-h-[75%] m-auto mr-2"
 							/>
 							<span className="font-medium font-mono">simpact</span>

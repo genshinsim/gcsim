@@ -125,6 +125,7 @@ export function CharacterCard({
 					<img
 						key="key"
 						src={`/api/assets/artifacts/${key}_flower.png`}
+						alt={key}
 						className="w-full h-8"
 						onError={(e) => ((e.target as HTMLImageElement).src = placeholder)}
 					/>

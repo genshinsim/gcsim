@@ -83,6 +83,7 @@ export const AvatarPortrait = ({
 				<div className="flex justify-center">
 					<img
 						src={"/api/assets/misc/nahida.png"}
+						alt=""
 						className=" object-contain opacity-50 h-24"
 						onLoad={onImageLoaded}
 					/>
@@ -119,6 +120,7 @@ export const AvatarPortrait = ({
 					<img
 						className="relative object-contain h-24"
 						key={char.name}
+						alt={char.name}
 						src={`/api/assets/avatar/${char.name}.png`}
 						onError={(e) => {
 							(e.target as HTMLImageElement).src =
