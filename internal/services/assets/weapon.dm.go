@@ -37,6 +37,7 @@ var weaponMap = map[string]string{
 	"cashflowsupervision":             "UI_EquipIcon_Catalyst_Wheatley_Awaken",
 	"chainbreaker":                    "UI_EquipIcon_Bow_Isikhulu_Awaken",
 	"cinnabarspindle":                 "UI_EquipIcon_Sword_Opus_Awaken",
+	"clashofkings":                    "UI_EquipIcon_Catalyst_SandMemoria_Awaken",
 	"cloudforged":                     "UI_EquipIcon_Bow_Ultimatum_Awaken",
 	"compoundbow":                     "UI_EquipIcon_Bow_Exotic_Awaken",
 	"coolsteel":                       "UI_EquipIcon_Sword_Steel_Awaken",

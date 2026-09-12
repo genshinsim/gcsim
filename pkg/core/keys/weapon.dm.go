@@ -77,6 +77,7 @@ const (
 	CashflowSupervision                           // cashflowsupervision
 	ChainBreaker                                  // chainbreaker
 	CinnabarSpindle                               // cinnabarspindle
+	ClashOfKings                                  // clashofkings
 	Cloudforged                                   // cloudforged
 	CompoundBow                                   // compoundbow
 	CoolSteel                                     // coolsteel
@@ -316,6 +317,7 @@ var _WeaponNames = [...]string{
 	"cashflowsupervision",
 	"chainbreaker",
 	"cinnabarspindle",
+	"clashofkings",
 	"cloudforged",
 	"compoundbow",
 	"coolsteel",
@@ -555,6 +557,7 @@ var _WeaponValues = [...]Weapon{
 	CashflowSupervision,
 	ChainBreaker,
 	CinnabarSpindle,
+	ClashOfKings,
 	Cloudforged,
 	CompoundBow,
 	CoolSteel,
