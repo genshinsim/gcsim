@@ -1,20 +1,20 @@
 {
-  "name": "@gcsim/executors",
-  "main": "src/index.ts",
-  "private": true,
-  "scripts": {
-    "build:wasm:web": "task wasm OUT=../../ui/packages/web/public/main.wasm",
-    "watch:web": "watch \"pnpm run build:wasm:web\" ../../../pkg ../../../internal ../../../cmd/wasm"
-  },
-  "dependencies": {
-    "@gcsim/types": "workspace:^",
-    "axios": "^1.6.7",
-    "lodash-es": "^4.17.21"
-  },
-  "devDependencies": {
-    "@types/lodash-es": "^4",
-    "@types/watch": "^1",
-    "concurrently": "^7.5.0",
-    "watch": "^1.0.2"
-  }
+	"name": "@gcsim/executors",
+	"main": "src/index.ts",
+	"private": true,
+	"scripts": {
+		"build:wasm:web": "task wasm OUT=../../ui/packages/web/public/main.wasm",
+		"watch:web": "watch \"pnpm run build:wasm:web\" ../../../pkg ../../../internal ../../../cmd/wasm"
+	},
+	"dependencies": {
+		"@gcsim/types": "workspace:^",
+		"axios": "^1.6.7",
+		"lodash-es": "^4.17.21"
+	},
+	"devDependencies": {
+		"@types/lodash-es": "^4",
+		"@types/watch": "^1",
+		"concurrently": "^7.5.0",
+		"watch": "^1.0.2"
+	}
 }

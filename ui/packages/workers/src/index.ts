@@ -36,5 +36,5 @@ router.get("/api/assets/*", handleAssets);
 router.get("/api/wasm/*", handleWasm);
 
 addEventListener("fetch", (event) => {
-  event.respondWith(router.handle(event.request, event));
+	event.respondWith(router.handle(event.request, event));
 });

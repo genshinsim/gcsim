@@ -1,8 +1,8 @@
 import React from "react";
 import styled from "styled-components";
+import artifact_data from "./artifact.dm.json";
 import character_data from "./character.dm.json";
 import weapon_data from "./weapon.dm.json";
-import artifact_data from "./artifact.dm.json";
 
 const Table = styled.table`
   border-collapse: collapse;
@@ -22,43 +22,43 @@ const TH = styled.th`
 `;
 
 export default function ParamsTable({ item_key, data_src }) {
-  let data = character_data;
-  switch (data_src) {
-    case "weapon":
-      data = weapon_data;
-      break;
-    case "artifact":
-      data = artifact_data;
-      break;
-  }
-  if (!(item_key in data) || data[item_key].length === 0) {
-    return <div>Does not have any ability params</div>;
-  }
-  const rows = data[item_key].map((e) => {
-    return (
-      <tr key={item_key}>
-        <TD>
-          <code>{e.ability}</code>
-        </TD>
-        <TD>
-          <code>{e.param}</code>
-        </TD>
-        <TD>{e.desc}</TD>
-      </tr>
-    );
-  });
-  return (
-    <div style={{ marginTop: "1rem", width: "100%" }}>
-      <Table>
-        <Thead>
-          <tr>
-            <TH>Ability</TH>
-            <TH>Param</TH>
-            <TH>Description</TH>
-          </tr>
-        </Thead>
-        <tbody>{rows}</tbody>
-      </Table>
-    </div>
-  );
+	let data = character_data;
+	switch (data_src) {
+		case "weapon":
+			data = weapon_data;
+			break;
+		case "artifact":
+			data = artifact_data;
+			break;
+	}
+	if (!(item_key in data) || data[item_key].length === 0) {
+		return <div>Does not have any ability params</div>;
+	}
+	const rows = data[item_key].map((e) => {
+		return (
+			<tr key={item_key}>
+				<TD>
+					<code>{e.ability}</code>
+				</TD>
+				<TD>
+					<code>{e.param}</code>
+				</TD>
+				<TD>{e.desc}</TD>
+			</tr>
+		);
+	});
+	return (
+		<div style={{ marginTop: "1rem", width: "100%" }}>
+			<Table>
+				<Thead>
+					<tr>
+						<TH>Ability</TH>
+						<TH>Param</TH>
+						<TH>Description</TH>
+					</tr>
+				</Thead>
+				<tbody>{rows}</tbody>
+			</Table>
+		</div>
+	);
 }

@@ -11,15 +11,15 @@ import { Swap } from "./Swap";
 import { WarningItem } from "./Warning";
 
 export {
-  Commit,
-  DateItem,
-  DevBuild,
-  Dirty,
-  Energy,
-  Iterations,
-  Mode,
-  Standard,
-  Swap,
-  WarningItem,
-  Item,
+	Commit,
+	DateItem,
+	DevBuild,
+	Dirty,
+	Energy,
+	Item,
+	Iterations,
+	Mode,
+	Standard,
+	Swap,
+	WarningItem,
 };

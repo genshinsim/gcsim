@@ -20,32 +20,34 @@ const TH = styled.th`
 `;
 
 export default function ActionsTable({ item_key }) {
-  let data = character_data;
-  if (!(item_key in data) || data[item_key].length === 0) {
-    return <div>Does not have any known legal actions</div>;
-  }
-  return (
-    <div style={{ marginTop: "1rem", width: "100%" }}>
-      <Table>
-        <Thead>
-          <tr>
-            <TH>Ability</TH>
-            <TH>Legal</TH>
-            <TH>Notes</TH>
-          </tr>
-        </Thead>
-        <tbody>
-          {data[item_key].map((e) => {
-            return (
-              <tr key={item_key}>
-                <TD><code>{e.ability}</code></TD>
-                <TD align="center">{e.invalid ? "❌" : (e.note ? "⚠" : "✔")}</TD>
-                <TD>{e.note ?? "-"}</TD>
-              </tr>
-            );
-          })}
-        </tbody>
-      </Table>
-    </div>
-  );
+	const data = character_data;
+	if (!(item_key in data) || data[item_key].length === 0) {
+		return <div>Does not have any known legal actions</div>;
+	}
+	return (
+		<div style={{ marginTop: "1rem", width: "100%" }}>
+			<Table>
+				<Thead>
+					<tr>
+						<TH>Ability</TH>
+						<TH>Legal</TH>
+						<TH>Notes</TH>
+					</tr>
+				</Thead>
+				<tbody>
+					{data[item_key].map((e) => {
+						return (
+							<tr key={item_key}>
+								<TD>
+									<code>{e.ability}</code>
+								</TD>
+								<TD align="center">{e.invalid ? "❌" : e.note ? "⚠" : "✔"}</TD>
+								<TD>{e.note ?? "-"}</TD>
+							</tr>
+						);
+					})}
+				</tbody>
+			</Table>
+		</div>
+	);
 }
