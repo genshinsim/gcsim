@@ -28,7 +28,7 @@ func NewTraveler(s *core.Core, w *character.CharWrapper, p info.CharacterProfile
 	c.BurstCon = 3
 	c.SkillCon = 5
 	c.NormalHitNum = normalHitNum
-	c.skillCD = 6 * 60
+	c.skillCD = 8 * 60
 
 	common.TravelerStoryBuffs(w, p)
 	return &c, nil
