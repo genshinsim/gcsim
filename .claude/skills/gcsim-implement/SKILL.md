@@ -48,6 +48,8 @@ end.
 
 Commit regularly to the branch you created in step 2. Keep commits small and standalone where possible, allowing for easy review by others commit by commit.
 
+Write commit messages tight: a `<type>(<scope>): <subject>` subject line, then point-form bullets of what changed — short, to the point, no prose paragraphs. Keep the `Co-Authored-By` trailer; drop any Claude session link.
+
 Once done, use `/gcsim-review-changes` to review the work.
 
 ## 4. Open the PR
@@ -71,11 +73,14 @@ gh pr create --base main --title "..." --body-file <file>
 Run `gh pr create` from the fork clone. If it prompts for a base repo, pick `upstream`; if it
 prompts where to push, pick `origin`.
 
-The body must:
+Write the body like game patch notes: **New**, **Changed** and **Removed** sections (omit any that is empty), each a short bullet list of what a reviewer can now observe — not files touched. Keep it brief; add detail under a bullet only where absolutely necessary.
 
-- state what a reviewer can now observe that they could not before — not a list of files touched
+The body must also:
+
 - carry `Closes #<issue-number>` on its own line, so merging closes the ticket
 - name anything in the ticket's acceptance criteria you did **not** do, and why
+
+Drop any Claude session link from the PR footer.
 
 Keep the PR small. If the work outgrew the ticket, stop and say so rather than widening the PR.
 
