@@ -50,12 +50,13 @@ export const Builder = (props: Props) => {
 			className="basis-full sm:basis-1/2 hd:basis-1/4 pr-2 pb-2 pt-2"
 			key="_blank"
 		>
-			<div
-				className="bg-gray-600 shadow rounded-md hover:bg-gray-500 flex items-center justify-center min-h-[226px] h-full"
+			<button
+				type="button"
+				className="bg-gray-600 shadow rounded-md hover:bg-gray-500 flex items-center justify-center min-h-[226px] h-full w-full"
 				onClick={props.handleAdd}
 			>
 				<Icon icon="plus" size={30} color="white" />
-			</div>
+			</button>
 		</div>
 	);
 

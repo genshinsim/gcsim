@@ -18,15 +18,20 @@ export function SampleItemView({
 			className="flex flex-row gap-2 items-center pl-1 pr-1 pt-px pb-px rounded-md m-1 "
 			style={{ backgroundColor: item.color }}
 		>
-			<span
+			<button
+				type="button"
 				className="material-icons text-sm cursor-pointer"
 				onClick={() => showBuffDuration(item)}
 			>
 				{item.icon}
-			</span>
-			<div className="flex-grow cursor-pointer" onClick={handleClick}>
+			</button>
+			<button
+				type="button"
+				className="flex-grow cursor-pointer text-left"
+				onClick={handleClick}
+			>
 				{item.msg}
-			</div>
+			</button>
 			<div>{item.target}</div>
 			<Dialog
 				canEscapeKeyClose
