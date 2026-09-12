@@ -22,7 +22,6 @@ internal/characters/replace.txt
 ./cmd/gcsim/*.json
 cmd/gcsim/gcsim
 !release-notes.txt
-**/node_modules
 .env
 .envrc
 .direnv/
@@ -40,6 +39,8 @@ backend/docker/binary
 computebin
 .cache
 .npm
+.pnpm-store
+node_modules
 .task/
 .venv
 # release binaries to avoid tinting repo

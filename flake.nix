@@ -56,8 +56,8 @@
                 self'.packages.golangci-lint-v2
 
                 # ui
-                nodejs_24
-                yarn-berry_3
+                nodejs
+                pnpm
 
                 # github-actions
                 goss
