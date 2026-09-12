@@ -23,7 +23,7 @@ function App({ id }: { id: string }) {
 				setMain(res.data);
 			}
 		});
-	}, [id, setData]);
+	}, [id]);
 
 	React.useEffect(() => {
 		if (main === null) {
@@ -73,7 +73,7 @@ function App({ id }: { id: string }) {
 					setData(res.data.data);
 				}
 			});
-	}, [main, setData]);
+	}, [main]);
 
 	if (main === null) {
 		return <div className="text-gray-200">Loading, please wait...</div>;
