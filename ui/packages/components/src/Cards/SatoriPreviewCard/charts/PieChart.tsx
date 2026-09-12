@@ -1,7 +1,7 @@
 import type { model } from "@gcsim/types";
 import { arc, pie } from "d3-shape";
 import { characterColor, elementColor } from "../colors";
-import { ChartImg, NoData } from "./util";
+import { ChartImg, NoData, wrapSvg } from "./util";
 
 type Slice = {
 	value: number;
@@ -31,11 +31,7 @@ function renderPie(slices: Slice[], width: number, height: number): string {
 		)
 		.join("");
 
-	return (
-		`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">` +
-		`<g transform="translate(${width / 2},${height / 2})">${paths}</g>` +
-		`</svg>`
-	);
+	return wrapSvg(width, height, paths, `translate(${width / 2},${height / 2})`);
 }
 
 type CharacterPieProps = {

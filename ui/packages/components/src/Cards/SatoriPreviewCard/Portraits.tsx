@@ -53,7 +53,8 @@ const Portrait = ({
 	}
 
 	const sets = char.sets ? Object.keys(char.sets) : [];
-	const half = sets.length === 1 && char.sets?.[sets[0]] === 2;
+	// A lone 2-piece set renders as a half-width flower (matches AvatarPortrait).
+	const isHalfWidthSet = sets.length === 1 && char.sets?.[sets[0]] === 2;
 
 	const avatarSize = height * 0.92;
 	const badgeStyle = {
@@ -116,7 +117,7 @@ const Portrait = ({
 				>
 					<img
 						src={`${assetBase}/artifacts/${sets[0]}_flower.png`}
-						width={sets.length > 1 || half ? 16 : 32}
+						width={sets.length > 1 || isHalfWidthSet ? 16 : 32}
 						height={32}
 						alt=""
 						style={{ objectFit: "cover" }}

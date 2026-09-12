@@ -2,7 +2,7 @@ import type { model } from "@gcsim/types";
 import { scaleLinear } from "d3-scale";
 import { area, curveBasis } from "d3-shape";
 import { TIMELINE_COLOR } from "../colors";
-import { ChartImg, NoData } from "./util";
+import { ChartImg, NoData, wrapSvg } from "./util";
 
 type Props = {
 	data?: model.BucketStats | null;
@@ -50,11 +50,12 @@ export const TimelineChart = ({ data, width, height }: Props) => {
 
 	const path = gen(points) ?? "";
 
-	const svg =
-		`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">` +
-		`<g transform="translate(${margin.left},${margin.top})">` +
-		`<path d="${path}" fill="${TIMELINE_COLOR}" stroke="${TIMELINE_COLOR}" stroke-width="2"/>` +
-		`</g></svg>`;
+	const svg = wrapSvg(
+		width,
+		height,
+		`<path d="${path}" fill="${TIMELINE_COLOR}" stroke="${TIMELINE_COLOR}" stroke-width="2"/>`,
+		`translate(${margin.left},${margin.top})`,
+	);
 
 	return <ChartImg svg={svg} width={width} height={height} />;
 };

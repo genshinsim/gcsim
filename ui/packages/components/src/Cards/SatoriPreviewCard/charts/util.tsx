@@ -6,6 +6,21 @@ export function svgDataUri(svg: string): string {
 	return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 
+// Wrap chart-body markup in a sized <svg> with an optional translated <g>.
+export function wrapSvg(
+	width: number,
+	height: number,
+	inner: string,
+	transform?: string,
+): string {
+	const group =
+		transform != null ? `<g transform="${transform}">${inner}</g>` : inner;
+	return (
+		`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">` +
+		`${group}</svg>`
+	);
+}
+
 type ChartImgProps = {
 	svg: string;
 	width: number;

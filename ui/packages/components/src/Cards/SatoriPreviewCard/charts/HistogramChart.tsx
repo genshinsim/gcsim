@@ -1,7 +1,7 @@
 import type { model } from "@gcsim/types";
 import { scaleLinear } from "d3-scale";
 import { HISTOGRAM_ACCENT, HISTOGRAM_BAR } from "../colors";
-import { ChartImg, NoData } from "./util";
+import { ChartImg, NoData, wrapSvg } from "./util";
 
 type Props = {
 	data?: model.OverviewStats | null;
@@ -35,7 +35,9 @@ export const HistogramChart = ({ data, width, height }: Props) => {
 		.range([yMax, 0])
 		.clamp(true);
 
-	const step = xMax / hist.length;
+	// Matches d3/visx scaleBand(paddingInner): bars span the full width and the
+	// last bar's right edge lands on xMax.
+	const step = xMax / (hist.length - PADDING_INNER);
 	const barWidth = step * (1 - PADDING_INNER);
 
 	// Index of the bar the mean falls into.
@@ -56,10 +58,12 @@ export const HistogramChart = ({ data, width, height }: Props) => {
 		})
 		.join("");
 
-	const svg =
-		`<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">` +
-		`<g transform="translate(${margin.left},${margin.top})">${rects}</g>` +
-		`</svg>`;
+	const svg = wrapSvg(
+		width,
+		height,
+		rects,
+		`translate(${margin.left},${margin.top})`,
+	);
 
 	return <ChartImg svg={svg} width={width} height={height} />;
 };
