@@ -1,6 +1,6 @@
 import {PreviewCard} from '@gcsim/components';
-import type {Meta, StoryObj} from '@storybook/react';
-import {cloneDeep, merge} from 'lodash';
+import type {Meta, StoryObj} from '@storybook/react-vite';
+import {cloneDeep, merge} from 'lodash-es';
 import {sampleResult} from '../samples';
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
@@ -31,7 +31,7 @@ export const Primary: Story = {
   },
 };
 
-let incomplete = cloneDeep(sampleResult);
+const incomplete = cloneDeep(sampleResult);
 export const WithIncomplete: Story = {
   args: {
     className: '!w-[540px] !h-[250px]',
@@ -41,7 +41,7 @@ export const WithIncomplete: Story = {
   },
 };
 
-let missingImages = cloneDeep(sampleResult);
+const missingImages = cloneDeep(sampleResult);
 missingImages.character_details[0].sets = {fake: 4};
 missingImages.character_details[0].name = 'fake';
 missingImages.character_details[0].weapon.name = 'fake';

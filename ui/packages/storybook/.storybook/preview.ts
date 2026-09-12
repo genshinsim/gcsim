@@ -1,8 +1,5 @@
-import {
-  INITIAL_VIEWPORTS,
-  MINIMAL_VIEWPORTS,
-} from "@storybook/addon-viewport";
-import type { Preview } from "@storybook/react";
+import type { Preview } from "@storybook/react-vite";
+import { INITIAL_VIEWPORTS, MINIMAL_VIEWPORTS } from "storybook/viewport";
 import "../src/index.css";
 import i18n from "./i18n";
 
@@ -53,12 +50,11 @@ const preview: Preview = {
       },
     },
     viewport: {
-      viewports: {
+      options: {
         ...INITIAL_VIEWPORTS,
         ...MINIMAL_VIEWPORTS,
         ...customViewports,
       },
-      defaultViewport: "desktop",
     },
     i18n,
   },
