@@ -1,5 +1,5 @@
 ---
-name: implement-with-pr
+name: gcsim-implement
 description: "Implement a ticket on its own branch and open a PR linked to the issue. Use when the work should land as a reviewable PR rather than commits on the current branch."
 disable-model-invocation: true
 ---
@@ -41,14 +41,14 @@ behind upstream. Never implement on `main`.
 
 Implement the work described in the ticket.
 
-Use `/tdd` where possible, at pre-agreed seams.
+Use `/gcsim-tdd` where possible, at pre-agreed seams.
 
 Run typechecking regularly, single test files regularly, and the full test suite once at the
 end.
 
 Commit regularly to the branch you created in step 2. Keep commits small and standalone where possible, allowing for easy review by others commit by commit.
 
-Once done, use `/review-changes` to review the work.
+Once done, use `/gcsim-review-changes` to review the work.
 
 ## 4. Open the PR
 
