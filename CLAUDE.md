@@ -4,14 +4,14 @@
 
 Project skills live in `.claude/skills/` and work without any external plugin installed:
 
-- **`implement-with-pr`** (`/implement-with-pr`): implement a ticket on its own branch and open a PR against `upstream`.
-- **`tdd`** (`/tdd`): red → green test-first loop.
-- **`review-changes`** (`/review-changes`): two-axis (Standards + Spec) review of a diff. Named to avoid colliding with the built-in `/code-review`.
-- **`triage`** (`/triage`): move upstream issues and external PRs through the triage state machine.
-- **`grilling`** (`/grilling`): stress-test a plan or decision with rounds of questions until shared understanding.
-- **`domain-modeling`** (`/domain-modeling`): build and sharpen the glossary and ADRs (`CONTEXT.md`, `docs/adr/`).
+- **`gcsim-implement`** (`/gcsim-implement`): implement a ticket on its own branch and open a PR against `upstream`.
+- **`gcsim-tdd`** (`/gcsim-tdd`): red → green test-first loop.
+- **`gcsim-review-changes`** (`/gcsim-review-changes`): two-axis (Standards + Spec) review of a diff. Named to avoid colliding with the built-in `/code-review`.
+- **`gcsim-triage`** (`/gcsim-triage`): move upstream issues and external PRs through the triage state machine.
+- **`gcsim-grilling`** (`/gcsim-grilling`): stress-test a plan or decision with rounds of questions until shared understanding.
+- **`gcsim-domain-modeling`** (`/gcsim-domain-modeling`): build and sharpen the glossary and ADRs (`CONTEXT.md`, `docs/adr/`).
 
-These skills are vendored copies of the `mattpocock-skills` plugin. `tdd`, `review-changes` and `triage` are adapted for this repo's fork workflow and the `docs/agents/` config below; `grilling` and `domain-modeling` are verbatim.
+These skills are vendored copies of the `mattpocock-skills` plugin. `gcsim-tdd`, `gcsim-review-changes` and `gcsim-triage` are adapted for this repo's fork workflow and the `docs/agents/` config below; `gcsim-grilling` and `gcsim-domain-modeling` are verbatim.
 
 ## Agent skills
 

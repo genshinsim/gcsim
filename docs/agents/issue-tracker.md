@@ -17,7 +17,7 @@ Always pass `--repo genshinsim/gcsim`. Do not rely on `gh`'s auto-detection here
 
 ## Pull requests as a triage surface
 
-**PRs as a request surface: no.** _(Set to `yes` if this repo treats external PRs as feature requests; `/triage` reads this flag.)_
+**PRs as a request surface: no.** _(Set to `yes` if this repo treats external PRs as feature requests; `/gcsim-triage` reads this flag.)_
 
 When set to `yes`, PRs run through the same labels and states as issues, using the `gh pr` equivalents (all scoped with `--repo genshinsim/gcsim`):
 

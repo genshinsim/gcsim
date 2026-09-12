@@ -1,5 +1,5 @@
 ---
-name: triage
+name: gcsim-triage
 description: Move issues and external PRs through a state machine of triage roles, categorise, verify, grill if needed, and write agent-ready briefs.
 disable-model-invocation: true
 ---
@@ -48,7 +48,7 @@ State transitions: an unlabeled issue normally goes to `needs-triage` first; fro
 
 ## Invocation
 
-The maintainer invokes `/triage` and describes what they want in natural language. Interpret the request and act. Examples:
+The maintainer invokes `/gcsim-triage` and describes what they want in natural language. Interpret the request and act. Examples:
 
 - "Show me anything that needs my attention"
 - "Let's look at #42" (issue or PR)
@@ -75,7 +75,7 @@ Show counts and a one-line summary per item. Let the maintainer pick.
 
 3. **Verify the claim.** Before any grilling, check that the claim holds up. For a bug, reproduce it from the reporter's steps. For a PR, confirm the diff does what it claims: check it out, run the relevant tests or commands. Report what happened: confirmed (with code path), failed, or insufficient detail (a strong `needs-info` signal). A confirmed verification makes a much stronger agent brief.
 
-4. **Grill (if needed).** If the request needs fleshing out, call the Skill tool twice, for `grilling` and `domain-modeling`, and grill it into shape a round of questions at a time, sharpening domain terms as decisions land. Don't edit `CONTEXT.md` or ADRs during triage. Instead, hand off any glossary or ADR change a decision implies as an acceptance criterion in the brief (step 5), so it lands with the code that motivates it.
+4. **Grill (if needed).** If the request needs fleshing out, call the Skill tool twice, for `gcsim-grilling` and `gcsim-domain-modeling`, and grill it into shape a round of questions at a time, sharpening domain terms as decisions land. Don't edit `CONTEXT.md` or ADRs during triage. Instead, hand off any glossary or ADR change a decision implies as an acceptance criterion in the brief (step 5), so it lands with the code that motivates it.
 
 5. **Apply the outcome:**
    - `ready-for-agent`: post an agent brief comment ([AGENT-BRIEF.md](AGENT-BRIEF.md)).

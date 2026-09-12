@@ -1,5 +1,5 @@
 ---
-name: review-changes
+name: gcsim-review-changes
 description: "Review the changes since a fixed point (commit, branch, tag, or merge-base) along two axes: Standards (does the code follow this repo's documented coding standards?) and Spec (does the code match what the originating issue/spec asked for?). Runs both reviews in parallel sub-agents and reports them side by side. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to \"review since X\"."
 ---
 
@@ -16,7 +16,7 @@ Read `docs/agents/issue-tracker.md` for how to fetch the originating issue or PR
 
 ### 1. Pin the fixed point
 
-Whatever the user said is the fixed point (a commit SHA, branch name, tag, `main`, `HEAD~5`, etc.). If they didn't specify one, ask for it. On a feature branch made with `implement-with-pr`, the natural fixed point is `upstream/main` (run `git fetch upstream` first so it's current).
+Whatever the user said is the fixed point (a commit SHA, branch name, tag, `main`, `HEAD~5`, etc.). If they didn't specify one, ask for it. On a feature branch made with `gcsim-implement`, the natural fixed point is `upstream/main` (run `git fetch upstream` first so it's current).
 
 Capture the diff command once: `git diff <fixed-point>...HEAD` (three-dot, so the comparison is against the merge-base). Also note the list of commits via `git log <fixed-point>..HEAD --oneline`.
 
@@ -88,4 +88,4 @@ Reporting them separately stops one axis from masking the other.
 
 ---
 
-_Vendored from the `mattpocock-skills` plugin (`engineering/code-review`), renamed to `review-changes` to avoid colliding with Claude Code's built-in `/code-review` command, and adapted for this repo's fork workflow and `docs/agents/` config._
+_Vendored from the `mattpocock-skills` plugin (`engineering/code-review`), renamed to `gcsim-review-changes` to avoid colliding with Claude Code's built-in `/code-review` command, and adapted for this repo's fork workflow and `docs/agents/` config._
