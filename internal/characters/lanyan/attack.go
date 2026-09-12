@@ -16,6 +16,7 @@ var (
 	ringsFrames  []int
 
 	attackHitmarks        = [][]int{{11}, {17, 37}, {15, 21}, {40}}
+	attackCQA             = []int{11, 30, 21, 40}
 	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03, 0}, {0.03, 0}, {0.06}}
 	attackDefHalt         = [][]bool{{true}, {true, true}, {false, false}, {true}}
 	attackOffsets         = []float64{-0.2, -0.2, 0.3, 0.5}
@@ -107,7 +108,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+		CanQueueAfter:   attackCQA[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}, nil
 }

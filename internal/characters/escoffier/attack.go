@@ -23,17 +23,16 @@ const normalHitNum = 3
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 17)
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 22)
+	attackFrames[0][action.ActionAttack] = 17
 	attackFrames[0][action.ActionCharge] = 20
-	attackFrames[0][action.ActionWalk] = 22
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 21)
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 30)
 	attackFrames[1][action.ActionAttack] = 29
-	attackFrames[1][action.ActionWalk] = 30
+	attackFrames[1][action.ActionCharge] = 21
 
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 62)
 	attackFrames[2][action.ActionWalk] = 61
-	attackFrames[2][action.ActionCharge] = 500 // TODO: this action is illegal; need better way to handle it
 }
 
 // Normal attack damage queue generator

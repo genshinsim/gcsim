@@ -33,12 +33,11 @@ const (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(48) // Q -> N1
+	burstFrames = frames.InitAbilSlice(55) // Q -> Aim/W
+	burstFrames[action.ActionAttack] = 48  // Q -> N1
 	burstFrames[action.ActionSkill] = 53   // Q -> Skill
-	burstFrames[action.ActionAim] = 55     // Q -> Aim
 	burstFrames[action.ActionDash] = 54    // Q -> D
 	burstFrames[action.ActionJump] = 54    // Q -> J
-	burstFrames[action.ActionWalk] = 55    // Q -> W
 	burstFrames[action.ActionSwap] = 36    // Q -> Swap
 }
 

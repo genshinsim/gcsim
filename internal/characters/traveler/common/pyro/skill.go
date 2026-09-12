@@ -45,12 +45,12 @@ func init() {
 	skillFrames[0][action.ActionJump] = 31
 	skillFrames[0][action.ActionSwap] = 48
 	// Hold
-	skillHoldFrames[0] = frames.InitAbilSlice(77) // E -> E
+	skillHoldFrames[0] = frames.InitAbilSlice(81) // E -> W
 	skillHoldFrames[0][action.ActionAttack] = 61
 	skillHoldFrames[0][action.ActionBurst] = 59
+	skillHoldFrames[0][action.ActionSkill] = 77
 	skillHoldFrames[0][action.ActionDash] = 60
 	skillHoldFrames[0][action.ActionJump] = 61
-	skillHoldFrames[0][action.ActionWalk] = 81
 	skillHoldFrames[0][action.ActionSwap] = 59
 
 	// Female
@@ -60,12 +60,12 @@ func init() {
 	skillFrames[1][action.ActionJump] = 31
 	skillFrames[1][action.ActionSwap] = 48
 	// Hold
-	skillHoldFrames[1] = frames.InitAbilSlice(77) // E -> E
+	skillHoldFrames[1] = frames.InitAbilSlice(81) // E -> W
 	skillHoldFrames[1][action.ActionAttack] = 61
 	skillHoldFrames[1][action.ActionBurst] = 59
+	skillHoldFrames[1][action.ActionSkill] = 77
 	skillHoldFrames[1][action.ActionDash] = 60
 	skillHoldFrames[1][action.ActionJump] = 61
-	skillHoldFrames[1][action.ActionWalk] = 81
 	skillHoldFrames[1][action.ActionSwap] = 59
 }
 

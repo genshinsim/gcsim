@@ -25,12 +25,12 @@ const (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(31) // E -> N
+	skillFrames = frames.InitAbilSlice(589 + 42) // E -> Swap, wait for nightsoul to run out and fall onto the ground
+	skillFrames[action.ActionAttack] = 31
 	skillFrames[action.ActionCharge] = 28
 	skillFrames[action.ActionSkill] = 17
 	skillFrames[action.ActionBurst] = 5
 	skillFrames[action.ActionDash] = 28
-	skillFrames[action.ActionSwap] = 589 + 42 // wait for nightsoul to run out and fall onto the ground
 
 	skillCancelFrames = frames.InitAbilSlice(44) // E -> Jump
 	skillCancelFrames[action.ActionAttack] = 43

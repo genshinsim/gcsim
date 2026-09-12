@@ -46,11 +46,11 @@ const (
 func init() {
 	skillFrames = frames.InitAbilSlice(12 + skillWindup) // E -> E
 
-	skillCancelFrames = frames.InitAbilSlice(43) // E -> E -> N1
+	skillCancelFrames = frames.InitAbilSlice(48) // E -> E -> J
+	skillCancelFrames[action.ActionAttack] = 43  // E -> E -> N1
 	skillCancelFrames[action.ActionAim] = 42     // E -> E -> Aim
 	skillCancelFrames[action.ActionBurst] = 42   // E -> E -> Q
 	skillCancelFrames[action.ActionDash] = 41    // E -> E -> D
-	skillCancelFrames[action.ActionJump] = 48    // E -> E -> J
 	skillCancelFrames[action.ActionWalk] = 44    // E -> E -> W
 	skillCancelFrames[action.ActionSwap] = 41    // E -> E -> Swap
 }

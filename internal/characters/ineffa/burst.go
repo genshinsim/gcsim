@@ -16,11 +16,11 @@ const (
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(127)
+	burstFrames = frames.InitAbilSlice(130) // Q -> W
+	burstFrames[action.ActionAttack] = 127
 	burstFrames[action.ActionSkill] = 127
 	burstFrames[action.ActionDash] = 105
 	burstFrames[action.ActionJump] = 106
-	burstFrames[action.ActionWalk] = 130
 	burstFrames[action.ActionSwap] = 126
 }
 

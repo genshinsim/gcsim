@@ -36,9 +36,8 @@ func init() {
 	attackFrames[2][action.ActionAttack] = 39                                // N3 -> N4
 	attackFrames[2][action.ActionCharge] = 39                                // N3 -> CA
 
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 62) // N4 -> W
-	attackFrames[3][action.ActionAttack] = 71                                // N4 -> N1
-	attackFrames[3][action.ActionCharge] = 500                               // TODO: this action is illegal; need better way to handle it
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 71) // N4 -> W
+	attackFrames[3][action.ActionWalk] = 62                                  // N4 -> Walk
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {

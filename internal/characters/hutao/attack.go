@@ -50,27 +50,25 @@ func init() {
 	attackFrames[4][action.ActionAttack] = 37
 
 	attackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5][0], 72)
-	attackFrames[5][action.ActionCharge] = 500 // TODO: this action is illegal; need better way to handle it
 
 	ppAttackFrames = make([][]int, normalHitNum)
 
-	ppAttackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 20)
+	ppAttackFrames[0] = frames.InitNormalCancelSlice(ppAttackHitmarks[0][0], 20)
 	ppAttackFrames[0][action.ActionAttack] = 14
 
-	ppAttackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 16)
+	ppAttackFrames[1] = frames.InitNormalCancelSlice(ppAttackHitmarks[1][0], 16)
 	ppAttackFrames[1][action.ActionAttack] = 12
 
-	ppAttackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 26)
+	ppAttackFrames[2] = frames.InitNormalCancelSlice(ppAttackHitmarks[2][0], 26)
 	ppAttackFrames[2][action.ActionCharge] = 23
 
-	ppAttackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 31)
+	ppAttackFrames[3] = frames.InitNormalCancelSlice(ppAttackHitmarks[3][0], 31)
 	ppAttackFrames[3][action.ActionAttack] = 29
 
-	ppAttackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][1], 48)
+	ppAttackFrames[4] = frames.InitNormalCancelSlice(ppAttackHitmarks[4][1], 48)
 	ppAttackFrames[4][action.ActionAttack] = 36
 
-	ppAttackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5][0], 72)
-	ppAttackFrames[5][action.ActionCharge] = 500 // TODO: this action is illegal; need better way to handle it
+	ppAttackFrames[5] = frames.InitNormalCancelSlice(ppAttackHitmarks[5][0], 72)
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {

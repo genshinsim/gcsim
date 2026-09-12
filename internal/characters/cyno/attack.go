@@ -35,7 +35,6 @@ func init() {
 	attackFrames[2][action.ActionCharge] = 26
 
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 58) // N4 -> N1
-	attackFrames[3][action.ActionCharge] = 500                               // impossible action
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
@@ -123,7 +122,6 @@ func init() {
 	attackBFrames[3][action.ActionAttack] = 27
 
 	attackBFrames[4] = frames.InitNormalCancelSlice(attackBHitmarks[4][0], 62) // N5 -> N1
-	attackBFrames[4][action.ActionCharge] = 500                                // illegal action
 }
 
 func (c *char) attackB() (action.Info, error) {

@@ -3,8 +3,11 @@ package barbara
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
+	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -30,6 +33,13 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	w.Character = &c
 	return nil
+}
+
+func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
+	if a == action.ActionCharge && c.Core.Player.LastAction.Type == action.ActionAttack && c.Core.Player.ActiveChar().NormalCounter == 0 {
+		return player.ErrInvalidChargeAction
+	}
+	return c.Character.NextQueueItemIsValid(k, a, p)
 }
 
 func (c *char) Init() error {

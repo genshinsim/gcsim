@@ -287,21 +287,16 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 			if next == action.ActionCharge {
 				nextSlash := curSlash.Next(c.Tags[strStackKey], c.c6Proc)
-				switch nextSlash {
-				// handle CA1/CA2 -> CAF frames
-				case FinalSlash:
+				if nextSlash == FinalSlash {
+					// handle CA1/CA2 -> CAF frames
 					switch curSlash {
 					case LeftSlash: // CA1 -> CAF
 						f = 60
 					case RightSlash: // CA2 -> CAF
 						f = 32
 					}
-				// handle CA0 -> CA0 frames
-				case SaichiSlash:
-					if curSlash == SaichiSlash {
-						f = 500
-					}
 				}
+				// CA0 -> CA0 is prevented by NextQueueItemIsValid
 			}
 
 			return frames.AtkSpdAdjust(f-windup, atkspd)

@@ -70,8 +70,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	return action.Info{
 		Frames:          c.newAttackFunc(attackFrames, windup),
-		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter],
+		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction] + windup,
+		CanQueueAfter:   attackHitmarks[c.NormalCounter] + windup,
 		State:           action.NormalAttackState,
 	}, nil
 }

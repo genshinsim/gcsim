@@ -31,7 +31,8 @@ docs:
       count_credit: yamitoka
       video: https://www.youtube.com/watch?v=sE5sGTOrQYU
       video_credit: yamitoka
-
+  issues:
+    - Doing Mualani E-> Shark Bite -> Swap will trigger 2 or 3 yelan/xq waves. In game it only does 1. Do Mualani E -> Shark Bite -> Walk -> Swap to workaround this issue.
 abilities:
   - name: attack
     params:
@@ -77,7 +78,7 @@ abilities:
         center: Player
         offset: [0, 0.9]
         box: [0, 1]
-        hitlag: {scale: 0.01, defense_halt: true, deployable: true}
+        hitlag: { scale: 0.01, defense_halt: true, deployable: true }
 
   - name: burst
     params:

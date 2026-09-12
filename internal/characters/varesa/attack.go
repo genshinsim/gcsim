@@ -14,6 +14,7 @@ import (
 var (
 	attackFrames          [][]int
 	attackHitmarks        = []int{23, 7, 33}
+	attackCQA             = []int{23, 7, 32}
 	attackHitlagHaltFrame = []float64{0, 0, 0.03}
 	attackHitlagFactor    = []float64{0, 0, 0.01}
 	attackHitboxes        = [][]float64{{2.5, 2.5}, {2.8, 3.5}, {2.5}}
@@ -21,6 +22,7 @@ var (
 
 	fieryAttackFrames   [][]int
 	fieryAttackHitmarks = []int{17, 29, 37}
+	fieryAttackCQA      = []int{17, 25, 37}
 	fieryAttackHitboxes = [][]float64{{2.5}, {4, 4}, {4, 4.5}}
 	fieryAttackOffsets  = []float64{1, -0.5, -0.5}
 )
@@ -116,7 +118,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          func(next action.Action) int { return attackFrames[normalCounter][next] - windup },
 		AnimationLength: attackFrames[normalCounter][action.InvalidAction] - windup,
-		CanQueueAfter:   attackHitmarks[normalCounter] - windup,
+		CanQueueAfter:   attackCQA[normalCounter] - windup,
 		State:           action.NormalAttackState,
 	}, nil
 }
@@ -174,7 +176,7 @@ func (c *char) fieryAttack() action.Info {
 	return action.Info{
 		Frames:          func(next action.Action) int { return fieryAttackFrames[normalCounter][next] - windup },
 		AnimationLength: fieryAttackFrames[normalCounter][action.InvalidAction] - windup,
-		CanQueueAfter:   fieryAttackHitmarks[normalCounter] - windup,
+		CanQueueAfter:   fieryAttackCQA[normalCounter] - windup,
 		State:           action.NormalAttackState,
 	}
 }

@@ -35,9 +35,10 @@ const (
 
 func init() {
 	// Tap E
-	skillPressFrames = frames.InitAbilSlice(44) // Tap E -> N1/D
+	skillPressFrames = frames.InitAbilSlice(45) // Tap E -> J
+	skillPressFrames[action.ActionAttack] = 44  // Tap E -> N1
 	skillPressFrames[action.ActionBurst] = 43   // Tap E -> Q
-	skillPressFrames[action.ActionJump] = 45    // Tap E -> J
+	skillPressFrames[action.ActionDash] = 44    // Tap E -> ND
 	skillPressFrames[action.ActionSwap] = 42    // Tap E -> Swap
 
 	// Short Hold E

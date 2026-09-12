@@ -39,7 +39,6 @@ func init() {
 
 	// N4 -> x
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 60)
-	attackFrames[3][action.ActionCharge] = 500 // TODO: this action is illegal; need better way to handle it
 	attackFrames[3][action.ActionDash] = 2
 	attackFrames[3][action.ActionJump] = 3
 	attackFrames[3][action.ActionSwap] = 2
@@ -97,7 +96,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter],
+		CanQueueAfter:   attackFrames[c.NormalCounter][action.ActionDash],
 		State:           action.NormalAttackState,
 	}, nil
 }

@@ -43,7 +43,7 @@ var (
 )
 
 const (
-	chargeHitmark                = 40
+	chargeHitmark                = 79
 	bikeChargeAttackICD          = 42  // Minimum time between CA hits
 	bikeChargeAttackSpinFrames   = 45  // One revolution every ~45f
 	bikeChargeAttackHitboxRadius = 3   // Placeholder
@@ -53,12 +53,13 @@ const (
 )
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(48)
-	chargeFrames[action.ActionBurst] = 50
+	chargeFrames = frames.InitAbilSlice(99)
+	chargeFrames[action.ActionAttack] = 98
+	chargeFrames[action.ActionCharge] = 98
 	chargeFrames[action.ActionDash] = chargeHitmark
 	chargeFrames[action.ActionJump] = chargeHitmark
-	chargeFrames[action.ActionSwap] = 50
-	chargeFrames[action.ActionWalk] = 60
+	chargeFrames[action.ActionSkill] = 98 // TODO 99 for tap E, 97 for hold E, 97 for recast E
+	chargeFrames[action.ActionWalk] = 98
 
 	// These static counts are rarely used. Zero values will cancel on the dynamic hitmark. Actions not listed will queue into CAF
 	bikeChargeFrames = frames.InitAbilSlice(bikeChargeAttackMinimumDuration + bikeChargeFinalHitmark)

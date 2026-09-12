@@ -17,6 +17,9 @@
   "lauma": [
     "Spirit envoy state jump is not implemented."
   ],
+  "mualani": [
+    "Doing Mualani E-> Shark Bite -> Swap will trigger 2 or 3 yelan/xq waves. In game it only does 1. Do Mualani E -> Shark Bite -> Walk -> Swap to workaround this issue."
+  ],
   "xianyun": [
     "Not all characters can plunge after a Adeptal Assistance boosted jump"
   ]

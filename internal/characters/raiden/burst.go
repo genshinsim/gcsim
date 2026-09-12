@@ -22,7 +22,6 @@ const (
 func init() {
 	burstFrames = frames.InitAbilSlice(112) // Q -> J
 	burstFrames[action.ActionAttack] = 111  // Q -> N1
-	burstFrames[action.ActionCharge] = 500  // TODO: this action is illegal
 	burstFrames[action.ActionSkill] = 111   // Q -> E
 	burstFrames[action.ActionDash] = 111    // Q -> D
 	burstFrames[action.ActionSwap] = 110    // Q -> Swap

@@ -24,8 +24,8 @@ func init() {
 	skillPressFrames = make([][]int, 2)
 
 	// Male
-	skillPressFrames[0] = frames.InitAbilSlice(74) // Tap E -> N1
-	skillPressFrames[0][action.ActionBurst] = 76   // Tap E -> Q
+	skillPressFrames[0] = frames.InitAbilSlice(76) // Tap E -> Q
+	skillPressFrames[0][action.ActionAttack] = 74  // Tap E -> N1
 	skillPressFrames[0][action.ActionDash] = 30    // Tap E -> D
 	skillPressFrames[0][action.ActionJump] = 31    // Tap E -> J
 	skillPressFrames[0][action.ActionSwap] = 66    // Tap E -> Swap

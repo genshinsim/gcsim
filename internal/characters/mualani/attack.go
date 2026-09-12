@@ -17,6 +17,7 @@ const normalHitNum = 3
 var (
 	attackFrames   [][]int
 	attackHitmarks = []int{11, 9, 31}
+	attackCQA      = []int{11, 8, 31}
 
 	sharkBiteFrames      [][]int
 	sharkBiteHitmarks    = []int{7, 7, 7, 42}
@@ -108,7 +109,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackFrames[c.NormalCounter][action.ActionSwap],
+		CanQueueAfter:   attackCQA[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}, nil
 }
@@ -188,8 +189,10 @@ func (c *char) sharkBite(p map[string]int) action.Info {
 		minAction = action.ActionDash
 	}
 	return action.Info{
-		Frames:          frames.NewAbilFunc(sharkBiteFrames[momentumStacks]),
-		AnimationLength: sharkBiteFrames[momentumStacks][action.WalkState], // shorter animation state so that a single bite doesn't make 3 yelan/xq waves. In game it only does 1.
+		Frames: frames.NewAbilFunc(sharkBiteFrames[momentumStacks]),
+		// TODO: This triggers 3 yelan/XQ waves if the next action is swap. In game it should only trigger 1
+		// Need add method to return animations as a slice
+		AnimationLength: sharkBiteFrames[momentumStacks][action.InvalidAction],
 		CanQueueAfter:   sharkBiteFrames[momentumStacks][minAction],
 		State:           action.NormalAttackState,
 	}

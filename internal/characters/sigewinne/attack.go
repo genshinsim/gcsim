@@ -27,8 +27,8 @@ func init() {
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 40) // N2 -> Walk
 	attackFrames[1][action.ActionAttack] = 36
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 67) // N3 -> Walk
-	attackFrames[2][action.ActionAttack] = 82
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 82) // N3 -> Attack
+	attackFrames[2][action.ActionWalk] = 67
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {

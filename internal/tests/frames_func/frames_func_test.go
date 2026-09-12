@@ -21,7 +21,7 @@ import (
 )
 
 // purpose of this test is to check that characters abilities have correct can queue after
-func TestCanQueue(t *testing.T) {
+func TestFramesFunc(t *testing.T) {
 	baseActions := [][]action.Action{
 		{action.ActionSkill},
 		{action.ActionSkill},
@@ -34,16 +34,17 @@ func TestCanQueue(t *testing.T) {
 		{action.ActionAim},
 		{action.ActionAim},
 		{action.ActionAim},
+		{action.ActionAttack, action.ActionAttack, action.ActionAttack, action.ActionAttack, action.ActionAttack, action.ActionAttack},
 		{action.ActionSkill, action.ActionSkill},
 		{action.ActionSkill, action.ActionBurst},
-		{action.ActionSkill, action.ActionAttack},
+		{action.ActionSkill, action.ActionAttack, action.ActionAttack, action.ActionAttack, action.ActionAttack, action.ActionAttack, action.ActionAttack},
 		{action.ActionSkill, action.ActionDash},
 		{action.ActionSkill, action.ActionJump},
 		{action.ActionSkill, action.ActionAttack, action.ActionCharge},
 		{action.ActionSkill, action.ActionAim},
 		{action.ActionBurst, action.ActionSkill},
 		{action.ActionBurst, action.ActionBurst},
-		{action.ActionBurst, action.ActionAttack},
+		{action.ActionBurst, action.ActionAttack, action.ActionAttack, action.ActionAttack, action.ActionAttack, action.ActionAttack, action.ActionAttack},
 		{action.ActionBurst, action.ActionDash},
 		{action.ActionBurst, action.ActionJump},
 		{action.ActionBurst, action.ActionAttack, action.ActionCharge},
@@ -64,16 +65,17 @@ func TestCanQueue(t *testing.T) {
 		{map[string]int{"hold": 0}},
 		{map[string]int{"hold": 1}},
 		{map[string]int{"hold": 2}},
+		{emptyParams, emptyParams, emptyParams, emptyParams, emptyParams, emptyParams},
 		{emptyParams, emptyParams},
 		{emptyParams, emptyParams},
-		{emptyParams, emptyParams},
+		{emptyParams, emptyParams, emptyParams, emptyParams, emptyParams, emptyParams, emptyParams},
 		{emptyParams, emptyParams},
 		{emptyParams, emptyParams},
 		{emptyParams, emptyParams, emptyParams},
 		{emptyParams, emptyParams},
 		{emptyParams, emptyParams},
 		{emptyParams, emptyParams},
-		{emptyParams, emptyParams},
+		{emptyParams, emptyParams, emptyParams, emptyParams, emptyParams, emptyParams, emptyParams},
 		{emptyParams, emptyParams},
 		{emptyParams, emptyParams},
 		{emptyParams, emptyParams, emptyParams},
@@ -85,12 +87,12 @@ func TestCanQueue(t *testing.T) {
 		_ = copy(actions, baseActions)
 		// insert character specific combos, params
 		for i, a := range actions {
-			testQueue(t, k, a, baseParams[i])
+			testFramesFunc(t, k, a, baseParams[i])
 		}
 	}
 }
 
-func testQueue(t *testing.T, k keys.Char, acts []action.Action, params []map[string]int) {
+func testFramesFunc(t *testing.T, k keys.Char, acts []action.Action, params []map[string]int) {
 	c, trg := makeCore(2)
 	prof := testhelper.DefaultProfile(k, keys.DullBlade)
 	prof.Base.Cons = 6
@@ -122,7 +124,6 @@ func testQueue(t *testing.T, k keys.Char, acts []action.Action, params []map[str
 			case errors.Is(err, player.ErrActionNotReady):
 			case errors.Is(err, player.ErrPlayerNotReady):
 			case errors.Is(err, player.ErrActionNoOp):
-				break
 			default:
 				t.Errorf("unexpected error waiting for action to be ready: %v", err)
 				t.FailNow()
@@ -140,6 +141,11 @@ func testQueue(t *testing.T, k keys.Char, acts []action.Action, params []map[str
 		}
 		c.Player.SetActionUsed(c.Player.Active(), a, &evt)
 		for act := range action.EndActionType {
+			if evt.Frames(act) > evt.AnimationLength {
+				t.Errorf("character %s action %s params: %v AnimationLength (%d) is smaller than the output of evt.Frames[%s] (%d). Action sequence: %s", c.Player.ActiveChar().Base.Key.String(), a, p, evt.AnimationLength, act.String(), evt.Frames(act), acts[:i+1])
+				break
+			}
+
 			// Normal attacks trigger this panic when there is atkspd
 			if evt.State == action.NormalAttackState && c.Player.ActiveChar().Stat(attributes.AtkSpd) > 0 {
 				break
@@ -149,8 +155,9 @@ func testQueue(t *testing.T, k keys.Char, acts []action.Action, params []map[str
 			if evt.State == action.ChargeAttackState && c.Player.ActiveChar().Stat(attributes.AtkSpd) > 0 {
 				break
 			}
+
 			if evt.Frames(act) < evt.CanQueueAfter {
-				t.Errorf("character %s action %s params: %v CanQueueAfter (%d) is larger than the output of evt.Frames[%s] (%d). Action sequence: %s", c.Player.ActiveChar().Base.Key.String(), a, p, evt.CanQueueAfter, act.String(), evt.Frames(act), acts)
+				t.Errorf("character %s action %s params: %v CanQueueAfter (%d) is larger than the output of evt.Frames[%s] (%d). Action sequence: %s", c.Player.ActiveChar().Base.Key.String(), a, p, evt.CanQueueAfter, act.String(), evt.Frames(act), acts[:i+1])
 				break
 			}
 		}

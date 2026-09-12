@@ -14,13 +14,13 @@ var dashFrames []int
 const dashHitmark = 20
 
 func init() {
-	dashFrames = frames.InitAbilSlice(42) // D -> N1
-	dashFrames[action.ActionCharge] = 36  // D -> CA
-	dashFrames[action.ActionSkill] = 35   // D -> E
-	dashFrames[action.ActionBurst] = 21   // D -> Q
-	dashFrames[action.ActionDash] = 30    // D -> D
-	dashFrames[action.ActionJump] = 500   // D -> J, TODO: this action is illegal; need better way to handle it
-	dashFrames[action.ActionSwap] = 34    // D -> Swap
+	dashFrames = frames.InitAbilSlice(500) // D -> J, TODO: this action is illegal; need better way to handle it
+	dashFrames[action.ActionAttack] = 42   // D -> N1
+	dashFrames[action.ActionCharge] = 36   // D -> CA
+	dashFrames[action.ActionSkill] = 35    // D -> E
+	dashFrames[action.ActionBurst] = 21    // D -> Q
+	dashFrames[action.ActionDash] = 30     // D -> D
+	dashFrames[action.ActionSwap] = 34     // D -> Swap
 }
 
 func (c *char) Dash(p map[string]int) (action.Info, error) {

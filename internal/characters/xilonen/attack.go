@@ -45,7 +45,6 @@ func init() {
 
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 70)
 	attackFrames[2][action.ActionAttack] = 57
-	attackFrames[2][action.ActionCharge] = 500 // TODO: this action is illegal; need better way to handle it
 
 	rollerFrames = make([][]int, rollerHitNum)
 

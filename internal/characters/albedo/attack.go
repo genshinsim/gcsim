@@ -25,20 +25,19 @@ const normalHitNum = 5
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 
-	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 14) // N1 -> N2
-	attackFrames[0][action.ActionCharge] = 23                             // N1 -> CA
+	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 23) // N1 -> CA
+	attackFrames[0][action.ActionAttack] = 14                             // N1 -> N2
 
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 22) // N2 -> N3
 	attackFrames[1][action.ActionCharge] = 21                             // N2 -> CA
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 32) // N3 -> N4
-	attackFrames[2][action.ActionCharge] = 41                             // N3 -> CA
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 41) // N3 -> CA
+	attackFrames[2][action.ActionAttack] = 32                             // N3 -> N4
 
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 34) // N4 -> N5
-	attackFrames[3][action.ActionCharge] = 36                             // N4 -> CA
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 36) // N4 -> CA
+	attackFrames[3][action.ActionAttack] = 34                             // N4 -> N5
 
-	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[3], 62) // N5 -> N1
-	attackFrames[4][action.ActionCharge] = 500                            // TODO: this action is illegal; need better way to handle it
+	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4], 62) // N5 -> N1
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {

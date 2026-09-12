@@ -39,10 +39,9 @@ func init() {
 	attackFrames[attack0Stacks][2] = frames.InitNormalCancelSlice(attackHitmarks[2], 57) // N3 -> CA0
 	attackFrames[attack0Stacks][3] = frames.InitNormalCancelSlice(attackHitmarks[3], 83) // N4 -> N1
 
-	attackFrames[attack0Stacks][0][action.ActionAttack] = 33  // N1 -> N2
-	attackFrames[attack0Stacks][1][action.ActionAttack] = 36  // N2 -> N3
-	attackFrames[attack0Stacks][2][action.ActionAttack] = 43  // N3 -> N4
-	attackFrames[attack0Stacks][3][action.ActionCharge] = 500 // N4 -> CA0, TODO: this action is illegal; need better way to handle it
+	attackFrames[attack0Stacks][0][action.ActionAttack] = 33 // N1 -> N2
+	attackFrames[attack0Stacks][1][action.ActionAttack] = 36 // N2 -> N3
+	attackFrames[attack0Stacks][2][action.ActionAttack] = 43 // N3 -> N4
 
 	attackFrames[attack1PlusStacks] = make([][]int, normalHitNum)
 	attackFrames[attack1PlusStacks][0] = frames.InitNormalCancelSlice(attackHitmarks[0], 33) // N1 -> N2

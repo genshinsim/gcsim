@@ -42,7 +42,6 @@ func init() {
 	attackFrames[0][3][action.ActionAttack] = 39                                // N4 -> N5
 
 	attackFrames[0][4] = frames.InitNormalCancelSlice(attackHitmarks[0][4], 69) // N5 -> N1
-	attackFrames[0][4][action.ActionCharge] = 500                               // N5 -> CA, TODO: this action is illegal; need better way to handle it
 
 	// Female
 	attackFrames[1] = make([][]int, normalHitNum)
@@ -60,7 +59,6 @@ func init() {
 	attackFrames[1][3][action.ActionAttack] = 38                                // N4 -> N5
 
 	attackFrames[1][4] = frames.InitNormalCancelSlice(attackHitmarks[1][4], 64) // N5 -> N1
-	attackFrames[1][4][action.ActionCharge] = 500                               // N5 -> CA, TODO: this action is illegal; need better way to handle it
 }
 
 func (c *Traveler) Attack(p map[string]int) (action.Info, error) {

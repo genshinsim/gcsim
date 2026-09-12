@@ -39,7 +39,6 @@ func init() {
 	attackFrames[3][action.ActionAttack] = 45                                // N1 -> N2
 
 	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 67) // N5 -> N1
-	attackFrames[4][action.ActionCharge] = 500                               // N5 -> CA, TODO: this action is illegal; need better way to handle it
 }
 
 // Normal attack damage queue generator

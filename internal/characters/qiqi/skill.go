@@ -17,10 +17,11 @@ const (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(57) // E -> N1/Swap
-	skillFrames[action.ActionBurst] = 58   // E -> Q
+	skillFrames = frames.InitAbilSlice(58) // E -> Q
+	skillFrames[action.ActionAttack] = 57  // E -> N1
 	skillFrames[action.ActionDash] = 6     // E -> D
 	skillFrames[action.ActionJump] = 5     // E -> J
+	skillFrames[action.ActionSwap] = 57    // E -> Swap
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {

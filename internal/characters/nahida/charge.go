@@ -14,10 +14,13 @@ var chargeFrames []int
 const chargeHitmark = 65
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(65)
+	chargeFrames = frames.InitAbilSlice(69) // CA -> W
+	chargeFrames[action.ActionAttack] = 65
+	chargeFrames[action.ActionCharge] = 65
+	chargeFrames[action.ActionSkill] = 65
+	chargeFrames[action.ActionBurst] = 64
 	chargeFrames[action.ActionDash] = 21
 	chargeFrames[action.ActionJump] = 21
-	chargeFrames[action.ActionWalk] = 69
 	chargeFrames[action.ActionSwap] = 21
 }
 

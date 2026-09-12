@@ -11,6 +11,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -174,4 +176,16 @@ func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 		return 27
 	}
 	return c.Character.AnimationStartDelay(k)
+}
+
+func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
+	// N4 -> CA0 is illegal
+	if a == action.ActionCharge && c.Core.Player.LastAction.Type == action.ActionAttack && c.Core.Player.ActiveChar().NormalCounter == 0 && c.attackState() == attack0Stacks {
+		return player.ErrInvalidChargeAction
+	}
+
+	if a == action.ActionCharge && c.slashState == SaichiSlash && c.slashState.Next(c.Tags[strStackKey], c.c6Proc) == SaichiSlash {
+		return fmt.Errorf("%v: Saichi Slash into Saichi Slash is invalid", c.Base.Key.String())
+	}
+	return c.Character.NextQueueItemIsValid(k, a, p)
 }

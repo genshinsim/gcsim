@@ -18,11 +18,11 @@ var skillFrames []int
 const skillRelease = 20 // release frame for the Bomb, travel comes on top, bomb_delay comes on top afterwards
 
 func init() {
-	skillFrames = frames.InitAbilSlice(49) // E -> Dash
+	skillFrames = frames.InitAbilSlice(66) // E -> Swap
 	skillFrames[action.ActionAttack] = 47  // E -> N1
 	skillFrames[action.ActionBurst] = 48   // E -> Q
 	skillFrames[action.ActionJump] = 47    // E -> J
-	skillFrames[action.ActionSwap] = 66    // E -> Swap
+	skillFrames[action.ActionDash] = 49    // E -> D
 }
 
 const (

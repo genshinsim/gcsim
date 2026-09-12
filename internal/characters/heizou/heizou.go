@@ -74,9 +74,10 @@ func (c *char) Condition(fields []string) (any, error) {
 
 func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
 	// cannot use charge without attack beforehand unlike most of the other catalyst users
-	if a == action.ActionCharge && c.Core.Player.LastAction.Type != action.ActionAttack {
+	if a == action.ActionCharge && c.NormalCounter == 0 {
 		return player.ErrInvalidChargeAction
 	}
+
 	return c.Character.NextQueueItemIsValid(k, a, p)
 }
 

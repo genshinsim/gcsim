@@ -42,7 +42,6 @@ func init() {
 	attackFrames[3][action.ActionAttack] = 27                                // N4 -> N5
 
 	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 63) // N5 -> N1
-	attackFrames[4][action.ActionCharge] = 500                               // N5 -> CA, TODO: this action is illegal; need better way to handle it
 
 	// NA (in skill) -> x
 	shunsuikenFrames = frames.InitNormalCancelSlice(shunsuikenHitmark, 23)

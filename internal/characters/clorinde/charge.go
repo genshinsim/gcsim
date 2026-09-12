@@ -16,9 +16,10 @@ var (
 )
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(44) // CA -> E
+	chargeFrames = frames.InitAbilSlice(68) // CA -> Q/E
 	chargeFrames[action.ActionAttack] = 66
-	chargeFrames[action.ActionBurst] = 67
+	chargeFrames[action.ActionJump] = chargeHitmark
+	chargeFrames[action.ActionDash] = chargeHitmark
 	chargeFrames[action.ActionSwap] = 45
 }
 
