@@ -9,7 +9,6 @@
 		"@blueprintjs/select": "^4.8.4",
 		"@fontsource/fira-mono": "^4.5.10",
 		"@gcsim/components": "workspace:^",
-		"@gcsim/db": "workspace:^",
 		"@gcsim/executors": "workspace:^",
 		"@gcsim/localization": "workspace:^",
 		"@gcsim/types": "workspace:^",

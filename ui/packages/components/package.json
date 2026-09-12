@@ -9,7 +9,6 @@
 		"@gcsim/data": "workspace:^",
 		"@gcsim/localization": "workspace:^",
 		"@gcsim/types": "workspace:^",
-		"@gcsim/ui": "workspace:^",
 		"@radix-ui/react-icons": "^1.3.0",
 		"@radix-ui/react-separator": "^1.0.3",
 		"@radix-ui/react-slot": "^1.0.2",

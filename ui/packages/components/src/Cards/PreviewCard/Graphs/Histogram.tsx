@@ -1,8 +1,7 @@
 import type { model } from "@gcsim/types";
-import { NoDataIcon } from "@gcsim/ui/src/Pages/Viewer/Components/Util/NoData";
 import { Group } from "@visx/group";
 import { ParentSize } from "@visx/responsive";
-import { Colors } from "../../../common/gcsim";
+import { Colors, NoDataIcon } from "../../../common/gcsim";
 import { useScales } from "../../DistributionCard/HistogramGraph";
 
 type Props = {
