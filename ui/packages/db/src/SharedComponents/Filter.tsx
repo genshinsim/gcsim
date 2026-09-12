@@ -46,6 +46,7 @@ export function Filter() {
 	return (
 		<div>
 			<button
+				type="button"
 				className="flex flex-row gap-2 bp4-button justify-center items-center p-3 bp4-intent-primary h-12 w-12"
 				onClick={() => setIsOpen(!isOpen)}
 			>
@@ -96,6 +97,7 @@ function ClearFilterButton() {
 	const dispatch = useContext(FilterDispatchContext);
 	return (
 		<button
+			type="button"
 			className="bp4-button bp4-intent-danger bp4-small  "
 			onClick={() => dispatch({ type: "clearFilter" })}
 		>
@@ -122,6 +124,7 @@ function TagFilter() {
 	return (
 		<div className="w-full  overflow-x-hidden no-scrollbar">
 			<button
+				type="button"
 				className=" bp4-button bp4-intent-primary w-full flex-row flex justify-between items-center "
 				onClick={() => setTagIsOpen(!tagIsOpen)}
 			>
@@ -191,6 +194,7 @@ function CharacterFilter() {
 	return (
 		<div className="w-full  overflow-x-hidden no-scrollbar">
 			<button
+				type="button"
 				className=" bp4-button bp4-intent-primary w-full flex-row flex justify-between items-center "
 				onClick={() => setCharIsOpen(!charIsOpen)}
 			>
@@ -248,6 +252,7 @@ function CharFilterButton({ charName }: { charName: string }) {
 		case ItemFilterState.include:
 			return (
 				<button
+					type="button"
 					className={"bp4-button bp4-intent-success block"}
 					onClick={handleClick}
 				>
@@ -257,6 +262,7 @@ function CharFilterButton({ charName }: { charName: string }) {
 		case ItemFilterState.exclude:
 			return (
 				<button
+					type="button"
 					className={"bp4-button bp4-intent-danger block"}
 					onClick={handleClick}
 				>
@@ -266,7 +272,11 @@ function CharFilterButton({ charName }: { charName: string }) {
 		case ItemFilterState.none:
 		default:
 			return (
-				<button className={"bp4-button block "} onClick={handleClick}>
+				<button
+					type="button"
+					className={"bp4-button block "}
+					onClick={handleClick}
+				>
 					<CharFilterButtonChild charName={charName} />
 				</button>
 			);
@@ -308,6 +318,7 @@ function SortBy() {
 	return (
 		<div className="w-full  overflow-x-hidden no-scrollbar">
 			<button
+				type="button"
 				className=" bp4-button bp4-intent-primary w-full flex-row flex justify-between items-center "
 				onClick={() => setSortIsOpen(!sortIsOpen)}
 			>

@@ -64,7 +64,6 @@
 				"noSvgWithoutTitle": "off",
 				"noStaticElementInteractions": "off",
 				"useAltText": "off",
-				"useButtonType": "off",
 				"useValidAnchor": "off",
 				"useAnchorContent": "off",
 				"useKeyWithClickEvents": "off"

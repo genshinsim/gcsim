@@ -88,7 +88,7 @@ function FilterDesktopPortrait({
 
 function PortraitWeaponComponent({ weapon }: { weapon?: string }) {
 	return (
-		<button className={"bp4-button"}>
+		<button type="button" className={"bp4-button"}>
 			{weapon ? (
 				<img
 					src={"https://gcsim.app/api/assets/weapons/" + weapon + ".png"}
