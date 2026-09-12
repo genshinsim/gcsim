@@ -53,7 +53,7 @@ export const CumulativeLegend = ({ names }: LegendProps) => {
 					{labels.map((label, i) => (
 						<LegendItem key={"legend-" + i}>
 							<div className="my-[2px] mr-[4px]">
-								<svg width={glpyhSize} height={glpyhSize}>
+								<svg width={glpyhSize} height={glpyhSize} aria-hidden="true">
 									<rect
 										fill={DataColorsConst.qualitative2(label.index)}
 										fillOpacity={0.5}
@@ -125,7 +125,12 @@ export const CumulativeGraph = ({
 
 	return (
 		<div className="relative">
-			<svg width={width} height={height}>
+			<svg
+				width={width}
+				height={height}
+				role="img"
+				aria-label="Cumulative damage contribution graph"
+			>
 				<Group left={margin.left} top={margin.top}>
 					<GraphGrid
 						opacity={0.35}

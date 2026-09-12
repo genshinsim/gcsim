@@ -70,7 +70,12 @@ export const PositionGraph = ({
 
 	return (
 		<div className="relative">
-			<svg width={width} height={height}>
+			<svg
+				width={width}
+				height={height}
+				role="img"
+				aria-label="Target position graph"
+			>
 				<Group left={marginLeft} top={margin.top}>
 					<GraphGrid
 						opacity={0.35}

@@ -59,7 +59,12 @@ const Graph = ({
 
 	return (
 		<div className="relative">
-			<svg width={width} height={height}>
+			<svg
+				width={width}
+				height={height}
+				role="img"
+				aria-label="Damage timeline graph"
+			>
 				<Group left={margin.left} top={margin.top}>
 					<AreaClosed
 						data={data}

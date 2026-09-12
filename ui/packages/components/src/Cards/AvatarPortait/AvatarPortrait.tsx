@@ -11,6 +11,7 @@ const WeaponImage = ({ weapon }: { weapon: model.Weapon }) => {
 				key={weapon.name}
 				width="62"
 				height="65"
+				aria-hidden="true"
 				onError={(e: React.SyntheticEvent<SVGSVGElement, Event>) => {
 					(e.target as SVGAElement).href.baseVal =
 						"/api/assets/misc/default.png";
@@ -135,6 +136,7 @@ export const AvatarPortrait = ({
 					<svg
 						width={35}
 						height={35}
+						aria-hidden="true"
 						onError={(e: React.SyntheticEvent<SVGSVGElement, Event>) => {
 							(e.target as SVGAElement).href.baseVal =
 								"/api/assets/misc/default.png";

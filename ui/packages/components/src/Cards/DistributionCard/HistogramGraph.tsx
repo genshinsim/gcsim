@@ -64,6 +64,8 @@ const Graph = ({
 			<svg
 				width={width}
 				height={height}
+				role="img"
+				aria-label="Damage distribution histogram"
 				onMouseMove={(e) => tooltipHandles.mouseHover(e, data)}
 				onMouseLeave={() => tooltipHandles.mouseLeave()}
 			>
