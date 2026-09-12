@@ -2922,6 +2922,86 @@ var WeaponMap = map[keys.Weapon]*model.WeaponData{
 			},
 		},
 	},
+	keys.CovenantOfFrostAndSnow: {
+		Id:          15436,
+		Key:         "covenantoffrostandsnow",
+		Rarity:      4,
+		WeaponClass: model.WeaponType_WEAPON_BOW,
+		ImageName:   "UI_EquipIcon_Bow_GlintstoneBow_Awaken",
+		BaseStats: &model.WeaponStatsData{
+			BaseProps: []*model.WeaponProp{
+				{
+					PropType:     model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+					InitialValue: 42.401,
+					Curve:        model.GrowCurveType_GROW_CURVE_ATTACK_201,
+				},
+				{
+					PropType:     model.FightPropType_FIGHT_PROP_DEFENSE_PERCENT,
+					InitialValue: 0.1126,
+					Curve:        model.GrowCurveType_GROW_CURVE_CRITICAL_201,
+				},
+			},
+			PromoData: []*model.PromotionData{
+				{
+					MaxLevel: 20,
+				},
+				{
+					MaxLevel: 40,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    25.9,
+						},
+					},
+				},
+				{
+					MaxLevel: 50,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    51.9,
+						},
+					},
+				},
+				{
+					MaxLevel: 60,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    77.8,
+						},
+					},
+				},
+				{
+					MaxLevel: 70,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    103.7,
+						},
+					},
+				},
+				{
+					MaxLevel: 80,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    129.7,
+						},
+					},
+				},
+				{
+					MaxLevel: 90,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    155.6,
+						},
+					},
+				},
+			},
+		},
+	},
 	keys.CranesEchoingCall: {
 		Id:          14515,
 		Key:         "cranesechoingcall",
