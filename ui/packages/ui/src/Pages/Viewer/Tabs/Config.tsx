@@ -9,7 +9,7 @@ import {
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
 import type { SimResults } from "@gcsim/types";
 import { ConfigEditor } from "@ui/Components";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router";
 import ExecutorSettingsButton from "../../../Components/Buttons/ExecutorSettingsButton";
@@ -101,10 +101,13 @@ export function useConfig(
 	const [err, setErr] = useState("");
 	const [modified, setModified] = useState<boolean>(false);
 
-	const updateCfg = (newCfg: string) => {
+	// TODO(react19): drop this useCallback and inline the function once the
+	// React Compiler is enabled — it auto-memoizes. Don't remove it before
+	// then: useExhaustiveDependencies is now an error and would fail the build.
+	const updateCfg = useCallback((newCfg: string) => {
 		setCfg(newCfg);
 		setModified(true);
-	};
+	}, []);
 
 	// reset config file every time it changes from results
 	useEffect(() => {
@@ -140,7 +143,7 @@ export function useConfig(
 			exec: exec,
 			setCfg: updateCfg,
 		};
-	}, [cfg, err, exec, isReady, modified, validated]);
+	}, [cfg, err, exec, isReady, modified, validated, updateCfg]);
 }
 
 export default React.memo(ConfigUI);

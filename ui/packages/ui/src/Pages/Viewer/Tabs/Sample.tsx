@@ -10,7 +10,7 @@ import {
 } from "@blueprintjs/core";
 import type { Sample, SimResults } from "@gcsim/types";
 import queryString from "query-string";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
 	DefaultSampleOptions,
@@ -234,10 +234,13 @@ export function useSample(
 		return DefaultSampleOptions;
 	});
 
-	const setAndStore = (val: string[]) => {
+	// TODO(react19): drop this useCallback and inline the function once the
+	// React Compiler is enabled — it auto-memoizes. Don't remove it before
+	// then: useExhaustiveDependencies is now an error and would fail the build.
+	const setAndStore = useCallback((val: string[]) => {
 		setSelected(val);
 		localStorage.setItem(SAVED_SAMPLE_KEY, JSON.stringify(val));
-	};
+	}, []);
 
 	const [sample, SetSample] = useState<Sample | undefined>(undefined);
 	const [generating, setGenerating] = useState(false);
@@ -327,5 +330,5 @@ export function useSample(
 			setSettings: setAndStore,
 			setSeed: setSeed,
 		};
-	}, [generating, parsed, sample, searchable, seed, selected]);
+	}, [generating, parsed, sample, searchable, seed, selected, setAndStore]);
 }

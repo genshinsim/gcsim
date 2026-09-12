@@ -23,6 +23,7 @@ const App = ({ id, src }: { id: string; src: string }) => {
 	);
 	const [loaded, setLoaded] = React.useState(0);
 	const [completed, setCompleted] = React.useState(false);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: mount-only fetch. The embed app is single-use — the Go embed generator opens a fresh headless page, navigates once to a single /db/:id or /sh/:id URL, and discards it; id/src never change on a mounted App, so refetching on them would be dead code.
 	React.useEffect(() => {
 		//https://gcsim.app/api/share/db/nFLhjtD9dfFN
 		const url = `/api/share/` + (src === "db" ? "db/" : "") + id;
@@ -44,7 +45,7 @@ const App = ({ id, src }: { id: string; src: string }) => {
 		if (loaded >= (data?.character_details?.length ?? 0)) {
 			setCompleted(true);
 		}
-	}, [loaded]);
+	}, [loaded, data?.character_details?.length]);
 
 	const handleOnImageLoaded = () => {
 		setLoaded(loaded + 1);

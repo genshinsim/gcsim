@@ -91,7 +91,7 @@ export default ({ running, src, error, current, total, cancel }: Props) => {
 			},
 			key.current,
 		);
-	}, [current, total, src, error, running, cancel]);
+	}, [current, total, src, error, running, cancel, t]);
 
 	return (
 		<Toaster ref={loadingToast} position={Position.TOP} className="z-50" />
