@@ -6,32 +6,32 @@ import "ace-builds/src-noconflict/theme-tomorrow_night";
 import "../../../util/mode-gcsim.dm.js";
 
 type Props = {
-  cfg: string;
-  onChange: (v: string) => void;
+	cfg: string;
+	onChange: (v: string) => void;
 };
 
 export function ActionList(props: Props) {
-  // const t = () => {
-  //   Prism.highlightElement();
-  // };
-  return (
-    <div className="p-1 md:p-2">
-      <AceEditor
-        mode="gcsim"
-        theme="tomorrow_night"
-        width="100%"
-        onChange={props.onChange}
-        value={props.cfg}
-        name="UNIQUE_ID_OF_DIV"
-        editorProps={{
-          $blockScrolling: true,
-        }}
-        setOptions={{
-          maxLines: Infinity,
-          fontSize: 14,
-          tabSize: 2,
-        }}
-      />
-    </div>
-  );
+	// const t = () => {
+	//   Prism.highlightElement();
+	// };
+	return (
+		<div className="p-1 md:p-2">
+			<AceEditor
+				mode="gcsim"
+				theme="tomorrow_night"
+				width="100%"
+				onChange={props.onChange}
+				value={props.cfg}
+				name="UNIQUE_ID_OF_DIV"
+				editorProps={{
+					$blockScrolling: true,
+				}}
+				setOptions={{
+					maxLines: Infinity,
+					fontSize: 14,
+					tabSize: 2,
+				}}
+			/>
+		</div>
+	);
 }

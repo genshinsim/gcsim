@@ -1,11 +1,11 @@
 {
-  "name": "@gcsim/localization",
-  "main": "src/index.ts",
-  "private": true,
-  "dependencies": {
-    "lodash-es": "^4.17.21"
-  },
-  "devDependencies": {
-    "@types/lodash-es": "^4"
-  }
+	"name": "@gcsim/localization",
+	"main": "src/index.ts",
+	"private": true,
+	"dependencies": {
+		"lodash-es": "^4.17.21"
+	},
+	"devDependencies": {
+		"@types/lodash-es": "^4"
+	}
 }

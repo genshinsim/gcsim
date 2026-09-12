@@ -1,15 +1,22 @@
 import { memo } from "react";
-import { Item } from "./Item";
 import { useTranslation } from "react-i18next";
+import { Item } from "./Item";
 
 type Props = {
-  modified?: boolean;
+	modified?: boolean;
 };
 
 export const Dirty = memo(({ modified }: Props) => {
-  const { t } = useTranslation();
-  if (!modified) {
-    return null;
-  }
-  return <Item value={t<string>("result.metadata_dirty")} intent="danger" bright bold />;
+	const { t } = useTranslation();
+	if (!modified) {
+		return null;
+	}
+	return (
+		<Item
+			value={t<string>("result.metadata_dirty")}
+			intent="danger"
+			bright
+			bold
+		/>
+	);
 });

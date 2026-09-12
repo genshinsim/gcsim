@@ -1,50 +1,50 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.5.13/schema.json",
-  "files": {
-    "includes": [
-      "**/*.ts",
-      "**/*.tsx",
-      "**/*.js",
-      "**/*.jsx",
-      "**/*.cjs",
-      "**/*.mjs",
-      "**/*.json",
-      "**/*.jsonc",
-      "!**/dist",
-      "!**/build",
-      "!**/.docusaurus",
-      "!**/storybook-static",
-      "!packages/types/src/generated"
-    ]
-  },
-  "formatter": {
-    "enabled": true
-  },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": true,
-      "correctness": {
-        "noUnusedVariables": {
-          "level": "warn",
-          "options": { "ignoreRestSiblings": true }
-        },
-        "noUnusedFunctionParameters": {
-          "level": "warn",
-          "options": { "ignoreRestSiblings": true }
-        }
-      },
-      "suspicious": {
-        "noTsIgnore": "off",
-        "noEmptyBlockStatements": "off"
-      }
-    }
-  },
-  "assist": {
-    "actions": {
-      "source": {
-        "organizeImports": "on"
-      }
-    }
-  }
+	"$schema": "https://biomejs.dev/schemas/2.5.13/schema.json",
+	"files": {
+		"includes": [
+			"**/*.ts",
+			"**/*.tsx",
+			"**/*.js",
+			"**/*.jsx",
+			"**/*.cjs",
+			"**/*.mjs",
+			"**/*.json",
+			"**/*.jsonc",
+			"!**/dist",
+			"!**/build",
+			"!**/.docusaurus",
+			"!**/storybook-static",
+			"!packages/types/src/generated"
+		]
+	},
+	"formatter": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"noUnusedVariables": {
+					"level": "warn",
+					"options": { "ignoreRestSiblings": true }
+				},
+				"noUnusedFunctionParameters": {
+					"level": "warn",
+					"options": { "ignoreRestSiblings": true }
+				}
+			},
+			"suspicious": {
+				"noTsIgnore": "off",
+				"noEmptyBlockStatements": "off"
+			}
+		}
+	},
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	}
 }

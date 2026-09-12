@@ -1,20 +1,15 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": [
-    "src",
-    "src/**/*.json"
-  ],
-  "compilerOptions": {
-    "baseUrl": "./",
-    // Storybook 10 ships its types behind package `exports` subpaths (e.g.
-    // `@storybook/react-vite`, `storybook/test`), which the root config's
-    // classic "Node" resolution cannot read. "Bundler" matches how Vite
-    // resolves these packages at build time.
-    "moduleResolution": "Bundler",
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    }
-  }
+	"extends": "../../tsconfig.json",
+	"include": ["src", "src/**/*.json"],
+	"compilerOptions": {
+		"baseUrl": "./",
+		// Storybook 10 ships its types behind package `exports` subpaths (e.g.
+		// `@storybook/react-vite`, `storybook/test`), which the root config's
+		// classic "Node" resolution cannot read. "Bundler" matches how Vite
+		// resolves these packages at build time.
+		"moduleResolution": "Bundler",
+		"paths": {
+			"@/*": ["./src/*"]
+		}
+	}
 }

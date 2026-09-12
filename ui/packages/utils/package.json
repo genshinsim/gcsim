@@ -1,5 +1,5 @@
 {
-  "name": "@gcsim/utils",
-  "main": "src/index.ts",
-  "private": true
+	"name": "@gcsim/utils",
+	"main": "src/index.ts",
+	"private": true
 }

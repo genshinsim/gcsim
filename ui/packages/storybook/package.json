@@ -1,42 +1,42 @@
 {
-  "name": "@gcsim/storybook",
-  "private": true,
-  "version": "0.0.0",
-  "main": "src/index.tsx",
-  "scripts": {
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
-  },
-  "dependencies": {
-    "@gcsim/components": "workspace:^",
-    "@gcsim/localization": "workspace:^",
-    "@radix-ui/react-slot": "^1.0.2",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.0",
-    "i18next": "^23.10.1",
-    "i18next-browser-languagedetector": "^7.2.0",
-    "i18next-http-backend": "^2.5.0",
-    "lodash-es": "^4.17.21",
-    "lucide-react": "^0.360.0",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-i18next": "^12.0.0",
-    "tailwind-merge": "^2.2.2",
-    "tailwindcss-animate": "^1.0.7"
-  },
-  "devDependencies": {
-    "@chromatic-com/storybook": "^5.3.1",
-    "@storybook/addon-docs": "^10.6.0",
-    "@storybook/react": "^10.6.0",
-    "@storybook/react-vite": "^10.6.0",
-    "@types/lodash-es": "^4.17.0",
-    "@types/react": "^18.2.66",
-    "@types/react-dom": "^18.2.22",
-    "@vitejs/plugin-react-swc": "^3.5.0",
-    "http-proxy-middleware": "^2.0.6",
-    "storybook": "^10.6.0",
-    "storybook-react-i18next": "^10.1.2",
-    "typescript": "^5.2.2",
-    "vite": "^5.2.0"
-  }
+	"name": "@gcsim/storybook",
+	"private": true,
+	"version": "0.0.0",
+	"main": "src/index.tsx",
+	"scripts": {
+		"storybook": "storybook dev -p 6006",
+		"build-storybook": "storybook build"
+	},
+	"dependencies": {
+		"@gcsim/components": "workspace:^",
+		"@gcsim/localization": "workspace:^",
+		"@radix-ui/react-slot": "^1.0.2",
+		"class-variance-authority": "^0.7.0",
+		"clsx": "^2.1.0",
+		"i18next": "^23.10.1",
+		"i18next-browser-languagedetector": "^7.2.0",
+		"i18next-http-backend": "^2.5.0",
+		"lodash-es": "^4.17.21",
+		"lucide-react": "^0.360.0",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"react-i18next": "^12.0.0",
+		"tailwind-merge": "^2.2.2",
+		"tailwindcss-animate": "^1.0.7"
+	},
+	"devDependencies": {
+		"@chromatic-com/storybook": "^5.3.1",
+		"@storybook/addon-docs": "^10.6.0",
+		"@storybook/react": "^10.6.0",
+		"@storybook/react-vite": "^10.6.0",
+		"@types/lodash-es": "^4.17.0",
+		"@types/react": "^18.2.66",
+		"@types/react-dom": "^18.2.22",
+		"@vitejs/plugin-react-swc": "^3.5.0",
+		"http-proxy-middleware": "^2.0.6",
+		"storybook": "^10.6.0",
+		"storybook-react-i18next": "^10.1.2",
+		"typescript": "^5.2.2",
+		"vite": "^5.2.0"
+	}
 }
