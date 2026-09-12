@@ -27,6 +27,7 @@ export default function NamesList({ item_key, data_src }) {
 		);
 	}
 	const rows = [item_key, ...data[item_key]].map((e, i) => {
+		// biome-ignore lint/suspicious/noArrayIndexKey: build-time static JSON alias strings
 		return <li key={i}>{e}</li>;
 	});
 	return (

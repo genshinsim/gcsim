@@ -23,7 +23,7 @@ export const PreviewCard = ({
 					{data.character_details?.map((c, i) => {
 						return (
 							<AvatarPortrait
-								key={"char-" + i}
+								key={c.name ?? "empty-" + i}
 								i={i}
 								char={c}
 								invalid={

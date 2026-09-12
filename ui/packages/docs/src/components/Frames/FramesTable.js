@@ -28,6 +28,7 @@ function Vid({ vid }) {
 function MultiVids({ vids }) {
 	const tabs = vids.map((e, i) => {
 		return (
+			// biome-ignore lint/suspicious/noArrayIndexKey: build-time static JSON
 			<TabItem value={i} label={`Video #${i + 1}`} key={i}>
 				<Vid vid={e} />
 			</TabItem>

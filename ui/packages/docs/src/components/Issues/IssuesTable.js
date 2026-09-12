@@ -20,6 +20,7 @@ export default function IssuesTable({ item_key, data_src }) {
 		return <div>Does not have any known issues</div>;
 	}
 	const rows = data[item_key].map((e, i) => {
+		// biome-ignore lint/suspicious/noArrayIndexKey: build-time static JSON, opaque strings
 		return <li key={i}>{e}</li>;
 	});
 	return (

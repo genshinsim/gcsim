@@ -110,7 +110,11 @@ export function ImportFromEnkaDialog(props: Props) {
 									<CustDiv i18nIsDynamicList>
 										{characters.map((e, i) => {
 											return (
-												<div key={i} className="ml-2">
+												<div
+													// biome-ignore lint/suspicious/noArrayIndexKey: character names may duplicate so index completes the composite; list is set wholesale after import, never reordered
+													key={e.name + "-" + i}
+													className="ml-2"
+												>
 													{e.name}{" "}
 													{e.enka_build_name
 														? "(" + e.enka_build_name + ")"
@@ -127,6 +131,7 @@ export function ImportFromEnkaDialog(props: Props) {
 								Encountered the following issue(s) importing data:
 								{errors.map((e, i) => {
 									return (
+										// biome-ignore lint/suspicious/noArrayIndexKey: string[] error messages, may duplicate, append-only
 										<div key={i} className="ml-2">
 											{e}
 										</div>

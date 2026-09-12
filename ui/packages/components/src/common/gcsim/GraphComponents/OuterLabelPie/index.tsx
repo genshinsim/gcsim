@@ -91,7 +91,7 @@ export default <Datum,>({
 
 								return (
 									<path
-										key={"hover-arc-" + index}
+										key={labelText?.(arc.data) ?? index}
 										d={pie.path(arc) ?? ""}
 										fill={color(arc.data)}
 										opacity={0.5}
@@ -108,7 +108,7 @@ export default <Datum,>({
 								return (
 									// biome-ignore lint/a11y/noStaticElementInteractions: mouse-only chart tooltip hover region, no interactive semantics
 									<path
-										key={"arc-" + index}
+										key={labelText?.(arc.data) ?? index}
 										d={pie.path(arc) ?? ""}
 										fill={color(arc.data)}
 										stroke={outline}

@@ -121,7 +121,8 @@ export const PositionGraph = ({
 								: 0.25;
 						return (
 							<Circle
-								key={`enemy-${i}`}
+								// biome-ignore lint/suspicious/noArrayIndexKey: name may be absent/duplicated so index completes the composite; enemy order is stable (built once in Go, never reordered)
+								key={`enemy-${e.name}-${i}`}
 								cx={xScale(e.x)}
 								cy={yScale(e.y)}
 								r={sizeScale(e.r)}
@@ -181,6 +182,7 @@ type Position = {
 	x: number;
 	y: number;
 	r: number;
+	name?: string;
 };
 
 type PositionData = {
@@ -206,7 +208,7 @@ function useData(enemies?: Enemy[], player?: Coord): PositionData {
 			const r = e.position?.r ?? 1;
 			const dist = Math.sqrt((playerX - x) ** 2 + (playerY - y) ** 2);
 			max = Math.max(max, dist + r);
-			return { x: x, y: y, r: r };
+			return { x: x, y: y, r: r, name: e.name };
 		});
 
 		return {

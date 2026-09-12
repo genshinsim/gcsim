@@ -104,11 +104,11 @@ function App({ id }: { id: string }) {
 
 	const rows = data
 		.filter((e) => e["_id"] !== id)
-		.map((e, i) => {
+		.map((e) => {
 			return (
 				<DBCard
 					className="border-0"
-					key={"entry-" + i}
+					key={e._id}
 					entry={e}
 					skipTags={-1}
 					footer={

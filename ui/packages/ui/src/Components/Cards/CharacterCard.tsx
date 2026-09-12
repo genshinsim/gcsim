@@ -144,7 +144,7 @@ export function CharacterCard({
 		stats = snapshot;
 		statsHeader = <Trans>character.total_stats</Trans>;
 	}
-	stats.forEach((s, i) => {
+	stats.forEach((s) => {
 		const val: JSX.Element[] = [];
 		if (s.flat === 0 && s.percent === 0) {
 			return;
@@ -155,28 +155,28 @@ export function CharacterCard({
 		switch (s.t) {
 			case "both":
 				val.push(
-					<td key={"flat-" + i} className="text-right text-xs">
+					<td key={"flat-" + s.key} className="text-right text-xs">
 						{s.flat.toFixed(0)}
 					</td>,
 				);
 				val.push(
-					<td key={"per-" + i} className="text-right text-xs">
+					<td key={"per-" + s.key} className="text-right text-xs">
 						{(s.percent * 100).toFixed(2) + "%"}
 					</td>,
 				);
 				break;
 			case "f":
 				val.push(
-					<td key={"flat-" + i} className="text-right text-xs">
+					<td key={"flat-" + s.key} className="text-right text-xs">
 						{s.flat.toFixed(0)}
 					</td>,
 				);
-				val.push(<td key={"per-" + i}></td>);
+				val.push(<td key={"per-" + s.key}></td>);
 				break;
 			case "%":
-				val.push(<td key={"flat-" + i}></td>);
+				val.push(<td key={"flat-" + s.key}></td>);
 				val.push(
-					<td key={"per-" + i} className="text-right text-xs">
+					<td key={"per-" + s.key} className="text-right text-xs">
 						{(s.percent * 100).toFixed(2) + "%"}
 					</td>,
 				);

@@ -17,9 +17,9 @@ export interface OptionsProp {
 export function Options(props: OptionsProp) {
 	const { t } = useTranslation();
 
-	const cols = props.options.map((o, index) => {
+	const cols = props.options.map((o) => {
 		return (
-			<div className="flex flex-row gap-1 p-1 items-center" key={index}>
+			<div className="flex flex-row gap-1 p-1 items-center" key={o}>
 				<label className="cursor-pointer">
 					<input
 						type="checkbox"
