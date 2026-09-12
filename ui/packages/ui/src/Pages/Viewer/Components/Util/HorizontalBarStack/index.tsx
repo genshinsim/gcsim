@@ -135,6 +135,7 @@ export default <Datum, Key extends StackKey>({
 											top={bar.y}
 											left={bar.x}
 										>
+											{/* biome-ignore lint/a11y/noStaticElementInteractions: mouse-only chart tooltip hover region, no interactive semantics */}
 											<rect
 												width={bar.width}
 												height={bar.height}

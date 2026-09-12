@@ -78,9 +78,9 @@ export const TeamBuilderTooltip = () => {
 			<Callout intent={Intent.PRIMARY} className="flex flex-col">
 				<span>
 					<Trans>simple.video_pre</Trans>
-					<a onClick={() => setOpenAddCharHelp(true)}>
+					<button type="button" onClick={() => setOpenAddCharHelp(true)}>
 						<Trans>simple.video</Trans>
-					</a>
+					</button>
 					<Trans>simple.video_post</Trans>
 				</span>
 				<div className="ml-auto">

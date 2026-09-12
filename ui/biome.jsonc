@@ -53,19 +53,11 @@
 				"noArrayIndexKey": "off"
 			},
 			// The old ESLint setup had no jsx-a11y plugin, so Biome's
-			// recommended a11y group surfaces ~104 pre-existing violations
-			// (missing SVG titles, button types, alt text, keyboard handlers,
-			// valid anchors). Each rule is disabled individually rather than
-			// switching off the whole group, so a follow-up child of #2790 can
-			// re-enable one rule at a time by deleting its "off" line. Keep the
-			// ESLint->Biome swap a clean tooling change; fixing the violations
-			// is tracked per rule under #2790.
-			"a11y": {
-				"noStaticElementInteractions": "off",
-				"useValidAnchor": "off",
-				"useAnchorContent": "off",
-				"useKeyWithClickEvents": "off"
-			}
+			// recommended a11y group surfaced ~104 pre-existing violations.
+			// They are being fixed and re-enabled one rule at a time under
+			// #2790; the interaction/anchor cluster (#2799) is done and now
+			// runs at the recommended "error". No a11y overrides remain.
+			"a11y": {}
 		}
 	},
 	"assist": {

@@ -81,6 +81,7 @@ export const RenderTooltip = (props: Props) => {
 		: DataColorsConst.qualitative5(data.index);
 
 	const content = (
+		// biome-ignore lint/a11y/noStaticElementInteractions: mouse-only chart tooltip hover region, no interactive semantics
 		<div
 			onMouseMove={() => {
 				props.handles.clearTimeout();

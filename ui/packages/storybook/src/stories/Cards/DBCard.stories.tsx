@@ -27,9 +27,7 @@ export const Primary: Story = {
 	args: {
 		entry: dbEntries.data[0],
 		footer: (
-			<a href="#">
-				<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
-			</a>
+			<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
 		),
 	},
 };
@@ -38,9 +36,7 @@ export const PrimaryTablet: Story = {
 	args: {
 		entry: dbEntries.data[0],
 		footer: (
-			<a href="#">
-				<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
-			</a>
+			<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
 		),
 	},
 	parameters: {
@@ -54,9 +50,7 @@ export const PrimaryMobile: Story = {
 	args: {
 		entry: dbEntries.data[0],
 		footer: (
-			<a href="#">
-				<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
-			</a>
+			<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
 		),
 	},
 	parameters: {
@@ -71,9 +65,7 @@ export const BGOverride: Story = {
 		className: "bg-orange-600",
 		entry: dbEntries.data[0],
 		footer: (
-			<a href="#">
-				<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
-			</a>
+			<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
 		),
 	},
 };
@@ -94,9 +86,7 @@ export const LongDesc: Story = {
 	args: {
 		entry: longDesc,
 		footer: (
-			<a href="#">
-				<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
-			</a>
+			<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
 		),
 	},
 };
@@ -105,9 +95,7 @@ export const LongDescTablet: Story = {
 	args: {
 		entry: longDesc,
 		footer: (
-			<a href="#">
-				<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
-			</a>
+			<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
 		),
 	},
 	parameters: {
@@ -121,9 +109,7 @@ export const LongDescMobile: Story = {
 	args: {
 		entry: longDesc,
 		footer: (
-			<a href="#">
-				<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
-			</a>
+			<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
 		),
 	},
 	parameters: {
