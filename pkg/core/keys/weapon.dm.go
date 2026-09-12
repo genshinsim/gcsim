@@ -137,6 +137,7 @@ const (
 	IronPoint                                     // ironpoint
 	IronSting                                     // ironsting
 	JadefallsSplendor                             // jadefallssplendor
+	JadeVista                                     // jadevista
 	KagotsurubeIsshin                             // kagotsurubeisshin
 	KagurasVerity                                 // kagurasverity
 	KatsuragikiriNagamasa                         // katsuragikirinagamasa
@@ -376,6 +377,7 @@ var _WeaponNames = [...]string{
 	"ironpoint",
 	"ironsting",
 	"jadefallssplendor",
+	"jadevista",
 	"kagotsurubeisshin",
 	"kagurasverity",
 	"katsuragikirinagamasa",
@@ -615,6 +617,7 @@ var _WeaponValues = [...]Weapon{
 	IronPoint,
 	IronSting,
 	JadefallsSplendor,
+	JadeVista,
 	KagotsurubeIsshin,
 	KagurasVerity,
 	KatsuragikiriNagamasa,
