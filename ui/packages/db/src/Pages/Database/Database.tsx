@@ -2,7 +2,7 @@ import { craftQuery, type DbQuery } from "SharedHooks/databaseQuery";
 import { Spinner } from "@blueprintjs/core";
 import type { db } from "@gcsim/types";
 import axios from "axios";
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import {
 	initialFilter as defaultFilter,
 	FilterContext,
@@ -24,51 +24,54 @@ export const Database = ({ initialFilter = defaultFilter }: Props) => {
 	const [page, setPage] = useState<number>(1);
 	const abortController = useRef(new AbortController());
 
-	const appendData = (next: db.Entry[]) => {
+	const appendData = useCallback((next: db.Entry[]) => {
 		// let d = [ ...data,...next.filter(e => {
 		//   return false
 		// })]
-		setData([...data, ...next]);
-	};
+		setData((prev) => [...prev, ...next]);
+	}, []);
 
-	const querydb = (query: DbQuery, nextPage: number, append: boolean) => {
-		axios(`/api/db?q=${encodeURIComponent(JSON.stringify(query))}`, {
-			signal: abortController.current.signal,
-		})
-			.then((resp: { data: db.Entries }) => {
-				if (resp.data && resp.data.data) {
-					setPage(nextPage);
-					setHasMore(true);
-					if (append) {
-						appendData(resp.data.data);
-					} else {
-						setData(resp.data.data);
-					}
-					//check count; if we got less than limit then there's no more data...
-					//TODO: this is bugged if there are exactly limit number of entries...
-					//TODO: really server should tell us if there's more data
-					if (resp.data.data.length < query.limit) {
-						setHasMore(false);
-					}
-				} else {
-					setHasMore(false);
-					if (!append) {
-						setData([]);
-					}
-				}
-				setIsLoading(false);
+	const querydb = useCallback(
+		(query: DbQuery, nextPage: number, append: boolean) => {
+			axios(`/api/db?q=${encodeURIComponent(JSON.stringify(query))}`, {
+				signal: abortController.current.signal,
 			})
-			.catch((err) => {
-				console.log("error: ", err);
-			});
-	};
+				.then((resp: { data: db.Entries }) => {
+					if (resp.data && resp.data.data) {
+						setPage(nextPage);
+						setHasMore(true);
+						if (append) {
+							appendData(resp.data.data);
+						} else {
+							setData(resp.data.data);
+						}
+						//check count; if we got less than limit then there's no more data...
+						//TODO: this is bugged if there are exactly limit number of entries...
+						//TODO: really server should tell us if there's more data
+						if (resp.data.data.length < query.limit) {
+							setHasMore(false);
+						}
+					} else {
+						setHasMore(false);
+						if (!append) {
+							setData([]);
+						}
+					}
+					setIsLoading(false);
+				})
+				.catch((err) => {
+					console.log("error: ", err);
+				});
+		},
+		[appendData],
+	);
 
 	useEffect(() => {
 		abortController.current.abort();
 		abortController.current = new AbortController();
 		const query = craftQuery(filter, 1, 25);
 		querydb(query, 1, false);
-	}, [filter]);
+	}, [filter, querydb]);
 
 	const fetchData = () => {
 		const nextPage = page + 1;
