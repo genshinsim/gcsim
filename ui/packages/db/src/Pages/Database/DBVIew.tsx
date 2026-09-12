@@ -25,7 +25,11 @@ export const DBView = (props: Props) => {
 			/>
 			{props.data.length === 0 ? (
 				<div className="6 flex flex-col justify-center items-center h-screen">
-					<img src={eula} alt="" className=" object-contain opacity-50 w-32 h-32" />
+					<img
+						src={eula}
+						alt=""
+						className=" object-contain opacity-50 w-32 h-32"
+					/>
 				</div>
 			) : (
 				<InfiniteScroll
