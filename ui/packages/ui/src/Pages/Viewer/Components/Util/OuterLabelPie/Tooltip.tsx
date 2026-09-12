@@ -67,6 +67,7 @@ export const RenderTooltip = <Datum,>(props: Props<Datum>) => {
 	}
 
 	const content = (
+		// biome-ignore lint/a11y/noStaticElementInteractions: mouse-only chart tooltip hover region, no interactive semantics
 		<div
 			onMouseMove={() => {
 				props.handles.clearTimeout();

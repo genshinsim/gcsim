@@ -90,6 +90,7 @@ export const RiskWarning = () => (
 			b: <b />,
 			p: <p className="text-gray-200" />,
 			discordlink: (
+				// biome-ignore lint/a11y/useAnchorContent: text injected at runtime by <Trans>
 				<a
 					href="https://discord.com/invite/m7jvjdxx7q"
 					target="_blank"
@@ -97,6 +98,7 @@ export const RiskWarning = () => (
 				/>
 			),
 			githublink: (
+				// biome-ignore lint/a11y/useAnchorContent: text injected at runtime by <Trans>
 				<a
 					href="https://github.com/genshinsim/gcsim"
 					target="_blank"
@@ -104,6 +106,7 @@ export const RiskWarning = () => (
 				/>
 			),
 			issueslink: (
+				// biome-ignore lint/a11y/useAnchorContent: text injected at runtime by <Trans>
 				<a
 					href="https://github.com/genshinsim/gcsim/issues"
 					target="_blank"

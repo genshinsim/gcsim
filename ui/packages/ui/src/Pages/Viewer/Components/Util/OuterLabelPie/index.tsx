@@ -106,6 +106,7 @@ export default <Datum,>({
 						{(pie) => {
 							return pie.arcs.map((arc, index) => {
 								return (
+									// biome-ignore lint/a11y/noStaticElementInteractions: mouse-only chart tooltip hover region, no interactive semantics
 									<path
 										key={"arc-" + index}
 										d={pie.path(arc) ?? ""}

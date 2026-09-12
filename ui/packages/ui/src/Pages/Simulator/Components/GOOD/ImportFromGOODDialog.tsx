@@ -61,6 +61,7 @@ export function ImportFromGOODDialog(props: Props) {
 			<div className={Classes.DIALOG_BODY}>
 				<p className="!pb-2">
 					<Trans i18nKey="simple.tools_import_pre_go">
+						{/* biome-ignore lint/a11y/useAnchorContent: text injected at runtime by <Trans> */}
 						<a
 							href="https://frzyc.github.io/genshin-optimizer/#/setting"
 							target="_blank"

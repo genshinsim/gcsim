@@ -86,6 +86,7 @@ export function ImportFromEnkaDialog(props: Props) {
 			<div className={Classes.DIALOG_BODY}>
 				<p className="!pb-2">
 					<Trans i18nKey="simple.tools_import_pre_enka">
+						{/* biome-ignore lint/a11y/useAnchorContent: text injected at runtime by <Trans> */}
 						<a href="https://enka.network/" target="_blank" rel="noreferrer" />
 					</Trans>
 				</p>

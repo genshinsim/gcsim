@@ -44,6 +44,7 @@ const IncompleteCharWarning = ({ data }: WarningProps) => {
 		>
 			<p>
 				<Trans i18nKey="warnings.incomplete_char_body">
+					{/* biome-ignore lint/a11y/useAnchorContent: text injected at runtime by <Trans> */}
 					<a
 						href="https://discord.gg/m7jvjdxx7q"
 						target="_blank"
