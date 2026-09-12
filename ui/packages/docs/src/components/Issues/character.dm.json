@@ -1,18 +1,26 @@
 {
-	"aino": ["Hold skill is not implemented."],
-	"albedo": ["Burst ticks missing precise frame count"],
-	"chasca": ["Cannot jump while in Nightsoul Blessing"],
-	"jahoda": [
-		"Smoke Bomb skill is not implemented, since it only trigger when no enemies are nearby."
-	],
-	"kinich": [
-		"The actual Kinich's circular movement is not simulated, so Loop Shots/Scalespiker Cannon will damage the Primary target, which does not depend on attack angle."
-	],
-	"lauma": ["Spirit envoy state jump is not implemented."],
-	"mualani": [
-		"Doing Mualani E-> Shark Bite -> Swap will trigger 2 or 3 yelan/xq waves. In game it only does 1. Do Mualani E -> Shark Bite -> Walk -> Swap to workaround this issue."
-	],
-	"xianyun": [
-		"Not all characters can plunge after a Adeptal Assistance boosted jump"
-	]
+  "aino": [
+    "Hold skill is not implemented."
+  ],
+  "albedo": [
+    "Burst ticks missing precise frame count"
+  ],
+  "chasca": [
+    "Cannot jump while in Nightsoul Blessing"
+  ],
+  "jahoda": [
+    "Smoke Bomb skill is not implemented, since it only trigger when no enemies are nearby."
+  ],
+  "kinich": [
+    "The actual Kinich's circular movement is not simulated, so Loop Shots/Scalespiker Cannon will damage the Primary target, which does not depend on attack angle."
+  ],
+  "lauma": [
+    "Spirit envoy state jump is not implemented."
+  ],
+  "mualani": [
+    "Doing Mualani E-> Shark Bite -> Swap will trigger 2 or 3 yelan/xq waves. In game it only does 1. Do Mualani E -> Shark Bite -> Walk -> Swap to workaround this issue."
+  ],
+  "xianyun": [
+    "Not all characters can plunge after a Adeptal Assistance boosted jump"
+  ]
 }

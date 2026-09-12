@@ -27,9 +27,9 @@ const statKeys = [
 
 export function charToCfg(char: Character): string {
 	let str = "";
-	// prettier-ignore
+	// biome-ignore format: keep the config line on one line
 	str += `${char.name} char lvl=${char.level}/${char.max_level} cons=${char.cons} talent=${char.talents.attack},${char.talents.skill},${char.talents.burst};\n`;
-	// prettier-ignore
+	// biome-ignore format: keep the config line on one line
 	str += `${char.name} add weapon="${char.weapon.name}" refine=${char.weapon.refine} lvl=${char.weapon.level}/${char.weapon.max_level};\n`;
 
 	//build sets

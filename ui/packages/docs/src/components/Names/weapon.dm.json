@@ -1,147 +1,471 @@
 {
-	"amenomakageuchi": ["ak", "amenoma"],
-	"amosbow": ["amos"],
-	"angelosheptades": ["angelos", "heptades"],
-	"apprenticesnotes": ["apprentice", "apprentices"],
-	"aquasimulacra": ["aqua"],
-	"aquilafavonia": ["aquila"],
-	"ashgravendrinkinghorn": ["ashgraven"],
-	"astralvulturescrimsonplumage": ["avcp"],
-	"athameartis": ["athame"],
-	"athousandblazingsuns": ["tbs"],
-	"athousandfloatingdreams": ["tfd", "thousandfloatingdreams"],
-	"balladoftheboundlessblue": ["boundlessblue"],
-	"balladofthefjords": ["ballad", "fjords"],
-	"beaconofthereedsea": ["beacon"],
-	"beginnersprotector": ["beginner", "beginners"],
-	"bloodsoakedruins": ["bloodsoaked"],
-	"bloodtaintedgreatsword": ["bloodtainted"],
-	"calamityofeshu": ["eshu"],
-	"calamityqueller": ["calamity"],
-	"cashflowsupervision": ["cashflow"],
-	"cinnabarspindle": ["cinnabar"],
-	"compoundbow": ["compound"],
-	"cranesechoingcall": ["crane"],
-	"crescentpike": ["cpike", "pike"],
-	"crimsonmoonssemblance": ["crimsonmoon"],
-	"dialoguesofthedesertsages": ["dialogues"],
-	"dragonsbane": ["dbane"],
-	"elegyfortheend": ["elegy"],
-	"engulfinglightning": ["engulfing"],
-	"etherlightspindlelute": ["etherlight"],
-	"everlastingmoonglow": ["donut", "moonglow"],
-	"fadingtwilight": ["twilight"],
-	"fangofthemountainking": ["fotmk"],
-	"favoniuscodex": ["favcodex"],
-	"favoniusgreatsword": ["favgs"],
-	"favoniuslance": ["favlance", "favspear"],
-	"favoniussword": ["favsword"],
-	"favoniuswarbow": ["favbow", "favwarbow"],
-	"festeringdesire": ["festering"],
-	"finaleofthedeep": ["finale"],
-	"fleuvecendreferryman": ["fleuve", "pipe"],
-	"fluteofezpitzal": ["ezpitzal"],
-	"footprintoftherainbow": ["footprint", "fotr"],
-	"forestregalia": ["regalia"],
-	"freedomsworn": ["freedom", "fs"],
-	"fruitoffulfillment": ["fof", "fruit"],
-	"hakushinring": ["hakushin"],
-	"harangeppakufutsu": ["haran"],
-	"harbingerofdawn": ["harbinger"],
-	"ibispiercer": ["ibis"],
-	"jadefallssplendor": ["jadefall"],
-	"kagotsurubeisshin": ["isshin"],
-	"kagurasverity": ["kagura"],
-	"katsuragikirinagamasa": ["nagamasa"],
-	"keyofkhajnisut": ["key", "khajnisut"],
-	"kitaincrossspear": ["kitain"],
-	"lightbearingmoonshard": ["lightbearing"],
-	"lightoffoliarincision": ["foliar", "foliarincision", "incision", "lofi"],
-	"lostprayertothesacredwinds": ["lostprayer"],
-	"luxurioussealord": ["sealord"],
-	"mailedflower": ["mailed"],
-	"makhairaaquamarine": ["aquamarine"],
-	"mappamare": ["mappa"],
-	"missivewindspear": ["missive"],
-	"mistsplitterreforged": ["mist", "mistsplitter"],
-	"mitternachtswaltz": ["mitternacht", "mitternachts", "waltz"],
-	"mouunsmoon": ["mouun", "mouuns"],
-	"nightweaverslookingglass": ["nightweavers"],
-	"nocturnescurtaincall": ["nocturnes"],
-	"oathsworneye": ["oathsworn"],
-	"otherworldlystory": ["otherworldly"],
-	"peakpatrolsong": ["pps"],
-	"pocketgrimoire": ["pocket"],
-	"polarstar": ["polar"],
-	"portablepowersaw": ["powersaw"],
-	"primordialjadecutter": ["jadecutter", "pjc"],
-	"primordialjadewingedspear": ["jadespear", "pjws"],
-	"prototypeamber": ["pamber"],
-	"prototypearchaic": ["archaic"],
-	"prototypecrescent": ["crescent"],
-	"prototyperancour": ["rancour"],
-	"prototypestarglitter": ["starglitter"],
-	"rainbowserpentsrainbow": ["rainbowserpent", "rainbowserpentbow"],
-	"ravenbow": ["raven"],
-	"recurvebow": ["recurve"],
-	"redhornstonethresher": ["redhorn"],
-	"reliquaryoftruth": ["reliquary"],
-	"sacrificialbow": ["sacbow"],
-	"sacrificialfragments": ["sacfrag", "sacfragments", "sacfrags"],
-	"sacrificialgreatsword": ["sacgs"],
-	"sacrificialjade": ["sacjade"],
-	"sacrificialsword": ["sacsword"],
-	"sapwoodblade": ["sapwood"],
-	"scionoftheblazingsun": ["scion"],
-	"seasonedhuntersbow": ["seasoned"],
-	"sequenceofsolitude": ["solitude"],
-	"serpentspine": ["serpent"],
-	"sharpshootersoath": ["sharpshooter", "sharpshooters"],
-	"silvershowerheartstrings": ["heartstrings", "silvershower"],
-	"skywardatlas": ["atlas"],
-	"skywardharp": ["harp"],
-	"skywardpride": ["pride"],
-	"snowtombedstarsilver": ["snowtombed", "starsilver"],
-	"songofbrokenpines": ["pines", "sobp"],
-	"songofstillness": ["stillness"],
-	"splendoroftranquilwaters": ["sotw", "splendor", "tranquilwaters"],
-	"staffofhoma": ["homa"],
-	"staffofthescarletsands": ["scarlet", "scarletsands", "sss"],
-	"starcallerswatch": ["scw"],
-	"summitshaper": ["summit"],
-	"sunnymorningsleepin": ["sunnymorning"],
-	"swordofdescension": ["descension"],
-	"swordofnarzissenkreuz": ["narzissenkreuz"],
-	"symphonistofscents": ["symphonist"],
-	"tamayurateinoohanashi": ["lamppost", "tamayuratei"],
-	"thealleyflash": ["alleyflash"],
-	"thebell": ["bell"],
-	"theblacksword": ["blacksword"],
-	"thecatch": ["catch"],
-	"thedaybreakchronicles": ["daybreak", "daybreakchronicles"],
-	"thedockhandsassistant": ["dockhand"],
-	"thefirstgreatmagic": ["fgm", "firstgreatmagic", "tfgm"],
-	"theflute": ["flute"],
-	"thestringless": ["stringless"],
-	"theunforged": ["unforged"],
-	"theviridescenthunt": ["vhunt", "viridescenthunt"],
-	"thewidsith": ["widsith"],
-	"thrillingtalesofdragonslayers": ["ttds"],
-	"thunderingpulse": ["tpulse"],
-	"tomeoftheeternalflow": ["eternalflow"],
-	"toukaboushigure": ["shigure", "umbrella"],
-	"tulaytullahsremembrance": ["tula", "tulaytullah"],
-	"ultimateoverlordsmegamagicsword": [
-		"megamagicsword",
-		"melusineclaymore",
-		"uomms"
-	],
-	"urakumisugiri": ["misugiri", "uraku"],
-	"vividnotions": ["vivid"],
-	"vortexvanquisher": ["vortex"],
-	"wanderingevenstar": ["evenstar"],
-	"wavebreakersfin": ["wavebreaker"],
-	"windblumeode": ["ode"],
-	"wolfsgravestone": ["gravestone", "wgs"],
-	"xiphosmoonlight": ["xiphos"]
+  "amenomakageuchi": [
+    "ak",
+    "amenoma"
+  ],
+  "amosbow": [
+    "amos"
+  ],
+  "angelosheptades": [
+    "angelos",
+    "heptades"
+  ],
+  "apprenticesnotes": [
+    "apprentice",
+    "apprentices"
+  ],
+  "aquasimulacra": [
+    "aqua"
+  ],
+  "aquilafavonia": [
+    "aquila"
+  ],
+  "ashgravendrinkinghorn": [
+    "ashgraven"
+  ],
+  "astralvulturescrimsonplumage": [
+    "avcp"
+  ],
+  "athameartis": [
+    "athame"
+  ],
+  "athousandblazingsuns": [
+    "tbs"
+  ],
+  "athousandfloatingdreams": [
+    "tfd",
+    "thousandfloatingdreams"
+  ],
+  "balladoftheboundlessblue": [
+    "boundlessblue"
+  ],
+  "balladofthefjords": [
+    "ballad",
+    "fjords"
+  ],
+  "beaconofthereedsea": [
+    "beacon"
+  ],
+  "beginnersprotector": [
+    "beginner",
+    "beginners"
+  ],
+  "bloodsoakedruins": [
+    "bloodsoaked"
+  ],
+  "bloodtaintedgreatsword": [
+    "bloodtainted"
+  ],
+  "calamityofeshu": [
+    "eshu"
+  ],
+  "calamityqueller": [
+    "calamity"
+  ],
+  "cashflowsupervision": [
+    "cashflow"
+  ],
+  "cinnabarspindle": [
+    "cinnabar"
+  ],
+  "compoundbow": [
+    "compound"
+  ],
+  "cranesechoingcall": [
+    "crane"
+  ],
+  "crescentpike": [
+    "cpike",
+    "pike"
+  ],
+  "crimsonmoonssemblance": [
+    "crimsonmoon"
+  ],
+  "dialoguesofthedesertsages": [
+    "dialogues"
+  ],
+  "dragonsbane": [
+    "dbane"
+  ],
+  "elegyfortheend": [
+    "elegy"
+  ],
+  "engulfinglightning": [
+    "engulfing"
+  ],
+  "etherlightspindlelute": [
+    "etherlight"
+  ],
+  "everlastingmoonglow": [
+    "donut",
+    "moonglow"
+  ],
+  "fadingtwilight": [
+    "twilight"
+  ],
+  "fangofthemountainking": [
+    "fotmk"
+  ],
+  "favoniuscodex": [
+    "favcodex"
+  ],
+  "favoniusgreatsword": [
+    "favgs"
+  ],
+  "favoniuslance": [
+    "favlance",
+    "favspear"
+  ],
+  "favoniussword": [
+    "favsword"
+  ],
+  "favoniuswarbow": [
+    "favbow",
+    "favwarbow"
+  ],
+  "festeringdesire": [
+    "festering"
+  ],
+  "finaleofthedeep": [
+    "finale"
+  ],
+  "fleuvecendreferryman": [
+    "fleuve",
+    "pipe"
+  ],
+  "fluteofezpitzal": [
+    "ezpitzal"
+  ],
+  "footprintoftherainbow": [
+    "footprint",
+    "fotr"
+  ],
+  "forestregalia": [
+    "regalia"
+  ],
+  "freedomsworn": [
+    "freedom",
+    "fs"
+  ],
+  "fruitoffulfillment": [
+    "fof",
+    "fruit"
+  ],
+  "hakushinring": [
+    "hakushin"
+  ],
+  "harangeppakufutsu": [
+    "haran"
+  ],
+  "harbingerofdawn": [
+    "harbinger"
+  ],
+  "ibispiercer": [
+    "ibis"
+  ],
+  "jadefallssplendor": [
+    "jadefall"
+  ],
+  "kagotsurubeisshin": [
+    "isshin"
+  ],
+  "kagurasverity": [
+    "kagura"
+  ],
+  "katsuragikirinagamasa": [
+    "nagamasa"
+  ],
+  "keyofkhajnisut": [
+    "key",
+    "khajnisut"
+  ],
+  "kitaincrossspear": [
+    "kitain"
+  ],
+  "lightbearingmoonshard": [
+    "lightbearing"
+  ],
+  "lightoffoliarincision": [
+    "foliar",
+    "foliarincision",
+    "incision",
+    "lofi"
+  ],
+  "lostprayertothesacredwinds": [
+    "lostprayer"
+  ],
+  "luxurioussealord": [
+    "sealord"
+  ],
+  "mailedflower": [
+    "mailed"
+  ],
+  "makhairaaquamarine": [
+    "aquamarine"
+  ],
+  "mappamare": [
+    "mappa"
+  ],
+  "missivewindspear": [
+    "missive"
+  ],
+  "mistsplitterreforged": [
+    "mist",
+    "mistsplitter"
+  ],
+  "mitternachtswaltz": [
+    "mitternacht",
+    "mitternachts",
+    "waltz"
+  ],
+  "mouunsmoon": [
+    "mouun",
+    "mouuns"
+  ],
+  "nightweaverslookingglass": [
+    "nightweavers"
+  ],
+  "nocturnescurtaincall": [
+    "nocturnes"
+  ],
+  "oathsworneye": [
+    "oathsworn"
+  ],
+  "otherworldlystory": [
+    "otherworldly"
+  ],
+  "peakpatrolsong": [
+    "pps"
+  ],
+  "pocketgrimoire": [
+    "pocket"
+  ],
+  "polarstar": [
+    "polar"
+  ],
+  "portablepowersaw": [
+    "powersaw"
+  ],
+  "primordialjadecutter": [
+    "jadecutter",
+    "pjc"
+  ],
+  "primordialjadewingedspear": [
+    "jadespear",
+    "pjws"
+  ],
+  "prototypeamber": [
+    "pamber"
+  ],
+  "prototypearchaic": [
+    "archaic"
+  ],
+  "prototypecrescent": [
+    "crescent"
+  ],
+  "prototyperancour": [
+    "rancour"
+  ],
+  "prototypestarglitter": [
+    "starglitter"
+  ],
+  "rainbowserpentsrainbow": [
+    "rainbowserpent",
+    "rainbowserpentbow"
+  ],
+  "ravenbow": [
+    "raven"
+  ],
+  "recurvebow": [
+    "recurve"
+  ],
+  "redhornstonethresher": [
+    "redhorn"
+  ],
+  "reliquaryoftruth": [
+    "reliquary"
+  ],
+  "sacrificialbow": [
+    "sacbow"
+  ],
+  "sacrificialfragments": [
+    "sacfrag",
+    "sacfragments",
+    "sacfrags"
+  ],
+  "sacrificialgreatsword": [
+    "sacgs"
+  ],
+  "sacrificialjade": [
+    "sacjade"
+  ],
+  "sacrificialsword": [
+    "sacsword"
+  ],
+  "sapwoodblade": [
+    "sapwood"
+  ],
+  "scionoftheblazingsun": [
+    "scion"
+  ],
+  "seasonedhuntersbow": [
+    "seasoned"
+  ],
+  "sequenceofsolitude": [
+    "solitude"
+  ],
+  "serpentspine": [
+    "serpent"
+  ],
+  "sharpshootersoath": [
+    "sharpshooter",
+    "sharpshooters"
+  ],
+  "silvershowerheartstrings": [
+    "heartstrings",
+    "silvershower"
+  ],
+  "skywardatlas": [
+    "atlas"
+  ],
+  "skywardharp": [
+    "harp"
+  ],
+  "skywardpride": [
+    "pride"
+  ],
+  "snowtombedstarsilver": [
+    "snowtombed",
+    "starsilver"
+  ],
+  "songofbrokenpines": [
+    "pines",
+    "sobp"
+  ],
+  "songofstillness": [
+    "stillness"
+  ],
+  "splendoroftranquilwaters": [
+    "sotw",
+    "splendor",
+    "tranquilwaters"
+  ],
+  "staffofhoma": [
+    "homa"
+  ],
+  "staffofthescarletsands": [
+    "scarlet",
+    "scarletsands",
+    "sss"
+  ],
+  "starcallerswatch": [
+    "scw"
+  ],
+  "summitshaper": [
+    "summit"
+  ],
+  "sunnymorningsleepin": [
+    "sunnymorning"
+  ],
+  "swordofdescension": [
+    "descension"
+  ],
+  "swordofnarzissenkreuz": [
+    "narzissenkreuz"
+  ],
+  "symphonistofscents": [
+    "symphonist"
+  ],
+  "tamayurateinoohanashi": [
+    "lamppost",
+    "tamayuratei"
+  ],
+  "thealleyflash": [
+    "alleyflash"
+  ],
+  "thebell": [
+    "bell"
+  ],
+  "theblacksword": [
+    "blacksword"
+  ],
+  "thecatch": [
+    "catch"
+  ],
+  "thedaybreakchronicles": [
+    "daybreak",
+    "daybreakchronicles"
+  ],
+  "thedockhandsassistant": [
+    "dockhand"
+  ],
+  "thefirstgreatmagic": [
+    "fgm",
+    "firstgreatmagic",
+    "tfgm"
+  ],
+  "theflute": [
+    "flute"
+  ],
+  "thestringless": [
+    "stringless"
+  ],
+  "theunforged": [
+    "unforged"
+  ],
+  "theviridescenthunt": [
+    "vhunt",
+    "viridescenthunt"
+  ],
+  "thewidsith": [
+    "widsith"
+  ],
+  "thrillingtalesofdragonslayers": [
+    "ttds"
+  ],
+  "thunderingpulse": [
+    "tpulse"
+  ],
+  "tomeoftheeternalflow": [
+    "eternalflow"
+  ],
+  "toukaboushigure": [
+    "shigure",
+    "umbrella"
+  ],
+  "tulaytullahsremembrance": [
+    "tula",
+    "tulaytullah"
+  ],
+  "ultimateoverlordsmegamagicsword": [
+    "megamagicsword",
+    "melusineclaymore",
+    "uomms"
+  ],
+  "urakumisugiri": [
+    "misugiri",
+    "uraku"
+  ],
+  "vividnotions": [
+    "vivid"
+  ],
+  "vortexvanquisher": [
+    "vortex"
+  ],
+  "wanderingevenstar": [
+    "evenstar"
+  ],
+  "wavebreakersfin": [
+    "wavebreaker"
+  ],
+  "windblumeode": [
+    "ode"
+  ],
+  "wolfsgravestone": [
+    "gravestone",
+    "wgs"
+  ],
+  "xiphosmoonlight": [
+    "xiphos"
+  ]
 }

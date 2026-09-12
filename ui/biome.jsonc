@@ -16,7 +16,7 @@
 			"!**/storybook-static",
 			"!packages/types/src/generated",
 			"!**/wasm_exec.js",
-			"!**/*.dm.js"
+			"!**/*.dm.*"
 		]
 	},
 	"formatter": {
