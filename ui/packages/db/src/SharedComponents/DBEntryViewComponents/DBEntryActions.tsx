@@ -40,6 +40,8 @@ export default function DBEntryActions({
 								strokeWidth={1.5}
 								stroke="currentColor"
 								className="w-5 h-5"
+								role="img"
+								aria-label={t("db.openInViewer") as string}
 							>
 								<path
 									strokeLinecap="round"
@@ -112,6 +114,8 @@ function ApproveDBEntryButton({
 							strokeWidth={1.5}
 							stroke="currentColor"
 							className="w-6 h-6"
+							role="img"
+							aria-label="Approve"
 						>
 							<path
 								strokeLinecap="round"

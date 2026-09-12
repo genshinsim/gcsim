@@ -61,7 +61,6 @@
 			// ESLint->Biome swap a clean tooling change; fixing the violations
 			// is tracked per rule under #2790.
 			"a11y": {
-				"noSvgWithoutTitle": "off",
 				"noStaticElementInteractions": "off",
 				"useAltText": "off",
 				"useValidAnchor": "off",

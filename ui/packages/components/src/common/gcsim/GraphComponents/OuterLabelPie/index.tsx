@@ -51,7 +51,7 @@ export default <Datum,>({
 	const radius = Math.min(width - margin, height) / 2;
 	return (
 		<div className="relative">
-			<svg width={width} height={height}>
+			<svg width={width} height={height} role="img" aria-label="Pie chart">
 				<Group left={width / 2} top={height / 2}>
 					{/* label arcs */}
 					{labelText != null && labelValue != null && (
