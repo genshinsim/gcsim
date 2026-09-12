@@ -4,7 +4,7 @@ import { visualizer } from "rollup-plugin-visualizer";
 import { type ConfigEnv, defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-export default ({}: ConfigEnv) => {
+export default (_env: ConfigEnv) => {
 	process.env.VITE_GIT_COMMIT_HASH = git.long();
 	process.env.VITE_GIT_BRANCH = git.branch();
 

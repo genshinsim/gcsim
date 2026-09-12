@@ -7,7 +7,7 @@ import { useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
 import SamplePage from "./SamplePage";
 
-export const LocalSample = ({}) => {
+export const LocalSample = () => {
 	const [sample, setSample] = useState<Sample | null>(null);
 	const [error, setError] = useState<string | null>(null);
 
@@ -27,7 +27,7 @@ export const LocalSample = ({}) => {
 	return <SamplePage sample={sample} error={error} retry={request} />;
 };
 
-export const UploadSample = ({}) => {
+export const UploadSample = () => {
 	const { t } = useTranslation();
 	const [sample, setSample] = useState<Sample | null>(null);
 	const [error, setError] = useState<string | null>(null);

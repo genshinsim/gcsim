@@ -1,4 +1,4 @@
-import type { Character, Set, Weapon } from "@gcsim/types";
+import type { Set as ArtifactSet, Character, Weapon } from "@gcsim/types";
 import { ArtifactMainStatsData } from "@ui/Data";
 import ArtifactDataGen from "@ui/Data/artifact.dm.json";
 import CharDataGen from "@ui/Data/character.dm.json";
@@ -113,8 +113,8 @@ function extractWeapon(
 
 function extractArtifactSet(
 	equipList: (GenshinItemWeapon | GenshinItemReliquary)[],
-): Set {
-	const result: Set = {};
+): ArtifactSet {
+	const result: ArtifactSet = {};
 	equipList.forEach((e) => {
 		if (e.flat.itemType !== "ITEM_RELIQUARY") {
 			return;
@@ -224,7 +224,7 @@ export default function EnkaToGOOD(enkaData: EnkaData): {
 					return;
 				}
 
-				let set: Set;
+				let set: ArtifactSet;
 				try {
 					set = extractArtifactSet(equipList);
 				} catch (e) {

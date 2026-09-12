@@ -150,7 +150,7 @@ function TagFilterButton({ tag, name }: { tag; name: string }) {
 			tag: tag,
 		});
 	};
-	let intent;
+	let intent: Intent;
 	switch (filter.tagFilter[tag].state) {
 		case ItemFilterState.include:
 			intent = Intent.SUCCESS;

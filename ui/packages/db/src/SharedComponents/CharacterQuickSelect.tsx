@@ -16,12 +16,8 @@ export function CharacterQuickSelect() {
 	const { t } = useTranslation();
 
 	const includedChars = Object.entries(filter.charFilter)
-		.map(([charName, charState]) => {
-			if (charState.state === ItemFilterState.include) {
-				return charName;
-			}
-		})
-		.filter((charName) => charName) as string[];
+		.filter(([, charState]) => charState.state === ItemFilterState.include)
+		.map(([charName]) => charName);
 
 	const translateCharName = (charName: string) =>
 		t("game:character_names." + charName);

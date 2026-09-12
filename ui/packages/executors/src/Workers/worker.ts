@@ -66,7 +66,7 @@ function handleRequest(req: any) {
 			throw new Error("aggregator unknown request");
 	}
 }
-onmessage = (ev) => handleRequest(ev.data);
+self.onmessage = (ev) => handleRequest(ev.data);
 
 // TODO: I hate this
 // Web Workers do not currently support modules (in all browsers), so instead the relevant code in common

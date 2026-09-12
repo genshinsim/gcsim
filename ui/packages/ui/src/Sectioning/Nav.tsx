@@ -18,7 +18,7 @@ import { Link } from "react-router-dom";
 import { useAppSelector } from "../Stores/store";
 import logo from "./logo.png";
 
-export default ({}) => {
+export default () => {
 	const { t, i18n } = useTranslation();
 	const user = useAppSelector((state) => state.user);
 	const [isOpen, setIsOpen] = useState(false);

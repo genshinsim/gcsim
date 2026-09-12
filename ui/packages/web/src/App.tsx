@@ -6,7 +6,7 @@ import WasmMode from "./WasmMode";
 
 const serverModeKey = "use-server-mode";
 
-const App = ({}) => {
+const App = () => {
 	const { t } = useTranslation();
 	const [serverMode, setServerMode] = React.useState<boolean>((): boolean => {
 		return localStorage.getItem(serverModeKey) === "true";
@@ -34,9 +34,9 @@ const App = ({}) => {
 	return (
 		<>
 			{serverMode ? (
-				<ServerMode children={children} />
+				<ServerMode>{children}</ServerMode>
 			) : (
-				<WasmMode children={children} />
+				<WasmMode>{children}</WasmMode>
 			)}
 		</>
 	);

@@ -4,7 +4,7 @@ import { appActions } from "../../Stores/appSlice";
 import { useAppDispatch } from "../../Stores/store";
 
 // TODO: translation
-export default ({}) => {
+export default () => {
 	const { t } = useTranslation();
 	const dispatch = useAppDispatch();
 

@@ -34,7 +34,13 @@
 				"noUnusedFunctionParameters": {
 					"level": "warn",
 					"options": { "ignoreRestSiblings": true }
-				}
+				},
+				// Preserve the old severity: eslint-plugin-react-hooks'
+				// `recommended` config ran `react-hooks/exhaustive-deps` at
+				// "warn", not error. Keep the Biome equivalent at "warn" so the
+				// migration is behaviour-preserving rather than auto-rewriting
+				// hook dependency arrays (which can change effect timing).
+				"useExhaustiveDependencies": "warn"
 			},
 			"suspicious": {
 				"noTsIgnore": "off",

@@ -66,7 +66,9 @@ export class WasmExecutor implements Executor {
 		const diff = this.workerCount - this.workers.length;
 
 		if (diff < 0) {
-			this.workers.splice(diff).forEach((w) => w.terminate());
+			this.workers.splice(diff).forEach((w) => {
+				w.terminate();
+			});
 			return Promise.resolve(true);
 		}
 

@@ -302,10 +302,10 @@ export function useSample(
 			return out;
 		}
 
-		parsed.map((row, i) => {
+		parsed.forEach((row, i) => {
 			const results: string[] = [];
-			row.slots.map((slot) => {
-				slot.map((e) => {
+			row.slots.forEach((slot) => {
+				slot.forEach((e) => {
 					results.push(e.msg);
 				});
 			});

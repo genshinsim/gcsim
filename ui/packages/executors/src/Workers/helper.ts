@@ -60,7 +60,7 @@ function handleRequest(req: any): any {
 }
 
 const queue: MessageEvent<any>[] = [];
-onmessage = (ev) => {
+self.onmessage = (ev) => {
 	if (ev.data.type === HelpRequest.Ready) {
 		ready(ev.data);
 		return;

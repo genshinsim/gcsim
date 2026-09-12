@@ -6,7 +6,7 @@ import { AiFillGithub } from "react-icons/ai";
 import { FaDiscord } from "react-icons/fa";
 import { SiKofi } from "react-icons/si";
 
-export default ({}) => {
+export default () => {
 	const { t } = useTranslation();
 
 	const divider = classNames(

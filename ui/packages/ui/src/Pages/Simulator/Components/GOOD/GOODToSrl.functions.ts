@@ -109,7 +109,7 @@ export function tallyArtifactSet(artifacts: GOODArtifact[]): {
 		.map((artifact) => {
 			return artifact.setKey.toLowerCase();
 		})
-		.map((setKey) => {
+		.forEach((setKey) => {
 			if (Object.keys(setKeyTally).includes(setKey)) {
 				setKeyTally[setKey] += 1;
 			} else if (setKey !== "") {

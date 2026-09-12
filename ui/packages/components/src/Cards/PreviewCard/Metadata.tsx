@@ -33,7 +33,7 @@ export const Metadata = ({ data }: Props) => {
 
 	return (
 		<div className="flex flex-row flex-wrap !p-1.5 gap-2 justify-center bg-slate-700 m-1 -mt-0  rounded-sm border border-gray-600">
-			<Error signKey={data.key_type} modified={data.modified} />
+			<BuildError signKey={data.key_type} modified={data.modified} />
 			{!data.modified && (data.key_type == null || data.key_type === "prod") ? (
 				<DPS dps={dps} />
 			) : null}
@@ -73,7 +73,7 @@ type ErrorProps = {
 	modified?: boolean | null | undefined;
 };
 
-export const Error = ({ signKey, modified }: ErrorProps) => {
+export const BuildError = ({ signKey, modified }: ErrorProps) => {
 	if (signKey == null || signKey === undefined || signKey === "prod") {
 		return <Dirty modified={modified ?? false} />;
 	}

@@ -23,7 +23,7 @@ export const VerticalLine = ({
 	}
 
 	const localX = xScale(x);
-	const Label = ({}) => {
+	const Label = () => {
 		if (label == null) return null;
 		return (
 			<Text

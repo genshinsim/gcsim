@@ -134,7 +134,8 @@ function useLabelPositions<Datum>(
 					pos.x = x;
 				}
 				pos.x += xPadding * (isLeft(pos.angle) ? -1 : 1);
-				return [pos.index, (prev = pos)];
+				prev = pos;
+				return [pos.index, pos];
 			}),
 		);
 	}, [arcs, labelRadius, xPadding, yPadding]);

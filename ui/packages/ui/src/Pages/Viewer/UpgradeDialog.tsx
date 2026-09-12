@@ -167,7 +167,7 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
 		"text-xs pt-2 font-mono text-gray-400",
 	);
 
-	const VersionInfo = ({}) => (
+	const VersionInfo = () => (
 		<div className={versionClass}>
 			{/* version line */}
 			<div>version</div>

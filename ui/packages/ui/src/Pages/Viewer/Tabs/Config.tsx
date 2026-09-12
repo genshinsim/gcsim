@@ -63,7 +63,7 @@ const ConfigUI = ({ config, running, resetTab }: ConfigProps) => {
 						}}
 					/>
 				</div>
-				<Error error={config.error} cfg={config.cfg} />
+				<ConfigError error={config.error} cfg={config.cfg} />
 			</div>
 			<div>
 				<ConfigEditor cfg={config.cfg} onChange={config.setCfg} />
@@ -72,7 +72,7 @@ const ConfigUI = ({ config, running, resetTab }: ConfigProps) => {
 	);
 };
 
-const Error = ({ error, cfg }: { error: string; cfg: string }) => {
+const ConfigError = ({ error, cfg }: { error: string; cfg: string }) => {
 	const { t } = useTranslation();
 	if (error === "" || cfg === "") {
 		return null;

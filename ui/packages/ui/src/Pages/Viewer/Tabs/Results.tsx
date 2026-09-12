@@ -110,7 +110,7 @@ const Damage = ({ data, running, names }: Props) => (
 	</Group>
 );
 
-const Energy = ({}: Props) => (
+const Energy = (_props: Props) => (
 	<Group>
 		<Heading text="Energy" target="energy" color={Colors.CERULEAN5} />
 		<Card className="flex col-span-full h-64 min-h-full">
@@ -125,7 +125,7 @@ const Energy = ({}: Props) => (
 	</Group>
 );
 
-const Reactions = ({}: Props) => (
+const Reactions = (_props: Props) => (
 	<Group>
 		<Heading
 			text="Reactions & Auras"
@@ -147,7 +147,7 @@ const Reactions = ({}: Props) => (
 	</Group>
 );
 
-const Healing = ({}: Props) => (
+const Healing = (_props: Props) => (
 	<Group>
 		<Heading text="Healing" target="healing" color={Colors.FOREST5} />
 		<Card className="flex col-span-full h-64 min-h-full">
@@ -158,7 +158,7 @@ const Healing = ({}: Props) => (
 	</Group>
 );
 
-const Shields = ({}: Props) => (
+const Shields = (_props: Props) => (
 	<Group>
 		<Heading text="Shields" target="shields" color={Colors.GOLD5} />
 		<Card className="flex col-span-full h-64 min-h-full">
@@ -174,7 +174,7 @@ const Shields = ({}: Props) => (
 	</Group>
 );
 
-const SimDetails = ({}: Props) => (
+const SimDetails = (_props: Props) => (
 	<Group>
 		<Heading text="Simulation Details" target="sim" color={Colors.TURQUOISE5} />
 		<Card className="flex col-span-2 h-64 min-h-full">

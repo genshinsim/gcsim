@@ -36,7 +36,10 @@ export function craftQuery(
 	}
 
 	if (filter.customFilter) {
-		let parsedFilter;
+		// biome-ignore lint/suspicious/noExplicitAny: JSON.parse result flows
+		// into DbQuery["query"] and may be unassigned on a parse error; an
+		// explicit type would trip strictNullChecks at the return site.
+		let parsedFilter: any;
 		try {
 			parsedFilter = JSON.parse(`${filter.customFilter}`);
 		} catch (e) {

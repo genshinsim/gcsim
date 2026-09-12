@@ -38,7 +38,9 @@ export default ({ data, running }: Props) => {
 		}
 
 		const targets = new Set<string>();
-		Object.keys(stats.cumu?.targets).forEach((key) => targets.add(key));
+		Object.keys(stats.cumu?.targets).forEach((key) => {
+			targets.add(key);
+		});
 		return Array.from(targets);
 	}, [stats.cumu]);
 	const [target, setTarget] = useState("1");
