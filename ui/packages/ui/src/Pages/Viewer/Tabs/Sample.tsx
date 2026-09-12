@@ -234,6 +234,9 @@ export function useSample(
 		return DefaultSampleOptions;
 	});
 
+	// TODO(react19): drop this useCallback and inline the function once the
+	// React Compiler is enabled — it auto-memoizes. Don't remove it before
+	// then: useExhaustiveDependencies is now an error and would fail the build.
 	const setAndStore = useCallback((val: string[]) => {
 		setSelected(val);
 		localStorage.setItem(SAVED_SAMPLE_KEY, JSON.stringify(val));

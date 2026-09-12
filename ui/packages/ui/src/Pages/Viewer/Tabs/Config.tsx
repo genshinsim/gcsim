@@ -101,6 +101,9 @@ export function useConfig(
 	const [err, setErr] = useState("");
 	const [modified, setModified] = useState<boolean>(false);
 
+	// TODO(react19): drop this useCallback and inline the function once the
+	// React Compiler is enabled — it auto-memoizes. Don't remove it before
+	// then: useExhaustiveDependencies is now an error and would fail the build.
 	const updateCfg = useCallback((newCfg: string) => {
 		setCfg(newCfg);
 		setModified(true);

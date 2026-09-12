@@ -24,6 +24,9 @@ export const Database = ({ initialFilter = defaultFilter }: Props) => {
 	const [page, setPage] = useState<number>(1);
 	const abortController = useRef(new AbortController());
 
+	// TODO(react19): drop this useCallback (inline the function) once the React
+	// Compiler is enabled — it auto-memoizes. Keep the functional setData
+	// updater regardless: it fixes a stale-closure bug, independent of memoization.
 	const appendData = useCallback((next: db.Entry[]) => {
 		// let d = [ ...data,...next.filter(e => {
 		//   return false
@@ -31,6 +34,10 @@ export const Database = ({ initialFilter = defaultFilter }: Props) => {
 		setData((prev) => [...prev, ...next]);
 	}, []);
 
+	// TODO(react19): drop this useCallback (inline the function) once the React
+	// Compiler is enabled — it auto-memoizes. Don't remove it before then:
+	// querydb must stay referentially stable or the effect below refetch-loops,
+	// and useExhaustiveDependencies is now an error.
 	const querydb = useCallback(
 		(query: DbQuery, nextPage: number, append: boolean) => {
 			axios(`/api/db?q=${encodeURIComponent(JSON.stringify(query))}`, {
