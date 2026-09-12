@@ -58,6 +58,7 @@ export function NumberInput({
 				/>
 				<div className="rounded-r-md flex flex-col">
 					<button
+						type="button"
 						className="bg-gray-800 w-12 rounded-tr-md focus:outline-none hover:bg-gray-900"
 						disabled={value === max}
 						onClick={() => {
@@ -83,6 +84,7 @@ export function NumberInput({
 						</span>
 					</button>
 					<button
+						type="button"
 						className="bg-gray-800 w-12 rounded-br-md focus:outline-none hover:bg-gray-900"
 						disabled={value === min}
 						onClick={() => {

@@ -91,6 +91,7 @@ function ApproveDBEntryButton({
 	return (
 		<>
 			<button
+				type="button"
 				className="bp4-button bp4-intent-success w-full"
 				disabled={dbEntryId === undefined || dbEntryId === null}
 				onClick={() => {
