@@ -55,10 +55,20 @@
 			// The old ESLint setup had no jsx-a11y plugin, so Biome's
 			// recommended a11y group surfaces ~104 pre-existing violations
 			// (missing SVG titles, button types, alt text, keyboard handlers,
-			// valid anchors). Disabled here so the ESLint->Biome swap stays a
-			// clean tooling change; enabling a11y and fixing the violations is
-			// its own follow-up (issue #2790).
-			"a11y": "off"
+			// valid anchors). Each rule is disabled individually rather than
+			// switching off the whole group, so a follow-up child of #2790 can
+			// re-enable one rule at a time by deleting its "off" line. Keep the
+			// ESLint->Biome swap a clean tooling change; fixing the violations
+			// is tracked per rule under #2790.
+			"a11y": {
+				"noSvgWithoutTitle": "off",
+				"noStaticElementInteractions": "off",
+				"useAltText": "off",
+				"useButtonType": "off",
+				"useValidAnchor": "off",
+				"useAnchorContent": "off",
+				"useKeyWithClickEvents": "off"
+			}
 		}
 	},
 	"assist": {
