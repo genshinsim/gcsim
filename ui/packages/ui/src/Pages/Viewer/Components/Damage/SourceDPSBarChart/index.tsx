@@ -31,7 +31,7 @@ export const SourceDPSCard = ({ data, running, names }: Props) => {
 	// without: on lang switch -> no data -> require changing the char dropdown value to see it again
 	useEffect(() => {
 		setFilter(all_filter);
-	}, [setFilter, all_filter]);
+	}, [all_filter]);
 
 	const [stats, timer] = useRefreshWithTimer(
 		(d) => {
