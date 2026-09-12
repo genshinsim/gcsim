@@ -64,11 +64,11 @@ export function Warning({
 				/>
 			</div>
 			<div className="inline-flex pt-4">
-				<img src={tanuki} className="w-15 h-10 mx-0" />
+				<img src={tanuki} alt="" className="w-15 h-10 mx-0" />
 				<div className="font-semibold px-3 pt-2 text-xl w-50 text-gray-200">
 					{t(headerKey)}
 				</div>
-				<img src={tanuki} className="w-15 h-10 mx-0" />
+				<img src={tanuki} alt="" className="w-15 h-10 mx-0" />
 			</div>
 			<div className="space-y-3 pb-3 text-s leading-5 text-gray-400">
 				<Trans i18nKey={bodyKey} components={bodyComponents}>

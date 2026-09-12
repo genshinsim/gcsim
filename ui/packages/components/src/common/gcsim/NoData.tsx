@@ -39,7 +39,7 @@ let availableImages = [...images];
 
 export const NoDataIcon = ({ className }: Props) => {
 	const img = useRef<string | undefined>(image());
-	return <img src={img.current} className={className} />;
+	return <img src={img.current} alt="" className={className} />;
 };
 
 function image(): string {

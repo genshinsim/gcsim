@@ -62,7 +62,6 @@
 			// is tracked per rule under #2790.
 			"a11y": {
 				"noStaticElementInteractions": "off",
-				"useAltText": "off",
 				"useValidAnchor": "off",
 				"useAnchorContent": "off",
 				"useKeyWithClickEvents": "off"
