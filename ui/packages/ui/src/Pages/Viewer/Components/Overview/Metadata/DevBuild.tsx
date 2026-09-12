@@ -7,11 +7,11 @@ type Props = {
 
 export const DevBuild = ({ signKey }: Props) => {
 	const { t } = useTranslation();
-	if (signKey == null || signKey == "prod") {
+	if (signKey == null || signKey === "prod") {
 		return null;
 	}
 
-	if (signKey != "dev") {
+	if (signKey !== "dev") {
 		return (
 			<Item
 				value={t<string>("result.metadata_dev_unofficial")}

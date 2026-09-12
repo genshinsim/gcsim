@@ -26,7 +26,7 @@ const Details = ({ data }: { data: any }) => {
 			) : (
 				<div className="flex flex-col ml-2 mr-2 mb-2 mt-2 p-2 rounded bg-[#252A31] ">
 					<div className="grid grid-cols-3">
-						<div>Mode: {data.mode == 1 ? "Dur" : "TTK"} </div>
+						<div>Mode: {data.mode === 1 ? "Dur" : "TTK"} </div>
 						<div>{`Sim duration: ${Math.round(
 							data.statistics.duration.mean,
 						)}s`}</div>

@@ -142,7 +142,7 @@ function useData(
 
 		const rows = new Map<string, SourceData[]>();
 		for (let i = 0; i < dps.length; i++) {
-			if (names[i] == "") {
+			if (names[i] === "") {
 				continue;
 			}
 			if (filter !== all_filter && names[i] !== filter) {
@@ -155,7 +155,7 @@ function useData(
 			}
 
 			for (const key in char) {
-				if (char[key].max == 0) {
+				if (char[key].max === 0) {
 					continue;
 				}
 

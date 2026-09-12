@@ -90,7 +90,7 @@ function extractWeapon(
 ): Weapon {
 	let result: Weapon | null = null;
 	equipList.forEach((e) => {
-		if (e.flat.itemType != "ITEM_WEAPON") {
+		if (e.flat.itemType !== "ITEM_WEAPON") {
 			return;
 		}
 		const { weapon: enkaWeapon, itemId } = e as GenshinItemWeapon;
@@ -116,7 +116,7 @@ function extractArtifactSet(
 ): Set {
 	const result: Set = {};
 	equipList.forEach((e) => {
-		if (e.flat.itemType != "ITEM_RELIQUARY") {
+		if (e.flat.itemType !== "ITEM_RELIQUARY") {
 			return;
 		}
 		//find set, throw error if we can an unrecognized set
@@ -141,7 +141,7 @@ function extractArtifactStats(
 	const total = stats_base.slice();
 	//we'll want to use labels for the other stuff (although doesn't do anything atm)
 	equipList.forEach((e) => {
-		if (e.flat.itemType != "ITEM_RELIQUARY") {
+		if (e.flat.itemType !== "ITEM_RELIQUARY") {
 			return;
 		}
 		const ms = extractMainStat(e as GenshinItemReliquary);

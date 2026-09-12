@@ -11,7 +11,7 @@ type endedStatus = {
 };
 
 const replacer = (k: string, v: unknown) => {
-	if (k == "ordering") return undefined;
+	if (k === "ordering") return undefined;
 	return v;
 };
 
@@ -42,7 +42,7 @@ export function parseLogV2(
         msg: "hook added"
    */
 	let lines: LogDetails[] = [];
-	if (!(typeof log == "string" || log instanceof String)) {
+	if (!(typeof log === "string" || log instanceof String)) {
 		log = JSON.stringify(log);
 	}
 
@@ -176,7 +176,7 @@ export function parseLogV2(
 		//skip if event is not in selected
 		// TODO: fix this??
 		// @ts-ignore
-		if (selected.indexOf(e.event) == -1) {
+		if (selected.indexOf(e.event) === -1) {
 			return;
 		}
 		//set icon/color etc... based on event
@@ -310,7 +310,7 @@ export function parseLogV2(
 						", next: " +
 						Math.floor(d["post_recovery"]);
 				}
-				if (d["post_recovery"] == d["max_energy"] && d["max_energy"]) {
+				if (d["post_recovery"] === d["max_energy"] && d["max_energy"]) {
 					e.msg += " (max)";
 				}
 				e.icon = "local_cafe";
@@ -374,7 +374,7 @@ export function parseLogV2(
 					}
 				}
 
-				if (e.ended != undefined) {
+				if (e.ended !== undefined) {
 					// maybe use e.target?
 					e.msg += strFrameWithSec(e.ended);
 				}
@@ -397,7 +397,7 @@ export function parseLogV2(
 
 	// TODO: fix this??
 	// @ts-ignore
-	if (selected.indexOf("status") != -1) {
+	if (selected.indexOf("status") !== -1) {
 		for (let f = -1; f <= finalFrame; f++) {
 			if (!(f in ended)) {
 				continue;

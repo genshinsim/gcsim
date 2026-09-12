@@ -44,7 +44,7 @@ const CardTemplate = ({
 			<Card
 				className="flex flex-auto flex-row items-stretch justify-between"
 				interactive={interactable}
-				onClick={() => interactable && value != undefined && click()}
+				onClick={() => interactable && value !== undefined && click()}
 			>
 				<div className="flex flex-col justify-start">
 					<CardTitle title={title} tooltip={tooltip} />

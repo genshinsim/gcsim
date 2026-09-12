@@ -32,7 +32,7 @@ export function useData(
 			};
 		});
 
-		if (data.length == 0) {
+		if (data.length === 0) {
 			return {
 				data: [],
 				keys: [],

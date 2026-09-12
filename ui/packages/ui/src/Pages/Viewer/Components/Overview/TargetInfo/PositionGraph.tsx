@@ -64,7 +64,7 @@ export const PositionGraph = ({
 		tooltip.hideTooltip,
 	);
 
-	if (enemies == null || data.length == 0) {
+	if (enemies == null || data.length === 0) {
 		return <NoData />;
 	}
 
@@ -111,7 +111,7 @@ export const PositionGraph = ({
 					/>
 					{data.map((e, i) => {
 						const opacity =
-							tooltip.tooltipData?.index == i && !tooltip.tooltipData.player
+							tooltip.tooltipData?.index === i && !tooltip.tooltipData.player
 								? 0.75
 								: 0.25;
 						return (

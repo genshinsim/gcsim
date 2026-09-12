@@ -30,7 +30,7 @@ function App({ id }: { id: string }) {
 			return;
 		}
 		const includedChars = main.summary?.char_names;
-		if (includedChars === null || includedChars == undefined) {
+		if (includedChars === null || includedChars === undefined) {
 			return;
 		}
 		const q = {

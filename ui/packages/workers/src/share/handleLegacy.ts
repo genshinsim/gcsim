@@ -23,7 +23,7 @@ export async function handleLegacy(request: IRequest): Promise<Response> {
 
 	const resp = await fetch(new Request(`https://gcsim.app/api/view/${key}`));
 
-	if (resp.status != 200) {
+	if (resp.status !== 200) {
 		return resp;
 	}
 

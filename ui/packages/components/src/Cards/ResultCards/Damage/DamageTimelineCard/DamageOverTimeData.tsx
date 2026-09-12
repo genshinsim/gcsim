@@ -28,7 +28,7 @@ export function useData(input?: model.BucketStats): OverTimeData {
 			};
 		});
 
-		if (data.length == 0) {
+		if (data.length === 0) {
 			return {
 				data: [],
 				duration: 1,

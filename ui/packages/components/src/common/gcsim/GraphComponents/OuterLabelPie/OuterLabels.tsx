@@ -57,7 +57,7 @@ export const OuterLabels = <Datum,>({
 	);
 	const linePoints = useLinePoints(labelPositions, pieRadius, tail);
 
-	if (labelRadius == 0) {
+	if (labelRadius === 0) {
 		return null;
 	}
 
@@ -125,7 +125,7 @@ function useLabelPositions<Datum>(
 				if (
 					prev != null &&
 					Math.abs(pos.y - prev.y) < yPadding &&
-					isLeft(pos.angle) == isLeft(prev.angle)
+					isLeft(pos.angle) === isLeft(prev.angle)
 				) {
 					const r = labelRadius;
 					const y = prev.y + yPadding * (isLeft(pos.angle) ? 1 : -1);

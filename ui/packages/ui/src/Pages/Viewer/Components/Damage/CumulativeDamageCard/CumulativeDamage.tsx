@@ -129,7 +129,7 @@ export const CumulativeGraph = ({
 		bucketSize,
 	);
 
-	if (input == null || data.length == 0) {
+	if (input == null || data.length === 0) {
 		return <NoData />;
 	}
 

@@ -109,7 +109,7 @@ function useData(
 		}
 
 		for (const key in char) {
-			if (char[key].max == 0) {
+			if (char[key].max === 0) {
 				continue;
 			}
 

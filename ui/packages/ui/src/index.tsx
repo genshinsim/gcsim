@@ -157,7 +157,7 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 	const prevLocation = useRef(location);
 	useEffect(() => {
 		if (
-			prevLocation.current != location &&
+			prevLocation.current !== location &&
 			movedOffViewer(location, prevLocation) &&
 			exec().running()
 		) {

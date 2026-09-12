@@ -291,7 +291,7 @@ function CharFilterButtonChild({ charName }: { charName: string }) {
 				src={`/api/assets/avatar/${charName}.png`}
 				className="truncate h-16 object-contain"
 			/>
-			{travelerName != "" ? (
+			{travelerName !== "" ? (
 				<div className="text-center">{travelerName}</div>
 			) : (
 				<></>

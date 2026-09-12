@@ -37,7 +37,7 @@ export default ({ running, src, error, current, total, cancel }: Props) => {
 			return;
 		}
 
-		if (current == undefined || total == undefined) {
+		if (current === undefined || total === undefined) {
 			key.current = loadingToast.current?.show(
 				{
 					message: t<string>("sim.loading"),
@@ -51,7 +51,7 @@ export default ({ running, src, error, current, total, cancel }: Props) => {
 			return;
 		}
 
-		if (current >= total && src == ResultSource.Loaded) {
+		if (current >= total && src === ResultSource.Loaded) {
 			key.current = loadingToast.current?.show(
 				{
 					message: t<string>("sim.loaded", { i: current }),

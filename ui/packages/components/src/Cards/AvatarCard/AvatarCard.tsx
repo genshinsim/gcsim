@@ -22,7 +22,7 @@ export const AvatarCard = ({
 		<div
 			className={
 				"flex flex-row flex-wrap justify-center gap-2" +
-				(className == "" ? "" : " " + className)
+				(className === "" ? "" : " " + className)
 			}
 		>
 			{chars?.map((c, i) => {

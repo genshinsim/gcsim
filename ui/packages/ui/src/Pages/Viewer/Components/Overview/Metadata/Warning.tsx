@@ -13,7 +13,7 @@ export const WarningItem = memo(({ warnings }: Props) => {
 		return null;
 	}
 	const count = Object.entries(warnings).filter(([, v]) => v as boolean).length;
-	if (count == 0) {
+	if (count === 0) {
 		return null;
 	}
 

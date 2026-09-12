@@ -39,7 +39,7 @@ function initialize(req: { cfg: string }) {
 function run(req: { itr: number }) {
 	try {
 		const resp = simulate();
-		if (typeof resp == "string" || resp instanceof String) {
+		if (typeof resp === "string" || resp instanceof String) {
 			return {
 				type: WorkerResponse.Failed,
 				reason: JSON.parse(resp as string).error,

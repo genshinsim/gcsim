@@ -20,7 +20,7 @@ export interface SampleItem {
 }
 
 export function strFrameWithSec(frame: number): string {
-	if (frame == -1) {
+	if (frame === -1) {
 		return " [-1]";
 	}
 	const result =

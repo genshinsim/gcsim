@@ -8,7 +8,7 @@ type Props = {
 
 export const Commit = memo(({ commit }: Props) => {
 	const { t } = useTranslation();
-	if (commit == null || commit == "") {
+	if (commit == null || commit === "") {
 		return null;
 	}
 

@@ -39,7 +39,7 @@ export async function handleEnka(request: IRequest): Promise<Response> {
 		avatars.push(avatar);
 	}
 
-	if (d.owner != undefined) {
+	if (d.owner !== undefined) {
 		console.log(uid, "has enka profile");
 
 		const resp = await fetch(

@@ -10,11 +10,11 @@ export const Home = () => {
 	const [_, to] = useLocation();
 	const sortedTagnames = Object.keys(tagData)
 		.filter((key) => {
-			return key !== "0" && key != "2";
+			return key !== "0" && key !== "2";
 		})
 		.map((key) => {
 			let name = tagData[key]["display_name"];
-			if (key == "1") {
+			if (key === "1") {
 				name = "(Not Tagged)";
 			}
 			return (

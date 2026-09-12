@@ -118,7 +118,7 @@ function useData(energy?: SourceStats[], names?: string[]): ChartData {
 
 		const rows = new Map<string, SourceData[]>();
 		for (let i = 0; i < energy.length; i++) {
-			if (names[i] == "") {
+			if (names[i] === "") {
 				continue;
 			}
 
@@ -128,7 +128,7 @@ function useData(energy?: SourceStats[], names?: string[]): ChartData {
 			}
 
 			for (const key in char) {
-				if (char[key].max == 0) {
+				if (char[key].max === 0) {
 					continue;
 				}
 

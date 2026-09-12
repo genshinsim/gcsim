@@ -105,7 +105,7 @@ export default function AoETable({ item_key, data_src }) {
 			</TabItem>,
 		);
 	}
-	if (tabs.length == 0) {
+	if (tabs.length === 0) {
 		return <div>No AoE data for {data_src}</div>;
 	}
 	return <Tabs>{tabs}</Tabs>;

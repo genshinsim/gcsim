@@ -95,9 +95,9 @@ export const RenderTooltip = (props: Props) => {
 	const temp = props.xLin.invert(props.tooltipData.x - props.margin.left);
 	const idx = Math.max(Math.floor(props.delta * (temp - props.data.min)), 0);
 	const lower =
-		props.delta == 0 ? props.data.min : props.data.min + idx / props.delta;
+		props.delta === 0 ? props.data.min : props.data.min + idx / props.delta;
 	const upper =
-		props.delta == 0
+		props.delta === 0
 			? props.data.max
 			: props.data.min + (idx + 1) / props.delta;
 	const count = props.data.histogram[idx];
@@ -206,28 +206,28 @@ const TooltipContent = ({
 
 	return (
 		<div className="px-5 py-2 font-mono text-xs grid grid-cols-[repeat(2,_max-content)] gap-x-2 justify-center">
-			{(muIndex && muIndex == idx && (
+			{(muIndex && muIndex === idx && (
 				<>
 					<span className="justify-self-end text-gray-400">mean</span>
 					<span>{mean}</span>
 				</>
 			)) ||
 				null}
-			{(p25Index && p25Index == idx && (
+			{(p25Index && p25Index === idx && (
 				<>
 					<span className="justify-self-end text-gray-400">p25</span>
 					<span>{p25}</span>
 				</>
 			)) ||
 				null}
-			{(p50Index && p50Index == idx && (
+			{(p50Index && p50Index === idx && (
 				<>
 					<span className="justify-self-end text-gray-400">p50</span>
 					<span>{p50}</span>
 				</>
 			)) ||
 				null}
-			{(p75Index && p75Index == idx && (
+			{(p75Index && p75Index === idx && (
 				<>
 					<span className="justify-self-end text-gray-400">p75</span>
 					<span>{p75}</span>

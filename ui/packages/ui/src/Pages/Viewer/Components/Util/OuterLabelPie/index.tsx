@@ -85,7 +85,7 @@ export default <Datum,>({
 					>
 						{(pie) => {
 							return pie.arcs.map((arc, index) => {
-								if (tooltip.tooltipData?.index != index) {
+								if (tooltip.tooltipData?.index !== index) {
 									return null;
 								}
 

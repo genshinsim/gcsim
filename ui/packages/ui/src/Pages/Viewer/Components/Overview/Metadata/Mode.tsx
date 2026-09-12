@@ -12,7 +12,7 @@ export const ModeItem = memo(({ mode }: Props) => {
 		return null;
 	}
 
-	const modeName = mode == 2 ? t<string>("db.ttk") : t<string>("db.duration");
+	const modeName = mode === 2 ? t<string>("db.ttk") : t<string>("db.duration");
 	return (
 		<Item
 			title={t<string>("db.simMode")}

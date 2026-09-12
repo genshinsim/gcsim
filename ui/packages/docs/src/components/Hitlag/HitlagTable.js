@@ -82,7 +82,7 @@ export default function HitlagTable({ item_key }) {
 			</TabItem>,
 		);
 	}
-	if (tabs.length == 0) {
+	if (tabs.length === 0) {
 		return <div>No hitlag data for character</div>;
 	}
 	return <Tabs>{tabs}</Tabs>;

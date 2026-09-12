@@ -195,7 +195,7 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
 				onChange={(e) => setValue(e.currentTarget.value)}
 				fill={true}
 			/>
-			{value == "custom" ? (
+			{value === "custom" ? (
 				<NumericInput
 					value={customSeed}
 					onValueChange={(valueAsNumber, valueAsString) =>

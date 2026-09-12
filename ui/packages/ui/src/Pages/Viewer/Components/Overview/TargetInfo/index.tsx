@@ -26,7 +26,7 @@ export default memo(TargetInfo);
 
 const CardData = ({ enemies, player }: Props) => {
 	const { t } = useTranslation();
-	if (enemies == null || enemies.length == 0) {
+	if (enemies == null || enemies.length === 0) {
 		return <NoData />;
 	}
 

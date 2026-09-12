@@ -112,7 +112,7 @@ export function tallyArtifactSet(artifacts: GOODArtifact[]): {
 		.map((setKey) => {
 			if (Object.keys(setKeyTally).includes(setKey)) {
 				setKeyTally[setKey] += 1;
-			} else if (setKey != "") {
+			} else if (setKey !== "") {
 				setKeyTally[setKey] = 1;
 			}
 		}); // Tallies the set keys

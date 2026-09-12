@@ -8,7 +8,7 @@ type Props = {
 };
 
 const CardTitle = (props: Props) => {
-	if (props.timer == null || props.timer == 0) {
+	if (props.timer == null || props.timer === 0) {
 		return <TitleWithTooltipMemo {...props} />;
 	}
 

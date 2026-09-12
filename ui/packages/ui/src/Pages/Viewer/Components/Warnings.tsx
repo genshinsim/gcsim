@@ -257,7 +257,7 @@ const FailedActionDetails = ({ data, title, stat }: DetailsProps) => {
 	}
 
 	const Item = ({ f, i }: { f: FloatStat | undefined; i: number }) => {
-		if (f?.max == 0) {
+		if (f?.max === 0) {
 			return null;
 		}
 

@@ -77,7 +77,7 @@ export const AvatarPortrait = ({
 			<div
 				className={
 					"flex flex-col bg-gray-400 border border-gray-600 rounded-sm" +
-					(className == "" ? "" : " " + className)
+					(className === "" ? "" : " " + className)
 				}
 			>
 				<div className="flex justify-center">
@@ -97,7 +97,7 @@ export const AvatarPortrait = ({
 		for (const [key] of Object.entries(char.sets)) {
 			sets.push(key);
 		}
-		if (sets.length == 1 && char.sets[sets[0]] == 2) {
+		if (sets.length === 1 && char.sets[sets[0]] === 2) {
 			half = true;
 		}
 	}
@@ -106,7 +106,7 @@ export const AvatarPortrait = ({
 		<div
 			className={
 				"flex flex-col bg-gray-400 border border-gray-600 rounded-sm" +
-				(className == "" ? "" : " " + className)
+				(className === "" ? "" : " " + className)
 			}
 		>
 			<div className={`relative w-full pt-2 z-0 ${charBG(char.element ?? "")}`}>

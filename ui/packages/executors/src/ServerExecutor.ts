@@ -21,7 +21,7 @@ export class ServerExecutor implements Executor {
 	}
 
 	public ready(): Promise<boolean> {
-		if (this.ready_cache != undefined) {
+		if (this.ready_cache !== undefined) {
 			const ready = this.ready_cache;
 			return new Promise((resolve) => resolve(ready));
 		}
@@ -31,8 +31,8 @@ export class ServerExecutor implements Executor {
 			axios
 				.get(`${this.ipaddr}/ready/${this.id}`)
 				.then((resp) => {
-					this.ready_cache = resp.status == 200;
-					resolve(resp.status == 200);
+					this.ready_cache = resp.status === 200;
+					resolve(resp.status === 200);
 				})
 				.catch((error) => {
 					this.ready_cache = false;
@@ -54,7 +54,7 @@ export class ServerExecutor implements Executor {
 				.then((resp) => {
 					//resp should be json body?
 					console.log(resp);
-					if (typeof resp.data == "string") {
+					if (typeof resp.data === "string") {
 						reject(resp.data);
 					} else {
 						resolve({

@@ -25,7 +25,7 @@ export const Metadata = ({ data }: Props) => {
 	//@ts-ignore: auto generate proto is wrong here. the key is lower case dps, not upper DPS
 	let dps: number | undefined = data?.statistics?.dps?.mean;
 	const count: number = Object.keys(data?.statistics?.target_dps ?? {}).length;
-	if (count > 0 && dps != undefined) {
+	if (count > 0 && dps !== undefined) {
 		dps = dps / (count * 1.0);
 	} else {
 		dps = undefined;
@@ -34,7 +34,7 @@ export const Metadata = ({ data }: Props) => {
 	return (
 		<div className="flex flex-row flex-wrap !p-1.5 gap-2 justify-center bg-slate-700 m-1 -mt-0  rounded-sm border border-gray-600">
 			<Error signKey={data.key_type} modified={data.modified} />
-			{!data.modified && (data.key_type == null || data.key_type == "prod") ? (
+			{!data.modified && (data.key_type == null || data.key_type === "prod") ? (
 				<DPS dps={dps} />
 			) : null}
 			<WarningItem warnings={data?.statistics?.warnings ?? undefined} />
@@ -52,7 +52,7 @@ type DPSProps = {
 export const DPS = ({ dps }: DPSProps) => {
 	const { i18n } = useTranslation();
 
-	if (dps == undefined) {
+	if (dps === undefined) {
 		<Item title="dps/target" value={"n/a"} />;
 	}
 
@@ -74,7 +74,7 @@ type ErrorProps = {
 };
 
 export const Error = ({ signKey, modified }: ErrorProps) => {
-	if (signKey == null || signKey == undefined || signKey == "prod") {
+	if (signKey == null || signKey === undefined || signKey === "prod") {
 		return <Dirty modified={modified ?? false} />;
 	}
 

@@ -51,7 +51,7 @@ const Row = ({
 			<div
 				key={ci}
 				className={
-					row.active == ci
+					row.active === ci
 						? "border-l-2 border-gray-500 bg-gray-400	"
 						: "border-l-2 border-gray-500"
 				}

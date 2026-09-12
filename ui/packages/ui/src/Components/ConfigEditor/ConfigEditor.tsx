@@ -64,7 +64,7 @@ export function ConfigEditor(props: Props) {
 					<FormGroup label={t<string>("simple.editor_theme")} inline>
 						<HTMLSelect onChange={(e) => setTheme(e.currentTarget.value)}>
 							{themes.map((t) => (
-								<option key={t} selected={t == theme}>
+								<option key={t} selected={t === theme}>
 									{t}
 								</option>
 							))}

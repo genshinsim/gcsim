@@ -50,13 +50,13 @@ export default ({
 	const [isOpen, setOpen] = useState(true);
 	const location = useLocation();
 
-	if (data == null || mismatch == MismatchType.NoMismatch) {
+	if (data == null || mismatch === MismatchType.NoMismatch) {
 		return null;
 	}
 
 	// only show hash mismatch on share links to reduce noise (for now)
 	if (
-		mismatch == MismatchType.CommitMismatch &&
+		mismatch === MismatchType.CommitMismatch &&
 		!location.pathname.startsWith("/sh/") &&
 		!location.pathname.startsWith("/db/")
 	) {
@@ -64,13 +64,16 @@ export default ({
 	}
 
 	// only show major version errors in development
-	if (mismatch != MismatchType.MajorVersionMismatch && mode === "development") {
+	if (
+		mismatch !== MismatchType.MajorVersionMismatch &&
+		mode === "development"
+	) {
 		return null;
 	}
 
 	const minor =
-		mismatch == MismatchType.CommitMismatch ||
-		mismatch == MismatchType.MinorVersionMismatch;
+		mismatch === MismatchType.CommitMismatch ||
+		mismatch === MismatchType.MinorVersionMismatch;
 
 	return (
 		<Dialog
@@ -118,11 +121,11 @@ function useMismatch(
 	useEffect(() => {
 		if (schema_version == null) {
 			setMismatch(MismatchType.MajorVersionMismatch);
-		} else if (schema_version.major != MAJOR) {
+		} else if (schema_version.major !== MAJOR) {
 			setMismatch(MismatchType.MajorVersionMismatch);
-		} else if (schema_version.minor != MINOR) {
+		} else if (schema_version.minor !== MINOR) {
 			setMismatch(MismatchType.MinorVersionMismatch);
-		} else if (resultCommit != latestCommit) {
+		} else if (resultCommit !== latestCommit) {
 			setMismatch(MismatchType.CommitMismatch);
 		} else {
 			setMismatch(MismatchType.NoMismatch);
@@ -203,7 +206,7 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
 		</div>
 	);
 
-	if (mismatch == MismatchType.CommitMismatch) {
+	if (mismatch === MismatchType.CommitMismatch) {
 		return (
 			<Callout
 				title={t<string>("viewer.commit_mismatch_title_hash")}
@@ -215,7 +218,7 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
 		);
 	}
 
-	if (mismatch == MismatchType.MinorVersionMismatch) {
+	if (mismatch === MismatchType.MinorVersionMismatch) {
 		return (
 			<Callout
 				title={t<string>("viewer.commit_mismatch_title_minor")}
@@ -295,7 +298,7 @@ const CancelButton = ({
 	const { t } = useTranslation();
 	const history = useHistory();
 
-	if (mismatch == MismatchType.MajorVersionMismatch) {
+	if (mismatch === MismatchType.MajorVersionMismatch) {
 		return (
 			<Button
 				text={t<string>("db.cancel")}

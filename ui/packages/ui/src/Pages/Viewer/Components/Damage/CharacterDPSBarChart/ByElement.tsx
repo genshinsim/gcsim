@@ -51,7 +51,7 @@ export const ByElementChart = ({ width, height, names, dps }: Props) => {
 	const { DataColors } = useDataColors();
 	const { data, keys, xMax } = useData(dps, names);
 
-	if (dps == null || names == null || keys.length == 0) {
+	if (dps == null || names == null || keys.length === 0) {
 		return <NoData />;
 	}
 
