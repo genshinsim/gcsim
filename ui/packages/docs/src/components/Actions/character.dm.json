@@ -2206,7 +2206,7 @@
   "iansan": [
     {
       "ability": "attack",
-      "invalid": true
+      "invalid": false
     },
     {
       "ability": "aim",
@@ -2214,7 +2214,8 @@
     },
     {
       "ability": "charge",
-      "invalid": true
+      "note": "Need to use attack right before charge.",
+      "invalid": false
     },
     {
       "ability": "low_plunge",
@@ -2226,11 +2227,12 @@
     },
     {
       "ability": "skill",
-      "invalid": true
+      "invalid": false
     },
     {
       "ability": "burst",
-      "invalid": true
+      "note": "Requires to use the 'movement' argument on action params to generate Nightsoul points.",
+      "invalid": false
     },
     {
       "ability": "dash",

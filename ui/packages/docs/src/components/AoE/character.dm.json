@@ -5665,6 +5665,62 @@
       "radius": 6
     }
   ],
+  "iansan": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.4,
+      "fan_angle": 260,
+      "radius": 1.75
+    },
+    {
+      "ability": "attack",
+      "name": "N2",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.5,
+      "radius": 1.6
+    },
+    {
+      "ability": "attack",
+      "name": "N3",
+      "shape": "Box",
+      "center": "Player",
+      "offset_y": -0.5,
+      "box_x": 2.2,
+      "box_y": 3
+    },
+    {
+      "ability": "charge",
+      "name": "CA",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 0.8
+    },
+    {
+      "ability": "charge",
+      "name": "CA-Swift",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 2.5
+    },
+    {
+      "ability": "skill",
+      "name": "E",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 0.8
+    },
+    {
+      "ability": "burst",
+      "name": "Q",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 5
+    }
+  ],
   "ifa": [
     {
       "ability": "attack",
