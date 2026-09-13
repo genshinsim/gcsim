@@ -1427,6 +1427,23 @@
         "burst_energy_cost": 60
       }
     },
+    "odette": {
+      "id": 10000150,
+      "sub_id": 15001,
+      "key": "odette",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_SNEZHNAYA_STAR",
+      "element": "Ice",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Odette",
+      "skill_details": {
+        "skill": 11502,
+        "burst": 11505,
+        "attack": 11501,
+        "burst_energy_cost": 60
+      }
+    },
     "ororon": {
       "id": 10000105,
       "sub_id": 10501,

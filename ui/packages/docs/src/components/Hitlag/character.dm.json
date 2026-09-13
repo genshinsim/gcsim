@@ -3399,6 +3399,64 @@
       "deployable": false
     }
   ],
+  "odette": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "time": 0.03,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N2",
+      "time": 0.03,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N3-2",
+      "time": 0.03,
+      "scale": 0.01,
+      "defense_halt": false,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N4",
+      "time": 0.05,
+      "scale": 0.01,
+      "defense_halt": false,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N5",
+      "time": 0,
+      "scale": 0,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "skill",
+      "name": "E-Recast-Final",
+      "time": 0.04,
+      "scale": 0.01,
+      "defense_halt": false,
+      "deployable": false
+    },
+    {
+      "ability": "cons",
+      "name": "C4",
+      "time": 0.04,
+      "scale": 0.01,
+      "defense_halt": false,
+      "deployable": true
+    }
+  ],
   "ororon": [
     {
       "ability": "aim",

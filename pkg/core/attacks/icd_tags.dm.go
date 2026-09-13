@@ -65,6 +65,7 @@ const (
 	ICDTagNeuvilletteC6
 	ICDTagNilouTranquilityAura
 	ICDTagNormalAttack
+	ICDTagOdetteDanceDuo
 	ICDTagOroronElmentalBurst
 	ICDTagOverloadDamage
 	ICDTagShatter

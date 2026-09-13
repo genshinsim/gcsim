@@ -52,6 +52,7 @@ const (
 	ICDGroupNahidaSkill
 	ICDGroupNaviaBurst
 	ICDGroupNilou
+	ICDGroupOdetteDanceDuo
 	ICDGroupOroronElementalBurst
 	ICDGroupSigewinne
 	ICDGroupSigewinneBurst
@@ -117,6 +118,7 @@ var ICDGroupResetTimer = []int{
 	ICDGroupNahidaSkill:               60,   // 1s
 	ICDGroupNaviaBurst:                720,  // 12s
 	ICDGroupNilou:                     114,  // 1.9s
+	ICDGroupOdetteDanceDuo:            180,  // 3s
 	ICDGroupOroronElementalBurst:      180,  // 3s
 	ICDGroupSigewinne:                 120,  // 2s
 	ICDGroupSigewinneBurst:            114,  // 1.9s
@@ -182,6 +184,7 @@ var ICDGroupEleApplicationSequence = [][]float64{
 	ICDGroupNahidaSkill:               {1.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	ICDGroupNaviaBurst:                {1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 0.0},
 	ICDGroupNilou:                     {1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
+	ICDGroupOdetteDanceDuo:            {1.0, 0.0, 0.0, 0.0},
 	ICDGroupOroronElementalBurst:      {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	ICDGroupSigewinne:                 {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
 	ICDGroupSigewinneBurst:            {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
@@ -247,6 +250,7 @@ var ICDGroupDamageSequence = [][]float64{
 	ICDGroupNahidaSkill:               {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupNaviaBurst:                {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupNilou:                     {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
+	ICDGroupOdetteDanceDuo:            {1.0, 1.0, 1.0, 1.0},
 	ICDGroupOroronElementalBurst:      {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupSigewinne:                 {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},
 	ICDGroupSigewinneBurst:            {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0},

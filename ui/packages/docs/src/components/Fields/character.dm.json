@@ -213,6 +213,16 @@
       "desc": "Returns a number representing the previous N1 version. Possible values are: 0 = Left, 1 = Right, 2 = Twirl."
     }
   ],
+  "odette": [
+    {
+      "field": ".odette.a1-stacks-other",
+      "desc": "Current number of A1 stacks on other characters"
+    },
+    {
+      "field": ".odette.a1-stacks-self",
+      "desc": "Current number of A1 stacks on Odette"
+    }
+  ],
   "shikanoinheizou": [
     {
       "field": ".heizou.declension",
