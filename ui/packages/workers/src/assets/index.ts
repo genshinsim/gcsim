@@ -8,7 +8,7 @@ import weaponMap from "./weapon.dm.json";
 // microservice in internal/services/assets). Layout of the GCSIM_ASSETS bucket
 // mirrors that service's routes: dynamic images are cached under
 // `<type>/<key>.png`, and the static files (fonts, logo, special/*, misc/*)
-// live at their sub-path, uploaded on deploy.
+// live at their sub-path, synced from this package's static/ dir on deploy.
 
 type AssetType = "avatar" | "weapons" | "artifacts";
 

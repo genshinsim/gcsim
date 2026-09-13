@@ -9,7 +9,7 @@ inputs:
     description: cloudflare account id
   rcloneConfig:
     required: true
-    description: rclone config for cloudflare R2 (assets bucket static files)
+    description: rclone config for cloudflare R2 (gcsim bucket static files)
 
 runs:
   using: composite
@@ -24,8 +24,9 @@ runs:
       command: deploy --keep-vars
 
   # Provision/refresh the static files the worker serves from R2 (fonts, logo,
-  # special/* traveler icons, misc/* including default.png). Uses `copy` not
-  # `sync` so dynamically cached images already in the bucket are preserved.
+  # special/* traveler icons, misc/* including default.png). Sourced from the
+  # workers package's own static/ copy so the package is self-contained. Uses
+  # `copy` not `sync` so dynamically cached images already in the bucket survive.
   - name: Setup rclone
     uses: AnimMouse/setup-rclone@v1
     with:
@@ -33,4 +34,4 @@ runs:
       disable_base64: true
   - name: Upload static assets to R2
     shell: bash
-    run: rclone copy ./internal/services/assets/static/ r2rclone:assets/ --progress
+    run: rclone copy ./ui/packages/workers/static/ r2rclone:gcsim/ --progress
