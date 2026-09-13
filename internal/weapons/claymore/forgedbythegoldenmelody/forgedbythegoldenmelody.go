@@ -18,11 +18,12 @@ const (
 	atkBuffContraKey     = "forged-by-the-golden-melody-contrapuntal-atk"
 	emBuffContraKey      = "forged-by-the-golden-melody-contrapuntal-em"
 	stellarBuffContraKey = "forged-by-the-golden-melody-contrapuntal-stellar"
+	contraICDKey         = "forged-by-the-golden-melody-contrapuntal-icd"
 )
 
 type Weapon struct {
 	Index       int
-	lastBuffKey string
+	curBuff     int
 	char        *character.CharWrapper
 	atkBuff     []float64
 	emBuff      []float64
@@ -31,6 +32,7 @@ type Weapon struct {
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error {
+	w.curBuff = 2
 	w.switchBuff()
 	return nil
 }
@@ -50,13 +52,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w.stellarBuff = 0.21 + float64(r)*0.07
 
 	onStellar := func(args ...any) {
-		atk := args[1].(*info.AttackInfo)
-		if atk.ActorIndex != char.Index() {
+		if char.StatusIsActive(contraICDKey) {
 			return
 		}
 
-		switch w.lastBuffKey {
-		case atkBuffKey:
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
+		}
+
+		switch w.curBuff {
+		case 0:
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag(atkBuffContraKey, 12*60),
 				AffectedStat: attributes.ATKP,
@@ -64,7 +70,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 					return w.atkBuff
 				},
 			})
-		case emBuffKey:
+		case 1:
 			char.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag(emBuffContraKey, 12*60),
 				AffectedStat: attributes.EM,
@@ -72,7 +78,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 					return w.emBuff
 				},
 			})
-		case stellarBuffKey:
+		case 2:
 			w.char.AddReactBonusMod(character.ReactBonusMod{
 				Base: modifier.NewBaseWithHitlag(stellarBuffContraKey, 12*60),
 				Amount: func(ai info.AttackInfo) float64 {
@@ -82,9 +88,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 					return 0
 				},
 			})
-		default:
-			return
 		}
+
+		char.AddStatus(contraICDKey, 12*60, true)
 	}
 
 	c.Events.Subscribe(event.OnStellarConduct, onStellar, fmt.Sprintf("forged-by-the-golden-melody-on-stellar-conduct-%v", char.Base.Key.String()))
@@ -94,9 +100,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 }
 
 func (w *Weapon) switchBuff() {
-	switch w.lastBuffKey {
-	case atkBuffKey:
-		w.lastBuffKey = emBuffKey
+	switch w.curBuff {
+	case 0:
 		w.char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(emBuffKey, 10*60),
 			AffectedStat: attributes.EM,
@@ -104,8 +109,7 @@ func (w *Weapon) switchBuff() {
 				return w.emBuff
 			},
 		})
-	case emBuffKey:
-		w.lastBuffKey = stellarBuffKey
+	case 1:
 		w.char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBaseWithHitlag(stellarBuffKey, 10*60),
 			Amount: func(ai info.AttackInfo) float64 {
@@ -116,7 +120,6 @@ func (w *Weapon) switchBuff() {
 			},
 		})
 	default:
-		w.lastBuffKey = atkBuffKey
 		w.char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(atkBuffKey, 10*60),
 			AffectedStat: attributes.ATKP,
@@ -125,5 +128,6 @@ func (w *Weapon) switchBuff() {
 			},
 		})
 	}
+	w.curBuff = (w.curBuff + 1) % 3
 	w.char.QueueCharTask(w.switchBuff, 10*60)
 }
