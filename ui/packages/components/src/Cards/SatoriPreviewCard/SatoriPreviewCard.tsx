@@ -20,9 +20,18 @@ export type SatoriPreviewCardProps = {
 	 * Injectable asset-resolver seam. Maps a relative asset path (see assetPaths)
 	 * to an <img src>. Defaults to `${assetBase}/${path}`, so Satori fetches the
 	 * assets itself; the edge worker overrides it to return pre-fetched `data:`
-	 * URIs. Does not affect layout.
+	 * URIs. Does not affect layout. Ignored for portraits when `portraits` is set.
 	 */
 	resolveAsset?: ResolveAsset;
+	/**
+	 * Pre-composited portrait images, one per character slot (order matches
+	 * data.character_details). When provided, each portrait's imagery (element
+	 * background + avatar + weapon + artifact set(s), with the white outline and
+	 * two-set slice baked in) renders as a single <img> and only the text badges
+	 * are layered on top. Produced by the Worker's Photon compositor; absent in
+	 * the browser/Storybook render, which stacks layers via resolveAsset.
+	 */
+	portraits?: readonly (string | null)[];
 };
 
 // Fixed card geometry (540x250), mirroring the live PreviewCard's measured
@@ -61,6 +70,7 @@ export const SatoriPreviewCard = ({
 	data,
 	assetBase = DEFAULT_ASSET_BASE,
 	resolveAsset = (path) => `${assetBase}/${path}`,
+	portraits,
 }: SatoriPreviewCardProps) => {
 	return (
 		<div
@@ -79,6 +89,7 @@ export const SatoriPreviewCard = ({
 				height={PORTRAIT_H}
 				margin={PORTRAIT_MARGIN}
 				resolveAsset={resolveAsset}
+				composited={portraits}
 			/>
 
 			<Metadata data={data} />

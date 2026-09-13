@@ -27,6 +27,11 @@ type PortraitProps = {
 	height: number;
 	margin: number;
 	resolveAsset: ResolveAsset;
+	// Pre-composited portrait image (bg + avatar + weapon + artifacts, with the
+	// white outline and two-set slice baked in). When set, the imagery renders as
+	// a single <img> and only the text badges are layered on top; when absent, the
+	// portrait is stacked layer-by-layer through resolveAsset (browser/Storybook).
+	composited?: string;
 };
 
 // A single character portrait: avatar, weapon, artifact set(s) and level/cons
@@ -40,6 +45,7 @@ const Portrait = ({
 	height,
 	margin,
 	resolveAsset,
+	composited,
 }: PortraitProps) => {
 	const base = {
 		display: "flex" as const,
@@ -54,6 +60,14 @@ const Portrait = ({
 
 	// Empty slot.
 	if (char === null) {
+		// Composited: the placeholder is already baked into the portrait image.
+		if (composited) {
+			return (
+				<div style={base}>
+					<img src={composited} width={width} height={height} alt="" />
+				</div>
+			);
+		}
 		return (
 			<div
 				style={{
@@ -91,6 +105,92 @@ const Portrait = ({
 		fontSize: 12,
 		fontWeight: 700,
 	};
+
+	// Text badges, shared by the layered and composited renders.
+	const consBadge = (
+		<div
+			style={{
+				...badgeStyle,
+				position: "absolute",
+				left: 0,
+				top: 0,
+				borderTopLeftRadius: 4,
+				borderBottomRightRadius: 8,
+			}}
+		>
+			<span style={{ color: CONS_COLOR }}>{`C${char.cons ?? 0}`}</span>
+			{char.weapon ? (
+				<span
+					style={{ color: REFINE_COLOR }}
+				>{`R${char.weapon.refine ?? 0}`}</span>
+			) : null}
+		</div>
+	);
+
+	const levelBadge = (
+		<div
+			style={{
+				...badgeStyle,
+				position: "absolute",
+				right: 0,
+				top: 0,
+				alignItems: "center",
+				borderTopRightRadius: 4,
+				borderBottomLeftRadius: 8,
+			}}
+		>
+			<span style={{ color: GRAY_400, fontWeight: 400 }}>lvl</span>
+			<span style={{ color: levelColor(i) }}>{char.level}</span>
+		</div>
+	);
+
+	// incomplete build: full-width WIP bar across the portrait (top-1/3).
+	const wipOverlay = invalid ? (
+		<div
+			style={{
+				position: "absolute",
+				top: "33%",
+				left: 0,
+				width,
+				display: "flex",
+				alignItems: "center",
+				justifyContent: "center",
+				padding: "6px 0",
+				border: "1px solid transparent",
+				backgroundColor: PRIMARY_BG,
+			}}
+		>
+			<span
+				style={{
+					color: "#ef4444",
+					fontFamily: FONT_FAMILY,
+					fontWeight: 700,
+					fontSize: 12,
+					lineHeight: "16px",
+					textTransform: "uppercase",
+				}}
+			>
+				WIP
+			</span>
+		</div>
+	) : null;
+
+	// Composited: one flat image for all imagery, text badges layered on top.
+	if (composited) {
+		return (
+			<div style={base}>
+				<img
+					src={composited}
+					width={width}
+					height={height}
+					alt={char.name ?? ""}
+				/>
+				{consBadge}
+				{levelBadge}
+				{wipOverlay}
+			</div>
+		);
+	}
 
 	return (
 		<div
@@ -166,71 +266,9 @@ const Portrait = ({
 				</div>
 			) : null}
 
-			{/* cons / refine (top-left) */}
-			<div
-				style={{
-					...badgeStyle,
-					position: "absolute",
-					left: 0,
-					top: 0,
-					borderTopLeftRadius: 4,
-					borderBottomRightRadius: 8,
-				}}
-			>
-				<span style={{ color: CONS_COLOR }}>{`C${char.cons ?? 0}`}</span>
-				{char.weapon ? (
-					<span
-						style={{ color: REFINE_COLOR }}
-					>{`R${char.weapon.refine ?? 0}`}</span>
-				) : null}
-			</div>
-
-			{/* level (top-right) */}
-			<div
-				style={{
-					...badgeStyle,
-					position: "absolute",
-					right: 0,
-					top: 0,
-					alignItems: "center",
-					borderTopRightRadius: 4,
-					borderBottomLeftRadius: 8,
-				}}
-			>
-				<span style={{ color: GRAY_400, fontWeight: 400 }}>lvl</span>
-				<span style={{ color: levelColor(i) }}>{char.level}</span>
-			</div>
-
-			{/* incomplete build: full-width WIP bar across the portrait (top-1/3) */}
-			{invalid ? (
-				<div
-					style={{
-						position: "absolute",
-						top: "33%",
-						left: 0,
-						width,
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						padding: "6px 0",
-						border: "1px solid transparent",
-						backgroundColor: PRIMARY_BG,
-					}}
-				>
-					<span
-						style={{
-							color: "#ef4444",
-							fontFamily: FONT_FAMILY,
-							fontWeight: 700,
-							fontSize: 12,
-							lineHeight: "16px",
-							textTransform: "uppercase",
-						}}
-					>
-						WIP
-					</span>
-				</div>
-			) : null}
+			{consBadge}
+			{levelBadge}
+			{wipOverlay}
 		</div>
 	);
 };
@@ -241,6 +279,8 @@ type Props = {
 	height: number;
 	margin: number;
 	resolveAsset: ResolveAsset;
+	// Pre-composited portrait images, one per character slot (see Portrait).
+	composited?: readonly (string | null)[];
 };
 
 // The four-portrait row (flexbox, replacing the live card's CSS grid). Each
@@ -251,6 +291,7 @@ export const Portraits = ({
 	height,
 	margin,
 	resolveAsset,
+	composited,
 }: Props) => {
 	const chars = data.character_details ?? [];
 	return (
@@ -271,6 +312,7 @@ export const Portraits = ({
 					height={height}
 					margin={margin}
 					resolveAsset={resolveAsset}
+					composited={composited?.[i] ?? undefined}
 				/>
 			))}
 		</div>
