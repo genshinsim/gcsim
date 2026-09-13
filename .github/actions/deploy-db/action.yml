@@ -7,32 +7,24 @@ inputs:
   accountId:
     required: true
     description: cloudflare account id
-  gitHubToken:
-    required: true
-    description: github token
-  branch:
-    required: true
-    description: name of the branch
 
 runs:
   using: composite
   steps:
-  - name: Build UI
+  - name: Build DB
     working-directory: ./ui
     shell: bash
     run: pnpm build:db
 
-  - name: List UI dist
+  - name: List DB dist
     working-directory: ./ui/packages/db/dist
     shell: bash
     run: ls -lh
-  
-  - name: Publish to Cloudflare Pages
-    uses: cloudflare/pages-action@1
+
+  - name: Deploy to Cloudflare Workers
+    uses: cloudflare/wrangler-action@v4
     with:
       apiToken: ${{ inputs.apiToken }}
       accountId: ${{ inputs.accountId }}
-      gitHubToken: ${{ inputs.gitHubToken }}
-      projectName: gcsim-db
-      branch: ${{ inputs.branch }}
-      directory: ./ui/packages/db/dist
+      workingDirectory: './ui/packages/db'
+      command: deploy
