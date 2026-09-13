@@ -139,6 +139,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"forestregalia":                   keys.ForestRegalia,
 	"regalia":                         keys.ForestRegalia,
 	"forgedbythegoldenmelody":         keys.ForgedByTheGoldenMelody,
+	"goldenmelody":                    keys.ForgedByTheGoldenMelody,
 	"fracturedhalo":                   keys.FracturedHalo,
 	"freedomsworn":                    keys.FreedomSworn,
 	"freedom":                         keys.FreedomSworn,
