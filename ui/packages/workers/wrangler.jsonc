@@ -13,6 +13,13 @@
 	// ASSET_SOURCE_HOSTS (per-type ordered mihoyo source hosts, JSON) is managed
 	// in the Cloudflare dashboard, not here. The deploy uses --keep-vars so it is
 	// not wiped; if unset the worker falls back to hardcoded mihoyo defaults.
+	// OG_PREVIEW_SCALE (OG card supersample factor, number; clamped to [1,3]) is
+	// likewise dashboard-managed and preserved via --keep-vars; if unset/invalid
+	// the worker falls back to a default of 1.5.
+	// OG_PREVIEW_CACHE_REV (OG edge-cache revision, integer) is also
+	// dashboard-managed and preserved via --keep-vars; bump it to force cards to
+	// re-render (e.g. after changing OG_PREVIEW_SCALE). If unset/invalid the
+	// worker falls back to a default of 1.
 	"r2_buckets": [
 		{
 			"binding": "GCSIM_WASM",

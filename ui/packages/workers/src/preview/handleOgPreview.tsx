@@ -26,15 +26,39 @@ const CARD_H = 250;
 
 // Supersample factor. workers-og rasterises satori's SVG at 1:1 with the card's
 // logical width, so at the card's native 540x250 the PNG is soft once an
-// unfurler scales it up. Rendering the (vector) card at 3x — 1620x750 — and
-// letting clients display it at the 540x250 the og:image meta advertises keeps
-// the raster crisp and gives Discord (which downscales the source) a sharper
-// image. Portraits are composited at this same scale so they aren't the soft
-// bottleneck. Single knob: tune down if render latency is too high. Source
-// assets are 256x256 and avatars logical 96px, so 3x (~288px) mildly
-// interpolates avatars while weapons/flowers never upscale — an accepted
-// tradeoff for crisper vector text/chart edges.
-const SCALE = 3;
+// unfurler scales it up. Rendering the (vector) card above native — e.g. 2x,
+// 1080x500 — and letting clients display it at the 540x250 the og:image meta
+// advertises keeps the raster crisp and gives Discord (which downscales the
+// source) a sharper image. Portraits are composited at this same scale so they
+// aren't the soft bottleneck. Source assets are 256x256 and avatars logical
+// 96px, so higher factors mildly interpolate avatars while weapons/flowers
+// never upscale — an accepted tradeoff for crisper vector text/chart edges.
+const DEFAULT_SCALE = 1.5;
+const MIN_SCALE = 1; // below native only softens the image
+const MAX_SCALE = 3; // cap render latency / canvas size
+
+// Resolve the supersample factor from OG_PREVIEW_SCALE (dashboard-managed, like
+// ASSET_SOURCE_HOSTS). Unset, non-numeric, or garbage falls back to the default
+// without throwing; the result is clamped to [MIN_SCALE, MAX_SCALE].
+function resolveScale(env: Env): number {
+	const parsed = parseFloat(env.OG_PREVIEW_SCALE ?? "");
+	const scale = Number.isNaN(parsed) ? DEFAULT_SCALE : parsed;
+	return Math.min(MAX_SCALE, Math.max(MIN_SCALE, scale));
+}
+
+// Edge-cache revision. Mixed into the cache key (see below) so bumping it makes
+// every cached card miss and re-render — the manual invalidation lever for
+// whenever rendering or the scale is tweaked (e.g. after changing
+// OG_PREVIEW_SCALE, since the scale itself is deliberately not in the key).
+// Read from OG_PREVIEW_CACHE_REV (dashboard-managed, like OG_PREVIEW_SCALE) so
+// it can be bumped without a code change; unset/invalid falls back to the
+// hardcoded default. Plain incrementing integer, not semver.
+const DEFAULT_CACHE_REV = 1;
+
+function resolveCacheRev(env: Env): number {
+	const parsed = parseInt(env.OG_PREVIEW_CACHE_REV ?? "", 10);
+	return Number.isNaN(parsed) ? DEFAULT_CACHE_REV : parsed;
+}
 
 // Long-lived edge cache. Satori rendering is far more expensive than the old
 // backend PNG proxy, so render-once/serve-many matters more here, not less.
@@ -71,10 +95,15 @@ export async function handleOgPreview(
 	const format = url.searchParams.get("format") === "svg" ? "svg" : "png";
 
 	// Serve a previously rendered card from the edge cache when present. Keyed on
-	// the full request URL so the `.png`/no-suffix and format variants stay
-	// distinct.
+	// the full request URL (so the `.png`/no-suffix and format variants stay
+	// distinct) plus the cache-rev knob via a synthetic `_ogrev` query param, so
+	// bumping the rev partitions the cache into a fresh namespace. The resolved
+	// scale is deliberately not part of the key — the rev is the invalidation
+	// lever.
 	const cache = caches.default;
-	const cacheKey = new Request(request.url, request);
+	const cacheUrl = new URL(request.url);
+	cacheUrl.searchParams.set("_ogrev", String(resolveCacheRev(env)));
+	const cacheKey = new Request(cacheUrl.toString(), request);
 	const cached = await cache.match(cacheKey);
 	if (cached) {
 		return cached;
@@ -109,11 +138,12 @@ export async function handleOgPreview(
 	// one flat PNG per slot, with the white icon outline and two-set slice baked
 	// in at raster level — Satori can express neither. Runs at the supersample
 	// scale so portraits match the card's crispness.
-	const portraits = compositePortraits(result, assets.resolveBytes, SCALE);
+	const scale = resolveScale(env);
+	const portraits = compositePortraits(result, assets.resolveBytes, scale);
 
 	const options: ImageResponseOptions = {
-		width: CARD_W * SCALE,
-		height: CARD_H * SCALE,
+		width: CARD_W * scale,
+		height: CARD_H * scale,
 		format,
 		fonts: cardFonts,
 	};
@@ -123,7 +153,7 @@ export async function handleOgPreview(
 		<div
 			style={{
 				display: "flex",
-				transform: `scale(${SCALE})`,
+				transform: `scale(${scale})`,
 				transformOrigin: "top left",
 			}}
 		>
