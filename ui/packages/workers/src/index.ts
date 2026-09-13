@@ -6,7 +6,6 @@ import {
 	handleInjectHead,
 	handleInjectHeadDB,
 	handleOgPreview,
-	handlePreview,
 } from "./preview";
 import { proxyRequest } from "./proxy";
 import { handleLegacy, handleShare, handleView } from "./share";
@@ -28,12 +27,11 @@ router.post("/api/share", handleShare);
 router.get("/api/share/:key", handleView);
 router.get("/api/share/db/:key", handleView);
 router.get("/api/legacy-share/:key", handleLegacy); //TODO: this endpoint should be deleted once we convert over to new
-router.get("/api/preview/:key", handlePreview);
-router.get("/api/preview/db/:key", handlePreview);
-// Satori-rendered preview (manual eyeballing / OG-embed testing); distinct from
-// the live OG path above, which is unchanged. See handleOgPreview.
-router.get("/api/og-preview/:key", handleOgPreview);
-router.get("/api/og-preview/db/:key", handleOgPreview);
+// Live OG path: Satori-rendered preview card. Crawlers hit these via the
+// og:image meta (`/api/preview/<key>.png`); the handler strips `.png` and
+// caches the render. See handleOgPreview.
+router.get("/api/preview/:key", handleOgPreview);
+router.get("/api/preview/db/:key", handleOgPreview);
 
 //enka
 router.get("/api/enka/:key", handleEnka);
