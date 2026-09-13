@@ -99,10 +99,10 @@ export async function handleOgPreview(
 	}
 
 	// Pre-fetch the card's imagery here (deduped, in parallel) through the
-	// Worker's own asset resolver and feed it to the card as `data:` URIs, so
-	// Satori makes zero outbound image fetches. A missing asset resolves to the
-	// misc/default.png placeholder and marks the render uncacheable, so a card
-	// with a missing asset isn't frozen for the full TTL.
+	// Worker's own asset resolver, so the compositor (and thus Satori) makes zero
+	// outbound image fetches. A missing asset resolves to the misc/default.png
+	// placeholder and marks the render uncacheable, so a card with a missing asset
+	// isn't frozen for the full TTL.
 	const assets = await fetchCardAssets(enumerateAssetPaths(result), env, ctx);
 
 	// Pre-composite each portrait (bg + avatar + weapon + artifact set(s)) into
@@ -127,11 +127,7 @@ export async function handleOgPreview(
 				transformOrigin: "top left",
 			}}
 		>
-			<SatoriPreviewCard
-				data={result}
-				resolveAsset={assets.resolve}
-				portraits={portraits}
-			/>
+			<SatoriPreviewCard data={result} portraits={portraits} />
 		</div>,
 		options,
 	);
