@@ -303,6 +303,9 @@ importers:
       vite-tsconfig-paths:
         specifier: ^4.0.5
         version: 4.3.2(typescript@5.9.3)(vite@4.5.14(@types/node@22.20.2)(terser@5.51.2))
+      wrangler:
+        specifier: 4.131.1
+        version: 4.131.1(@cloudflare/workers-types@5.20260911.1)(@types/node@22.20.2)
 
   packages/docs:
     dependencies:
@@ -884,7 +887,7 @@ importers:
         version: 4.9.5
       wrangler:
         specifier: 4.131.1
-        version: 4.131.1(@cloudflare/workers-types@5.20260911.1)
+        version: 4.131.1(@cloudflare/workers-types@5.20260911.1)(@types/node@22.20.2)
 
 packages:
 
@@ -17834,10 +17837,10 @@ snapshots:
       tapable: 2.3.3
       webpack: 5.110.3(clean-css@5.3.3)(cssnano@6.1.2(postcss@8.5.28))(html-minifier-terser@7.2.0)(postcss@8.5.28)
 
-  miniflare@5.20260911.0-alpha:
+  miniflare@5.20260911.0-alpha(@types/node@22.20.2):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
-      sharp: 0.35.4
+      sharp: 0.35.4(@types/node@22.20.2)
       undici: 7.29.0
       workerd: 1.20260911.1
       ws: 8.21.0
@@ -19663,7 +19666,7 @@ snapshots:
 
   shallowequal@1.1.0: {}
 
-  sharp@0.35.4:
+  sharp@0.35.4(@types/node@22.20.2):
     dependencies:
       '@img/colour': 1.1.0
       detect-libc: 2.1.2
@@ -19694,6 +19697,7 @@ snapshots:
       '@img/sharp-win32-arm64': 0.35.4
       '@img/sharp-win32-ia32': 0.35.4
       '@img/sharp-win32-x64': 0.35.4
+      '@types/node': 22.20.2
 
   shebang-command@2.0.0:
     dependencies:
@@ -20625,13 +20629,13 @@ snapshots:
       regexparam: 3.0.0
       use-sync-external-store: 1.7.0(react@18.3.1)
 
-  wrangler@4.131.1(@cloudflare/workers-types@5.20260911.1):
+  wrangler@4.131.1(@cloudflare/workers-types@5.20260911.1)(@types/node@22.20.2):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.5.0
       '@cloudflare/unenv-preset': 2.16.1(unenv@2.0.0-rc.24)(workerd@1.20260911.1)
       blake3-wasm: 2.1.5
       esbuild: 0.28.1
-      miniflare: 5.20260911.0-alpha
+      miniflare: 5.20260911.0-alpha(@types/node@22.20.2)
       path-to-regexp: 6.3.0
       unenv: 2.0.0-rc.24
       workerd: 1.20260911.1
