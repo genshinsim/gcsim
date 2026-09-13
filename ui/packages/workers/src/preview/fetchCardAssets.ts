@@ -1,10 +1,5 @@
+import { resolveAsset, STATUS_HEADER } from "../assets";
 import type { Env } from "../bindings";
-
-// A 1x1 transparent PNG. Used in place of any asset the Worker could not fetch
-// so the render stays valid (Satori rejects a non-absolute <img src>) and makes
-// no network fetch of its own. A render that had to use it is never cached.
-const FALLBACK_ASSET =
-	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==";
 
 // Base64-encode arbitrary bytes for a `data:` URI. Chunked so large buffers
 // don't blow the argument limit of String.fromCharCode; btoa is available in
@@ -21,48 +16,62 @@ function base64FromArrayBuffer(buffer: ArrayBuffer): string {
 
 export type ResolvedAssets = {
 	// Maps a relative asset path (e.g. "avatar/Nahida.png") to an <img src>: the
-	// fetched bytes as a `data:` URI, or the placeholder for a path that failed.
+	// resolved bytes as a `data:` URI. A missing asset resolves to the Worker's
+	// misc/default.png placeholder bytes (same as /api/assets/* serves).
 	resolve: (path: string) => string;
-	// True when any asset failed to fetch and the fallback stood in — the render
-	// must not be cached so it re-renders once the asset lands.
+	// True when any asset resolved to the placeholder (X-Gcsim-Asset: fallback) —
+	// the render must not be cached so it re-renders once the asset lands.
 	usedFallback: boolean;
 };
 
 // Pre-fetch the card's assets in the Worker and return a resolver that hands
 // back `data:` URIs, so Satori makes zero outbound image fetches at render
-// time. Paths are the relative ones enumerateAssetPaths yields; each is fetched
-// once (callers dedup) from the same origin the /api/assets proxy uses.
+// time. Each path is resolved once (callers dedup) through the Worker's own
+// in-process asset resolver — the same resolution the public /api/assets/*
+// route uses — so there is no outbound HTTP round-trip and no duplicated
+// R2/source-host/placeholder logic.
 export async function fetchCardAssets(
 	paths: string[],
 	env: Env,
+	ctx: ExecutionContext,
 ): Promise<ResolvedAssets> {
 	const map = new Map<string, string>();
 	let usedFallback = false;
 
 	await Promise.all(
 		paths.map(async (path) => {
+			let resp: Response;
 			try {
-				const resp = await fetch(
-					new Request(`${env.ASSETS_ENDPOINT}/api/assets/${path}`),
-				);
-				if (!resp.ok) {
-					usedFallback = true;
-					return;
-				}
-				const buffer = await resp.arrayBuffer();
-				const contentType = resp.headers.get("Content-Type") ?? "image/png";
-				map.set(
-					path,
-					`data:${contentType};base64,${base64FromArrayBuffer(buffer)}`,
-				);
+				resp = await resolveAsset(path, env, ctx);
 			} catch {
 				usedFallback = true;
+				return;
 			}
+			if (resp.status !== 200) {
+				usedFallback = true;
+				return;
+			}
+			// A genuinely-missing asset comes back as the misc/default.png
+			// placeholder (HTTP 200), flagged X-Gcsim-Asset: fallback — not by a
+			// non-ok status. That is the signal to skip caching this render.
+			if (resp.headers.get(STATUS_HEADER) === "fallback") {
+				usedFallback = true;
+			}
+			const buffer = await resp.arrayBuffer();
+			const contentType = resp.headers.get("Content-Type") ?? "image/png";
+			map.set(
+				path,
+				`data:${contentType};base64,${base64FromArrayBuffer(buffer)}`,
+			);
 		}),
 	);
 
+	// Every enumerated path maps to real bytes here: a typed miss resolves to the
+	// placeholder (200), and the static paths are bundled files. An empty src can
+	// only occur if a bundled static file (nahida/default) is itself absent — a
+	// broken deploy — and such a render is uncacheable (usedFallback) regardless.
 	return {
-		resolve: (path) => map.get(path) ?? FALLBACK_ASSET,
+		resolve: (path) => map.get(path) ?? "",
 		usedFallback,
 	};
 }

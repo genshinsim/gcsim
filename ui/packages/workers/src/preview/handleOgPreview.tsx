@@ -93,11 +93,12 @@ export async function handleOgPreview(
 		return new Response("invalid share data for " + key, { status: 400 });
 	}
 
-	// Pre-fetch the card's imagery here (deduped, in parallel) and feed it to the
-	// card as `data:` URIs, so Satori makes zero outbound image fetches. A fetch
-	// that fails falls back to a placeholder — and marks the render uncacheable,
-	// so a card with a missing asset isn't frozen for the full TTL.
-	const assets = await fetchCardAssets(enumerateAssetPaths(result), env);
+	// Pre-fetch the card's imagery here (deduped, in parallel) through the
+	// Worker's own asset resolver and feed it to the card as `data:` URIs, so
+	// Satori makes zero outbound image fetches. A missing asset resolves to the
+	// misc/default.png placeholder and marks the render uncacheable, so a card
+	// with a missing asset isn't frozen for the full TTL.
+	const assets = await fetchCardAssets(enumerateAssetPaths(result), env, ctx);
 
 	const options: ImageResponseOptions = {
 		width: CARD_W * SCALE,
