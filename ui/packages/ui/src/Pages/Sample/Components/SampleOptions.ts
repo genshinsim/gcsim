@@ -59,19 +59,19 @@ export const AdvancedPreset = [
 ];
 
 export const VerbosePreset = [
-	...AdvancedPreset,
-	"player",
-	"heal",
-	"hurt",
-	"pre_damage_mod",
-	"icd", // ele and dmg app icd
-	"calc", // detailed damage calc
-	"snapshot", // detailed snapshot calc
-	"character",
-	"weapon",
-	"enemy",
-	"artifact",
-	"hitlag",
+  ...AdvancedPreset,
+  "player",
+  "heal",
+  "hurt",
+  "pre_damage_mods",
+  "icd", // ele and dmg app icd
+  "calc", // detailed damage calc
+  "snapshot", // detailed snapshot calc
+  "character",
+  "weapon",
+  "enemy",
+  "artifact",
+  "hitlag",
 ];
 
 export const DebugPreset = [...VerbosePreset, "debug", "sim"];
