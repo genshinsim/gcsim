@@ -26,6 +26,7 @@ func (c *char) c1(points float64) {
 	}
 	c.AddEnergy("iansan-c1", 15)
 	c.AddStatus(c1ICD, 18*60, true)
+	c.c1Points = 0
 }
 
 func (c *char) c2ATKBuff(char *character.CharWrapper) {
@@ -68,6 +69,7 @@ func (c *char) c4Points() float64 {
 	points := c.pointsOverflow * 0.5
 	if c.c4Stacks > 0 {
 		points += 4.0
+		c.c4Stacks--
 	}
 	return points
 }

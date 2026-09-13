@@ -111,14 +111,17 @@ func (c *char) applyBuffTask(src int) {
 			c.a4Heal()
 		}
 
-		active := c.Core.Player.ActiveChar()
-		active.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag(burstBuffStatus, 1*60),
-			Amount: func() []float64 {
-				c.c2ATKBuff(active)
-				return c.burstBuff
-			},
-		})
+		if c.Base.Ascension >= 1 {
+			active := c.Core.Player.ActiveChar()
+			active.AddStatMod(character.StatMod{
+				Base: modifier.NewBaseWithHitlag(burstBuffStatus, 1*60),
+				Amount: func() []float64 {
+					c.c2ATKBuff(active)
+					return c.burstBuff
+				},
+			})
+		}
+
 		c.applyBuffTask(src)
 	}, 1*60)
 }
