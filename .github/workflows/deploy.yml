@@ -55,6 +55,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          rcloneConfig: ${{ secrets.CF_RCLONE }}
 
       - name: deploy-db
         uses: ./.github/actions/deploy-db
