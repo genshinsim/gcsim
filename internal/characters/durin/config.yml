@@ -1,0 +1,137 @@
+use: pipeline
+kind: character
+name: durin
+
+override:
+  icd_group:
+    DurinBurstBlack:
+      name: Durin_Burst_BlackBullet
+    DurinBurstWhite:
+      name: Durin_Burst_WhiteFire
+    DurinSkill:
+      name: Durin_EleA_BlackBullet
+
+combat:
+  icd_tags:
+    - DurinBurstBlack
+    - DurinBurstTornado
+    - DurinBurstWhite
+  icd_groups:
+    - DurinBurstBlack
+    - DurinBurstWhite
+    - DurinSkill
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG|1)
+      - attack(4-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+
+  - skillWhite: 'skill(Transmutation: Confirmation of Purity DMG)'
+  - skillBlack:
+      - 'skill(Transmutation: Denial of Darkness DMG)'
+      - 'skill(Transmutation: Denial of Darkness DMG|1)'
+      - 'skill(Transmutation: Denial of Darkness DMG|2)'
+  - skillEnergy: skill(Energy Regeneration)
+
+  - burstWhiteInitial:
+      - 'burst(Principle of Purity: As the Light Shifts DMG)'
+      - 'burst(Principle of Purity: As the Light Shifts DMG|1)'
+      - 'burst(Principle of Purity: As the Light Shifts DMG|2)'
+  - burstBlackInitial:
+      - 'burst(Principle of Darkness: As the Stars Smolder DMG)'
+      - 'burst(Principle of Darkness: As the Stars Smolder DMG|1)'
+      - 'burst(Principle of Darkness: As the Stars Smolder DMG|2)'
+  - burstWhiteDoT: burst(Dragon of White Flame DMG)
+  - burstBlackDoT: burst(Dragon of Dark Decay DMG)
+
+docs:
+  fields:
+    .durin.a4-stacks: Number of A4 stacks remaining.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1iOPmOa6RcDB2yTt4lP2phoZ4gCHe0x217bP427Fl3vY/edit?usp=sharing
+      count_credit: caxia5 and caramielle.
+      video: https://youtu.be/7RRKS0tbPXg
+      video_credit: caramielle.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.3]
+        radius: 2.15
+        hitlag: {time: 0.02, scale: 0.01}
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        radius: 2.15
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: N3-1
+        shape: Circle
+        center: Player
+        offset: [-0.2, 0.4]
+        radius: 2.4
+
+      - name: N3-2
+        shape: Circle
+        center: Player
+        offset: [-0.2, 0.4]
+        radius: 2.4
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: N4
+        shape: Box
+        center: Player
+        offset: [-0.2, -0.6]
+        box: [3.3, 4.8]
+        hitlag: {time: 0.05, scale: 0.01}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: Player
+        offset: [0, 0.8]
+        radius: 2.5
+
+  - name: skill
+    hitbox:
+      - name: E-White
+        shape: Circle
+        center: Player
+        offset: [0, 1.2]
+        radius: 4.5
+
+      - name: E-Black
+        shape: Box
+        center: Player
+        offset: [0, -3]
+        box: [3, 7]
+
+  - name: burst
+    params:
+      travel: Projectile travel time for Dragon of Dark Decay. Default 10 frames. Does nothing for Dragon of White Flame.
+    hitbox:
+      - name: Q-Initial
+        shape: Circle
+        center: Player
+        radius: 6.5
+
+      - name: Q-Tick-White
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3.5
+
+      - name: Q-Tick-Black
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1.5

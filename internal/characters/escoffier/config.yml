@@ -1,0 +1,146 @@
+use: pipeline
+kind: character
+name: escoffier
+
+override:
+  icd_group:
+    EscoffierSkill:
+      name: Escoffier_ElementalArt
+
+shortcuts:
+  - esco
+
+combat:
+  icd_groups:
+    - EscoffierSkill
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG|1)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skillInital: skill(Skill DMG)
+  - skillDot: skill(Frosty Parfait DMG)
+  - skillDur: skill(Cold Storage Mode Duration)
+  - arkhe: skill(Surging Blade DMG)
+
+  - burst: burst(Skill DMG)
+  - burstHealPer: burst(Healing)
+  - burstHealFlat: burst(Healing|1)
+  - burstCD: burst(CD)
+  - burstEnergy: burst(Energy Cost)
+
+docs:
+  fields:
+    .escoffier.c2-count: Number of Cold Dish (C2) stacks
+    .escoffier.c4-count: Number of extra healing and energy restore effects (C4) left
+    .escoffier.c6-count: Number of Special-Grade Frosty Parfait (C6) attacks left
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1jmmWW0RXjYt6VbQjcdumUQaMxAhJDA5zqjubkTqiglg/edit?usp=sharing
+      count_credit: charliex3000
+      video: https://youtu.be/ZYrYcEMG_mQ
+      video_credit: charliex3000
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Box
+        center: Player
+        box: [1.6, 3]
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.7]
+        radius: 2
+
+      - name: N3-1
+        shape: Circle
+        center: Player
+        offset: [0, 0.8]
+        radius: 2.5
+
+      - name: N3-2
+        shape: Circle
+        center: Player
+        offset: [0, 0.4]
+        radius: 2.5
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA
+        shape: Box
+        center: Player
+        offset: [0, -1.2]
+        box: [3.3, 3.5]
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    params:
+      travel: Frosty Parfait travel time. Default 5 frames.
+    hitbox:
+      - name: E
+        shape: Circle
+        center: Player
+        radius: 5
+
+      - name: E-Arkhe
+        shape: Circle
+        center: Player
+        radius: 5
+
+      - name: E-Tick
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1.5
+
+  - name: burst
+    hitbox:
+      - name: Q
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 7
+
+  - name: cons
+    hitbox:
+      - name: E-C6
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4

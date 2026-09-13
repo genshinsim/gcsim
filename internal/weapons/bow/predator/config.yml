@@ -1,3 +1,8 @@
-package_name: predator
-genshin_id: 15415
-key: predator
+use: pipeline
+kind: weapon
+name: predator
+
+abilities:
+  - name: default
+    params:
+      passive: 0 for passive disabled, 1 for enabled (default).

@@ -6,14 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
-
-func init() {
-	core.RegisterCharFunc(keys.Nilou, NewChar)
-}
 
 type char struct {
 	*tmpl.Character
@@ -70,8 +64,8 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 	return c.Character.ActionReady(a, p)
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
 		return 11
 	}
 	return c.Character.AnimationStartDelay(k)

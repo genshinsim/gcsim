@@ -86,7 +86,7 @@ func userSubEmbeds(entries []*db.Entry, page int, sender discord.UserID) []disco
 	row.Title = fmt.Sprintf("DB Submissions (Page %v)", page)
 	row.Description = fmt.Sprintf("<@%v>, here's all of your db submissions as requested", sender)
 	for _, v := range entries {
-		//TODO: insert create date
+		// TODO: insert create date
 		title := fmt.Sprintf("%v", v.Description)
 		if len(title) > 254 {
 			title = title[:254]

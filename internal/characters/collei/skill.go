@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const (
@@ -34,8 +34,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// The game has ICD as AttackTagElementalArt, ICDTagElementalArt,
 	// ICDGroupColleiBoomerangForward, and ICDGroupColleiBoomerangBack. However,
 	// we believe this is unnecessary, so just use ICDTagNone.
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Floral Brush",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -47,10 +47,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
-	var c6Cb func(a combat.AttackCB)
+	var c6Cb func(a info.AttackCB)
 	if c.Base.Cons >= 6 {
 		c6Triggered := false
-		c6Cb = func(a combat.AttackCB) {
+		c6Cb = func(a info.AttackCB) {
 			if c6Triggered {
 				return
 			}
@@ -59,7 +59,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		}
 	}
 	particleCB := c.makeParticleCB()
-	//TODO: this should have its own position
+	// TODO: this should have its own position
 	for _, hitmark := range skillHitmarks {
 		c.Core.QueueAttack(
 			ai,
@@ -105,10 +105,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) makeParticleCB() combat.AttackCBFunc {
+func (c *char) makeParticleCB() info.AttackCBFunc {
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {

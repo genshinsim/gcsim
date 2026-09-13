@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 )
 
@@ -16,6 +17,7 @@ const normalHitNum = 3
 var (
 	attackFrames   [][]int
 	attackHitmarks = []int{11, 9, 31}
+	attackCQA      = []int{11, 8, 31}
 
 	sharkBiteFrames      [][]int
 	sharkBiteHitmarks    = []int{7, 7, 7, 42}
@@ -79,8 +81,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		return c.sharkBite(p), nil
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNormalAttack,
@@ -107,7 +109,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackFrames[c.NormalCounter][action.ActionSwap],
+		CanQueueAfter:   attackCQA[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}, nil
 }
@@ -125,11 +127,11 @@ func (c *char) sharkBite(p map[string]int) action.Info {
 	c.QueueCharTask(func() {
 		c.momentumStacks = 0
 		mult := bite[c.TalentLvlSkill()] + momentumBonus[c.TalentLvlSkill()]*float64(momentumStacks) + c.c1()
-		ai := combat.AttackInfo{
-			ActorIndex:     c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:     c.Index(),
 			Abil:           fmt.Sprintf("Sharky's Bite (%v momentum)", momentumStacks),
 			AttackTag:      attacks.AttackTagNormal,
-			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+			AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 			ICDTag:         attacks.ICDTagNone,
 			ICDGroup:       attacks.ICDGroupDefault,
 			StrikeType:     attacks.StrikeTypeDefault,
@@ -142,16 +144,16 @@ func (c *char) sharkBite(p map[string]int) action.Info {
 			mult += surgingBite[c.TalentLvlSkill()]
 		}
 
-		primaryEnemy, ok := c.Core.Combat.PrimaryTarget().(combat.Enemy)
+		primaryEnemy, ok := c.Core.Combat.PrimaryTarget().(info.Enemy)
 		if !ok {
 			return
 		}
-		var enemiesMissile []combat.Enemy
+		var enemiesMissile []info.Enemy
 		if primaryEnemy.StatusIsActive(markedAsPreyKey) {
 			ap := combat.NewCircleHitOnTarget(primaryEnemy, nil, sharkMissileHitboxes)
 			enemiesMissile = c.Core.Combat.EnemiesWithinArea(
 				ap,
-				func(e combat.Enemy) bool { return e.StatusIsActive(markedAsPreyKey) && e != primaryEnemy },
+				func(e info.Enemy) bool { return e.StatusIsActive(markedAsPreyKey) && e != primaryEnemy },
 			)
 			neighbours := len(enemiesMissile)
 			mult *= max(1.00-0.14*float64(neighbours), 0.72)
@@ -187,14 +189,16 @@ func (c *char) sharkBite(p map[string]int) action.Info {
 		minAction = action.ActionDash
 	}
 	return action.Info{
-		Frames:          frames.NewAbilFunc(sharkBiteFrames[momentumStacks]),
-		AnimationLength: sharkBiteFrames[momentumStacks][action.WalkState], // shorter animation state so that a single bite doesn't make 3 yelan/xq waves. In game it only does 1.
+		Frames: frames.NewAbilFunc(sharkBiteFrames[momentumStacks]),
+		// TODO: This triggers 3 yelan/XQ waves if the next action is swap. In game it should only trigger 1
+		// Need add method to return animations as a slice
+		AnimationLength: sharkBiteFrames[momentumStacks][action.InvalidAction],
 		CanQueueAfter:   sharkBiteFrames[momentumStacks][minAction],
 		State:           action.NormalAttackState,
 	}
 }
 
-func (c *char) removeEnemyMarkCB(a combat.AttackCB) {
+func (c *char) removeEnemyMarkCB(a info.AttackCB) {
 	enemy, ok := a.Target.(*enemy.Enemy)
 	if !ok {
 		return

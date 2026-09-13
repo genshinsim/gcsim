@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
@@ -27,15 +27,45 @@ type Character struct {
 	// hp
 	currentHPRatio float64
 	currentHPDebt  float64
+
+	// jump acceleration during the jump
+	JumpModified  player.AirborneSource
+	JumpModifiedF int
 }
 
 func NewWithWrapper(c *core.Core, w *character.CharWrapper) *Character {
-	r := New(c)
+	r := newChar(c)
 	r.CharWrapper = w
+
+	c.Events.Subscribe(event.OnStellarVortexDetonate, func(args ...any) {
+		ap, ok := args[2].(*info.AttackPattern)
+		if !ok {
+			return
+		}
+		if !c.Combat.Player().IsWithinArea(*ap) {
+			return
+		}
+		if c.Player.CurrentState() != action.JumpState {
+			return
+		}
+
+		if c.Player.Airborne() != player.Grounded {
+			return
+		}
+
+		r.JumpModified = player.AirborneStellarSwirl
+		r.JumpModifiedF = c.F - c.Player.CurrentStateStart()
+
+		// TODO: Find what frames where SSW vortex still gives enough vertical velocity to give airborne
+		if c.F-c.Player.CurrentStateStart() > 10 {
+			return
+		}
+		c.Player.SetAirborne(r.JumpModified)
+	}, "ssw-jump-"+r.Base.Key.String())
 	return r
 }
 
-func New(c *core.Core) *Character {
+func newChar(c *core.Core) *Character {
 	t := &Character{
 		Core:                   c,
 		ActionCD:               make([]int, action.EndActionType),
@@ -54,17 +84,17 @@ func New(c *core.Core) *Character {
 	return t
 }
 
-func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
-	s := combat.Snapshot{
+func (c *Character) Snapshot(a *info.AttackInfo) info.Snapshot {
+	s := info.Snapshot{
 		CharLvl:     c.Base.Level,
 		SourceFrame: c.Core.F,
 	}
 
 	var evt glog.Event
-	var debug []interface{}
+	var debug []any
 
 	if c.Core.Flags.LogDebug {
-		evt = c.Core.Log.NewEvent(a.Abil, glog.LogSnapshotEvent, c.Index).
+		evt = c.Core.Log.NewEvent(a.Abil, glog.LogSnapshotEvent, c.Index()).
 			Write("abil", a.Abil).
 			Write("mult", a.Mult).
 			Write("ele", a.Element.String()).
@@ -79,7 +109,7 @@ func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot {
 	// check infusion
 	var inf attributes.Element
 	if !a.IgnoreInfusion {
-		inf = c.Core.Player.Infused(c.Index, a.AttackTag)
+		inf = c.Core.Player.Infused(c.Index(), a.AttackTag)
 		if inf != attributes.NoElement {
 			a.Element = inf
 		}
@@ -113,33 +143,40 @@ func (c *Character) NextNormalCounter() int {
 }
 
 func (c *Character) Attack(map[string]int) (action.Info, error) {
-	return action.Info{}, fmt.Errorf("%v: action attack not implemented", c.CharWrapper.Base.Key)
+	return action.Info{}, fmt.Errorf("%v: action attack not implemented", c.Base.Key)
 }
+
 func (c *Character) Aimed(map[string]int) (action.Info, error) {
-	return action.Info{}, fmt.Errorf("%v: action aimed not implemented", c.CharWrapper.Base.Key)
+	return action.Info{}, fmt.Errorf("%v: action aimed not implemented", c.Base.Key)
 }
+
 func (c *Character) ChargeAttack(map[string]int) (action.Info, error) {
-	return action.Info{}, fmt.Errorf("%v: action charge not implemented", c.CharWrapper.Base.Key)
+	return action.Info{}, fmt.Errorf("%v: action charge not implemented", c.Base.Key)
 }
+
 func (c *Character) HighPlungeAttack(map[string]int) (action.Info, error) {
-	return action.Info{}, fmt.Errorf("%v: action high_plunge not implemented", c.CharWrapper.Base.Key)
+	return action.Info{}, fmt.Errorf("%v: action high_plunge not implemented", c.Base.Key)
 }
+
 func (c *Character) LowPlungeAttack(map[string]int) (action.Info, error) {
-	return action.Info{}, fmt.Errorf("%v: action low_plunge not implemented", c.CharWrapper.Base.Key)
+	return action.Info{}, fmt.Errorf("%v: action low_plunge not implemented", c.Base.Key)
 }
+
 func (c *Character) Skill(map[string]int) (action.Info, error) {
-	return action.Info{}, fmt.Errorf("%v: action skill not implemented", c.CharWrapper.Base.Key)
+	return action.Info{}, fmt.Errorf("%v: action skill not implemented", c.Base.Key)
 }
+
 func (c *Character) Burst(map[string]int) (action.Info, error) {
-	return action.Info{}, fmt.Errorf("%v: action burst not implemented", c.CharWrapper.Base.Key)
+	return action.Info{}, fmt.Errorf("%v: action burst not implemented", c.Base.Key)
 }
 
 func (c *Character) NextQueueItemIsValid(_ keys.Char, a action.Action, p map[string]int) error {
 	if a == action.ActionCharge {
 		switch c.Weapon.Class {
 		case info.WeaponClassSword, info.WeaponClassSpear:
-			// cannot do charge on most sword/polearm characters without attack beforehand
-			if c.Core.Player.LastAction.Type != action.ActionAttack {
+			// cannot do charge on most sword/polearm characters without doing N1 first
+			// this also prevents doing the last NA and then CAing
+			if c.Core.Player.ActiveChar().NormalCounter == 0 {
 				return player.ErrInvalidChargeAction
 			}
 		}

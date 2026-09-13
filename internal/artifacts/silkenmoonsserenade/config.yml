@@ -1,0 +1,7 @@
+use: pipeline
+kind: artifact
+name: silkenmoonsserenade
+
+shortcuts:
+  - silkenmoon
+  - sms

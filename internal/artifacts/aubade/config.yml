@@ -1,0 +1,7 @@
+use: pipeline
+kind: artifact
+name: aubadeofmorningstarandmoon
+
+shortcuts:
+  - aubade
+  - aubadeofmorningstar

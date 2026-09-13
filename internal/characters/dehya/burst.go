@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const (
@@ -46,7 +46,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.burstPunchFunc(c.burstHitSrc)()
 	}, burstPunch1Hitmark)
 
-	c.ConsumeEnergy(15) //TODO: If this is ping related, this could be closer to 1 at 0 ping
+	c.ConsumeEnergy(15) // TODO: If this is ping related, this could be closer to 1 at 0 ping
 	c.SetCDWithDelay(action.ActionBurst, 18*60, 1)
 
 	return action.Info{
@@ -62,11 +62,11 @@ func (c *char) burstPunchFunc(src int) func() {
 		if c.burstHitSrc != src {
 			return
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Flame-Mane's Fist",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagElementalBurst,
@@ -80,7 +80,7 @@ func (c *char) burstPunchFunc(src int) func() {
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: -2.8}, 5, 7.8),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -2.8}, 5, 7.8),
 			0,
 			0,
 			c.c4CB(),
@@ -103,11 +103,11 @@ func (c *char) burstKickFunc(src int) func() {
 		if src != c.burstHitSrc { // prevents duplicates
 			return
 		}
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Incineration Drive",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagNone,
@@ -121,7 +121,7 @@ func (c *char) burstKickFunc(src int) func() {
 		}
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 6.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 6.5),
 			0,
 			0,
 			c.c4CB(),

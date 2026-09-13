@@ -92,4 +92,4 @@ In order to keep your CLI up-to-date with changes made by the gcsim dev team, yo
 4. Click on `New Terminal`. 
 This will open Powershell in the `gcsim` folder.
 5. Type `git pull` into the Powershell window.
-6. Rebuild the `gcsim.exe` as described in steps 5 and 6 in [this section](#building-the-cli-gcsimexe).
+6. Rebuild the `gcsim.exe` as described in steps 5 and 6 in [this section](#build-the-cli-gcsimexe).

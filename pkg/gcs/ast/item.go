@@ -5,22 +5,22 @@ import "fmt"
 // Token represents a token or text string returned from the scanner.
 type Token struct {
 	Typ  TokenType // The type of this item.
-	pos  Pos       // The starting position, in bytes, of this item in the input string.
+	Pos  Pos       // The starting position, in bytes, of this item in the input string.
 	Val  string    // The value of this item.
-	line int       // The line number at the start of this item.
+	Line int       // The line number at the start of this item.
 }
 
 func (t Token) String() string {
 	switch {
-	case t.Typ == itemEOF:
+	case t.Typ == ItemEOF:
 		return "EOF"
-	case t.Typ == itemError:
+	case t.Typ == ItemError:
 		return t.Val
-	case t.Typ == itemTerminateLine:
+	case t.Typ == ItemTerminateLine:
 		return ";"
-	case t.Typ > itemTerminateLine && t.Typ < itemKeyword:
+	case t.Typ > ItemTerminateLine && t.Typ < ItemKeyword:
 		return t.Val
-	case t.Typ > itemKeyword:
+	case t.Typ > ItemKeyword:
 		return fmt.Sprintf("<%s>", t.Val)
 		// case len(i.val) > 10:
 		// 	return fmt.Sprintf("%.10q...", i.val)
@@ -32,25 +32,25 @@ func (t Token) String() string {
 type TokenType int
 
 const (
-	itemError TokenType = iota // error occurred; value is text of error
+	ItemError TokenType = iota // error occurred; value is text of error
 
-	itemEOF
-	itemTerminateLine    // \n to denote end of a line
-	itemAssign           // equals ('=') introducing an assignment
-	itemComma            // coma (,) used to break up list of ident
-	itemLeftParen        // '('
-	itemRightParen       // ')'
-	itemLeftSquareParen  // '['
-	itemRightSquareParen // ']'
-	itemLeftBrace        // '{'
-	itemRightBrace       // '}'
-	itemColon            // ':'
+	ItemEOF
+	ItemTerminateLine    // \n to denote end of a line
+	ItemAssign           // equals ('=') introducing an assignment
+	ItemComma            // coma (,) used to break up list of ident
+	ItemLeftParen        // '('
+	ItemRightParen       // ')'
+	ItemLeftSquareParen  // '['
+	ItemRightSquareParen // ']'
+	ItemLeftBrace        // '{'
+	ItemRightBrace       // '}'
+	ItemColon            // ':'
 	ItemPlus             // '+'
 	ItemMinus            // '-'
 	ItemAsterisk         // '*'
 	ItemForwardSlash     // '/'
 	// following is logic operator
-	itemLogicOP // used only to delimit logical operation
+	ItemLogicOP // used only to delimit logical operation
 	LogicNot    // !
 	LogicAnd    // && keyword
 	LogicOr     // || keyword
@@ -62,58 +62,96 @@ const (
 	OpGreaterThanOrEqual // >= keyword
 	OpLessThan           // < keyword
 	OpLessThanOrEqual    // <= keyword
-	itemDot              // the cursor, spelled '.'
+	ItemDot              // the cursor, spelled '.'
 	// item types
-	itemTypes
-	itemField      // alphanumeric identifier starting with '.'
-	itemIdentifier // alphanumeric identifier not starting with '.'
-	itemNumber     // simple number
-	itemBool       // boolean
-	itemString     // string, including quotes
+	ItemTypes
+	ItemField      // alphanumeric identifier starting with '.'
+	ItemIdentifier // alphanumeric identifier not starting with '.'
+	ItemNumber     // simple number
+	ItemBool       // boolean
+	ItemString     // string, including quotes
 	// Keywords appear after all the rest.
-	itemKeyword        // used only to delimit the keywords
-	keywordLet         // let
-	keywordWhile       // while
-	keywordIf          // if
-	keywordElse        // else
-	keywordFn          // fn
-	keywordSwitch      // switch
-	keywordCase        // case
-	keywordDefault     // default
-	keywordBreak       // break
-	keywordContinue    // continue
-	keywordFallthrough // fallthrough
-	keywordReturn      // return
-	keywordFor         // for
+	ItemKeyword        // used only to delimit the keywords
+	KeywordLet         // let
+	KeywordWhile       // while
+	KeywordIf          // if
+	KeywordElse        // else
+	KeywordFn          // fn
+	KeywordSwitch      // switch
+	KeywordCase        // case
+	KeywordDefault     // default
+	KeywordBreak       // break
+	KeywordContinue    // continue
+	KeywordFallthrough // fallthrough
+	KeywordReturn      // return
+	KeywordFor         // for
 	// Keywords after this are specific to Genshin (i.e. not generic scripting keywords)
 	// These are special char related keywords
-	keywordOptions           // options
-	keywordAdd               // add
-	keywordChar              // char
-	keywordStats             // stats
-	keywordWeapon            // weapon
-	keywordSet               // set
-	keywordLvl               // lvl
-	keywordRefine            // refine
-	keywordCons              // cons
-	keywordTalent            // talent
-	keywordCount             // count
-	keywordParams            // params
-	keywordLabel             // label
-	keywordUntil             // until
-	keywordActive            // active
-	keywordTarget            // target
-	keywordResist            // resist
-	keywordEnergy            // energy
-	keywordParticleThreshold // particle_threshold
-	keywordParticleDropCount // particle_drop_count
-	keywordParticleElement   // particle_element
-	keywordHurt              // hurt
+	KeywordOptions           // options
+	KeywordAdd               // add
+	KeywordChar              // char
+	KeywordStats             // stats
+	KeywordWeapon            // weapon
+	KeywordSet               // set
+	KeywordLvl               // lvl
+	KeywordRefine            // refine
+	KeywordCons              // cons
+	KeywordTalent            // talent
+	KeywordCount             // count
+	KeywordParams            // params
+	KeywordLabel             // label
+	KeywordUntil             // until
+	KeywordActive            // active
+	KeywordTarget            // target
+	KeywordResist            // resist
+	KeywordEnergy            // energy
+	KeywordParticleThreshold // particle_threshold
+	KeywordParticleDropCount // particle_drop_count
+	KeywordParticleElement   // particle_element
+	KeywordHurt              // hurt
 
 	// Keywords specific to gcsim appears after this
-	itemKeys
-	itemStatKey      // stats: def%, def, etc..
-	itemElementKey   // elements: pyro, hydro, etc..
-	itemCharacterKey // characters: albedo, amber, etc..
-	itemActionKey    // actions: skill, burst, attack, charge, etc...
+	ItemKeys
+	ItemStatKey      // stats: def%, def, etc..
+	ItemElementKey   // elements: pyro, hydro, etc..
+	ItemCharacterKey // characters: albedo, amber, etc..
+	ItemActionKey    // actions: skill, burst, attack, charge, etc...
 )
+
+type Precedence int
+
+const (
+	_ Precedence = iota
+	Lowest
+	LogicalOr
+	LogicalAnd // TODO: or make one for && and ||?
+	Equals
+	LessOrGreater
+	Sum
+	Product
+	Prefix
+	Call
+)
+
+var precedences = map[TokenType]Precedence{
+	LogicOr:              LogicalOr,
+	LogicAnd:             LogicalAnd,
+	OpEqual:              Equals,
+	OpNotEqual:           Equals,
+	OpLessThan:           LessOrGreater,
+	OpGreaterThan:        LessOrGreater,
+	OpLessThanOrEqual:    LessOrGreater,
+	OpGreaterThanOrEqual: LessOrGreater,
+	ItemPlus:             Sum,
+	ItemMinus:            Sum,
+	ItemForwardSlash:     Product,
+	ItemAsterisk:         Product,
+	ItemLeftParen:        Call,
+}
+
+func (t Token) Precedence() Precedence {
+	if p, ok := precedences[t.Typ]; ok {
+		return p
+	}
+	return Lowest
+}

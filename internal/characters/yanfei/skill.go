@@ -7,7 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var skillFrames []int
@@ -30,8 +30,8 @@ func init() {
 // Summons flames that deal AoE Pyro DMG. Opponents hit by the flames will grant Yanfei the maximum number of Scarlet Seals.
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	done := false
-	addSeal := func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	addSeal := func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -42,13 +42,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			c.sealCount = c.maxTags
 		}
 		c.AddStatus(sealBuffKey, 600, true)
-		c.Core.Log.NewEvent("yanfei gained max seals", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("yanfei gained max seals", glog.LogCharacterEvent, c.Index()).
 			Write("current_seals", c.sealCount)
 		done = true
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Signed Edict",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -84,8 +84,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

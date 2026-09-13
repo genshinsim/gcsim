@@ -4,9 +4,7 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type char struct {
@@ -18,14 +16,9 @@ type char struct {
 	shieldTickSrc           int
 }
 
-func init() {
-	core.RegisterCharFunc(keys.Xinyan, NewChar)
-}
-
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := char{}
-	t := tmpl.New(s)
-	t.CharWrapper = w
+	t := tmpl.NewWithWrapper(s, w)
 	c.Character = t
 
 	c.EnergyMax = 60
@@ -54,8 +47,8 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
 		return 28
 	}
 	return c.Character.AnimationStartDelay(k)

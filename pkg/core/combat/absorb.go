@@ -3,13 +3,14 @@ package combat
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-func (h *Handler) AbsorbCheck(idx int, p AttackPattern, prio ...attributes.Element) attributes.Element {
+func (h *Handler) AbsorbCheck(idx int, p info.AttackPattern, prio ...attributes.Element) attributes.Element {
 	// check targets for collision first
 	for _, e := range prio {
 		for _, x := range h.enemies {
-			t, ok := x.(TargetWithAura)
+			t, ok := x.(info.TargetWithAura)
 			if !ok {
 				continue
 			}
@@ -25,7 +26,7 @@ func (h *Handler) AbsorbCheck(idx int, p AttackPattern, prio ...attributes.Eleme
 			}
 		}
 		for _, x := range h.gadgets {
-			t, ok := x.(TargetWithAura)
+			t, ok := x.(info.TargetWithAura)
 			if !ok {
 				continue
 			}
@@ -40,7 +41,7 @@ func (h *Handler) AbsorbCheck(idx int, p AttackPattern, prio ...attributes.Eleme
 				return e
 			}
 		}
-		if t, ok := h.player.(TargetWithAura); ok {
+		if t, ok := h.player.(info.TargetWithAura); ok {
 			if collision, _ := t.AttackWillLand(p); collision && t.AuraContains(e) {
 				h.Log.NewEvent(
 					"infusion check (p) picked up "+e.String(),

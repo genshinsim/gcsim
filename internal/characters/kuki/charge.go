@@ -8,12 +8,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var chargeFrames []int
-var chargeHitmarks = []int{14, 25}
-var chargeHitlagHaltFrame = []float64{0, 0.10}
-var chargeDefHalt = []bool{false, true}
+var (
+	chargeFrames          []int
+	chargeHitmarks        = []int{14, 25}
+	chargeHitlagHaltFrame = []float64{0, 0.10}
+	chargeDefHalt         = []bool{false, true}
+)
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(35) // CA -> N1/E/Q
@@ -24,8 +27,8 @@ func init() {
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	for i, mult := range charge {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Charge %v", i),
 			AttackTag:          attacks.AttackTagExtra,
 			ICDTag:             attacks.ICDTagNormalAttack,

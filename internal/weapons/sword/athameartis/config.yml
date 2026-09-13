@@ -1,0 +1,6 @@
+use: pipeline
+kind: weapon
+name: athameartis
+
+shortcuts:
+  - athame

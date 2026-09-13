@@ -49,7 +49,7 @@ func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
 		logs = make([]string, 0, len(c.mods))
 		evt = c.log.NewEvent(
 			fmt.Sprintf("hitlag applied to char: %.3f", dur),
-			glog.LogHitlagEvent, c.Index,
+			glog.LogHitlagEvent, c.Index(),
 		).
 			Write("duration", dur).
 			Write("factor", factor).
@@ -60,7 +60,7 @@ func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
 	for i, v := range c.mods {
 		if v.AffectedByHitlag() && v.Expiry() != -1 && v.Expiry() > *c.f {
 			mod := c.mods[i]
-			mod.Extend(mod.Key(), c.log, c.Index, ext)
+			mod.Extend(mod.Key(), c.log, c.Index(), ext)
 			if c.debug {
 				logs = append(logs, fmt.Sprintf("%v: %v", v.Key(), v.Expiry()))
 			}

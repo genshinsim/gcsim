@@ -6,9 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var skillEndFrames []int
@@ -32,13 +31,7 @@ const (
 func (c *char) skillHoldDuration(stacks int) int {
 	// animation duration only
 	// diff is the number of stacks we must charge up to reach the desired state
-	diff := stacks - c.decStack
-	if diff < 0 {
-		diff = 0
-	}
-	if diff > 4 {
-		diff = 4
-	}
+	diff := min(max(stacks-c.decStack, 0), 4)
 	// it's .75s per stack
 	return 45 * diff
 }
@@ -46,7 +39,7 @@ func (c *char) skillHoldDuration(stacks int) int {
 func (c *char) addDecStack() {
 	if c.decStack < 4 {
 		c.decStack++
-		c.Core.Log.NewEvent("declension stack gained", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("declension stack gained", glog.LogCharacterEvent, c.Index()).
 			Write("stacks", c.decStack)
 	}
 }
@@ -54,8 +47,8 @@ func (c *char) addDecStack() {
 func (c *char) skillRelease(delay int) action.Info {
 	c.Core.Tasks.Add(func() {
 		hitDelay := skillHitmark - skillCDStart
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               "Heartstopper Strike",
 			AttackTag:          attacks.AttackTagElementalArt,
 			ICDTag:             attacks.ICDTagNone,
@@ -83,9 +76,9 @@ func (c *char) skillRelease(delay int) action.Info {
 		}
 
 		done := false
-		skillCB := func(a combat.AttackCB) {
+		skillCB := func(a info.AttackCB) {
 			c.decStack = 0
-			if a.Target.Type() != targets.TargettableEnemy {
+			if a.Target.Type() != info.TargettableEnemy {
 				return
 			}
 			if done {
@@ -105,7 +98,7 @@ func (c *char) skillRelease(delay int) action.Info {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
-			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: offset}, width, height),
+			combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: offset}, width, height),
 			hitDelay,
 			skillCB,
 			c.particleCB,
@@ -142,8 +135,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return c.skillPress(), nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

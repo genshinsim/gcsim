@@ -1,2 +1,6 @@
-key: archaicpetra
-set_id: 15014
+use: pipeline
+kind: artifact
+name: archaicpetra
+
+shortcuts:
+  - ap

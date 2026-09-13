@@ -75,7 +75,6 @@ func (s *Server) CreateShare() http.HandlerFunc {
 
 		expiresAt := uint64(time.Now().Unix() + DefaultTLL)
 		id, err := s.cfg.ShareStore.Create(r.Context(), res, expiresAt, user)
-
 		if err != nil {
 			s.Log.Errorw("unexpected error saving result", "err", err)
 			w.WriteHeader(http.StatusInternalServerError)

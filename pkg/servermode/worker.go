@@ -4,8 +4,8 @@ import (
 	"log/slog"
 
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/gcs"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/gcs/eval"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 	"github.com/genshinsim/gcsim/pkg/simulator"
@@ -26,6 +26,7 @@ type worker struct {
 }
 
 type job struct {
+	file *ast.File
 	cfg  *info.ActionList
 	node ast.Node
 	seed int64
@@ -49,7 +50,8 @@ func (w *worker) run(workerCount, flushInterval int) {
 		w.done = true
 	}()
 
-	simcfg, gcsl, err := parse(w.cfg)
+	file := ast.NewFile()
+	simcfg, gcsl, err := parse(file, w.cfg)
 	if err != nil {
 		w.log.Info("config parsing failed", "id", w.id, "err", err)
 		w.handleErr(err)
@@ -83,6 +85,7 @@ func (w *worker) run(workerCount, flushInterval int) {
 				w.log.Info("wip sending ended due to cancel", "id", w.id)
 				return
 			case workChan <- job{
+				file: file,
 				cfg:  simcfg.Copy(),
 				node: gcsl.Copy(),
 				seed: cryptoRandSeed(),
@@ -152,7 +155,7 @@ func (w *worker) iter(work chan job, res chan stats.Result, errChan chan error) 
 				errChan <- err
 				return
 			}
-			eval, err := gcs.NewEvaluator(job.node, c)
+			eval, err := eval.NewEvaluator(job.file, job.node, c)
 			if err != nil {
 				errChan <- err
 				break

@@ -5,14 +5,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.AquaSimulacra, NewWeapon)
-}
 
 type Weapon struct {
 	Index   int
@@ -31,8 +26,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("aquasimulacra-hp", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return v, true
+		Amount: func() []float64 {
+			return v
 		},
 	})
 
@@ -50,8 +45,8 @@ func (w *Weapon) enemyCheck(char *character.CharWrapper, c *core.Core) func() {
 		if enemies != nil {
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("aquasimulacra-dmg", 72),
-				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-					return w.dmgBuff, true
+				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+					return w.dmgBuff
 				},
 			})
 		}

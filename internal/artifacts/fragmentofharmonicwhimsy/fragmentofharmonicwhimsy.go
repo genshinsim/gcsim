@@ -7,14 +7,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterSetFunc(keys.FragmentOfHarmonicWhimsy, NewSet)
-}
 
 type Set struct {
 	stacks int
@@ -40,19 +35,19 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase(fohw2pc, -1),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
 
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
-		c.Events.Subscribe(event.OnHPDebt, func(args ...interface{}) bool {
+		c.Events.Subscribe(event.OnHPDebt, func(args ...any) {
 			index := args[0].(int)
 			amount := args[1].(float64)
-			if char.Index != index || amount == 0 {
-				return false
+			if char.Index() != index || amount == 0 {
+				return
 			}
 
 			if !char.StatModIsActive(fohw4pc) {
@@ -67,12 +62,10 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			char.AddStatMod(character.StatMod{
 				Base: modifier.NewBaseWithHitlag(fohw4pc, 6*60),
-				Amount: func() ([]float64, bool) {
-					return m, true
+				Amount: func() []float64 {
+					return m
 				},
 			})
-
-			return false
 		}, fmt.Sprintf("fragmentofharmonicwhimsy-hp-debt-%v", char.Base.Key.String()))
 	}
 

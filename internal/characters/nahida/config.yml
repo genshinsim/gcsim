@@ -1,45 +1,113 @@
-package_name: nahida
-genshin_id: 10000073
-key: nahida
-action_param_keys:
-  skill:
-    - param: "hold"
-icd_tags:
-- ICDTagNahidaSkill
-- ICDTagNahidaC6
-icd_groups:
-- group_name: ICDGroupNahidaSkill
-  reset_timer: 60
-  ele_app_sequence: [1.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-  damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-skill_data_mapping:
-  attack:
-    attack_1:
-    - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-    - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-    - 2 # 3-Hit DMG|{param2:F1P}
-    attack_4:
-    - 3 # 4-Hit DMG|{param3:F1P}
-    charge:
-    - 4 # Charged Attack DMG|{param4:F1P}
-  skill:
-    skillHold:
-    - 1 # Hold DMG|{param1:F1P}
-    skillPress:
-    - 0 # #{LAYOUT_MOBILE#Tap}{LAYOUT_PC#Press}{LAYOUT_PS#Press} DMG|{param0:F1P}
-    triKarmaAtk:
-    - 2 # Tri-Karma Purification DMG|{param2:F1P} ATK+{param3:F1P} Elemental Mastery
-    triKarmaEM:
-    - 3 # Tri-Karma Purification DMG|{param2:F1P} ATK+{param3:F1P} Elemental Mastery
-  burst:
-    burstTriKarmaCDReduction:
-    - 2 # Electro: Trigger Interval Decrease|1 Character {param2:F2}s
-    - 3 # Electro: Trigger Interval Decrease|2 Characters {param3:F2}s
-    burstTriKarmaDmgBonus:
-    - 0 # Pyro: DMG Bonus|1 Character {param0:F1P}
-    - 1 # Pyro: DMG Bonus|2 Characters {param1:F1P}
-    burstTriKarmaDurationExtend:
-    - 4 # Hydro: Duration Extension|1 Character {param4:F2}s
-    - 5 # Hydro: Duration Extension|2 Characters {param5:F2}s
+use: pipeline
+kind: character
+name: nahida
+
+override:
+  icd_group:
+    NahidaSkill:
+      name: Nahida_Chain_Normal
+
+shortcuts:
+  - kusanali
+  - lesserlordkusanali
+
+combat:
+  icd_tags:
+    - NahidaC6
+    - NahidaSkill
+  icd_groups:
+    - NahidaSkill
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+
+  - skillPress: skill(Press DMG)
+  - skillHold: skill(Hold DMG)
+  - triKarmaAtk: skill(Tri-Karma Purification DMG)
+  - triKarmaEM: skill(Tri-Karma Purification DMG|1)
+
+  - burstTriKarmaDmgBonus:
+      - 'burst(?Pyro: DMG Bonus 1 Character)'
+      - 'burst(?Pyro: DMG Bonus 2 Character)'
+  - burstTriKarmaCDReduction:
+      - 'burst(?Electro: Trigger Interval Decrease 1 Character)'
+      - 'burst(?Electro: Trigger Interval Decrease 2 Character)'
+  - burstTriKarmaDurationExtend:
+      - 'burst(?Hydro: Duration Extension 1 Character)'
+      - 'burst(?Hydro: Duration Extension 2 Character)'
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1MBeFddkD4OtHdBMncqW_j18NC-lUMqA9noVo_pH26H0/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/GuEA10wWfcw
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1KyV7XXKTL-3dYM58qJ4dunV-kSatZNdqmONzSm9vgfU/edit?usp=sharing
+      count_credit: ._keng
+      video: https://youtu.be/OKE6IrDx2MM
+      video_credit: ._keng
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        box: [2, 8]
+
+      - name: N2
+        shape: Box
+        center: PrimaryTarget
+        box: [2.5, 8]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        box: [2.5, 8]
+
+      - name: N4
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -1.5]
+        box: [3, 10]
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -3]
+        box: [6, 6]
+
+  - name: skill
+    params:
+      hold: 0 for Tap (default), value between 1 and 300 for Hold. The number is added to the minimum holding frames for Tap to turn into Hold (16).
+    hitbox:
+      - name: E-Initial-Tap
+        shape: Circle
+        center: Player
+        offset: [0, 0.2]
+        radius: 4.6
+
+      - name: E-Initial-Hold
+        shape: Circle
+        center: Player
+        radius: 25
+
+      - name: E-TKP
+        shape: Single
+        center: GlobalValue
+
+  - name: burst
+
+  - name: cons
+    hitbox:
+      - name: C6-TKP
+        note: Spawns on target that C6 proc'd on.
+        shape: Single
+        center: GlobalValue

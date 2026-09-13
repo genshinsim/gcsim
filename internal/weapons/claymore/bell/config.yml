@@ -1,3 +1,6 @@
-package_name: bell
-genshin_id: 12402
-key: thebell
+use: pipeline
+kind: weapon
+name: thebell
+
+shortcuts:
+  - bell

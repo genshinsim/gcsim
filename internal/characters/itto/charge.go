@@ -6,8 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -185,8 +185,8 @@ func (c *char) windupFrames(prevSlash, curSlash SlashType) int {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		AttackTag:          attacks.AttackTagExtra,
 		ICDTag:             attacks.ICDTagNormalAttack,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -202,12 +202,21 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	stacks := c.Tags[strStackKey]
 	c.slashState = prevSlash.Next(stacks, c.c6Proc)
 
+	// check if we're starting a new CA
+	var caStart bool
+	switch prevSlash {
+	case InvalidSlash, SaichiSlash, FinalSlash:
+		c.a1Stacks = 0
+		c.stacksConsumed = 0
+		caStart = true
+	}
+
 	// figure out how many frames we need to skip
 	windup := c.windupFrames(prevSlash, c.slashState)
 
 	// handle hitlag and talent%
 	ai.Abil = c.slashState.String(true)
-	c.Core.Log.NewEvent("performing CA", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("performing CA", glog.LogCharacterEvent, c.Index()).
 		Write("slash", c.slashState.String(false)).
 		Write("stacks", stacks)
 
@@ -244,13 +253,13 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: chargeOffsets[burstIndex][c.slashState]},
+		info.Point{Y: chargeOffsets[burstIndex][c.slashState]},
 		chargeHitboxes[burstIndex][c.slashState][0],
 	)
 	if c.slashState == LeftSlash || c.slashState == RightSlash {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: chargeOffsets[burstIndex][c.slashState]},
+			info.Point{Y: chargeOffsets[burstIndex][c.slashState]},
 			chargeHitboxes[burstIndex][c.slashState][0],
 			chargeHitboxes[burstIndex][c.slashState][1],
 		)
@@ -278,27 +287,30 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 			if next == action.ActionCharge {
 				nextSlash := curSlash.Next(c.Tags[strStackKey], c.c6Proc)
-				switch nextSlash {
-				// handle CA1/CA2 -> CAF frames
-				case FinalSlash:
+				if nextSlash == FinalSlash {
+					// handle CA1/CA2 -> CAF frames
 					switch curSlash {
 					case LeftSlash: // CA1 -> CAF
 						f = 60
 					case RightSlash: // CA2 -> CAF
 						f = 32
 					}
-				// handle CA0 -> CA0 frames
-				case SaichiSlash:
-					if curSlash == SaichiSlash {
-						f = 500
-					}
 				}
+				// CA0 -> CA0 is prevented by NextQueueItemIsValid
 			}
 
 			return frames.AtkSpdAdjust(f-windup, atkspd)
 		},
+		OnRemoved: func(next action.AnimationState) {
+			if next != action.ChargeAttackState {
+				c.slashState = InvalidSlash
+				c.a1Stacks = 0
+				c.stacksConsumed = 0
+			}
+		},
 		AnimationLength: chargeFrames[curSlash][action.InvalidAction] - windup,
 		CanQueueAfter:   chargeHitmarks[curSlash] - windup,
+		Segmented:       !caStart,
 		State:           action.ChargeAttackState,
 	}, nil
 }

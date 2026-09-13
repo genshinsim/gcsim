@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -30,8 +31,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	c.ResetActionCooldown(action.ActionSkill)
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Shadowhunter's Ambush",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -61,17 +62,15 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		// do nothing if previous char wasn't freminet
 		prev := args[0].(int)
-		if prev != c.Index {
-			return false
+		if prev != c.Index() {
+			return
 		}
 		if !c.StatusIsActive(burstKey) {
-			return false
+			return
 		}
 		c.DeleteStatus(burstKey)
-
-		return false
 	}, "freminet-exit")
 }

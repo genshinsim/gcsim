@@ -1,3 +1,6 @@
-package_name: dialoguesofthedesertsages
-genshin_id: 13426
-key: dialoguesofthedesertsages
+use: pipeline
+kind: weapon
+name: dialoguesofthedesertsages
+
+shortcuts:
+  - dialogues

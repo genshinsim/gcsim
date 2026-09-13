@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -27,8 +26,8 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Breastplate",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,
@@ -88,10 +87,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) skillHealCB() combat.AttackCBFunc {
+func (c *char) skillHealCB() info.AttackCBFunc {
 	done := false
-	return func(atk combat.AttackCB) {
-		if atk.Target.Type() != targets.TargettableEnemy {
+	return func(atk info.AttackCB) {
+		if atk.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -110,7 +109,7 @@ func (c *char) skillHealCB() combat.AttackCBFunc {
 				def := atk.AttackEvent.Snapshot.Stats.TotalDEF()
 				heal := shieldHeal[c.TalentLvlSkill()]*def + shieldHealFlat[c.TalentLvlSkill()]
 				c.Core.Player.Heal(info.HealInfo{
-					Caller:  c.Index,
+					Caller:  c.Index(),
 					Target:  -1,
 					Message: "Breastplate (Attack)",
 					Src:     heal,
@@ -126,8 +125,8 @@ func (c *char) skillHealCB() combat.AttackCBFunc {
 // When Breastplate's duration expires or it is destroyed by DMG, it will deal 400% ATK of Geo DMG to surrounding opponents.
 func (c *char) explodeShield() {
 	c.shieldTimer = 0
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Breastplate (C4)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagElementalArt,

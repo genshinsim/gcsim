@@ -3,7 +3,7 @@ package albedo
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -37,11 +37,11 @@ func (c *char) c4(lastConstruct int) func() {
 			m[attributes.DmgP] = 0.3
 			active.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("albedo-c4", 60), // 1s
-				Amount: func(atk *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 					if atk.Info.AttackTag != attacks.AttackTagPlunge {
-						return nil, false
+						return nil
 					}
-					return m, true
+					return m
 				},
 			})
 		}
@@ -74,8 +74,8 @@ func (c *char) c6(lastConstruct int) func() {
 			active.AddStatMod(character.StatMod{
 				Base:         modifier.NewBase("albedo-c6", 60), // 1s
 				AffectedStat: attributes.DmgP,
-				Amount: func() ([]float64, bool) {
-					return m, true
+				Amount: func() []float64 {
+					return m
 				},
 			})
 		}

@@ -1,4 +1,7 @@
-package_name: favonius
-genshin_id: 13407
-key: favoniuslance
-skip_data_func: true
+use: pipeline
+kind: weapon
+name: favoniuslance
+
+shortcuts:
+  - favlance
+  - favspear

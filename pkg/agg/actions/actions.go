@@ -17,6 +17,7 @@ func init() {
 
 type buffer struct {
 	characterActions []map[string]*calc.StreamStats
+	iters            uint
 }
 
 func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
@@ -44,6 +45,7 @@ func (b *buffer) Add(result stats.Result) {
 			b.characterActions[i][k].Add(v)
 		}
 	}
+	b.iters++
 }
 
 func (b *buffer) Flush(result *model.SimulationStatistics) {
@@ -51,6 +53,7 @@ func (b *buffer) Flush(result *model.SimulationStatistics) {
 	for i, c := range b.characterActions {
 		source := make(map[string]*model.DescriptiveStats)
 		for k, s := range c {
+			agg.PadStreamStatToCount(s, b.iters)
 			source[k] = agg.ToDescriptiveStats(s)
 		}
 

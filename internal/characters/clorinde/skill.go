@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -52,7 +51,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(skillStateKey) {
 		return c.skillDash(p)
 	}
-	c.AddStatus(skillStateKey, skillStart+int(60*skillStateDuration[0]), true)
+	c.AddStatus(skillStateKey, skillStart+skillStateDuration*60, true)
 	c.QueueCharTask(c.c6skill, 0)
 	c.SetCDWithDelay(action.ActionSkill, skillCD, skillStart)
 
@@ -68,7 +67,7 @@ func (c *char) skillDash(p map[string]int) (action.Info, error) {
 	c.normalSCounter = 0
 
 	// depending on BOL lvl it does either 1 hit or 3 hit
-	ratio := c.currentHPDebtRatio()
+	ratio := c.CurrentHPDebtRatio()
 	switch {
 	case ratio >= 1:
 		return c.skillDashFullBOL(p)
@@ -80,12 +79,12 @@ func (c *char) skillDash(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) gainBOLOnAttack() {
-	c.ModifyHPDebtByRatio(skillBOLGain[c.TalentLvlSkill()])
+	c.ModifyHPDebtByRatio(skillBOLGain)
 }
 
 func (c *char) skillDashNoBOL(_ map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Impale the Night (0% BoL)",
 		AttackTag:      attacks.AttackTagNormal,
 		ICDTag:         attacks.ICDTagNormalAttack,
@@ -110,9 +109,9 @@ func (c *char) skillDashNoBOL(_ map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillDashFullBOL(_ map[string]int) (action.Info, error) {
-	for i := 0; i < 3; i++ {
-		ai := combat.AttackInfo{
-			ActorIndex:     c.Index,
+	for range 3 {
+		ai := info.AttackInfo{
+			ActorIndex:     c.Index(),
 			Abil:           "Impale the Night (100%+ BoL)",
 			AttackTag:      attacks.AttackTagNormal,
 			ICDTag:         attacks.ICDTagNormalAttack,
@@ -130,7 +129,7 @@ func (c *char) skillDashFullBOL(_ map[string]int) (action.Info, error) {
 	}
 
 	c.QueueCharTask(func() {
-		c.skillHeal(skillLungeFullBOLHeal[0], "Impale the Night (100%+ BoL)")
+		c.skillHeal(skillLungeFullBOLHeal, "Impale the Night (100%+ BoL)")
 	}, skillHealFrame)
 
 	if c.Base.Cons >= 6 && c.c6Stacks > 0 {
@@ -150,8 +149,8 @@ func (c *char) skillDashFullBOL(_ map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillDashRegular(_ map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Impale the Night (<100% BoL)",
 		AttackTag:      attacks.AttackTagNormal,
 		ICDTag:         attacks.ICDTagNormalAttack,
@@ -168,7 +167,7 @@ func (c *char) skillDashRegular(_ map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(ai, ap, skillDashHitmark, skillDashHitmark, c.particleCB)
 
 	c.QueueCharTask(func() {
-		c.skillHeal(skillLungeLowBOLHeal[0], "Impale the Night (<100% BoL)")
+		c.skillHeal(skillLungeLowBOLHeal, "Impale the Night (<100% BoL)")
 	}, skillHealFrame)
 
 	return action.Info{
@@ -181,17 +180,17 @@ func (c *char) skillDashRegular(_ map[string]int) (action.Info, error) {
 
 func (c *char) skillHeal(bolMult float64, msg string) {
 	amt := c.CurrentHPDebt() * bolMult
-	c.heal(&info.HealInfo{
-		Caller:  c.Index,
-		Target:  c.Index,
+	c.Heal(&info.HealInfo{
+		Caller:  c.Index(),
+		Target:  c.Index(),
 		Message: msg,
 		Src:     amt,
 		Bonus:   c.Stat(attributes.Heal), // TODO: confirms that it scales with healing %
 	})
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

@@ -8,11 +8,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var skillLeapFrames [][]int
-var skillStateDur = []int{220, 238, 179}
+var (
+	skillLeapFrames [][]int
+	skillStateDur   = []int{220, 238, 179}
+)
 
 const (
 	skillPressHitmark = 3
@@ -78,13 +80,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		}
 		c.skillEnemiesHit = nil
 	}
-	//C2: After using White Clouds at Dawn, Xianyun's ATK will be increased by 20% for 15s.
+	// C2: After using White Clouds at Dawn, Xianyun's ATK will be increased by 20% for 15s.
 	c.c2buff()
 
 	// This should only hit enemies once at most
 	// During each Cloud Transmogrification state Xianyun enters, Skyladder may be used up to 3 times and only 1 instance of Skyladder DMG can be dealt to any one opponent.
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Skyladder",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -96,8 +98,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	aoe := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillRadius)
-	targets := c.Core.Combat.EnemiesWithinArea(aoe, func(t combat.Enemy) bool {
-		return !slices.Contains[[]targets.TargetKey](c.skillEnemiesHit, t.Key())
+	targets := c.Core.Combat.EnemiesWithinArea(aoe, func(t info.Enemy) bool {
+		return !slices.Contains[[]info.TargetKey](c.skillEnemiesHit, t.Key())
 	})
 
 	for _, t := range targets {
@@ -134,13 +136,13 @@ func (c *char) cooldownReduce(src int) func() {
 	}
 }
 
-func (c *char) particleCB() func(combat.AttackCB) {
+func (c *char) particleCB() func(info.AttackCB) {
 	// Particles are not produced if the skill was from c6
 	if c.skillWasC6 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(particleICDKey) {

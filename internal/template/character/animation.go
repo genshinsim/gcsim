@@ -1,7 +1,7 @@
 package character
 
-import "github.com/genshinsim/gcsim/pkg/model"
+import "github.com/genshinsim/gcsim/pkg/core/info"
 
-func (c *Character) AnimationStartDelay(_ model.AnimationDelayKey) int {
+func (c *Character) AnimationStartDelay(_ info.AnimationDelayKey) int {
 	return 0
 }

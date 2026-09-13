@@ -6,19 +6,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterSetFunc(keys.ViridescentVenerer, NewSet)
-}
 
 type Set struct {
 	Index int
@@ -38,8 +32,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("vv-2pc", -1),
 			AffectedStat: attributes.AnemoP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -51,50 +45,52 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	// add +0.6 reaction damage
 	char.AddReactBonusMod(character.ReactBonusMod{
 		Base: modifier.NewBase("vv-4pc", -1),
-		Amount: func(ai combat.AttackInfo) (float64, bool) {
+		Amount: func(ai info.AttackInfo) float64 {
 			// check to make sure this is not an amped swirl
-			if ai.Amped {
-				return 0, false
+			if ai.Amped || ai.Catalyzed {
+				return 0
 			}
 			switch ai.AttackTag {
-			case attacks.AttackTagSwirlCryo:
-			case attacks.AttackTagSwirlElectro:
-			case attacks.AttackTagSwirlHydro:
-			case attacks.AttackTagSwirlPyro:
+			case attacks.AttackTagSwirlCryo,
+				attacks.AttackTagSwirlElectro,
+				attacks.AttackTagSwirlHydro,
+				attacks.AttackTagSwirlPyro:
+				return 0.6
+			case attacks.AttackTagDirectStellarSwirl,
+				attacks.AttackTagReactionStellarSwirl:
+				return 0.2
 			default:
-				return 0, false
+				return 0
 			}
-			return 0.6, false
 		},
 	})
 
-	vvfunc := func(ele attributes.Element, key string) func(args ...interface{}) bool {
-		return func(args ...interface{}) bool {
-			atk := args[1].(*combat.AttackEvent)
+	vvfunc := func(ele attributes.Element, key string) func(args ...any) {
+		return func(args ...any) {
+			atk := args[1].(*info.AttackEvent)
 			t, ok := args[0].(*enemy.Enemy)
 			if !ok {
-				return false
+				return
 			}
-			if atk.Info.ActorIndex != char.Index {
-				return false
+			if atk.Info.ActorIndex != char.Index() {
+				return
 			}
 
 			// ignore if character not on field
-			if c.Player.Active() != char.Index {
-				return false
+			if c.Player.Active() != char.Index() {
+				return
 			}
 
-			t.AddResistMod(combat.ResistMod{
+			t.AddResistMod(info.ResistMod{
 				Base:  modifier.NewBaseWithHitlag(key, 10*60),
 				Ele:   ele,
 				Value: -0.4,
 			})
-			c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index, "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index).Write("target", t.Key())
-
-			return false
+			c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index(), "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index()).Write("target", t.Key())
 		}
 	}
 	c.Events.Subscribe(event.OnSwirlCryo, vvfunc(attributes.Cryo, "vvcryo"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnStellarSwirl, vvfunc(attributes.Cryo, "vvcryo"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnSwirlElectro, vvfunc(attributes.Electro, "vvelectro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnSwirlHydro, vvfunc(attributes.Hydro, "vvhydro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
 	c.Events.Subscribe(event.OnSwirlPyro, vvfunc(attributes.Pyro, "vvpyro"), fmt.Sprintf("vv-4pc-%v", char.Base.Key.String()))
@@ -102,19 +98,19 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	// Additional event for on damage proc on secondary targets
 	// Got some very unexpected results when trying to modify the above vvfunc to allow for this, so I'm just copying it separately here
 	// Possibly closure related? Not sure
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 
 		// ignore if character not on field
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 
 		ele := atk.Info.Element
@@ -125,17 +121,15 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		case attacks.AttackTagSwirlHydro:
 		case attacks.AttackTagSwirlPyro:
 		default:
-			return false
+			return
 		}
 
-		t.AddResistMod(combat.ResistMod{
+		t.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag(key, 10*60),
 			Ele:   ele,
 			Value: -0.4,
 		})
-		c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index, "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index).Write("target", t.Key())
-
-		return false
+		c.Log.NewEventBuildMsg(glog.LogArtifactEvent, char.Index(), "vv 4pc proc: ", key).Write("reaction", key).Write("char", char.Index()).Write("target", t.Key())
 	}, fmt.Sprintf("vv-4pc-secondary-%v", char.Base.Key.String()))
 
 	return &s, nil

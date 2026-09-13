@@ -1,47 +1,231 @@
-package_name: arlecchino
-genshin_id: 10000096
-key: arlecchino
-action_param_keys:
-  charge:
-    - param: "early_cancel"
-icd_groups:
-  - group_name: ICDGroupArlecchinoElementalArt
-    reset_timer: 600
-    ele_app_sequence:
-      [1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1]
-skill_data_mapping:
-  attack:
-    attack_1:
-      - 0 # 1-Hit DMG
-    attack_2:
-      - 1 # 2-Hit DMG
-    attack_3:
-      - 2 # 3-Hit DMG
-    attack_4:
-      - 3 # 4-Hit DMG
-      - 3 # 4-Hit DMG
-    attack_5:
-      - 4 # 5-Hit DMG
-    attack_6:
-      - 5 # 6-Hit DMG
-    charge:
-      - 6 # Charged Attack DMG
-    collision:
-      - 8 # Plunge DMG
-    lowPlunge:
-      - 9 # Low/High Plunge DMG
-    highPlunge:
-      - 10 # Low/High Plunge DMG
-    masque:
-      - 11 # Masque of the Red Death Increase
-  skill:
-    skillSpike:
-      - 0 # Spike DMG
-    skillFinal:
-      - 1 # Cleave DMG
-    skillSigil:
-      - 2 # Blood-Debt Directive DMG
-  burst:
-    burst:
-      - 0 # Skill DMG
+use: pipeline
+kind: character
+name: arlecchino
+
+shortcuts:
+  - arle
+
+combat:
+  icd_groups:
+    - ArlecchinoElementalArt
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - - attack(4-Hit DMG)
+        - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+      - attack(6-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+  - masque: attack(Masque of the Red Death Increase)
+
+  - skillSpike: skill(Spike DMG)
+  - skillFinal: skill(Cleave DMG)
+  - skillSigil: skill(Blood-Debt Directive DMG)
+
+  - burst: burst(Skill DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/17DRa-MYwyZ52xmZuxdhpe9lml_AdogfwEBzTRoE2Uuo/edit#usp=sharing
+      count_credit: ._keng
+      video: https://youtu.be/oYHfYd4y_Rs
+      video_credit: ._keng
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Box
+        center: Player
+        offset: [0, -0.15]
+        box: [1.9, 3]
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        fan_angle: 300
+        radius: 2.6
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: N3
+        shape: Box
+        center: Player
+        offset: [0, -1.2]
+        box: [1.9, 4]
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: N4-1
+        shape: Circle
+        center: Player
+        offset: [-0.5, -0.7]
+        radius: 2.8
+        hitlag: {scale: 0.01, defense_halt: true}
+
+      - name: N4-2
+        shape: Circle
+        center: Player
+        offset: [-0.5, -0.7]
+        radius: 2.8
+
+      - name: N5
+        shape: Circle
+        center: Player
+        offset: [0, 2.4]
+        radius: 2.5
+
+      - name: N6
+        shape: Circle
+        center: Player
+        offset: [0, 2.5]
+        radius: 3
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: Masque-N1
+        shape: Box
+        center: Player
+        offset: [0, -0.15]
+        box: [1.9, 4.2]
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: Masque-N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        fan_angle: 300
+        radius: 3.1
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: Masque-N3
+        shape: Box
+        center: Player
+        offset: [0, -1.2]
+        box: [3.4, 5.6]
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: Masque-N4-1
+        shape: Circle
+        center: Player
+        offset: [-0.5, -0.7]
+        radius: 3.3
+        hitlag: {scale: 0.01, defense_halt: true}
+
+      - name: Masque-N4-2
+        shape: Circle
+        center: Player
+        offset: [-0.5, -0.7]
+        radius: 3.3
+
+      - name: Masque-N5
+        shape: Circle
+        center: Player
+        offset: [0, 2.4]
+        radius: 2.8
+
+      - name: Masque-N6
+        shape: Circle
+        center: Player
+        offset: [0, 2.5]
+        radius: 3.7
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    params:
+      early_cancel: Cancel the CA immediately after absorbing nearby Blood-Debt Directives. The next action must be Dash or Jump. Default 0 (false), 1 for true
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        offset: [0, 0.9]
+        radius: 4
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: Masque-CA
+        shape: Circle
+        center: PrimaryTarget
+        offset: [0, 0.9]
+        radius: 4
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Masque-Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: Masque-Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+      - name: Masque-High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    hitbox:
+      - name: E-Spike
+        shape: Circle
+        center: Player
+        radius: 0.5
+
+      - name: E-Cleave
+        shape: Circle
+        center: Player
+        offset: [0, 4.5]
+        radius: 6
+        hitlag: {scale: 0.01, defense_halt: true}
+
+  - name: burst
+    hitbox:
+      - name: Q-ElementalBurst
+        shape: Circle
+        center: Player
+        offset: [0, 6]
+        radius: 6.5
+
+  - name: cons
+    hitbox:
+      - name: C2
+        shape: Circle
+        center: Player
+        offset: [0, 3]
+        radius: 6.5

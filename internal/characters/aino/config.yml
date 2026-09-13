@@ -1,0 +1,94 @@
+use: pipeline
+kind: character
+name: aino
+
+combat:
+  icd_tags:
+    - AinoBurstMoonHit
+  icd_groups:
+    - AinoBurstMoonHit
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG)
+
+  - skill:
+      - skill(Stage 1 DMG)
+      - skill(Stage 2 DMG)
+
+  - burst: burst(Water Ball DMG)
+
+docs:
+  issues:
+    - Hold skill is not implemented.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1vxUU9xUugiqNoZAF3YQe2gg7tqscHfAsPkHl2M3OuRA/edit?usp=sharing
+      count_credit: caramielle.
+      video: https://youtu.be/4ytupEiwlEE
+      video_credit: caramielle.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2
+        hitlag: {time: 0.1, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.8]
+        radius: 2
+        hitlag: {time: 0.1, scale: 0.01, defense_halt: true}
+
+      - name: N3-1
+        shape: Box
+        center: Player
+        offset: [0, -1]
+        box: [2.5, 3.5]
+
+      - name: N3-2
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2
+        hitlag: {time: 0.08, scale: 0.01, defense_halt: true}
+
+  - name: skill
+    hitbox:
+      - name: E-1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1.2
+
+      - name: E-2
+        shape: Circle
+        center: Player
+        offset: [0, 1.2]
+        radius: 3.5
+        hitlag: {time: 0.03, scale: 0.01}
+
+  - name: burst
+    hitbox:
+      - name: Q-Water-Ball-A1-AG
+        shape: Circle
+        center: GlobalValue
+        radius: 4
+
+      - name: Q-Water-Ball
+        shape: Circle
+        center: GlobalValue
+        radius: 1
+
+  - name: cons
+    hitbox:
+      - name: C2
+        shape: Circle
+        center: GlobalValue
+        radius: 1.5

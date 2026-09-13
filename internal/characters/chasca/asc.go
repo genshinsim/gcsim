@@ -7,12 +7,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-var a1DMGBuff = []float64{0.0, 0.15, 0.35, 0.65, 0.65} // has an extra 0.65 for c2 stack
-var a1ConversionChance = []float64{0.0, 0.333, 0.667, 1.0}
+var (
+	a1DMGBuff          = []float64{0.0, 0.15, 0.35, 0.65, 0.65} // has an extra 0.65 for c2 stack
+	a1ConversionChance = []float64{0.0, 0.333, 0.667, 1.0}
+)
 
 func (c *char) a1DMGBuff() {
 	if c.Base.Ascension < 1 {
@@ -23,12 +26,12 @@ func (c *char) a1DMGBuff() {
 	// since it would be active for all E-CAs anyways
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("chasca-a1", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.ICDTag != attacks.ICDTagChascaShining {
-				return nil, false
+				return nil
 			}
 			m[attributes.DmgP] = a1DMGBuff[len(c.partyPHECTypesUnique)+c.c2A1Stack()]
-			return m, true
+			return m
 		},
 	})
 }
@@ -52,11 +55,11 @@ func (c *char) a4() {
 	if c.Base.Ascension < 4 {
 		return
 	}
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Burning Shadowhunt Shot",
 		AttackTag:      attacks.AttackTagExtra,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeDefault,
@@ -65,7 +68,7 @@ func (c *char) a4() {
 		Mult:           1.5 * skillShadowhunt[c.TalentLvlSkill()],
 		IsDeployable:   true,
 	}
-	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(_ ...any) {
 		bulletElem := attributes.Anemo
 		if len(c.partyPHECTypesUnique) > 0 {
 			bulletElem = c.partyPHECTypesUnique[c.Core.Rand.Intn(len(c.partyPHECTypesUnique))]
@@ -82,6 +85,5 @@ func (c *char) a4() {
 		}
 		ap := combat.NewSingleTargetHit(c.Core.Combat.PrimaryTarget().Key())
 		c.Core.QueueAttack(ai, ap, 0, 60)
-		return false
 	}, "chasca-a4")
 }

@@ -1,18 +1,15 @@
 package lyney
 
 import (
+	"errors"
+
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
-
-func init() {
-	core.RegisterCharFunc(keys.Lyney, NewChar)
-}
 
 type char struct {
 	*tmpl.Character
@@ -87,13 +84,20 @@ func (c *char) Condition(fields []string) (any, error) {
 	}
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		return 12
-	case model.AnimationYelanN0StartDelay:
+	case info.AnimationYelanN0StartDelay:
 		return 5
 	default:
 		return c.Character.AnimationStartDelay(k)
 	}
+}
+
+func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
+	if a == action.ActionAim && c.Core.Player.LastAction.Type == action.ActionAttack && c.Core.Player.ActiveChar().NormalCounter == 0 {
+		return errors.New("cannot use aim after n4")
+	}
+	return c.Character.NextQueueItemIsValid(k, a, p)
 }

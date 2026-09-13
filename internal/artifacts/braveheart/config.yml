@@ -1,2 +1,6 @@
-key: braveheart
-set_id: 10002
+use: pipeline
+kind: artifact
+name: braveheart
+
+shortcuts:
+  - brave

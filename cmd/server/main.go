@@ -71,7 +71,6 @@ func main() {
 		servermode.WithWorkers(opt.workers),
 		servermode.WithTimeout(time.Duration(opt.timeout)*time.Second),
 	)
-
 	if err != nil {
 		panic(err)
 	}

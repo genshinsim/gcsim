@@ -1,0 +1,6 @@
+use: pipeline
+kind: weapon
+name: sacrificialsword
+
+shortcuts:
+  - sacsword

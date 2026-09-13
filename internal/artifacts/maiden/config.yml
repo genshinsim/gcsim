@@ -1,2 +1,7 @@
-key: maidenbeloved
-set_id: 14004
+use: pipeline
+kind: artifact
+name: maidenbeloved
+
+shortcuts:
+  - maiden
+  - mb

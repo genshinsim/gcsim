@@ -1,13 +1,15 @@
 package beidou
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -37,9 +39,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.a4()
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Tidecaller (E)",
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
+		Abil:               "Tidecaller",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -52,6 +54,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		HitlagHaltFrames:   skillHitlagStages[counter] * 60,
 		CanBeDefenseHalted: true,
 	}
+	if counter > 0 {
+		ai.Abil += fmt.Sprintf(" (Level %v)", counter)
+	}
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillRadius[counter]),
@@ -62,11 +67,11 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// add shield
 	c.Core.Player.Shields.Add(&shield.Tmpl{
-		ActorIndex: c.Index,
-		Target:     c.Index,
+		ActorIndex: c.Index(),
+		Target:     c.Index(),
 		Src:        c.Core.F,
 		ShieldType: shield.BeidouThunderShield,
-		Name:       "Beidou Skill",
+		Name:       "Tidecaller (Shield)",
 		HP:         shieldPer[c.TalentLvlSkill()]*c.MaxHP() + shieldBase[c.TalentLvlSkill()],
 		Ele:        attributes.Electro,
 		Expires:    c.Core.F + skillHitmark, // last until hitmark
@@ -82,9 +87,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) makeParticleCB(counter int) combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) makeParticleCB(counter int) info.AttackCBFunc {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(particleICDKey) {

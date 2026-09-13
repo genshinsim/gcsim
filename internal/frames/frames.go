@@ -43,8 +43,22 @@ func NewAttackFunc(c *character.Character, slice [][]int) func(action.Action) in
 	}
 }
 
+func NewAttackFuncWithOffset(c *character.Character, slice [][]int, offset int) func(action.Action) int {
+	n := c.NormalCounter
+	atkspd := c.Stat(attributes.AtkSpd)
+	return func(next action.Action) int {
+		return AtkSpdAdjust(slice[n][next], atkspd) + offset
+	}
+}
+
 func NewAbilFunc(slice []int) func(action.Action) int {
 	return func(next action.Action) int {
 		return slice[next]
+	}
+}
+
+func NewAbilFuncWithOffset(slice []int, offset int) func(action.Action) int {
+	return func(next action.Action) int {
+		return slice[next] + offset
 	}
 }

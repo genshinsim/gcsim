@@ -1,0 +1,109 @@
+use: pipeline
+kind: character
+name: citlali
+
+override:
+  icd_group:
+    CitlaliFrostfallStorm:
+      name: Citlali_Storm
+
+combat:
+  icd_tags:
+    - CitlaliFrostfallStorm
+    - CitlaliSpiritVessel
+  icd_groups:
+    - CitlaliFrostfallStorm
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skill: skill(Obsidian Tzitzimitl DMG)
+  - shieldEM: skill(Shield DMG Absorption)
+  - shieldFlat: skill(Shield DMG Absorption|1)
+  - frostfall: skill(Frostfall Storm DMG)
+
+  - iceStorm: burst(Ice Storm DMG)
+  - spiritVessel: burst(Spiritvessel Skull DMG)
+
+docs:
+  fields:
+    .citlali.c6-stacks: Number of Cifra of the Secret Law (C6) points.
+    .citlali.opal-fire: Whether Itzpapa is in the Opal Fire state.
+    .citlali.stellar-blade: Number of Stellar Blade (C1) stacks.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1TmPZ9MxDZ9DJSr3MLkmO-ypbWmw-FlqSSpwlr_H6GPA/edit?usp=sharing
+      count_credit: caramielle.
+      video: https://youtu.be/-GPx5vw3CeY
+      video_credit: charliex3000
+    - count: https://docs.google.com/spreadsheets/d/1TmPZ9MxDZ9DJSr3MLkmO-ypbWmw-FlqSSpwlr_H6GPA/edit?usp=sharing
+      count_credit: caramielle.
+      video: https://youtu.be/ghO1XkWozXo
+      video_credit: charliex3000
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.8
+
+      - name: N2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.8
+
+      - name: N3
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.8
+
+  - name: charge
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.8
+        hitlag: {scale: 0.05, deployable: true}
+
+  - name: skill
+    hitbox:
+      - name: E-Obsidian-Tzitzimitl
+        shape: Circle
+        center: Player
+        radius: 6
+
+      - name: E-Frostfall-Storm
+        shape: Circle
+        center: Player
+        radius: 6
+
+  - name: burst
+    hitbox:
+      - name: Q-Ice-Storm
+        shape: Circle
+        center: PrimaryTarget
+        radius: 6.5
+
+      - name: Q-Spiritvessel-Skull
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3.5
+
+  - name: cons
+    hitbox:
+      - name: C4-Spiritvessel-Skull
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3.5

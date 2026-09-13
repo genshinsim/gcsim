@@ -1,3 +1,6 @@
-package_name: jadefallssplendor
-genshin_id: 14505
-key: jadefallssplendor
+use: pipeline
+kind: weapon
+name: jadefallssplendor
+
+shortcuts:
+  - jadefall

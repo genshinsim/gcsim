@@ -1,3 +1,6 @@
-package_name: xiphos
-genshin_id: 11418
-key: xiphosmoonlight
+use: pipeline
+kind: weapon
+name: xiphosmoonlight
+
+shortcuts:
+  - xiphos

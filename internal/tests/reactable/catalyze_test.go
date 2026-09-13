@@ -6,9 +6,8 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 func TestQuicken(t *testing.T) {
@@ -18,29 +17,29 @@ func TestQuicken(t *testing.T) {
 		t.Errorf("error initializing core: %v", err)
 		t.FailNow()
 	}
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
 	trg := c.Combat.Enemies()[0].(*enemy.Enemy)
-	if math.Abs(float64(trg.Durability[reactable.Quicken])-19.966666) > 0.000001 {
+	if math.Abs(float64(trg.GetAuraDurability(info.ReactionModKeyQuicken))-19.966666) > 0.000001 {
 		t.Errorf(
 			"expected quicken=%v, got quicken=%v",
 			19.666666,
-			trg.Durability[reactable.Quicken],
+			trg.GetAuraDurability(info.ReactionModKeyQuicken),
 		)
 	}
 	if trg.AuraContains(attributes.Dendro, attributes.Electro) {
@@ -55,40 +54,40 @@ func TestElectroDoesNotReduceQuicken(t *testing.T) {
 		t.Errorf("error initializing core: %v", err)
 		t.FailNow()
 	}
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Dendro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 25,
 		},
-		Pattern: combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100),
+		Pattern: combat.NewCircleHitOnTarget(info.Point{}, nil, 100),
 	}, 0)
 	advanceCoreFrame(c)
 
 	trg := c.Combat.Enemies()[0].(*enemy.Enemy)
-	if math.Abs(float64(trg.Durability[reactable.Quicken])-19.933333) > 0.000001 { // 2f decay
+	if math.Abs(float64(trg.GetAuraDurability(info.ReactionModKeyQuicken))-19.933333) > 0.000001 { // 2f decay
 		t.Errorf(
 			"expected electro attack to not consume quicken aura, got quicken=%v",
-			trg.Durability[reactable.Quicken],
+			trg.GetAuraDurability(info.ReactionModKeyQuicken),
 		)
 	}
-	if trg.Durability[reactable.Electro] != 20 {
+	if trg.GetAuraDurability(info.ReactionModKeyElectro) != 20 {
 		t.Errorf(
-			"expected electro attack to not reduce, got electro=%v", trg.Durability[reactable.Electro])
+			"expected electro attack to not reduce, got electro=%v", trg.GetAuraDurability(info.ReactionModKeyElectro))
 	}
 }

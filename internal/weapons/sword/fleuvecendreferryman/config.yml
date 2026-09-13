@@ -1,3 +1,7 @@
-package_name: fleuvecendreferryman
-genshin_id: 11426
-key: fleuvecendreferryman
+use: pipeline
+kind: weapon
+name: fleuvecendreferryman
+
+shortcuts:
+  - fleuve
+  - pipe

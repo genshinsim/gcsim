@@ -75,7 +75,6 @@ func NewServer(cfg Config, cust ...func(*Server) error) (*Server, error) {
 
 	// check connection
 	err = client.Ping(context.TODO(), nil)
-
 	if err != nil {
 		s.Log.Errorw("result - mongodb ping failed", "err", err)
 		return nil, err
@@ -117,7 +116,6 @@ func (s *Server) Read(ctx context.Context, key string) (*share.ShareEntry, error
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
 	res := &share.ShareEntry{}
 	err := col.FindOne(ctx, bson.D{{Key: "_id", Value: key}}).Decode(res)
-
 	if err != nil {
 		s.Log.Infow("error getting share", "err", err)
 		if errors.Is(err, mongo.ErrNoDocuments) {
@@ -137,7 +135,6 @@ func (s *Server) Update(ctx context.Context, entry *share.ShareEntry) (string, e
 
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
 	res, err := col.ReplaceOne(ctx, bson.D{{Key: "_id", Value: key}}, entry)
-
 	if err != nil {
 		return "", status.Error(codes.Internal, "unexpected server error")
 	}
@@ -161,7 +158,6 @@ func (s *Server) Delete(ctx context.Context, key string) error {
 
 	col := s.client.Database(s.cfg.Database).Collection(s.cfg.Collection)
 	res, err := col.DeleteOne(ctx, bson.D{{Key: "_id", Value: key}})
-
 	if err != nil {
 		return status.Error(codes.Internal, "unexpected server error")
 	}

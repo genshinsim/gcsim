@@ -6,9 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -77,8 +76,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) SkillPress(burstActive int) action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Claw and Thunder (Press)",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
@@ -92,12 +91,12 @@ func (c *char) SkillPress(burstActive int) action.Info {
 		CanBeDefenseHalted: true,
 	}
 
-	var particleCB combat.AttackCBFunc
+	var particleCB info.AttackCBFunc
 	if !c.StatusIsActive(burstBuffKey) {
 		particleCB = c.pressParticleCB
 	}
 
-	var c4cb combat.AttackCBFunc
+	var c4cb info.AttackCBFunc
 	if c.Base.Cons >= 4 {
 		c4cb = c.c4cb
 	}
@@ -111,7 +110,7 @@ func (c *char) SkillPress(burstActive int) action.Info {
 		ai,
 		combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: 1},
+			info.Point{Y: 1},
 			radius,
 			240,
 		),
@@ -119,7 +118,7 @@ func (c *char) SkillPress(burstActive int) action.Info {
 		skillPressHitmarks[burstActive],
 		particleCB,
 		c4cb,
-		c.addSigil(false),
+		c.addSigil(),
 	)
 
 	c.SetCDWithDelay(action.ActionSkill, c.a1CDReduction(6*60), skillPressCDStarts[burstActive])
@@ -132,8 +131,8 @@ func (c *char) SkillPress(burstActive int) action.Info {
 	}
 }
 
-func (c *char) pressParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) pressParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(pressParticleICDKey) {
@@ -144,8 +143,8 @@ func (c *char) pressParticleCB(a combat.AttackCB) {
 }
 
 func (c *char) SkillHold(burstActive int) action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Claw and Thunder (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -157,7 +156,7 @@ func (c *char) SkillHold(burstActive int) action.Info {
 		Mult:       skillHold[c.TalentLvlSkill()],
 	}
 
-	var particleCB combat.AttackCBFunc
+	var particleCB info.AttackCBFunc
 	if !c.StatusIsActive(burstBuffKey) {
 		particleCB = c.holdParticleCB
 	}
@@ -182,8 +181,8 @@ func (c *char) SkillHold(burstActive int) action.Info {
 	}
 }
 
-func (c *char) holdParticleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) holdParticleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(holdParticleICDKey) {
@@ -193,9 +192,14 @@ func (c *char) holdParticleCB(a combat.AttackCB) {
 	c.Core.QueueParticle(c.Base.Key.String(), 4, attributes.Electro, c.ParticleDelay)
 }
 
-func (c *char) addSigil(done bool) combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) addSigil() info.AttackCBFunc {
+	done := false
+	sigils := 1
+	if c.IsHexerei && c.Base.Cons >= 6 {
+		sigils = 3
+	}
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {
@@ -206,8 +210,11 @@ func (c *char) addSigil(done bool) combat.AttackCBFunc {
 			c.sigils = 0
 		}
 
-		if c.sigils < 3 {
-			c.sigils++
+		c.sigils += sigils
+
+		if c.sigils > 3 {
+			c.sigils = 3
+			c.thunderFallCB()
 		}
 
 		// add sigil er buff
@@ -216,8 +223,8 @@ func (c *char) addSigil(done bool) combat.AttackCBFunc {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase(skillSigilKey, 18*60),
 			AffectedStat: attributes.ER,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -232,6 +239,7 @@ func (c *char) clearSigil() {
 	if c.sigils > 0 {
 		c.AddEnergy("razor", float64(c.sigils)*5)
 		c.sigils = 0
+		c.c6HexereiMod()
 		c.DeleteStatus(skillSigilKey)
 	}
 }

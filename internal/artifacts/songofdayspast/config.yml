@@ -1,2 +1,6 @@
-key: songofdayspast
-set_id: 15033
+use: pipeline
+kind: artifact
+name: songofdayspast
+
+shortcuts:
+  - sodp

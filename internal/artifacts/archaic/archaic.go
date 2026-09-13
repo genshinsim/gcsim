@@ -8,15 +8,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterSetFunc(keys.ArchaicPetra, NewSet)
-}
 
 type Set struct {
 	element attributes.Element
@@ -37,30 +32,19 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("archaic-2pc", -1),
 			AffectedStat: attributes.GeoP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
 	if count >= 4 {
 		m := make([]float64, attributes.EndStatType)
 
-		core.Events.Subscribe(event.OnShielded, func(args ...interface{}) bool {
-			// Character that picks it up must be the petra set holder
-			if core.Player.Active() != char.Index {
-				return false
-			}
-
-			// Check shield
-			shd := args[0].(shield.Shield)
-			if shd.Type() != shield.Crystallize {
-				return false
-			}
-			s.element = shd.Element()
-
+		enableSet := func(e attributes.Element) {
+			s.element = e
 			// Activate
 			// TODO: cd for proc?
-			core.Log.NewEvent("archaic petra proc'd", glog.LogArtifactEvent, char.Index).
+			core.Log.NewEvent("archaic petra proc'd", glog.LogArtifactEvent, char.Index()).
 				Write("ele", s.element)
 
 			m[attributes.PyroP] = 0
@@ -77,13 +61,33 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 				c.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("archaic-4pc", 10*60),
 					AffectedStat: attributes.NoStat,
-					Amount: func() ([]float64, bool) {
-						return m, true
+					Amount: func() []float64 {
+						return m
 					},
 				})
 			}
+		}
 
-			return false
+		core.Events.Subscribe(event.OnShielded, func(args ...any) {
+			// Character that picks it up must be the petra set holder
+			if core.Player.Active() != char.Index() {
+				return
+			}
+
+			// Check shield
+			shd := args[0].(shield.Shield)
+			if shd.Type() != shield.Crystallize {
+				return
+			}
+			enableSet(shd.Element())
+		}, fmt.Sprintf("archaic-4pc-%v", char.Base.Key.String()))
+
+		core.Events.Subscribe(event.OnLunarCrystallize, func(args ...any) {
+			// Character that triggers it up must be the petra set holder
+			if core.Player.Active() != char.Index() {
+				return
+			}
+			enableSet(attributes.Hydro)
 		}, fmt.Sprintf("archaic-4pc-%v", char.Base.Key.String()))
 	}
 

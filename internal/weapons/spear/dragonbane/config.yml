@@ -1,3 +1,6 @@
-package_name: dragonbane
-genshin_id: 13401
-key: dragonsbane
+use: pipeline
+kind: weapon
+name: dragonsbane
+
+shortcuts:
+  - dbane

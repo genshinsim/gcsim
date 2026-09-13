@@ -1,2 +1,9 @@
-key: tenacityofthemillelith
-set_id: 15017
+use: pipeline
+kind: artifact
+name: tenacityofthemillelith
+
+shortcuts:
+  - millelith
+  - tenacity
+  - tom
+  - totm

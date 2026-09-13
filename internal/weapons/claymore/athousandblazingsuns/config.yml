@@ -1,3 +1,6 @@
-package_name: athousandblazingsuns
-genshin_id: 12514
-key: athousandblazingsuns
+use: pipeline
+kind: weapon
+name: athousandblazingsuns
+
+shortcuts:
+  - tbs

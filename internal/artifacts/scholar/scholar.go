@@ -7,14 +7,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterSetFunc(keys.Scholar, NewSet)
-}
 
 type Set struct {
 	Index int
@@ -36,8 +31,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("scholar-2pc", -1),
 			AffectedStat: attributes.ER,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -45,12 +40,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		const icdKey = "scholar-4pc-icd"
 		icd := 180
 		// TODO: test lmao
-		c.Events.Subscribe(event.OnParticleReceived, func(args ...interface{}) bool {
-			if c.Player.Active() != char.Index {
-				return false
+		c.Events.Subscribe(event.OnParticleReceived, func(args ...any) {
+			if c.Player.Active() != char.Index() {
+				return
 			}
 			if char.StatusIsActive(icdKey) {
-				return false
+				return
 			}
 			char.AddStatus(icdKey, icd, true)
 
@@ -60,8 +55,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					this.AddEnergy("scholar-4pc", 3)
 				}
 			}
-
-			return false
 		}, fmt.Sprintf("scholar-4pc-%v", char.Base.Key.String()))
 	}
 

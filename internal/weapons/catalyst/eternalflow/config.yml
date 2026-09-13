@@ -1,3 +1,6 @@
-package_name: eternalflow
-genshin_id: 14514
-key: tomeoftheeternalflow
+use: pipeline
+kind: weapon
+name: tomeoftheeternalflow
+
+shortcuts:
+  - eternalflow

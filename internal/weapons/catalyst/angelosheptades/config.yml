@@ -1,0 +1,7 @@
+use: pipeline
+kind: weapon
+name: angelosheptades
+
+shortcuts:
+  - angelos
+  - heptades

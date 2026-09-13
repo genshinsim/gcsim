@@ -67,7 +67,7 @@ $$
  
 #### Ingame
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/kI6N3Mn5BQY?start=20" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/kI6N3Mn5BQY?start=20" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
 
 By looking at Keqing N1 hitlag footage against a tree and counting the number of hitlag frames for the different cases, we can confirm that the calculation matches ingame.
 Hitlag starts 1 frame after the character significantly slows down (significant camera shake/movement can also be used) and ends once the character starts moving again.

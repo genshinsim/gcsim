@@ -1,0 +1,91 @@
+use: pipeline
+kind: character
+name: lauma
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+  - charge: attack(Spiritcall Prayer DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skillPress: skill(Press DMG)
+  - skillHold1: skill(1-Hit Hold DMG)
+  - skillHold2: skill(2-Hit Hold DMG)
+  - frostgroveSanctuaryAtk: skill(Frostgrove Sanctuary Attack DMG)
+  - frostgroveSanctuaryEM: skill(Frostgrove Sanctuary Attack DMG|1)
+  - skillResShred: skill(Elemental RES Decrease)
+
+  - bloomDmgIncrease: burst(Bloom, Hyperbloom, and Burgeon DMG Increase)
+  - lunarBloomDmgIncrease: burst(Lunar-Bloom DMG Increase)
+
+docs:
+  issues:
+    - Spirit envoy state jump is not implemented.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1fXUE-XpBd3EE3AIjH5flz0KRCG2PfueslfCZWqck_mk/edit?usp=sharing
+      count_credit: caramielle.
+      video: https://youtu.be/i9wA_9zFF6A
+      video_credit: caramielle.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        box: [2, 8]
+
+      - name: N2
+        shape: Box
+        center: PrimaryTarget
+        box: [2, 8]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        box: [2.8, 8]
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Box
+        center: PrimaryTarget
+        box: [2.8, 8]
+
+  - name: skill
+    params:
+      hold: 0 for Tap (default), 1 for Hold. Must have a verdant dew available.
+    hitbox:
+      - name: E-Press
+        shape: Circle
+        center: Player
+        radius: 6
+
+      - name: E-Hold
+        shape: Circle
+        center: Player
+        radius: 6
+
+      - name: E-Lunarbloom
+        shape: Circle
+        center: Player
+        radius: 6
+
+      - name: E-Frostgrove
+        shape: Circle
+        center: Player
+        radius: 6
+
+      - name: E-FrostgroveC6
+        shape: Circle
+        center: Player
+        radius: 6
+
+  - name: burst
+
+  - name: dash
+    note: Cannot dash while in spirit envoy state.

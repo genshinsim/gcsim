@@ -9,11 +9,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstFramesGrounded []int
-var burstFramesNS []int
-var burstSecondaryHitmark = []int{103, 139, 147, 153, 157, 160}
+var (
+	burstFramesGrounded   []int
+	burstFramesNS         []int
+	burstSecondaryHitmark = []int{103, 139, 147, 153, 157, 160}
+)
 
 const (
 	burstHitmark = 96
@@ -36,11 +39,11 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Galesplitting Soulseeker Shell",
 		AttackTag:      attacks.AttackTagElementalBurst,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeDefault,
@@ -60,7 +63,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai.ICDTag = attacks.ICDTagChascaBurst
 	ai.ICDGroup = attacks.ICDGroupChascaBurst
 
-	var c4cb combat.AttackCBFunc
+	var c4cb info.AttackCBFunc
 
 	enemies := c.Core.Combat.EnemiesWithinArea(ap, nil)
 	burstBullets := make([]attributes.Element, 0, 6)
@@ -70,7 +73,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		burstBullets[i], burstBullets[j] = burstBullets[j], burstBullets[i]
 	})
 	burstFrame := c.Core.F
-	for i := 0; i < 6; i++ {
+	for i := range 6 {
 		switch {
 		case i < len(burstBullets):
 			ele := burstBullets[i]
@@ -97,26 +100,25 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		if c.nightsoulState.HasBlessing() {
 			return
 		}
-		c.Core.Log.NewEvent("nightsoul ended, falling", glog.LogCharacterEvent, c.Index)
+		c.Core.Log.NewEvent("nightsoul ended, falling", glog.LogCharacterEvent, c.Index())
 		c.AddStatus(plungeAvailableKey, 26, true)
 	}, burstNSFall)
 
-	frames := frames.NewAbilFunc(burstFramesGrounded)
 	if c.nightsoulState.HasBlessing() {
 		// if we Q while in the air, we need to add the frames of fall down
 		// TODO: set fall down animation to be "idle/skill" instead of burst?
 		return action.Info{
-			Frames:          c.skillNextFrames(frames, 0),
+			Frames:          c.skillNextFrames(frames.NewAbilFunc(burstFramesNS), 0),
 			AnimationLength: burstFramesNS[action.InvalidAction],
-			CanQueueAfter:   burstNSFall, // can't start falling until frame 102
+			CanQueueAfter:   burstNSFall,
 			State:           action.BurstState,
 		}, nil
 	}
 
 	return action.Info{
-		Frames:          frames,
+		Frames:          frames.NewAbilFunc(burstFramesGrounded),
 		AnimationLength: burstFramesGrounded[action.InvalidAction],
-		CanQueueAfter:   burstFramesGrounded[action.ActionDash], // earliest cancel
+		CanQueueAfter:   burstFramesGrounded[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
 	}, nil
 }

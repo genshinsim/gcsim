@@ -6,8 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var skillFrames [][]int
@@ -35,8 +34,8 @@ func init() {
 }
 
 func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Razorgrass Blade",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -47,14 +46,14 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 		Mult:       skill[c.TalentLvlSkill()],
 	}
 
-	var skillCB func(a combat.AttackCB)
+	var skillCB func(a info.AttackCB)
 	if c.Base.Cons >= 1 {
 		c.skillC1 = true
 		skillCB = c.c1cb()
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), geometry.Point{Y: -0.3}, 6.5, 130),
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), info.Point{Y: -0.3}, 6.5, 130),
 		skillHitmark,
 		skillHitmark,
 		skillCB,
@@ -71,8 +70,8 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *Traveler) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *Traveler) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

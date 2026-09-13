@@ -1,0 +1,6 @@
+use: pipeline
+kind: weapon
+name: vividnotions
+
+shortcuts:
+  - vivid

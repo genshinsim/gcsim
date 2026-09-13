@@ -1,2 +1,6 @@
-key: echoesofanoffering
-set_id: 15024
+use: pipeline
+kind: artifact
+name: echoesofanoffering
+
+shortcuts:
+  - echoes

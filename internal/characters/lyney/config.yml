@@ -1,57 +1,174 @@
-package_name: lyney
-genshin_id: 10000084
-key: lyney
-action_param_keys:
-    attack:
-        - param: "travel"
-    aim:
-        - param: "hold"
-        - param: "travel"
-        - param: "c6_travel"
-        - param: "weakspot"
-icd_tags:
-  - ICDTagLyneyEndBoom
-  - ICDTagLyneyEndBoomEnhanced
-icd_groups:
-  - group_name: ICDGroupLyneyExtra
-    reset_timer: 60
-    ele_app_sequence: [1, 0, 0, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1]
-skill_data_mapping:
-  attack:
-    aim:
-      - 8 # Aimed Shot|{param8:F1P}
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-    attack_4:
-      - 4 # 4-Hit DMG|{param4:F1P}
-    fullaim:
-      - 9 # Aimed Shot Charge Level 1|{param9:F1P}
-    prop:
-      - 10 # Prop Arrow DMG|{param10:F1P}
-    propAligned:
-      - 15 # Spiritbreath Thorn DMG|{param15:F1P}
-    propHP:
-      - 12 # Grin-Malkin Hat Inherited HP|{param12:P}
-    propPyrotechnic:
-      - 14 # Pyrotechnic Strike DMG|{param14:F1P}
-  skill:
-    skill:
-      - 0 # Skill DMG|{param0:F1P}
-    skillBonus:
-      - 1 # Skill DMG Bonus|{param1:F1P} ATK/Stack
-  burst:
-    burst:
-      - 0 # Skill DMG|{param0:F1P}
-    explosiveFirework:
-      - 1 # Explosive Firework DMG|{param1:F1P}
+use: pipeline
+kind: character
+name: lyney
 
-documentation:
-  fields_data:
-    - fields: [.lyney.propSurplusStacks]
-      desc: Number of Prop Surplus stacks.
+override:
+  icd_group:
+    LyneyExtra:
+      name: Avatar_Liney_ExtraAttack
+
+combat:
+  icd_tags:
+    - LyneyEndBoom
+    - LyneyEndBoomEnhanced
+  icd_groups:
+    - LyneyExtra
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Aimed Shot Charge Level 1)
+  - prop: attack(Prop Arrow DMG)
+  - propHP: attack(Grin-Malkin Hat Inherited HP)
+  - propPyrotechnic: attack(Pyrotechnic Strike DMG)
+  - propAligned: attack(Spiritbreath Thorn DMG)
+
+  - skill: skill(Skill DMG)
+  - skillBonus: skill(Skill DMG Bonus)
+
+  - burst: burst(Skill DMG)
+  - explosiveFirework: burst(Explosive Firework DMG)
+
+docs:
+  fields:
+    .lyney.propSurplusStacks: Number of Prop Surplus stacks.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1gnA8r59Zp4gMIWTeOyW04hUikeNyrHIL7Ujbc-QATjs/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/fmKm5ddt7I4
+      video_credit: Kolibri#7675
+
+abilities:
+  - name: default
+    params:
+      c2_stacks: Number of C2 stacks to gain at the beginning. Default 0, maximum 3. Set via '+params=[c2_stacks=...]' in Lyney's 'char' line.
+      pyrotechnic_travel: Projectile travel time for Pyrotechnic Strike via Grin-Malkin Hat expiry. Default 36 frames. Set via '+params=[pyrotechnic_travel=...]' in Lyney's 'char' line.
+
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3-1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3-2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N4
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: aim
+    params:
+      c6_travel: Projectile travel time for C6. Default 10 frames. Only does something if level is 1.
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot, 2 for Prop Arrow (default).
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim-Lv2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Lv2-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim-Lv2-Aligned
+        note: Spawns at the target hit by FullAim-Lv2.
+        shape: Circle
+        center: GlobalValue
+        radius: 2
+
+      - name: FullAim-Lv2-PyrotechnicStrike
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: FullAim-Lv2-PyrotechnicStrike-Skill
+        note: Spawns at the position of the Grin-Malkin Hat which is at the FullAim-Lv2-Aligned position.
+        shape: Circle
+        center: GlobalValue
+        radius: 3.5
+
+  - name: skill
+    hitbox:
+      - name: E-Skill
+        shape: Circle
+        center: Player
+        offset: [0, 5.5]
+        radius: 5.5
+
+  - name: burst
+    hitbox:
+      - name: Q-Move
+        note: 'On every tick: Applies to all enemies within 4m radius of the Player.'
+        shape: Single
+        center: GlobalValue
+
+      - name: Q-ExplosiveFirework
+        shape: Circle
+        center: Player
+        radius: 6
+
+  - name: cons
+    hitbox:
+      - name: FullAim-Lv2-C6
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1

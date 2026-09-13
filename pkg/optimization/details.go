@@ -32,6 +32,7 @@ type SubstatOptimizerDetails struct {
 	charRelevantSubstats    [][]attributes.Stat
 	charProfilesCopy        []info.CharacterProfile
 	charMaxExtraERSubs      []float64
+	file                    *ast.File
 	simcfg                  *info.ActionList
 	gcsl                    ast.Node
 	simopt                  simulator.Options
@@ -86,7 +87,7 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 
 	seed := time.Now().UnixNano()
 	init := optstats.NewDamageAggBuffer(stats.simcfg)
-	_, err := optstats.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, seed, optstats.OptimizerDmgStat, init.Add)
+	_, err := optstats.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.file, stats.simcfg, stats.gcsl, stats.simopt, seed, optstats.OptimizerDmgStat, init.Add)
 	if err != nil {
 		stats.optimizer.logger.Fatal(err.Error())
 	}
@@ -101,7 +102,7 @@ func (stats *SubstatOptimizerDetails) calculateSubstatGradientsForChar(
 		stats.simcfg.Characters = stats.charProfilesCopy
 
 		a := optstats.NewDamageAggBuffer(stats.simcfg)
-		_, err := optstats.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.simcfg, stats.gcsl, stats.simopt, seed, optstats.OptimizerDmgStat, a.Add)
+		_, err := optstats.RunWithConfigCustomStats(context.TODO(), stats.cfg, stats.file, stats.simcfg, stats.gcsl, stats.simopt, seed, optstats.OptimizerDmgStat, a.Add)
 		if err != nil {
 			stats.optimizer.logger.Fatal(err.Error())
 		}

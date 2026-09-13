@@ -2,18 +2,18 @@ package itto
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/construct"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 type ushi struct {
 	src    int
 	expiry int
 	char   *char
-	dir    geometry.Point
-	pos    geometry.Point
+	dir    info.Point
+	pos    info.Point
 }
 
-func (c *char) newUshi(dur int, dir, pos geometry.Point) construct.Construct {
+func (c *char) newUshi(dur int, dir, pos info.Point) construct.Construct {
 	return &ushi{
 		src:    c.Core.F,
 		expiry: c.Core.F + dur,
@@ -29,5 +29,5 @@ func (u *ushi) Type() construct.GeoConstructType { return construct.GeoConstruct
 func (u *ushi) Expiry() int                      { return u.expiry }
 func (u *ushi) IsLimited() bool                  { return true }
 func (u *ushi) Count() int                       { return 1 }
-func (u *ushi) Direction() geometry.Point        { return u.dir }
-func (u *ushi) Pos() geometry.Point              { return u.pos }
+func (u *ushi) Direction() info.Point            { return u.dir }
+func (u *ushi) Pos() info.Point                  { return u.pos }

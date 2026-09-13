@@ -1,3 +1,11 @@
-package_name: halberd
-genshin_id: 13302
-key: halberd
+use: pipeline
+kind: weapon
+name: halberd
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Halberd
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Single
+        center: GlobalValue

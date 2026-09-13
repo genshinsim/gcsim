@@ -1,4 +1,6 @@
-package_name: favonius
-genshin_id: 12401
-key: favoniusgreatsword
-skip_data_func: true
+use: pipeline
+kind: weapon
+name: favoniusgreatsword
+
+shortcuts:
+  - favgs

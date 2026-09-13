@@ -1,6 +1,10 @@
 package mavuika
 
 import (
+	"errors"
+	"fmt"
+
+	"github.com/genshinsim/gcsim/internal/frames"
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -9,7 +13,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type SkillState int
@@ -17,7 +20,6 @@ type SkillState int
 const (
 	ring SkillState = iota
 	bike
-	bikeCDKey = "flamestrider-charge"
 )
 
 type char struct {
@@ -36,17 +38,13 @@ type char struct {
 	savedNormalCounter int
 	caState            ChargeState
 	canBikePlunge      bool
+	chargeCancel       bool
+	dashFrames         []int
 }
 
-func init() {
-	core.RegisterCharFunc(keys.Mavuika, NewChar)
-}
-
-func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
 	c := char{}
-	t := tmpl.New(s)
-
-	t.CharWrapper = w
+	t := tmpl.NewWithWrapper(s, w)
 	c.Character = t
 
 	c.EnergyMax = 0
@@ -54,8 +52,17 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.SkillCon = 5
 	c.NormalHitNum = normalHitNum
 
+	fs, ok := p.Params["start_energy"]
+	if !ok {
+		fs = maxFightingSpirit
+	}
+	fs = max(min(fs, maxFightingSpirit), 0)
+
+	c.fightingSpirit = float64(fs)
+
 	w.Character = &c
 	c.nightsoulState = nightsoul.New(c.Core, c.CharWrapper)
+	c.dashFrames = frames.InitAbilSlice(24) // Dash -> Dash
 	return nil
 }
 
@@ -89,7 +96,7 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	switch a {
 	case action.ActionBurst:
-		if c.fightingSpirit < 100 {
+		if !c.Core.Flags.IgnoreBurstEnergy && c.fightingSpirit < 100 {
 			return false, action.InsufficientEnergy
 		}
 		return c.Character.ActionReady(a, p)
@@ -98,17 +105,37 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 			return true, action.NoFailure
 		}
 		return c.Character.ActionReady(a, p)
+	case action.ActionCharge:
+		if c.nightsoulState.HasBlessing() && c.armamentState == bike {
+			if !c.canBeginBikedCharge(p) {
+				return false, action.InsufficientStamina
+			}
+		}
 	}
 	return c.Character.ActionReady(a, p)
 }
 
+func (c *char) canBeginBikedCharge(p map[string]int) bool {
+	if c.Core.Player.CurrentState() != action.ChargeAttackState || c.caState.StartFrame == 0 {
+		bufferedFrames, ok := p["buffered"]
+		if !ok {
+			bufferedFrames = maxBufferedBikeChargeFrames
+		}
+		bufferedFrames = maxBufferedBikeChargeFrames - c.GetSkippedWindupFrames(bufferedFrames)
+		if c.GetRemainingNightSoulDuration() < bufferedFrames {
+			// If unable to perform a biked charge, must wait until physical charge is ready
+			return false
+		}
+	}
+	return true
+}
+
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) {
 		c.DeleteStatus(burstKey)
 		if c.armamentState == bike && c.nightsoulState.HasBlessing() {
 			c.exitBike()
 		}
-		return false
 	}, "mavuika-exit")
 }
 
@@ -116,17 +143,19 @@ func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "nightsoul":
 		return c.nightsoulState.Condition(fields)
+	case "fightingspirit":
+		return c.fightingSpirit, nil
 	default:
 		return c.Character.Condition(fields)
 	}
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
 		switch k {
-		case model.AnimationXingqiuN0StartDelay:
+		case info.AnimationXingqiuN0StartDelay:
 			return 0
-		case model.AnimationYelanN0StartDelay:
+		case info.AnimationYelanN0StartDelay:
 			return 0
 		default:
 			return c.Character.AnimationStartDelay(k)
@@ -134,11 +163,29 @@ func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
 	}
 
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		return 22
-	case model.AnimationYelanN0StartDelay:
+	case info.AnimationYelanN0StartDelay:
 		return 22
 	default:
 		return c.Character.AnimationStartDelay(k)
 	}
+}
+
+func (c *char) NextQueueItemIsValid(targetChar keys.Char, a action.Action, p map[string]int) error {
+	if c.chargeCancel {
+		if targetChar != c.Base.Key {
+			return errors.New("cannot swap, Mavuika must perform a Biked charge attack after a dash cancel")
+		}
+		if !c.nightsoulState.HasBlessing() {
+			return errors.New("nightsoul blessing expired before Mavuika could perform charge cancel")
+		}
+		if c.Core.Player.CurrentState() != action.DashState {
+			return errors.New("cannot allow Mavuika to go into idle during charge-cancelled dash")
+		}
+		if a != action.ActionCharge {
+			return fmt.Errorf("cannot perform action %s, Mavuika must perform a Biked charge attack after a dash cancel", a)
+		}
+	}
+	return c.Character.NextQueueItemIsValid(targetChar, a, p)
 }

@@ -1,13 +1,14 @@
 package xingqiu
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/internal/frames"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -27,12 +28,13 @@ func init() {
 const (
 	orbitalKey     = "xingqiu-orbital"
 	particleICDKey = "xingqiu-particle-icd"
+	skillAbilName  = "Guhua Sword: Fatal Rainscreen"
 )
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Guhua Sword: Fatal Rainscreen",
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
+		Abil:               skillAbilName,
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -45,6 +47,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	for i, v := range rainscreen {
+		ai.Abil = fmt.Sprintf("%v %v", skillAbilName, i)
 		ax := ai
 		ax.Mult = v[c.TalentLvlSkill()]
 		if c.Base.Cons >= 4 {
@@ -55,13 +58,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: skillOffsets[i]},
+			info.Point{Y: skillOffsets[i]},
 			skillHitboxes[i][0],
 		)
 		if i == 1 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: skillOffsets[i]},
+				info.Point{Y: skillOffsets[i]},
 				skillHitboxes[i][0],
 				skillHitboxes[i][1],
 			)
@@ -85,8 +88,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

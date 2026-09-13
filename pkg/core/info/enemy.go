@@ -16,7 +16,7 @@ type EnemyProfile struct {
 	FreezeResist          float64                `json:"freeze_resist"`
 	ParticleDrops         []*model.MonsterHPDrop `json:"-"`
 	HpBase                float64                `json:"-"`
-	HpGrowCurve           model.MonsterCurveType `json:"-"`
+	HpGrowCurve           model.GrowCurveType    `json:"-"`
 	Id                    int                    `json:"-"`
 	MonsterName           string                 `json:"monster_name"`
 	Modified              bool                   `json:"modified"`
@@ -29,4 +29,28 @@ func (e *EnemyProfile) Clone() EnemyProfile {
 		r.Resist[k] = v
 	}
 	return r
+}
+
+type Enemy interface {
+	Target
+	// hp related
+	MaxHP() float64
+	HP() float64
+	// hitlag related
+	ApplyHitlag(factor, dur float64)
+	QueueEnemyTask(f func(), delay int)
+	// modifier related
+	// add
+	AddStatus(key string, dur int, hitlag bool)
+	AddResistMod(mod ResistMod)
+	AddDefMod(mod DefMod)
+	// delete
+	DeleteStatus(key string)
+	DeleteResistMod(key string)
+	DeleteDefMod(key string)
+	// active
+	StatusIsActive(key string) bool
+	ResistModIsActive(key string) bool
+	DefModIsActive(key string) bool
+	StatusExpiry(key string) int
 }

@@ -1,2 +1,6 @@
-key: instructor
-set_id: 10007
+use: pipeline
+kind: artifact
+name: instructor
+
+shortcuts:
+  - ins

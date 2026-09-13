@@ -6,18 +6,12 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterSetFunc(keys.PaleFlame, NewSet)
-}
 
 type Set struct {
 	stacks int
@@ -49,8 +43,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("pf-2pc", -1),
 			AffectedStat: attributes.PhyP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -63,19 +57,19 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	icd := 18 // 0.3s * 60
 	s.buff = make([]float64, attributes.EndStatType)
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt && atk.Info.AttackTag != attacks.AttackTagElementalArtHold {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		// reset stacks if expired
 		if !char.StatModIsActive(pf4key) {
@@ -87,18 +81,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		}
 		s.updateBuff()
 
-		c.Log.NewEvent("paleflame gained stack", glog.LogArtifactEvent, char.Index).
+		c.Log.NewEvent("paleflame gained stack", glog.LogArtifactEvent, char.Index()).
 			Write("stacks", s.stacks)
 
 		char.AddStatus(icdKey, icd, true)
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(pf4key, 420),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return s.buff, true
+			Amount: func() []float64 {
+				return s.buff
 			},
 		})
-		return false
 	}, fmt.Sprintf("pf4-%v", char.Base.Key.String()))
 
 	return &s, nil

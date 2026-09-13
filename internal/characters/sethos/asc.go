@@ -2,8 +2,7 @@ package sethos
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const a1Key = "sethos-a1"
@@ -30,9 +29,11 @@ func (c *char) a1Consume(energy float64, holdLevel int) {
 	c.c2AddStack(c2ConsumingKey)
 }
 
-const a4Key = "sethos-a4"
-const a4IcdKey = "sethos-a4-icd"
-const a4Icd = 15 * 60
+const (
+	a4Key    = "sethos-a4"
+	a4IcdKey = "sethos-a4-icd"
+	a4Icd    = 15 * 60
+)
 
 func (c *char) a4() {
 	if c.Base.Ascension < 4 {
@@ -43,14 +44,14 @@ func (c *char) a4() {
 	c.a4Count = 0
 }
 
-func (c *char) makeA4cb() combat.AttackCBFunc {
+func (c *char) makeA4cb() info.AttackCBFunc {
 	if c.Base.Ascension < 4 {
 		return nil
 	}
 
 	done := false
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if done {

@@ -1,0 +1,8 @@
+use: pipeline
+kind: weapon
+name: sacrificialfragments
+
+shortcuts:
+  - sacfrag
+  - sacfragments
+  - sacfrags

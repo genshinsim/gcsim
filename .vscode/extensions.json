@@ -4,10 +4,12 @@
     "zxh404.vscode-proto3",
     "redhat.vscode-yaml",
     "mgmcdermott.vscode-language-babel",
-    "dbaeumer.vscode-eslint",
+    "biomejs.biome",
     "golang.go",
     "visualstudioexptteam.vscodeintellicode",
     "eriklynd.json-tools",
-    "esbenp.prettier-vscode"
+    "bbenoist.Nix",
+    "mkhl.direnv",
+    "ms-vscode-remote.remote-wsl"
   ]
 }

@@ -1,3 +1,6 @@
-package_name: cinnabar
-genshin_id: 11415
-key: cinnabarspindle
+use: pipeline
+kind: weapon
+name: cinnabarspindle
+
+shortcuts:
+  - cinnabar

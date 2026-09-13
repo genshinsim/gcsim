@@ -20,14 +20,14 @@ func (c *char) a1() {
 
 	for i, char := range c.Core.Player.Chars() {
 		// does not affect hutao
-		if c.Index == i {
+		if c.Index() == i {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(a1BuffKey, 480),
 			AffectedStat: attributes.CR,
-			Amount: func() ([]float64, bool) {
-				return c.a1buff, true
+			Amount: func() []float64 {
+				return c.a1buff
 			},
 		})
 	}
@@ -45,11 +45,11 @@ func (c *char) a4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("hutao-a4", -1),
 		AffectedStat: attributes.PyroP,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if c.CurrentHPRatio() <= 0.5 {
-				return c.a4buff, true
+				return c.a4buff
 			}
-			return nil, false
+			return nil
 		},
 	})
 }

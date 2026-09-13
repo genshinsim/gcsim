@@ -6,13 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.DialoguesOfTheDesertSages, NewWeapon)
-}
 
 type Weapon struct {
 	Index int
@@ -35,19 +30,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	energyRestore := 6 + float64(r)*2
 
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		src := args[0].(*info.HealInfo)
 
-		if src.Caller != char.Index {
-			return false
+		if src.Caller != char.Index() {
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, icd, true)
 		char.AddEnergy(energySrc, energyRestore)
-
-		return false
 	}, fmt.Sprintf("dialoguesofthedesertsages-%v", char.Base.Key.String()))
 
 	return w, nil

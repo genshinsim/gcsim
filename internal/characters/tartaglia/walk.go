@@ -17,10 +17,7 @@ func (c *char) Walk(p map[string]int) (action.Info, error) {
 	if !ok {
 		f = 1
 	}
-	animLength := walkFrames[action.ActionSkill]
-	if animLength < f {
-		animLength = f
-	}
+	animLength := max(walkFrames[action.ActionSkill], f)
 	return action.Info{
 		Frames: func(next action.Action) int {
 			if f < walkFrames[next] {

@@ -12,14 +12,14 @@ func (t *Target) WillApplyEle(tag attacks.ICDTag, grp attacks.ICDGroup, char int
 	}
 
 	// check if we need to start timer
-	x := t.icdTagOnTimer[char][tag]
-	if !t.icdTagOnTimer[char][tag] {
-		t.icdTagOnTimer[char][tag] = true
+	x := t.icdTagOnTimer[NewIcdKey(char, tag, grp)]
+	if !t.icdTagOnTimer[NewIcdKey(char, tag, grp)] {
+		t.icdTagOnTimer[NewIcdKey(char, tag, grp)] = true
 		t.ResetTagCounterAfterDelay(tag, grp, char)
 	}
 
-	val := t.icdTagCounter[char][tag]
-	t.icdTagCounter[char][tag]++
+	val := t.icdTagCounter[NewIcdKey(char, tag, grp)]
+	t.icdTagCounter[NewIcdKey(char, tag, grp)]++
 
 	// if counter > length, then use 0 for group seq
 	groupSeq := attacks.ICDGroupEleApplicationSequence[grp][len(attacks.ICDGroupEleApplicationSequence[grp])-1]
@@ -40,13 +40,13 @@ func (t *Target) WillApplyEle(tag attacks.ICDTag, grp attacks.ICDGroup, char int
 
 func (t *Target) GroupTagDamageMult(tag attacks.ICDTag, grp attacks.ICDGroup, char int) float64 {
 	// check if we need to start timer
-	if !t.icdDamageTagOnTimer[char][tag] {
-		t.icdDamageTagOnTimer[char][tag] = true
+	if !t.icdDamageTagOnTimer[NewIcdKey(char, tag, grp)] {
+		t.icdDamageTagOnTimer[NewIcdKey(char, tag, grp)] = true
 		t.ResetDamageCounterAfterDelay(tag, grp, char)
 	}
 
-	val := t.icdDamageTagCounter[char][tag]
-	t.icdDamageTagCounter[char][tag]++
+	val := t.icdDamageTagCounter[NewIcdKey(char, tag, grp)]
+	t.icdDamageTagCounter[NewIcdKey(char, tag, grp)]++
 
 	// if counter > length, then use 0 for group seq
 	groupSeq := attacks.ICDGroupDamageSequence[grp][len(attacks.ICDGroupDamageSequence[grp])-1]
@@ -60,8 +60,8 @@ func (t *Target) GroupTagDamageMult(tag attacks.ICDTag, grp attacks.ICDGroup, ch
 func (t *Target) ResetDamageCounterAfterDelay(tag attacks.ICDTag, grp attacks.ICDGroup, char int) {
 	t.Core.Tasks.Add(func() {
 		// set the counter back to 0
-		t.icdDamageTagCounter[char][tag] = 0
-		t.icdDamageTagOnTimer[char][tag] = false
+		t.icdDamageTagCounter[NewIcdKey(char, tag, grp)] = 0
+		t.icdDamageTagOnTimer[NewIcdKey(char, tag, grp)] = false
 		t.Core.Log.NewEvent("damage counter reset", glog.LogICDEvent, char).
 			Write("tag", tag).
 			Write("grp", grp)
@@ -75,8 +75,8 @@ func (t *Target) ResetDamageCounterAfterDelay(tag attacks.ICDTag, grp attacks.IC
 func (t *Target) ResetTagCounterAfterDelay(tag attacks.ICDTag, grp attacks.ICDGroup, char int) {
 	t.Core.Tasks.Add(func() {
 		// set the counter back to 0
-		t.icdTagCounter[char][tag] = 0
-		t.icdTagOnTimer[char][tag] = false
+		t.icdTagCounter[NewIcdKey(char, tag, grp)] = 0
+		t.icdTagOnTimer[NewIcdKey(char, tag, grp)] = false
 		t.Core.Log.NewEvent("ele app counter reset", glog.LogICDEvent, char).
 			Write("tag", tag).
 			Write("grp", grp)

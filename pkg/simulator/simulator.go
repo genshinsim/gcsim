@@ -19,6 +19,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
+	"github.com/genshinsim/gcsim/pkg/gcs/parser"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/result"
 	"github.com/genshinsim/gcsim/pkg/stats"
@@ -58,8 +59,8 @@ func Version() string {
 	return sha1ver
 }
 
-func Parse(cfg string) (*info.ActionList, ast.Node, error) {
-	parser := ast.New(cfg)
+func Parse(file *ast.File, cfg string) (*info.ActionList, ast.Node, error) {
+	parser := parser.New(file, cfg)
 	simcfg, gcsl, err := parser.Parse()
 	if err != nil {
 		return &info.ActionList{}, nil, err
@@ -89,18 +90,35 @@ func Run(ctx context.Context, opts Options) (*model.SimulationResult, error) {
 		return &model.SimulationResult{}, err
 	}
 
-	simcfg, gcsl, err := Parse(cfg)
+	file := ast.NewFile()
+	simcfg, gcsl, err := Parse(file, cfg)
 	if err != nil {
 		return &model.SimulationResult{}, err
 	}
 
-	return RunWithConfig(ctx, cfg, simcfg, gcsl, opts, start)
+	return RunWithConfig(ctx, file, cfg, simcfg, gcsl, opts, start)
 }
 
 // Runs the simulation with a given parsed config
 // TODO: cfg string should be in the action list instead
 // TODO: need to add a context here to avoid infinite looping
-func RunWithConfig(ctx context.Context, cfg string, simcfg *info.ActionList, gcsl ast.Node, opts Options, start time.Time) (*model.SimulationResult, error) {
+func RunWithConfig(ctx context.Context, file *ast.File, cfg string, simcfg *info.ActionList, gcsl ast.Node, opts Options, start time.Time) (*model.SimulationResult, error) {
+	return run(ctx, file, cfg, simcfg, gcsl, CryptoRandSeed)
+}
+
+func RunWithSeededConfig(ctx context.Context, file *ast.File, cfg string, simcfg *info.ActionList, gcsl ast.Node, seeds []int64) (*model.SimulationResult, error) {
+	if len(seeds) != simcfg.Settings.Iterations {
+		return &model.SimulationResult{}, fmt.Errorf("number of seeds %v must match number of iterations %v", len(seeds), simcfg.Settings.Iterations)
+	}
+	i := 0
+	seedFunc := func() int64 {
+		i++
+		return seeds[i-1]
+	}
+	return run(ctx, file, cfg, simcfg, gcsl, seedFunc)
+}
+
+func run(ctx context.Context, file *ast.File, cfg string, simcfg *info.ActionList, gcsl ast.Node, seedFunc func() int64) (*model.SimulationResult, error) {
 	// initialize aggregators
 	var aggregators []agg.Aggregator
 	for _, aggregator := range agg.Aggregators() {
@@ -128,9 +146,10 @@ func RunWithConfig(ctx context.Context, cfg string, simcfg *info.ActionList, gcs
 		wip := 0
 		for wip < simcfg.Settings.Iterations {
 			pool.QueueCh <- worker.Job{
+				File:    file,
 				Cfg:     simcfg.Copy(),
 				Actions: gcsl.Copy(),
-				Seed:    CryptoRandSeed(),
+				Seed:    seedFunc(),
 			}
 			wip++
 		}

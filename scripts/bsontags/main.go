@@ -124,8 +124,8 @@ func (v visitor) Visit(n ast.Node) ast.Visitor {
 						if strings.HasPrefix(existingProtoTag, "name=") && name == "-" {
 							name = strings.TrimPrefix(existingProtoTag, "name=")
 						}
-						if strings.HasPrefix(existingProtoTag, "json=") {
-							name = strings.TrimPrefix(existingProtoTag, "json=")
+						if after, ok0 := strings.CutPrefix(existingProtoTag, "json="); ok0 {
+							name = after
 						}
 					}
 				}

@@ -20,20 +20,19 @@ func (c *char) a4() {
 	}
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.GeoP] = 0.12
-	//TODO: this used to be on PostDash; need to check if working correctly still
-	c.Core.Events.Subscribe(event.OnDash, func(_ ...interface{}) bool {
+	// TODO: this used to be on PostDash; need to check if working correctly still
+	c.Core.Events.Subscribe(event.OnDash, func(_ ...any) {
 		// check for jade screen
 		if c.Core.Constructs.CountByType(construct.GeoConstructNingSkill) <= 0 {
-			return false
+			return
 		}
 		active := c.Core.Player.ActiveChar()
 		active.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("ning-screen", 600),
 			AffectedStat: attributes.GeoP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
-		return false
 	}, "ningguang-a4")
 }

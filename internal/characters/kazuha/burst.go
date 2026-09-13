@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -29,10 +29,10 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	player := c.Core.Combat.Player()
 	c.qAbsorb = attributes.NoElement
-	c.qAbsorbCheckLocation = combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1}, 8)
+	c.qAbsorbCheckLocation = combat.NewCircleHitOnTarget(player, info.Point{Y: 1}, 8)
 
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Kazuha Slash",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagNone,
@@ -45,12 +45,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		HitlagFactor:       0.05,
 		CanBeDefenseHalted: false,
 	}
-	ap := combat.NewCircleHitOnTarget(player, geometry.Point{Y: 1}, 9)
+	ap := combat.NewCircleHitOnTarget(player, info.Point{Y: 1}, 9)
 
 	c.Core.QueueAttack(ai, ap, burstHitmark, burstHitmark)
 
 	// apply dot and check for absorb
-	ai.Abil = "Kazuha Slash (Dot)"
+	ai.Abil = "Kazuha Slash (DoT)"
 	ai.StrikeType = attacks.StrikeTypeDefault
 	ai.Mult = burstDot[c.TalentLvlBurst()]
 	ai.Durability = 25
@@ -58,7 +58,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai.HitlagHaltFrames = 0
 
 	aiAbsorb := ai
-	aiAbsorb.Abil = "Kazuha Slash (Absorb Dot)"
+	aiAbsorb.Abil = "Kazuha Slash (Absorb DoT)"
 	aiAbsorb.Mult = burstEleDot[c.TalentLvlBurst()]
 	aiAbsorb.Element = attributes.NoElement
 
@@ -85,7 +85,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		// queue up ticks
 		// from kisa's count: ticks starts at 147, + 117 gap each roughly; 5 ticks total
 		// updated to 140 based on koli's count: https://docs.google.com/spreadsheets/d/1uEbP13O548-w_nGxFPGsf5jqj1qGD3pqFZ_AiV4w3ww/edit#gid=775340159
-		for i := 0; i < 5; i++ {
+		for i := range 5 {
 			c.Core.Tasks.Add(func() {
 				if c.qAbsorb != attributes.NoElement {
 					aiAbsorb.Element = c.qAbsorb
@@ -123,7 +123,7 @@ func (c *char) absorbCheckQ(src, count, maxcount int) func() {
 		if count == maxcount {
 			return
 		}
-		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.Index, c.qAbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
+		c.qAbsorb = c.Core.Combat.AbsorbCheck(c.Index(), c.qAbsorbCheckLocation, attributes.Pyro, attributes.Hydro, attributes.Electro, attributes.Cryo)
 
 		if c.qAbsorb != attributes.NoElement {
 			return

@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -42,7 +42,6 @@ func init() {
 	attackFrames[0][3][action.ActionAttack] = 39                                // N4 -> N5
 
 	attackFrames[0][4] = frames.InitNormalCancelSlice(attackHitmarks[0][4], 69) // N5 -> N1
-	attackFrames[0][4][action.ActionCharge] = 500                               // N5 -> CA, TODO: this action is illegal; need better way to handle it
 
 	// Female
 	attackFrames[1] = make([][]int, normalHitNum)
@@ -60,12 +59,11 @@ func init() {
 	attackFrames[1][3][action.ActionAttack] = 38                                // N4 -> N5
 
 	attackFrames[1][4] = frames.InitNormalCancelSlice(attackHitmarks[1][4], 64) // N5 -> N1
-	attackFrames[1][4][action.ActionCharge] = 500                               // N5 -> CA, TODO: this action is illegal; need better way to handle it
 }
 
 func (c *Traveler) Attack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:          attacks.AttackTagNormal,
 		ICDTag:             attacks.ICDTagNormalAttack,
@@ -80,7 +78,7 @@ func (c *Traveler) Attack(p map[string]int) (action.Info, error) {
 	}
 	ap := combat.NewCircleHitOnTargetFanAngle(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: attackOffsets[c.gender][c.NormalCounter]},
+		info.Point{Y: attackOffsets[c.gender][c.NormalCounter]},
 		attackHitboxes[c.gender][c.NormalCounter][0],
 		attackFanAngles[c.gender][c.NormalCounter],
 	)
@@ -88,7 +86,7 @@ func (c *Traveler) Attack(p map[string]int) (action.Info, error) {
 		(c.gender == 1 && c.NormalCounter == 1) {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.gender][c.NormalCounter]},
+			info.Point{Y: attackOffsets[c.gender][c.NormalCounter]},
 			attackHitboxes[c.gender][c.NormalCounter][0],
 			attackHitboxes[c.gender][c.NormalCounter][1],
 		)

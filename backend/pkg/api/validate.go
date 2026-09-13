@@ -60,7 +60,7 @@ func (s *Server) validateSigning(data []byte, str string) error {
 		return errors.New("id does not exist")
 	}
 
-	var res map[string]interface{}
+	var res map[string]any
 	json.Unmarshal(data, &res)
 	d, err := json.Marshal(res)
 	if err != nil {

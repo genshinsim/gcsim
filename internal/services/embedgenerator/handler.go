@@ -169,8 +169,8 @@ func (s *Server) handleImageRequest(src string) http.HandlerFunc {
 }
 
 func (s *Server) handleResult(val string, w http.ResponseWriter) {
-	if strings.HasPrefix(val, "error: ") {
-		val = strings.TrimPrefix(val, "error: ")
+	if after, ok := strings.CutPrefix(val, "error: "); ok {
+		val = after
 		w.WriteHeader(http.StatusUnprocessableEntity)
 		w.Write([]byte(val))
 		return

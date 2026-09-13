@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 func TestCryoMelt(t *testing.T) {
@@ -12,15 +12,15 @@ func TestCryoMelt(t *testing.T) {
 	trg := addTargetToCore(c)
 	c.Init()
 
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 25,
 		},
 	})
 	trg.Tick()
-	next := &combat.AttackEvent{
-		Info: combat.AttackInfo{
+	next := &info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 50,
 		},
@@ -42,15 +42,15 @@ func TestPyroMelt(t *testing.T) {
 	trg := addTargetToCore(c)
 	c.Init()
 
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 25,
 		},
 	})
 	trg.Tick()
-	next := &combat.AttackEvent{
-		Info: combat.AttackInfo{
+	next := &info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},
@@ -72,27 +72,27 @@ func TestPyroFrozenCryoMelt(t *testing.T) {
 	trg := addTargetToCore(c)
 	c.Init()
 
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 25,
 		},
 	})
-	trg.React(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.React(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Hydro,
 			Durability: 25,
 		},
 	})
-	trg.AttachOrRefill(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	trg.AttachOrRefill(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 25,
 		},
 	})
 	trg.Tick()
-	next := &combat.AttackEvent{
-		Info: combat.AttackInfo{
+	next := &info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 50,
 		},

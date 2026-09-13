@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -16,6 +16,7 @@ var (
 	ringsFrames  []int
 
 	attackHitmarks        = [][]int{{11}, {17, 37}, {15, 21}, {40}}
+	attackCQA             = []int{11, 30, 21, 40}
 	attackHitlagHaltFrame = [][]float64{{0.03}, {0.03, 0}, {0.03, 0}, {0.06}}
 	attackDefHalt         = [][]bool{{true}, {true, true}, {false, false}, {true}}
 	attackOffsets         = []float64{-0.2, -0.2, 0.3, 0.5}
@@ -58,8 +59,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	for i := 0; i < len(attack[c.NormalCounter]); i++ {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,
@@ -75,26 +76,26 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			ai.HitlagFactor = 0.01
 		}
 
-		var ap combat.AttackPattern
+		var ap info.AttackPattern
 		switch {
 		case len(attackHitboxes[c.NormalCounter]) == 2: // box
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsets[c.NormalCounter]},
+				info.Point{Y: attackOffsets[c.NormalCounter]},
 				attackHitboxes[c.NormalCounter][0],
 				attackHitboxes[c.NormalCounter][1],
 			)
 		case attackFanAngles[c.NormalCounter] > 0: // circle with fan angle
 			ap = combat.NewCircleHitOnTargetFanAngle(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsets[c.NormalCounter]},
+				info.Point{Y: attackOffsets[c.NormalCounter]},
 				attackHitboxes[c.NormalCounter][0],
 				attackFanAngles[c.NormalCounter],
 			)
 		default: // circle
 			ap = combat.NewCircleHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsets[c.NormalCounter]},
+				info.Point{Y: attackOffsets[c.NormalCounter]},
 				attackHitboxes[c.NormalCounter][0],
 			)
 		}
@@ -107,7 +108,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
 		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+		CanQueueAfter:   attackCQA[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}, nil
 }
@@ -123,14 +124,14 @@ func (c *char) reathermoonRings() action.Info {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(ringsFrames),
 		AnimationLength: ringsFrames[action.InvalidAction],
-		CanQueueAfter:   ringsFrames[action.ActionDash],
+		CanQueueAfter:   ringsFrames[action.ActionAttack],
 		State:           action.SkillState,
 	}
 }
 
 func (c *char) reathermoonRingsDetail(abilName string, hitmarks []int) {
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		AttackTag:          attacks.AttackTagElementalArt,
 		StrikeType:         attacks.StrikeTypeDefault,
 		Durability:         25,
@@ -162,7 +163,7 @@ func (c *char) reathermoonRingsDetail(abilName string, hitmarks []int) {
 		}
 
 		// TODO: approximated
-		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(target, nil, 8), func(t combat.Enemy) bool {
+		next := c.Core.Combat.RandomEnemyWithinArea(combat.NewCircleHitOnTarget(target, nil, 8), func(t info.Enemy) bool {
 			return target.Key() != t.Key()
 		})
 		if next != nil {

@@ -6,17 +6,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.TheBlackSword, NewWeapon)
-}
 
 // Increases DMG dealt by Normal and Charged Attacks by 20%. Additionally,
 // regenerates 60% of ATK as HP when Normal and Charged Attacks score a CRIT Hit. This effect can occur once every 5s.
@@ -35,34 +29,34 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	val[attributes.DmgP] = 0.15 + 0.05*float64(r)
 	char.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("blacksword", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-				return nil, false
+				return nil
 			}
-			return val, true
+			return val
 		},
 	})
 
 	const icdKey = "black-sword-icd"
 	heal := 0.5 + .1*float64(r)
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		crit := args[3].(bool)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		if crit {
 			c.Player.Heal(info.HealInfo{
-				Caller:  char.Index,
+				Caller:  char.Index(),
 				Target:  c.Player.Active(),
 				Message: "The Black Sword",
 				Src:     heal * atk.Snapshot.Stats.TotalATK(),
@@ -71,7 +65,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			// trigger cd
 			char.AddStatus(icdKey, 300, true) // every 5s
 		}
-		return false
 	}, fmt.Sprintf("black-sword-%v", char.Base.Key.String()))
 	return w, nil
 }

@@ -15,33 +15,33 @@ import "ace-builds/src-noconflict/theme-tomorrow_night";
 import "ace-builds/src-noconflict/theme-twilight";
 import "ace-builds/src-noconflict/theme-xcode";
 //gcsim specific module
-import "./mode-gcsim.js";
-import { AceEditorWrapperProps } from "./types.js";
+import "./mode-gcsim.dm.js";
+import type { AceEditorWrapperProps } from "./types.js";
 
 export function AceEditorWrapper({
-  cfg,
-  onChange,
-  maxLines = 35,
-  fontSize = 14,
-  theme = "tomorrow_night",
+	cfg,
+	onChange,
+	maxLines = 35,
+	fontSize = 14,
+	theme = "tomorrow_night",
 }: AceEditorWrapperProps) {
-  return (
-    <AceEditor
-      mode="gcsim"
-      theme={theme}
-      width="100%"
-      onChange={onChange}
-      value={cfg}
-      name="config_editor"
-      editorProps={{
-        $blockScrolling: true,
-      }}
-      setOptions={{
-        maxLines: maxLines,
-        fontSize: fontSize,
-        tabSize: 2,
-        highlightActiveLine: false,
-      }}
-    />
-  );
+	return (
+		<AceEditor
+			mode="gcsim"
+			theme={theme}
+			width="100%"
+			onChange={onChange}
+			value={cfg}
+			name="config_editor"
+			editorProps={{
+				$blockScrolling: true,
+			}}
+			setOptions={{
+				maxLines: maxLines,
+				fontSize: fontSize,
+				tabSize: 2,
+				highlightActiveLine: false,
+			}}
+		/>
+	);
 }

@@ -79,7 +79,7 @@ func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *actio
 	h.char = char
 	h.started = *h.f
 	h.aniEvt = evt
-	h.events.Emit(event.OnStateChange, h.state, evt.State)
+	h.events.Emit(event.OnStateChange, h.state, evt.State, evt.Segmented)
 	h.state = evt.State
 	h.stateExpiry = *h.f + evt.AnimationLength
 	h.lastAct = act
@@ -87,8 +87,9 @@ func (h *AnimationHandler) SetActionUsed(char int, act action.Action, evt *actio
 		h.event = h.log.NewEvent(fmt.Sprintf("%v started", act.String()), glog.LogHitlagEvent, char).
 			Write("AnimationLength", evt.AnimationLength).
 			Write("CanQueueAfter", evt.CanQueueAfter).
+			Write("Segmented", evt.Segmented).
 			Write("State", evt.State.String())
-		for i := action.Action(0); i < action.EndActionType; i++ {
+		for i := range action.EndActionType {
 			h.event.Write(i.String(), evt.Frames(i))
 		}
 	}
@@ -108,8 +109,9 @@ func (h *AnimationHandler) CurrentStateStart() int {
 func (h *AnimationHandler) Tick() {
 	if h.aniEvt != nil && h.aniEvt.Tick() {
 		h.logEnded()
-		h.events.Emit(event.OnStateChange, h.state, action.Idle)
+		h.events.Emit(event.OnStateChange, h.state, action.Idle, false)
 		h.state = action.Idle
+		h.started = *h.f
 		h.aniEvt = nil
 	}
 }

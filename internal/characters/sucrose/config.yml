@@ -1,34 +1,124 @@
-package_name: sucrose
-genshin_id: 10000043
-key: sucrose
-action_param_keys:
-    low_plunge:
-        - param: "collision"
-    high_plunge:
-        - param: "collision"
-skill_data_mapping:
-    attack:
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        attack_4:
-            - 3 # 4-Hit DMG|{param3:F1P}
-        charge:
-            - 4 # Charged Attack DMG|{param4:P}
-        collision:
-            - 6 # Plunge DMG|{param6:F1P}
-        lowPlunge:
-            - 7 # Low/High Plunge DMG|{param7:P}/{param8:P}
-        highPlunge:
-            - 8 # Low/High Plunge DMG|{param7:P}/{param8:P}
-    skill:
-        skill:
-            - 0 # Skill DMG|{param0:P}
-    burst:
-        burstAbsorb:
-            - 1 # Additional Elemental DMG|{param1:F1P}
-        burstDot:
-            - 0 # DoT|{param0:P}
+use: pipeline
+kind: character
+name: sucrose
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skill: skill(Skill DMG)
+
+  - burstDot: burst(DoT)
+  - burstAbsorb: burst(Additional Elemental DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1qHFGd5xt2MNBCIw7WK78lwv2Az98vLz8CRILU8piugo/edit?usp=sharing
+      count_credit: Kurt#5846
+      video: https://youtu.be/qFTyVL1cA4w
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1qHFGd5xt2MNBCIw7WK78lwv2Az98vLz8CRILU8piugo/edit?usp=sharing
+      count_credit: Kurt#5846
+      video: https://youtu.be/Rd7GqdlsPz0
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/16ZDmEBZOD4xeUcodxFJVuLC7IIqM9LGLilkct65mElg/edit?usp=sharing
+      count_credit: kolibri._.
+      video: https://youtu.be/3ah-MfdDfis
+      video_credit: kolibri._.
+    - count: https://docs.google.com/spreadsheets/d/1w2kx5-gLYqyuxYisKb5gnOfA-jsM1VdpCWv04aJVcIY/edit?usp=sharing
+      count_credit: soloxcx
+      video: https://youtu.be/zCuAAX2FUTE
+      video_credit: soloxcx
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: N2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: N3
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: N4
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Box
+        center: Player
+        offset: [0, -0.2]
+        box: [3.2, 7.5]
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        radius: 1.5
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        radius: 3.5
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    hitbox:
+      - name: E
+        shape: Circle
+        center: Player
+        offset: [0, 5]
+        radius: 6
+
+  - name: burst
+    hitbox:
+      - name: Q-DoT
+        shape: Circle
+        center: Player
+        offset: [0, 5]
+        radius: 8
+
+      - name: Q-AdditionalElement
+        shape: Circle
+        center: Player
+        offset: [0, 5]
+        radius: 8
+
+      - name: Q-AbsorbCheck
+        shape: Box
+        center: GlobalValue
+        offset: [0, 4]
+        box: [2.5, 2.5]

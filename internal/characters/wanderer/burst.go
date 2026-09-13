@@ -6,10 +6,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstFramesNormal []int
-var burstFramesE []int
+var (
+	burstFramesNormal []int
+	burstFramesE      []int
+)
 
 func init() {
 	burstFramesNormal = frames.InitAbilSlice(101)
@@ -47,8 +50,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		return c.WindfavoredBurst(p)
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Kyougen: Five Ceremonial Plays",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -59,7 +62,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
 			delay+burstSnapshotDelay, delay+burstHitmark+i*burstHitmarkDelay)
 	}
@@ -76,8 +79,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) WindfavoredBurst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Kyougen: Five Ceremonial Plays (Windfavored)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -90,7 +93,7 @@ func (c *char) WindfavoredBurst(p map[string]int) (action.Info, error) {
 
 	c.c2()
 
-	for i := 0; i < 5; i++ {
+	for i := range 5 {
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 5),
 			burstSnapshotDelay, burstHitmark+i*burstHitmarkDelay)
 	}

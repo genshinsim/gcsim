@@ -1,2 +1,6 @@
-key: lavawalker
-set_id: 14003
+use: pipeline
+kind: artifact
+name: lavawalker
+
+shortcuts:
+  - lw

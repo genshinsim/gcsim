@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -24,57 +25,72 @@ func (c *char) c1() {
 //   - Burning, Bloom, Hyperbloom, Burgeon Reaction DMG can score CRIT Hits.
 //     CRIT Rate and CRIT DMG are fixed at 20% and 100% respectively.
 //   - Within 8s of being affected by Quicken, Aggravate, Spread, DEF is decreased by 30%.
+//   - The CRIT Rate and CRIT DMG of Lunar-Bloom DMG received are increased by 10% and 20% respectively.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
-		t, ok := args[0].(*enemy.Enemy)
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+		e, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
-		ae := args[1].(*combat.AttackEvent)
+		ae := args[1].(*info.AttackEvent)
+
+		if !e.StatusIsActive(skillMarkKey) {
+			return
+		}
 
 		switch ae.Info.AttackTag {
-		case attacks.AttackTagBurningDamage:
-		case attacks.AttackTagBloom:
-		case attacks.AttackTagHyperbloom:
-		case attacks.AttackTagBurgeon:
+		case attacks.AttackTagBurningDamage, attacks.AttackTagBloom, attacks.AttackTagHyperbloom, attacks.AttackTagBurgeon, attacks.AttackTagBountifulCore:
+			// TODO: should this really be +=??
+			ae.Snapshot.Stats[attributes.CR] += 0.2
+			ae.Snapshot.Stats[attributes.CD] = 1
+			c.Core.Log.NewEvent("nahida c2 buff", glog.LogCharacterEvent, ae.Info.ActorIndex).
+				Write("final_critrate", ae.Snapshot.Stats[attributes.CR])
 		default:
-			return false
+			return
 		}
-
-		if !t.StatusIsActive(skillMarkKey) {
-			return false
-		}
-
-		//TODO: should this really be +=??
-		ae.Snapshot.Stats[attributes.CR] += 0.2
-		ae.Snapshot.Stats[attributes.CD] += 1
-
-		c.Core.Log.NewEvent("nahida c2 buff", glog.LogCharacterEvent, ae.Info.ActorIndex).
-			Write("final_crit", ae.Snapshot.Stats[attributes.CR])
-
-		return false
 	}, "nahida-c2-reaction-dmg-buff")
 
-	cb := func(rx event.Event) event.Hook {
-		return func(args ...interface{}) bool {
+	cb := func(_ event.Event) event.Hook {
+		return func(args ...any) {
 			t, ok := args[0].(*enemy.Enemy)
 			if !ok {
-				return false
+				return
 			}
 			if !t.StatusIsActive(skillMarkKey) {
-				return false
+				return
 			}
-			t.AddDefMod(combat.DefMod{
+			t.AddDefMod(info.DefMod{
 				Base:  modifier.NewBaseWithHitlag("nahida-c2", 480),
 				Value: -0.3,
 			})
-			return false
 		}
 	}
 
 	c.Core.Events.Subscribe(event.OnQuicken, cb(event.OnQuicken), "nahida-c2-def-shred-quicken")
 	c.Core.Events.Subscribe(event.OnAggravate, cb(event.OnAggravate), "nahida-c2-def-shred-aggravate")
 	c.Core.Events.Subscribe(event.OnSpread, cb(event.OnSpread), "nahida-c2-def-shred-spread")
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.CR] = 0.1
+	m[attributes.CD] = 0.2
+	for _, char := range c.Core.Player.Chars() {
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBase("nahida-c2-lunarbloom", -1),
+			Amount: func(ae *info.AttackEvent, t info.Target) []float64 {
+				e, ok := t.(*enemy.Enemy)
+				if !ok {
+					return nil
+				}
+				if !e.StatusIsActive(skillMarkKey) {
+					return nil
+				}
+				if ae.Info.AttackTag == attacks.AttackTagDirectLunarBloom {
+					return m
+				}
+				return nil
+			},
+		})
+	}
 }
 
 // When 1/2/3/(4 or more) nearby opponents are affected by All Schemes to Know's
@@ -84,22 +100,19 @@ func (c *char) c4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("nahida-c4", -1),
 		AffectedStat: attributes.EM,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			enemies := c.Core.Combat.EnemiesWithinArea(
 				combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 30),
-				func(t combat.Enemy) bool {
+				func(t info.Enemy) bool {
 					return t.StatusIsActive(skillMarkKey)
 				},
 			)
-			count := len(enemies)
-			if count > 4 {
-				count = 4
-			}
+			count := min(len(enemies), 4)
 			if count == 0 {
-				return nil, false
+				return nil
 			}
 			c.c4Buff[attributes.EM] = float64(80 + count*20)
-			return c.c4Buff, true
+			return c.c4Buff
 		},
 	})
 }
@@ -117,11 +130,11 @@ const (
 // is considered Elemental Skill DMG and can be triggered once every 0.2s. This
 // effect can last up to 10s and will be removed after Nahida has unleashed 6
 // instances of Tri-Karma Purification: Karmic Oblivion.
-func (c *char) makeC6CB() combat.AttackCBFunc {
+func (c *char) makeC6CB() info.AttackCBFunc {
 	if c.Base.Cons < 6 {
 		return nil
 	}
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
@@ -140,8 +153,8 @@ func (c *char) makeC6CB() combat.AttackCBFunc {
 		}
 		c.AddStatus(c6ICDKey, 0.2*60, true)
 
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Tri-Karma Purification: Karmic Oblivion",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNahidaC6,

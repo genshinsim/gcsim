@@ -1,2 +1,9 @@
-key: crimsonwitchofflames
-set_id: 15006
+use: pipeline
+kind: artifact
+name: crimsonwitchofflames
+
+shortcuts:
+  - crimson
+  - cw
+  - cwof
+  - witch

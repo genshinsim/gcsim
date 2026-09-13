@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -16,6 +17,8 @@ var (
 	attackReleaseNormal = [][]int{{11}, {6}, {32, 41}}
 	attackReleaseE      = [][]int{{15}, {3}, {32, 40}}
 	attackRadiusE       = []float64{2.5, 2.5, 3}
+	attackCQANormal     = []int{11, 5, 33}
+	attackCQAE          = []int{15, 3, 33}
 )
 
 const normalHitNum = 3
@@ -39,7 +42,7 @@ func init() {
 	attackFramesNormal[1][action.ActionJump] = 5
 	attackFramesNormal[1][action.ActionSwap] = 5
 
-	attackFramesNormal[2] = frames.InitNormalCancelSlice(attackReleaseNormal[2][0], 76)
+	attackFramesNormal[2] = frames.InitNormalCancelSlice(attackReleaseNormal[2][1], 76)
 	attackFramesNormal[2][action.ActionAttack] = 64
 	attackFramesNormal[2][action.ActionCharge] = 50
 	attackFramesNormal[2][action.ActionSkill] = 33
@@ -62,7 +65,7 @@ func init() {
 	attackFramesE[1][action.ActionDash] = 5
 	attackFramesE[1][action.ActionJump] = 5
 
-	attackFramesE[2] = frames.InitNormalCancelSlice(attackReleaseE[2][0], 70)
+	attackFramesE[2] = frames.InitNormalCancelSlice(attackReleaseE[2][1], 70)
 	attackFramesE[2][action.ActionAttack] = 54
 	attackFramesE[2][action.ActionCharge] = 53
 	attackFramesE[2][action.ActionSkill] = 33
@@ -88,8 +91,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 			AttackTag:  attacks.AttackTagNormal,
 			ICDTag:     attacks.ICDTagNormalAttack,
@@ -122,7 +125,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 				frames.AtkSpdAdjust(attackFramesNormal[currentNormalCounter][next], atkspd)
 		},
 		AnimationLength: windup + attackFramesNormal[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   windup + attackReleaseNormal[c.NormalCounter][len(attackReleaseNormal[c.NormalCounter])-1],
+		CanQueueAfter:   windup + attackCQANormal[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}, nil
 }
@@ -140,8 +143,8 @@ func (c *char) WindfavoredAttack(p map[string]int) (action.Info, error) {
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       fmt.Sprintf("Normal %v (Windfavored)", c.NormalCounter),
 			AttackTag:  attacks.AttackTagNormal,
 			ICDTag:     attacks.ICDTagNormalAttack,
@@ -175,7 +178,7 @@ func (c *char) WindfavoredAttack(p map[string]int) (action.Info, error) {
 				frames.AtkSpdAdjust(attackFramesE[currentNormalCounter][next], atkspd)
 		},
 		AnimationLength: windup + attackFramesE[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   windup + attackReleaseE[c.NormalCounter][len(attackReleaseE[c.NormalCounter])-1],
+		CanQueueAfter:   windup + attackCQAE[c.NormalCounter],
 		State:           action.NormalAttackState,
 	}, nil
 }

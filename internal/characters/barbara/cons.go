@@ -17,14 +17,14 @@ func (c *char) c1(delay int) {
 
 func (c *char) c2() {
 	for i, char := range c.Core.Player.Chars() {
-		if i == c.Index {
+		if i == c.Index() {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("barbara-c2", skillDuration),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return c.c2buff, true
+			Amount: func() []float64 {
+				return c.c2buff
 			},
 		})
 	}
@@ -33,15 +33,14 @@ func (c *char) c2() {
 // inspired from hutao c6
 // TODO: does this even work?
 func (c *char) c6() {
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
-			return false
+			return
 		}
-		if c.Core.Player.Active() != c.Index { // trigger only when not barbara
+		if c.Core.Player.Active() != c.Index() { // trigger only when not barbara
 			c.checkc6()
 		}
-		return false
 	}, "barbara-c6")
 }
 

@@ -16,16 +16,16 @@ func (c *char) a1() {
 	}
 
 	count := 0
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) {
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		if !t.StatusIsActive(skillHoldMarkKey) {
-			return false
+			return
 		}
 		if count == 4 {
-			return false
+			return
 		}
 		if count == 0 {
 			c.QueueCharTask(func() {
@@ -34,7 +34,6 @@ func (c *char) a1() {
 		}
 		count++
 		c.ReduceActionCooldown(action.ActionSkill, 120)
-		return false
 	}, "charlotte-a1")
 }
 
@@ -45,7 +44,7 @@ func (c *char) a4() {
 	heal := 0
 	cryop := 0
 	for _, this := range c.Core.Player.Chars() {
-		if c.Index == this.Index {
+		if c.Index() == this.Index() {
 			continue
 		}
 		if this.CharZone == info.ZoneFontaine {
@@ -60,8 +59,8 @@ func (c *char) a4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("charlotte-a4", -1),
 		AffectedStat: attributes.NoStat,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 }

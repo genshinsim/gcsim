@@ -1,0 +1,7 @@
+use: pipeline
+kind: weapon
+name: thedaybreakchronicles
+
+shortcuts:
+  - daybreakchronicles
+  - daybreak

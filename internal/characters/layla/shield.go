@@ -5,15 +5,16 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 const (
-	nightStars    = "nightstars"
-	starSkillIcd  = "nightstar-skill-icd"
-	starBurstIcd  = "nightstar-burst-icd"
-	shootingStars = "shooting-stars"
+	nightStars        = "nightstars"
+	starSkillIcd      = "nightstar-skill-icd"
+	starBurstIcd      = "nightstar-burst-icd"
+	shootingStars     = "shooting-stars"
+	shootingStarsAbil = "Shooting Star"
 )
 
 var starsTravel = []int{35, 33, 30, 28}
@@ -36,14 +37,14 @@ func (c *char) removeShield() {
 func (c *char) newShield(base float64, dur int) *shd {
 	n := &shd{}
 	n.Tmpl = &shield.Tmpl{}
-	n.Tmpl.ActorIndex = c.Index
-	n.Tmpl.Target = -1
-	n.Tmpl.Src = c.Core.F
-	n.Tmpl.ShieldType = shield.LaylaSkill
-	n.Tmpl.Ele = attributes.Cryo
-	n.Tmpl.HP = base
-	n.Tmpl.Name = "Layla Skill"
-	n.Tmpl.Expires = c.Core.F + dur
+	n.ActorIndex = c.Index()
+	n.Target = -1
+	n.Src = c.Core.F
+	n.ShieldType = shield.LaylaSkill
+	n.Ele = attributes.Cryo
+	n.HP = base
+	n.Name = "Curtain of Slumber (Shield)"
+	n.Expires = c.Core.F + dur
 	n.c = c
 	return n
 }
@@ -70,12 +71,9 @@ func (c *char) addNightStars(count int, icd ICDNightStar) {
 		c.a1Stack++
 	}
 
-	stars := count + c.Tag(nightStars)
-	if stars > 4 {
-		stars = 4
-	}
+	stars := min(count+c.Tag(nightStars), 4)
 	c.SetTag(nightStars, stars)
-	c.Core.Log.NewEvent("adding stars", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("adding stars", glog.LogCharacterEvent, c.Index()).
 		Write("stars", stars)
 
 	if stars == 4 && c.Tag(shootingStars) == 0 {
@@ -85,7 +83,7 @@ func (c *char) addNightStars(count int, icd ICDNightStar) {
 	}
 }
 
-func (c *char) shootStars(src int, last combat.Enemy, particleCB combat.AttackCBFunc) func() {
+func (c *char) shootStars(src int, last info.Enemy, particleCB info.AttackCBFunc) func() {
 	return func() {
 		if c.shootStarSrc != src {
 			return
@@ -118,9 +116,9 @@ func (c *char) shootStars(src int, last combat.Enemy, particleCB combat.AttackCB
 			}
 		}
 
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Shooting Star",
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
+			Abil:       shootingStarsAbil,
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
 			ICDGroup:   attacks.ICDGroupLayla,
@@ -132,7 +130,7 @@ func (c *char) shootStars(src int, last combat.Enemy, particleCB combat.AttackCB
 		}
 
 		done := false
-		c2CB := func(_ combat.AttackCB) {
+		c2CB := func(_ info.AttackCB) {
 			if done {
 				return
 			}
@@ -164,7 +162,7 @@ func (c *char) shootStars(src int, last combat.Enemy, particleCB combat.AttackCB
 	}
 }
 
-func (c *char) makeParticleCB() combat.AttackCBFunc {
+func (c *char) makeParticleCB() info.AttackCBFunc {
 	var particleICDKey string
 	if c.particleCBSwitch {
 		particleICDKey = particleICD2Key
@@ -172,8 +170,8 @@ func (c *char) makeParticleCB() combat.AttackCBFunc {
 		particleICDKey = particleICD1Key
 	}
 	c.particleCBSwitch = !c.particleCBSwitch
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(particleICDKey) {

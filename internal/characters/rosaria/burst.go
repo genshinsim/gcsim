@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
@@ -26,9 +26,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// Note - if a more advanced targeting system is added in the future
 	// hit 1 is technically only on surrounding enemies, hits 2 and dot are on the lance
 	// For now assume that everything hits all targets
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Rites of Termination (Hit 1)",
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
+		Abil:               "Rites of Termination (Initial 1)",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -49,14 +49,14 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// center on player
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 3.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, 3.5),
 		15,
 		15,
 		c1CB,
 		c6CB,
 	)
 
-	ai.Abil = "Rites of Termination (Hit 2)"
+	ai.Abil = "Rites of Termination (Initial 2)"
 	ai.StrikeType = attacks.StrikeTypeDefault
 	ai.Mult = burst[1][c.TalentLvlBurst()]
 	// no more hitlag after first hit
@@ -70,7 +70,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	playerPos := c.Core.Combat.Player()
-	gadgetOffset := geometry.Point{Y: 3}
+	gadgetOffset := info.Point{Y: 3}
 	apHit2 := combat.NewCircleHitOnTarget(playerPos, gadgetOffset, 6)
 	apTick := combat.NewCircleHitOnTarget(playerPos, gadgetOffset, 6.5)
 	// Handle Hit 2 and DoT
@@ -83,8 +83,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.Core.Status.Add("rosariaburst", dur)
 
 		// Burst is snapshot when the lance lands (when the 2nd damage proc hits)
-		ai = combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai = info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Rites of Termination (DoT)",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagNone,

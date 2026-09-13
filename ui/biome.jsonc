@@ -1,0 +1,62 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.5.13/schema.json",
+	"files": {
+		"includes": [
+			"**/*.ts",
+			"**/*.tsx",
+			"**/*.js",
+			"**/*.jsx",
+			"**/*.cjs",
+			"**/*.mjs",
+			"**/*.json",
+			"**/*.jsonc",
+			"!**/dist",
+			"!**/build",
+			"!**/.docusaurus",
+			"!**/storybook-static",
+			"!**/test-results",
+			"!**/playwright-report",
+			"!**/blob-report",
+			"!packages/types/src/generated",
+			"!**/wasm_exec.js",
+			"!**/*.dm.*"
+		]
+	},
+	"formatter": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"noUnusedVariables": {
+					"level": "warn",
+					"options": { "ignoreRestSiblings": true }
+				},
+				"noUnusedFunctionParameters": {
+					"level": "warn",
+					"options": { "ignoreRestSiblings": true }
+				},
+				"useExhaustiveDependencies": "error"
+			},
+			"suspicious": {
+				"noTsIgnore": "off",
+				"noEmptyBlockStatements": "off"
+			},
+			// The old ESLint setup had no jsx-a11y plugin, so Biome's
+			// recommended a11y group surfaced ~104 pre-existing violations.
+			// They are being fixed and re-enabled one rule at a time under
+			// #2790; the interaction/anchor cluster (#2799) is done and now
+			// runs at the recommended "error". No a11y overrides remain.
+			"a11y": {}
+		}
+	},
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	}
+}

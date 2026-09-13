@@ -5,9 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/construct"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const particleICDKey = "zhongli-particle-icd"
@@ -15,8 +14,8 @@ const particleICDKey = "zhongli-particle-icd"
 func (c *char) newStele(dur int) {
 	flat := c.a4Skill()
 	// deal damage when created
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Stone Stele (Initial)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -29,7 +28,7 @@ func (c *char) newStele(dur int) {
 		FlatDmg:    flat,
 	}
 	steleDir := c.Core.Combat.Player().Direction()
-	stelePos := geometry.CalcOffsetPoint(c.Core.Combat.Player().Pos(), geometry.Point{Y: 3}, steleDir)
+	stelePos := info.CalcOffsetPoint(c.Core.Combat.Player().Pos(), info.Point{Y: 3}, steleDir)
 	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(stelePos, nil, 2), 0, 0, c.particleCB())
 
 	// create a construct
@@ -50,15 +49,15 @@ func (c *char) newStele(dur int) {
 	c.Core.Log.NewEvent(
 		"Stele added",
 		glog.LogCharacterEvent,
-		c.Index,
+		c.Index(),
 	).
 		Write("orig_count", num).
 		Write("cur_count", c.steleCount).
 		Write("next_tick", c.Core.F+120)
 
 	// Snapshot buffs for resonance ticks
-	aiSnap := combat.AttackInfo{
-		ActorIndex: c.Index,
+	aiSnap := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Stone Stele (Tick)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagElementalArt,
@@ -71,7 +70,7 @@ func (c *char) newStele(dur int) {
 		FlatDmg:    flat,
 	}
 	snap := c.Snapshot(&aiSnap)
-	c.steleSnapshot = combat.AttackEvent{
+	c.steleSnapshot = info.AttackEvent{
 		Info:        aiSnap,
 		Snapshot:    snap,
 		SourceFrame: c.Core.F,
@@ -82,21 +81,21 @@ func (c *char) newStele(dur int) {
 
 func (c *char) resonance(src int) func() {
 	return func() {
-		c.Core.Log.NewEvent("Stele checking for tick", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Stele checking for tick", glog.LogCharacterEvent, c.Index()).
 			Write("src", src).
-			Write("char", c.Index)
+			Write("char", c.Index())
 		if !c.Core.Constructs.Has(src) {
 			return
 		}
-		c.Core.Log.NewEvent("Stele ticked", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Stele ticked", glog.LogCharacterEvent, c.Index()).
 			Write("next expected", c.Core.F+120).
 			Write("src", src).
-			Write("char", c.Index)
+			Write("char", c.Index())
 
 		// Use snapshot for damage
 		ae := c.steleSnapshot
 
-		boxOffset := geometry.Point{Y: -4}
+		boxOffset := info.Point{Y: -4}
 		boxSize := 8.0
 		boxSizeSquared := boxSize * boxSize
 
@@ -124,12 +123,12 @@ func (c *char) resonance(src int) func() {
 			}
 
 			// queue stele attack
-			steleAttackPos := geometry.CalcOffsetPoint(stelePos, boxOffset, steleDir)
+			steleAttackPos := info.CalcOffsetPoint(stelePos, boxOffset, steleDir)
 			c.Core.QueueAttackWithSnap(ai, snap, combat.NewBoxHitOnTarget(steleAttackPos, nil, boxSize, boxSize), 0, particleCB)
 
 			// queue resonance attacks
 			for _, con := range resonanceConstructs {
-				resonanceAttackPos := geometry.CalcOffsetPoint(con.Pos(), boxOffset, con.Direction())
+				resonanceAttackPos := info.CalcOffsetPoint(con.Pos(), boxOffset, con.Direction())
 				c.Core.QueueAttackWithSnap(ai, snap, combat.NewBoxHitOnTarget(resonanceAttackPos, nil, boxSize, boxSize), 0, particleCB)
 			}
 		}
@@ -137,9 +136,9 @@ func (c *char) resonance(src int) func() {
 	}
 }
 
-func (c *char) particleCB() combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB() info.AttackCBFunc {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(particleICDKey) {

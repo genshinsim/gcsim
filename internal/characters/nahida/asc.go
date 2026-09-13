@@ -5,13 +5,15 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const a1BuffKey = "nahida-a1"
-const a4BuffKey = "nahida-a4"
+const (
+	a1BuffKey = "nahida-a1"
+	a4BuffKey = "nahida-a4"
+)
 
 // When unleashing Illusory Heart, the Shrine of Maya will gain the following effects:
 // The Elemental Mastery of the active character within the field will be increased by 25% of the Elemental Mastery of the party member with the highest Elemental Mastery.
@@ -47,8 +49,11 @@ func (c *char) applyA1(dur int) {
 			Base:         modifier.NewBase(a1BuffKey, dur),
 			AffectedStat: attributes.EM,
 			Extra:        true,
-			Amount: func() ([]float64, bool) {
-				return c.a1Buff, c.Core.Player.Active() == idx
+			Amount: func() []float64 {
+				if c.Core.Player.Active() == idx {
+					return c.a1Buff
+				}
+				return nil
 			},
 		})
 	}
@@ -62,14 +67,14 @@ func (c *char) a4() {
 	}
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase(a4BuffKey, -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if atk.Info.AttackTag != attacks.AttackTagElementalArt {
-				return nil, false
+				return nil
 			}
 			if !strings.HasPrefix(atk.Info.Abil, "Tri-Karma") {
-				return nil, false
+				return nil
 			}
-			return c.a4Buff, true
+			return c.a4Buff
 		},
 	})
 }

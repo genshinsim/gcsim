@@ -1,2 +1,6 @@
-key: thunderingfury
-set_id: 15005
+use: pipeline
+kind: artifact
+name: thunderingfury
+
+shortcuts:
+  - tf

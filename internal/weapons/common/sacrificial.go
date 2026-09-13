@@ -6,25 +6,21 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 type Sacrificial struct {
 	Index int
-	data  *model.WeaponData
 }
 
-func (s *Sacrificial) SetIndex(idx int)        { s.Index = idx }
-func (s *Sacrificial) Init() error             { return nil }
-func (s *Sacrificial) Data() *model.WeaponData { return s.data }
+func (s *Sacrificial) SetIndex(idx int) { s.Index = idx }
+func (s *Sacrificial) Init() error      { return nil }
 
-func NewSacrificial(data *model.WeaponData) *Sacrificial {
-	return &Sacrificial{data: data}
+func NewSacrificial() *Sacrificial {
+	return &Sacrificial{}
 }
 
 func (s *Sacrificial) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
@@ -40,33 +36,32 @@ func (s *Sacrificial) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 		cd = (19 - (r-4)*3) * 60
 	}
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		dmg := args[2].(float64)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagElementalArt {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		if char.Cooldown(action.ActionSkill) == 0 {
-			return false
+			return
 		}
 		if dmg == 0 {
-			return false
+			return
 		}
 		if c.Rand.Float64() < prob {
 			char.ResetActionCooldown(action.ActionSkill)
 			char.AddStatus(icdKey, cd, true)
-			c.Log.NewEvent("sacrificial proc'd", glog.LogWeaponEvent, char.Index)
+			c.Log.NewEvent("sacrificial proc'd", glog.LogWeaponEvent, char.Index())
 		}
-		return false
 	}, fmt.Sprintf("sac-%v", char.Base.Key.String()))
 
 	return s, nil

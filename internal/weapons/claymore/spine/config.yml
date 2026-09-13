@@ -1,3 +1,11 @@
-package_name: spine
-genshin_id: 12409
-key: serpentspine
+use: pipeline
+kind: weapon
+name: serpentspine
+
+shortcuts:
+  - serpent
+
+abilities:
+  - name: default
+    params:
+      stacks: Number of stacks to gain at the beginning. Default 0, maximum 5.

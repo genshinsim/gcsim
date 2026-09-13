@@ -6,26 +6,22 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 type Wavebreaker struct {
 	Index int
-	data  *model.WeaponData
 }
 
-func (w *Wavebreaker) SetIndex(idx int)        { w.Index = idx }
-func (w *Wavebreaker) Init() error             { return nil }
-func (w *Wavebreaker) Data() *model.WeaponData { return w.data }
+func (w *Wavebreaker) SetIndex(idx int) { w.Index = idx }
+func (w *Wavebreaker) Init() error      { return nil }
 
-func NewWavebreaker(data *model.WeaponData) *Wavebreaker {
-	return &Wavebreaker{data: data}
+func NewWavebreaker() *Wavebreaker {
+	return &Wavebreaker{}
 }
 
 func (w *Wavebreaker) NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
@@ -36,7 +32,7 @@ func (w *Wavebreaker) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 
 	var amt float64
 
-	c.Events.Subscribe(event.OnInitialize, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnInitialize, func(args ...any) {
 		var energy float64
 
 		for _, x := range c.Player.Chars() {
@@ -47,7 +43,7 @@ func (w *Wavebreaker) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 		if amt > maxBonus {
 			amt = maxBonus
 		}
-		c.Log.NewEvent("wavebreaker dmg calc", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("wavebreaker dmg calc", glog.LogWeaponEvent, char.Index()).
 			Write("total", energy).
 			Write("per", per).
 			Write("max", maxBonus).
@@ -56,14 +52,13 @@ func (w *Wavebreaker) NewWeapon(c *core.Core, char *character.CharWrapper, p inf
 		m[attributes.DmgP] = amt
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("wavebreaker", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag == attacks.AttackTagElementalBurst {
-					return m, true
+					return m
 				}
-				return nil, false
+				return nil
 			},
 		})
-		return true
 	}, fmt.Sprintf("wavebreaker-%v", char.Base.Key.String()))
 
 	return w, nil

@@ -2,7 +2,7 @@ package xinyan
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -32,12 +32,12 @@ func (c *char) a4() {
 		idx := i
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("xinyan-a4", -1),
-			Amount: func(_ *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			Amount: func(_ *info.AttackEvent, _ info.Target) []float64 {
 				shd := c.Core.Player.Shields.Get(shield.XinyanSkill)
-				if shd == nil {
-					return nil, false
+				if shd != nil && c.Core.Player.Active() == idx {
+					return m
 				}
-				return m, c.Core.Player.Active() == idx
+				return nil
 			},
 		})
 	}

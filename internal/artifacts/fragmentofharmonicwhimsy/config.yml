@@ -1,2 +1,6 @@
-key: fragmentofharmonicwhimsy
-set_id: 15035
+use: pipeline
+kind: artifact
+name: fragmentofharmonicwhimsy
+
+shortcuts:
+  - fohw

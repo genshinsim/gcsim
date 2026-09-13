@@ -14,11 +14,11 @@ import (
 )
 
 type dbGetOpt struct {
-	Query   map[string]interface{} `json:"query"`
-	Sort    map[string]interface{} `json:"sort"`
-	Project map[string]interface{} `json:"project"`
-	Skip    int64                  `json:"skip"`
-	Limit   int64                  `json:"limit"`
+	Query   map[string]any `json:"query"`
+	Sort    map[string]any `json:"sort"`
+	Project map[string]any `json:"project"`
+	Skip    int64          `json:"skip"`
+	Limit   int64          `json:"limit"`
 }
 
 func marshalOptions() protojson.MarshalOptions {

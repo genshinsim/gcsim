@@ -4,14 +4,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.HarbingerOfDawn, NewWeapon)
-}
 
 type Weapon struct {
 	Index int
@@ -31,8 +26,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("harbinger", -1),
 		AffectedStat: attributes.CR,
-		Amount: func() ([]float64, bool) {
-			return m, char.CurrentHPRatio() >= 0.9
+		Amount: func() []float64 {
+			if char.CurrentHPRatio() >= 0.9 {
+				return m
+			}
+			return nil
 		},
 	})
 	return w, nil

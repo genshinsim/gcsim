@@ -1,8 +1,8 @@
+import TabItem from "@theme/TabItem";
+import Tabs from "@theme/Tabs";
 import React from "react";
 import styled from "styled-components";
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-import character_data from "./character_data.json";
+import character_data from "./character.dm.json";
 
 const Table = styled.table`
   border-collapse: collapse;
@@ -22,68 +22,68 @@ const TH = styled.th`
 `;
 
 function AbilHitlag({ data }) {
-  const rows = data.map((e) => {
-    return (
-      <tr key={e.ability}>
-        <TD>{e.ability}</TD>
-        <TD>{e.hitHaltTime}</TD>
-        <TD>{e.hitHaltTimeScale}</TD>
-        <TD>{e.canBeDefenseHalt ? "true" : "false"}</TD>
-        <TD>{e.deployable ? "true" : "false"}</TD>
-      </tr>
-    );
-  });
+	const rows = data.map((e) => {
+		return (
+			<tr key={e.name}>
+				<TD>{e.name}</TD>
+				<TD>{e.time}</TD>
+				<TD>{e.scale}</TD>
+				<TD>{e.defense_halt ? "true" : "false"}</TD>
+				<TD>{e.deployable ? "true" : "false"}</TD>
+			</tr>
+		);
+	});
 
-  return (
-    <div style={{ marginTop: "1rem", width: "100%" }}>
-      <Table>
-        <Thead>
-          <tr>
-            <TH>Ability</TH>
-            <TH>Halt Time</TH>
-            <TH>Scale</TH>
-            <TH>Defense Halt</TH>
-            <TH>Deployable</TH>
-          </tr>
-        </Thead>
-        <tbody>{rows}</tbody>
-      </Table>
-    </div>
-  );
+	return (
+		<div style={{ marginTop: "1rem", width: "100%" }}>
+			<Table>
+				<Thead>
+					<tr>
+						<TH>Ability</TH>
+						<TH>Halt Time</TH>
+						<TH>Scale</TH>
+						<TH>Defense Halt</TH>
+						<TH>Deployable</TH>
+					</tr>
+				</Thead>
+				<tbody>{rows}</tbody>
+			</Table>
+		</div>
+	);
 }
 
-const abils = ["normal", "charge", "aim", "skill", "burst", "asc", "cons"];
-const abilLabels = [
-  "Normal",
-  "Charge Attack",
-  "Aimed Shot",
-  "Skill",
-  "Burst",
-  "Ascension",
-  "Cons",
-];
+const labels = {
+	["attack"]: "Normal",
+	["charge"]: "Charge",
+	["plunge"]: "Plunge",
+	["aim"]: "Aimed",
+	["skill"]: "Skill",
+	["burst"]: "Burst",
+	["asc"]: "Ascension",
+	["cons"]: "Constellation",
+	["-"]: "Other",
+};
 
 export default function HitlagTable({ item_key }) {
-  if (!(item_key in character_data)) {
-    return <div>No hitlag data for character</div>;
-  }
-  const char = character_data[item_key];
-  let tabs = [];
-  let count = 0;
-  abils.forEach((a, i) => {
-    //skip if no data for this tab
-    if (!(a in char)) {
-      return;
-    }
-    count++;
-    tabs.push(
-      <TabItem value={a} label={abilLabels[i]} key={a}>
-        <AbilHitlag data={char[a]} />
-      </TabItem>
-    );
-  });
-  if (count == 0) {
-    return <div>No hitlag data for character</div>;
-  }
-  return <Tabs>{tabs}</Tabs>;
+	const data = character_data;
+	if (!(item_key in data)) {
+		return <div>No hitlag data for character</div>;
+	}
+	const abil_data = {};
+	data[item_key].forEach((e) => {
+		abil_data[e.ability] = abil_data[e.ability] ?? [];
+		abil_data[e.ability].push(e);
+	});
+	const tabs = [];
+	for (const abil in abil_data) {
+		tabs.push(
+			<TabItem key={abil} value={abil} label={labels[abil]}>
+				<AbilHitlag data={abil_data[abil]} />
+			</TabItem>,
+		);
+	}
+	if (tabs.length === 0) {
+		return <div>No hitlag data for character</div>;
+	}
+	return <Tabs>{tabs}</Tabs>;
 }

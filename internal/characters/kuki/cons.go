@@ -17,32 +17,32 @@ import (
 //
 // This effect can occur once every 5s.
 func (c *char) c4() {
-	//TODO: idk if the damage is instant or not
+	// TODO: idk if the damage is instant or not
 	const c4IcdKey = "kuki-c4-icd"
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		ae := args[1].(*combat.AttackEvent)
-		trg := args[0].(combat.Target)
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		ae := args[1].(*info.AttackEvent)
+		trg := args[0].(info.Target)
 		// ignore if C4 on icd
 		if c.StatusIsActive(c4IcdKey) {
-			return false
+			return
 		}
 		// On normal,charge and plunge attack
 		if ae.Info.AttackTag != attacks.AttackTagNormal && ae.Info.AttackTag != attacks.AttackTagExtra && ae.Info.AttackTag != attacks.AttackTagPlunge {
-			return false
+			return
 		}
 		// make sure the person triggering the attack is on field still
 		if ae.Info.ActorIndex != c.Core.Player.Active() {
-			return false
+			return
 		}
 		if c.Core.Status.Duration(ringKey) == 0 {
-			return false
+			return
 		}
 		c.AddStatus(c4IcdKey, 300, true) // 5s * 60
 
-		//TODO:frames for this and ICD tag
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
-			Abil:       "Thundergrass Mark",
+		// TODO:frames for this and ICD tag
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
+			Abil:       "Thundergrass Mark (C4)",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagNone,
 			ICDGroup:   attacks.ICDGroupDefault,
@@ -53,8 +53,6 @@ func (c *char) c4() {
 			FlatDmg:    c.MaxHP() * 0.097,
 		}
 		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 2), 5, 5, c.particleCB)
-
-		return false
 	}, "kuki-c4")
 }
 
@@ -66,17 +64,17 @@ func (c *char) c6() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.EM] = 150
 	const c6IcdKey = "kuki-c6-icd"
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 		if c.StatusIsActive(c6IcdKey) {
-			return false
+			return
 		}
 		// check if hp less than 25%
 		if c.CurrentHPRatio() > 0.25 {
-			return false
+			return
 		}
 		// if dead, revive back to 1 hp
 		if c.CurrentHPRatio() <= 0 {
@@ -88,11 +86,9 @@ func (c *char) c6() {
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("kuki-c6", 900),
 			AffectedStat: attributes.EM,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
-
-		return false
 	}, "kuki-c6")
 }

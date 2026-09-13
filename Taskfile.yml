@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 tasks:
   build:
@@ -8,6 +8,7 @@ tasks:
       - task: pipeline
   protos:
     cmds:
+      - cd ui && pnpm install
       - |
         protoc --experimental_allow_proto3_optional \
                --go_out=module=github.com/genshinsim/gcsim:. \
@@ -24,44 +25,53 @@ tasks:
       - go run scripts/bsontags/main.go -dir ./backend/pkg/services/db -verbose
       - go run scripts/bsontags/main.go -dir ./backend/pkg/services/share -verbose
       - task: msgp
-      # - task: protos-to-ts
   msgp:
-    dir: ./pkg/stats
-    cmds:
-      - go generate
+    cmd: go generate ./pkg/stats
   embed:
-    cmds:
-      - sh -c "scripts/build_preview.sh"
+    cmd: ./scripts/build_preview.sh
+
   pipeline:
+    desc: Run pipeline
+    vars:
+      CLI_ARGS: '{{.CLI_ARGS | default "run"}}'
     cmds:
-      - go run pipeline/cmd/generate/main.go --gen-char --gen-weap --gen-art --gen-enemies
-  pipeline-avatars:
+      - go generate ./pipeline
+      - go run ./pipeline {{.CLI_ARGS}}
+  pipeline-add:
     cmds:
-      - go run pipeline/cmd/generate/main.go --gen-char
-  pipeline-weapons:
+      - git add -v 'ui/packages/docs/docs/reference/*/*.md' > /dev/null
+      - git add -v '*.dm.*'
+  pipeline-clean:
     cmds:
-      - go run pipeline/cmd/generate/main.go --gen-weap
-  pipeline-artifacts:
+      - git rm -f --ignore-unmatch 'ui/packages/docs/docs/reference/*/*.md' > /dev/null
+      - git rm -f --ignore-unmatch '*.dm.*'
+
+  enumer:
     cmds:
-      - go run pipeline/cmd/generate/main.go --gen-art
-  pipeline-enemies:
-    cmds:
-      - go run pipeline/cmd/generate/main.go --gen-enemies
+      - go generate ./pkg/core/attributes
+
   wasm:
     dir: cmd/wasm
     cmds:
-      - go build -o '{{.OUT | default "main.wasm"}}' -ldflags="-X 'main.shareKey=${{if eq OS "windows"}}env:{{end}}GCSIM_SHARE_KEY'"
+      - go build -trimpath -o '{{.OUT | default "main.wasm"}}' -ldflags="-X 'main.shareKey=${{if eq OS "windows"}}env:{{end}}GCSIM_SHARE_KEY'"
       - echo "compiled wasm successfully!"
     env:
       GOOS: js
       GOARCH: wasm
+
   lint:
-    cmd: golangci-lint run --fast --fix --print-issued-lines=false --out-format=colored-line-number --issues-exit-code=0
+    desc: Run golangci-lint
+    cmd: golangci-lint run
+
+  lint-fix:
+    desc: Run golangci-lint and fix issues
+    cmd: golangci-lint run --fix
+
   dev-server-mode:
     desc: watches for change and launches server mode
     watch: true
     sources:
-      - "**/*.go"
+      - '**/*.go'
     vars:
       WIN_CMD: Get-CimInstance -ClassName Win32_PRocess -Filter "CommandLine LIKE '%GCSIM_SERVER%'" | ForEach-Object -Process {taskkill /F /PID $_.ProcessId}
     cmds:

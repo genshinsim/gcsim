@@ -1,2 +1,7 @@
-key: desertpavilionchronicle
-set_id: 15027
+use: pipeline
+kind: artifact
+name: desertpavilionchronicle
+
+shortcuts:
+  - desertpavilion
+  - dpc

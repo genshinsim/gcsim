@@ -1,36 +1,154 @@
-package_name: sara
-genshin_id: 10000056
-key: sara
-action_param_keys:
-    attack:
-        - param: "travel"
-    aim:
-        - param: "hold"
-        - param: "travel"
-        - param: "weakspot"
-skill_data_mapping:
-    attack:
-        aim:
-            - 5 # Aimed Shot|{param5:F1P}
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        attack_4:
-            - 3 # 4-Hit DMG|{param3:F1P}
-        attack_5:
-            - 4 # 5-Hit DMG|{param4:F1P}
-        fullaim:
-            - 6 # Fully-Charged Aimed Shot|{param6:P}
-    skill:
-        atkBuff:
-            - 1 # ATK Bonus Ratio|{param1:P}
-        skill:
-            - 0 # Tengu Juurai: Ambush DMG|{param0:F1P}
-    burst:
-        burstCluster:
-            - 1 # Tengu Juurai: Stormcluster DMG|{param1:F1P}
-        burstMain:
-            - 0 # Tengu Juurai: Titanbreaker DMG|{param0:F1P}
+use: pipeline
+kind: character
+name: kujousara
+
+shortcuts:
+  - kujosara
+  - sara
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Fully-Charged Aimed Shot)
+
+  - skill: 'skill(Tengu Juurai: Ambush DMG)'
+  - atkBuff: skill(ATK Bonus Ratio)
+
+  - burstMain: 'burst(Tengu Juurai: Titanbreaker DMG)'
+  - burstCluster: 'burst(Tengu Juurai: Stormcluster DMG)'
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1B29Zceb_pl8FYfHtIrZeMttZtovmwE8tHEZud_kkbmo/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/omTcYawTD8U
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/jfkU6x8fqXI
+      video_credit: xsylent
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/1lnNs48yI9I
+      video_credit: xsylent
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/zIKZWBuy9wQ
+      video_credit: bowtae
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N4
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N5
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: aim
+    params:
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default).
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: E-FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: E-FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+  - name: skill
+    hitbox:
+      - name: E-Skill
+        note: Attack buff detection area has the same hitbox.
+        shape: Circle
+        center: Player
+        radius: 6
+
+  - name: burst
+    hitbox:
+      - name: Q-Titanbreaker
+        note: Attack buff detection area has the same hitbox.
+        shape: Circle
+        center: PrimaryTarget
+        radius: 6
+
+      - name: Q-Stormcluster
+        note: Every Stormcluster has its own direction (0/90/180/270 degrees at base, 0/60/120/180/240/300 degrees at C4+), starts at Q-Titanbreaker position + 3.6m in that direction and moves at 1.35m per attack. Attack buff detection area has the same hitbox.
+        shape: Circle
+        center: GlobalValue
+        radius: 3
+
+  - name: cons
+    hitbox:
+      - name: E-C2
+        shape: Circle
+        center: Player
+        radius: 6
+
+  - name: walk
+    note: Only aim followed by walk has proper frames.

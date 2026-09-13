@@ -7,14 +7,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterSetFunc(keys.TheExile, NewSet)
-}
 
 type Set struct {
 	Index int
@@ -36,8 +31,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("exile-2pc", -1),
 			AffectedStat: attributes.ER,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -46,9 +41,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	buffDuration := 360 // 6s * 60
 
 	if count >= 4 {
-		c.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
-			if c.Player.Active() != char.Index {
-				return false
+		c.Events.Subscribe(event.OnBurst, func(args ...any) {
+			if c.Player.Active() != char.Index() {
+				return
 			}
 
 			// TODO: does multiple exile holders extend the duration?
@@ -56,13 +51,13 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 			for _, x := range c.Player.Chars() {
 				this := x
 				if this.StatusIsActive(buffKey) {
-					return false
+					return
 				}
 			}
 
 			for _, x := range c.Player.Chars() {
 				this := x
-				if char.Index == this.Index {
+				if char.Index() == this.Index() {
 					continue
 				}
 				// add exile status to all party members except holder
@@ -75,8 +70,6 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 					}, i)
 				}
 			}
-
-			return false
 		}, fmt.Sprintf("exile-4pc-%v", char.Base.Key.String()))
 	}
 

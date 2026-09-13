@@ -1,44 +1,171 @@
-package_name: lynette
-genshin_id: 10000083
-key: lynette
-action_param_keys:
-    skill:
-        - param: "hold"
-    burst:
-        - param: "vivid_travel"
-    low_plunge:
-        - param: "collision"
-    high_plunge:
-        - param: "collision"
-skill_data_mapping:
-    attack:
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-            - 3 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-        attack_4:
-            - 4 # 4-Hit DMG|{param4:F1P}
-        charge:
-            - 5 # Charged Attack DMG|{param5:F1P}+{param6:F1P}
-            - 6 # Charged Attack DMG|{param5:F1P}+{param6:F1P}
-        collision:
-            - 8 # Plunge DMG|{param6:F1P}
-        lowPlunge:
-            - 9 # Low/High Plunge DMG|{param7:P}/{param8:P}
-        highPlunge:
-            - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
-    skill:
-        skill:
-            - 0 # Enigma Thrust DMG|{param0:F1P}
-        skillAligned:
-            - 2 # Surging Blade DMG|{param2:F1P}
-    burst:
-        bogglecat:
-            - 1 # Bogglecat Box DMG|{param1:F1P}
-        burst:
-            - 0 # Skill DMG|{param0:F1P}
-        vivid:
-            - 2 # Vivid Shot DMG|{param2:F1P}
+use: pipeline
+kind: character
+name: lynette
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG|1)
+      - attack(4-Hit DMG)
+  - charge:
+      - attack(Charged Attack DMG)
+      - attack(Charged Attack DMG|1)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skill: skill(Enigma Thrust DMG)
+  - skillAligned: skill(Surging Blade DMG)
+
+  - burst: burst(Skill DMG)
+  - bogglecat: burst(Bogglecat Box DMG)
+  - vivid: burst(Vivid Shot DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1g1SvcQ1Ih48_P1t4sanzti42DWEhCTIv-ui-DTxWmF4/edit?usp=sharing
+      count_credit: solo#8829
+      video: https://youtu.be/QLd68iVl7HY
+      video_credit: solo#8829
+    - count: https://docs.google.com/spreadsheets/d/1g1SvcQ1Ih48_P1t4sanzti42DWEhCTIv-ui-DTxWmF4/edit?usp=sharing
+      count_credit: solo#8829
+      video: https://youtu.be/MLlk4er8wqE
+      video_credit: solo#8829
+    - count: https://docs.google.com/spreadsheets/d/1g1SvcQ1Ih48_P1t4sanzti42DWEhCTIv-ui-DTxWmF4/edit?usp=sharing
+      count_credit: solo#8829
+      video: https://youtu.be/9hEf5pG_4uQ
+      video_credit: solo#8829
+    - count: https://docs.google.com/spreadsheets/d/16ZDmEBZOD4xeUcodxFJVuLC7IIqM9LGLilkct65mElg/edit?usp=sharing
+      count_credit: charliex3000
+      video: https://youtu.be/aDf_dwieVxY
+      video_credit: charliex3000
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.3]
+        radius: 2
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Box
+        center: Player
+        offset: [0, -0.3]
+        box: [1.8, 2.8]
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N3-1
+        shape: Box
+        center: Player
+        box: [1.5, 2.5]
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: N3-2
+        shape: Box
+        center: Player
+        box: [1.5, 2.5]
+
+      - name: N4
+        shape: Box
+        center: Player
+        box: [2.2, 2.5]
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA-1
+        shape: Circle
+        center: Player
+        offset: [0, 0.8]
+        radius: 2.2
+
+      - name: CA-2
+        shape: Circle
+        center: Player
+        offset: [0, 0.8]
+        radius: 2.2
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    params:
+      hold: 0 for Tap (default), value between 1 and 150 for Hold. The number determines the E duration in frames.
+    hitbox:
+      - name: E-Tap
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [1.8, 4.5]
+        hitlag: {scale: 0.01, defense_halt: true}
+
+      - name: E-Hold
+        note: Spawns at the closest enemy in 8m radius around the player.
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [1.8, 5]
+        hitlag: {scale: 0.01, defense_halt: true}
+
+      - name: E-Aligned
+        note: Spawns on the first enemy hit by E.
+        shape: Box
+        center: GlobalValue
+        offset: [0, -0.3]
+        box: [1.2, 4.5]
+        hitlag: {scale: 0.01, defense_halt: true}
+
+  - name: burst
+    params:
+      vivid_travel: Projectile travel time for Vivid Shots. Default 15 frames.
+    hitbox:
+      - name: Q-Initial
+        note: 'Q spawns at Y: 1.8m offset from the player position.'
+        shape: Circle
+        center: Player
+        offset: [0, 1.5]
+        radius: 4.5
+
+      - name: Q-Bogglecat
+        note: Spawns on the Q position. Absorbs an element either by getting hit or the absorb check with 0.48m radius around the Q position that happens every 0.3s.
+        shape: Circle
+        center: GlobalValue
+        radius: 6
+
+      - name: Q-VividShot
+        note: Spawns on a random enemy within 15m radius of the Q position.
+        shape: Circle
+        center: GlobalValue
+        radius: 1

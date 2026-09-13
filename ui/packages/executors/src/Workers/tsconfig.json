@@ -1,10 +1,6 @@
 {
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "lib": [
-      "webworker",
-      "ES2022",
-      "ScriptHost"
-    ],
-  }
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"lib": ["webworker", "ES2022", "ScriptHost"]
+	}
 }

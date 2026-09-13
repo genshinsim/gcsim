@@ -5,14 +5,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterSetFunc(keys.DefendersWill, NewSet)
-}
 
 type Set struct {
 	Index int
@@ -33,15 +28,15 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("defenderswill-2pc", -1),
 			AffectedStat: attributes.DEFP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
 	// TODO: player dmg isn't correct so no point in implementing this for now
 	// 4 Piece: For each different element present in your own party, the wearer's Elemental RES to that corresponding element is increased by 30%.
 	if count >= 4 {
-		c.Log.NewEvent("defenderswill-4pc not implemented", glog.LogArtifactEvent, char.Index)
+		c.Log.NewEvent("defenderswill-4pc not implemented", glog.LogArtifactEvent, char.Index())
 	}
 
 	return &s, nil

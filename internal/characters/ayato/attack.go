@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -21,8 +21,10 @@ var (
 	attackOffsets         = []float64{0.6, 0.8, 0.3, -0.2, 0.6}
 )
 
-const normalHitNum = 5
-const shunsuikenHitmark = 5
+const (
+	normalHitNum      = 5
+	shunsuikenHitmark = 5
+)
 
 func init() {
 	// NA cancels
@@ -40,7 +42,6 @@ func init() {
 	attackFrames[3][action.ActionAttack] = 27                                // N4 -> N5
 
 	attackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][0], 63) // N5 -> N1
-	attackFrames[4][action.ActionCharge] = 500                               // N5 -> CA, TODO: this action is illegal; need better way to handle it
 
 	// NA (in skill) -> x
 	shunsuikenFrames = frames.InitNormalCancelSlice(shunsuikenHitmark, 23)
@@ -52,9 +53,9 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-			ActorIndex:         c.Index,
+			ActorIndex:         c.Index(),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,
 			ICDGroup:           attacks.ICDGroupDefault,
@@ -68,13 +69,13 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			info.Point{Y: attackOffsets[c.NormalCounter]},
 			attackHitboxes[c.NormalCounter][0],
 		)
 		if c.NormalCounter >= 2 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsets[c.NormalCounter]},
+				info.Point{Y: attackOffsets[c.NormalCounter]},
 				attackHitboxes[c.NormalCounter][0],
 				attackHitboxes[c.NormalCounter][1],
 			)
@@ -96,9 +97,9 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) SoukaiKanka(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		Abil:               fmt.Sprintf("Shunsuiken %v", c.NormalCounter),
+		ActorIndex:         c.Index(),
 		AttackTag:          attacks.AttackTagNormal,
 		ICDTag:             attacks.ICDTagNormalAttack,
 		ICDGroup:           attacks.ICDGroupDefault,

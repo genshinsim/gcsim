@@ -6,11 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -21,10 +19,6 @@ const (
 	healSnapKey        = "sodp-heal-snap"
 	wavesOfDaysPastKey = "waves-of-days-past"
 )
-
-func init() {
-	core.RegisterSetFunc(keys.SongOfDaysPast, NewSet)
-}
 
 type Set struct {
 	Index int
@@ -50,8 +44,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("sodp-2pc", -1),
 			AffectedStat: attributes.Heal,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -64,12 +58,12 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	return &s, nil
 }
 
-func (s *Set) OnHeal() func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
+func (s *Set) OnHeal() func(args ...any) {
+	return func(args ...any) {
 		src := args[0].(*info.HealInfo)
 		healAmt := args[4].(float64)
-		if src.Caller != s.char.Index {
-			return false
+		if src.Caller != s.char.Index() {
+			return
 		}
 		s.core.Flags.Custom[healStacksKey] += healAmt
 		if s.core.Flags.Custom[healStacksKey] >= 15000 {
@@ -84,13 +78,12 @@ func (s *Set) OnHeal() func(args ...interface{}) bool {
 				s.core.Flags.Custom[wavesOfDaysPastKey] = 5
 			}, 6*60)
 		}
-		return false
 	}
 }
 
-func (s *Set) OnEnemyHit() func(args ...interface{}) bool {
-	return func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+func (s *Set) OnEnemyHit() func(args ...any) {
+	return func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagElementalBurst:
 		case attacks.AttackTagElementalArt:
@@ -99,13 +92,13 @@ func (s *Set) OnEnemyHit() func(args ...interface{}) bool {
 		case attacks.AttackTagExtra:
 		case attacks.AttackTagPlunge:
 		default:
-			return false
+			return
 		}
 		if s.core.Status.Duration(wavesOfDaysPastKey) == 0 {
-			return false
+			return
 		}
 		if atk.Info.ActorIndex != s.core.Player.Active() {
-			return false
+			return
 		}
 		if s.core.Flags.Custom[wavesOfDaysPastKey] > 0 {
 			s.core.Flags.Custom[wavesOfDaysPastKey]--
@@ -117,6 +110,5 @@ func (s *Set) OnEnemyHit() func(args ...interface{}) bool {
 		if s.core.Flags.Custom[wavesOfDaysPastKey] == 0 {
 			s.core.Status.Delete(wavesOfDaysPastKey)
 		}
-		return false
 	}
 }

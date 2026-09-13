@@ -1,44 +1,156 @@
-package_name: xilonen
-genshin_id: 10000103
-key: xilonen
-icd_tags:
-    - ICDTagXilonenSkate
-skill_data_mapping:
-    attack:
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}+{param2:F1P}
-            - 2 # 2-Hit DMG|{param1:F1P}+{param2:F1P}
-        attack_3:
-            - 3 # 3-Hit DMG|{param3:F1P}
-        ca:
-            - 4 # Charged Attack DMG|{param4:F1P}
-        collision:
-            - 6 # Plunge DMG|{param6:F1P}
-        highPlunge:
-            - 8 # Low/High Plunge DMG|{param7:P}/{param8:P}
-        lowPlunge:
-            - 7 # Low/High Plunge DMG|{param7:P}/{param8:P}
-        attackE_1:
-            - 9
-        attackE_2:
-            - 10
-        attackE_3:
-            - 11
-        attackE_4:
-            - 12
-    skill:
-        skillDMG:
-            - 0 # Skill DMG|{param0:P}+{param1:P}
-        skillShred:
-            - 1
-    burst:
-        burstDMG:
-            - 0 # Skill DMG|{param0:F1P}
-        burstHealPer:
-            - 1 # Continuous Healing|{param1:F1P} DEF+{param2:I}
-        burstHealBase:
-            - 2 # Continuous Healing|{param1:F1P} DEF+{param2:I}
-        burstFollowDMG:
-            - 4 # Follow-Up Beat DMG|{param4:F1P} DEF
+use: pipeline
+kind: character
+name: xilonen
+
+shortcuts:
+  - xilo
+
+combat:
+  icd_tags:
+    - XilonenSkate
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - - attack(2-Hit DMG)
+        - attack(2-Hit DMG|1)
+      - attack(3-Hit DMG)
+  - ca: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+  - attackE:
+      - attack(Blade Roller 1-Hit DMG)
+      - attack(Blade Roller 2-Hit DMG)
+      - attack(Blade Roller 3-Hit DMG)
+      - attack(Blade Roller 4-Hit DMG)
+
+  - skillDMG: skill(Rush DMG)
+  - skillShred: skill(Elemental RES Decrease)
+
+  - burstDMG: burst(Skill DMG)
+  - burstHealPer: burst(Continuous Healing)
+  - burstHealBase: burst(Continuous Healing|1)
+  - burstFollowDMG: burst(Follow-Up Beat DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/18E4Aa-DlVSUdM_B8LQOsIDraX_ghxuNaM59zpAo1mLc/edit?usp=sharing
+      count_credit: shizukayuki
+      video: https://youtu.be/lyzsRRzBogE
+      video_credit: shizukayuki
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 2.1
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N2-1
+        shape: Circle
+        center: Player
+        offset: [0, -0.5]
+        fan_angle: 150
+        radius: 2.5
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N2-2
+        shape: Circle
+        center: Player
+        offset: [0, -0.5]
+        fan_angle: 150
+        radius: 2.7
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N3
+        shape: Circle
+        center: Player
+        offset: [0, -0.5]
+        fan_angle: 160
+        radius: 3.2
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: E-N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.7]
+        fan_angle: 270
+        radius: 2.7
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: E-N2
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [5, 3.7]
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: E-N3
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [3.5, 4.5]
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: E-N4
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        fan_angle: 270
+        radius: 3.5
+        hitlag: {time: 0.06, scale: 0.01}
+
+  - name: charge
+    note: Need to use attack right before charge. Cannot charge in nightsoul blessing
+    hitbox:
+      - name: CA
+        shape: Box
+        center: Player
+        offset: [0, -1.8]
+        box: [2, 4.5]
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example. Cannot low plunge in nightsoul blessing.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+
+  - name: skill
+    hitbox:
+      - name: E
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 0.8
+        hitlag: {scale: 0.01, defense_halt: true, deployable: true}
+
+  - name: burst
+    hitbox:
+      - name: Q
+        shape: Circle
+        center: Player
+        radius: 7

@@ -10,15 +10,14 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
-	"github.com/genshinsim/gcsim/pkg/reactable"
+	"github.com/genshinsim/gcsim/pkg/testhelper"
 )
 
 func TestTravelerDendroBurstAttach(t *testing.T) {
 	c, trg := makeCore(2)
-	prof := defProfile(keys.AetherDendro)
+	prof := testhelper.DefaultProfile(keys.AetherDendro, testhelper.TestWeaponKey)
 	prof.Base.Cons = 6
 	idx, err := c.AddChar(prof)
 	if err != nil {
@@ -32,10 +31,9 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 		t.FailNow()
 	}
 	c.Combat.DefaultTarget = trg[0].Key()
-	c.Events.Subscribe(event.OnGadgetHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		log.Printf("hit by %v attack, dur %v", atk.Info.Element, atk.Info.Durability)
-		return false
 	}, "hit-check")
 	advanceCoreFrame(c)
 
@@ -60,17 +58,17 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 		t.FailNow()
 	}
 	log.Println("initial aura string: ", gr.ActiveAuraString())
-	if gr.Durability[reactable.Dendro] != 10 {
-		t.Errorf("expecting initial 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.Dendro])
+	if gr.GetAuraDurability(info.ReactionModKeyDendro) != 10 {
+		t.Errorf("expecting initial 10 dendro on traveler lea lotus, got %v", gr.GetAuraDurability(info.ReactionModKeyDendro))
 	}
 
 	// pattern only hit gadet
-	pattern := combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100)
-	pattern.SkipTargets[targets.TargettableEnemy] = true
+	pattern := combat.NewCircleHitOnTarget(info.Point{}, nil, 100)
+	pattern.SkipTargets[info.TargettableEnemy] = true
 
 	// check the cryo attaches
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Cryo,
 			Durability: 100,
 		},
@@ -79,17 +77,17 @@ func TestTravelerDendroBurstAttach(t *testing.T) {
 	advanceCoreFrame(c)
 
 	log.Println("after applying 100 cyro: ", gr.ActiveAuraString())
-	if gr.Durability[reactable.Cryo] != 80 {
-		t.Errorf("expecting 80 dendro on traveler lea lotus, got %v", gr.Durability[reactable.Cryo])
+	if gr.GetAuraDurability(info.ReactionModKeyCryo) != 80 {
+		t.Errorf("expecting 80 cryo on traveler lea lotus, got %v", gr.GetAuraDurability(info.ReactionModKeyCryo))
 	}
-	if gr.Durability[reactable.Dendro] != 10 {
-		t.Errorf("expecting 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.Dendro])
+	if gr.GetAuraDurability(info.ReactionModKeyDendro) != 10 {
+		t.Errorf("expecting 10 dendro on traveler lea lotus, got %v", gr.GetAuraDurability(info.ReactionModKeyDendro))
 	}
 }
 
 func TestTravelerDendroBurstPyro(t *testing.T) {
 	c, trg := makeCore(1)
-	prof := defProfile(keys.AetherDendro)
+	prof := testhelper.DefaultProfile(keys.AetherDendro, testhelper.TestWeaponKey)
 	prof.Base.Cons = 6
 	idx, err := c.AddChar(prof)
 	if err != nil {
@@ -103,19 +101,17 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 		t.FailNow()
 	}
 	c.Combat.DefaultTarget = trg[0].Key()
-	c.Events.Subscribe(event.OnGadgetHit, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnGadgetHit, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		log.Printf("gadget hit by %v attack, dur %v", atk.Info.Element, atk.Info.Durability)
-		return false
 	}, "hit-check")
 	dmgCount := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.Abil == "Lea Lotus Lamp Explosion" {
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.Abil == "Lea Lotus Lamp (Explosion)" {
 			dmgCount++
 			log.Println("big boom at: ", c.F)
 		}
-		return false
 	}, "hit-check")
 	advanceCoreFrame(c)
 
@@ -140,17 +136,17 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 		t.FailNow()
 	}
 	log.Println("initial aura string: ", gr.ActiveAuraString())
-	if gr.Durability[reactable.Dendro] != 10 {
-		t.Errorf("expecting initial 10 dendro on traveler lea lotus, got %v", gr.Durability[reactable.Dendro])
+	if gr.GetAuraDurability(info.ReactionModKeyDendro) != 10 {
+		t.Errorf("expecting initial 10 dendro on traveler lea lotus, got %v", gr.GetAuraDurability(info.ReactionModKeyDendro))
 	}
 
 	// pattern only hit gadet
-	pattern := combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100)
-	pattern.SkipTargets[targets.TargettableEnemy] = true
+	pattern := combat.NewCircleHitOnTarget(info.Point{}, nil, 100)
+	pattern.SkipTargets[info.TargettableEnemy] = true
 
 	// check the cryo attaches
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Pyro,
 			Durability: 100,
 		},
@@ -159,12 +155,12 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 	advanceCoreFrame(c)
 
 	log.Printf("at f %v after applying 100 pyro: %v\n", c.F, gr.ActiveAuraString())
-	if gr.Durability[reactable.Pyro] != 0 {
-		t.Errorf("expecting 0 dendro on traveler lea lotus, got %v", gr.Durability[reactable.Pyro])
+	if gr.GetAuraDurability(info.ReactionModKeyPyro) != 0 {
+		t.Errorf("expecting 0 dendro on traveler lea lotus, got %v", gr.GetAuraDurability(info.ReactionModKeyPyro))
 	}
 
 	// should get an explosion 60 frfames later
-	for i := 0; i < 100; i++ {
+	for range 100 {
 		advanceCoreFrame(c)
 	}
 
@@ -178,7 +174,7 @@ func TestTravelerDendroBurstPyro(t *testing.T) {
 // duration is either 12s at c0 or 15s at c2
 func TestTravelerDendroBurstTicks(t *testing.T) {
 	c, trg := makeCore(1)
-	prof := defProfile(keys.AetherDendro)
+	prof := testhelper.DefaultProfile(keys.AetherDendro, testhelper.TestWeaponKey)
 	prof.Base.Cons = 6
 	idx, err := c.AddChar(prof)
 	if err != nil {
@@ -193,13 +189,12 @@ func TestTravelerDendroBurstTicks(t *testing.T) {
 	}
 	c.Combat.DefaultTarget = trg[0].Key()
 	dmgCount := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.Abil == "Lea Lotus Lamp" {
 			dmgCount++
 			log.Println("boom at (adjusted): ", c.F-54-1)
 		}
-		return false
 	}, "hit-check")
 	advanceCoreFrame(c)
 
@@ -224,7 +219,7 @@ func TestTravelerDendroBurstTicks(t *testing.T) {
 
 func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 	c, trg := makeCore(1)
-	prof := defProfile(keys.AetherDendro)
+	prof := testhelper.DefaultProfile(keys.AetherDendro, testhelper.TestWeaponKey)
 	prof.Base.Cons = 6
 	idx, err := c.AddChar(prof)
 	if err != nil {
@@ -239,13 +234,12 @@ func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 	}
 	c.Combat.DefaultTarget = trg[0].Key()
 	dmgCount := 0
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
 		if atk.Info.Abil == "Lea Lotus Lamp" {
 			dmgCount++
 			log.Println("boom at (adjusted): ", c.F-54-1)
 		}
-		return false
 	}, "hit-check")
 	advanceCoreFrame(c)
 
@@ -259,12 +253,12 @@ func TestTravelerDendroBurstElectroTicks(t *testing.T) {
 	}
 
 	// pattern only hit gadet
-	pattern := combat.NewCircleHitOnTarget(geometry.Point{}, nil, 100)
-	pattern.SkipTargets[targets.TargettableEnemy] = true
+	pattern := combat.NewCircleHitOnTarget(info.Point{}, nil, 100)
+	pattern.SkipTargets[info.TargettableEnemy] = true
 
 	// check the cryo attaches
-	c.QueueAttackEvent(&combat.AttackEvent{
-		Info: combat.AttackInfo{
+	c.QueueAttackEvent(&info.AttackEvent{
+		Info: info.AttackInfo{
 			Element:    attributes.Electro,
 			Durability: 100,
 		},

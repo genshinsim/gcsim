@@ -1,3 +1,9 @@
-package_name: foliar
-genshin_id: 11512
-key: lightoffoliarincision
+use: pipeline
+kind: weapon
+name: lightoffoliarincision
+
+shortcuts:
+  - foliar
+  - foliarincision
+  - incision
+  - lofi

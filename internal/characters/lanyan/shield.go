@@ -7,11 +7,11 @@ import (
 
 func (c *char) genShield(ele attributes.Element) {
 	c.Core.Player.Shields.Add(&shield.Tmpl{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Target:     -1,
 		Src:        c.Core.F,
 		ShieldType: shield.LanyanShield,
-		Name:       "Lanyan Skill",
+		Name:       "Swallow-Wisp Pinion Dance (Shield)",
 		HP:         c.shieldHP(),
 		Ele:        ele,
 		Expires:    c.Core.F + 12.5*60,
@@ -27,7 +27,7 @@ func (c *char) restoreShield(percent float64) {
 	amt = min(amt+existingShield.CurrentHP(), c.shieldHP())
 
 	c.Core.Player.Shields.Add(&shield.Tmpl{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Target:     -1,
 		Src:        c.Core.F,
 		ShieldType: shield.LanyanShield,

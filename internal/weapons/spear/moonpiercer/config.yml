@@ -1,3 +1,8 @@
-package_name: moonpiercer
-genshin_id: 13417
-key: moonpiercer
+use: pipeline
+kind: weapon
+name: moonpiercer
+
+abilities:
+  - name: default
+    params:
+      pickup_delay: Number of frames until the Leaf is picked up by the active character after every proc.

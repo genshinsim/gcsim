@@ -1,5 +1,5 @@
 export * from "./ActionList";
 export * from "./CharacterCardView";
-export * from "./TeamBuilder/Builder";
-export * from "./GOOD/ImportFromGOODDialog";
 export * from "./Enka/ImportFromEnkaDialog";
+export * from "./GOOD/ImportFromGOODDialog";
+export * from "./TeamBuilder/Builder";

@@ -44,10 +44,10 @@ jobs:
         run: echo "LOWERCASE_REPO_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: 3.x
           cache: pip
@@ -131,7 +131,7 @@ jobs:
 
       # checkout and set up build env
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: go-setup-and-test
         uses: ./.github/actions/go-setup-and-test
       - name: yarn-setup-and-test
@@ -148,20 +148,24 @@ jobs:
           source ${{ matrix.image.build_script }}
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
 
       - name: Login to GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ghcr.io
           username: "${{ github.actor }}"
           password: "${{ secrets.GITHUB_TOKEN }}"
 
-      - name: Setup Goss
-        if: ${{ matrix.image.tests_enabled }}
-        uses: e1himself/goss-installation-action@v1
+      - uses: nixbuild/nix-quick-install-action@9f63be77f412a248c9d9a65a4c82cf066cdf8f0c # v35
+      - uses: nix-community/cache-nix-action@7df957e333c1e5da7721f60227dbba6d06080569 # v7.0.2
+        id: nix-cache
         with:
-          version: latest
+          primary-key: ${{ runner.os }}-nix-${{ hashFiles('**/*.nix', '**/flake.lock', '**/multiverse.lock') }}
+      - name: Prefetch nix store
+        if: steps.nix-cache.outputs.hit-primary-key != 'true'
+        run: |-
+          nix develop -c true
 
       - name: Prepare Build Outputs
         id: prepare-build-outputs
@@ -178,7 +182,7 @@ jobs:
           echo "outputs=${outputs}" >> $GITHUB_OUTPUT
 
       - name: Build Image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         id: build
         with:
           build-args: |-
@@ -217,7 +221,8 @@ jobs:
           else
               image_name="${{ steps.prepare-build-outputs.outputs.image_name }}"
           fi
-          dgoss run ${image_name} ${{ matrix.image.goss_args }}
+          export GOSS_PATH="$(dirname -- "$(nix develop -c which goss)")/.goss-wrapped"
+          nix develop -c dgoss run ${image_name} ${{ matrix.image.goss_args }}
 
       - name: Export Digest
         id: export-digest
@@ -229,7 +234,7 @@ jobs:
 
       - name: Upload Digest
         if: ${{ inputs.pushImages }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{ matrix.image.name }}-${{ matrix.image.target_os }}-${{ matrix.image.target_arch }}
           path: /tmp/${{ matrix.image.name }}/*
@@ -253,7 +258,7 @@ jobs:
         run: echo "LOWERCASE_REPO_OWNER=${GITHUB_REPOSITORY_OWNER,,}" >> $GITHUB_ENV
 
       - name: Download Digests
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           pattern: "${{ matrix.image.name }}-{linux,darwin}-{amd64,arm64}"
           merge-multiple: true
@@ -276,10 +281,10 @@ jobs:
           fi
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@37fe631027851001ddb9b187196cc803df7f5f0e # v4.3.0
 
       - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
         with:
           registry: ghcr.io
           username: "${{ github.actor }}"
@@ -325,7 +330,7 @@ jobs:
           echo "color=0xFF0000" >> $GITHUB_OUTPUT
 
       - name: Send Discord Webhook
-        uses: sarisia/actions-status-discord@v1
+        uses: sarisia/actions-status-discord@eb045afee445dc055c18d3d90bd0f244fd062708 # v1.16.0
         if: ${{ always() && inputs.sendNotifications == 'true' }}
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}

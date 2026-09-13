@@ -13,7 +13,7 @@ const (
 	// OnReactionOccured // target, AttackEvent
 	// OnTransReaction   // target, AttackEvent
 	// OnAmpReaction     // target, AttackEvent
-
+	OnElementApplied         // target, AttackEvent
 	OnAuraDurabilityAdded    // target, ele, durability
 	OnAuraDurabilityDepleted // target, ele
 	// OnReaction               // target, AttackEvent, ReactionType
@@ -39,6 +39,11 @@ const (
 	OnHyperbloom         // target, AttackEvent
 	OnBurgeon            // target, AttackEvent
 	OnBurning            // target, AttackEvent
+	OnLunarCharged       // target, AttackEvent
+	OnLunarBloom         // target, AttackEvent
+	OnLunarCrystallize   // target, AttackEvent
+	OnStellarConduct     // target, AttackEvent
+	OnStellarSwirl       // target, AttackEvent
 	OnShatter            // target, AttackEvent; at the end to simplify all reaction event subs since it's normally not considered as an elemental reaction
 	ReactionEventEndDelim
 	OnDendroCore // Gadget
@@ -49,7 +54,8 @@ const (
 	OnConstructSpawned  // nil
 	OnCharacterSwap     // prev, next
 	OnParticleReceived  // particle
-	OnEnergyChange      // character_received_index, pre_energy, energy_change, src (post-energy available in character_received), is_particle (boolean)
+	OnEnergyChange      // character_received, pre_energy, energy_change, src (post-energy available in character_received), is_particle (boolean)
+	OnEnergyBurst       // character_drained, pre_energy, burst_cost
 	OnTargetDied        // target, AttackEvent
 	OnTargetMoved       // target
 	OnCharacterHit      // nil <- this is for when the character is going to get hit but might be shielded from dmg
@@ -71,9 +77,12 @@ const (
 	OnPlunge       // nil
 	OnAimShoot     // nil
 	OnDash
+	OnSpecialReactionAttack // target, AttackEvent; event so predamagemods can be applied to the individual lunar/stellar contributions. Emitted once per contributor
+	OnMoondriftHarmony      // target, AttackEvent;
+	OnStellarVortexDetonate // src char, contribMap, AttackPattern;
 	// sim stuff
 	OnInitialize  // nil
-	OnStateChange // prev, next
+	OnStateChange // prev, next, segmented
 	OnEnemyAdded  // t
 	OnTick
 	OnSimEndedSuccessfully // nil
@@ -84,12 +93,12 @@ type Handler struct {
 	events [][]ehook
 }
 
-type Hook func(args ...interface{}) bool
+type Hook func(args ...any)
 
 type Eventter interface {
 	Subscribe(e Event, f Hook, key string)
 	Unsubscribe(e Event, key string)
-	Emit(e Event, args ...interface{})
+	Emit(e Event, args ...any)
 }
 
 type ehook struct {
@@ -109,6 +118,22 @@ func New() *Handler {
 	return h
 }
 
+// Subscribe to an event
+//
+//	core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+//		e, ok := args[0].(*enemy.Enemy);
+//		if !ok {
+//			return
+//		}
+//		atk, ok := args[1].(*info.AttackEvent)
+//		if !ok {
+//			return
+//		}
+//		if atk.Info.ActorIndex != char.Index() {
+//			return
+//		}
+//		doSomething(e)
+//	}, "subscription")
 func (h *Handler) Subscribe(e Event, f Hook, key string) {
 	a := h.events[e]
 
@@ -133,23 +158,17 @@ func (h *Handler) Subscribe(e Event, f Hook, key string) {
 }
 
 func (h *Handler) Unsubscribe(e Event, key string) {
-	n := 0
-	for _, v := range h.events[e] {
-		if v.key != key {
-			h.events[e][n] = v
-			n++
+	for i, v := range h.events[e] {
+		if v.key == key {
+			h.events[e][i].f = nil
 		}
 	}
-	h.events[e] = h.events[e][:n]
 }
 
-func (h *Handler) Emit(e Event, args ...interface{}) {
-	n := 0
+func (h *Handler) Emit(e Event, args ...any) {
 	for _, v := range h.events[e] {
-		if !v.f(args...) {
-			h.events[e][n] = v
-			n++
+		if v.f != nil {
+			v.f(args...)
 		}
 	}
-	h.events[e] = h.events[e][:n]
 }

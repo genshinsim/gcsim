@@ -28,7 +28,7 @@ func (c *char) Jump(p map[string]int) (action.Info, error) {
 		return action.Info{
 			Frames:          frames.NewAbilFunc(skillJumpFrames),
 			AnimationLength: skillJumpFrames[action.InvalidAction],
-			CanQueueAfter:   skillJumpFrames[action.ActionWalk],
+			CanQueueAfter:   skillJumpFrames[action.ActionAttack],
 			State:           action.JumpState,
 		}, nil
 	}

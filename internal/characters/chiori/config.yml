@@ -1,62 +1,166 @@
-package_name: "chiori"
-genshin_id: 10000094
-key: "chiori"
+use: pipeline
+kind: character
+name: chiori
 
-# generate param key validation code
-action_param_keys:
-  skill:
-    - param: "hold"
+override:
+  icd_group:
+    ChioriSkill:
+      name: Chiori_ElementArt
 
-icd_tags:
-  - ICDTagChioriSkill
-icd_groups:
-  - group_name: ICDGroupChioriSkill
-    reset_timer: 114
-    ele_app_sequence: [1, 0, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1]
+combat:
+  icd_tags:
+    - ChioriSkill
+  icd_groups:
+    - ChioriSkill
 
-# generate skill scaling data
-generate_skill_data: true
-skill_data_mapping:
-  attack: # Normal Attack: Weaving Blade
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-      - 3 # 3-Hit DMG|{param2:F1P}+{param3:F1P}
-    attack_4:
-      - 4 # 4-Hit DMG|{param4:F1P}
-    charge:
-      - 5 # Charged Attack DMG|{param5:F1P}+{param6:F1P}
-      - 6 # Charged Attack DMG|{param5:F1P}+{param6:F1P}
-      # - 7 # Charged Attack Stamina Cost|{param7:F1}
-    plunge:
-      - 8 # Plunge DMG|{param8:F1P}
-    lowPlunge:
-      - 9 # Low/High Plunge DMG|{param9:P}/{param10:P}
-    highPlunge:
-      - 10 # Low/High Plunge DMG|{param9:P}/{param10:P}
-  skill: # Fluttering Hasode
-    turretAtkScaling:
-      - 0 # Automaton Doll: Sode Slash|{param0:P} ATK+{param1:P} DEF
-    turretDefScaling:
-      - 1 # Automaton Doll: Sode Slash|{param0:P} ATK+{param1:P} DEF
-    turretDuration:
-      - 2 # Automaton Doll: Sode Duration|{param2:F1}s
-    turretInterval:
-      - 3 # Automaton Doll: Sode Attack Interval|{param3:F1}s
-    thrustAtkScaling:
-      - 4 # Upward Thrust Attack DMG|{param4:P} ATK+{param5:P} DEF
-    thrustDefScaling:
-      - 5 # Upward Thrust Attack DMG|{param4:P} ATK+{param5:P} DEF
-      # - 6 # CD|{param6:F1}s
-  burst: # Hiyoku: Twin Blades
-    burstAtkScaling:
-      - 0 # Skill DMG|{param0:P} ATK+{param1:P} DEF
-    burstDefScaling:
-      - 1 # Skill DMG|{param0:P} ATK+{param1:P} DEF
-    burstCD:
-      - 2 # CD|{param2:F1}s
-      # - 3 # Energy Cost|{param3:I}
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG|1)
+      - attack(4-Hit DMG)
+  - charge:
+      - attack(Charged Attack DMG)
+      - attack(Charged Attack DMG|1)
+  - plunge: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - turretAtkScaling: skill(Tamoto DMG)
+  - turretDefScaling: skill(Tamoto DMG|1)
+  - turretDuration: skill(Tamoto Duration)
+  - turretInterval: skill(Tamoto Attack Interval)
+  - thrustAtkScaling: skill(Upward Sweep Attack DMG)
+  - thrustDefScaling: skill(Upward Sweep Attack DMG|1)
+
+  - burstAtkScaling: burst(Skill DMG)
+  - burstDefScaling: burst(Skill DMG|1)
+  - burstCD: burst(CD)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1XHPuw9CDIFaeiJ1xQAH7VOPqKAIqipyL62RHxp9hbNg/edit?usp=sharing
+      count_credit: shizukayuki
+      video: https://youtu.be/T_qhsR5X8dw
+      video_credit: clevernt
+    - count: https://docs.google.com/spreadsheets/d/1XHPuw9CDIFaeiJ1xQAH7VOPqKAIqipyL62RHxp9hbNg/edit?usp=sharing
+      count_credit: shizukayuki
+      video: https://youtu.be/yQqwL9vAmLQ
+      video_credit: shizukayuki
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 1.6
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        radius: 1.8
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N3-1
+        shape: Box
+        center: Player
+        offset: [0, -0.6]
+        box: [1.8, 3.6]
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+      - name: N3-2
+        shape: Box
+        center: Player
+        offset: [0, -0.6]
+        box: [1.8, 3.6]
+
+      - name: N4
+        shape: Circle
+        center: Player
+        offset: [0, 0.9]
+        radius: 2.8
+        hitlag: {scale: 0.01, defense_halt: true}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA-1
+        shape: Circle
+        center: Player
+        offset: [0, 1.4]
+        radius: 2.3
+
+      - name: CA-2
+        shape: Circle
+        center: Player
+        offset: [0, 1.6]
+        radius: 2.4
+        hitlag: {scale: 0.01, defense_halt: true}
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    note: Previous action must be skill[hold=1].
+
+  - name: skill
+    params:
+      hold: 0 for Tap (default), 1 for Hold.
+    hitbox:
+      - name: E-UpwardThrust
+        shape: Box
+        center: Player
+        box: [5.5, 3.5]
+
+      - name: E-Tamoto
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1.2
+
+  - name: burst
+    hitbox:
+      - name: Q
+        note: This is an approximation because we do not actually know the real AoE.
+        shape: Circle
+        center: Player
+        radius: 12
+
+  - name: asc
+    hitbox:
+      - name: A1-Tapestry
+        note: Spawns on target that A1 Tapestry proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 2.5
+
+  - name: cons
+    hitbox:
+      - name: Kinu
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1.2
+
+  - name: walk
+    note: Everything except normal followed by walk has proper frames.

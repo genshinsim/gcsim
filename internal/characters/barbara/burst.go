@@ -22,7 +22,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	stats, _ := c.Stats()
 	c.Core.Tasks.Add(func() {
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  -1,
 			Message: "Shining Miracle♪",
 			Src:     bursthp[c.TalentLvlBurst()] + bursthpp[c.TalentLvlBurst()]*c.MaxHP(),

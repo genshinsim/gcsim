@@ -9,13 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.TheFlute, NewWeapon)
-}
 
 // Normal or Charged Attacks grant a Harmonic on hits. Gaining 5 Harmonics triggers the
 // power of music and deals 100% ATK DMG to surrounding opponents. Harmonics last up to 30s,
@@ -38,19 +33,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	stacks := 0
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		if atk.Info.ActorIndex != char.Index {
-			return false
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-			return false
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, 30, true) // every 0.5s
 		if !char.StatusIsActive(durationKey) {
@@ -65,8 +60,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			stacks = 0
 			char.DeleteStatus(durationKey)
 
-			ai := combat.AttackInfo{
-				ActorIndex: char.Index,
+			ai := info.AttackInfo{
+				ActorIndex: char.Index(),
 				Abil:       "Flute Proc",
 				AttackTag:  attacks.AttackTagWeaponSkill,
 				ICDTag:     attacks.ICDTagNone,
@@ -76,10 +71,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 				Durability: 100,
 				Mult:       0.75 + 0.25*float64(r),
 			}
-			trg := args[0].(combat.Target)
+			trg := args[0].(info.Target)
 			c.QueueAttack(ai, combat.NewCircleHitOnTarget(trg, nil, 4), 0, 1)
 		}
-		return false
 	}, fmt.Sprintf("flute-%v", char.Base.Key.String()))
 	return w, nil
 }

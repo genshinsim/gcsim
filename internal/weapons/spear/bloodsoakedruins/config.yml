@@ -1,0 +1,6 @@
+use: pipeline
+kind: weapon
+name: bloodsoakedruins
+
+shortcuts:
+  - bloodsoaked

@@ -1,0 +1,7 @@
+use: pipeline
+kind: artifact
+name: disenchantmentindeepshadow
+
+shortcuts:
+  - deepshadow
+  - disenchantment

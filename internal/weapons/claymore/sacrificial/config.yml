@@ -1,0 +1,6 @@
+use: pipeline
+kind: weapon
+name: sacrificialgreatsword
+
+shortcuts:
+  - sacgs

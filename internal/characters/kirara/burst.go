@@ -6,14 +6,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
 	burstFrames []int
 
-	boxHitmark  = 38
-	mineExpired = "kirara-cardamoms-expired"
+	mineSnapshot = 34
+	boxHitmark   = 38
+	mineExpired  = "kirara-cardamoms-expired"
 )
 
 func init() {
@@ -27,8 +28,8 @@ func init() {
 
 // Has one parameter, "hits" determines the number of cardamoms that hit the enemy
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	boxAi := combat.AttackInfo{
-		ActorIndex: c.Index,
+	boxAi := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Secret Art: Surprise Dispatch",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -43,10 +44,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 1 {
 		// Every 8,000 Max HP Kirara possesses will cause her to create 1 extra Cat Grass Cardamom when she uses Secret Art: Surprise Dispatch.
 		// A maximum of 4 extra can be created this way.
-		bonus := int(c.MaxHP() / 8000)
-		if bonus > 4 {
-			bonus = 4
-		}
+		bonus := min(int(c.MaxHP()/8000), 4)
 		c.cardamoms += bonus
 	}
 
@@ -61,8 +59,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if minehits > c.cardamoms {
 		minehits = c.cardamoms
 	}
-	mineAi := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	mineAi := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Cat Grass Cardamom Explosion",
 		AttackTag:          attacks.AttackTagElementalBurst,
 		ICDTag:             attacks.ICDTagElementalBurst,
@@ -75,15 +73,18 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		IsDeployable:       true,
 	}
 
-	c.mineSnap = c.Snapshot(&mineAi)
+	c.QueueCharTask(func() {
+		c.mineSnap = c.Snapshot(&mineAi)
+	}, mineSnapshot)
+
 	c.minePattern = combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 2)
 
 	// box
 	player := c.Core.Combat.Player()
-	boxPos := geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 3}, player.Direction())
+	boxPos := info.CalcOffsetPoint(player.Pos(), info.Point{Y: 3}, player.Direction())
 	c.QueueCharTask(func() {
 		c.AddStatus(mineExpired, 12*60, true)
-		c.Core.QueueAttackWithSnap(boxAi, c.mineSnap, combat.NewCircleHitOnTarget(boxPos, nil, 6), 0)
+		c.Core.QueueAttack(boxAi, combat.NewCircleHitOnTarget(boxPos, nil, 6), 0, 0)
 	}, boxHitmark)
 
 	// mine hits

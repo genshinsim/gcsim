@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const normalHitNum = 3
@@ -39,8 +39,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		travel = 10
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNone,
@@ -53,20 +53,21 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	ap := combat.NewBoxHit(
 		c.Core.Combat.Player(),
 		c.Core.Combat.PrimaryTarget(),
-		geometry.Point{Y: -0.5},
+		info.Point{Y: -0.5},
 		0.1,
 		1,
 	)
 
-	for i, mult := range attack[c.NormalCounter] {
+	counter := c.NormalCounter
+	for i, mult := range attack[counter] {
 		c.QueueCharTask(func() {
-			var c4cb combat.AttackCBFunc
+			var c4cb info.AttackCBFunc
 			if c.StatusIsActive(burstBuffKey) {
-				ai.Abil = fmt.Sprintf("Dusk Bolt %v", c.NormalCounter)
+				ai.Abil = fmt.Sprintf("Dusk Bolt %v", counter)
 				ai.AttackTag = attacks.AttackTagExtra
 				ai.ICDTag = attacks.ICDTagElementalBurst
 				ai.Element = attributes.Electro
-				ai.FlatDmg += burstEM[c.TalentLvlBurst()] * c.Stat(attributes.EM)
+				ai.FlatDmg = burstEM[c.TalentLvlBurst()] * c.Stat(attributes.EM)
 
 				deltaPos := c.Core.Combat.Player().Pos().Sub(c.Core.Combat.PrimaryTarget().Pos())
 				dist := deltaPos.Magnitude()
@@ -75,7 +76,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 				ap = combat.NewBoxHit(
 					c.Core.Combat.Player(),
 					c.Core.Combat.PrimaryTarget(),
-					geometry.Point{Y: -dist},
+					info.Point{Y: -dist},
 					0.1,
 					15,
 				)
@@ -89,7 +90,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 				travel,
 				c4cb,
 			)
-		}, attackHitmarks[c.NormalCounter][i])
+		}, attackHitmarks[counter][i])
 	}
 
 	defer c.AdvanceNormalIndex()

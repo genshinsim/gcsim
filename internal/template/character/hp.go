@@ -1,6 +1,8 @@
 package character
 
-import "github.com/genshinsim/gcsim/pkg/core/event"
+import (
+	"github.com/genshinsim/gcsim/pkg/core/event"
+)
 
 func (c *Character) clampHPRatio() {
 	if c.currentHPRatio > 1 {
@@ -49,7 +51,7 @@ func (c *Character) ModifyHPDebtByAmount(amt float64) {
 	}
 	prevHPDebt := c.currentHPDebt
 	c.setHPDebtByAmount(c.currentHPDebt + amt)
-	c.Core.Events.Emit(event.OnHPDebt, c.Index, prevHPDebt-c.currentHPDebt)
+	c.Core.Events.Emit(event.OnHPDebt, c.Index(), prevHPDebt-c.currentHPDebt)
 }
 
 func (c *Character) ModifyHPDebtByRatio(r float64) {
@@ -67,4 +69,8 @@ func (c *Character) CurrentHP() float64 {
 
 func (c *Character) CurrentHPDebt() float64 {
 	return c.currentHPDebt
+}
+
+func (c *Character) CurrentHPDebtRatio() float64 {
+	return c.currentHPDebt / c.MaxHP()
 }

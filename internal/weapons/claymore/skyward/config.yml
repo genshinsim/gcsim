@@ -1,3 +1,15 @@
-package_name: skyward
-genshin_id: 12501
-key: skywardpride
+use: pipeline
+kind: weapon
+name: skywardpride
+
+shortcuts:
+  - pride
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Skyward Pride
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Box
+        center: GlobalValue
+        box: [0.1, 0.1]

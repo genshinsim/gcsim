@@ -1,2 +1,8 @@
-key: nighttimewhispersintheechoingwoods
-set_id: 15034
+use: pipeline
+kind: artifact
+name: nighttimewhispersintheechoingwoods
+
+shortcuts:
+  - echoingwoods
+  - nighttime
+  - nighttimewhispers

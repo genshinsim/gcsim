@@ -7,23 +7,27 @@ import (
 )
 
 func (c *CharWrapper) ConsumeEnergy(delay int) {
-	if delay == 0 {
-		c.log.NewEvent("draining energy", glog.LogEnergyEvent, c.Index).
-			Write("pre_drain", c.Energy).
-			Write("post_drain", 0).
+	c.ConsumeEnergyPartial(delay, c.EnergyMax)
+}
+
+func (c *CharWrapper) ConsumeEnergyPartial(delay int, amount float64) {
+	f := func() {
+		preEnergy := c.Energy
+		post := max(c.Energy-amount, 0)
+		c.log.NewEvent("draining energy", glog.LogEnergyEvent, c.Index()).
+			Write("pre_drain", preEnergy).
+			Write("post_drain", post).
 			Write("source", c.Base.Key.String()+"-burst-energy-drain").
 			Write("max_energy", c.EnergyMax)
-		c.Energy = 0
-		return
+		c.Energy = post
+		c.events.Emit(event.OnEnergyBurst, c, preEnergy, amount)
 	}
-	c.tasks.Add(func() {
-		c.log.NewEvent("draining energy", glog.LogEnergyEvent, c.Index).
-			Write("pre_drain", c.Energy).
-			Write("post_drain", 0).
-			Write("source", c.Base.Key.String()+"-burst-energy-drain").
-			Write("max_energy", c.EnergyMax)
-		c.Energy = 0
-	}, delay)
+
+	if delay == 0 {
+		f()
+	} else {
+		c.tasks.Add(f, delay)
+	}
 }
 
 func (c *CharWrapper) AddEnergy(src string, e float64) {
@@ -37,7 +41,7 @@ func (c *CharWrapper) AddEnergy(src string, e float64) {
 	}
 
 	c.events.Emit(event.OnEnergyChange, c, preEnergy, e, src, false)
-	c.log.NewEvent("adding energy", glog.LogEnergyEvent, c.Index).
+	c.log.NewEvent("adding energy", glog.LogEnergyEvent, c.Index()).
 		Write("rec'd", e).
 		Write("pre_recovery", preEnergy).
 		Write("post_recovery", c.Energy).
@@ -53,10 +57,10 @@ func (c *CharWrapper) ReceiveParticle(p Particle, isActive bool, partyCount int)
 	}
 	// recharge amount - particles: same = 3, non-ele = 2, diff = 1
 	// recharge amount - orbs: same = 9, non-ele = 6, diff = 3 (3x particles)
-	switch {
-	case p.Ele == c.Base.Element:
+	switch p.Ele {
+	case c.Base.Element:
 		amt = 3
-	case p.Ele == attributes.NoElement:
+	case attributes.NoElement:
 		amt = 2
 	default:
 		amt = 1
@@ -79,7 +83,7 @@ func (c *CharWrapper) ReceiveParticle(p Particle, isActive bool, partyCount int)
 	c.log.NewEvent(
 		"particle",
 		glog.LogEnergyEvent,
-		c.Index,
+		c.Index(),
 	).
 		Write("source", p.Source).
 		Write("count", p.Num).

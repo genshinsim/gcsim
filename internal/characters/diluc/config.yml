@@ -1,73 +1,176 @@
-package_name: diluc
-genshin_id: 10000016
-key: diluc
-action_param_keys:
-    low_plunge:
-      - param: "collision"
-    high_plunge:
-      - param: "collision"
-skill_data_mapping:
-  attack:
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}
-    attack_4:
-      - 3 # 4-Hit DMG|{param3:P}
-    collision:
-      - 8 # Plunge DMG|{param6:F1P}
-    lowPlunge:
-      - 9 # Low/High Plunge DMG|{param7:P}/{param8:P}
-    highPlunge:
-      - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
-  skill:
-    skill:
-      - 0 # 1-Hit DMG|{param0:F1P}
-      - 1 # 2-Hit DMG|{param1:F1P}
-      - 2 # 3-Hit DMG|{param2:P}
-  burst:
-    burstDOT:
-      - 1 # DoT|{param1:F1P}
-    burstExplode:
-      - 0 # Slashing DMG|{param0:P}
-    burstInitial:
-      - 0 # Slashing DMG|{param0:P}
-icd_groups:
-  - group_name: ICDGroupDiluc
-    reset_timer: 300
-    ele_app_sequence:
-      [
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        0,
-        0,
-        0,
-      ]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+use: pipeline
+kind: character
+name: diluc
+
+combat:
+  icd_groups:
+    - Diluc
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skill:
+      - skill(1-Hit DMG)
+      - skill(2-Hit DMG)
+      - skill(3-Hit DMG)
+
+  - burstExplode: burst(Slashing DMG)
+  - burstInitial: burst(Slashing DMG)
+  - burstDOT: burst(DoT)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1p0blrnuM7JvwU2QMdZdLayYqP3-7OMDgYC6GDQNn_QU/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/KsBKdqCPFj8
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1zCwdd6_KYFqMD4OQ_llGLdDshoZTu_1pmAMysxGDQvs/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/KlgZlck5kQQ?t=340
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/16ZDmEBZOD4xeUcodxFJVuLC7IIqM9LGLilkct65mElg/edit?usp=sharing
+      count_credit: kolibri._.
+      video: https://youtu.be/I7j6tydYc4s
+      video_credit: kolibri._.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        fan_angle: 300
+        radius: 2
+        hitlag: {time: 0.1, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Box
+        center: Player
+        offset: [0, -1]
+        box: [2, 3]
+        hitlag: {time: 0.09, scale: 0.01, defense_halt: true}
+
+      - name: N3
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        fan_angle: 300
+        radius: 2
+        hitlag: {time: 0.09, scale: 0.01, defense_halt: true}
+
+      - name: N4
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [2, 3]
+        hitlag: {time: 0.12, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    hitbox:
+      - name: CA-Spinning
+        note: not implemented yet
+        shape: Circle
+        center: Player
+        offset: [0, 0.3]
+        radius: 3
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true, deployable: true}
+
+      - name: CA-Final
+        note: not implemented yet
+        shape: Circle
+        center: Player
+        radius: 3.5
+        hitlag: {time: 0.15, scale: 0.01, defense_halt: true, deployable: true}
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    hitbox:
+      - name: E-1
+        shape: Box
+        center: Player
+        box: [3, 3.5]
+        hitlag: {time: 0.12, scale: 0.01, defense_halt: true}
+
+      - name: E-2
+        shape: Circle
+        center: Player
+        offset: [0, 1.2]
+        fan_angle: 300
+        radius: 2.2
+        hitlag: {time: 0.12, scale: 0.01, defense_halt: true}
+
+      - name: E-3
+        shape: Box
+        center: Player
+        offset: [0, -0.3]
+        box: [3.5, 4]
+        hitlag: {time: 0.16, scale: 0.01, defense_halt: true}
+
+  - name: burst
+    hitbox:
+      - name: Q-Start
+        note: not implemented yet
+        shape: Circle
+        center: Player
+        radius: 6
+
+      - name: Q-Slashing-1
+        shape: Box
+        center: Player
+        offset: [0, -1]
+        box: [16, 6]
+        hitlag: {time: 0.09, scale: 0.01, defense_halt: true}
+
+      - name: Q-DoT
+        note: 'This is a moving hitbox. It moves at 2.8m in Y direction per attack and starts at Y: 1m (pay attention to the offsetY!).'
+        shape: Box
+        center: Player
+        offset: [0, -5]
+        box: [16, 8]
+
+      - name: Q-Explosion
+        note: 'This is part of a moving hitbox. This hitbox spawns at Y: 1 + 14*1.7 = 24.8m (pay attention to the offsetY!).'
+        shape: Box
+        center: Player
+        offset: [0, -6]
+        box: [16, 10]
+
+  - name: walk
+    note: No action followed by walk (except low_plunge and high_plunge) has proper frames.

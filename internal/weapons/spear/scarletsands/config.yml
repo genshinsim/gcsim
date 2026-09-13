@@ -1,3 +1,8 @@
-package_name: scarletsands
-genshin_id: 13511
-key: staffofthescarletsands
+use: pipeline
+kind: weapon
+name: staffofthescarletsands
+
+shortcuts:
+  - scarlet
+  - scarletsands
+  - sss

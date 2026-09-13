@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -35,7 +35,6 @@ func init() {
 	attackFrames[2][action.ActionCharge] = 26
 
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 58) // N4 -> N1
-	attackFrames[3][action.ActionCharge] = 500                               // impossible action
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
@@ -45,8 +44,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	c2CB := c.makeC2CB()
 	c6CB := c.makeC6CB()
 	for i, mult := range attack[c.NormalCounter] {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			Mult:               mult[c.TalentLvlAttack()],
 			AttackTag:          attacks.AttackTagNormal,
@@ -64,14 +63,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		}
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			info.Point{Y: attackOffsets[c.NormalCounter]},
 			attackHitboxes[c.NormalCounter][0],
 			attackFanAngles[c.NormalCounter],
 		)
 		if c.NormalCounter == 1 || c.NormalCounter == 2 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsets[c.NormalCounter]},
+				info.Point{Y: attackOffsets[c.NormalCounter]},
 				attackHitboxes[c.NormalCounter][0],
 				attackHitboxes[c.NormalCounter][1],
 			)
@@ -123,7 +122,6 @@ func init() {
 	attackBFrames[3][action.ActionAttack] = 27
 
 	attackBFrames[4] = frames.InitNormalCancelSlice(attackBHitmarks[4][0], 62) // N5 -> N1
-	attackBFrames[4][action.ActionCharge] = 500                                // illegal action
 }
 
 func (c *char) attackB() (action.Info, error) {
@@ -132,8 +130,8 @@ func (c *char) attackB() (action.Info, error) {
 	c2CB := c.makeC2CB()
 	c6CB := c.makeC6CB()
 	for i, mult := range attackB[c.normalBCounter] {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Pactsworn Pathclearer %v", c.normalBCounter),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,
@@ -158,13 +156,13 @@ func (c *char) attackB() (action.Info, error) {
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackBOffsets[c.normalBCounter]},
+			info.Point{Y: attackBOffsets[c.normalBCounter]},
 			attackBHitboxes[c.normalBCounter][0],
 		)
 		if c.normalBCounter == 2 {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: attackBOffsets[c.normalBCounter]},
+				info.Point{Y: attackBOffsets[c.normalBCounter]},
 				attackBHitboxes[c.normalBCounter][0],
 				attackBHitboxes[c.normalBCounter][1],
 			)

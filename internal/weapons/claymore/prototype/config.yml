@@ -1,3 +1,15 @@
-package_name: prototype
-genshin_id: 12406
-key: prototypearchaic
+use: pipeline
+kind: weapon
+name: prototypearchaic
+
+shortcuts:
+  - archaic
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Prototype Archaic
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 3

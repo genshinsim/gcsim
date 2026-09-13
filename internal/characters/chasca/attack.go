@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -18,20 +18,22 @@ var (
 	attackSkillTapFrames []int
 )
 
-const normalHitNum = 4
-const attackSkillTapHitmark = 11
+const (
+	normalHitNum          = 4
+	attackSkillTapHitmark = 11
+)
 
 func init() {
 	attackFrames = make([][]int, normalHitNum)
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 27) // N1 -> Walk
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 29) // N2 -> Walk
 	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][1], 53) // N3 -> Walk
-	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 62) // N4 -> Walk
+	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 73) // N4 -> N1
 
 	attackFrames[0][action.ActionAttack] = 17
 	attackFrames[1][action.ActionAttack] = 19
 	attackFrames[2][action.ActionAttack] = 36
-	attackFrames[3][action.ActionAttack] = 73
+	attackFrames[3][action.ActionWalk] = 62
 
 	attackSkillTapFrames = frames.InitAbilSlice(39)
 	attackSkillTapFrames[action.ActionAttack] = 34
@@ -59,8 +61,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		travel = 10
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNone,
@@ -77,7 +79,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			combat.NewBoxHit(
 				c.Core.Combat.Player(),
 				c.Core.Combat.PrimaryTarget(),
-				geometry.Point{Y: -0.5},
+				info.Point{Y: -0.5},
 				0.1,
 				1,
 			),
@@ -87,21 +89,21 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	defer c.AdvanceNormalIndex()
-
+	framesFunc := frames.NewAttackFunc(c.Character, attackFrames)
 	return action.Info{
-		Frames:          func(next action.Action) int { return frames.NewAttackFunc(c.Character, attackFrames)(next) + windup },
-		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+		Frames:          func(next action.Action) int { return framesFunc(next) + windup },
+		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction] + windup,
+		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1] + windup,
 		State:           action.NormalAttackState,
 	}, nil
 }
 
 func (c *char) attackSkillTap(_ map[string]int) action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:      attacks.AttackTagNormal,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:         attacks.ICDTagChascaTap,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeDefault,
@@ -115,7 +117,7 @@ func (c *char) attackSkillTap(_ map[string]int) action.Info {
 		windup = 0
 	}
 
-	ap := combat.NewCircleHitFanAngle(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -3.0}, 8.0, 120)
+	ap := combat.NewCircleHitFanAngle(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), info.Point{Y: -3.0}, 8.0, 120)
 	c.QueueCharTask(func() {
 		if !c.nightsoulState.HasBlessing() {
 			return
@@ -129,8 +131,11 @@ func (c *char) attackSkillTap(_ map[string]int) action.Info {
 	}, windup+attackSkillTapHitmark)
 
 	defer c.AdvanceNormalIndex()
+
 	return action.Info{
-		Frames:          c.skillNextFrames(frames.NewAttackFunc(c.Character, attackFrames), 0),
+		Frames: c.skillNextFrames(func(next action.Action) int {
+			return frames.AtkSpdAdjust(attackSkillTapFrames[next], c.Stat(attributes.AtkSpd))
+		}, 0),
 		AnimationLength: attackSkillTapFrames[action.InvalidAction],
 		CanQueueAfter:   1, // can run out of nightsoul and start falling earlier
 		State:           action.NormalAttackState,

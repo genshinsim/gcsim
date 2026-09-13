@@ -5,14 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
-
-func init() {
-	core.RegisterCharFunc(keys.Raiden, NewChar)
-}
 
 type char struct {
 	*tmpl.Character
@@ -26,6 +20,7 @@ type char struct {
 	applyC4        bool
 	c6Count        int
 	c6ICD          int
+	burstAnimSrc   int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -39,6 +34,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	w.Character = &c
 
+	c.burstAnimSrc = -1
+
 	return nil
 }
 
@@ -48,6 +45,7 @@ func (c *char) Init() error {
 	c.a4()
 	c.onBurstStackCount()
 	c.onSwapClearBurst()
+	c.c2Init()
 	return nil
 }
 
@@ -61,8 +59,8 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 	return c.Character.ActionStam(a, p)
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
 		return 13
 	}
 	return c.Character.AnimationStartDelay(k)

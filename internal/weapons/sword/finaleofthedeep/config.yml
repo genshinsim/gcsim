@@ -1,3 +1,6 @@
-package_name: finaleofthedeep
-genshin_id: 11425
-key: finaleofthedeep
+use: pipeline
+kind: weapon
+name: finaleofthedeep
+
+shortcuts:
+  - finale

@@ -6,11 +6,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var skillPressFrames [][]int
-var skillHoldFrames [][]int
+var (
+	skillPressFrames [][]int
+	skillHoldFrames  [][]int
+)
 
 const (
 	skillPressHitmark = 10
@@ -49,13 +51,7 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	hold := p["hold"]
-	glide := p["glide_cancel"]
-	if glide < 0 {
-		glide = 0
-	}
-	if glide > 1 {
-		glide = 1
-	}
+	glide := min(max(p["glide_cancel"], 0), 1)
 
 	c.a1Absorb = attributes.NoElement
 
@@ -65,9 +61,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return c.skillHold(glide), nil
 }
 
-func (c *char) makeParticleCB(count float64) combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) makeParticleCB(count float64) info.AttackCBFunc {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(particleICDKey) {
@@ -80,9 +76,9 @@ func (c *char) makeParticleCB(count float64) combat.AttackCBFunc {
 
 func (c *char) skillPress(glide int) action.Info {
 	c.a1AbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillPressRadius)
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Chihayaburu",
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       "Chihayaburu (Press)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -130,9 +126,9 @@ func (c *char) skillPress(glide int) action.Info {
 
 func (c *char) skillHold(glide int) action.Info {
 	c.a1AbsorbCheckLocation = combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, skillHoldRadius)
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Chihayaburu",
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       "Chihayaburu (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,

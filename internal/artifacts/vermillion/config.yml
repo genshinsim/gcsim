@@ -1,2 +1,7 @@
-key: vermillionhereafter
-set_id: 15023
+use: pipeline
+kind: artifact
+name: vermillionhereafter
+
+shortcuts:
+  - vermillion
+  - vh

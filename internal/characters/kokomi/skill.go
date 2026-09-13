@@ -6,10 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var skillFrames []int
@@ -52,8 +50,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -66,9 +64,9 @@ func (c *char) particleCB(a combat.AttackCB) {
 }
 
 // Helper function since this needs to be created both on skill use and burst use
-func (c *char) createSkillSnapshot() *combat.AttackEvent {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+func (c *char) createSkillSnapshot() *info.AttackEvent {
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Bake-Kurage",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -79,9 +77,9 @@ func (c *char) createSkillSnapshot() *combat.AttackEvent {
 		Mult:       skillDmg[c.TalentLvlSkill()],
 	}
 	snap := c.Snapshot(&ai)
-	ae := combat.AttackEvent{
+	ae := info.AttackEvent{
 		Info:        ai,
-		Pattern:     combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 3}, 6),
+		Pattern:     combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 3}, 6),
 		SourceFrame: c.Core.F,
 		Snapshot:    snap,
 	}
@@ -90,7 +88,7 @@ func (c *char) createSkillSnapshot() *combat.AttackEvent {
 }
 
 // Helper function that handles damage, healing, and particle components of every tick of her E
-func (c *char) skillTick(d *combat.AttackEvent) {
+func (c *char) skillTick(d *info.AttackEvent) {
 	// check if skill has burst bonus snapshot
 	// snapshot is between 1st and 2nd tick
 	if c.swapEarlyF > c.skillLastUsed && c.swapEarlyF < c.skillLastUsed+100 {
@@ -115,13 +113,13 @@ func (c *char) skillTick(d *combat.AttackEvent) {
 			if active.CurrentHPRatio() <= 0.5 {
 				bonus := 0.045 * maxhp
 				src += bonus
-				c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, active.Index).
+				c.Core.Log.NewEvent("kokomi c2 proc'd", glog.LogCharacterEvent, active.Index()).
 					Write("bonus", bonus)
 			}
 		}
 
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  c.Core.Player.Active(),
 			Message: "Bake-Kurage",
 			Src:     src,
@@ -132,9 +130,9 @@ func (c *char) skillTick(d *combat.AttackEvent) {
 
 // Handles repeating skill damage ticks. Split into a separate function as you can only have 1 jellyfish on field at once
 // Skill snapshots, so inputs into the function are the originating snapshot
-func (c *char) skillTickTask(originalSnapshot *combat.AttackEvent, src int) func() {
+func (c *char) skillTickTask(originalSnapshot *info.AttackEvent, src int) func() {
 	return func() {
-		c.Core.Log.NewEvent("Skill Tick Debug", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Skill Tick Debug", glog.LogCharacterEvent, c.Index()).
 			Write("current dur", c.Core.Status.Duration("kokomiskill")).
 			Write("skilllastused", c.skillLastUsed).
 			Write("src", src)

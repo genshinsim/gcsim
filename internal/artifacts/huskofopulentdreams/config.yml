@@ -1,2 +1,12 @@
-key: huskofopulentdreams
-set_id: 15021
+use: pipeline
+kind: artifact
+name: huskofopulentdreams
+
+shortcuts:
+  - hood
+  - husk
+
+abilities:
+  - name: default
+    params:
+      stacks: Number of stacks for the 4pc affect to gain at the beginning. Default 0, maximum 4.

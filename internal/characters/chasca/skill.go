@@ -7,11 +7,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var skillFrames []int
-var skillCancelFrames []int
+var (
+	skillFrames       []int
+	skillCancelFrames []int
+)
 
 const (
 	skillHitmarks      = 3
@@ -19,12 +21,12 @@ const (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(27) // E -> E
-	skillFrames[action.ActionAttack] = 5
+	skillFrames = frames.InitAbilSlice(586 + 37) // E -> Swap, wait for nightsoul to run out and fall onto the ground
+	skillFrames[action.ActionAttack] = 6
 	skillFrames[action.ActionAim] = 17
 	skillFrames[action.ActionBurst] = 6
+	skillFrames[action.ActionSkill] = 27
 	skillFrames[action.ActionDash] = 6
-	skillFrames[action.ActionSwap] = 586 + 37 // wait for nightsoul to run out and fall onto the ground
 
 	skillCancelFrames = frames.InitAbilSlice(40) // E -> Dash/Jump
 	skillCancelFrames[action.ActionAttack] = 38
@@ -75,8 +77,9 @@ func (c *char) enterNightsoul() {
 }
 
 func (c *char) nigthsoulFallingMsg() {
-	c.Core.Log.NewEvent("nightsoul ended, falling", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("nightsoul ended, falling", glog.LogCharacterEvent, c.Index())
 }
+
 func (c *char) exitNightsoul() {
 	if !c.nightsoulState.HasBlessing() {
 		return
@@ -119,17 +122,17 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.exitNightsoul()
 		return action.Info{
 			Frames:          frames.NewAbilFunc(skillCancelFrames),
-			AnimationLength: skillFrames[action.InvalidAction],
-			CanQueueAfter:   skillFrames[action.ActionLowPlunge], // earliest cancel
+			AnimationLength: skillCancelFrames[action.InvalidAction],
+			CanQueueAfter:   skillCancelFrames[action.ActionLowPlunge], // earliest cancel
 			State:           action.SkillState,
 		}, nil
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Spirit Reins, Shadow Hunt",
 		AttackTag:      attacks.AttackTagElementalArt,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeDefault,
@@ -147,13 +150,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	return action.Info{
 		Frames:          c.skillNextFrames(frames.NewAbilFunc(skillFrames), 0),
 		AnimationLength: skillFrames[action.InvalidAction],
-		CanQueueAfter:   skillFrames[action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillFrames[action.ActionAttack], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.skillParticleICD {

@@ -26,8 +26,8 @@ func init() {
 
 // Only applies burst damage. Main Talisman functions are handled in qiqi.go
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Fortune-Preserving Talisman",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -41,8 +41,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(ai, ap, burstHitmark, burstHitmark)
 
 	// Talisman is applied via a 0 dmg attack way before the damage is dealt
-	talismanAi := combat.AttackInfo{
-		ActorIndex: c.Index,
+	talismanAi := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Fortune-Preserving Talisman (Talisman application)",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagNone,
@@ -50,7 +50,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Physical,
 	}
-	talismanCB := func(a combat.AttackCB) {
+	talismanCB := func(a info.AttackCB) {
 		e, ok := a.Target.(*enemy.Enemy)
 		if !ok {
 			return
@@ -71,47 +71,45 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) talismanHealHook() {
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		e, ok := args[0].(*enemy.Enemy)
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if !ok {
-			return false
+			return
 		}
 
 		// do nothing if talisman expired
 		if !e.StatusIsActive(talismanKey) {
-			return false
+			return
 		}
 		// do nothing if talisman still on icd
 		if e.GetTag(talismanICDKey) >= c.Core.F {
-			return false
+			return
 		}
 
 		healAmt := c.healDynamic(burstHealPer, burstHealFlat, c.TalentLvlBurst())
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  atk.Info.ActorIndex,
 			Message: "Fortune-Preserving Talisman",
 			Src:     healAmt,
 			Bonus:   c.Stat(attributes.Heal),
 		})
 		e.SetTag(talismanICDKey, c.Core.F+60)
-
-		return false
 	}, "talisman-heal-hook")
 }
 
 // Handles C2, A4, and skill NA/CA on hit hooks
 // Additionally handles burst Talisman hook - can't be done another way since Talisman is applied before the burst damage is dealt
 func (c *char) onNACAHitHook() {
-	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		e, ok := args[0].(*enemy.Enemy)
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		if !ok {
-			return false
+			return
 		}
-		if atk.Info.ActorIndex != c.Index {
-			return false
+		if atk.Info.ActorIndex != c.Index() {
+			return
 		}
 
 		// All of the below only occur on Qiqi NA/CA hits
@@ -119,7 +117,7 @@ func (c *char) onNACAHitHook() {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagExtra:
 		default:
-			return false
+			return
 		}
 
 		// A4:
@@ -136,7 +134,7 @@ func (c *char) onNACAHitHook() {
 				c.Core.Log.NewEvent(
 					"Qiqi A4 Adding Talisman",
 					glog.LogCharacterEvent,
-					c.Index,
+					c.Index(),
 				).
 					Write("target", e.Key()).
 					Write("talisman_expiry", e.StatusExpiry(talismanKey))
@@ -146,14 +144,12 @@ func (c *char) onNACAHitHook() {
 		// Qiqi NA/CA healing proc in skill duration
 		if c.StatusIsActive(skillBuffKey) {
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
+				Caller:  c.Index(),
 				Target:  -1,
 				Message: "Herald of Frost (Attack)",
 				Src:     c.healSnapshot(&c.skillHealSnapshot, skillHealOnHitPer, skillHealOnHitFlat, c.TalentLvlSkill()),
 				Bonus:   c.skillHealSnapshot.Stats[attributes.Heal],
 			})
 		}
-
-		return false
 	}, "qiqi-onhit-naca-hook")
 }

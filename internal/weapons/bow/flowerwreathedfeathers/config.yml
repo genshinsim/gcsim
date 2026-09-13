@@ -1,3 +1,3 @@
-package_name: flowerwreathedfeathers
-genshin_id: 15430
-key: flowerwreathedfeathers
+use: pipeline
+kind: weapon
+name: flowerwreathedfeathers

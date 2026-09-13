@@ -1,0 +1,6 @@
+use: pipeline
+kind: artifact
+name: longnightsoath
+
+shortcuts:
+  - lno

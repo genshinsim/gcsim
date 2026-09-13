@@ -1,49 +1,159 @@
-package_name: dori
-genshin_id: 10000068
-key: dori
-action_param_keys:
-    skill:
-      - param: "travel"
-    burst:
-      - param: "c2_travel"
-    low_plunge:
-      - param: "collision"
-    high_plunge:
-      - param: "collision"
-icd_tags:
-  - ICDTagDoriC2
-  - ICDTagDoriChargingStation
-icd_groups:
-  - group_name: ICDGroupDoriBurst
-    reset_timer: 180
-    ele_app_sequence: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-skill_data_mapping:
-  attack:
-    auto_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    auto_2:
-      - 1 # 2-Hit DMG|{param1:F1P}+{param2:F1P}
-      - 2 # 2-Hit DMG|{param1:F1P}+{param2:F1P}
-    auto_3:
-      - 3 # 3-Hit DMG|{param3:F1P}
-    collision:
-      - 8 # Plunge DMG|{param6:F1P}
-    lowPlunge:
-      - 9 # Low/High Plunge DMG|{param7:P}/{param8:P}
-    highPlunge:
-      - 10 # Low/High Plunge DMG|{param7:P}/{param8:P}
-  skill:
-    skill:
-      - 0 # Troubleshooter Shot DMG|{param0:F1P}
-    skillAfter:
-      - 1 # After-Sales Service Round DMG|{param1:F1P}
-  burst:
-    burst:
-      - 0 # Connector DMG|{param0:P}
-    burstenergy:
-      - 3 # Energy Regeneration|{param3:F1}
-    bursthealflat:
-      - 2 # Continuous Healing|{param1:F1P} Max HP+{param2:I}
-    bursthealpp:
-      - 1 # Continuous Healing|{param1:F1P} Max HP+{param2:I}
+use: pipeline
+kind: character
+name: dori
+
+override:
+  icd_group:
+    DoriBurst:
+      name: Dori_Elemental_Burst
+
+combat:
+  icd_tags:
+    - DoriC2
+    - DoriChargingStation
+  icd_groups:
+    - DoriBurst
+
+talents:
+  - auto:
+      - attack(1-Hit DMG)
+      - - attack(2-Hit DMG)
+        - attack(2-Hit DMG|1)
+      - attack(3-Hit DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skill: skill(Troubleshooter Shot DMG)
+  - skillAfter: skill(After-Sales Service Round DMG)
+
+  - burst: burst(Connector DMG)
+  - bursthealpp: burst(Continuous Healing)
+  - bursthealflat: burst(Continuous Healing|1)
+  - burstenergy: burst(Energy Regeneration)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1F7mZ269IdPtu0JogHnnUdewG11g2rq3-2KWj5m2BbBY/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/9v2gTsb0qzs
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/16ZDmEBZOD4xeUcodxFJVuLC7IIqM9LGLilkct65mElg/edit?usp=sharing
+      count_credit: kolibri._.
+      video: https://youtu.be/UCMirfn4QgM
+      video_credit: kolibri._.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2
+        hitlag: {time: 0.1, scale: 0.01, defense_halt: true}
+
+      - name: N2-1
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2
+
+      - name: N2-2
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2
+
+      - name: N3
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 2
+        hitlag: {time: 0.08, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    hitbox:
+      - name: CA-Spinning
+        note: not implemented yet
+        shape: Circle
+        center: Player
+        offset: [0, 0.3]
+        radius: 2.8
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true, deployable: true}
+
+      - name: CA-Final
+        note: not implemented yet
+        shape: Circle
+        center: Player
+        radius: 3.3
+        hitlag: {time: 0.15, scale: 0.01, defense_halt: true, deployable: true}
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    params:
+      travel: Projectile travel time for Troubleshooter Shot. Default 10 frames.
+    hitbox:
+      - name: E-TroubleshooterShot
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: E-After-SalesRound
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+  - name: burst
+    params:
+      c2_travel: Projectile travel time for Jinni Toop. Default 10 frames.
+    hitbox:
+      - name: Q-SelfHit
+        note: Q spawns at offsetY 5 and has a detection area of 10m. This attack is only triggered if the Player is within the Q detection area.
+        shape: Single
+        center: Player
+
+      - name: Q-Connector
+        note: Q spawns at offsetY 5 and has a detection area of 10m. This attack is a line going from the Player to the Q position if the Player is within the Q detection area.
+        shape: Box
+        center: Player
+        box: [1, 0]
+
+  - name: cons
+    hitbox:
+      - name: E-C2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+  - name: walk
+    note: No action followed by walk (except low_plunge and high_plunge) has proper frames.

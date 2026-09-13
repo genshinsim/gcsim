@@ -1,3 +1,18 @@
-package_name: perception
-genshin_id: 14409
-key: eyeofperception
+use: pipeline
+kind: weapon
+name: eyeofperception
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Eye of Perception Enemy Detection
+        note: It looks for enemies within this hitbox. At the start, the center is Player and starting with the first bounce it's always the enemy that the Bolt is at.
+        shape: Circle
+        center: GlobalValue
+        radius: 8
+
+      - name: Eye of Perception
+        note: Is done as a chain of attacks starting at the target hit (marking the target for 0.6s) and moving on to the closest enemy that is not marked yet if such an enemy exists.
+        shape: Circle
+        center: GlobalValue
+        radius: 0.6

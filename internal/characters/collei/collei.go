@@ -4,11 +4,8 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 var dendroEvents = []event.Event{
@@ -19,15 +16,12 @@ var dendroEvents = []event.Event{
 	event.OnBloom,
 	event.OnHyperbloom,
 	event.OnBurgeon,
-}
-
-func init() {
-	core.RegisterCharFunc(keys.Collei, NewChar)
+	event.OnLunarBloom,
 }
 
 type char struct {
 	*tmpl.Character
-	burstPos           geometry.Point
+	burstPos           info.Point
 	burstExtendCount   int
 	sproutShouldExtend bool
 	sproutShouldProc   bool
@@ -62,8 +56,8 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
 		return 11
 	}
 	return c.Character.AnimationStartDelay(k)

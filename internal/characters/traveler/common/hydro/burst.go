@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -35,8 +35,8 @@ func init() {
 }
 
 func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Rising Waters",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -60,7 +60,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 	initialPos := c.Core.Combat.Player().Pos()
 	initialDirection := c.Core.Combat.Player().Direction()
 	for i := 0; i < burstTicks; i++ {
-		nextPos := geometry.CalcOffsetPoint(initialPos.Add(geometry.Point{X: 0.5, Y: 0.5}), geometry.Point{Y: burstSpeed * float64(i)}, initialDirection)
+		nextPos := info.CalcOffsetPoint(initialPos.Add(info.Point{X: 0.5, Y: 0.5}), info.Point{Y: burstSpeed * float64(i)}, initialDirection)
 		// TODO: Trigger the 0.15m AoE attack for every enemy within 2.5m (estimation) of the calculated pos to emulate the burst triggering its 0.15m AoE attack on collision.
 		c.Core.QueueAttackWithSnap(ai,
 			snap,

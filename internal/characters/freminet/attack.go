@@ -8,8 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -46,9 +46,9 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		return c.detonateSkill()
 	}
 
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
-		ActorIndex:         c.Index,
+		ActorIndex:         c.Index(),
 		AttackTag:          attacks.AttackTagNormal,
 		ICDTag:             attacks.ICDTagNormalAttack,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -64,14 +64,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: attackOffsets[c.NormalCounter]},
+		info.Point{Y: attackOffsets[c.NormalCounter]},
 		attackHitboxes[c.NormalCounter][0],
 	)
 
 	if c.NormalCounter == 2 {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[c.NormalCounter]},
+			info.Point{Y: attackOffsets[c.NormalCounter]},
 			attackHitboxes[c.NormalCounter][0],
 			attackHitboxes[c.NormalCounter][1],
 		)
@@ -85,8 +85,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			frostMod *= 2
 		}
 
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Pressurized Floe: Pers Time Frost",
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
@@ -114,7 +114,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		if c.skillStacks > 4 {
 			c.skillStacks = 4
 		}
-		c.Core.Log.NewEvent("freminet skill stacks gained", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("freminet skill stacks gained", glog.LogCharacterEvent, c.Index()).
 			Write("stacks", c.skillStacks)
 	}
 

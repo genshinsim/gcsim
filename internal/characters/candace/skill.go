@@ -6,9 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 )
 
 var (
@@ -37,19 +36,16 @@ func init() {
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
-	chargeLevel := p["hold"]
-	if chargeLevel > 1 {
-		chargeLevel = 1
-	}
+	chargeLevel := min(p["hold"], 1)
 	windup := 0
 	if p["perfect"] != 0 {
 		chargeLevel = 1
 		windup = 55
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
-		Abil:               "Sacred Rite: Heron's Sanctum (E)",
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
+		Abil:               "Sacred Rite: Heron's Sanctum",
 		AttackTag:          attacks.AttackTagElementalArt,
 		ICDTag:             attacks.ICDTagNone,
 		ICDGroup:           attacks.ICDGroupDefault,
@@ -62,7 +58,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		CanBeDefenseHalted: true,
 	}
 
-	var ap combat.AttackPattern
+	var ap info.AttackPattern
 	var particleCount float64
 	hitmark := skillHitmarks[chargeLevel] - windup
 	switch chargeLevel {
@@ -70,17 +66,17 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ai.PoiseDMG = 150
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: skillOffsets[chargeLevel]},
+			info.Point{Y: skillOffsets[chargeLevel]},
 			skillHitboxes[chargeLevel][0],
 			skillHitboxes[chargeLevel][1],
 		)
 		particleCount = 2
 	case 1:
 		ai.PoiseDMG = 300
-		ai.Abil = "Sacred Rite: Heron's Sanctum Charged Up (E)"
+		ai.Abil = "Sacred Rite: Heron's Sanctum (Charged)"
 		ap = combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: skillOffsets[chargeLevel]},
+			info.Point{Y: skillOffsets[chargeLevel]},
 			skillHitboxes[chargeLevel][0],
 		)
 		particleCount = 3
@@ -91,7 +87,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ap,
 		hitmark,
 		hitmark,
-		func(_ combat.AttackCB) {
+		func(_ info.AttackCB) {
 			if c.Base.Cons >= 2 {
 				c.c2()
 			}
@@ -101,10 +97,10 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	// Add shield until skill unleashed (treated as frame when attack hits)
 	c.Core.Player.Shields.Add(&shield.Tmpl{
-		ActorIndex: c.Index,
-		Target:     c.Index,
+		ActorIndex: c.Index(),
+		Target:     c.Index(),
 		Src:        c.Core.F,
-		Name:       "Candace Skill",
+		Name:       "Sacred Rite: Heron's Sanctum (Shield)",
 		ShieldType: shield.CandaceSkill,
 		HP:         skillShieldPct[c.TalentLvlSkill()]*c.MaxHP() + skillShieldFlat[c.TalentLvlSkill()],
 		Ele:        attributes.Hydro,
@@ -125,9 +121,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) makeParticleCB(particleCount float64) combat.AttackCBFunc {
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) makeParticleCB(particleCount float64) info.AttackCBFunc {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(particleICDKey) {

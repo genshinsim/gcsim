@@ -3,18 +3,12 @@ package emeraldorb
 import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.EmeraldOrb, NewWeapon)
-}
 
 type Weapon struct {
 	Index int
@@ -31,39 +25,40 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.15 + float64(r)*0.05
 
-	addBuff := func(args ...interface{}) bool {
+	addBuff := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		// don't proc if dmg not from weapon holder
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		// don't proc if off-field
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 
 		// add buff
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("emeraldorb", 720),
 			AffectedStat: attributes.NoStat,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
-
-		return false
 	}
 
 	subKey := "emeraldorb-" + char.Base.Key.String()
 
 	c.Events.Subscribe(event.OnVaporize, addBuff, subKey)
 	c.Events.Subscribe(event.OnElectroCharged, addBuff, subKey)
+	c.Events.Subscribe(event.OnLunarCharged, addBuff, subKey)
 	c.Events.Subscribe(event.OnFrozen, addBuff, subKey)
 	c.Events.Subscribe(event.OnSwirlHydro, addBuff, subKey)
+	c.Events.Subscribe(event.OnBloom, addBuff, subKey)
+	c.Events.Subscribe(event.OnLunarBloom, addBuff, subKey)
 
 	return w, nil
 }

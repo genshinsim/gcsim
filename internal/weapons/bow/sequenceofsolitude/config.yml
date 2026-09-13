@@ -1,0 +1,15 @@
+use: pipeline
+kind: weapon
+name: sequenceofsolitude
+
+shortcuts:
+  - solitude
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Sequence of Solitude
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 3

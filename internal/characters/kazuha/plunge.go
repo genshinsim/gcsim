@@ -8,30 +8,42 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var plungePressFrames []int
-var plungeHoldFrames []int
+var (
+	plungePressFrames []int
+	plungeHoldFrames  []int
+)
 
 // a1 is 1 frame before this
 // collision is 6 frame before this
-const plungePressHitmark = 36
-const plungeHoldHitmark = 41
+const (
+	plungePressHitmark = 36
+	plungeHoldHitmark  = 41
+)
 
-var highPlungeFrames []int
-var lowPlungeFrames []int
+var (
+	highPlungeFrames []int
+	lowPlungeFrames  []int
+)
 
-const lowPlungeHitmark = 46
-const highPlungeHitmark = 47
-const collisionHitmark = lowPlungeHitmark - 6
+const (
+	lowPlungeHitmark  = 46
+	highPlungeHitmark = 47
+	collisionHitmark  = lowPlungeHitmark - 6
+)
 
-const lowPlungePoiseDMG = 100.0
-const lowPlungeRadius = 3.0
+const (
+	lowPlungePoiseDMG = 100.0
+	lowPlungeRadius   = 3.0
+)
 
-const highPlungePoiseDMG = 150.0
-const highPlungeRadius = 5.0
+const (
+	highPlungePoiseDMG = 150.0
+	highPlungeRadius   = 5.0
+)
 
 // TODO: missing plunge -> skill
 func init() {
@@ -95,8 +107,8 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Low Plunge",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,
@@ -109,7 +121,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, lowPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, lowPlungeRadius),
 		lowPlungeHitmark,
 		lowPlungeHitmark,
 	)
@@ -146,7 +158,7 @@ func (c *char) skillPlunge(p map[string]int) (action.Info, error) {
 		State: action.PlungeAttackState,
 	}
 
-	//TODO: is this accurate?? these should be the hitmarks
+	// TODO: is this accurate?? these should be the hitmarks
 	var hitmark int
 	if c.Core.Player.LastAction.Param["hold"] == 0 {
 		hitmark = plungePressHitmark
@@ -165,8 +177,8 @@ func (c *char) skillPlunge(p map[string]int) (action.Info, error) {
 	}
 
 	if collisionParam > 0 {
-		ai := combat.AttackInfo{
-			ActorIndex:     c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:     c.Index(),
 			Abil:           "Plunge Collision",
 			AttackTag:      attacks.AttackTagPlunge,
 			ICDTag:         attacks.ICDTagNone,
@@ -177,12 +189,12 @@ func (c *char) skillPlunge(p map[string]int) (action.Info, error) {
 			Durability:     0,
 			Mult:           collision[c.TalentLvlAttack()],
 		}
-		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 1), hitmark-6, hitmark-6)
+		c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 1), hitmark-6, hitmark-6)
 	}
 
 	// aoe dmg
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "High Plunge",
 		AttackTag:      attacks.AttackTagPlunge,
 		ICDTag:         attacks.ICDTagNone,
@@ -197,16 +209,16 @@ func (c *char) skillPlunge(p map[string]int) (action.Info, error) {
 
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 4.5),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, 4.5),
 		hitmark,
 		hitmark,
 	)
 
 	// a1 if applies
 	if c.a1Absorb != attributes.NoElement {
-		ai := combat.AttackInfo{
-			ActorIndex:     c.Index,
-			Abil:           "Kazuha A1",
+		ai := info.AttackInfo{
+			ActorIndex:     c.Index(),
+			Abil:           "Soumon Swordsmanship (A1)",
 			AttackTag:      attacks.AttackTagPlunge,
 			ICDTag:         attacks.ICDTagNone,
 			ICDGroup:       attacks.ICDGroupDefault,
@@ -220,7 +232,7 @@ func (c *char) skillPlunge(p map[string]int) (action.Info, error) {
 
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 0.5}, 4.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 0.5}, 4.5),
 			hitmark-1,
 			hitmark-1,
 		)
@@ -240,8 +252,8 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "High Plunge",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,
@@ -254,7 +266,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, highPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, highPlungeRadius),
 		highPlungeHitmark,
 		highPlungeHitmark,
 	)
@@ -270,8 +282,8 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 // Plunge normal falling attack damage queue generator
 // Standard - Always part of high/low plunge attacks
 func (c *char) plungeCollision(delay int) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Plunge Collision",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,
@@ -281,5 +293,5 @@ func (c *char) plungeCollision(delay int) {
 		Durability: 0,
 		Mult:       collision[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 1), delay, delay)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 1), delay, delay)
 }

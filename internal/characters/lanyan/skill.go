@@ -6,7 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 const (
@@ -56,8 +56,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.absorbedElement = attributes.Anemo
 	c.DeleteStatus(leapBackStatus)
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Swallow-Wisp Pinion Dance: Detect",
 		AttackTag:  attacks.AttackTagNone,
 		ICDTag:     attacks.ICDTagNone,
@@ -95,13 +95,13 @@ func (c *char) getCurrentSkillFrames() []int {
 	return skillMissFrames
 }
 
-func (c *char) leapBack() func(combat.AttackCB) {
+func (c *char) leapBack() func(info.AttackCB) {
 	done := false
-	return func(a combat.AttackCB) {
+	return func(a info.AttackCB) {
 		if done {
 			return
 		}
-		if a.Target.Type() != targets.TargettableEnemy {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		done = true
@@ -113,8 +113,8 @@ func (c *char) leapBack() func(combat.AttackCB) {
 	}
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.particleGenerated {

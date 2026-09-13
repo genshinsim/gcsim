@@ -64,6 +64,12 @@ type Handler struct {
 		Param  map[string]int
 		Char   int
 	}
+
+	verdantDewExpiryFrame int
+	verdantDew            int
+	partialDewCount       int
+
+	moonridgeDew int
 }
 
 type Opt struct {
@@ -231,7 +237,7 @@ func (h *Handler) ApplyHitlag(char int, factor, dur float64) {
 	h.chars[char].ApplyHitlag(factor, dur)
 
 	// also extend infusion
-	//TODO: this is a really awkward place to apply this
+	// TODO: this is a really awkward place to apply this
 	h.ExtendInfusion(char, factor, dur)
 
 	// extend the dash cd by the hitlag extension amount
@@ -310,6 +316,9 @@ func (h *Handler) Tick() {
 	}
 	h.Shields.Tick()
 	h.AnimationHandler.Tick()
+
+	h.verdantDewTick()
+
 	for _, c := range h.chars {
 		c.Tick()
 	}
@@ -323,6 +332,7 @@ const (
 	AirborneVenti
 	AirborneKazuha
 	AirborneXianyun
+	AirborneStellarSwirl
 	TerminateAirborne
 )
 
@@ -331,6 +341,13 @@ func (h *Handler) SetAirborne(src AirborneSource) error {
 		// do nothing
 		return fmt.Errorf("invalid airborne source: %v", src)
 	}
+
+	if src == Grounded {
+		h.Log.NewEvent("gained grounded", glog.LogCharacterEvent, h.active)
+	} else {
+		h.Log.NewEvent("gained airborne", glog.LogCharacterEvent, h.active)
+	}
+
 	h.airborne = src
 	return nil
 }
@@ -340,5 +357,25 @@ func (h *Handler) Airborne() AirborneSource {
 }
 
 const (
-	XianyunAirborneBuff = "xianyun-airborne-buff"
+	XianyunAirborneBuff      = "xianyun-airborne-buff"
+	StellarSwirlAirborneBuff = "ssw-airborne-buff"
 )
+
+func (h *Handler) GetMoonsignLevel() int {
+	count := 0
+	for _, c := range h.Chars() {
+		count += c.Moonsign
+	}
+	return count
+}
+
+func (h *Handler) GetHexereiCount() int {
+	count := 0
+	for _, char := range h.chars {
+		if char.IsHexerei {
+			count++
+		}
+	}
+
+	return count
+}

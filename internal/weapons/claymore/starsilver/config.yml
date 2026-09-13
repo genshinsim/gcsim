@@ -1,3 +1,16 @@
-package_name: starsilver
-genshin_id: 12411
-key: snowtombedstarsilver
+use: pipeline
+kind: weapon
+name: snowtombedstarsilver
+
+shortcuts:
+  - snowtombed
+  - starsilver
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Snow-Tombed Starsilver
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 3

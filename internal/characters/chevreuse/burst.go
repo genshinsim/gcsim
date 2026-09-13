@@ -6,13 +6,10 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var (
-	burstFrames []int
-)
+var burstFrames []int
 
 func init() {
 	burstFrames = frames.InitAbilSlice(61) // Q -> Walk
@@ -29,8 +26,8 @@ const (
 )
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Explosive Grenade",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -42,8 +39,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	mineAi := combat.AttackInfo{
-		ActorIndex: c.Index,
+	mineAi := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Secondary Explosive Shell",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -75,16 +72,16 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	mineCounts := []int{1, 2, 2, 2, 1}
 	mineSteps := [][]float64{{0}, {45, 315}, {90, 270}, {135, 225}, {180}}
 	mineDelays := []int{24, 33, 42, 51, 60}
-	for i := 0; i < mineGroups; i++ {
+	for i := range mineGroups {
 		for j := 0; j < mineCounts[i]; j++ {
 			// every shell has its own direction
-			direction := geometry.DegreesToDirection(mineSteps[i][j]).Rotate(burstInitialDirection)
+			direction := info.DegreesToDirection(mineSteps[i][j]).Rotate(burstInitialDirection)
 
 			// can't use combat attack pattern func because can't easily supply direction
-			mineAp := combat.AttackPattern{
-				Shape: geometry.NewCircle(burstInitialPos, 6, direction, 60),
+			mineAp := info.AttackPattern{
+				Shape: info.NewCircle(burstInitialPos, 6, direction, 60),
 			}
-			mineAp.SkipTargets[targets.TargettablePlayer] = true
+			mineAp.SkipTargets[info.TargettablePlayer] = true
 			c.Core.QueueAttack(mineAi, mineAp, snapshotDelay, burstHitmark+mineDelays[i])
 		}
 	}

@@ -6,8 +6,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
+)
+
+const (
+	astralGlowKey     = "mona-astral-glow"
+	astralGlowICDKey  = "mona-astral-glow-icd"
+	omenRefreshICDKey = "mona-omen-refresh-icd"
+	omenRefreshCap    = 4
 )
 
 // After she has used Illusory Torrent for 2s, if there are any opponents nearby,
@@ -16,8 +25,12 @@ import (
 //
 // - checks for ascension level in dash.go to avoid queuing this up only to fail the ascension level check
 func (c *char) a1() {
+	if c.Base.Ascension < 1 {
+		return
+	}
+
 	// do nothing if not Mona
-	if c.Core.Player.Active() != c.Index {
+	if c.Core.Player.Active() != c.Index() {
 		return
 	}
 	// do nothing if we aren't dashing anymore
@@ -26,13 +39,13 @@ func (c *char) a1() {
 	}
 	enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 15), nil)
 	if enemies != nil {
-		c.Core.Log.NewEvent("mona-a1 phantom added", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("mona-a1 phantom added", glog.LogCharacterEvent, c.Index()).
 			Write("expiry:", c.Core.F+120)
 		// queue up phantom explosion
 		phantomPos := c.Core.Combat.Player()
 		c.Core.Tasks.Add(func() {
-			aiExplode := combat.AttackInfo{
-				ActorIndex: c.Index,
+			aiExplode := info.AttackInfo{
+				ActorIndex: c.Index(),
 				Abil:       "Mirror Reflection of Doom (A1 Explode)",
 				AttackTag:  attacks.AttackTagElementalArt,
 				ICDTag:     attacks.ICDTagNone,
@@ -62,11 +75,120 @@ func (c *char) a4() {
 			Base:         modifier.NewBase("mona-a4", -1),
 			AffectedStat: attributes.HydroP,
 			Extra:        true,
-			Amount: func() ([]float64, bool) {
-				return c.a4Stats, true
+			Amount: func() []float64 {
+				return c.a4Stats
 			},
 		})
 	}
 	c.a4Stats[attributes.HydroP] = 0.2 * c.NonExtraStat(attributes.ER)
 	c.QueueCharTask(c.a4, 60)
+}
+
+func (c *char) astralGlowGainCB(a info.AttackCB) {
+	if !c.IsHexerei {
+		return
+	}
+
+	if c.Core.Player.GetHexereiCount() < 2 {
+		return
+	}
+
+	if c.StatusIsActive(astralGlowICDKey) {
+		return
+	}
+
+	c.AddStatus(astralGlowICDKey, 0.1*60, false) // 0.1s ICD
+
+	if c.astralGlowStacks < 3 {
+		c.astralGlowStacks++
+	}
+
+	c.astralGlowSrc = c.Core.F
+	c.QueueCharTask(c.removeAstralGlowStack(c.astralGlowSrc), 60*8)
+	c.AddStatus(astralGlowKey, 8*60, true)
+}
+
+func (c *char) omenRefreshCB(a info.AttackCB) {
+	if !c.IsHexerei {
+		return
+	}
+
+	if c.Core.Player.GetHexereiCount() < 2 {
+		return
+	}
+	t, ok := a.Target.(*enemy.Enemy)
+
+	if !ok {
+		return
+	}
+
+	if !t.StatusIsActive(omenKey) {
+		return
+	}
+
+	omenRefreshCount := t.GetTag(omenKey)
+
+	if omenRefreshCount <= 0 {
+		return
+	}
+
+	if c.StatusIsActive(omenRefreshICDKey) {
+		return
+	}
+
+	t.SetTag(omenKey, omenRefreshCount-1)
+
+	c.AddStatus(omenRefreshICDKey, 0.5*60, false) // 0.5s ICD
+
+	omenExp := t.StatusExpiry(omenKey)
+
+	newDur := omenExp - c.Core.F + 2*60
+
+	t.AddStatus(omenKey, newDur, true)
+
+	c.Core.Log.NewEvent("mona hexerei proc: omen refresh", glog.LogCharacterEvent, c.Index()).
+		Write("refreshCount", omenRefreshCount-1)
+}
+
+func (c *char) hexInit() {
+	if !c.IsHexerei {
+		return
+	}
+
+	if c.Core.Player.GetHexereiCount() < 2 {
+		return
+	}
+
+	for _, char := range c.Core.Player.Chars() {
+		if char.Index() == c.Index() {
+			continue
+		}
+
+		char.AddReactBonusMod(character.ReactBonusMod{
+			Base: modifier.NewBase("mona-hexerei-astral-glow-vaporize", -1),
+			Amount: func(ai info.AttackInfo) float64 {
+				m := 0.05 * float64(c.astralGlowStacks)
+
+				if ai.Amped && ai.AmpType == info.ReactionTypeVaporize {
+					c.astralGlowStacks = 0 // clear all stacks
+					return m
+				}
+
+				return 0
+			},
+		})
+	}
+}
+
+func (c *char) removeAstralGlowStack(src int) func() {
+	return func() {
+		if c.astralGlowSrc != src {
+			return
+		}
+		if c.astralGlowStacks == 0 {
+			return
+		}
+		c.astralGlowStacks = 0
+		c.Core.Log.NewEvent("mona hexerei expired: astral glow", glog.LogCharacterEvent, c.Index())
+	}
 }

@@ -9,7 +9,7 @@ import (
 )
 
 func (s *Server) ApproveTag(ctx context.Context, req *ApproveTagRequest) (*ApproveTagResponse, error) {
-	//TODO: tag validation should be done at API gateway lvl?? need to check both auth and tag is valid
+	// TODO: tag validation should be done at API gateway lvl?? need to check both auth and tag is valid
 	if req.GetId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "id cannot be blank")
 	}
@@ -28,7 +28,7 @@ func (s *Server) ApproveTag(ctx context.Context, req *ApproveTagRequest) (*Appro
 }
 
 func (s *Server) RejectTag(ctx context.Context, req *RejectTagRequest) (*RejectTagResponse, error) {
-	//TODO: tag validation should be done at API gateway lvl?? need to check both auth and tag is valid
+	// TODO: tag validation should be done at API gateway lvl?? need to check both auth and tag is valid
 	if req.GetId() == "" {
 		return nil, status.Error(codes.InvalidArgument, "id cannot be blank")
 	}

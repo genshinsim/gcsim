@@ -1,2 +1,6 @@
-key: nymphsdream
-set_id: 15029
+use: pipeline
+kind: artifact
+name: nymphsdream
+
+shortcuts:
+  - nymph

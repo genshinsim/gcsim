@@ -1,0 +1,103 @@
+use: pipeline
+kind: character
+name: nicole
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+
+  - skill: skill(Skill DMG)
+  - skillShieldAtk: skill(Shield DMG Absorption)
+  - skillShieldFlat: skill(Shield DMG Absorption|1)
+  - skillBuffRatio: skill(Grace of Kenosis ATK Bonus Ratio)
+  - skillBuffMax: skill(Grace of Kenosis Max ATK Bonus)
+
+  - burstInitial: burst(Skill DMG)
+  - burstProjection: burst(Arcane Projection DMG)
+
+docs:
+  fields:
+    .nicole.projections: Number of Arcane Projection attacks done by this burst. 0 if burst is not active.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1H2uTneGE3-4m8FZNwV_clkeH_LEY_FbSHn285f-uFqY/edit?usp=sharing
+      count_credit: caxia5 and caramielle.
+      video: https://youtu.be/7eDR9Mr9qPo
+      video_credit: caramielle.
+    - count: https://docs.google.com/spreadsheets/d/1H2uTneGE3-4m8FZNwV_clkeH_LEY_FbSHn285f-uFqY/edit?usp=sharing
+      count_credit: caxia5 and caramielle.
+      video: https://youtu.be/Rp9XUVtXLkk
+      video_credit: caramielle.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -1]
+        box: [4, 2]
+
+      - name: N2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2
+
+      - name: N3
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2.5
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
+
+  - name: skill
+    hitbox:
+      - name: E
+        shape: Circle
+        center: Player
+        radius: 5
+
+  - name: burst
+    hitbox:
+      - name: Q
+        shape: Circle
+        center: Player
+        radius: 6.5
+
+      - name: Q-Projection
+        note: Default if projection hitbox is not otherwise specified
+        shape: Circle
+        center: PrimaryTarget
+        offset: [-2.5, 2.5]
+        radius: 4.5
+
+      - name: Q-Projection-Albedo
+        shape: Box
+        center: PrimaryTarget
+        offset: [-1.5, 2.5]
+        box: [3, 8]
+
+      - name: Q-Projection-Razor
+        shape: Circle
+        center: PrimaryTarget
+        offset: [-1.5, 2.5]
+        radius: 4.5
+
+      - name: Q-Projection-Sucrose
+        shape: Circle
+        center: PrimaryTarget
+        offset: [-1.5, 2.5]
+        radius: 4.5
+
+      - name: Q-Projection-Klee
+        shape: Circle
+        center: PrimaryTarget
+        offset: [-1.157003, 0.956513]
+        radius: 4.5

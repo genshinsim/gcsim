@@ -6,11 +6,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var chargeFrames []int
-var chargeHitmarks = []int{27, 33, 39}
+var (
+	chargeFrames   []int
+	chargeHitmarks = []int{27, 33, 39}
+)
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(71)
@@ -22,9 +24,9 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
+	ai := info.AttackInfo{
 		Abil:       "Charge",
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		AttackTag:  attacks.AttackTagExtra,
 		ICDTag:     attacks.ICDTagExtraAttack,
 		ICDGroup:   attacks.ICDGroupAyakaExtraAttack,
@@ -38,7 +40,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	// priority: enemy > gadget
 	chargeCount := 5
 	checkDelay := chargeHitmarks[0] - 1 // TODO: exact delay unknown
-	singleCharge := func(pos geometry.Point, hitmark int) {
+	singleCharge := func(pos info.Point, hitmark int) {
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHitOnTarget(
@@ -53,8 +55,8 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		)
 	}
 
-	charge := func(target combat.Target) {
-		for j := 0; j < 3; j++ {
+	charge := func(target info.Target) {
+		for j := range 3 {
 			// queue up ca hits because target could move
 			c.Core.Tasks.Add(func() {
 				singleCharge(target.Pos(), 0)
@@ -74,7 +76,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		// check for enemies around the enemy found
 		anchorEnemy := enemies[0]
 		chargeArea := combat.NewCircleHitOnTarget(anchorEnemy, nil, 4)
-		enemies = c.Core.Combat.EnemiesWithinArea(chargeArea, func(t combat.Enemy) bool {
+		enemies = c.Core.Combat.EnemiesWithinArea(chargeArea, func(t info.Enemy) bool {
 			return t.Key() != anchorEnemy.Key() // don't want to target the same enemy twice
 		})
 		enemyCount := len(enemies)

@@ -6,17 +6,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterSetFunc(keys.ShimenawasReminiscence, NewSet)
-}
 
 type Set struct {
 	cd    int
@@ -38,8 +32,8 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBase("shim-2pc", -1),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
@@ -53,15 +47,15 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 		m := make([]float64, attributes.EndStatType)
 		m[attributes.DmgP] = 0.50
-		c.Events.Subscribe(event.OnSkill, func(args ...interface{}) bool {
-			if c.Player.Active() != char.Index {
-				return false
+		c.Events.Subscribe(event.OnSkill, func(args ...any) {
+			if c.Player.Active() != char.Index() {
+				return
 			}
 			if char.Energy < 15 {
-				return false
+				return
 			}
 			if char.StatusIsActive(icdKey) {
-				return false
+				return
 			}
 			char.AddStatus(icdKey, icd, true)
 
@@ -72,19 +66,17 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 
 			char.AddAttackMod(character.AttackMod{
 				Base: modifier.NewBaseWithHitlag("shim-4pc", 60*10),
-				Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+				Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 					switch atk.Info.AttackTag {
 					case attacks.AttackTagNormal:
 					case attacks.AttackTagExtra:
 					case attacks.AttackTagPlunge:
 					default:
-						return nil, false
+						return nil
 					}
-					return m, true
+					return m
 				},
 			})
-
-			return false
 		}, fmt.Sprintf("shim-4pc-%v", char.Base.Key.String()))
 	}
 

@@ -1,39 +1,144 @@
-package_name: collei
-genshin_id: 10000067
-key: collei
-action_param_keys:
-  attack: 
-    - param: "travel"
-  aim:
-    - param: "hold"
-    - param: "travel"
-    - param: "weakspot"
-icd_tags:
-  - ICDTagColleiSprout
-icd_groups:
-  - group_name: ICDGroupColleiBurst
-    reset_timer: 180
-    ele_app_sequence: [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-skill_data_mapping:
-  attack:
-    aim:
-      - 4 # Aimed Shot|{param4:F1P}
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}
-    attack_4:
-      - 3 # 4-Hit DMG|{param3:F1P}
-    fullaim:
-      - 5 # Fully-Charged Aimed Shot|{param5:P}
-  skill:
-    skill:
-      - 0 # Skill DMG|{param0:F1P}
-  burst:
-    burstExplosion:
-      - 0 # Explosion DMG|{param0:F1P}
-    burstLeap:
-      - 1 # Leap DMG|{param1:F1P}
+use: pipeline
+kind: character
+name: collei
+
+override:
+  icd_group:
+    ColleiBurst:
+      name: Collei_Elemental_Burst
+
+combat:
+  icd_tags:
+    - ColleiSprout
+  icd_groups:
+    - ColleiBurst
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Fully-Charged Aimed Shot)
+
+  - skill: skill(Skill DMG)
+
+  - burstExplosion: burst(Explosion DMG)
+  - burstLeap: burst(Leap DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1BHJW5zmHoPWUF_tAhCZRTrU-3Z9dZCvxrsiEJM24wOY/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/5chUsA2IqHU
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1BHJW5zmHoPWUF_tAhCZRTrU-3Z9dZCvxrsiEJM24wOY/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/zPIreUUV780
+      video_credit: Kolibri#7675
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N4
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: aim
+    params:
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default).
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+        hitlag: {time: 0.12, scale: 0.01, deployable: true}
+
+  - name: skill
+    hitbox:
+      - name: E-Hit-1
+        shape: Single
+        center: Player
+        hitlag: {scale: 0.01, defense_halt: true, deployable: true}
+
+      - name: E-Hit-2
+        shape: Single
+        center: Player
+        hitlag: {scale: 0.01, defense_halt: true, deployable: true}
+
+  - name: burst
+    hitbox:
+      - name: Q-Initial
+        note: A4 has a detection area of 6m around the position of this hitbox.
+        shape: Circle
+        center: Player
+        radius: 5.5
+
+      - name: Q-Tick
+        note: Spawns at the Q-Initial position.
+        shape: Circle
+        center: Player
+        radius: 4
+
+  - name: asc
+    hitbox:
+      - name: E-A1
+        shape: Circle
+        center: Player
+        radius: 2
+
+  - name: cons
+    hitbox:
+      - name: Q-C6
+        note: Spawns on target that C6 proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 4
+
+  - name: walk
+    note: Only aim followed by walk has proper frames.

@@ -1,4 +1,6 @@
-package_name: unforged
-genshin_id: 12504
-key: theunforged
-skip_data_func: true
+use: pipeline
+kind: weapon
+name: theunforged
+
+shortcuts:
+  - unforged

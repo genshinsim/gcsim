@@ -1,3 +1,18 @@
-package_name: kingssquire
-genshin_id: 15417
-key: kingssquire
+use: pipeline
+kind: weapon
+name: kingssquire
+
+abilities:
+  - name: default
+    hitbox:
+      - name: King's Squire Enemy Detection
+        note: It looks for the closest enemy within this hitbox.
+        shape: Circle
+        center: Player
+        radius: 15
+
+      - name: King's Squire
+        note: Spawns on the closest enemy found if such an enemy exists.
+        shape: Circle
+        center: GlobalValue
+        radius: 1.6

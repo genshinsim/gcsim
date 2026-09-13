@@ -1,0 +1,166 @@
+use: pipeline
+kind: character
+name: varesa
+
+combat:
+  icd_tags:
+    - VaresaCombatCycle
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+  - charged: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+  - fieryAttack:
+      - attack(Fiery Passion 1-Hit DMG)
+      - attack(Fiery Passion 2-Hit DMG)
+      - attack(Fiery Passion 3-Hit DMG)
+  - fieryCharged: attack(Fiery Passion Charged Attack DMG)
+  - fieryCollision: attack(Fiery Passion Plunge DMG)
+  - fieryLowPlunge: attack(Fiery Passion Low/High Plunge DMG)
+  - fieryHighPlunge: attack(Fiery Passion Low/High Plunge DMG|1)
+
+  - rush: skill(Rush DMG)
+  - fieryRush: skill(Fiery Passion Rush DMG)
+
+  - kick: burst(Flying Kick DMG)
+  - fieryKick: burst(Fiery Passion Flying Kick DMG)
+  - kablam: burst(Volcano Kablam DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1YoeMaH7WsfKJJLBGiKhaV4-oz18qj3g--CawoXePGWk/edit?usp=sharing
+      count_credit: caramielle.
+      video: https://youtu.be/u1_nb91bzlg
+      video_credit: imring
+    - count: https://docs.google.com/spreadsheets/d/1YoeMaH7WsfKJJLBGiKhaV4-oz18qj3g--CawoXePGWk/edit?usp=sharing
+      count_credit: caramielle.
+      video: https://youtu.be/to7EbShho0M
+      video_credit: imring
+    - count: https://docs.google.com/spreadsheets/d/1YoeMaH7WsfKJJLBGiKhaV4-oz18qj3g--CawoXePGWk/edit?usp=sharing
+      count_credit: caramielle.
+      video: https://youtu.be/efWEz8qudtg
+      video_credit: charliex3000
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Box
+        center: Player
+        offset: [0, -0.2]
+        box: [2.5, 2.5]
+        hitlag: {defense_halt: true}
+
+      - name: N2
+        shape: Box
+        center: Player
+        offset: [0, -0.2]
+        box: [2.8, 3.5]
+        hitlag: {defense_halt: true}
+
+      - name: N3
+        shape: Circle
+        center: Player
+        radius: 2.5
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: Fiery-N1
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 2.5
+        hitlag: {time: 0.01, scale: 0.03, defense_halt: true}
+
+      - name: Fiery-N2
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [4, 4]
+        hitlag: {time: 0.01, scale: 0.03, defense_halt: true}
+
+      - name: Fiery-N3
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [4, 4.5]
+        hitlag: {time: 0.01, scale: 0.03, defense_halt: true}
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: Player
+        offset: [0, 0.7]
+        radius: 3.5
+        hitlag: {time: 0.01, scale: 0.03, defense_halt: true}
+
+      - name: Fiery-CA
+        shape: Circle
+        center: Player
+        offset: [0, 0.7]
+        radius: 3.5
+        hitlag: {time: 0.01, scale: 0.03, defense_halt: true}
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        radius: 1
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    note: Previous action must be jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be charge or jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    note: Hold skill is not implemented.
+    hitbox:
+      - name: E
+        note: This is an approximation because we do not actually know the real AoE.
+        shape: Box
+        center: PrimaryTarget
+        box: [0.1, 2]
+        hitlag: {scale: 0.1, defense_halt: true}
+
+      - name: Fiery-E
+        note: This is an approximation because we do not actually know the real AoE.
+        shape: Box
+        center: PrimaryTarget
+        box: [0.1, 2]
+
+  - name: burst
+    hitbox:
+      - name: Q
+        shape: Circle
+        center: PrimaryTarget
+        offset: [0, 1]
+        radius: 7.5
+
+      - name: Fiery-Q
+        shape: Circle
+        center: PrimaryTarget
+        offset: [0, 1]
+        radius: 7.5
+
+      - name: Q-Volcano-Kablam
+        shape: Circle
+        center: PrimaryTarget
+        offset: [0, 1]
+        radius: 7.5

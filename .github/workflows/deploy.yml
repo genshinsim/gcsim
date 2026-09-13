@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Get branch names
         id: branch-name
-        uses: tj-actions/branch-names@v7
+        uses: tj-actions/branch-names@5250492686b253f06fa55861556d1027b067aeb5 # v9.0.2
 
       # grab latest sha
       - name: Setup Environment (PR)  
@@ -26,17 +26,13 @@ jobs:
           echo "LAST_COMMIT_SHA=${GITHUB_SHA}" >> ${GITHUB_ENV}
 
       # setup + test go and yarn
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: go-setup-and-test
         uses: ./.github/actions/go-setup-and-test
       - name: yarn-setup-and-test
         uses: ./.github/actions/yarn-setup-and-test
 
       # deploy
-      - name: deploy-workers
-        uses: ./.github/actions/deploy-workers
-        with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
 
       # wasm first because it takes the longest
       - name: deploy-wasm
@@ -46,14 +42,20 @@ jobs:
           branch: ${{ steps.branch-name.outputs.base_ref_branch }}
           shareKey: ${{ secrets.AES_KEY }}
 
+      # build the UI before deploying the Worker: the consolidated Worker
+      # uploads ui/packages/web/dist as its static assets
       - name: deploy-ui
         uses: ./.github/actions/deploy-ui
         with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           # name needs to be "main" if on mainline
           branch: ${{ steps.branch-name.outputs.base_ref_branch == 'mainline' && 'main' || steps.branch-name.outputs.base_ref_branch }}
+
+      - name: deploy-workers
+        uses: ./.github/actions/deploy-workers
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          rcloneConfig: ${{ secrets.CF_RCLONE }}
 
       - name: deploy-db
         uses: ./.github/actions/deploy-db
@@ -120,7 +122,7 @@ jobs:
           ls -la
       # upload artifacts
       - name: upload db artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: backend-artifacts
           path: ./backend/docker
@@ -132,7 +134,7 @@ jobs:
           cp ./backend/docker/hash.txt ./computebin/hash.txt
           cp ./backend/cmd/compute/compute ./computebin/compute
       - name: upload compute artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: compute-artifacts
           path: ./computebin 
@@ -151,15 +153,19 @@ jobs:
           GCSIM_SHARE_KEY: ${{ secrets.AES_KEY }}
 
       - name: Release Binary
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3
         with:
           files: |
             LICENSE
+            gcsim_windows_arm64.exe
             gcsim_windows_amd64.exe
             gcsim_darwin_arm64
             gcsim_darwin_amd64
+            gcsim_linux_arm64
             gcsim_linux_amd64
+            server_windows_arm64.exe
             server_windows_amd64.exe
             server_darwin_arm64
             server_darwin_amd64
+            server_linux_arm64
             server_linux_amd64

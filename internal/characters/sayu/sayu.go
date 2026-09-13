@@ -5,16 +5,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/hacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 func init() {
-	core.RegisterCharFunc(keys.Sayu, NewChar)
 	hacks.RegisterNOSpecialChar(keys.Sayu)
 }
 
@@ -23,7 +20,7 @@ type char struct {
 	eDuration           int
 	eAbsorb             attributes.Element
 	eAbsorbTag          attacks.ICDTag
-	absorbCheckLocation combat.AttackPattern
+	absorbCheckLocation info.AttackPattern
 	qTickRadius         float64
 	c2Bonus             float64
 }
@@ -57,8 +54,8 @@ func (c *char) Init() error {
 	return nil
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
 		return 24
 	}
 	return c.Character.AnimationStartDelay(k)

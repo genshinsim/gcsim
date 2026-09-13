@@ -8,9 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -47,8 +46,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return c.skillRecast(), nil
 	}
 	// always trigger electro no ICD on initial summon
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Oz (Summon)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
@@ -67,7 +66,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// hitmark is 5 frames after oz spawns
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), geometry.Point{Y: 1.5}, radius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: 1.5}, radius),
 		skillOzSpawn,
 		skillOzHitmark,
 	)
@@ -93,8 +92,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {
@@ -113,7 +112,7 @@ func (c *char) skillRecast() action.Info {
 		c.ozTickSrc = c.Core.F // reset attack timer
 		c.Core.Tasks.Add(c.ozTick(c.ozTickSrc), 60)
 		c.ozSnapshot.Snapshot = c.Snapshot(&c.ozSnapshot.Info)
-		c.Core.Log.NewEvent("Recasting oz", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Recasting oz", glog.LogCharacterEvent, c.Index()).
 			Write("next expected tick", c.Core.F+60)
 	}, 2) // 2f delay
 	return action.Info{
@@ -138,8 +137,8 @@ func (c *char) queueOz(src string, ozSpawn, firstTick int) {
 		c.AddStatus(ozActiveKey, dur, false)
 		// queue up oz removal at the end of the duration for gcsl conditional
 		c.Core.Tasks.Add(c.removeOz(c.Core.F), dur)
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       fmt.Sprintf("Oz (%v)", src),
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagElementalArt,
@@ -150,10 +149,10 @@ func (c *char) queueOz(src string, ozSpawn, firstTick int) {
 			Mult:       birdAtk[c.TalentLvlSkill()],
 		}
 		player := c.Core.Combat.Player()
-		c.ozPos = geometry.CalcOffsetPoint(player.Pos(), geometry.Point{Y: 1.5}, player.Direction())
+		c.ozPos = info.CalcOffsetPoint(player.Pos(), info.Point{Y: 1.5}, player.Direction())
 
 		snap := c.Snapshot(&ai)
-		c.ozSnapshot = combat.AttackEvent{
+		c.ozSnapshot = info.AttackEvent{
 			Info:        ai,
 			Snapshot:    snap,
 			SourceFrame: c.Core.F,
@@ -161,7 +160,7 @@ func (c *char) queueOz(src string, ozSpawn, firstTick int) {
 		c.ozSnapshot.Callbacks = append(c.ozSnapshot.Callbacks, c.particleCB)
 
 		c.Core.Tasks.Add(c.ozTick(c.Core.F), firstTick)
-		c.Core.Log.NewEvent("Oz activated", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Oz activated", glog.LogCharacterEvent, c.Index()).
 			Write("source", src).
 			Write("next expected tick", c.Core.F+60)
 	}
@@ -182,7 +181,7 @@ func (c *char) ozTick(src int) func() {
 			return
 		}
 
-		c.Core.Log.NewEvent("Oz ticked", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Oz ticked", glog.LogCharacterEvent, c.Index()).
 			Write("next expected tick", c.Core.F+60).
 			Write("src", src)
 
@@ -191,7 +190,7 @@ func (c *char) ozTick(src int) func() {
 		ae.Pattern = combat.NewBoxHit(
 			c.ozPos,
 			c.Core.Combat.PrimaryTarget(),
-			geometry.Point{Y: -0.5},
+			info.Point{Y: -0.5},
 			0.1,
 			1,
 		)
@@ -205,11 +204,11 @@ func (c *char) removeOz(src int) func() {
 	return func() {
 		// if src != ozSource then this is no longer the same oz, do nothing
 		if c.ozSource != src {
-			c.Core.Log.NewEvent("Oz not removed, src changed", glog.LogCharacterEvent, c.Index).
+			c.Core.Log.NewEvent("Oz not removed, src changed", glog.LogCharacterEvent, c.Index()).
 				Write("src", src)
 			return
 		}
-		c.Core.Log.NewEvent("Oz removed", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("Oz removed", glog.LogCharacterEvent, c.Index()).
 			Write("src", src)
 		c.ozActive = false
 	}

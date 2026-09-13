@@ -1,5 +1,5 @@
 cd ui
-yarn workspace @gcsim/embed build
+pnpm --filter @gcsim/embed build
 cd ..
 ls -lh ./ui/packages/embed/dist
 cd cmd/services/embedgenerator

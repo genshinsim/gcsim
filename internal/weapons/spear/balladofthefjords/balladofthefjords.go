@@ -4,14 +4,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.BalladOfTheFjords, NewWeapon)
-}
 
 type Weapon struct {
 	Index  int
@@ -38,8 +33,8 @@ func (w *Weapon) Init() error {
 	w.char.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("balladofthefjords", -1),
 		AffectedStat: attributes.EM,
-		Amount: func() ([]float64, bool) {
-			return m, true
+		Amount: func() []float64 {
+			return m
 		},
 	})
 

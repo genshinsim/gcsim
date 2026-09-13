@@ -8,9 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -151,7 +150,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) enterBike() {
-	c.Core.Log.NewEvent("switching to bike state", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("switching to bike state", glog.LogCharacterEvent, c.Index())
 	c.armamentState = bike
 	c.NormalHitNum = bikeHitNum
 	c.NormalCounter = 0
@@ -159,7 +158,7 @@ func (c *char) enterBike() {
 }
 
 func (c *char) exitBike() {
-	c.Core.Log.NewEvent("switching to ring state", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("switching to ring state", glog.LogCharacterEvent, c.Index())
 	c.armamentState = ring
 	c.NormalHitNum = normalHitNum
 	c.ringSrc = c.Core.F
@@ -192,12 +191,12 @@ func (c *char) skillRecast() action.Info {
 }
 
 func (c *char) skillHold() action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "The Named Moment (Flamestrider)",
 		AttackTag:      attacks.AttackTagElementalArt,
 		ICDTag:         attacks.ICDTagNone,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeBlunt,
 		PoiseDMG:       75,
@@ -208,7 +207,7 @@ func (c *char) skillHold() action.Info {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: 1.0},
+		info.Point{Y: 1.0},
 		6,
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
@@ -218,16 +217,16 @@ func (c *char) skillHold() action.Info {
 		c.AddStatus(skillRecastCDKey, skillRecastCD, false)
 	}, 24)
 
-	return c.getSkillCastActionInfo(skillFramesHold)
+	return c.getSkillCastActionInfo(skillFramesHold, action.ActionSwap)
 }
 
 func (c *char) skillPress() action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "The Named Moment",
 		AttackTag:      attacks.AttackTagElementalArt,
 		ICDTag:         attacks.ICDTagNone,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeDefault,
 		Element:        attributes.Pyro,
@@ -236,24 +235,24 @@ func (c *char) skillPress() action.Info {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: 0.5},
+		info.Point{Y: 0.5},
 		5,
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
 	c.exitBike()
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 18)
 
-	return c.getSkillCastActionInfo(skillFrames)
+	return c.getSkillCastActionInfo(skillFrames, action.ActionAttack)
 }
 
 // Recasting E while on bike, occurs with Sac or Burst allowing E to come off of cd
 func (c *char) skillBikeRefresh() action.Info {
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "The Named Moment (Flamestrider)",
 		AttackTag:      attacks.AttackTagElementalArt,
 		ICDTag:         attacks.ICDTagNone,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeBlunt,
 		PoiseDMG:       75,
@@ -264,17 +263,17 @@ func (c *char) skillBikeRefresh() action.Info {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: 1.0},
+		info.Point{Y: 1.0},
 		6,
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 18)
 
-	return c.getSkillCastActionInfo(skillBikeRefreshFrames)
+	return c.getSkillCastActionInfo(skillBikeRefreshFrames, action.ActionSwap)
 }
 
 // Recast can occur earlier out of Plunge, this extends a normal skill use to match total frames
-func (c *char) getSkillCastActionInfo(f []int) action.Info {
+func (c *char) getSkillCastActionInfo(f []int, canQueueAfter action.Action) action.Info {
 	plungeFrames := 0
 
 	// If using skill out of plunge, extend animation for non-recast skill
@@ -290,7 +289,7 @@ func (c *char) getSkillCastActionInfo(f []int) action.Info {
 	return action.Info{
 		Frames:          func(next action.Action) int { return f[next] + plungeFrames },
 		AnimationLength: f[action.InvalidAction] + plungeFrames,
-		CanQueueAfter:   f[action.ActionSwap] + plungeFrames,
+		CanQueueAfter:   f[canQueueAfter] + plungeFrames,
 		State:           action.SkillState,
 	}
 }
@@ -306,12 +305,12 @@ func (c *char) skillRingTask(src int) {
 		if !c.nightsoulState.HasBlessing() {
 			return
 		}
-		ai := combat.AttackInfo{
-			ActorIndex:     c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:     c.Index(),
 			Abil:           "Rings of Searing Radiance",
 			AttackTag:      attacks.AttackTagElementalArt,
 			ICDTag:         attacks.ICDTagNone,
-			AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+			AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 			ICDGroup:       attacks.ICDGroupDefault,
 			StrikeType:     attacks.StrikeTypeDefault,
 			Element:        attributes.Pyro,
@@ -320,7 +319,7 @@ func (c *char) skillRingTask(src int) {
 		}
 		ap := combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: 1.0},
+			info.Point{Y: 1.0},
 			6,
 		)
 		c.Core.QueueAttack(ai, ap, 0, 0, c.c6RingCB())
@@ -329,8 +328,8 @@ func (c *char) skillRingTask(src int) {
 	}, 2*60)
 }
 
-func (c *char) particleCB(a combat.AttackCB) {
-	if a.Target.Type() != targets.TargettableEnemy {
+func (c *char) particleCB(a info.AttackCB) {
+	if a.Target.Type() != info.TargettableEnemy {
 		return
 	}
 	if c.StatusIsActive(particleICDKey) {

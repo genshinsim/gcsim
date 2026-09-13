@@ -44,7 +44,7 @@ func (c *Client) Create(ctx context.Context, data *model.SimulationResult, expir
 }
 
 func (c *Client) Replace(ctx context.Context, id string, data *model.SimulationResult) error {
-	//TODO: handle ttl; should be ok for now since we only call this for db update..
+	// TODO: handle ttl; should be ok for now since we only call this for db update..
 	_, err := c.srvClient.Update(ctx, &UpdateRequest{
 		Id:     id,
 		Result: data,
@@ -81,7 +81,6 @@ func (c *Client) Read(ctx context.Context, id string) (*model.SimulationResult, 
 	resp, err := c.srvClient.Read(ctx, &ReadRequest{
 		Id: id,
 	})
-
 	if err != nil {
 		return nil, 0, err
 	}

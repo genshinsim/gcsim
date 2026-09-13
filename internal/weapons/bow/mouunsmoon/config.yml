@@ -1,4 +1,7 @@
-package_name: mouunsmoon
-genshin_id: 15416
-key: mouunsmoon
-skip_data_func: true
+use: pipeline
+kind: weapon
+name: mouunsmoon
+
+shortcuts:
+  - mouun
+  - mouuns

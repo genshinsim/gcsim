@@ -440,7 +440,7 @@ You'll see that the sim handled when the actions took place for us.
 :::caution
 It's important to understand that by **default**, gcsim will execute actions as fast as possible aka. frame perfect.
 
-It is possible to delay execution via [waits](/reference/system_functions#wait), but be careful of how waits are handled (read the warning in the documentation carefully). 
+It is possible to delay execution via [waits](/reference/system_functions#sleepwait), but be careful of how waits are handled (read the warning in the documentation carefully). 
 It may not be intuitive.
 :::
 

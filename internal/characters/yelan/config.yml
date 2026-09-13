@@ -1,57 +1,189 @@
-package_name: yelan
-genshin_id: 10000060
-key: yelan
-action_param_keys:
-  attack:
-    - param: "travel"
-  aim:
-    - param: "hold"
-    - param: "travel"
-    - param: "weakspot"
-  skill:
-    - param: "marked"
-  burst:
-    - param: "travel"
-icd_tags:
-  - ICDTagYelanBreakthrough
-  - ICDTagYelanBurst
-icd_groups:
-  - group_name: ICDGroupYelanBreakthrough
-    reset_timer: 18
-    ele_app_sequence: [1, 0, 0, 0]
-    damage_sequence: [1, 0, 0, 0]
-  - group_name: ICDGroupYelanBurst
-    reset_timer: 120
-    ele_app_sequence:
-      [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
-    damage_sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-skill_data_mapping:
-  attack:
-    aim:
-      - 4 # Aimed Shot|{param4:F1P}
-    attack_1:
-      - 0 # 1-Hit DMG|{param0:F1P}
-    attack_2:
-      - 1 # 2-Hit DMG|{param1:F1P}
-    attack_3:
-      - 2 # 3-Hit DMG|{param2:F1P}
-    attack_4:
-      - 3 # 4-Hit DMG|{param3:F1P}+{param3:F1P}
-      - 3 # 4-Hit DMG|{param3:F1P}+{param3:F1P}
-    barb:
-      - 6 # Breakthrough Barb DMG|{param6:F2P} Max HP
-    fullaim:
-      - 5 # Fully-Charged Aimed Shot|{param5:P}
-  skill:
-    skill:
-      - 0 # Skill DMG|{param0:F1P} Max HP
-  burst:
-    burst:
-      - 0 # Skill DMG|{param0:F2P} Max HP
-    burstDice:
-      - 1 # Exquisite Throw DMG|{param1:F2P} Max HP ×3
+use: pipeline
+kind: character
+name: yelan
 
-documentation:
-  fields_data:
-    - fields: [.yelan.breakthrough]
-      desc: Whether Yelan is in the Breakthrough state or not.
+override:
+  icd_group:
+    YelanBreakthrough:
+      name: Yelan_ExtraAttack
+    YelanBurst:
+      name: Yelan_ElementalBurst
+
+combat:
+  icd_tags:
+    - YelanBreakthrough
+    - YelanBurst
+  icd_groups:
+    - YelanBreakthrough
+    - YelanBurst
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - - attack(4-Hit DMG)
+        - attack(4-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Fully-Charged Aimed Shot)
+  - barb: attack(Breakthrough Barb DMG)
+
+  - skill: skill(Skill DMG)
+
+  - burst: burst(Skill DMG)
+  - burstDice: burst(Exquisite Throw DMG)
+
+docs:
+  fields:
+    .yelan.breakthrough: Whether Yelan is in the Breakthrough state or not.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1k4f8EkgneV_588EpJlDavx_0zyFi5ZiWd0HdUV6wx38/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/4WpZhbvEktU
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1zCwdd6_KYFqMD4OQ_llGLdDshoZTu_1pmAMysxGDQvs/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/KlgZlck5kQQ?t=1719
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/2_WisLdDvZ0?t=243
+      video_credit: paichlear
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/2_WisLdDvZ0?t=253
+      video_credit: paichlear
+    - count: https://docs.google.com/spreadsheets/d/187T-SngEZUUordjY_K_tF_DdvHjQju9CoBJdp2eJOis/edit?usp=sharing
+      count_credit: bowtae
+      video: https://youtu.be/9qen-zpB06w
+      video_credit: bowtae
+    - count: https://docs.google.com/spreadsheets/d/1y4r8MNm_sWfFCmELlc3qWnlf_m40veFGV3IW6KOW5Is/edit?usp=sharing
+      count_credit: soloxcx
+      video: https://youtu.be/SnYqKjjoUYk
+      video_credit: soloxcx & zephyr77
+
+abilities:
+  - name: default
+    params:
+      breakthrough: 0 for no Breakthrough state at start of sim, 1 (default) for Breakthrough state at start of sim. Set via '+params=[breakthrough=...]' in Yelan's 'char' line.
+
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N3
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N4-1
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: N4-2
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+  - name: aim
+    params:
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot (default).
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit weakspot with aimed shot. Default 0 (false), 1 for true.
+    hitbox:
+      - name: Aim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Aim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: FullAim-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Breakthrough-Barb
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Breakthrough-Barb-Head
+        shape: Box
+        center: PrimaryTarget
+        offset: [0, -0.5]
+        box: [0.1, 1]
+
+      - name: Breakthrough-Barb-Explosion
+        shape: Circle
+        center: PrimaryTarget
+        radius: 6
+
+  - name: skill
+    params:
+      marked: Number of enemies to mark with the Lifeline. Default 1.
+    hitbox:
+      - name: E-Skill
+        note: Spawns on all enemies marked by E
+        shape: Single
+        center: GlobalValue
+
+  - name: burst
+    params:
+      travel: Exquisite Throw projectile travel time. Default 20 frames.
+    hitbox:
+      - name: Q-Initial
+        shape: Circle
+        center: Player
+        offset: [-1.5, -1.7]
+        radius: 6
+        hitlag: {time: 0.05, scale: 0.05, deployable: true}
+
+      - name: Q-Dice
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.5
+
+  - name: cons
+    hitbox:
+      - name: Q-C2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.5
+
+      - name: C6
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4
+
+  - name: walk
+    note: Only aim followed by walk has proper frames.

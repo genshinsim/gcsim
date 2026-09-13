@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -39,10 +39,9 @@ func init() {
 	attackFrames[attack0Stacks][2] = frames.InitNormalCancelSlice(attackHitmarks[2], 57) // N3 -> CA0
 	attackFrames[attack0Stacks][3] = frames.InitNormalCancelSlice(attackHitmarks[3], 83) // N4 -> N1
 
-	attackFrames[attack0Stacks][0][action.ActionAttack] = 33  // N1 -> N2
-	attackFrames[attack0Stacks][1][action.ActionAttack] = 36  // N2 -> N3
-	attackFrames[attack0Stacks][2][action.ActionAttack] = 43  // N3 -> N4
-	attackFrames[attack0Stacks][3][action.ActionCharge] = 500 // N4 -> CA0, TODO: this action is illegal; need better way to handle it
+	attackFrames[attack0Stacks][0][action.ActionAttack] = 33 // N1 -> N2
+	attackFrames[attack0Stacks][1][action.ActionAttack] = 36 // N2 -> N3
+	attackFrames[attack0Stacks][2][action.ActionAttack] = 43 // N3 -> N4
 
 	attackFrames[attack1PlusStacks] = make([][]int, normalHitNum)
 	attackFrames[attack1PlusStacks][0] = frames.InitNormalCancelSlice(attackHitmarks[0], 33) // N1 -> N2
@@ -78,8 +77,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	// Attack
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 		Mult:               attack[c.NormalCounter][c.TalentLvlAttack()],
 		AttackTag:          attacks.AttackTagNormal,
@@ -101,13 +100,13 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 	ap := combat.NewCircleHitOnTarget(
 		c.Core.Combat.Player(),
-		geometry.Point{Y: attackOffsets[attackIndex][c.NormalCounter]},
+		info.Point{Y: attackOffsets[attackIndex][c.NormalCounter]},
 		attackHitboxes[attackIndex][c.NormalCounter][0],
 	)
 	if c.NormalCounter == 3 {
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: attackOffsets[attackIndex][c.NormalCounter]},
+			info.Point{Y: attackOffsets[attackIndex][c.NormalCounter]},
 			attackHitboxes[attackIndex][c.NormalCounter][0],
 			attackHitboxes[attackIndex][c.NormalCounter][1],
 		)
@@ -118,9 +117,10 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	// TODO: assume NAs always hit. since it is not possible to know if the next CA is CA0 or CA1/CAF when deciding what CA frames to return.
 	// Add superlative strength stacks on damage
 	n := c.NormalCounter
-	if n == 1 {
+	switch n {
+	case 1:
 		c.addStrStack("attack", 1)
-	} else if n == 3 {
+	case 3:
 		c.addStrStack("attack", 2)
 	}
 	if c.StatModIsActive(burstBuffKey) && (n == 0 || n == 2) {

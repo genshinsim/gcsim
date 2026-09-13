@@ -8,35 +8,51 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 )
 
-var highPlungeFrames []int
-var lowPlungeFrames []int
+var (
+	highPlungeFrames []int
+	lowPlungeFrames  []int
+)
 
-var highPlungeFramesB []int
-var lowPlungeFramesB []int
+var (
+	highPlungeFramesB []int
+	lowPlungeFramesB  []int
+)
 
-const lowPlungeHitmark = 41 + 3
-const highPlungeHitmark = 43 + 3
-const collisionHitmark = lowPlungeHitmark - 6
+const (
+	lowPlungeHitmark  = 41 + 3
+	highPlungeHitmark = 43 + 3
+	collisionHitmark  = lowPlungeHitmark - 6
+)
 
-const lowPlungeHitmarkB = 44 + 3
-const highPlungeHitmarkB = 45 + 3
-const collisionHitmarkB = lowPlungeHitmarkB - 6
+const (
+	lowPlungeHitmarkB  = 44 + 3
+	highPlungeHitmarkB = 45 + 3
+	collisionHitmarkB  = lowPlungeHitmarkB - 6
+)
 
-const lowPlungePoiseDMG = 100.0
-const lowPlungeRadius = 3.0
+const (
+	lowPlungePoiseDMG = 100.0
+	lowPlungeRadius   = 3.0
+)
 
-const highPlungePoiseDMG = 150.0
-const highPlungeRadius = 5.0
+const (
+	highPlungePoiseDMG = 150.0
+	highPlungeRadius   = 5.0
+)
 
-const lowPlungePoiseDMGB = 100.0
-const lowPlungeRadiusB = 4.0
+const (
+	lowPlungePoiseDMGB = 100.0
+	lowPlungeRadiusB   = 4.0
+)
 
-const highPlungePoiseDMGB = 150.0
-const highPlungeRadiusB = 6.0
+const (
+	highPlungePoiseDMGB = 150.0
+	highPlungeRadiusB   = 6.0
+)
 
 func init() {
 	// low_plunge -> x
@@ -102,8 +118,8 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Low Plunge",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,
@@ -116,7 +132,7 @@ func (c *char) lowPlungeXY(p map[string]int) action.Info {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, lowPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, lowPlungeRadius),
 		lowPlungeHitmark,
 		lowPlungeHitmark,
 	)
@@ -139,9 +155,9 @@ func (c *char) lowPlungeBXY(p map[string]int) action.Info {
 		c.plungeCollisionB(collisionHitmarkB)
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
-		Abil:           "Low Plunge (Q)",
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
+		Abil:           "Low Plunge (Pactsworn Pathclearer)",
 		AttackTag:      attacks.AttackTagPlunge,
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
@@ -154,7 +170,7 @@ func (c *char) lowPlungeBXY(p map[string]int) action.Info {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, lowPlungeRadiusB),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, lowPlungeRadiusB),
 		lowPlungeHitmarkB,
 		lowPlungeHitmarkB,
 	)
@@ -193,8 +209,8 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 		c.plungeCollision(collisionHitmark)
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "High Plunge",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,
@@ -207,7 +223,7 @@ func (c *char) highPlungeXY(p map[string]int) action.Info {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, highPlungeRadius),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, highPlungeRadius),
 		highPlungeHitmark,
 		highPlungeHitmark,
 	)
@@ -230,9 +246,9 @@ func (c *char) highPlungeBXY(p map[string]int) action.Info {
 		c.plungeCollisionB(collisionHitmarkB)
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
-		Abil:           "High Plunge (Q)",
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
+		Abil:           "High Plunge (Pactsworn Pathclearer)",
 		AttackTag:      attacks.AttackTagPlunge,
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
@@ -245,7 +261,7 @@ func (c *char) highPlungeBXY(p map[string]int) action.Info {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, highPlungeRadiusB),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, highPlungeRadiusB),
 		highPlungeHitmarkB,
 		highPlungeHitmarkB,
 	)
@@ -261,8 +277,8 @@ func (c *char) highPlungeBXY(p map[string]int) action.Info {
 // Plunge normal falling attack damage queue generator
 // Standard - Always part of high/low plunge attacks
 func (c *char) plungeCollision(delay int) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Plunge Collision",
 		AttackTag:  attacks.AttackTagPlunge,
 		ICDTag:     attacks.ICDTagNone,
@@ -272,14 +288,14 @@ func (c *char) plungeCollision(delay int) {
 		Durability: 0,
 		Mult:       collision[c.TalentLvlAttack()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 1), delay, delay)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 1), delay, delay)
 }
 
 // Plunge normal falling attack damage queue generator
 // Standard - Always part of high/low plunge attacks
 func (c *char) plungeCollisionB(delay int) {
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Plunge Collision",
 		AttackTag:      attacks.AttackTagPlunge,
 		ICDTag:         attacks.ICDTagNone,
@@ -290,5 +306,5 @@ func (c *char) plungeCollisionB(delay int) {
 		Durability:     0,
 		Mult:           collisionB[c.TalentLvlBurst()],
 	}
-	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 1}, 1), delay, delay)
+	c.Core.QueueAttack(ai, combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 1}, 1), delay, delay)
 }

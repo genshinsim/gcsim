@@ -8,8 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var aimedFrames [][]int
@@ -53,8 +53,8 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	}
 	weakspot := p["weakspot"]
 
-	ai := combat.AttackInfo{
-		ActorIndex:           c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:           c.Index(),
 		Abil:                 "Fully-Charged Aimed Shot",
 		AttackTag:            attacks.AttackTagExtra,
 		ICDTag:               attacks.ICDTagNone,
@@ -77,8 +77,8 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 	skip := 0
 	if c.Core.Status.Duration(c6Key) > 0 && hold == attacks.AimParamLv2 {
 		c.Core.Status.Delete(c6Key)
-		c.Core.Log.NewEvent(c6Key+" proc used", glog.LogCharacterEvent, c.Index).
-			Write("char", c.Index)
+		c.Core.Log.NewEvent(c6Key+" proc used", glog.LogCharacterEvent, c.Index()).
+			Write("char", c.Index())
 		// skip aimed charge time
 		skip = 83
 	}
@@ -99,7 +99,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 			if c.Base.Ascension >= 1 && c.Core.F < c.a1Expiry {
 				old := snap.Stats[attributes.CR]
 				snap.Stats[attributes.CR] += .20
-				c.Core.Log.NewEvent("a1 adding crit rate", glog.LogCharacterEvent, c.Index).
+				c.Core.Log.NewEvent("a1 adding crit rate", glog.LogCharacterEvent, c.Index()).
 					Write("old", old).
 					Write("new", snap.Stats[attributes.CR]).
 					Write("expiry", c.a1Expiry)
@@ -112,7 +112,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 				combat.NewBoxHit(
 					c.Core.Combat.Player(),
 					c.Core.Combat.PrimaryTarget(),
-					geometry.Point{Y: -0.5},
+					info.Point{Y: -0.5},
 					0.1,
 					1,
 				),
@@ -140,7 +140,7 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 			combat.NewBoxHit(
 				c.Core.Combat.Player(),
 				c.Core.Combat.PrimaryTarget(),
-				geometry.Point{Y: -0.5},
+				info.Point{Y: -0.5},
 				0.1,
 				1,
 			),

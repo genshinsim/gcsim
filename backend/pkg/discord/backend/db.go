@@ -116,7 +116,6 @@ func (s *Store) ReplaceConfig(id, link string, source model.DBTag) error {
 		Config:    res.Config,
 		SourceTag: source,
 	})
-
 	if err != nil {
 		s.Log.Infow("replace config failed", "err", err)
 		return err
@@ -135,7 +134,6 @@ func (s *Store) ReplaceDesc(id, desc string, source model.DBTag) error {
 		Desc:      desc,
 		SourceTag: source,
 	})
-
 	if err != nil {
 		s.Log.Infow("replace desc failed", "err", err)
 		return err

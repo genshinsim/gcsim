@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -31,12 +32,11 @@ func init() {
 	attackFrames[2][action.ActionAttack] = 39                             // N3 -> N4
 
 	attackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3], 67) // N4 -> N1
-	attackFrames[3][action.ActionCharge] = 500                            // N4 -> CA, TODO: this action is illegal; need better way to handle it
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagMonaWaterDamage,
@@ -56,7 +56,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		),
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
-		c.c2,
+		c.astralGlowGainCB,
+		c.omenRefreshCB,
 	)
 
 	defer c.AdvanceNormalIndex()

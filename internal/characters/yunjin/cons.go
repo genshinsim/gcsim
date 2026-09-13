@@ -3,8 +3,8 @@ package yunjin
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -25,11 +25,11 @@ func (c *char) c2() {
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBaseWithHitlag(c2Key, 12*60),
-			Amount: func(ae *combat.AttackEvent, _ combat.Target) ([]float64, bool) {
+			Amount: func(ae *info.AttackEvent, _ info.Target) []float64 {
 				if ae.Info.AttackTag == attacks.AttackTagNormal {
-					return m, true
+					return m
 				}
-				return nil, false
+				return nil
 			},
 		})
 	}
@@ -44,37 +44,36 @@ func (c *char) deleteC2() {
 	}
 }
 
-// When Yun Jin triggers the Crystallize Reaction, her DEF is increased by 20% for 12s.
+// When Yun Jin triggers Crystallize or Lunar-Crystallize reactions, her DEF is increased by 20% for 12s.
 func (c *char) c4() {
 	if c.Base.Cons < 4 {
 		return
 	}
 	c.c4bonus = make([]float64, attributes.EndStatType)
 	c.c4bonus[attributes.DEFP] = .2
-	charModFunc := func(args ...interface{}) bool {
+	charModFunc := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return false
+			return
 		}
 
-		ae := args[1].(*combat.AttackEvent)
-		if ae.Info.ActorIndex != c.Index {
-			return false
+		ae := args[1].(*info.AttackEvent)
+		if ae.Info.ActorIndex != c.Index() {
+			return
 		}
 
 		c.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("yunjin-c4", 12*60),
 			AffectedStat: attributes.DEFP,
-			Amount: func() ([]float64, bool) {
-				return c.c4bonus, true
+			Amount: func() []float64 {
+				return c.c4bonus
 			},
 		})
-
-		return false
 	}
 	c.Core.Events.Subscribe(event.OnCrystallizeCryo, charModFunc, "yunjin-c4")
 	c.Core.Events.Subscribe(event.OnCrystallizeElectro, charModFunc, "yunjin-c4")
 	c.Core.Events.Subscribe(event.OnCrystallizePyro, charModFunc, "yunjin-c4")
 	c.Core.Events.Subscribe(event.OnCrystallizeHydro, charModFunc, "yunjin-c4")
+	c.Core.Events.Subscribe(event.OnLunarCrystallize, charModFunc, "yunjin-c4")
 }
 
 // Characters under the effects of the Flying Cloud Flag Formation have their Normal ATK SPD increased by 12%.
@@ -87,12 +86,12 @@ func (c *char) c6() {
 		this.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(c6Key, 12*60),
 			AffectedStat: attributes.AtkSpd,
-			Amount: func() ([]float64, bool) {
-				//TODO: i assume this buff should go away if stacks are gone?
+			Amount: func() []float64 {
+				// TODO: i assume this buff should go away if stacks are gone?
 				if this.Tags[burstBuffKey] == 0 {
-					return nil, false
+					return nil
 				}
-				return c.c6bonus, true
+				return c.c6bonus
 			},
 		})
 	}

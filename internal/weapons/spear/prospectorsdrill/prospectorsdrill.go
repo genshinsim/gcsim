@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -21,10 +20,6 @@ const (
 	buffKey        = "prospectors-drill"
 	buffDuration   = 10 * 60
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.ProspectorsDrill, NewWeapon)
-}
 
 type Weapon struct {
 	stacks int
@@ -44,15 +39,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	r := p.Refine
 
 	// gain symbols
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		source := args[0].(*info.HealInfo)
 		index := args[1].(int)
 		amount := args[2].(float64)
-		if source.Caller != char.Index && index != char.Index { // heal others and get healed including wielder
-			return false
+		if source.Caller != char.Index() && index != char.Index() { // heal others and get healed including wielder
+			return
 		}
 		if amount <= 0 {
-			return false
+			return
 		}
 
 		if !char.StatusIsActive(symbolKey) {
@@ -61,28 +56,27 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if w.stacks < 3 {
 			w.stacks++
 		}
-		c.Log.NewEvent("prospectors-drill adding stack", glog.LogWeaponEvent, char.Index).
+		c.Log.NewEvent("prospectors-drill adding stack", glog.LogWeaponEvent, char.Index()).
 			Write("stacks", w.stacks)
 		char.AddStatus(symbolKey, symbolDuration, true)
-		return false
 	}, fmt.Sprintf("prospectors-drill-heal-%v", char.Base.Key.String()))
 
 	// consume symbols
 	baseEle := 0.055 + 0.015*float64(r)
 	atk := 0.02 + 0.01*float64(r)
 	m := make([]float64, attributes.EndStatType)
-	buffFunc := func(args ...interface{}) bool {
+	buffFunc := func(args ...any) {
 		// skip if no symbols (status not active implies symbols == 0)
 		if !char.StatusIsActive(symbolKey) {
-			return false
+			return
 		}
 		// skip if trigger on icd
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		// check for active before deleting symbol
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		// add icd
 		char.AddStatus(icdKey, icdDuration, true)
@@ -100,12 +94,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag(buffKey, buffDuration),
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
-
-		return false
 	}
 	key := fmt.Sprintf("prospectors-drill-struggle-%v", char.Base.Key.String())
 	c.Events.Subscribe(event.OnBurst, buffFunc, key)

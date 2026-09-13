@@ -6,13 +6,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.RightfulReward, NewWeapon)
-}
 
 type Weapon struct {
 	Index int
@@ -32,18 +27,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	icd := 10 * 60
 	const icdKey = "rightfulreward-icd"
 
-	c.Events.Subscribe(event.OnHeal, func(args ...interface{}) bool {
+	c.Events.Subscribe(event.OnHeal, func(args ...any) {
 		index := args[1].(int)
-		if index != char.Index {
-			return false
+		if index != char.Index() {
+			return
 		}
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		char.AddStatus(icdKey, icd, true) // 10s icd
 		char.AddEnergy("rightfulreward", refund)
-
-		return false
 	}, fmt.Sprintf("rightfulreward-%v", char.Base.Key.String()))
 	return w, nil
 }

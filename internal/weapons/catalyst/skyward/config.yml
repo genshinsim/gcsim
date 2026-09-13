@@ -1,3 +1,23 @@
-package_name: skyward
-genshin_id: 14501
-key: skywardatlas
+use: pipeline
+kind: weapon
+name: skywardatlas
+
+shortcuts:
+  - atlas
+
+abilities:
+  - name: default
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: Skyward Atlas Enemy Detection
+        note: 'It looks for enemies within this hitbox. At every tick: Spawn an attack on the closest one.'
+        shape: Circle
+        center: Player
+        radius: 15
+
+      - name: Skyward Atlas
+        note: Spawns on the closest enemy found if such an enemy exists.
+        shape: Circle
+        center: GlobalValue
+        radius: 1.2

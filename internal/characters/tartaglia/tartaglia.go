@@ -8,7 +8,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
 
 const (
@@ -18,10 +17,6 @@ const (
 	particleICDKey     = "tartaglia-particle-icd"
 	meleeKey           = "tartagliamelee"
 )
-
-func init() {
-	core.RegisterCharFunc(keys.Tartaglia, NewChar)
-}
 
 // tartaglia specific character implementation
 type char struct {
@@ -75,9 +70,9 @@ func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]i
 	return c.Character.NextQueueItemIsValid(k, a, p)
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 	switch k {
-	case model.AnimationXingqiuN0StartDelay:
+	case info.AnimationXingqiuN0StartDelay:
 		if c.StatusIsActive(meleeKey) {
 			return 12
 		}

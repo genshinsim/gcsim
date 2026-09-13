@@ -17,7 +17,7 @@ runs:
     - name: Build UI
       working-directory: ./ui
       shell: bash
-      run: yarn workspace @gcsim/embed build
+      run: pnpm --filter @gcsim/embed build
 
     - name: List UI dist
       working-directory: ./ui/packages/embed/dist

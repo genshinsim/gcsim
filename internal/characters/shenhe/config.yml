@@ -1,35 +1,127 @@
-package_name: shenhe
-genshin_id: 10000063
-key: shenhe
-action_param_keys:
-    skill:
-        - param: "hold"
-skill_data_mapping:
-    attack:
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        attack_4:
-            - 3 # 4-Hit DMG|{param3:F1P}+{param4:F1P}
-            - 3 # 4-Hit DMG|{param3:F1P}+{param4:F1P}
-        attack_5:
-            - 5 # 5-Hit DMG|{param5:F1P}
-        charged:
-            - 6 # Charged Attack DMG|{param6:F1P}
-    skill:
-        skillHold:
-            - 1 # Hold Skill DMG|{param1:F1P}
-        skillPress:
-            - 0 # #{LAYOUT_MOBILE#Tap}{LAYOUT_PC#Press}{LAYOUT_PS#Press} Skill DMG|{param0:P}
-        skillpp:
-            - 2 # DMG Bonus|{param2:F1P} ATK
-    burst:
-        burst:
-            - 0 # Skill DMG|{param0:P}
-        burstdot:
-            - 2 # DoT|{param2:F1P}
-        burstrespp:
-            - 1 # RES Decrease|{param1:F1P}
+use: pipeline
+kind: character
+name: shenhe
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - - attack(4-Hit DMG)
+        - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+  - charged: attack(Charged Attack DMG)
+
+  - skillPress: skill(Press Skill DMG)
+  - skillHold: skill(Hold Skill DMG)
+  - skillpp: skill(DMG Bonus)
+
+  - burst: burst(Skill DMG)
+  - burstrespp: burst(RES Decrease)
+  - burstdot: burst(DoT)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1CeCbNYTXozBDeeRerGJFLWwsKrKz3K3-PydNSBATx8E/edit?usp=sharing
+      count_credit: Shizuka#7791
+      video: https://youtu.be/27cpC8A_elw
+      video_credit: Kolibri#7675 (special thanks to Xreejan#1180)
+    - count: https://docs.google.com/spreadsheets/d/1CeCbNYTXozBDeeRerGJFLWwsKrKz3K3-PydNSBATx8E/edit?usp=sharing
+      count_credit: Shizuka#7791
+      video: https://youtu.be/lcDQi_9YBzA
+      video_credit: Shizuka#7791
+    - count: https://docs.google.com/spreadsheets/d/1CeCbNYTXozBDeeRerGJFLWwsKrKz3K3-PydNSBATx8E/edit?usp=sharing
+      count_credit: Shizuka#7791
+      video: https://youtu.be/tb1bGGVNJoA?t=126
+      video_credit: Shizuka#7791
+    - count: https://docs.google.com/spreadsheets/d/1zCwdd6_KYFqMD4OQ_llGLdDshoZTu_1pmAMysxGDQvs/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/KlgZlck5kQQ?t=1280
+      video_credit: Kolibri#7675 (special thanks to Xreejan#1180)
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        fan_angle: 270
+        radius: 2.5
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        fan_angle: 270
+        radius: 2.5
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: N3
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 2.5
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: N4-1
+        shape: Box
+        center: Player
+        box: [2.2, 3.6]
+
+      - name: N4-2
+        shape: Box
+        center: Player
+        box: [2.2, 3.6]
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: N5
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 3
+        hitlag: {time: 0.1, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.8
+        hitlag: {scale: 0.01, defense_halt: true, deployable: true}
+
+  - name: skill
+    params:
+      hold: 0 for Tap (default), 1 for Hold.
+    hitbox:
+      - name: E-Tap
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.8
+        hitlag: {scale: 0.01, defense_halt: true, deployable: true}
+
+      - name: E-Hold
+        shape: Circle
+        center: Player
+        offset: [0, 1.5]
+        radius: 4
+
+  - name: burst
+    hitbox:
+      - name: Q-ElementalBurst
+        note: Q/A1/C2 have a detection area with the same hitbox.
+        shape: Circle
+        center: Player
+        offset: [0, 2]
+        fan_angle: 120
+        radius: 8
+
+      - name: Q-DoT
+        shape: Circle
+        center: Player
+        radius: 7
+
+  - name: walk
+    note: Everything except normal followed by walk has proper frames.

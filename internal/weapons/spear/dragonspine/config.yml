@@ -1,3 +1,12 @@
-package_name: dragonspine
-genshin_id: 13409
-key: dragonspinespear
+use: pipeline
+kind: weapon
+name: dragonspinespear
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Dragonspine Spear
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 3

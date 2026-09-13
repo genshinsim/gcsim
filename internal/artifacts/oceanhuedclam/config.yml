@@ -1,2 +1,15 @@
-key: oceanhuedclam
-set_id: 15022
+use: pipeline
+kind: artifact
+name: oceanhuedclam
+
+shortcuts:
+  - clam
+  - ohc
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Ocean-Hued Clam
+        shape: Circle
+        center: GlobalValue
+        radius: 6

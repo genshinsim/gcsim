@@ -2,7 +2,7 @@ package hacks
 
 import "github.com/genshinsim/gcsim/pkg/core/keys"
 
-var noblesseSpecialChars = [keys.EndCharKeys]bool{}
+var noblesseSpecialChars = [keys.InvalidChar]bool{}
 
 func RegisterNOSpecialChar(k keys.Char) {
 	noblesseSpecialChars[k] = true

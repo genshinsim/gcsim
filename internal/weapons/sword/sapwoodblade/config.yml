@@ -1,3 +1,11 @@
-package_name: sapwoodblade
-genshin_id: 11417
-key: sapwoodblade
+use: pipeline
+kind: weapon
+name: sapwoodblade
+
+shortcuts:
+  - sapwood
+
+abilities:
+  - name: default
+    params:
+      pickup_delay: Number of frames until the Leaf is picked up by the active character after every proc.

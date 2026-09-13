@@ -1,3 +1,11 @@
-package_name: prayer
-genshin_id: 14502
-key: lostprayertothesacredwinds
+use: pipeline
+kind: weapon
+name: lostprayertothesacredwinds
+
+shortcuts:
+  - lostprayer
+
+abilities:
+  - name: default
+    params:
+      stacks: Number of stacks to gain at the beginning. Default 0, maximum 4.

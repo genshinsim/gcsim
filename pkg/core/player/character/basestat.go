@@ -3,6 +3,7 @@ package character
 import (
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/catalog"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -10,7 +11,7 @@ import (
 )
 
 func (c *CharWrapper) UpdateBaseStats() error {
-	data := c.Data()
+	data := catalog.CharacterMap[c.Base.Key]
 	if data == nil {
 		return fmt.Errorf("unexpected nil char data for %v", c.Base.Key)
 	}
@@ -24,7 +25,7 @@ func (c *CharWrapper) UpdateBaseStats() error {
 	asc := AvatarAsc(c.Base.MaxLevel, data)
 	c.Base.Ascension = asc
 
-	wdata := c.Equip.Weapon.Data()
+	wdata := catalog.WeaponMap[c.Weapon.Key]
 	if wdata == nil {
 		return fmt.Errorf("unexpected nil weapon data for %v", c.Weapon.Key)
 	}
@@ -46,7 +47,7 @@ func (c *CharWrapper) UpdateBaseStats() error {
 	// log stats
 	c.log.NewEvent(
 		"stat calc done for "+c.Base.Key.String(),
-		glog.LogCharacterEvent, c.Index,
+		glog.LogCharacterEvent, c.Index(),
 	).
 		Write("char_base", c.Base).
 		Write("weap_base", c.Weapon).
@@ -72,16 +73,11 @@ func AvatarAsc(maxLvl int, data *model.AvatarData) int {
 func AvatarBaseStat(char info.CharacterBase, data *model.AvatarData) ([]float64, error) {
 	res := make([]float64, attributes.EndStatType)
 
-	lvl := char.Level - 1
-	if lvl < 0 {
-		lvl = 0
-	}
-	if lvl > 89 {
-		lvl = 89
-	}
-	res[attributes.BaseHP] = data.Stats.BaseHp * model.AvatarGrowCurveByLvl[lvl][data.Stats.HpCurve]
-	res[attributes.BaseATK] = data.Stats.BaseAtk * model.AvatarGrowCurveByLvl[lvl][data.Stats.AtkCurve]
-	res[attributes.BaseDEF] = data.Stats.BaseDef * model.AvatarGrowCurveByLvl[lvl][data.Stats.DefCruve]
+	lvl := min(max(char.Level-1, 0), 99)
+	res[attributes.BaseHP] = data.Stats.BaseHp * catalog.GrowCurve[data.Stats.HpCurve][lvl]
+	res[attributes.BaseATK] = data.Stats.BaseAtk * catalog.GrowCurve[data.Stats.AtkCurve][lvl]
+	res[attributes.BaseDEF] = data.Stats.BaseDef * catalog.GrowCurve[data.Stats.DefCruve][lvl]
+	res[attributes.EM] = data.Stats.ElementMastery
 	// default er/cr/cd
 	res[attributes.ER] += 1
 	res[attributes.CD] += 0.5
@@ -106,18 +102,12 @@ func AvatarBaseStat(char info.CharacterBase, data *model.AvatarData) ([]float64,
 
 func WeaponBaseStat(weap info.WeaponProfile, data *model.WeaponData) ([]float64, error) {
 	res := make([]float64, attributes.EndStatType)
-	lvl := weap.Level - 1
-	if lvl < 0 {
-		lvl = 0
-	}
-	if lvl > 89 {
-		lvl = 89
-	}
+	lvl := min(max(weap.Level-1, 0), 89)
 	// base props
 	for _, v := range data.BaseStats.BaseProps {
 		s := info.ConvertProtoStat(v.PropType)
-		//TODO: should this be cumulative?
-		res[s] = v.InitialValue * model.WeaponGrowCurveByLvl[lvl][v.Curve]
+		// TODO: should this be cumulative?
+		res[s] = v.InitialValue * catalog.GrowCurve[v.Curve][lvl]
 	}
 
 	// calculate promotion bonus

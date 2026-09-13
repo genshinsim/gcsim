@@ -1,3 +1,8 @@
-package_name: firstgreatmagic
-genshin_id: 15512
-key: thefirstgreatmagic
+use: pipeline
+kind: weapon
+name: thefirstgreatmagic
+
+shortcuts:
+  - fgm
+  - firstgreatmagic
+  - tfgm

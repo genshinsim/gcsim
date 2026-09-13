@@ -1,2 +1,9 @@
-key: shimenawasreminiscence
-set_id: 15019
+use: pipeline
+kind: artifact
+name: shimenawasreminiscence
+
+shortcuts:
+  - shim
+  - shime
+  - shimenawa
+  - sr

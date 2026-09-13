@@ -1,4 +1,6 @@
-package_name: vortex
-genshin_id: 13504
-key: vortexvanquisher
-skip_data_func: true
+use: pipeline
+kind: weapon
+name: vortexvanquisher
+
+shortcuts:
+  - vortex

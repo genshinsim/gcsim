@@ -8,6 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
+const MaxChars = 4
+
 type CharacterProfile struct {
 	Base           CharacterBase               `json:"base"`
 	Weapon         WeaponProfile               `json:"weapon"`
@@ -28,7 +30,7 @@ type RandomSubstats struct {
 }
 
 func (r RandomSubstats) Validate() error {
-	//TODO: support more than just 5 stars
+	// TODO: support more than just 5 stars
 	if r.Rarity != 5 {
 		return fmt.Errorf("unsupported rarity: %v", r.Rarity)
 	}
@@ -130,5 +132,6 @@ const (
 	ZoneSumeru
 	ZoneFontaine
 	ZoneNatlan
+	ZoneNodKrai
 	ZoneSnezhnaya
 )

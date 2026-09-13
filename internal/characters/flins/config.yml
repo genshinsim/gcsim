@@ -1,0 +1,121 @@
+use: pipeline
+kind: character
+name: flins
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - - attack(4-Hit DMG)
+        - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skillAttack:
+      - skill(1-Hit DMG)
+      - skill(2-Hit DMG)
+      - skill(3-Hit DMG)
+      - - skill(4-Hit DMG)
+        - skill(4-Hit DMG)
+      - skill(5-Hit DMG)
+  - skillCharge: skill(Charged Attack DMG)
+  - skillDmg: skill(Northland Spearstorm DMG)
+
+  - burstInit: burst(Initial Skill DMG)
+  - burstMid: burst(Middle Phase Lunar-Charged DMG)
+  - burstFinal: burst(Final Phase Lunar-Charged DMG)
+  - symphony: burst(Thunderous Symphony DMG)
+  - symphonyExtra: burst(Thunderous Symphony Additional DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1OME_OLISjpiGhp2e2O-YpkGDyQT7amWxXA8V0LqOAY4/edit?gid=0#gid=0
+      count_credit: caramielle.
+      video: https://youtu.be/eO6YGJM-4TY
+      video_credit: caramielle.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [1.3, 3.2]
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Box
+        center: Player
+        offset: [0.3, -1.6]
+        box: [2, 3.8]
+        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+
+      - name: N3
+        shape: Circle
+        center: Player
+        offset: [0, 0.8]
+        radius: 2.8
+        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+
+      - name: N4-1
+        shape: Circle
+        center: Player
+        offset: [0, 1.2]
+        radius: 2.8
+
+      - name: N4-2
+        shape: Circle
+        center: Player
+        offset: [0, 1.2]
+        radius: 2.8
+
+      - name: N5
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        radius: 2.8
+        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA
+        shape: Box
+        center: Player
+        box: [4, 6]
+
+  - name: skill
+    hitbox:
+      - name: E-Start
+        shape: Circle
+        center: Player
+        radius: 3
+
+      - name: E-Spearstorm
+        shape: Box
+        center: Player
+        box: [4, 6]
+
+  - name: burst
+    hitbox:
+      - name: Q-ComethTheNight
+        shape: Circle
+        center: Player
+        radius: 7
+
+      - name: Q-FallingThunder
+        shape: Circle
+        center: Player
+        radius: 7
+
+  - name: cons
+    hitbox:
+      - name: C2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2.5

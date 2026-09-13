@@ -8,7 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var (
@@ -50,27 +50,25 @@ func init() {
 	attackFrames[4][action.ActionAttack] = 37
 
 	attackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5][0], 72)
-	attackFrames[5][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
 
 	ppAttackFrames = make([][]int, normalHitNum)
 
-	ppAttackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0][0], 20)
+	ppAttackFrames[0] = frames.InitNormalCancelSlice(ppAttackHitmarks[0][0], 20)
 	ppAttackFrames[0][action.ActionAttack] = 14
 
-	ppAttackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1][0], 16)
+	ppAttackFrames[1] = frames.InitNormalCancelSlice(ppAttackHitmarks[1][0], 16)
 	ppAttackFrames[1][action.ActionAttack] = 12
 
-	ppAttackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2][0], 26)
+	ppAttackFrames[2] = frames.InitNormalCancelSlice(ppAttackHitmarks[2][0], 26)
 	ppAttackFrames[2][action.ActionCharge] = 23
 
-	ppAttackFrames[3] = frames.InitNormalCancelSlice(attackHitmarks[3][0], 31)
+	ppAttackFrames[3] = frames.InitNormalCancelSlice(ppAttackHitmarks[3][0], 31)
 	ppAttackFrames[3][action.ActionAttack] = 29
 
-	ppAttackFrames[4] = frames.InitNormalCancelSlice(attackHitmarks[4][1], 48)
+	ppAttackFrames[4] = frames.InitNormalCancelSlice(ppAttackHitmarks[4][1], 48)
 	ppAttackFrames[4][action.ActionAttack] = 36
 
-	ppAttackFrames[5] = frames.InitNormalCancelSlice(attackHitmarks[5][0], 72)
-	ppAttackFrames[5][action.ActionCharge] = 500 //TODO: this action is illegal; need better way to handle it
+	ppAttackFrames[5] = frames.InitNormalCancelSlice(ppAttackHitmarks[5][0], 72)
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
@@ -79,8 +77,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	}
 
 	for i, mult := range attack[c.NormalCounter] {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			Mult:               mult[c.TalentLvlAttack()],
 			AttackTag:          attacks.AttackTagNormal,
@@ -98,14 +96,14 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		}
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
+			info.Point{X: attackOffsets[c.NormalCounter][i][0], Y: attackOffsets[c.NormalCounter][i][1]},
 			attackHitboxes[c.NormalCounter][i][0],
 			attackFanAngles[c.NormalCounter],
 		)
 		if c.NormalCounter == 1 || (c.NormalCounter == 4 && i == 1) {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: attackOffsets[c.NormalCounter][i][1]},
+				info.Point{Y: attackOffsets[c.NormalCounter][i][1]},
 				attackHitboxes[c.NormalCounter][i][0],
 				attackHitboxes[c.NormalCounter][i][1],
 			)
@@ -127,8 +125,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 func (c *char) ppAttack() action.Info {
 	for i, mult := range attack[c.NormalCounter] {
-		ai := combat.AttackInfo{
-			ActorIndex:         c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:         c.Index(),
 			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
 			Mult:               mult[c.TalentLvlAttack()],
 			AttackTag:          attacks.AttackTagNormal,
@@ -146,14 +144,14 @@ func (c *char) ppAttack() action.Info {
 		}
 		ap := combat.NewCircleHitOnTargetFanAngle(
 			c.Core.Combat.Player(),
-			geometry.Point{X: ppAttackOffsets[c.NormalCounter][i][0], Y: ppAttackOffsets[c.NormalCounter][i][1]},
+			info.Point{X: ppAttackOffsets[c.NormalCounter][i][0], Y: ppAttackOffsets[c.NormalCounter][i][1]},
 			ppAttackHitboxes[c.NormalCounter][i][0],
 			ppAttackFanAngles[c.NormalCounter],
 		)
 		if c.NormalCounter == 1 || (c.NormalCounter == 4 && i == 1) {
 			ap = combat.NewBoxHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: ppAttackOffsets[c.NormalCounter][i][1]},
+				info.Point{Y: ppAttackOffsets[c.NormalCounter][i][1]},
 				ppAttackHitboxes[c.NormalCounter][i][0],
 				ppAttackHitboxes[c.NormalCounter][i][1],
 			)

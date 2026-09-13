@@ -1,3 +1,15 @@
-package_name: skyward
-genshin_id: 15501
-key: skywardharp
+use: pipeline
+kind: weapon
+name: skywardharp
+
+shortcuts:
+  - harp
+
+abilities:
+  - name: default
+    hitbox:
+      - name: Skyward Harp
+        note: Spawns on the enemy that the weapon proc'd on.
+        shape: Circle
+        center: GlobalValue
+        radius: 3

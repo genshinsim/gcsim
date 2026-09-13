@@ -1,3 +1,7 @@
-package_name: keyofkhajnisut
-genshin_id: 11511
-key: keyofkhajnisut
+use: pipeline
+kind: weapon
+name: keyofkhajnisut
+
+shortcuts:
+  - key
+  - khajnisut

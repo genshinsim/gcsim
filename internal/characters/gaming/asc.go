@@ -2,10 +2,8 @@ package gaming
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -13,13 +11,13 @@ const a1Key = "gaming-a1"
 
 // After Bestial Ascent's Plunging Attack: Charmed Cloudstrider hits an opponent,
 // Gaming will regain 1.5% of his Max HP once every 0.2s for 0.8s.
-func (c *char) makeA1CB() combat.AttackCBFunc {
+func (c *char) makeA1CB() info.AttackCBFunc {
 	if c.Base.Ascension < 1 {
 		return nil
 	}
 
-	return func(a combat.AttackCB) {
-		if a.Target.Type() != targets.TargettableEnemy {
+	return func(a info.AttackCB) {
+		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
 		if c.StatusIsActive(a1Key) {
@@ -35,8 +33,8 @@ func (c *char) a1Heal() {
 		return
 	}
 	c.Core.Player.Heal(info.HealInfo{
-		Caller:  c.Index,
-		Target:  c.Index,
+		Caller:  c.Index(),
+		Target:  c.Index(),
 		Message: "Dance of Amity (A1)",
 		Type:    info.HealTypePercent,
 		Src:     0.015,
@@ -57,11 +55,11 @@ func (c *char) a4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("gaming-a4-heal-bonus", -1),
 		AffectedStat: attributes.Heal,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if c.CurrentHPRatio() >= 0.5 {
-				return nil, false
+				return nil
 			}
-			return mHeal, true
+			return mHeal
 		},
 	})
 
@@ -69,14 +67,14 @@ func (c *char) a4() {
 	mDmg[attributes.DmgP] = 0.2
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("gaming-a4-dmg-bonus", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if c.CurrentHPRatio() < 0.5 {
-				return nil, false
+				return nil
 			}
 			if atk.Info.Abil != specialPlungeKey {
-				return nil, false
+				return nil
 			}
-			return mDmg, true
+			return mDmg
 		},
 	})
 }

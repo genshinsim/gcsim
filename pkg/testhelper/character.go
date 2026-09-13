@@ -3,36 +3,32 @@ package testhelper
 import (
 	_ "embed"
 
+	"github.com/genshinsim/gcsim/pkg/catalog"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
-	"google.golang.org/protobuf/encoding/prototext"
 )
 
-//go:embed test_char_data.pb
-var pbData []byte
-var base *model.AvatarData
+// TODO: insert a custom char at runtime
+const TestCharKey = keys.InvalidChar
 
-func init() {
-	base = &model.AvatarData{}
-	err := prototext.Unmarshal(pbData, base)
-	if err != nil {
-		panic(err)
-	}
+func RegisterTestCharacter() {
+	// TODO: this should be part of registration
+	catalog.CharacterMap[TestCharKey] = catalog.CharacterMap[keys.Albedo]
+	core.RegisterCharFunc(TestCharKey, NewChar)
 }
 
 type Character struct {
 	*character.CharWrapper
 }
 
-func (c *Character) Snapshot(a *combat.AttackInfo) combat.Snapshot { return combat.Snapshot{} }
+func (c *Character) Snapshot(a *info.AttackInfo) info.Snapshot { return info.Snapshot{} }
 func (c *Character) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	return true, action.NoFailure
 }
+
 func (c *Character) NextQueueItemIsValid(_ keys.Char, a action.Action, p map[string]int) error {
 	return nil
 }
@@ -44,7 +40,6 @@ func (c *Character) SetCDWithDelay(a action.Action, dur, delay int)       {}
 func (c *Character) Charges(a action.Action) int                          { return 1 }
 func (c *Character) SetCD(a action.Action, dur int)                       {}
 func (c *Character) Init() error                                          { return nil }
-func (c *Character) Data() *model.AvatarData                              { return base }
 func (c *Character) CurrentHPRatio() float64                              { return 0 }
 func (c *Character) CurrentHP() float64                                   { return 0 }
 func (c *Character) CurrentHPDebt() float64                               { return 0 }
@@ -56,6 +51,7 @@ func (c *Character) ModifyHPDebtByAmount(float64)                         {}
 func (c *Character) ModifyHPDebtByRatio(float64)                          {}
 func (c *Character) Heal(*info.HealInfo) (float64, float64)               { return 0, 0 }
 func (c *Character) Drain(*info.DrainInfo) float64                        { return 0 }
+func (c *Character) ReceiveHeal(hi *info.HealInfo, heal float64) float64  { return heal }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
 	c := Character{}

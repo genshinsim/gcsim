@@ -49,29 +49,28 @@ func (c *char) a4() {
 		return
 	}
 	// TODO: should also check once every 1s but this is good enough...
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 		if c.CurrentHPRatio() >= a4Threshold {
-			return false
+			return
 		}
 		if c.StatusIsActive(a4ICDKey) {
-			return false
+			return
 		}
 		c.AddStatus(a4ICDKey, a4ICD, true)
 		// 20% HP Part
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Index,
+			Caller:  c.Index(),
+			Target:  c.Index(),
 			Message: a4HealMsg,
 			Src:     a4InitialHealRatio * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
 		})
 		// 6% every 2s for 10s part (5 times)
 		c.QueueCharTask(c.a4DotHeal(0), a4DoTHealInterval)
-		return false
 	}, "hutao-c6")
 }
 
@@ -82,8 +81,8 @@ func (c *char) a4DotHeal(count int) func() {
 			return
 		}
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
-			Target:  c.Index,
+			Caller:  c.Index(),
+			Target:  c.Index(),
 			Message: a4HealMsg,
 			Src:     a4DoTHealRatio * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),

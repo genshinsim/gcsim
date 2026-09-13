@@ -1,0 +1,196 @@
+use: pipeline
+kind: character
+name: skirk
+
+combat:
+  icd_tags:
+    - SkirkCons
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG)
+        - attack(3-Hit DMG|1)
+      - attack(4-Hit DMG)
+      - attack(5-Hit DMG)
+  - charge:
+      - attack(Charged Attack DMG)
+      - attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skillAttack:
+      - skill(1-Hit DMG)
+      - skill(2-Hit DMG)
+      - - skill(3-Hit DMG)
+        - skill(3-Hit DMG|1)
+      - - skill(4-Hit DMG)
+        - skill(4-Hit DMG|1)
+      - skill(5-Hit DMG)
+  - skillCharge:
+      - skill(Charged Attack DMG)
+      - skill(Charged Attack DMG)
+      - skill(Charged Attack DMG)
+  - skillCollision: skill(Plunge DMG)
+  - skillLowPlunge: skill(Low/High Plunge DMG)
+  - skillHighPlunge: skill(Low/High Plunge DMG|1)
+
+  - burstDoT: burst(Slash DMG)
+  - burstFinal: burst(Final Slash DMG)
+  - burstBonus: burst(Serpent's Subtlety Bonus)
+  - burstDMG:
+      - burst(0/1/2/3 Void Rift Absorption DMG Bonus)
+      - burst(0/1/2/3 Void Rift Absorption DMG Bonus|1)
+      - burst(0/1/2/3 Void Rift Absorption DMG Bonus|2)
+      - burst(0/1/2/3 Void Rift Absorption DMG Bonus|3)
+
+docs:
+  fields:
+    .skirk.a4_stacks: Number of A4 stacks.
+    .skirk.c6_stacks: Number of C6 stacks.
+    .skirk.serpents_subtlety: Amount of Serpent's Subtlety.
+    .skirk.void_rifts: Number of Void Rifts on the field.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1GR9gnMj2UQiO3dDhCp9gI2AX2r50u6LPTyQb9oonKCY/edit?usp=sharing
+      count_credit: caramielle.
+      video: https://youtu.be/_axQvoeyqy4
+      video_credit: charliex3000
+    - count: https://docs.google.com/spreadsheets/d/1GR9gnMj2UQiO3dDhCp9gI2AX2r50u6LPTyQb9oonKCY/edit?usp=sharing
+      count_credit: charliex3000
+      video: https://youtu.be/5EOo75WSRRE
+      video_credit: charliex3000
+
+abilities:
+  - name: default
+    params:
+      start_serpents_subtlety: deprecated; use start_energy instead.
+
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.3]
+        radius: 2
+        hitlag: {time: 0.02, scale: 0.01}
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, -0.3]
+        radius: 2.2
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: N3-1
+        shape: Box
+        center: Player
+        offset: [0, -1.8]
+        box: [2.5, 3.5]
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: N3-2
+        shape: Box
+        center: Player
+        offset: [0, -1.8]
+        box: [2.5, 3.5]
+
+      - name: N4
+        shape: Box
+        center: Player
+        offset: [0, -1]
+        box: [2.5, 6]
+        hitlag: {time: 0.05, scale: 0.01}
+
+      - name: N5
+        shape: Circle
+        center: Player
+        offset: [0, -0.3]
+        radius: 3.2
+        hitlag: {time: 0.06, scale: 0.01}
+
+      - name: E-N1
+        shape: Box
+        center: Player
+        offset: [0, -0.4]
+        box: [7, 5]
+        hitlag: {time: 0.02, scale: 0.01}
+
+      - name: E-N2
+        shape: Box
+        center: Player
+        offset: [0, -0.4]
+        box: [7, 3.5]
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: E-N3-1
+        shape: Box
+        center: Player
+        offset: [0, -0.4]
+        box: [6, 3.5]
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: E-N3-2
+        shape: Box
+        center: Player
+        offset: [0, -0.2]
+        box: [6, 3.5]
+
+      - name: E-N4-1
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [5, 6]
+        hitlag: {time: 0.03, scale: 0.01}
+
+      - name: E-N4-2
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [5, 6]
+
+      - name: E-N5
+        shape: Box
+        center: Player
+        offset: [0, -0.4]
+        box: [11, 6]
+        hitlag: {time: 0.06, scale: 0.01}
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2.8
+
+      - name: E-CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3.3
+
+  - name: skill
+    note: Cannot be used in Seven-Phase Flash.
+    params:
+      hold: 0 for Tap (default), value between 1 and 184 for Hold. The number determines the hold E duration in frames.
+
+  - name: burst
+    hitbox:
+      - name: Q
+        shape: Box
+        center: Player
+        offset: [0, -5]
+        box: [14, 12]
+
+  - name: cons
+    hitbox:
+      - name: Far to Fall (C1)
+        shape: Box
+        center: Player
+        offset: [0, -3]
+        box: [4, 8]
+
+      - name: 'Havoc: Sever (C6)'
+        shape: Circle
+        center: Player
+        radius: 5

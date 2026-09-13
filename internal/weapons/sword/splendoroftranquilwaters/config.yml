@@ -1,3 +1,8 @@
-package_name: splendoroftranquilwaters
-genshin_id: 11513
-key: splendoroftranquilwaters
+use: pipeline
+kind: weapon
+name: splendoroftranquilwaters
+
+shortcuts:
+  - sotw
+  - splendor
+  - tranquilwaters

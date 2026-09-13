@@ -1,34 +1,115 @@
-package_name: gaming
-genshin_id: 10000092
-key: gaming
-action_param_keys:
-    low_plunge:
-        - param: "collision"
-        - param: "man_chai_delay"
-    high_plunge:
-        - param: "collision"
-        - param: "man_chai_delay"
-    burst:
-        - param: "man_chai_delay"
-skill_data_mapping:
-    attack:
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        attack_4:
-            - 3 # 4-Hit DMG|{param3:F1P}
-        collision:
-            - 8 # Plunge DMG|{param8:F1P}
-        lowPlunge:
-            - 9 # Low Plunge DMG|{param9:P}
-        highPlunge:
-            - 10 # High Plunge DMG|{param10:P}
-    skill:
-        skill:
-            - 0 # Skill DMG|{param1:P}
-    burst:
-        burst:
-            - 0 # Skill DMG|{param0:P}
+use: pipeline
+kind: character
+name: gaming
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skill: 'skill(Plunging Attack: Charmed Cloudstrider DMG)'
+
+  - burst: burst(Suanni Man Chai Smash DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1jVLp_jub6nJlNFrk2ir6kVOBEN2EA5o_DLr5JUNHZj4/edit?usp=sharing
+      count_credit: kolibri._.
+      video: https://youtu.be/VhHMfTl7klI
+      video_credit: kolibri._.
+    - count: https://docs.google.com/spreadsheets/d/16ZDmEBZOD4xeUcodxFJVuLC7IIqM9LGLilkct65mElg/edit?usp=sharing
+      count_credit: kolibri._.
+      video: https://youtu.be/pL6sOcOYBr8
+      video_credit: kolibri._.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 2
+        hitlag: {time: 0.1, scale: 0.01, defense_halt: true}
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        fan_angle: 270
+        radius: 2
+        hitlag: {time: 0.09, scale: 0.01, defense_halt: true}
+
+      - name: N3
+        shape: Box
+        center: Player
+        offset: [0, -1.7]
+        box: [2.5, 4]
+        hitlag: {time: 0.12, scale: 0.01, defense_halt: true}
+
+      - name: N4
+        shape: Circle
+        center: Player
+        offset: [0, 2]
+        radius: 2
+        hitlag: {time: 0.12, scale: 0.01, defense_halt: true}
+
+  - name: charge
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+      - name: E-Low_Plunge
+        shape: Circle
+        center: Player
+        radius: 4
+
+      - name: E-Low_Plunge-C6
+        shape: Circle
+        center: Player
+        radius: 6
+
+  - name: low_plunge
+    note: Previous action must be skill or a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg. Does not apply to the Plunge from E.
+      man_chai_delay: Number of frames until Man Chai returns starting from hitmark + 1 frame. Default delay for this case is 92 frames.
+
+  - name: high_plunge
+    note: Previous action must be skill or a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg. Does not apply to the Plunge from E.
+      man_chai_delay: Number of frames until Man Chai returns starting from hitmark + 1 frame. Default delay for this case is 92 frames.
+
+  - name: skill
+
+  - name: burst
+    params:
+      man_chai_delay: Number of frames until Man Chai returns starting from hitmark + 1 frame. Default delay for this case is 100 frames.
+    hitbox:
+      - name: Q
+        shape: Circle
+        center: Player
+        radius: 5

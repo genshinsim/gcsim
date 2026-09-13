@@ -12,6 +12,7 @@ func init() {
 	skillDashFrames[action.ActionSkill] = 6
 	skillDashFrames[action.ActionBurst] = 25
 }
+
 func (c *char) Dash(p map[string]int) (action.Info, error) {
 	if c.nightsoulState.HasBlessing() {
 		c.reduceNightsoulPoints(13.3)

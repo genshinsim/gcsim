@@ -7,14 +7,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
-
-func init() {
-	core.RegisterCharFunc(keys.Yanfei, NewChar)
-}
 
 type char struct {
 	*tmpl.Character
@@ -72,11 +66,10 @@ func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
 
 // Hook that clears yanfei burst status and seals when she leaves the field
 func (c *char) onExitField() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) {
 		c.sealCount = 0
 		c.DeleteStatus(sealBuffKey)
 		c.Core.Status.Delete("yanfeiburst")
-		return false
 	}, "yanfei-exit")
 }
 
@@ -89,8 +82,8 @@ func (c *char) Condition(fields []string) (any, error) {
 	}
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
 		return 4
 	}
 	return c.Character.AnimationStartDelay(k)

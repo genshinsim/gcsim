@@ -3,7 +3,7 @@ package yanfei
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/player/shield"
 	"github.com/genshinsim/gcsim/pkg/enemy"
@@ -17,19 +17,19 @@ func (c *char) c2() {
 		m := make([]float64, attributes.EndStatType)
 		c.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("yanfei-c2", -1),
-			Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagExtra {
-					return nil, false
+					return nil
 				}
 				x, ok := t.(*enemy.Enemy)
 				if !ok {
-					return nil, false
+					return nil
 				}
 				if x.HP()/x.MaxHP() >= .5 {
-					return nil, false
+					return nil
 				}
 				m[attributes.CR] = 0.20
-				return m, true
+				return m
 			},
 		})
 	}
@@ -44,11 +44,11 @@ func (c *char) c4() {
 		return
 	}
 	c.Core.Player.Shields.Add(&shield.Tmpl{
-		ActorIndex: c.Index,
+		ActorIndex: c.Index(),
 		Target:     -1,
 		Src:        c.Core.F,
 		ShieldType: shield.YanfeiC4,
-		Name:       "Yanfei C4",
+		Name:       "Supreme Amnesty (Shield)",
 		HP:         c.MaxHP() * .45,
 		Ele:        attributes.Pyro,
 		Expires:    c.Core.F + 15*60,

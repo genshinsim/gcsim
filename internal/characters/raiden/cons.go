@@ -3,11 +3,29 @@ package raiden
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
+
+func (c *char) c2Init() {
+	if c.Base.Cons < 2 {
+		return
+	}
+
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if c.Index() != atk.Info.ActorIndex {
+			return
+		}
+
+		if c.StatusIsActive(BurstKey) || c.Core.Player.CurrentStateStart() == c.burstAnimSrc {
+			atk.Info.IgnoreDefPercent += 0.6
+		}
+	}, "raiden-c2-hook")
+}
 
 // When the Musou Isshin state applied by Secret Art: Musou Shinsetsu expires
 // all nearby party members (excluding the Raiden Shogun) gain 30% bonus ATK for 10s.
@@ -16,20 +34,20 @@ func (c *char) c4() {
 	m[attributes.ATKP] = 0.3
 
 	for i, char := range c.Core.Player.Chars() {
-		if i == c.Index {
+		if i == c.Index() {
 			continue
 		}
 		char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag("raiden-c4", 600),
 			AffectedStat: attributes.ATKP,
-			Amount: func() ([]float64, bool) {
-				return m, true
+			Amount: func() []float64 {
+				return m
 			},
 		})
 	}
 }
 
-func (c *char) c6(ac combat.AttackCB) {
+func (c *char) c6(ac info.AttackCB) {
 	if c.Base.Cons < 6 {
 		return
 	}
@@ -41,11 +59,11 @@ func (c *char) c6(ac combat.AttackCB) {
 	}
 	c.c6ICD = c.Core.F + 60
 	c.c6Count++
-	c.Core.Log.NewEvent("raiden c6 triggered", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("raiden c6 triggered", glog.LogCharacterEvent, c.Index()).
 		Write("next_icd", c.c6ICD).
 		Write("count", c.c6Count)
 	for i, char := range c.Core.Player.Chars() {
-		if i == c.Index {
+		if i == c.Index() {
 			continue
 		}
 		char.ReduceActionCooldown(action.ActionBurst, 60)

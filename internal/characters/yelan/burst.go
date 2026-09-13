@@ -6,16 +6,20 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var burstFrames []int
-var burstTravel = 20
+var (
+	burstFrames []int
+	burstTravel = 20
+)
 
 // initial hit
-const burstHitmark = 76
-const c2Hitmark = 17
+const (
+	burstHitmark = 76
+	c2Hitmark    = 17
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(93) // Q -> N1/CA/D
@@ -25,8 +29,8 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:       c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:       c.Index(),
 		Abil:             "Depth-Clarion Dice",
 		AttackTag:        attacks.AttackTagElementalBurst,
 		ICDTag:           attacks.ICDTagNone,
@@ -52,21 +56,21 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// Initial hit
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{X: -1.5, Y: -1.7}, 6),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{X: -1.5, Y: -1.7}, 6),
 		burstHitmark,
 		burstHitmark,
 	)
 
-	//TODO: check if we need to add f to this
+	// TODO: check if we need to add f to this
 	c.Core.Tasks.Add(func() {
 		c.AddStatus(burstKey, 15*60, false)
-		c.a4() //TODO: does this call need to be delayed?
+		c.a4() // TODO: does this call need to be delayed?
 	}, burstHitmark)
 	if c.Base.Cons >= 6 { // C6 passive, lasts 20 seconds
 		c.Core.Status.Add(c6Status, 20*60)
 		c.c6count = 0
 	}
-	c.Core.Log.NewEvent("burst activated", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("burst activated", glog.LogCharacterEvent, c.Index()).
 		Write("expiry", c.Core.F+15*60)
 
 	c.SetCD(action.ActionBurst, 18*60)
@@ -87,8 +91,8 @@ func (c *char) burstWaveWrapper() {
 
 func (c *char) summonExquisiteThrow() {
 	hp := c.MaxHP()
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Exquisite Throw",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagYelanBurst,
@@ -100,7 +104,7 @@ func (c *char) summonExquisiteThrow() {
 		FlatDmg:    burstDice[c.TalentLvlBurst()] * hp,
 	}
 	snap := c.Snapshot(&ai)
-	for i := 0; i < 3; i++ {
+	for i := range 3 {
 		c.Core.QueueAttackWithSnap(
 			ai,
 			snap,
@@ -114,12 +118,12 @@ func (c *char) summonExquisiteThrow() {
 		)
 	}
 	if c.Base.Cons >= 2 && c.c2icd <= c.Core.F {
-		ai.Abil = "Yelan C2 Proc"
+		ai.Abil = "Exquisite Throw (C2)"
 		ai.ICDTag = attacks.ICDTagNone
 		ai.ICDGroup = attacks.ICDGroupDefault
 		ai.FlatDmg = 14.0 / 100 * hp
 		c.c2icd = c.Core.F + 1.8*60
-		//TODO: frames timing on this?
+		// TODO: frames timing on this?
 		c.Core.QueueAttack(
 			ai,
 			combat.NewCircleHit(

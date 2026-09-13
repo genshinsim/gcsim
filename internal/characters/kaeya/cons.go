@@ -3,7 +3,6 @@ package kaeya
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -19,19 +18,19 @@ func (c *char) c1() {
 	m := make([]float64, attributes.EndStatType)
 	c.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBase("kaeya-c1", -1),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			e, ok := t.(*enemy.Enemy)
 			if !ok {
-				return nil, false
+				return nil
 			}
 			if atk.Info.AttackTag != attacks.AttackTagNormal && atk.Info.AttackTag != attacks.AttackTagExtra {
-				return nil, false
+				return nil
 			}
 			if !e.AuraContains(attributes.Cryo, attributes.Frozen) {
-				return nil, false
+				return nil
 			}
 			m[attributes.CR] = 0.15
-			return m, true
+			return m
 		},
 	})
 }
@@ -39,19 +38,19 @@ func (c *char) c1() {
 // C2:
 // Every time Glacial Waltz defeats an opponent during its duration, its duration is increased by 2.5s, up to a maximum of 15s.
 func (c *char) c2() {
-	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) {
 		_, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
 		if !ok {
-			return false
+			return
 		}
 		// ignore if burst isn't up
 		if c.Core.Status.Duration(burstKey) == 0 {
-			return false
+			return
 		}
 		// ignore if extension limit reached
 		if c.c2ProcCount > 2 {
-			return false
+			return
 		}
 		// burst duration steps
 		// 8s
@@ -64,10 +63,9 @@ func (c *char) c2() {
 		}
 		c.Core.Status.Extend(burstKey, extension)
 		c.c2ProcCount++
-		c.Core.Log.NewEvent("kaeya-c2 proc'd", glog.LogCharacterEvent, c.Index).
+		c.Core.Log.NewEvent("kaeya-c2 proc'd", glog.LogCharacterEvent, c.Index()).
 			Write("c2ProcCount", c.c2ProcCount).
 			Write("extension", extension)
-		return false
 	}, "kaeya-c2")
 }
 
@@ -77,28 +75,27 @@ func (c *char) c2() {
 // This shield absorbs Cryo DMG with 250% efficiency.
 // Can only occur once every 60s.
 func (c *char) c4() {
-	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnPlayerHPDrain, func(args ...any) {
 		di := args[0].(*info.DrainInfo)
 		if di.Amount <= 0 {
-			return false
+			return
 		}
 		if c.Core.F < c.c4icd && c.c4icd != 0 {
-			return false
+			return
 		}
 		maxhp := c.MaxHP()
 		if c.CurrentHPRatio() < 0.2 {
 			c.c4icd = c.Core.F + 3600
 			c.Core.Player.Shields.Add(&shield.Tmpl{
-				ActorIndex: c.Index,
-				Target:     c.Index,
+				ActorIndex: c.Index(),
+				Target:     c.Index(),
 				Src:        c.Core.F,
 				ShieldType: shield.KaeyaC4,
-				Name:       "Kaeya C4",
+				Name:       "Frozen Kiss (Shield)",
 				HP:         .3 * maxhp,
 				Ele:        attributes.Cryo,
 				Expires:    c.Core.F + 1200,
 			})
 		}
-		return false
 	}, "kaeya-c4")
 }

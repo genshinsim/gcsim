@@ -10,43 +10,56 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
-	"github.com/genshinsim/gcsim/pkg/core/targets"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var chargeFrames []int
-var bikeChargeFrames []int
-var bikeChargeFinalFrames []int
-var bikeHittableEntityList []HittableEntity
+var (
+	chargeFrames           []int
+	bikeChargeFrames       []int
+	bikeChargeFinalFrames  []int
+	bikeHittableEntityList []HittableEntity
+)
 
 // Minimum CA time before CAF anim is 50f
-var bikeChargeAttackMinimumDuration = 50
-var bikeChargeAttackStartupHitmark = 35
+var (
+	bikeChargeAttackMinimumDuration = 50
+	bikeChargeAttackStartupHitmark  = 35
+)
 
 // Maximum CA time before CAF anim is 375f
-var bikeChargeAttackMaximumDuration = 375
-var bikeChargeFinalHitmark = 45
+var (
+	bikeChargeAttackMaximumDuration = 375
+	bikeChargeFinalHitmark          = 45
+)
 
 // TODO: Replicate frames 35-46 of the CA more accurately
 // var bikeSpinInitialFrames = 11
 // var bikeSpinInitialAngularVelocity = float64(-180 / 11)
 // spin velocity varies by current angle
-var bikeSpinQuadrantAngularVelocity = []float64{-90 / 9, -90 / 7, -90 / 15, -90 / 14} // Quadrant 4, 3, 2, 1
-var bikeSpinQuadrantFrames = []int{9, 7, 15, 14}                                      // Quadrant 4, 3, 2, 1
+var (
+	bikeSpinQuadrantAngularVelocity = []float64{-90 / 9, -90 / 7, -90 / 15, -90 / 14} // Quadrant 4, 3, 2, 1
+	bikeSpinQuadrantFrames          = []int{9, 7, 15, 14}                             // Quadrant 4, 3, 2, 1
+)
 
-const chargeHitmark = 40
-const bikeChargeAttackICD = 42         // Minimum time between CA hits
-const bikeChargeAttackSpinFrames = 45  // One revolution every ~45f
-const bikeChargeAttackHitboxRadius = 3 // Placeholder
-const bikeChargeAttackSpinOffset = 4.0 // Estimated center of hitbox from Mav origin
+const (
+	chargeHitmark                = 79
+	bikeChargeAttackICD          = 42  // Minimum time between CA hits
+	bikeChargeAttackSpinFrames   = 45  // One revolution every ~45f
+	bikeChargeAttackHitboxRadius = 3   // Placeholder
+	bikeChargeAttackSpinOffset   = 4.0 // Estimated center of hitbox from Mav origin
+	maxBufferedBikeChargeFrames  = 15
+	cdcLockoutStatus             = "mavuika-cdc-lockout"
+)
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(48)
-	chargeFrames[action.ActionBurst] = 50
+	chargeFrames = frames.InitAbilSlice(99)
+	chargeFrames[action.ActionAttack] = 98
+	chargeFrames[action.ActionCharge] = 98
 	chargeFrames[action.ActionDash] = chargeHitmark
 	chargeFrames[action.ActionJump] = chargeHitmark
-	chargeFrames[action.ActionSwap] = 50
-	chargeFrames[action.ActionWalk] = 60
+	chargeFrames[action.ActionSkill] = 98 // TODO 99 for tap E, 97 for hold E, 97 for recast E
+	chargeFrames[action.ActionWalk] = 98
 
 	// These static counts are rarely used. Zero values will cancel on the dynamic hitmark. Actions not listed will queue into CAF
 	bikeChargeFrames = frames.InitAbilSlice(bikeChargeAttackMinimumDuration + bikeChargeFinalHitmark)
@@ -71,13 +84,13 @@ type ChargeState struct {
 	StartFrame      int
 	cAtkFrames      int
 	skippedWindupF  int
-	LastHit         map[targets.TargetKey]int
+	LastHit         map[info.TargetKey]int
 	FacingDirection float64
 	srcFrame        int
 }
 
 type HittableEntity struct {
-	Entity     combat.Target
+	Entity     info.Target
 	isOneTick  bool   // Does entity get destroyed after a single maxHitCount?
 	CollFrames [2]int // Frames of the CA spin on which collision happens
 }
@@ -86,8 +99,11 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	if c.armamentState == bike && c.nightsoulState.HasBlessing() {
 		return c.BikeCharge(p)
 	}
-	ai := combat.AttackInfo{
-		ActorIndex:         c.Index,
+	if c.Core.Player.CurrentState() == action.DashState && c.chargeCancel {
+		return action.Info{}, errors.New("can only cancel a dash with a biked charge")
+	}
+	ai := info.AttackInfo{
+		ActorIndex:         c.Index(),
 		Abil:               "Charge",
 		AttackTag:          attacks.AttackTagExtra,
 		ICDTag:             attacks.ICDTagNormalAttack,
@@ -106,7 +122,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		ai,
 		combat.NewCircleHitOnTarget(
 			c.Core.Combat.Player(),
-			geometry.Point{Y: 0.3},
+			info.Point{Y: 0.3},
 			3.3,
 		),
 		chargeHitmark,
@@ -121,16 +137,28 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
+// Relative to bike charge start with no windup skip, Mav is unable to cdc
+// between 79 and 87f (inclusive), and every rotation thereafter
+// This only applies if mav is actively spinning, not if she goes into a finisher.
+func (c *char) cdcLockout(src int) {
+	if c.caState.StartFrame != src {
+		return
+	}
+	c.AddStatus(cdcLockoutStatus, 87-79+1, true)
+
+	c.QueueCharTask(func() {
+		c.cdcLockout(src)
+	}, bikeChargeAttackSpinFrames)
+}
+
 // This starts the CA, then goes to a loop handler for duration calc
 func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	// Parameters for tuning CA
 	durationCA := p["hold"]
 	final := p["final"]
 	bufferedFrames, ok := p["buffered"]
-	if ok {
-		bufferedFrames = min(bufferedFrames, 15) // Number of frames the CA input is buffered, maximum of 15f
-	} else {
-		bufferedFrames = 15 // Assume max buffered frames by default
+	if !ok {
+		bufferedFrames = maxBufferedBikeChargeFrames
 	}
 
 	bikeHittableEntities, hitboxError := c.BuildBikeChargeAttackHittableTargetList()
@@ -141,17 +169,29 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 
 	// Check if a continuing CA or new
 	skippedWindupFrames := 0
+	segmented := true
 	if c.Core.Player.CurrentState() != action.ChargeAttackState || c.caState.StartFrame == 0 {
+		segmented = false
 		c.caState = ChargeState{}
-		c.caState.StartFrame = c.Core.F
-		c.caState.LastHit = make(map[targets.TargetKey]int)
+		startFrame := c.Core.F
+		c.caState.StartFrame = startFrame
+		c.caState.LastHit = make(map[info.TargetKey]int)
 		for _, t := range bikeHittableEntities {
 			targetIndex := t.Entity.Key()
 			c.caState.LastHit[targetIndex] = 0
 		}
 		c.bikeChargeAttackHook()
 		skippedWindupFrames = c.GetSkippedWindupFrames(bufferedFrames)
+		// If the full windup is not skipped, mav's ca windup will proc n0 abilities like Yelan/XQ
+		if skippedWindupFrames < 15 {
+			c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState, false)
+		}
 		c.caState.skippedWindupF = skippedWindupFrames // Used for syncing CA frames on CA hook
+
+		c.DeleteStatus(cdcLockoutStatus)
+		c.QueueCharTask(func() {
+			c.cdcLockout(startFrame)
+		}, 79-skippedWindupFrames)
 	}
 
 	c.caState.srcFrame = c.Core.F
@@ -160,7 +200,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	isForceFinalHit := false // Used when exceeding CA duration, forces CAF
 
 	if final == 1 {
-		return c.BikeChargeAttackFinal(0, skippedWindupFrames)
+		return c.BikeChargeAttackFinal(0, skippedWindupFrames, segmented)
 	}
 
 	// Do not allow starting with a partial CA hold
@@ -172,6 +212,8 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	} else {
 		hasValidTarget, ai, err := c.HasValidTargetCheck(bikeHittableEntities)
 		if !hasValidTarget {
+			// Shouldn't matter
+			ai.Segmented = segmented
 			return ai, err
 		}
 		durationCA = c.CountBikeChargeAttack(1, skippedWindupFrames, bikeHittableEntities, nightSoulDuration)
@@ -186,7 +228,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 	}
 
 	if isForceFinalHit {
-		return c.BikeChargeAttackFinal(durationCA, skippedWindupFrames)
+		return c.BikeChargeAttackFinal(durationCA, skippedWindupFrames, segmented)
 	}
 
 	// Start queue CAF for invalid actions
@@ -198,7 +240,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 		if c.caState.srcFrame != src {
 			return
 		}
-		c.BikeChargeAttackFinal(0, 0)
+		c.BikeChargeAttackFinal(0, 0, true)
 	}, durationCA+1)
 
 	return action.Info{
@@ -214,6 +256,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 		},
 		AnimationLength: durationCA + newMinSpinDuration + bikeChargeFinalFrames[action.InvalidAction],
 		CanQueueAfter:   durationCA,
+		Segmented:       segmented,
 		State:           action.ChargeAttackState,
 		OnRemoved: func(next action.AnimationState) {
 			if next != action.ChargeAttackState {
@@ -226,7 +269,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 
 // For given CA length, calculate hits on each target in hittable list
 func (c *char) HoldBikeChargeAttack(cAtkFrames, skippedWindupFrames int, hittableEntities []HittableEntity) {
-	for i := 0; i < len(hittableEntities); i++ {
+	for i := range hittableEntities {
 		t := hittableEntities[i]
 		enemyID := t.Entity.Key()
 		lastHitFrame := c.caState.LastHit[enemyID]
@@ -256,16 +299,16 @@ func (c *char) HoldBikeChargeAttack(cAtkFrames, skippedWindupFrames int, hittabl
 
 // For given maxHitCount count, calculate maxHitCount timings on targets and return CA duration
 func (c *char) CountBikeChargeAttack(maxHitCount, skippedWindupFrames int, hittableEntities []HittableEntity, nsDur int) int {
-	// Return remaining CA time between nightsoul duration and max CA duration for attempting hit
-	dur := func(a, b int) int {
-		if a < b {
-			return a
-		}
-		return b
-	}(nsDur, bikeChargeAttackMaximumDuration-c.caState.cAtkFrames)
+	// Return remaining CA time between nightsoul duration (account for skipped windup) and max CA duration for attempting hit
+	dur := min(nsDur+skippedWindupFrames, bikeChargeAttackMaximumDuration-c.caState.cAtkFrames)
+	// if just starting a charge attack, duration can last beyond ns duration
+	if c.caState.StartFrame == c.Core.F {
+		dur = max(bikeChargeAttackMinimumDuration, dur)
+	}
+
 	hitCounter := 0
 
-	for i := 0; i < len(hittableEntities); i++ {
+	for i := range hittableEntities {
 		t := hittableEntities[i]
 		if t.Entity != c.Core.Combat.PrimaryTarget() {
 			continue
@@ -295,7 +338,7 @@ func (c *char) CountBikeChargeAttack(maxHitCount, skippedWindupFrames int, hitta
 		}
 	}
 
-	for i := 0; i < len(hittableEntities); i++ {
+	for i := range hittableEntities {
 		t := hittableEntities[i]
 		enemyID := t.Entity.Key()
 		lastHitFrame := c.caState.LastHit[enemyID]
@@ -321,7 +364,7 @@ func (c *char) CountBikeChargeAttack(maxHitCount, skippedWindupFrames int, hitta
 }
 
 // CAF occurs after reaching maximum CA duration, exiting NS, or letting go of CA
-func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.Info, error) {
+func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int, segmented bool) (action.Info, error) {
 	bikeChargeAttackElapsedTime := c.caState.cAtkFrames + caFrames
 	var newMinSpinDuration int
 	if bikeChargeAttackElapsedTime > 0 {
@@ -334,7 +377,6 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 	caFrames += newMinSpinDuration
 	adjustedBikeChargeFinalHitmark := bikeChargeFinalHitmark + caFrames
 	bikeHittableEntities, err := c.BuildBikeChargeAttackHittableTargetList()
-
 	if err != nil {
 		return action.Info{}, err
 	}
@@ -344,7 +386,7 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 	src := c.caState.srcFrame
 	c.QueueCharTask(func() {
 		// char must be active
-		if c.Core.Player.Active() != c.Index {
+		if c.Core.Player.Active() != c.Index() {
 			return
 		}
 
@@ -358,11 +400,11 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 			return
 		}
 
-		ai := combat.AttackInfo{
-			ActorIndex:       c.Index,
+		ai := info.AttackInfo{
+			ActorIndex:       c.Index(),
 			Abil:             "Flamestrider Charged Attack (Final)",
 			AttackTag:        attacks.AttackTagExtra,
-			AdditionalTags:   []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+			AdditionalTags:   []attacks.AttackTag{attacks.AttackTagNightsoul},
 			ICDTag:           attacks.ICDTagMavuikaFlamestrider,
 			ICDGroup:         attacks.ICDGroupDefault,
 			StrikeType:       attacks.StrikeTypeBlunt,
@@ -385,7 +427,7 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 			ai,
 			combat.NewCircleHitOnTarget(
 				c.Core.Combat.Player(),
-				geometry.Point{Y: 2},
+				info.Point{Y: 2},
 				radius,
 			),
 			0,
@@ -394,16 +436,13 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 
 		// Reset c.caState upon finisher landing
 		c.caState = ChargeState{}
+		c.DeleteStatus(cdcLockoutStatus)
 	}, adjustedBikeChargeFinalHitmark)
 
 	nightSoulDuration := c.GetRemainingNightSoulDuration()
 	if nightSoulDuration <= adjustedBikeChargeFinalHitmark {
-		// Exiting at hitmark to account for dash cancel
 		c.QueueCharTask(func() {
-			c.exitBike()
-		}, adjustedBikeChargeFinalHitmark)
-
-		c.QueueCharTask(func() {
+			c.nightsoulState.ConsumePoints(c.nightsoulState.Points())
 			c.exitNightsoul()
 		}, nightSoulDuration)
 	}
@@ -417,16 +456,17 @@ func (c *char) BikeChargeAttackFinal(caFrames, skippedWindupFrames int) (action.
 		Frames:          func(next action.Action) int { return bikeChargeFinalFrames[next] + caFrames },
 		AnimationLength: bikeChargeFinalFrames[action.InvalidAction] + caFrames,
 		CanQueueAfter:   bikeChargeFinalFrames[action.ActionDash] + caFrames,
+		Segmented:       segmented,
 		State:           action.ChargeAttackState,
 	}, nil
 }
 
-func (c *char) GetBikeChargeAttackAttackInfo() combat.AttackInfo {
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+func (c *char) GetBikeChargeAttackAttackInfo() info.AttackInfo {
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "Flamestrider Charged Attack (Cyclic)",
 		AttackTag:      attacks.AttackTagExtra,
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		ICDTag:         attacks.ICDTagMavuikaFlamestrider,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeBlunt,
@@ -445,39 +485,42 @@ func (c *char) GetBikeChargeAttackAttackInfo() combat.AttackInfo {
 
 func (c *char) GetSkippedWindupFrames(bufferedFrames int) int {
 	x := c.Core.Player.CurrentState()
-	var skippedWindupFrames int
+	var skippedWindupFrames int // If none of the following cases apply, no windup can be skipped
 	// TODO: Refactor this when handling initial CA frames in separate function for unique velocity
 	// Currently the angle/hitbox tracking uses raw CA frames to determine position
 	// Subtracting this at the wrong time can cause hits to get out of sync
 	switch {
 	case x == action.DashState:
-		skippedWindupFrames = 15
-		// In rare instances this doesn't proc in-game, but with the sim frames it should always happen
-		c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState)
-		return skippedWindupFrames
+		// You can only allow less than max buffered frames if you allow dash to finish completely
+		if c.chargeCancel {
+			c.chargeCancel = false
+			c.Core.Log.NewEvent(
+				"Mav cancelled charge cancel",
+				glog.LogCharacterEvent,
+				c.Index(),
+			)
+			return maxBufferedBikeChargeFrames
+		}
+		skippedWindupFrames = maxBufferedBikeChargeFrames
 	case x == action.NormalAttackState || x == action.ChargeAttackState && c.caState.StartFrame == c.Core.F:
-		skippedWindupFrames = 15
+		skippedWindupFrames = maxBufferedBikeChargeFrames
 	case x == action.BurstState:
 		if bufferedFrames == 0 {
 			skippedWindupFrames = 0
 		} else {
-			skippedWindupFrames = 15
+			skippedWindupFrames = maxBufferedBikeChargeFrames
 		}
 	// Skill recast is called from skill Hold and Recast, recast has forced n0 frames
 	case x == action.SkillState && c.StatusIsActive(skillRecastCDKey):
 		if c.StatusDuration(skillRecastCDKey) > 45 {
 			skippedWindupFrames = 13
 		} else {
-			skippedWindupFrames = 15
+			skippedWindupFrames = maxBufferedBikeChargeFrames
 		}
 	case x == action.PlungeAttackState:
 		skippedWindupFrames = 13
 	}
 	skippedWindupFrames = min(skippedWindupFrames, bufferedFrames)
-	// If the full windup is not skipped, mav's ca windup will proc n0 abilities like Yelan/XQ
-	if skippedWindupFrames < 15 {
-		c.Core.Events.Emit(event.OnStateChange, action.NormalAttackState, action.NormalAttackState)
-	}
 	return skippedWindupFrames
 }
 
@@ -530,14 +573,13 @@ func (c *char) buildValidTargetList() ([]HittableEntity, error) {
 			facingDirection = c.caState.FacingDirection
 		}
 		isIntersecting, err := c.BikeHitboxIntersectionAngles(v, collisionFrames[:], facingDirection)
-
 		if err != nil {
 			return hittableEnemies, err
 		}
 
 		if isIntersecting {
 			hittableEnemies = append(hittableEnemies, HittableEntity{
-				Entity:     combat.Target(v),
+				Entity:     info.Target(v),
 				isOneTick:  false,
 				CollFrames: collisionFrames,
 			})
@@ -554,14 +596,14 @@ func (c *char) buildValidGadgetList() []HittableEntity {
 			continue
 		}
 		switch g.GadgetTyp() {
-		case combat.GadgetTypDendroCore, combat.GadgetTypBogglecatBox:
+		case info.GadgetTypDendroCore, info.GadgetTypBogglecatBox:
 			// Calculate start and ending frames for collision
 			// Can ignore hitbox shape errors since these gadgets have circular hitboxes
 			hittableGadget, isHittable, _ := c.IsGadgetHittable(g)
 			if isHittable {
 				hittableGadgets = append(hittableGadgets, hittableGadget)
 			}
-		case combat.GadgetTypLeaLotus:
+		case info.GadgetTypLeaLotus:
 			hittableGadget, isHittable, _ := c.IsGadgetHittable(g)
 			if isHittable {
 				hittableGadget.isOneTick = false
@@ -572,7 +614,7 @@ func (c *char) buildValidGadgetList() []HittableEntity {
 	return hittableGadgets
 }
 
-func (c *char) IsGadgetHittable(v combat.Gadget) (HittableEntity, bool, error) {
+func (c *char) IsGadgetHittable(v info.Gadget) (HittableEntity, bool, error) {
 	collisionFrames := [2]int{-1, -1}
 	var facingDirection float64
 	if c.caState.cAtkFrames == 0 {
@@ -586,7 +628,7 @@ func (c *char) IsGadgetHittable(v combat.Gadget) (HittableEntity, bool, error) {
 
 	if isIntersecting {
 		newGadget = HittableEntity{
-			Entity:     combat.Target(v),
+			Entity:     info.Target(v),
 			isOneTick:  true,
 			CollFrames: collisionFrames,
 		}
@@ -614,17 +656,17 @@ func (c *char) HasValidTargetCheck(bikeHittableEntities []HittableEntity) (bool,
 
 // Currently used for dendro cores spawning, other movements/additions should not happen mid-CA anim
 func (c *char) bikeChargeAttackHook() {
-	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnDendroCore, func(args ...any) {
 		// Ignore if not in bike state
 		if c.armamentState != bike && !c.nightsoulState.HasBlessing() {
-			return false
+			return
 		}
 		// If in bike state, add gadget to target list if it can be hit
-		g, ok := args[0].(combat.Gadget)
+		g, ok := args[0].(info.Gadget)
 		if !ok {
-			return false
+			return
 		}
-		if g.GadgetTyp() == combat.GadgetTypDendroCore {
+		if g.GadgetTyp() == info.GadgetTypDendroCore {
 			// Might not be necessary to add to list?
 			hittableGadget, isHittable, _ := c.IsGadgetHittable(g)
 			if isHittable {
@@ -642,8 +684,6 @@ func (c *char) bikeChargeAttackHook() {
 				c.caState.LastHit[g.Key()] += c.Core.F
 			}
 		}
-
-		return false
 	}, "mavuika-bike-gadget-check")
 }
 
@@ -727,11 +767,14 @@ func (c *char) CalculateValidCollisionFrames(durationCA int, collisionFrames [2]
 
 // Calculate start and end frames for each spin during which target is within Mav hitbox
 // Return false if target is not circle or has no overlap
-func (c *char) BikeHitboxIntersectionAngles(v combat.Target, f []int, offsetAngle float64) (bool, error) {
+// Offset angle is 0 if primmary target is straight ahead of player (target has same x, higher y coords)
+//
+//	and increases as the target moves CCW
+func (c *char) BikeHitboxIntersectionAngles(v info.Target, f []int, offsetAngle float64) (bool, error) {
 	enemyShape := v.Shape()
 	var enemyRadius float64
 	switch v := enemyShape.(type) {
-	case *geometry.Circle:
+	case *info.Circle:
 		enemyRadius = v.Radius() // Rt
 	default:
 		return false, errors.New("target has non-circular hitbox, Mavuika CA requires circle hitboxes for calculations")
@@ -762,6 +805,10 @@ func (c *char) BikeHitboxIntersectionAngles(v combat.Target, f []int, offsetAngl
 	enemyAngle := math.Atan2(posDifference.Y, posDifference.X) * (180 / math.Pi)
 	thetaM := math.Acos(cosThetaM) * (180 / math.Pi)
 
+	// This is the angle measured CCW from the X axis relative to Mavuika
+	//  where Mavuika is the origin coordinate facing the primary target,
+	//  and the Y axis originates from Mavuika and extends to said target.
+	//  By standard convention, the x axis measures 90 degrees CW from the Y axis
 	enemyAngle = math.Mod(enemyAngle-offsetAngle+360, 360)
 
 	intersectAngleStart := enemyAngle + thetaM
@@ -773,9 +820,13 @@ func (c *char) BikeHitboxIntersectionAngles(v combat.Target, f []int, offsetAngl
 	return true, nil
 }
 
+// 0 degree offset if primary target straight ahead (target has same x coord, higher y coord)
+// 90 degree offset if to the left (lesser x, same y)
+// 180 degree offset if behind (same x, lower y)
+// 270 degree offset if to the right (higher x, same y)
 func (c *char) DirectionOffsetToPrimaryTarget() float64 {
-	var enemyDirection = geometry.CalcDirection(c.Core.Combat.Player().Pos(), c.Core.Combat.PrimaryTarget().Pos())
-	if enemyDirection == geometry.DefaultDirection() {
+	enemyDirection := info.CalcDirection(c.Core.Combat.Player().Pos(), c.Core.Combat.PrimaryTarget().Pos())
+	if enemyDirection == info.DefaultDirection() {
 		return 0
 	}
 

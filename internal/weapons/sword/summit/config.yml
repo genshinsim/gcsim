@@ -1,4 +1,6 @@
-package_name: summit
-genshin_id: 11504
-key: summitshaper
-skip_data_func: true
+use: pipeline
+kind: weapon
+name: summitshaper
+
+shortcuts:
+  - summit

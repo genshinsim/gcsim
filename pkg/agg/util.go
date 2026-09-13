@@ -7,6 +7,17 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 )
 
+// If the count is smaller than ss.Count, nothing will happen.
+// Otherwise, 0s will be added to ss until ss.Count is equal to count.
+func PadStreamStatToCount(ss *stats.StreamStats, count uint) {
+	if count < ss.Count {
+		return
+	}
+	for range count - ss.Count {
+		ss.Add(0)
+	}
+}
+
 func ToDescriptiveStats(ss *stats.StreamStats) *model.DescriptiveStats {
 	sd := ss.StdDev()
 	if math.IsNaN(sd) {
@@ -43,7 +54,7 @@ func ToOverviewStats(input *stats.Sample) *model.OverviewStats {
 	}
 
 	// Scott's normal reference rule
-	h := (3.49 * std) / (math.Pow(float64(len(input.Xs)), 1.0/3.0))
+	h := (3.49 * std) / math.Pow(float64(len(input.Xs)), 1.0/3.0)
 	if h == 0.0 || maxval == minval {
 		hist := make([]uint32, 1)
 		hist[0] = uint32(len(input.Xs))

@@ -6,13 +6,15 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 var burstFrames []int
 
-const burstHitmark = 75                        // Initial Hit
-const fatalBlossomHitmark = 145 - burstHitmark // Fatal Blossom, accounting for task queuing
+const (
+	burstHitmark        = 75                 // Initial Hit
+	fatalBlossomHitmark = 145 - burstHitmark // Fatal Blossom, accounting for task queuing
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(96) // Q -> N1/E
@@ -22,8 +24,8 @@ func init() {
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Rite of Progeniture: Tectonic Tide",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -76,14 +78,14 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		maxBlossoms := 7
 		enemies := c.Core.Combat.RandomEnemiesWithinArea(c.skillArea, nil, maxBlossoms)
 		tracking := len(enemies)
-		var center geometry.Point
-		for i := 0; i < maxBlossoms; i++ {
+		var center info.Point
+		for i := range maxBlossoms {
 			if i < tracking {
 				// each blossom targets a separate enemy if possible
 				center = enemies[i].Pos()
 			} else {
 				// if a blossom has no enemy then it randomly spawns in the skill area
-				center = geometry.CalcRandomPointFromCenter(c.skillArea.Shape.Pos(), 0.5, 9.5, c.Core.Rand)
+				center = info.CalcRandomPointFromCenter(c.skillArea.Shape.Pos(), 0.5, 9.5, c.Core.Rand)
 			}
 			// Blossoms are generated on a slight delay from initial hit
 			// TODO: no precise frame data for time between Blossoms

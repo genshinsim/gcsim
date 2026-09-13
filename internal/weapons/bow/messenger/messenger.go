@@ -9,13 +9,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.Messenger, NewWeapon)
-}
 
 type Weapon struct {
 	Index int
@@ -33,31 +28,31 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	dmg := 0.75 + float64(r)*0.25
 	const icdKey = "messenger-icd"
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
-		atk := args[1].(*combat.AttackEvent)
-		trg := args[0].(combat.Target)
+	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		trg := args[0].(info.Target)
 		// don't proc if dmg not from weapon holder
-		if atk.Info.ActorIndex != char.Index {
-			return false
+		if atk.Info.ActorIndex != char.Index() {
+			return
 		}
 		// don't proc if off-field
-		if c.Player.Active() != char.Index {
-			return false
+		if c.Player.Active() != char.Index() {
+			return
 		}
 		// don't proc if not hitting weakspot
 		if !atk.Info.HitWeakPoint {
-			return false
+			return
 		}
 		// don't proc if on icd
 		if char.StatusIsActive(icdKey) {
-			return false
+			return
 		}
 		// set icd
 		char.AddStatus(icdKey, 10*60, true) // 10s icd
 
 		// queue single target proc
-		ai := combat.AttackInfo{
-			ActorIndex:   char.Index,
+		ai := info.AttackInfo{
+			ActorIndex:   char.Index(),
 			Abil:         "Messenger Proc",
 			AttackTag:    attacks.AttackTagNone,
 			ICDTag:       attacks.ICDTagNone,
@@ -69,8 +64,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			HitWeakPoint: true, // ensure crit by marking it as hitting weakspot
 		}
 		c.QueueAttack(ai, combat.NewSingleTargetHit(trg.Key()), 0, 1)
-
-		return false
 	}, fmt.Sprintf("messenger-%v", char.Base.Key.String()))
 
 	return w, nil

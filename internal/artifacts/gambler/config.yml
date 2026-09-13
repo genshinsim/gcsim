@@ -1,2 +1,3 @@
-key: gambler
-set_id: 10008
+use: pipeline
+kind: artifact
+name: gambler

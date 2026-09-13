@@ -5,8 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
 // If 2 stacks of Grimheart are consumed upon unleashing the Holding Mode of Icetide Vortex,
@@ -18,8 +18,8 @@ func (c *char) a1() {
 	}
 	// make sure this gets executed after hold e hitlag starts but before hold e is over
 	// this makes it so it doesn't get affected by hitlag after Hold E is over
-	aiA1 := combat.AttackInfo{
-		ActorIndex: c.Index,
+	aiA1 := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Icetide (Lightfall)",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
@@ -33,7 +33,7 @@ func (c *char) a1() {
 	c.QueueCharTask(func() {
 		c.Core.QueueAttack(
 			aiA1,
-			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), geometry.Point{Y: 2}, 6.5),
+			combat.NewCircleHitOnTarget(c.Core.Combat.Player(), info.Point{Y: 2}, 6.5),
 			a1Hitmark-(skillHoldHitmark+1),
 			a1Hitmark-(skillHoldHitmark+1),
 			c.burstStackCB,
@@ -50,9 +50,9 @@ func (c *char) a4() {
 	if c.grimheartStacks < 2 {
 		c.grimheartStacks++
 	}
-	c.Core.Log.NewEvent("eula: grimheart stack", glog.LogCharacterEvent, c.Index).
+	c.Core.Log.NewEvent("eula: grimheart stack", glog.LogCharacterEvent, c.Index()).
 		Write("current count", c.grimheartStacks)
 
 	c.ResetActionCooldown(action.ActionSkill)
-	c.Core.Log.NewEvent("eula a4 reset skill cd", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("eula a4 reset skill cd", glog.LogCharacterEvent, c.Index())
 }

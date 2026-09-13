@@ -12,7 +12,7 @@ func TestEventWriteKeyOnlyPanic(t *testing.T) {
 		Frame:     1,
 		Event:     LogCharacterEvent,
 		CharIndex: 0,
-		Logs:      map[string]interface{}{},
+		Logs:      map[string]any{},
 	}
 	// test writing
 	defer func() {
@@ -31,7 +31,7 @@ func TestEventWriteNonStringKeyPanic(t *testing.T) {
 		Frame:     1,
 		Event:     LogCharacterEvent,
 		CharIndex: 0,
-		Logs:      map[string]interface{}{},
+		Logs:      map[string]any{},
 	}
 	// test writing
 	defer func() {
@@ -50,7 +50,7 @@ func TestEventWriteKeyVal(t *testing.T) {
 		Frame:     1,
 		Event:     LogCharacterEvent,
 		CharIndex: 0,
-		Logs:      map[string]interface{}{},
+		Logs:      map[string]any{},
 		Ordering:  make(map[string]int),
 	}
 
@@ -68,13 +68,13 @@ func BenchmarkEasyJSONSerialization(b *testing.B) {
 	count := 10800
 	var testdata EventArr
 	testdata = make([]*LogEvent, 0, count)
-	for i := 0; i < count; i++ {
+	for range count {
 		e := &LogEvent{
 			Msg:       "test",
 			Frame:     1,
 			Event:     LogCharacterEvent,
 			CharIndex: 0,
-			Logs:      map[string]interface{}{},
+			Logs:      map[string]any{},
 			Ordering:  make(map[string]int),
 		}
 		e.Write("a", 1).
@@ -94,11 +94,11 @@ func BenchmarkEasyJSONSerialization(b *testing.B) {
 
 type testChain struct{}
 
-func (t *testChain) Write(key, val interface{}) *testChain { return t }
+func (t *testChain) Write(key, val any) *testChain { return t }
 
 type testVariadic struct{}
 
-func (t *testVariadic) Write(kv ...interface{}) {}
+func (t *testVariadic) Write(kv ...any) {}
 
 func BenchmarkChainCalls(b *testing.B) {
 	for n := 0; n < b.N; n++ {

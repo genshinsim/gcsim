@@ -58,8 +58,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 func (c *char) burstCast() {
 	// initial heal
 	c.QueueCharTask(func() {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Stars Gather at Dusk (Initial)",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagNone,
@@ -74,7 +74,7 @@ func (c *char) burstCast() {
 		c.Core.QueueAttack(ai, burstArea, 0, 0)
 
 		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index,
+			Caller:  c.Index(),
 			Target:  -1,
 			Message: "Stars Gather at Dusk Heal (Initial)",
 			Src:     healInstantP[c.TalentLvlBurst()]*c.TotalAtk() + healInstantFlat[c.TalentLvlBurst()],
@@ -104,43 +104,43 @@ func (c *char) burstCast() {
 }
 
 func (c *char) burstPlungeDoTTrigger() {
-	c.Core.Events.Subscribe(event.OnApplyAttack, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnApplyAttack, func(args ...any) {
 		// ApplyAttack occurs only once per attack, so we do not need to add an ICD status
-		atk := args[0].(*combat.AttackEvent)
+		atk := args[0].(*info.AttackEvent)
 
 		// TODO: fragile
 		// needs to be like this because of raiden q plunge being burst dmg not plunge dmg
 		if atk.Info.AttackTag != attacks.AttackTagPlunge &&
 			!strings.Contains(atk.Info.Abil, "Low Plunge") &&
 			!strings.Contains(atk.Info.Abil, "High Plunge") {
-			return false
+			return
 		}
 
 		if atk.Info.Durability == 0 {
 			// plunge collisions have 0 durability
-			return false
+			return
 		}
 
 		active := c.Core.Player.ActiveChar()
-		if active.Index != atk.Info.ActorIndex {
-			return false
+		if active.Index() != atk.Info.ActorIndex {
+			return
 		}
 		if !active.StatusIsActive(player.XianyunAirborneBuff) {
-			return false
+			return
 		}
 
 		if c.adeptalAssistStacks <= 0 {
-			return false
+			return
 		}
 
 		if c.StatusIsActive(lossKey) {
-			return false
+			return
 		}
 		c.AddStatus(lossKey, lossIcd, false)
 
 		aoe := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, burstDoTRadius)
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Starwicker",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagElementalBurst,
@@ -167,13 +167,12 @@ func (c *char) burstPlungeDoTTrigger() {
 		}
 		// keep a window open for a4 to be able to apply
 		c.AddStatus(a4WindowKey, 1, false)
-		return false
 	}, "xianyun-starwicker-plunge-hook")
 }
 
 func (c *char) burstHealDoT() {
 	c.Core.Player.Heal(info.HealInfo{
-		Caller:  c.Index,
+		Caller:  c.Index(),
 		Target:  -1,
 		Message: "Starwicker Heal",
 		Src:     healDotP[c.TalentLvlBurst()]*c.TotalAtk() + healDotFlat[c.TalentLvlBurst()],

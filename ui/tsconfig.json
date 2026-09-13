@@ -1,31 +1,24 @@
 {
-  "compilerOptions": {
-    "incremental": true,
-    "composite": true,
-    "declaration": true,
-    "target": "ES2022",
-    "module": "ES2022",
-    "moduleResolution": "Node",
-    "jsx": "react-jsx",
-    "lib": [
-      "DOM",
-      "DOM.Iterable",
-      "ES2022",
-      "ESNext"
-    ],
-    "paths": {
-      "react": [
-        "./node_modules/@types/react"
-      ]
-    },
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "noImplicitAny": false,
-    "strict": true,
-    "isolatedModules": true,
-    "noFallthroughCasesInSwitch": true,
-    "forceConsistentCasingInFileNames": true,
-    "allowSyntheticDefaultImports": true,
-  }
+	"compilerOptions": {
+		"incremental": true,
+		"composite": true,
+		"declaration": true,
+		"target": "ES2022",
+		"module": "ES2022",
+		"moduleResolution": "Node",
+		"jsx": "react-jsx",
+		"lib": ["DOM", "DOM.Iterable", "ES2022", "ESNext"],
+		"paths": {
+			"react": ["./node_modules/@types/react"]
+		},
+		"resolveJsonModule": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"noImplicitAny": false,
+		"strict": true,
+		"isolatedModules": true,
+		"noFallthroughCasesInSwitch": true,
+		"forceConsistentCasingInFileNames": true,
+		"allowSyntheticDefaultImports": true
+	}
 }

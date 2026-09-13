@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -32,9 +33,9 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.a4Stacks = 0
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
-		Abil:       "Painted Dome (Q)",
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       "Painted Dome",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -58,11 +59,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		for _, char := range c.Core.Player.Chars() {
 			char.AddReactBonusMod(character.ReactBonusMod{
 				Base: modifier.NewBaseWithHitlag(burstDmgBonusKey, burstDuration),
-				Amount: func(ai combat.AttackInfo) (float64, bool) {
+				Amount: func(ai info.AttackInfo) float64 {
 					if ai.AttackTag == attacks.AttackTagBloom {
-						return burstDmgBonus[c.TalentLvlBurst()], false
+						return burstDmgBonus[c.TalentLvlBurst()]
 					}
-					return 0, false
+					return 0
 				},
 			})
 		}
@@ -77,13 +78,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) addBurstExitHandler() {
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(_ ...any) {
 		c.DeleteStatus(burstKey)
 		c.DeleteStatus(a4Key)
 		c.DeleteStatus(c2Key)
 		for _, char := range c.Core.Player.Chars() {
 			char.DeleteStatus(burstDmgBonusKey)
 		}
-		return false
 	}, "kaveh-exit")
 }

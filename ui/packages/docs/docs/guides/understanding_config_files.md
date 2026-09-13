@@ -213,7 +213,7 @@ Every configuration must have at least one `target` (enemy) set. Otherwise the s
 target lvl=100 resist=0.1;
 ```
 
-This will add a target that's level 100 with 10% resistance across the board. You can customize the resistance (see [here](/reference/config#enemy)).
+This will add a target that's level 100 with 10% resistance across the board. You can customize the resistance (see [here](/reference/config#optional-target-type-params)).
 
 To simulate multi-target simulation, simply repeat the target line as many times as you desire.
 

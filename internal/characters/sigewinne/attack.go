@@ -8,11 +8,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var attackFrames [][]int
-var attackHitmarks = []int{12, 14, 38}
+var (
+	attackFrames   [][]int
+	attackHitmarks = []int{12, 14, 38}
+)
 
 const normalHitNum = 3
 
@@ -25,8 +27,8 @@ func init() {
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 40) // N2 -> Walk
 	attackFrames[1][action.ActionAttack] = 36
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 67) // N3 -> Walk
-	attackFrames[2][action.ActionAttack] = 82
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 82) // N3 -> Attack
+	attackFrames[2][action.ActionWalk] = 67
 }
 
 func (c *char) Attack(p map[string]int) (action.Info, error) {
@@ -38,8 +40,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		travel = 10
 	}
 
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       fmt.Sprintf("Normal %v", c.NormalCounter),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNone,
@@ -49,11 +51,11 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
-	var ap combat.AttackPattern
+	var ap info.AttackPattern
 	if c.NormalCounter != 0 {
 		ap = combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1)
 	} else {
-		ap = combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), geometry.Point{Y: -0.5}, 0.1, 1)
+		ap = combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.5}, 0.1, 1)
 	}
 	c.Core.QueueAttack(
 		ai,

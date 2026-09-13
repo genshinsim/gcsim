@@ -28,8 +28,8 @@ func init() {
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// initial damage; part of the burst tag
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		Abil:       "Midnight Phantasmagoria",
 		AttackTag:  attacks.AttackTagElementalBurst,
 		ICDTag:     attacks.ICDTagElementalBurst,
@@ -50,8 +50,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	// check for C4
 	var c4HealFunc func()
 	if c.Base.Cons >= 4 {
-		ai := combat.AttackInfo{
-			ActorIndex: c.Index,
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
 			Abil:       "Her Pilgrimage of Bleak (C4)",
 			AttackTag:  attacks.AttackTagElementalBurst,
 			ICDTag:     attacks.ICDTagElementalBurst,
@@ -67,8 +67,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		// heal
 		c4HealFunc = func() {
 			c.Core.Player.Heal(info.HealInfo{
-				Caller:  c.Index,
-				Target:  c.Index,
+				Caller:  c.Index(),
+				Target:  c.Index(),
 				Message: "Her Pilgrimage of Bleak (C4)",
 				Src:     0.2 * c.MaxHP(),
 				Bonus:   c.Stat(attributes.Heal),
@@ -83,7 +83,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.ozActive = true
 	c.burstOzSpawnSrc = c.Core.F
 	burstFullOzFunc := c.burstOzSpawn(c.Core.F, 0, burstFullOzFirstTick, c4HealFunc)
-	burstShortOzFunc := c.burstOzSpawn(c.Core.F, burstShortOzSpawn, burstShortOzFirstTick, c4HealFunc)
+
+	// OnRemoved gets called when the swap starts, but Oz should spawn after
+	// the swap finishes executing and Fischl leaves the field, so we need
+	// to add in the swap delay as an additional delay
+	extraDelay := c.Core.Player.Delays.Swap
+	burstShortOzFunc := c.burstOzSpawn(c.Core.F, burstShortOzSpawn+extraDelay, burstShortOzFirstTick+extraDelay, c4HealFunc)
 
 	c.Core.Tasks.Add(burstFullOzFunc, burstFullOzSpawn)
 
@@ -92,7 +97,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		AnimationLength: burstFrames[action.InvalidAction],
 		CanQueueAfter:   burstFrames[action.ActionSwap], // earliest cancel
 		State:           action.BurstState,
-		OnRemoved:       func(next action.AnimationState) { burstShortOzFunc() },
+		OnRemoved: func(next action.AnimationState) {
+			// other actions are handled by burstFullOzFunc
+			if next == action.SwapState {
+				burstShortOzFunc()
+			}
+		},
 	}, nil
 }
 

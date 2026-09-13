@@ -28,6 +28,11 @@ const (
 	TravelerHydroC4
 	SigewinneC2
 	LanyanShield
+	CitlaliSkill
+	DahliaBurst
+	IneffaSkill
+	ColumbinaC1
+	NicoleSkill
 	EndType
 )
 

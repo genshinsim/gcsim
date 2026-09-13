@@ -2,10 +2,15 @@ package razor
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
+
+const hexereiICDKey = "razor-hexerei-icd"
 
 // Decreases Claw and Thunder's CD by 18%.
 func (c *char) a1CDReduction(cd int) int {
@@ -33,11 +38,53 @@ func (c *char) a4() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBase("razor-a4", -1),
 		AffectedStat: attributes.ER,
-		Amount: func() ([]float64, bool) {
+		Amount: func() []float64 {
 			if c.Energy/c.EnergyMax >= 0.5 {
-				return nil, false
+				return nil
 			}
-			return c.a4Bonus, true
+			return c.a4Bonus
 		},
 	})
+}
+
+func (c *char) thunderFallCB() {
+	if !c.IsHexerei {
+		return
+	}
+
+	if c.Core.Player.GetHexereiCount() < 2 {
+		return
+	}
+
+	if c.StatusIsActive(hexereiICDKey) {
+		return
+	}
+
+	c.c6HexereiMod()
+
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
+		Abil:       "Surge of Lightning",
+		AttackTag:  attacks.AttackTagNone,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Electro,
+		Durability: 25,
+		Mult:       1.5,
+	}
+
+	ap := combat.NewCircleHitOnTarget(
+		c.Core.Combat.Player(),
+		info.Point{Y: 2},
+		5,
+	)
+	c.AddStatus(hexereiICDKey, 60+74, false)
+
+	c.Core.QueueAttack(ai, ap, 0, 37)
+	c.Core.Tasks.Add(
+		func() {
+			c.AddEnergy("razor-surge-of-lightning", 7)
+		}, 74,
+	)
 }

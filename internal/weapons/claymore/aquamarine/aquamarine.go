@@ -6,14 +6,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
-
-func init() {
-	core.RegisterWeaponFunc(keys.MakhairaAquamarine, NewWeapon)
-}
 
 type Weapon struct {
 	atkBuff float64
@@ -51,15 +46,15 @@ func (w *Weapon) updateStats() {
 		Base:         modifier.NewBaseWithHitlag("aquamarine", 12*60),
 		AffectedStat: attributes.ATK,
 		Extra:        true,
-		Amount: func() ([]float64, bool) {
-			return val, true
+		Amount: func() []float64 {
+			return val
 		},
 	})
 
 	valTeam := make([]float64, attributes.EndStatType)
 	valTeam[attributes.ATK] = val[attributes.ATK] * 0.3
 	for _, this := range w.core.Player.Chars() {
-		if this.Index == w.char.Index {
+		if this.Index() == w.char.Index() {
 			continue
 		}
 
@@ -67,8 +62,8 @@ func (w *Weapon) updateStats() {
 			Base:         modifier.NewBaseWithHitlag(fmt.Sprintf("aquamarine-%v", w.char.Base.Key.String()), 12*60),
 			AffectedStat: attributes.ATK,
 			Extra:        true,
-			Amount: func() ([]float64, bool) {
-				return valTeam, true
+			Amount: func() []float64 {
+				return valTeam
 			},
 		})
 	}

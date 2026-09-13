@@ -8,11 +8,13 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/geometry"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-var chargeFrames []int
-var chargeHitmarks = []int{20, 20} // CA-1 and CA-2 hit at the same time
+var (
+	chargeFrames   []int
+	chargeHitmarks = []int{20, 20} // CA-1 and CA-2 hit at the same time
+)
 
 func init() {
 	chargeFrames = frames.InitAbilSlice(56)                                 // CA -> N1
@@ -24,8 +26,8 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex: c.Index,
+	ai := info.AttackInfo{
+		ActorIndex: c.Index(),
 		AttackTag:  attacks.AttackTagNormal,
 		ICDTag:     attacks.ICDTagNormalAttack,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -39,7 +41,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		ai.Abil = fmt.Sprintf("Charge %v", i)
 		c.Core.QueueAttack(
 			ai,
-			combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), geometry.Point{Y: 0.3}, 2.2, 270),
+			combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), info.Point{Y: 0.3}, 2.2, 270),
 			chargeHitmarks[i],
 			chargeHitmarks[i],
 		)

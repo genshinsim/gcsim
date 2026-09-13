@@ -1,4 +1,7 @@
-package_name: apprentice
-genshin_id: 14101
-key: apprenticesnotes
-skip_data_func: true
+use: pipeline
+kind: weapon
+name: apprenticesnotes
+
+shortcuts:
+  - apprentice
+  - apprentices

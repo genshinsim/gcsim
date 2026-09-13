@@ -9,12 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/model"
 )
-
-func init() {
-	core.RegisterCharFunc(keys.Heizou, NewChar)
-}
 
 type char struct {
 	*tmpl.Character
@@ -79,14 +74,15 @@ func (c *char) Condition(fields []string) (any, error) {
 
 func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
 	// cannot use charge without attack beforehand unlike most of the other catalyst users
-	if a == action.ActionCharge && c.Core.Player.LastAction.Type != action.ActionAttack {
+	if a == action.ActionCharge && c.NormalCounter == 0 {
 		return player.ErrInvalidChargeAction
 	}
+
 	return c.Character.NextQueueItemIsValid(k, a, p)
 }
 
-func (c *char) AnimationStartDelay(k model.AnimationDelayKey) int {
-	if k == model.AnimationXingqiuN0StartDelay {
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
 		return 10
 	}
 	return c.Character.AnimationStartDelay(k)

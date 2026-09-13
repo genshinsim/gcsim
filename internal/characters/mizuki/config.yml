@@ -1,0 +1,113 @@
+use: pipeline
+kind: character
+name: yumemizukimizuki
+
+override:
+  icd_group:
+    MizukiSkill:
+      name: Mizuki_Eart_Attack
+
+shortcuts:
+  - mizuki
+
+combat:
+  icd_groups:
+    - MizukiSkill
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - cloudDMG: skill(Continuous Attack DMG)
+  - swirlDMG: skill(Elemental Mastery-Based Swirl DMG Increase)
+  - stellarSwirlDMG: skill(Elemental Mastery-Based Stellar Swirl DMG Increase)
+  - skill: skill(Skill DMG)
+
+  - burstDMG: burst(Skill DMG)
+  - snackDMG: burst(Munen Shockwave DMG)
+  - snackHealEM: burst(Snack Pick-Up HP Regeneration)
+  - snackHealFlat: burst(Snack Pick-Up HP Regeneration|1)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1ZeZ9wSU_sicb6rmPEPPEq47SEFRi-e-lsF8Te4Ri_BQ/edit?usp=sharing
+      count_credit: klapeto
+      video: https://youtu.be/F3YpbJQl0GA
+      video_credit: klapeto
+    - count: https://docs.google.com/spreadsheets/d/1UU0EVPBatEndl4GRZyIs8Ix8O3kcZUDAwOHqM8_jQJw/edit?usp=sharing
+      count_credit: klapeto
+      video: https://youtu.be/lCTrJbsbwuM
+      video_credit: klapeto
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4
+        hitlag: {scale: 0.05, deployable: true}
+
+      - name: N2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4
+        hitlag: {scale: 0.05, deployable: true}
+
+      - name: N3
+        shape: Circle
+        center: PrimaryTarget
+        radius: 4
+        hitlag: {scale: 0.05, deployable: true}
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: GlobalValue
+        radius: 3.5
+
+  - name: skill
+    params:
+      travel: Projectile travel time for Continuous Attack. Default 30 frames.
+    hitbox:
+      - name: E-Init
+        shape: Circle
+        center: Player
+        radius: 5.5
+
+      - name: E-Continuous-Attack
+        shape: Circle
+        center: Player
+        radius: 4
+
+  - name: burst
+    hitbox:
+      - name: Q-Init
+        shape: Circle
+        center: PrimaryTarget
+        radius: 8
+
+      - name: Q-Find-Enemy
+        shape: Circle
+        center: GlobalValue
+        radius: 6
+
+      - name: Q-Munen-Shockwave
+        shape: Circle
+        center: GlobalValue
+        radius: 4
+
+      - name: Q-Snack-Trigger
+        note: Mizuki's pickup range is increased while the Dreamdrifter state (assumed x2.1).
+        shape: Circle
+        center: GlobalValue
+        radius: 2.5

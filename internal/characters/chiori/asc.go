@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -55,44 +56,44 @@ func (c *char) a1TapestrySetup() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		// seize the moment not active
 		if !c.StatusIsActive(a1SeizeTheMomentKey) {
-			return false
+			return
 		}
 		// seize the moment on icd
 		if c.StatusIsActive(a1SeizeTheMomentICDKey) {
-			return false
+			return
 		}
 		// attack not na/ca/plunge
-		atk := args[1].(*combat.AttackEvent)
+		atk := args[1].(*info.AttackEvent)
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagNormal:
 		case attacks.AttackTagExtra:
 		case attacks.AttackTagPlunge:
 		default:
-			return false
+			return
 		}
 		// atk not by active char
 		if atk.Info.ActorIndex != c.Core.Player.Active() {
-			return false
+			return
 		}
 		// atk not within 30m of player
 		t, ok := args[0].(*enemy.Enemy)
 		if !ok {
-			return false
+			return
 		}
 		if !t.IsWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 30)) {
-			return false
+			return
 		}
 
 		// apply icd
 		c.AddStatus(a1SeizeTheMomentICDKey, a1SeizeTheMomentICD, true)
 
 		// deal dmg
-		ai := combat.AttackInfo{
+		ai := info.AttackInfo{
 			Abil:       "Fluttering Hasode (Seize the Moment)",
-			ActorIndex: c.Index,
+			ActorIndex: c.Index(),
 			AttackTag:  attacks.AttackTagElementalArt,
 			ICDTag:     attacks.ICDTagChioriSkill,
 			ICDGroup:   attacks.ICDGroupChioriSkill,
@@ -111,8 +112,6 @@ func (c *char) a1TapestrySetup() {
 		if c.a1AttackCount == a1SeizeTheMomentAttackLimit {
 			c.DeleteStatus(a1SeizeTheMomentKey)
 		}
-
-		return false
 	}, a1SeizeTheMomentKey)
 }
 
@@ -148,7 +147,7 @@ func (c *char) commonA1Trigger() {
 func (c *char) a1Tapestry() {
 	c.commonA1Trigger()
 
-	c.Core.Log.NewEvent("a1 tapestry triggered", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("a1 tapestry triggered", glog.LogCharacterEvent, c.Index())
 	c.AddStatus(a1SeizeTheMomentKey, a1SeizeTheMomentDuration, true)
 	c.a1AttackCount = 0
 }
@@ -156,9 +155,9 @@ func (c *char) a1Tapestry() {
 func (c *char) a1Tailoring() {
 	c.commonA1Trigger()
 
-	c.Core.Log.NewEvent("a1 tailoring triggered", glog.LogCharacterEvent, c.Index)
+	c.Core.Log.NewEvent("a1 tailoring triggered", glog.LogCharacterEvent, c.Index())
 	c.Core.Player.AddWeaponInfuse(
-		c.Index,
+		c.Index(),
 		a1GeoInfusionKey,
 		attributes.Geo,
 		a1GeoInfusionDuration,
@@ -185,9 +184,8 @@ func (c *char) a4() {
 	}
 	c.a4Buff = make([]float64, attributes.EndStatType)
 	c.a4Buff[attributes.GeoP] = 0.20
-	c.Core.Events.Subscribe(event.OnConstructSpawned, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnConstructSpawned, func(args ...any) {
 		c.applyA4Buff()
-		return false
 	}, a4BuffKey)
 }
 
@@ -196,8 +194,8 @@ func (c *char) applyA4Buff() {
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(a4BuffKey, a4Duration),
 		AffectedStat: attributes.GeoP,
-		Amount: func() ([]float64, bool) {
-			return c.a4Buff, true
+		Amount: func() []float64 {
+			return c.a4Buff
 		},
 	})
 }

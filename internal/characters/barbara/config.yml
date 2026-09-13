@@ -1,42 +1,182 @@
-package_name: barbara
-genshin_id: 10000014
-key: barbara
-action_param_keys:
-    low_plunge:
-        - param: "collision"
-    high_plunge:
-        - param: "collision"
-skill_data_mapping:
-    attack:
-        attack_1:
-            - 0 # 1-Hit DMG|{param0:F1P}
-        attack_2:
-            - 1 # 2-Hit DMG|{param1:F1P}
-        attack_3:
-            - 2 # 3-Hit DMG|{param2:F1P}
-        attack_4:
-            - 3 # 4-Hit DMG|{param3:F1P}
-        charge:
-            - 4 # Charged Attack DMG|{param4:P}
-        collision:
-            - 6 # Plunge DMG|{param6:F1P}
-        lowPlunge:
-            - 7 # Low/High Plunge DMG|{param7:P}/{param8:P}
-        highPlunge:
-            - 8 # Low/High Plunge DMG|{param7:P}/{param8:P}
-    skill:
-        prochp:
-            - 3 # HP Regeneration Per Hit|{param2:F2P} Max HP+{param3:I}
-        prochpp:
-            - 2 # HP Regeneration Per Hit|{param2:F2P} Max HP+{param3:I}
-        skill:
-            - 4 # Droplet DMG|{param4:F1P}
-        skillhp:
-            - 1 # Continuous Regeneration|{param0:F2P} Max HP+{param1:I}
-        skillhpp:
-            - 0 # Continuous Regeneration|{param0:F2P} Max HP+{param1:I}
-    burst:
-        bursthp:
-            - 1 # Regeneration|{param0:F1P} Max HP+{param1:I}
-        bursthpp:
-            - 0 # Regeneration|{param0:F1P} Max HP+{param1:I}
+use: pipeline
+kind: character
+name: barbara
+
+shortcuts:
+  - barb
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skillhpp: skill(Continuous Regeneration)
+  - skillhp: skill(Continuous Regeneration|1)
+  - prochpp: skill(HP Regeneration Per Hit)
+  - prochp: skill(HP Regeneration Per Hit|1)
+  - skill: skill(Droplet DMG)
+
+  - bursthpp: burst(Regeneration)
+  - bursthp: burst(Regeneration|1)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/ZlKREU4NZPA
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/jhUlKRvocbE
+      video_credit: phaZZi#6461
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/Rqo_MotgnfE
+      video_credit: phaZZi#6461
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/ZnRYEUid2GM
+      video_credit: phaZZi#6461
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/uZkg013mFe8
+      video_credit: phaZZi#6461
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/vRerlysyCOY
+      video_credit: phaZZi#6461
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/IIo72mLqbWU
+      video_credit: phaZZi#6461
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/K3QyNxUKVrA
+      video_credit: phaZZi#6461
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/7nZbuE0f4Kw
+      video_credit: phaZZi#6461
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/o9iruWfLM7w
+      video_credit: phaZZi#6461
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/-YCbJLFqZbI
+      video_credit: phaZZi#6461
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/eHC7cO5OqwM
+      video_credit: phaZZi#6461
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/dKmJ1HZGwgw
+      video_credit: phaZZi#6461
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/FYOwXVjh-5I
+      video_credit: phaZZi#6461
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/9ibZzREPpHo
+      video_credit: phaZZi#6461
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/QYRg0a7eMkg
+      video_credit: phaZZi#6461
+    - count: https://docs.google.com/spreadsheets/d/1R_OywCjjSW8PeYPPniBLVnoTZ8uQ2L_GLKYmQvFTHV0/edit?usp=sharing
+      count_credit: phaZZi#6461
+      video: https://youtu.be/_eBvsIVgbDU
+      video_credit: phaZZi#6461
+    - count: https://docs.google.com/spreadsheets/d/1zCwdd6_KYFqMD4OQ_llGLdDshoZTu_1pmAMysxGDQvs/edit?usp=sharing
+      count_credit: Kolibri#7675
+      video: https://youtu.be/KlgZlck5kQQ?t=248
+      video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/16ZDmEBZOD4xeUcodxFJVuLC7IIqM9LGLilkct65mElg/edit?usp=sharing
+      count_credit: kolibri._.
+      video: https://youtu.be/rCqwu5K1mjc
+      video_credit: kolibri._.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: N2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: N3
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1
+
+      - name: N4
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: Player
+        offset: [0, 5]
+        radius: 3
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        radius: 1.5
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        radius: 3.5
+
+  - name: low_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Previous action must be a jump buffed via Xianyun's burst for example.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: skill
+    hitbox:
+      - name: E-Droplet
+        shape: Circle
+        center: Player
+        radius: 3
+
+      - name: E-MelodyLoop-1.5s-Timer
+        note: Melody Loop mechanics (collision) are not properly implemented yet.
+        shape: Circle
+        center: Player
+        radius: 1
+        hitlag: {time: 0.05, scale: 0.05, defense_halt: true, deployable: true}
+
+  - name: burst
+
+  - name: walk
+    note: Everything except charge and burst followed by walk has proper frames.
