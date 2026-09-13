@@ -20,7 +20,7 @@
 		},
 		{
 			"binding": "GCSIM_ASSETS",
-			"bucket_name": "assets"
+			"bucket_name": "gcsim"
 		}
 	],
 	"env": {
@@ -41,7 +41,7 @@
 				},
 				{
 					"binding": "GCSIM_ASSETS",
-					"bucket_name": "assets"
+					"bucket_name": "gcsim"
 				}
 			]
 		}
