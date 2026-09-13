@@ -10,10 +10,17 @@
 		"run_worker_first": true,
 		"not_found_handling": "single-page-application"
 	},
+	// ASSET_SOURCE_HOSTS (per-type ordered mihoyo source hosts, JSON) is managed
+	// in the Cloudflare dashboard, not here. The deploy uses --keep-vars so it is
+	// not wiped; if unset the worker falls back to hardcoded mihoyo defaults.
 	"r2_buckets": [
 		{
 			"binding": "GCSIM_WASM",
 			"bucket_name": "wasm"
+		},
+		{
+			"binding": "GCSIM_ASSETS",
+			"bucket_name": "assets"
 		}
 	],
 	"env": {
@@ -31,6 +38,10 @@
 				{
 					"binding": "GCSIM_WASM",
 					"bucket_name": "wasm"
+				},
+				{
+					"binding": "GCSIM_ASSETS",
+					"bucket_name": "assets"
 				}
 			]
 		}
