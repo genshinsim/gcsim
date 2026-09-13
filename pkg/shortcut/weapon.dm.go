@@ -106,6 +106,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"everlastingmoonglow":             keys.EverlastingMoonglow,
 	"donut":                           keys.EverlastingMoonglow,
 	"moonglow":                        keys.EverlastingMoonglow,
+	"exaiphanesblade":                 keys.ExaiphanesBlade,
 	"eyeofperception":                 keys.EyeOfPerception,
 	"fadingtwilight":                  keys.FadingTwilight,
 	"twilight":                        keys.FadingTwilight,
