@@ -10,31 +10,36 @@ import (
 )
 
 var (
-	skillHitmark = 21
+	skillHitmark = 9
 	skillFrames  []int
 
 	fastSkill = "fast-skill"
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(43)
-	skillFrames[action.ActionDash] = 31
+	skillFrames = frames.InitAbilSlice(137) // E -> E
+	skillFrames[action.ActionAttack] = 32
+	skillFrames[action.ActionBurst] = 31
+	skillFrames[action.ActionDash] = 27
 	skillFrames[action.ActionJump] = 32
-	skillFrames[action.ActionSwap] = 42
+	skillFrames[action.ActionWalk] = 38
+	skillFrames[action.ActionSwap] = 33
 }
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index(),
-		Abil:           "Thunderbolt Rush",
-		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
-		AttackTag:      attacks.AttackTagElementalArt,
-		ICDTag:         attacks.ICDTagNone,
-		ICDGroup:       attacks.ICDGroupDefault,
-		StrikeType:     attacks.StrikeTypeSlash,
-		Element:        attributes.Electro,
-		Durability:     25,
-		Mult:           skill[c.TalentLvlSkill()],
+		ActorIndex:         c.Index(),
+		Abil:               "Thunderbolt Rush",
+		AdditionalTags:     []attacks.AttackTag{attacks.AttackTagNightsoul},
+		AttackTag:          attacks.AttackTagElementalArt,
+		ICDTag:             attacks.ICDTagNone,
+		ICDGroup:           attacks.ICDGroupDefault,
+		StrikeType:         attacks.StrikeTypeSpear,
+		Element:            attributes.Electro,
+		Durability:         25,
+		Mult:               skill[c.TalentLvlSkill()],
+		CanBeDefenseHalted: true,
+		IsDeployable:       true,
 	}
 
 	c.Core.QueueAttack(
@@ -43,7 +48,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			c.Core.Combat.Player(),
 			c.Core.Combat.PrimaryTarget(),
 			nil,
-			1,
+			0.8,
 		),
 		skillHitmark,
 		skillHitmark,
@@ -51,7 +56,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	)
 
 	c.AddStatus(fastSkill, 5*60, true)
-	c.enterNightsoul(c.nightsoulState.MaxPoints)
+	c.Core.Tasks.Add(func() {
+		c.enterNightsoul(c.nightsoulState.MaxPoints)
+	}, 3)
 	c.particleGenerated = false
 	c.SetCD(action.ActionSkill, 16*60)
 
@@ -78,14 +85,14 @@ func (c *char) particleCB(a info.AttackCB) {
 
 func (c *char) enterNightsoul(points float64) {
 	c.nightsoulSrc = c.Core.F
-	c.nightsoulState.EnterBlessing(points)
+	c.nightsoulState.EnterTimedBlessing(points, 16*60, c.exitNightsoul)
 	c.nightsoulPointReduceTask(c.nightsoulSrc)
-	c.setNightsoulExitTimer(16 * 60)
 }
 
 func (c *char) exitNightsoul() {
 	c.nightsoulSrc = -1
 	c.nightsoulState.ExitBlessing()
+	c.nightsoulState.ClearPoints()
 	c.DeleteStatus(burstStatus)
 	c.DeleteStatus(a1Status)
 }
@@ -103,22 +110,11 @@ func (c *char) nightsoulPointReduceTask(src int) {
 		c.nightsoulState.ConsumePoints(points)
 		c.c1(points)
 		c.updateATKBuff()
-		if c.nightsoulState.Points() < 0.001 {
+		if c.nightsoulState.Points() <= 0.2 {
 			c.exitNightsoul()
 			return
 		}
 
 		c.nightsoulPointReduceTask(src)
 	}, 60*tickInterval)
-}
-
-func (c *char) setNightsoulExitTimer(duration int) {
-	src := c.nightsoulSrc
-	c.QueueCharTask(func() {
-		if c.nightsoulSrc != src {
-			return
-		}
-		c.nightsoulState.ClearPoints()
-		c.exitNightsoul()
-	}, duration)
 }
