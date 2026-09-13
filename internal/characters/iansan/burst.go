@@ -7,6 +7,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -29,10 +30,10 @@ const (
 )
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
-	ai := combat.AttackInfo{
-		ActorIndex:     c.Index,
+	ai := info.AttackInfo{
+		ActorIndex:     c.Index(),
 		Abil:           "The Three Principles of Power",
-		AdditionalTags: []attacks.AdditionalTag{attacks.AdditionalTagNightsoul},
+		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
 		AttackTag:      attacks.AttackTagElementalBurst,
 		ICDTag:         attacks.ICDTagNone,
 		ICDGroup:       attacks.ICDGroupDefault,
@@ -106,9 +107,9 @@ func (c *char) applyBuffTask(src int) {
 		active := c.Core.Player.ActiveChar()
 		active.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag(burstBuffStatus, 1*60),
-			Amount: func() ([]float64, bool) {
+			Amount: func() []float64 {
 				c.c2ATKBuff(active)
-				return c.burstBuff, true
+				return c.burstBuff
 			},
 		})
 		c.applyBuffTask(src)
@@ -121,16 +122,17 @@ func (c *char) updateATKBuff() {
 		return
 	}
 
-	rate := highATK[c.TalentLvlBurst()]
+	rate := highATK
 	if c.nightsoulState.Points() < 42 {
-		rate = lowATK[c.TalentLvlBurst()] * c.nightsoulState.Points()
+		rate = lowATK * c.nightsoulState.Points()
 	}
 	c.burstBuff[attributes.ATK] = min(c.TotalAtk()*rate, maxATK[c.TalentLvlBurst()])
 }
 
-func (c *char) burstMovementRestore(args ...interface{}) bool {
+func (c *char) burstMovementRestore(args ...interface{}) {
 	if !c.StatusIsActive(burstStatus) {
-		return true
+		c.Core.Events.Unsubscribe(event.OnActionExec, burstBuffStatus)
+		return
 	}
 
 	param := args[2].(map[string]int)
@@ -138,5 +140,4 @@ func (c *char) burstMovementRestore(args ...interface{}) bool {
 	if ok {
 		c.burstRestoreNS += movement
 	}
-	return false
 }

@@ -784,6 +784,7 @@
     },
     "iansan": {
       "id": 10000110,
+      "sub_id": 11001,
       "key": "iansan",
       "rarity": "QUALITY_PURPLE",
       "body": "BODY_LOLI",
@@ -796,8 +797,7 @@
         "burst": 11105,
         "attack": 11101,
         "burst_energy_cost": 70
-      },
-      "name_text_hash_map ": "3120492514"
+      }
     },
     "ifa": {
       "id": 10000113,

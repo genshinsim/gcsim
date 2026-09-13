@@ -2,8 +2,8 @@ package iansan
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
-	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
@@ -36,10 +36,10 @@ func (c *char) c2ATKBuff(char *character.CharWrapper) {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	if c.Index == c.Core.Player.Active() {
+	if c.Index() == c.Core.Player.Active() {
 		return
 	}
-	if char.Index != c.Core.Player.Active() {
+	if char.Index() != c.Core.Player.Active() {
 		return
 	}
 	c.burstBuff[attributes.ATKP] = 0.3
@@ -50,15 +50,14 @@ func (c *char) c4() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnBurst, func(args ...interface{}) bool {
+	c.Core.Events.Subscribe(event.OnBurst, func(args ...interface{}) {
 		if !c.StatusIsActive(burstStatus) {
-			return false
+			return
 		}
-		if c.Index == c.Core.Player.Active() {
-			return false
+		if c.Index() == c.Core.Player.Active() {
+			return
 		}
 		c.c4Stacks = 2
-		return false
 	}, "iansan-c4")
 }
 
@@ -83,8 +82,8 @@ func (c *char) c6() {
 	active := c.Core.Player.ActiveChar()
 	active.AddAttackMod(character.AttackMod{
 		Base: modifier.NewBaseWithHitlag(c6Status, 3*60),
-		Amount: func(atk *combat.AttackEvent, t combat.Target) ([]float64, bool) {
-			return m, true
+		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+			return m
 		},
 	})
 }
