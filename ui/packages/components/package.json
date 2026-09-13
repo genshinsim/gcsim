@@ -6,6 +6,7 @@
 	"dependencies": {
 		"@blueprintjs/core": "^4.11.4",
 		"@blueprintjs/popover2": "^1.7.4",
+		"@cf-wasm/photon": "^0.4.0",
 		"@gcsim/data": "workspace:^",
 		"@gcsim/localization": "workspace:^",
 		"@gcsim/types": "workspace:^",

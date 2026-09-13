@@ -9,6 +9,22 @@ import {
 import { elementBackgrounds } from "./backgrounds";
 import { GRAY_400, GRAY_600, GRAY_700, levelColor, PRIMARY_BG } from "./colors";
 import { FONT_FAMILY } from "./fonts";
+// Portrait layout constants (logical px), shared with the Photon compositor so
+// the layered and composited renders place every layer identically.
+import {
+	ARTIFACT_BOTTOM,
+	ARTIFACT_HALF,
+	ARTIFACT_LEFT,
+	ARTIFACT_SIZE,
+	AVATAR_MARGIN_TOP,
+	AVATAR_SIZE,
+	ICON_OPACITY,
+	PLACEHOLDER_OPACITY,
+	WEAPON_BOTTOM,
+	WEAPON_RIGHT,
+	WEAPON_SIZE,
+	WIP_TOP,
+} from "./portraitGeometry";
 
 // Live badge accent colors (text-geo / text-electro), read from the rendered
 // PreviewCard.
@@ -27,6 +43,11 @@ type PortraitProps = {
 	height: number;
 	margin: number;
 	resolveAsset: ResolveAsset;
+	// Pre-composited portrait image (bg + avatar + weapon + artifacts, with the
+	// white outline and two-set slice baked in). When set, the imagery renders as
+	// a single <img> and only the text badges are layered on top; when absent, the
+	// portrait is stacked layer-by-layer through resolveAsset (browser/Storybook).
+	composited?: string;
 };
 
 // A single character portrait: avatar, weapon, artifact set(s) and level/cons
@@ -40,6 +61,7 @@ const Portrait = ({
 	height,
 	margin,
 	resolveAsset,
+	composited,
 }: PortraitProps) => {
 	const base = {
 		display: "flex" as const,
@@ -54,21 +76,29 @@ const Portrait = ({
 
 	// Empty slot.
 	if (char === null) {
+		// Composited: the placeholder is already baked into the portrait image.
+		if (composited) {
+			return (
+				<div style={base}>
+					<img src={composited} width={width} height={height} alt="" />
+				</div>
+			);
+		}
 		return (
 			<div
 				style={{
 					...base,
-					backgroundColor: "#9ca3af",
+					backgroundColor: GRAY_400,
 					alignItems: "center",
 					justifyContent: "center",
 				}}
 			>
 				<img
 					src={resolveAsset(NAHIDA_PLACEHOLDER_PATH)}
-					width={96}
-					height={96}
+					width={AVATAR_SIZE}
+					height={AVATAR_SIZE}
 					alt=""
-					style={{ objectFit: "contain", opacity: 0.5 }}
+					style={{ objectFit: "contain", opacity: PLACEHOLDER_OPACITY }}
 				/>
 			</div>
 		);
@@ -92,6 +122,92 @@ const Portrait = ({
 		fontWeight: 700,
 	};
 
+	// Text badges, shared by the layered and composited renders.
+	const consBadge = (
+		<div
+			style={{
+				...badgeStyle,
+				position: "absolute",
+				left: 0,
+				top: 0,
+				borderTopLeftRadius: 4,
+				borderBottomRightRadius: 8,
+			}}
+		>
+			<span style={{ color: CONS_COLOR }}>{`C${char.cons ?? 0}`}</span>
+			{char.weapon ? (
+				<span
+					style={{ color: REFINE_COLOR }}
+				>{`R${char.weapon.refine ?? 0}`}</span>
+			) : null}
+		</div>
+	);
+
+	const levelBadge = (
+		<div
+			style={{
+				...badgeStyle,
+				position: "absolute",
+				right: 0,
+				top: 0,
+				alignItems: "center",
+				borderTopRightRadius: 4,
+				borderBottomLeftRadius: 8,
+			}}
+		>
+			<span style={{ color: GRAY_400, fontWeight: 400 }}>lvl</span>
+			<span style={{ color: levelColor(i) }}>{char.level}</span>
+		</div>
+	);
+
+	// incomplete build: full-width WIP bar across the portrait (top-1/3).
+	const wipOverlay = invalid ? (
+		<div
+			style={{
+				position: "absolute",
+				top: WIP_TOP,
+				left: 0,
+				width,
+				display: "flex",
+				alignItems: "center",
+				justifyContent: "center",
+				padding: "6px 0",
+				border: "1px solid transparent",
+				backgroundColor: PRIMARY_BG,
+			}}
+		>
+			<span
+				style={{
+					color: "#ef4444",
+					fontFamily: FONT_FAMILY,
+					fontWeight: 700,
+					fontSize: 12,
+					lineHeight: "16px",
+					textTransform: "uppercase",
+				}}
+			>
+				WIP
+			</span>
+		</div>
+	) : null;
+
+	// Composited: one flat image for all imagery, text badges layered on top.
+	if (composited) {
+		return (
+			<div style={base}>
+				<img
+					src={composited}
+					width={width}
+					height={height}
+					alt={char.name ?? ""}
+				/>
+				{consBadge}
+				{levelBadge}
+				{wipOverlay}
+			</div>
+		);
+	}
+
 	return (
 		<div
 			style={{
@@ -112,53 +228,53 @@ const Portrait = ({
 			{/* avatar (h-24, top-aligned under the card's pt-2) */}
 			<img
 				src={resolveAsset(avatarPath(char.name))}
-				width={96}
-				height={96}
+				width={AVATAR_SIZE}
+				height={AVATAR_SIZE}
 				alt={char.name ?? ""}
-				style={{ objectFit: "contain", marginTop: 8 }}
+				style={{ objectFit: "contain", marginTop: AVATAR_MARGIN_TOP }}
 			/>
 
 			{/* weapon */}
 			{char.weapon?.name ? (
 				<img
 					src={resolveAsset(weaponPath(char.weapon.name))}
-					width={55}
-					height={55}
+					width={WEAPON_SIZE}
+					height={WEAPON_SIZE}
 					alt=""
 					style={{
 						position: "absolute",
-						bottom: 4,
-						right: -4,
+						bottom: WEAPON_BOTTOM,
+						right: WEAPON_RIGHT,
 						objectFit: "contain",
-						opacity: 0.85,
+						opacity: ICON_OPACITY,
 					}}
 				/>
 			) : null}
 
-			{/* artifact set(s) — 35x35, or two 17.5-wide halves for a 2-set build */}
+			{/* artifact set(s) — full flower, or two half-width halves for a 2-set build */}
 			{sets.length > 0 ? (
 				<div
 					style={{
 						position: "absolute",
-						bottom: 1,
-						left: 1,
+						bottom: ARTIFACT_BOTTOM,
+						left: ARTIFACT_LEFT,
 						display: "flex",
 						flexDirection: "row",
-						opacity: 0.85,
+						opacity: ICON_OPACITY,
 					}}
 				>
 					<img
 						src={resolveAsset(artifactFlowerPath(sets[0]))}
-						width={twoSets || isHalfWidthSet ? 17.5 : 35}
-						height={35}
+						width={twoSets || isHalfWidthSet ? ARTIFACT_HALF : ARTIFACT_SIZE}
+						height={ARTIFACT_SIZE}
 						alt=""
 						style={{ objectFit: "cover" }}
 					/>
 					{twoSets ? (
 						<img
 							src={resolveAsset(artifactFlowerPath(sets[1]))}
-							width={17.5}
-							height={35}
+							width={ARTIFACT_HALF}
+							height={ARTIFACT_SIZE}
 							alt=""
 							style={{ objectFit: "cover" }}
 						/>
@@ -166,71 +282,9 @@ const Portrait = ({
 				</div>
 			) : null}
 
-			{/* cons / refine (top-left) */}
-			<div
-				style={{
-					...badgeStyle,
-					position: "absolute",
-					left: 0,
-					top: 0,
-					borderTopLeftRadius: 4,
-					borderBottomRightRadius: 8,
-				}}
-			>
-				<span style={{ color: CONS_COLOR }}>{`C${char.cons ?? 0}`}</span>
-				{char.weapon ? (
-					<span
-						style={{ color: REFINE_COLOR }}
-					>{`R${char.weapon.refine ?? 0}`}</span>
-				) : null}
-			</div>
-
-			{/* level (top-right) */}
-			<div
-				style={{
-					...badgeStyle,
-					position: "absolute",
-					right: 0,
-					top: 0,
-					alignItems: "center",
-					borderTopRightRadius: 4,
-					borderBottomLeftRadius: 8,
-				}}
-			>
-				<span style={{ color: GRAY_400, fontWeight: 400 }}>lvl</span>
-				<span style={{ color: levelColor(i) }}>{char.level}</span>
-			</div>
-
-			{/* incomplete build: full-width WIP bar across the portrait (top-1/3) */}
-			{invalid ? (
-				<div
-					style={{
-						position: "absolute",
-						top: "33%",
-						left: 0,
-						width,
-						display: "flex",
-						alignItems: "center",
-						justifyContent: "center",
-						padding: "6px 0",
-						border: "1px solid transparent",
-						backgroundColor: PRIMARY_BG,
-					}}
-				>
-					<span
-						style={{
-							color: "#ef4444",
-							fontFamily: FONT_FAMILY,
-							fontWeight: 700,
-							fontSize: 12,
-							lineHeight: "16px",
-							textTransform: "uppercase",
-						}}
-					>
-						WIP
-					</span>
-				</div>
-			) : null}
+			{consBadge}
+			{levelBadge}
+			{wipOverlay}
 		</div>
 	);
 };
@@ -241,6 +295,8 @@ type Props = {
 	height: number;
 	margin: number;
 	resolveAsset: ResolveAsset;
+	// Pre-composited portrait images, one per character slot (see Portrait).
+	composited?: readonly string[];
 };
 
 // The four-portrait row (flexbox, replacing the live card's CSS grid). Each
@@ -251,6 +307,7 @@ export const Portraits = ({
 	height,
 	margin,
 	resolveAsset,
+	composited,
 }: Props) => {
 	const chars = data.character_details ?? [];
 	return (
@@ -271,6 +328,7 @@ export const Portraits = ({
 					height={height}
 					margin={margin}
 					resolveAsset={resolveAsset}
+					composited={composited?.[i] ?? undefined}
 				/>
 			))}
 		</div>

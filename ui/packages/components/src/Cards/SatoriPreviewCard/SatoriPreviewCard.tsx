@@ -7,6 +7,7 @@ import { SLATE_700, SLATE_800 } from "./colors";
 import { FONT_FAMILY } from "./fonts";
 import { Metadata } from "./Metadata";
 import { Portraits } from "./Portraits";
+import { PORTRAIT_H, PORTRAIT_W } from "./portraitGeometry";
 
 // Default asset host, matching the live asset URL scheme. Absolute so Satori
 // (which has no dev-server proxy) can fetch the images at render time.
@@ -20,9 +21,20 @@ export type SatoriPreviewCardProps = {
 	 * Injectable asset-resolver seam. Maps a relative asset path (see assetPaths)
 	 * to an <img src>. Defaults to `${assetBase}/${path}`, so Satori fetches the
 	 * assets itself; the edge worker overrides it to return pre-fetched `data:`
-	 * URIs. Does not affect layout.
+	 * URIs. Does not affect layout. Ignored for portraits when `portraits` is set.
 	 */
 	resolveAsset?: ResolveAsset;
+	/**
+	 * Pre-composited portrait images, one per character slot (order matches
+	 * data.character_details). When provided, each portrait's imagery (element
+	 * background + avatar + weapon + artifact set(s), with the white outline and
+	 * two-set slice baked in) renders as a single <img> and only the text badges
+	 * are layered on top. Produced by the Worker's Photon compositor; absent in
+	 * the browser/Storybook render, which stacks layers via resolveAsset. This is
+	 * all-or-nothing: when set, the compositor always returns one image per slot
+	 * (empty slots included), so there is no mixed per-slot layered fallback.
+	 */
+	portraits?: readonly string[];
 };
 
 // Fixed card geometry (540x250), mirroring the live PreviewCard's measured
@@ -32,9 +44,8 @@ const CARD_W = 540;
 const CARD_H = 250;
 const INSET = 4; // the live card's m-1 / ml-1 / mr-1 / mb-1
 
-// Portrait row: 4 portraits, each 127x106 with a 4px margin (grid-cols-4 + m-1).
-const PORTRAIT_W = 127;
-const PORTRAIT_H = 106;
+// Portrait row: 4 portraits, each PORTRAIT_W x PORTRAIT_H (from ./portraitGeometry)
+// with a 4px margin (grid-cols-4 + m-1).
 const PORTRAIT_MARGIN = 4;
 
 // Graph row: timeline + histogram are wide (w-48 shrunk to 154), the two pies
@@ -61,6 +72,7 @@ export const SatoriPreviewCard = ({
 	data,
 	assetBase = DEFAULT_ASSET_BASE,
 	resolveAsset = (path) => `${assetBase}/${path}`,
+	portraits,
 }: SatoriPreviewCardProps) => {
 	return (
 		<div
@@ -79,6 +91,7 @@ export const SatoriPreviewCard = ({
 				height={PORTRAIT_H}
 				margin={PORTRAIT_MARGIN}
 				resolveAsset={resolveAsset}
+				composited={portraits}
 			/>
 
 			<Metadata data={data} />
