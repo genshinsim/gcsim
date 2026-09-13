@@ -19,6 +19,10 @@ export type ResolvedAssets = {
 	// resolved bytes as a `data:` URI. A missing asset resolves to the Worker's
 	// misc/default.png placeholder bytes (same as /api/assets/* serves).
 	resolve: (path: string) => string;
+	// Maps a relative asset path to the resolved raw bytes. Same resolution as
+	// `resolve`, but undecoded — the portrait compositor needs the raw PNG bytes
+	// (not a `data:` URI) to feed Photon.
+	resolveBytes: (path: string) => Uint8Array | undefined;
 	// True when any asset resolved to the placeholder (X-Gcsim-Asset: fallback) —
 	// the render must not be cached so it re-renders once the asset lands.
 	usedFallback: boolean;
@@ -36,6 +40,7 @@ export async function fetchCardAssets(
 	ctx: ExecutionContext,
 ): Promise<ResolvedAssets> {
 	const map = new Map<string, string>();
+	const bytes = new Map<string, Uint8Array>();
 	let usedFallback = false;
 
 	await Promise.all(
@@ -59,6 +64,7 @@ export async function fetchCardAssets(
 			}
 			const buffer = await resp.arrayBuffer();
 			const contentType = resp.headers.get("Content-Type") ?? "image/png";
+			bytes.set(path, new Uint8Array(buffer));
 			map.set(
 				path,
 				`data:${contentType};base64,${base64FromArrayBuffer(buffer)}`,
@@ -72,6 +78,7 @@ export async function fetchCardAssets(
 	// broken deploy — and such a render is uncacheable (usedFallback) regardless.
 	return {
 		resolve: (path) => map.get(path) ?? "",
+		resolveBytes: (path) => bytes.get(path),
 		usedFallback,
 	};
 }

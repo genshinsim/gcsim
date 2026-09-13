@@ -1,5 +1,6 @@
 import { enumerateAssetPaths } from "@gcsim/components/src/Cards/SatoriPreviewCard/assetPaths";
 import type { SatoriFont } from "@gcsim/components/src/Cards/SatoriPreviewCard/fonts";
+import { compositePortraits } from "@gcsim/components/src/Cards/SatoriPreviewCard/portraitCompositor";
 // Deep import (not the package root) so bundling pulls only the card subtree,
 // not the whole component library (which imports .png/.css assets).
 import { SatoriPreviewCard } from "@gcsim/components/src/Cards/SatoriPreviewCard/SatoriPreviewCard";
@@ -25,11 +26,15 @@ const CARD_H = 250;
 
 // Supersample factor. workers-og rasterises satori's SVG at 1:1 with the card's
 // logical width, so at the card's native 540x250 the PNG is soft once an
-// unfurler scales it up. Rendering the (vector) card at 2x — 1080x500 — and
+// unfurler scales it up. Rendering the (vector) card at 3x — 1620x750 — and
 // letting clients display it at the 540x250 the og:image meta advertises keeps
-// the raster crisp. Pure resolution bump: the card layout is unchanged, only
-// wrapped in a scaled container.
-const SCALE = 2;
+// the raster crisp and gives Discord (which downscales the source) a sharper
+// image. Portraits are composited at this same scale so they aren't the soft
+// bottleneck. Single knob: tune down if render latency is too high. Source
+// assets are 256x256 and avatars logical 96px, so 3x (~288px) mildly
+// interpolates avatars while weapons/flowers never upscale — an accepted
+// tradeoff for crisper vector text/chart edges.
+const SCALE = 3;
 
 // Long-lived edge cache. Satori rendering is far more expensive than the old
 // backend PNG proxy, so render-once/serve-many matters more here, not less.
@@ -100,6 +105,12 @@ export async function handleOgPreview(
 	// with a missing asset isn't frozen for the full TTL.
 	const assets = await fetchCardAssets(enumerateAssetPaths(result), env, ctx);
 
+	// Pre-composite each portrait (bg + avatar + weapon + artifact set(s)) into
+	// one flat PNG per slot, with the white icon outline and two-set slice baked
+	// in at raster level — Satori can express neither. Runs at the supersample
+	// scale so portraits match the card's crispness.
+	const portraits = compositePortraits(result, assets.resolveBytes, SCALE);
+
 	const options: ImageResponseOptions = {
 		width: CARD_W * SCALE,
 		height: CARD_H * SCALE,
@@ -116,7 +127,11 @@ export async function handleOgPreview(
 				transformOrigin: "top left",
 			}}
 		>
-			<SatoriPreviewCard data={result} resolveAsset={assets.resolve} />
+			<SatoriPreviewCard
+				data={result}
+				resolveAsset={assets.resolve}
+				portraits={portraits}
+			/>
 		</div>,
 		options,
 	);
