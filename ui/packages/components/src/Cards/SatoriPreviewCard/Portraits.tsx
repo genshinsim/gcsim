@@ -1,4 +1,11 @@
 import type { model } from "@gcsim/types";
+import {
+	artifactFlowerPath,
+	avatarPath,
+	NAHIDA_PLACEHOLDER_PATH,
+	type ResolveAsset,
+	weaponPath,
+} from "./assetPaths";
 import { elementBackgrounds } from "./backgrounds";
 import { GRAY_400, GRAY_600, GRAY_700, levelColor, PRIMARY_BG } from "./colors";
 import { FONT_FAMILY } from "./fonts";
@@ -19,11 +26,11 @@ type PortraitProps = {
 	width: number;
 	height: number;
 	margin: number;
-	assetBase: string;
+	resolveAsset: ResolveAsset;
 };
 
 // A single character portrait: avatar, weapon, artifact set(s) and level/cons
-// badges. All imagery is remote URL <img> behind the injected asset base; the
+// badges. Imagery <img> srcs come from the injected resolveAsset seam; the
 // element background is a pre-blended bundled image (see ./backgrounds).
 const Portrait = ({
 	char,
@@ -32,7 +39,7 @@ const Portrait = ({
 	width,
 	height,
 	margin,
-	assetBase,
+	resolveAsset,
 }: PortraitProps) => {
 	const base = {
 		display: "flex" as const,
@@ -57,7 +64,7 @@ const Portrait = ({
 				}}
 			>
 				<img
-					src={`${assetBase}/misc/nahida.png`}
+					src={resolveAsset(NAHIDA_PLACEHOLDER_PATH)}
 					width={96}
 					height={96}
 					alt=""
@@ -104,7 +111,7 @@ const Portrait = ({
 		>
 			{/* avatar (h-24, top-aligned under the card's pt-2) */}
 			<img
-				src={`${assetBase}/avatar/${char.name}.png`}
+				src={resolveAsset(avatarPath(char.name))}
 				width={96}
 				height={96}
 				alt={char.name ?? ""}
@@ -114,7 +121,7 @@ const Portrait = ({
 			{/* weapon */}
 			{char.weapon?.name ? (
 				<img
-					src={`${assetBase}/weapons/${char.weapon.name}.png`}
+					src={resolveAsset(weaponPath(char.weapon.name))}
 					width={55}
 					height={55}
 					alt=""
@@ -141,7 +148,7 @@ const Portrait = ({
 					}}
 				>
 					<img
-						src={`${assetBase}/artifacts/${sets[0]}_flower.png`}
+						src={resolveAsset(artifactFlowerPath(sets[0]))}
 						width={twoSets || isHalfWidthSet ? 17.5 : 35}
 						height={35}
 						alt=""
@@ -149,7 +156,7 @@ const Portrait = ({
 					/>
 					{twoSets ? (
 						<img
-							src={`${assetBase}/artifacts/${sets[1]}_flower.png`}
+							src={resolveAsset(artifactFlowerPath(sets[1]))}
 							width={17.5}
 							height={35}
 							alt=""
@@ -233,7 +240,7 @@ type Props = {
 	width: number;
 	height: number;
 	margin: number;
-	assetBase: string;
+	resolveAsset: ResolveAsset;
 };
 
 // The four-portrait row (flexbox, replacing the live card's CSS grid). Each
@@ -243,7 +250,7 @@ export const Portraits = ({
 	width,
 	height,
 	margin,
-	assetBase,
+	resolveAsset,
 }: Props) => {
 	const chars = data.character_details ?? [];
 	return (
@@ -263,7 +270,7 @@ export const Portraits = ({
 					width={width}
 					height={height}
 					margin={margin}
-					assetBase={assetBase}
+					resolveAsset={resolveAsset}
 				/>
 			))}
 		</div>
