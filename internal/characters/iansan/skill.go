@@ -99,6 +99,14 @@ func (c *char) exitNightsoul() {
 	c.DeleteStatus(a1Status)
 }
 
+func (c *char) reduceNightsoulPoints(points float64) {
+	c.nightsoulState.ConsumePoints(points)
+	c.c1(points)
+	if c.nightsoulState.Points() <= 0.2 {
+		c.exitNightsoul()
+	}
+}
+
 func (c *char) nightsoulPointReduceTask(src int) {
 	// reduce 0.6 point every 6f, which is 6 per second
 	const tickInterval = .1
@@ -108,11 +116,8 @@ func (c *char) nightsoulPointReduceTask(src int) {
 			return
 		}
 
-		points := 0.6
-		c.nightsoulState.ConsumePoints(points)
-		c.c1(points)
+		c.reduceNightsoulPoints(0.6)
 		if c.nightsoulState.Points() <= 0.2 {
-			c.exitNightsoul()
 			return
 		}
 
