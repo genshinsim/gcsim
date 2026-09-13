@@ -27,5 +27,11 @@ peerDependencyRules:
     "react-popper>react": "18"
     # react-virtual v2 (old @tanstack/react-virtual) declares react 16/17 only.
     "react-virtual>react": "18"
-    # tsconfck 3.x wants TS 5; monorepo still on TS 4.9 in places. Runs on 4.9.
-    "tsconfck>typescript": "4"
+    # tsconfck's declared typescript peer range predates the TS7 native
+    # compiler; the monorepo standardizes on typescript@7. tsconfck's core
+    # tsconfig parser is self-contained and does not need the peer. Runs on 7.
+    "tsconfck>typescript": "7"
+    # madge declares typescript as an OPTIONAL peer (used only by `pnpm
+    # circular`/`orphans` dev tooling, not build/typecheck/CI). Its range
+    # predates TS7; waived so the workspace's single typescript@7 satisfies it.
+    "madge>typescript": "7"
