@@ -30,6 +30,7 @@
 		"classnames": "^2.3.2",
 		"clsx": "^2.1.0",
 		"d3-scale": "^4.0.2",
+		"d3-shape": "^3.2.0",
 		"i18next": "^23.10.1",
 		"lodash-es": "^4.17.21",
 		"lucide-react": "^0.360.0",
@@ -45,6 +46,7 @@
 	},
 	"devDependencies": {
 		"@types/d3-scale": "^4",
+		"@types/d3-shape": "^3",
 		"@types/lodash-es": "^4",
 		"@types/react": "^18.2.66",
 		"@types/react-dom": "^18.2.22",
