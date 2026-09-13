@@ -92,8 +92,14 @@ const Portrait = ({
 				alignItems: "flex-start",
 				justifyContent: "center",
 				backgroundImage: `url(${portraitBackground(char.element ?? "")})`,
-				backgroundSize: "cover",
-				backgroundPosition: "center",
+				// The bundled backgrounds share the portrait's aspect ratio
+				// (381x318 ~= 127x106), so an exact 100% 100% fill matches the
+				// live card's `cover` with no visible distortion. `cover` +
+				// `center` is avoided on purpose: Satori's pattern-position math
+				// emits x="NaN" y="NaN" for it, which makes the raster tile the
+				// background from 0,0 instead of filling the portrait.
+				backgroundSize: "100% 100%",
+				backgroundRepeat: "no-repeat",
 			}}
 		>
 			{/* avatar (h-24, top-aligned under the card's pt-2) */}
