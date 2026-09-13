@@ -95,7 +95,7 @@ func (r *Reactable) queueStellarSwirl(charIndex int) {
 
 func (r *Reactable) nearbySSwVortex() info.Gadget {
 	for _, g := range r.core.Combat.Gadgets() {
-		if g.GadgetTyp() == info.GadgetTypStellarVortex {
+		if g != nil && g.GadgetTyp() == info.GadgetTypStellarVortex {
 			return g
 		}
 	}
