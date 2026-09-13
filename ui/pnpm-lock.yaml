@@ -457,6 +457,9 @@ importers:
 
   packages/storybook:
     dependencies:
+      '@cf-wasm/photon':
+        specifier: ^0.4.0
+        version: 0.4.0
       '@gcsim/components':
         specifier: workspace:^
         version: link:../components
