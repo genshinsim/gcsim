@@ -16,14 +16,14 @@ export function LatestVersion() {
 		isLoaded: false,
 		text: "",
 		tag: "",
-		portraits: [],
+		portraits: [] as string[],
 	});
 
 	useEffect(() => {
 		axios("https://api.github.com/repos/genshinsim/gcsim/releases/latest")
 			.then((resp: { data }) => {
 				const majorVersion = majorVersionRegex.exec(resp.data.name);
-				let portraits = [];
+				let portraits: string[] = [];
 				if (majorVersion && majorVersion[0]) {
 					portraits = LatestCharactersData[majorVersion[0]] || [];
 				}
@@ -56,7 +56,13 @@ export function LatestVersion() {
 						<div className="flex gap-4">
 							{portraits.map((char) => (
 								<div key={char} className="flex flex-col items-center">
-									<AvatarPortrait char={{ name: char }} hideDetails />
+									<AvatarPortrait
+										char={{ name: char }}
+										i={0}
+										invalid={false}
+										onImageLoaded={() => {}}
+										hideDetails
+									/>
 									{t(`game:character_names.${char}`)}
 								</div>
 							))}

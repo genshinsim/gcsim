@@ -1,15 +1,14 @@
 {
 	"compilerOptions": {
 		"incremental": true,
-		"composite": true,
-		"declaration": true,
 		"target": "ES2022",
 		"module": "ES2022",
-		"moduleResolution": "Node",
+		"moduleResolution": "Bundler",
 		"jsx": "react-jsx",
 		"lib": ["DOM", "DOM.Iterable", "ES2022", "ESNext"],
 		"paths": {
-			"react": ["./node_modules/@types/react"]
+			"react": ["./node_modules/@types/react"],
+			"@ui/*": ["./packages/ui/src/*"]
 		},
 		"resolveJsonModule": true,
 		"esModuleInterop": true,

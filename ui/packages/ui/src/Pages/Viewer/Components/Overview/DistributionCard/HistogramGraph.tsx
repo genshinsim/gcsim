@@ -106,7 +106,7 @@ const Graph = ({
 						numTicks={numVerticalTicks}
 						labelOffset={55}
 						labelProps={
-							specialLocales.includes(i18n.resolvedLanguage)
+							specialLocales.includes(i18n.resolvedLanguage ?? "")
 								? {
 										transform: "scale(1 1) translate(40 160)",
 										style: { writingMode: "vertical-lr" },

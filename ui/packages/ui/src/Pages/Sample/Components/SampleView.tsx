@@ -270,13 +270,12 @@ function SamplerUI({
 			<div className="flex flex-col overflow-x-auto h-[80vh]">
 				<Card className="flex-auto !bg-gray-600 !text-xs min-w-[60rem] ">
 					<AutoSizer disableWidth={true}>
-						{({ height, width }) => (
+						{({ height }) => (
 							<div
 								ref={parentRef}
 								style={{
 									minHeight: "100px",
 									height: height,
-									width: width,
 									overflow: "auto",
 									position: "relative",
 								}}

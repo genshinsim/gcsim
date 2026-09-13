@@ -4,7 +4,8 @@
 	"scripts": {
 		"dev": "vite --host",
 		"build": "vite build",
-		"preview": "pnpm run build && vite preview --host"
+		"preview": "pnpm run build && vite preview --host",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@blueprintjs/core": "^4.11.4",

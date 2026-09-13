@@ -1,7 +1,7 @@
 import { Position, Toaster } from "@blueprintjs/core";
 import axios from "axios";
 import { useContext } from "react";
-import { type ReactI18NextChild, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { AuthContext } from "../Management.context";
 
 export default function DBEntryActions({
@@ -13,7 +13,7 @@ export default function DBEntryActions({
 }) {
 	const { t: translate } = useTranslation();
 
-	const t = (key: string) => translate(key) as ReactI18NextChild; // idk why this is needed
+	const t = (key: string) => translate(key);
 
 	const isAdmin = useContext(AuthContext).isAdmin;
 
@@ -28,9 +28,7 @@ export default function DBEntryActions({
 					className="bp4-button    bp4-intent-primary"
 					rel="noreferrer"
 				>
-					<div className="md:flex hidden">
-						{t("db.openInViewer") as ReactI18NextChild}
-					</div>
+					<div className="md:flex hidden">{t("db.openInViewer")}</div>
 					<div className="flex md:hidden">
 						{
 							<svg

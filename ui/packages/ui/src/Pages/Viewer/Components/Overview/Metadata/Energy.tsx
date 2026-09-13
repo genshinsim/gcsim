@@ -34,14 +34,14 @@ export const Energy = memo(({ energy }: Props) => {
 			<div className="flex flex-row items-center gap-1 font-mono select-none">
 				<Trans i18nKey="result.metadata_energy">
 					<div className="text-xs text-gray-400 pr-1" />
-					<div className="text-sm">{{ p: amount + "p" }}</div>
+					<div className="text-sm">{{ p: amount + "p" } as never}</div>
 					<div className="text-xs text-gray-400" />
 					<div className="text-sm">
-						{{ s: startSec + t("result.seconds_short") }}
+						{{ s: startSec + t("result.seconds_short") } as never}
 					</div>
 					<div className="text-xs text-gray-400" />
 					<div className="text-sm">
-						{{ e: endSec + t("result.seconds_short") }}
+						{{ e: endSec + t("result.seconds_short") } as never}
 					</div>
 				</Trans>
 			</div>

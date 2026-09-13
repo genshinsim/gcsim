@@ -425,17 +425,17 @@ export const Value = {
   wrap(value: any): Value {
     const result = createBaseValue();
     if (value === null) {
-      result.null_value = NullValue.NULL_VALUE;
+      result.nullValue = NullValue.NULL_VALUE;
     } else if (typeof value === "boolean") {
-      result.bool_value = value;
+      result.boolValue = value;
     } else if (typeof value === "number") {
-      result.number_value = value;
+      result.numberValue = value;
     } else if (typeof value === "string") {
-      result.string_value = value;
+      result.stringValue = value;
     } else if (globalThis.Array.isArray(value)) {
-      result.list_value = value;
+      result.listValue = value;
     } else if (typeof value === "object") {
-      result.struct_value = value;
+      result.structValue = value;
     } else if (typeof value !== "undefined") {
       throw new globalThis.Error("Unsupported any value type: " + typeof value);
     }
@@ -443,17 +443,17 @@ export const Value = {
   },
 
   unwrap(message: any): string | number | boolean | Object | null | Array<any> | undefined {
-    if (message.string_value !== undefined) {
-      return message.string_value;
-    } else if (message?.number_value !== undefined) {
-      return message.number_value;
-    } else if (message?.bool_value !== undefined) {
-      return message.bool_value;
-    } else if (message?.struct_value !== undefined) {
-      return message.struct_value as any;
-    } else if (message?.list_value !== undefined) {
-      return message.list_value;
-    } else if (message?.null_value !== undefined) {
+    if (message.stringValue !== undefined) {
+      return message.stringValue;
+    } else if (message?.numberValue !== undefined) {
+      return message.numberValue;
+    } else if (message?.boolValue !== undefined) {
+      return message.boolValue;
+    } else if (message?.structValue !== undefined) {
+      return message.structValue as any;
+    } else if (message?.listValue !== undefined) {
+      return message.listValue;
+    } else if (message?.nullValue !== undefined) {
       return null;
     }
     return undefined;

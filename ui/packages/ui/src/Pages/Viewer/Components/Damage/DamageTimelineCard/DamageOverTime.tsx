@@ -232,7 +232,7 @@ export const DamageOverTimeGraph = ({
 						numTicks={numYTicks}
 						labelOffset={65}
 						labelProps={
-							specialLocales.includes(i18n.resolvedLanguage)
+							specialLocales.includes(i18n.resolvedLanguage ?? "")
 								? {
 										transform: "scale(1 1) translate(56 204)",
 										style: { writingMode: "vertical-lr" },

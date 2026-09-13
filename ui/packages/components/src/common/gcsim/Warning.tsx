@@ -73,7 +73,7 @@ export function Warning({
 			<div className="space-y-3 pb-3 text-s leading-5 text-gray-400">
 				<Trans i18nKey={bodyKey} components={bodyComponents}>
 					<p />
-					<p>{{ rerun: t("viewer.rerun") }}</p>
+					<p>{{ rerun: t("viewer.rerun") } as never}</p>
 					<p className="font-semibold leading-6 text-gray-200" />
 				</Trans>
 			</div>

@@ -12,6 +12,7 @@ export const ActionListTooltip = () => {
 			userActions.setUserSettings({
 				showTips: !settings.showTips,
 				showBuilder: settings.showBuilder,
+				showNameSearch: settings.showNameSearch,
 			}),
 		);
 	};
@@ -65,6 +66,7 @@ export const TeamBuilderTooltip = () => {
 			userActions.setUserSettings({
 				showTips: !settings.showTips,
 				showBuilder: settings.showBuilder,
+				showNameSearch: settings.showNameSearch,
 			}),
 		);
 	};

@@ -92,6 +92,7 @@ export const RenderTooltip = <Datum,>(props: Props<Datum>) => {
 			}}
 		>
 			<Tooltip
+				// @ts-expect-error legacy Blueprint Tooltip props on the migrated Radix Tooltip; predates the migration and is out of scope to rewrite here
 				isOpen={true}
 				enforceFocus={false}
 				autoFocus={false}

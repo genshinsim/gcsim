@@ -45,6 +45,7 @@ export function PageUserAccount() {
 								userActions.setUserSettings({
 									showTips: !user.data.settings.showTips,
 									showBuilder: user.data.settings.showBuilder,
+									showNameSearch: user.data.settings.showNameSearch,
 								}),
 							);
 						}}
@@ -58,6 +59,7 @@ export function PageUserAccount() {
 								userActions.setUserSettings({
 									showTips: user.data.settings.showTips,
 									showBuilder: !user.data.settings.showBuilder,
+									showNameSearch: user.data.settings.showNameSearch,
 								}),
 							);
 						}}
