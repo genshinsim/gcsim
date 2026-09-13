@@ -21,7 +21,9 @@ const NAME_MAPS: Record<AssetType, Record<string, string>> = {
 // Fallback source hosts if ASSET_SOURCE_HOSTS is unset/invalid. Kept in sync
 // with the Go service's mihoyo defaults (cmd/services/assets/main.go).
 const DEFAULT_SOURCE_HOSTS: Record<AssetType, string[]> = {
-	avatar: ["https://upload-os-bbs.mihoyo.com/game_record/genshin/character_icon/"],
+	avatar: [
+		"https://upload-os-bbs.mihoyo.com/game_record/genshin/character_icon/",
+	],
 	weapons: ["https://upload-os-bbs.mihoyo.com/game_record/genshin/equip/"],
 	artifacts: ["https://upload-os-bbs.mihoyo.com/game_record/genshin/equip/"],
 };
@@ -42,7 +44,8 @@ const SPECIAL_KEYS = new Set<string>([
 ]);
 
 const DEFAULT_KEY = "misc/default.png";
-const LONG_CACHE = "max-age=5184000";
+const CACHE_SECONDS = 60 * 24 * 60 * 60; // 60 days
+const LONG_CACHE = `max-age=${CACHE_SECONDS}`;
 const TYPED_RE = /^(avatar|weapons|artifacts)\/(.+)\.png$/;
 
 export async function handleAssets(
@@ -63,7 +66,7 @@ export async function handleAssets(
 
 	const response = typed
 		? await resolveTyped(typed[1] as AssetType, typed[2], subpath, env, ctx)
-		: await serveObject(subpath, env, false);
+		: await serveStatic(subpath, env);
 
 	// Never persist the no-cache fallback for a requested key, so a later
 	// successful fetch can still populate it (matches the Go service).
@@ -84,8 +87,10 @@ async function resolveTyped(
 	ctx: ExecutionContext,
 ): Promise<Response> {
 	// Travelers: serve the bundled special icon, not the mihoyo CDN image.
-	if (type === "avatar" && SPECIAL_KEYS.has(key)) {
-		return serveObject(`special/${key}.png`, env, true);
+	// Checked for every type before the map lookup, matching the Go service.
+	if (SPECIAL_KEYS.has(key)) {
+		const special = await env.GCSIM_ASSETS.get(`special/${key}.png`);
+		return special ? r2Response(special, `special/${key}.png`) : fallback(env);
 	}
 
 	// R2 cache hit.
@@ -150,7 +155,7 @@ async function fetchImage(
 	let resp: Response;
 	try {
 		resp = await fetch(url, {
-			cf: { cacheTtl: 60 * 24 * 60 * 60, cacheEverything: true },
+			cf: { cacheTtl: CACHE_SECONDS, cacheEverything: true },
 		});
 	} catch {
 		return null;
@@ -165,16 +170,12 @@ async function fetchImage(
 	return { body: await resp.arrayBuffer(), contentType };
 }
 
-// Serve an object straight from R2. `fallbackOnMiss` returns default.png (used
-// for the special icons); otherwise a miss is a 404 (matches the Go file server).
-async function serveObject(
-	key: string,
-	env: Env,
-	fallbackOnMiss: boolean,
-): Promise<Response> {
+// Serve a static file straight from R2; a miss is a 404 (matches the Go file
+// server mounted at /api/assets/*).
+async function serveStatic(key: string, env: Env): Promise<Response> {
 	const object = await env.GCSIM_ASSETS.get(key);
 	if (!object) {
-		return fallbackOnMiss ? fallback(env) : new Response("Not Found", { status: 404 });
+		return new Response("Not Found", { status: 404 });
 	}
 	return r2Response(object, key);
 }
