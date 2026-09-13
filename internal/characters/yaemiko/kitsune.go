@@ -10,6 +10,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
+const kitsuneDur = 900
+
 type kitsune struct {
 	src         int
 	deleted     bool
@@ -34,17 +36,18 @@ func (c *char) makeKitsune() {
 		}
 		// ok now we can delete this
 		c.popOldestKitsune()
-	}, 900-skillStart) // e ani + duration
+	}, kitsuneDur+c.revelationBonusSkillDur()-skillStart) // e ani + duration
 
-	if len(c.kitsunes) == 0 {
-		c.Core.Status.Add(yaeTotemStatus, 900-skillStart)
+	if c.kitsuneCount() == 0 {
+		c.Core.Status.Add(yaeTotemStatus, kitsuneDur+c.revelationBonusSkillDur()-skillStart)
 	}
 	// pop oldest first
-	if len(c.kitsunes) == 3 {
+	if c.kitsuneCount() == 3 {
 		c.popOldestKitsune()
+		c.a1OnSkillPopKitsune()
 	}
 	c.kitsunes = append(c.kitsunes, k)
-	c.SetTag(yaeTotemCount, c.sakuraLevelCheck())
+	c.SetTag(yaeTotemCount, c.kitsuneCount())
 }
 
 func (c *char) popAllKitsune() {
@@ -67,7 +70,7 @@ func (c *char) popOldestKitsune() {
 
 	// here check for status
 	if len(c.kitsunes) > 0 {
-		dur := c.Core.F - c.kitsunes[0].src + (900 - skillStart)
+		dur := c.Core.F - c.kitsunes[0].src + (kitsuneDur + c.revelationBonusSkillDur() - skillStart)
 		if dur < 0 {
 			log.Panicf("oldest totem should have expired already? dur: %v totem: %v", dur, *c.kitsunes[0])
 		}
@@ -80,7 +83,7 @@ func (c *char) popOldestKitsune() {
 }
 
 func (c *char) kitsuneBurst(ai info.AttackInfo, pattern info.AttackPattern) {
-	for i := 0; i < c.sakuraLevelCheck(); i++ {
+	for i := 0; i < c.kitsuneCount(); i++ {
 		c.Core.QueueAttack(ai, pattern, burstThunderbolt1Hitmark+i*24, burstThunderbolt1Hitmark+i*24)
 		if c.Base.Cons >= 1 {
 			c.Core.Tasks.Add(func() {
@@ -92,7 +95,10 @@ func (c *char) kitsuneBurst(ai info.AttackInfo, pattern info.AttackPattern) {
 			Write("src", c.kitsunes[i].src).
 			Write("delay", burstThunderbolt1Hitmark+i*24)
 	}
-	c.popAllKitsune()
+
+	if !c.revelation {
+		c.popAllKitsune()
+	}
 }
 
 func (c *char) kitsuneTick(totem *kitsune) func() {
@@ -101,57 +107,46 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 		if totem.deleted {
 			return
 		}
-		// c6
-		// Sesshou Sakura start at Level 2 when created. Max level increased to 4, and their attacks will ignore 45% of the opponents' DEF.
-
-		lvl := c.sakuraLevelCheck() - 1
-		if c.Base.Cons >= 2 {
-			lvl += 1
-		}
-
-		ai := info.AttackInfo{
-			Abil:       "Sesshou Sakura Tick",
-			ActorIndex: c.Index(),
-			AttackTag:  attacks.AttackTagElementalArt,
-			Mult:       skill[lvl][c.TalentLvlSkill()],
-			ICDTag:     attacks.ICDTagElementalArt,
-			ICDGroup:   attacks.ICDGroupDefault,
-			StrikeType: attacks.StrikeTypeDefault,
-			Element:    attributes.Electro,
-			Durability: 25,
-		}
-
-		c.Core.Log.NewEvent("sky kitsune tick at level", glog.LogCharacterEvent, c.Index()).
-			Write("sakura level", lvl+1)
-
-		var c4cb info.AttackCBFunc
-		if c.Base.Cons >= 4 {
-			done := false
-			c4cb = func(a info.AttackCB) {
-				if a.Target.Type() != info.TargettableEnemy {
-					return
-				}
-				if done {
-					return
-				}
-				done = true
-				c.c4()
-			}
-		}
-		if c.Base.Cons >= 6 {
-			ai.IgnoreDefPercent = 0.60
-		}
 
 		// spawn 1 attack
 		// priority: enemy > gadget
 		tick := func(pos info.Point) {
+			// c6
+			// Sesshou Sakura start at Level 2 when created. Max level increased to 4, and their attacks will ignore 45% of the opponents' DEF.
+
+			lvl := c.sakuraLevel()
+			// safety check
+			if lvl < 1 {
+				panic("sakura level should not be < 1 during tick")
+			}
+
+			c.Core.Log.NewEvent("sky kitsune tick at level", glog.LogCharacterEvent, c.Index()).
+				Write("sakura level", lvl)
+
+			flatDmg, revCB := c.revelationEnhanceDMG()
+
+			ai := info.AttackInfo{
+				Abil:             "Sesshou Sakura Tick",
+				ActorIndex:       c.Index(),
+				AttackTag:        attacks.AttackTagElementalArt,
+				Mult:             skill[lvl-1][c.TalentLvlSkill()],
+				ICDTag:           attacks.ICDTagElementalArt,
+				ICDGroup:         attacks.ICDGroupDefault,
+				StrikeType:       attacks.StrikeTypeDefault,
+				Element:          attributes.Electro,
+				Durability:       25,
+				FlatDmg:          flatDmg,
+				IgnoreDefPercent: c.c6DefIgnore(),
+			}
+
 			c.Core.QueueAttack(
 				ai,
 				combat.NewCircleHitOnTarget(pos, nil, 0.5),
 				1,
 				1,
 				c.particleCB,
-				c4cb,
+				revCB,
+				c.c4MakeCB(),
 			)
 		}
 
@@ -172,14 +167,18 @@ func (c *char) kitsuneTick(totem *kitsune) func() {
 	}
 }
 
-func (c *char) sakuraLevelCheck() int {
-	count := len(c.kitsunes)
-	if count < 0 {
-		// this is for the base case when there are no totems (other wise we'll end up with 1 if C6)
+func (c *char) kitsuneCount() int {
+	return len(c.kitsunes)
+}
+
+func (c *char) sakuraLevel() int {
+	count := c.kitsuneCount()
+	if count <= 0 {
+		// this is for the base case when there are no totems (other wise we'll end up with 1 if C2)
 		return 0
 	}
 	if count > 3 {
 		panic("wtf more than 3 totems")
 	}
-	return count
+	return count + c.c2SakuraLevelBonus()
 }

@@ -25,10 +25,10 @@ talents:
   - highPlunge: attack(Low/High Plunge DMG|1)
 
   - skill:
-      - 'skill(Sesshou Sakura DMG: Level 1)'
-      - 'skill(Sesshou Sakura DMG: Level 2)'
-      - 'skill(Sesshou Sakura DMG: Level 3)'
-      - 'skill(Sesshou Sakura DMG: Level 4)'
+      - "skill(Sesshou Sakura DMG: Level 1)"
+      - "skill(Sesshou Sakura DMG: Level 2)"
+      - "skill(Sesshou Sakura DMG: Level 3)"
+      - "skill(Sesshou Sakura DMG: Level 4)"
 
   - burst:
       - burst(Skill DMG)
@@ -48,7 +48,10 @@ docs:
       count_credit: kolibri._.
       video: https://youtu.be/xh7HAIYruI8
       video_credit: kolibri._.
-
+    - count: https://docs.google.com/spreadsheets/d/1RO7a1zNyZ0btewNpqlqiAFx3oaga-3TeTiGgSh-462A/edit?usp=sharing
+      count_credit: charliex3000
+      video: https://youtu.be/c3o0QK0pzZY
+      video_credit: charliex3000
 abilities:
   - name: attack
     params:
@@ -72,7 +75,7 @@ abilities:
   - name: charge
     hitbox:
       - name: CA
-        note: 'This is a moving hitbox. It moves at 1.65m in Y direction per attack and starts at Y: 1.65m.'
+        note: "This is a moving hitbox. It moves at 1.65m in Y direction per attack and starts at Y: 1.65m."
         shape: Box
         center: Player
         box: [2, 2]
@@ -123,6 +126,17 @@ abilities:
         shape: Circle
         center: PrimaryTarget
         radius: 7
+
+  - name: asc
+    hitbox:
+      - name: A1
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.5
+
+      - name: Revelation
+        shape: Single
+        center: Target
 
   - name: walk
     note: No action followed by walk (except low_plunge and high_plunge) has proper frames.
