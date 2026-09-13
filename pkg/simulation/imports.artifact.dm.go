@@ -28,6 +28,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/gladiator"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/goldentroupe"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/heartofdepth"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/heartofthefurnace"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/huskofopulentdreams"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/instructor"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/lavawalker"
