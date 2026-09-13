@@ -69,3 +69,10 @@ func (c *char) Condition(fields []string) (any, error) {
 		return c.Character.Condition(fields)
 	}
 }
+
+func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
+	if k == info.AnimationXingqiuN0StartDelay {
+		return 10
+	}
+	return c.Character.AnimationStartDelay(k)
+}
