@@ -2,6 +2,8 @@
 	"name": "gcsim-gateway",
 	"main": "src/index.ts",
 	"compatibility_date": "2026-09-12",
+	// Bundle the card's TTF bytes as raw ArrayBuffers (see preview/cardFonts.ts).
+	"rules": [{ "type": "Data", "globs": ["**/*.ttf"], "fallthrough": true }],
 	"assets": {
 		"directory": "../web/dist",
 		"binding": "ASSETS",
