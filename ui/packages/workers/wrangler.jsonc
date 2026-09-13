@@ -2,10 +2,35 @@
 	"name": "gcsim-gateway",
 	"main": "src/index.ts",
 	"compatibility_date": "2026-09-12",
+	"assets": {
+		"directory": "../web/dist",
+		"binding": "ASSETS",
+		"run_worker_first": true,
+		"not_found_handling": "single-page-application"
+	},
 	"r2_buckets": [
 		{
 			"binding": "GCSIM_WASM",
 			"bucket_name": "wasm"
 		}
-	]
+	],
+	"env": {
+		"staging": {
+			"workers_dev": true,
+			// Bindings are not inherited across wrangler environments, so the
+			// assets binding and r2 buckets must be redeclared here verbatim.
+			"assets": {
+				"directory": "../web/dist",
+				"binding": "ASSETS",
+				"run_worker_first": true,
+				"not_found_handling": "single-page-application"
+			},
+			"r2_buckets": [
+				{
+					"binding": "GCSIM_WASM",
+					"bucket_name": "wasm"
+				}
+			]
+		}
+	}
 }

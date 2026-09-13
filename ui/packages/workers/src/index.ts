@@ -36,6 +36,11 @@ router.get("/db/:key", handleInjectHeadDB);
 router.get("/api/assets/*", handleAssets);
 router.get("/api/wasm/*", handleWasm);
 
+// SPA fallthrough: anything not matched above is served from the static-assets
+// binding. `not_found_handling: "single-page-application"` makes deep links
+// resolve to index.html. Kept explicit so the routing intent lives in code too.
+router.all("*", (request: Request, env: Env) => env.ASSETS.fetch(request));
+
 export default {
 	async fetch(
 		request: Request,
