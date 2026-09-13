@@ -15,24 +15,25 @@ var (
 )
 
 const (
-	chargeHitmark = 24
-	swiftHitmark  = 14
+	chargeHitmark = 21
+	swiftHitmark  = 25
 )
 
 func init() {
-	chargeFrames = frames.InitAbilSlice(55)
-	chargeFrames[action.ActionAttack] = 49
-	chargeFrames[action.ActionSkill] = 49
+	chargeFrames = frames.InitAbilSlice(55) // E -> Walk
+	chargeFrames[action.ActionAttack] = 52
+	chargeFrames[action.ActionSkill] = 51
 	chargeFrames[action.ActionBurst] = 50
 	chargeFrames[action.ActionDash] = chargeHitmark
 	chargeFrames[action.ActionJump] = chargeHitmark
 	chargeFrames[action.ActionSwap] = 49
 
-	swiftFrames = frames.InitAbilSlice(52)
-	swiftFrames[action.ActionAttack] = 51
-	swiftFrames[action.ActionSkill] = 51
-	swiftFrames[action.ActionJump] = 50
-	swiftFrames[action.ActionSwap] = 49
+	swiftFrames = frames.InitAbilSlice(33) // E -> Walk
+	swiftFrames[action.ActionAttack] = 32
+	swiftFrames[action.ActionBurst] = 24
+	swiftFrames[action.ActionDash] = 30
+	swiftFrames[action.ActionJump] = 27
+	swiftFrames[action.ActionSwap] = 31
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
@@ -78,20 +79,24 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 
 func (c *char) chargedSwift() action.Info {
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index(),
-		Abil:           "Swift Stormflight",
-		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
-		AttackTag:      attacks.AttackTagExtra,
-		ICDTag:         attacks.ICDTagNone,
-		ICDGroup:       attacks.ICDGroupDefault,
-		StrikeType:     attacks.StrikeTypeDefault,
-		Element:        attributes.Electro,
-		Durability:     25,
-		Mult:           swift[c.TalentLvlSkill()],
+		ActorIndex:       c.Index(),
+		Abil:             "Swift Stormflight",
+		AdditionalTags:   []attacks.AttackTag{attacks.AttackTagNightsoul, attacks.AttackTagIansanBisonsaurus},
+		PoiseDMG:         120,
+		AttackTag:        attacks.AttackTagExtra,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupPoleExtraAttack,
+		StrikeType:       attacks.StrikeTypeBlunt,
+		IgnoreInfusion:   true,
+		Element:          attributes.Electro,
+		Durability:       25,
+		HitlagFactor:     0.01,
+		HitlagHaltFrames: 0.05 * 60,
+		Mult:             swift[c.TalentLvlSkill()],
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6),
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.PrimaryTarget(), info.Point{Y: 0.5}, 2.5, 360),
 		swiftHitmark,
 		swiftHitmark,
 		c.makeA1CB(),
@@ -100,7 +105,7 @@ func (c *char) chargedSwift() action.Info {
 	return action.Info{
 		Frames:          frames.NewAbilFunc(swiftFrames),
 		AnimationLength: swiftFrames[action.InvalidAction],
-		CanQueueAfter:   swiftFrames[action.ActionSwap],
+		CanQueueAfter:   swiftFrames[action.ActionBurst],
 		State:           action.ChargeAttackState,
 	}
 }
