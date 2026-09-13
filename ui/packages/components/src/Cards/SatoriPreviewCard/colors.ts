@@ -71,21 +71,10 @@ export const GRAY_600 = "#4b5563";
 export const GRAY_700 = "#374151";
 export const GRAY_400 = "#9ca3af";
 
-// Portrait background gradient accents by element (tailwind charBG equivalents).
-const portraitAccents: Record<string, string> = {
-	cryo: "#93c5fd", // blue-300
-	hydro: "#3b82f6", // blue-500
-	pyro: "#f87171", // red-400
-	electro: "#d8b4fe", // purple-300
-	anemo: "#14b8a6", // teal-500
-	dendro: "#4d7c0f", // lime-700
-	geo: "#facc15", // yellow-400
-};
+// Metadata pill palette, matching the live badge variants (common/ui/badge).
+export const PRIMARY_BG = "#0f172a"; // bg-primary (slate-900)
+export const PRIMARY_FG = "#f8fafc"; // text-primary-foreground
+export const AMBER_700 = "#b45309"; // warning bg
+export const ROSE_700 = "#be123c"; // danger bg
 
-export function portraitBackground(element: string): string {
-	const accent = portraitAccents[element];
-	if (accent == null) {
-		return GRAY_700;
-	}
-	return `linear-gradient(to right, ${GRAY_700}, ${accent})`;
-}
+// Portrait background images (pre-blended per element) live in ./backgrounds.

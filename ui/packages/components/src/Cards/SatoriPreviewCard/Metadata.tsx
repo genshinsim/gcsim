@@ -1,12 +1,26 @@
 import type { model } from "@gcsim/types";
-import { GRAY_400, GRAY_600, GRAY_700, SLATE_700 } from "./colors";
+import {
+	AMBER_700,
+	GRAY_400,
+	GRAY_600,
+	PRIMARY_BG,
+	PRIMARY_FG,
+	ROSE_700,
+	SLATE_700,
+} from "./colors";
+import { FONT_FAMILY } from "./fonts";
 
 type Intent = "default" | "warning" | "danger";
 
-const intentStyles: Record<Intent, { bg: string; fg: string }> = {
-	default: { bg: GRAY_700, fg: "#e5e7eb" },
-	warning: { bg: "#78350f", fg: "#fcd34d" }, // amber-900 / amber-300
-	danger: { bg: "#7f1d1d", fg: "#fca5a5" }, // red-900 / red-300
+// Matches the live badge variants: default = slate-900 with a muted title, and
+// warning/amber and danger/rose fill the whole pill with white text.
+const intentStyles: Record<
+	Intent,
+	{ bg: string; titleFg: string; fg: string }
+> = {
+	default: { bg: PRIMARY_BG, titleFg: GRAY_400, fg: PRIMARY_FG },
+	warning: { bg: AMBER_700, titleFg: "#f5f5f5", fg: "#ffffff" },
+	danger: { bg: ROSE_700, titleFg: "#ffe4e6", fg: "#ffffff" },
 };
 
 type ItemProps = {
@@ -16,37 +30,45 @@ type ItemProps = {
 	valueCase?: "uppercase" | "lowercase" | "none";
 };
 
-// A single metadata pill. Hook-free equivalent of the live Metadata Item/Badge.
+// A single metadata pill. Hook-free equivalent of the live Metadata Item/Badge
+// (font-mono, text-sm bold value, text-xs title, px-2.5 py-1.5).
 const Item = ({
 	title,
 	value,
 	intent = "default",
 	valueCase = "uppercase",
 }: ItemProps) => {
-	const { bg, fg } = intentStyles[intent];
+	const { bg, titleFg, fg } = intentStyles[intent];
 	return (
 		<div
 			style={{
 				display: "flex",
 				flexDirection: "row",
 				alignItems: "center",
-				gap: 4,
-				padding: "1px 6px",
+				gap: 8,
+				padding: "6px 10px",
 				borderRadius: 4,
+				border: "1px solid transparent",
 				backgroundColor: bg,
-				fontFamily: "Inter",
+				fontFamily: FONT_FAMILY,
 			}}
 		>
 			{title != null ? (
 				<span
-					style={{ fontSize: 10, color: GRAY_400, textTransform: "lowercase" }}
+					style={{
+						fontSize: 12,
+						lineHeight: "16px",
+						color: titleFg,
+						textTransform: "lowercase",
+					}}
 				>
 					{title}
 				</span>
 			) : null}
 			<span
 				style={{
-					fontSize: 12,
+					fontSize: 14,
+					lineHeight: "16px",
 					fontWeight: 700,
 					color: fg,
 					textTransform: valueCase === "none" ? "none" : valueCase,
@@ -82,8 +104,8 @@ export const Metadata = ({ data }: Props) => {
 				gap: 8,
 				justifyContent: "center",
 				alignItems: "center",
-				padding: 4,
-				margin: "0 4px",
+				padding: 6,
+				margin: "0 4px 4px",
 				borderRadius: 4,
 				border: `1px solid ${GRAY_600}`,
 				backgroundColor: SLATE_700,
@@ -163,7 +185,6 @@ export const Metadata = ({ data }: Props) => {
 				key="mode"
 				title="mode"
 				value={data.mode === 2 ? "ttk" : "duration"}
-				valueCase="lowercase"
 			/>,
 		);
 	}

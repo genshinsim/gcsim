@@ -3,6 +3,7 @@ import { HistogramChart } from "./charts/HistogramChart";
 import { CharacterPie, ElementPie } from "./charts/PieChart";
 import { TimelineChart } from "./charts/TimelineChart";
 import { SLATE_700, SLATE_800 } from "./colors";
+import { FONT_FAMILY } from "./fonts";
 import { Metadata } from "./Metadata";
 import { Portraits } from "./Portraits";
 
@@ -16,22 +17,33 @@ export type SatoriPreviewCardProps = {
 	assetBase?: string;
 };
 
-// Fixed card geometry (540x250), all in pixels so each chart knows its exact
-// render size — no DOM measurement, no responsive wrappers.
+// Fixed card geometry (540x250), mirroring the live PreviewCard's measured
+// layout pixel-for-pixel: a 4px inset around each row (its `m-1`), 4-across
+// portraits, a metadata row, then the four graph cells.
 const CARD_W = 540;
 const CARD_H = 250;
-const PAD = 4;
-const ROW_GAP = 4;
+const INSET = 4; // the live card's m-1 / ml-1 / mr-1 / mb-1
 
-const INNER_W = CARD_W - 2 * PAD;
-const PORTRAIT_GAP = 4;
-const PORTRAIT_W = (INNER_W - 3 * PORTRAIT_GAP) / 4;
-const PORTRAIT_H = 104;
+// Portrait row: 4 portraits, each 127x106 with a 4px margin (grid-cols-4 + m-1).
+const PORTRAIT_W = 127;
+const PORTRAIT_H = 106;
+const PORTRAIT_MARGIN = 4;
 
+// Graph row: timeline + histogram are wide (w-48 shrunk to 154), the two pies
+// are 106; all 84 tall with a 4px gap (matches the live flex row exactly).
 const GRAPH_GAP = 4;
-const GRAPH_H = 96;
-const WIDE_W = 148; // timeline + histogram
+const GRAPH_H = 84;
+const WIDE_W = 154; // timeline + histogram
 const PIE_W = 106;
+
+const cell = {
+	display: "flex" as const,
+	alignItems: "center" as const,
+	justifyContent: "center" as const,
+	borderRadius: 4,
+	backgroundColor: SLATE_700,
+	height: GRAPH_H,
+};
 
 // A standalone, fixed-size (540x250) preview card that renders deterministically
 // from a single model.SimulationResult. Hook-free, flexbox-only, no DOM
@@ -41,14 +53,6 @@ export const SatoriPreviewCard = ({
 	data,
 	assetBase = DEFAULT_ASSET_BASE,
 }: SatoriPreviewCardProps) => {
-	const cell = {
-		display: "flex" as const,
-		alignItems: "center" as const,
-		justifyContent: "center" as const,
-		borderRadius: 4,
-		backgroundColor: SLATE_700,
-	};
-
 	return (
 		<div
 			style={{
@@ -56,17 +60,15 @@ export const SatoriPreviewCard = ({
 				flexDirection: "column",
 				width: CARD_W,
 				height: CARD_H,
-				padding: PAD,
-				gap: ROW_GAP,
 				backgroundColor: SLATE_800,
-				fontFamily: "Inter",
+				fontFamily: FONT_FAMILY,
 			}}
 		>
 			<Portraits
 				data={data}
 				width={PORTRAIT_W}
 				height={PORTRAIT_H}
-				gap={PORTRAIT_GAP}
+				margin={PORTRAIT_MARGIN}
 				assetBase={assetBase}
 			/>
 
@@ -77,32 +79,31 @@ export const SatoriPreviewCard = ({
 					display: "flex",
 					flexDirection: "row",
 					gap: GRAPH_GAP,
-					justifyContent: "center",
-					margin: "0 4px",
+					margin: `0 ${INSET}px ${INSET}px`,
 				}}
 			>
-				<div style={{ ...cell, width: WIDE_W, height: GRAPH_H }}>
+				<div style={{ ...cell, width: WIDE_W }}>
 					<TimelineChart
 						data={data.statistics?.damage_buckets}
 						width={WIDE_W}
 						height={GRAPH_H}
 					/>
 				</div>
-				<div style={{ ...cell, width: PIE_W, height: GRAPH_H }}>
+				<div style={{ ...cell, width: PIE_W }}>
 					<CharacterPie
 						dps={data.statistics?.character_dps}
 						width={PIE_W}
 						height={GRAPH_H}
 					/>
 				</div>
-				<div style={{ ...cell, width: PIE_W, height: GRAPH_H }}>
+				<div style={{ ...cell, width: PIE_W }}>
 					<ElementPie
 						dps={data.statistics?.element_dps}
 						width={PIE_W}
 						height={GRAPH_H}
 					/>
 				</div>
-				<div style={{ ...cell, width: WIDE_W, height: GRAPH_H }}>
+				<div style={{ ...cell, width: WIDE_W }}>
 					<HistogramChart
 						data={data.statistics?.dps}
 						width={WIDE_W}
