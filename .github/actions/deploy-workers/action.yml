@@ -11,8 +11,8 @@ inputs:
 runs:
   using: composite
   steps:
-  - name: Publish to Cloudflare Pages
-    uses: cloudflare/wrangler-action@v3
+  - name: Deploy to Cloudflare Workers
+    uses: cloudflare/wrangler-action@v4
     with:
       apiToken: ${{ inputs.apiToken }}
       accountId: ${{ inputs.accountId }}
