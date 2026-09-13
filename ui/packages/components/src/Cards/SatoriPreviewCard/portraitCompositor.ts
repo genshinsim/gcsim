@@ -29,28 +29,27 @@ import {
 } from "./assetPaths";
 import { elementBackgrounds } from "./backgrounds";
 import { GRAY_400 } from "./colors";
+// Portrait layout constants (logical px), shared with the layered Portrait
+// render so the two agree. Everything below multiplies by the render scale
+// before touching pixels.
+import {
+	ARTIFACT_BOTTOM,
+	ARTIFACT_LEFT,
+	ARTIFACT_SIZE,
+	AVATAR_MARGIN_TOP,
+	AVATAR_SIZE,
+	ICON_OPACITY,
+	PLACEHOLDER_OPACITY,
+	PORTRAIT_H,
+	PORTRAIT_W,
+	WEAPON_BOTTOM,
+	WEAPON_RIGHT,
+	WEAPON_SIZE,
+} from "./portraitGeometry";
 
 // Resolve a relative asset path (see assetPaths) to raw image bytes. Mirrors the
 // Worker's in-process resolver output; a miss yields the placeholder bytes.
 export type ResolveBytes = (path: string) => Uint8Array | undefined;
-
-// Portrait geometry, in the card's LOGICAL px (matches Portraits.tsx exactly).
-// Everything below multiplies by the render scale before touching pixels.
-const PORTRAIT_W = 127;
-const PORTRAIT_H = 106;
-const AVATAR = 96;
-const AVATAR_MARGIN_TOP = 8;
-const WEAPON = 55;
-const WEAPON_BOTTOM = 4;
-const WEAPON_RIGHT = -4; // sticks 4px past the right edge (portrait clips it)
-const ARTIFACT = 35;
-const ARTIFACT_BOTTOM = 1;
-const ARTIFACT_LEFT = 1;
-
-// Live-card opacities (the weapon/artifact wrappers are opacity-85; the empty
-// slot's Nahida placeholder is opacity-50).
-const ICON_OPACITY = 0.85;
-const NAHIDA_OPACITY = 0.5;
 
 // Empty-slot background (tailwind gray-400), matching Portrait's char===null case.
 const EMPTY_BG = hexToRgb(GRAY_400);
@@ -116,6 +115,8 @@ function withWhiteOutline(img: PhotonImage, r: number): PhotonImage {
 	for (let y = 0; y < h; y++) {
 		for (let x = 0; x < w; x++) {
 			const a = src[(y * w + x) * 4 + 3];
+			// Skip near-transparent antialias fringe (alpha < ~6%) so the outline
+			// traces the solid silhouette, not the icon's soft anti-aliased edge.
 			if (a < 16) continue;
 			for (let dy = -r; dy <= r; dy++) {
 				for (let dx = -r; dx <= r; dx++) {
@@ -229,10 +230,10 @@ function compositePortrait(
 		const canvas = solid(pw, ph, EMPTY_BG);
 		const bytes = resolveBytes(NAHIDA_PLACEHOLDER_PATH);
 		if (bytes) {
-			const size = Math.round(AVATAR * scale);
+			const size = Math.round(AVATAR_SIZE * scale);
 			const nahida = withOpacity(
 				resizeTo(decode(bytes), size, size),
-				NAHIDA_OPACITY,
+				PLACEHOLDER_OPACITY,
 			);
 			drawAt(canvas, nahida, (pw - size) / 2, (ph - size) / 2);
 			nahida.free();
@@ -246,7 +247,7 @@ function compositePortrait(
 	// Avatar: 96x96, horizontally centred, marginTop 8 (contain; source is square).
 	const avatarBytes = resolveBytes(avatarPath(char.name));
 	if (avatarBytes) {
-		const size = Math.round(AVATAR * scale);
+		const size = Math.round(AVATAR_SIZE * scale);
 		const avatar = resizeTo(decode(avatarBytes), size, size);
 		drawAt(canvas, avatar, (pw - size) / 2, AVATAR_MARGIN_TOP * scale);
 		avatar.free();
@@ -257,11 +258,13 @@ function compositePortrait(
 		? resolveBytes(weaponPath(char.weapon.name))
 		: undefined;
 	if (weaponBytes) {
-		const size = Math.round(WEAPON * scale);
+		const size = Math.round(WEAPON_SIZE * scale);
 		let weapon = resizeTo(decode(weaponBytes), size, size);
 		weapon = withOpacity(withWhiteOutline(weapon, r), ICON_OPACITY);
-		const x = (PORTRAIT_W - WEAPON + WEAPON_RIGHT) * scale;
-		const y = (PORTRAIT_H - WEAPON - WEAPON_BOTTOM) * scale;
+		// left = W - right - size (CSS `right`): with right:-4 the icon's left is
+		// 127 - (-4) - 55 = 76, overhanging the right edge by 4px (canvas clips it).
+		const x = (PORTRAIT_W - WEAPON_RIGHT - WEAPON_SIZE) * scale;
+		const y = (PORTRAIT_H - WEAPON_SIZE - WEAPON_BOTTOM) * scale;
 		drawAt(canvas, weapon, x - r, y - r); // -r: undo the outline pad
 		weapon.free();
 	}
@@ -269,7 +272,7 @@ function compositePortrait(
 	// Artifact set(s): 35x35 (or the two-set/lone-2pc slice), bottom-left, outlined.
 	const sets = char.sets ? Object.keys(char.sets) : [];
 	if (sets.length > 0) {
-		const cell = even(Math.round(ARTIFACT * scale));
+		const cell = even(Math.round(ARTIFACT_SIZE * scale));
 		const isLoneHalf = sets.length === 1 && char.sets?.[sets[0]] === 2;
 		const setImgs: PhotonImage[] = [];
 		for (const set of sets.slice(0, 2)) {
@@ -285,7 +288,7 @@ function compositePortrait(
 				ICON_OPACITY,
 			);
 			const x = ARTIFACT_LEFT * scale;
-			const y = (PORTRAIT_H - ARTIFACT - ARTIFACT_BOTTOM) * scale;
+			const y = (PORTRAIT_H - ARTIFACT_SIZE - ARTIFACT_BOTTOM) * scale;
 			drawAt(canvas, gear, x - r, y - r);
 			gear.free();
 		}

@@ -9,6 +9,22 @@ import {
 import { elementBackgrounds } from "./backgrounds";
 import { GRAY_400, GRAY_600, GRAY_700, levelColor, PRIMARY_BG } from "./colors";
 import { FONT_FAMILY } from "./fonts";
+// Portrait layout constants (logical px), shared with the Photon compositor so
+// the layered and composited renders place every layer identically.
+import {
+	ARTIFACT_BOTTOM,
+	ARTIFACT_HALF,
+	ARTIFACT_LEFT,
+	ARTIFACT_SIZE,
+	AVATAR_MARGIN_TOP,
+	AVATAR_SIZE,
+	ICON_OPACITY,
+	PLACEHOLDER_OPACITY,
+	WEAPON_BOTTOM,
+	WEAPON_RIGHT,
+	WEAPON_SIZE,
+	WIP_TOP,
+} from "./portraitGeometry";
 
 // Live badge accent colors (text-geo / text-electro), read from the rendered
 // PreviewCard.
@@ -72,17 +88,17 @@ const Portrait = ({
 			<div
 				style={{
 					...base,
-					backgroundColor: "#9ca3af",
+					backgroundColor: GRAY_400,
 					alignItems: "center",
 					justifyContent: "center",
 				}}
 			>
 				<img
 					src={resolveAsset(NAHIDA_PLACEHOLDER_PATH)}
-					width={96}
-					height={96}
+					width={AVATAR_SIZE}
+					height={AVATAR_SIZE}
 					alt=""
-					style={{ objectFit: "contain", opacity: 0.5 }}
+					style={{ objectFit: "contain", opacity: PLACEHOLDER_OPACITY }}
 				/>
 			</div>
 		);
@@ -149,7 +165,7 @@ const Portrait = ({
 		<div
 			style={{
 				position: "absolute",
-				top: "33%",
+				top: WIP_TOP,
 				left: 0,
 				width,
 				display: "flex",
@@ -212,53 +228,53 @@ const Portrait = ({
 			{/* avatar (h-24, top-aligned under the card's pt-2) */}
 			<img
 				src={resolveAsset(avatarPath(char.name))}
-				width={96}
-				height={96}
+				width={AVATAR_SIZE}
+				height={AVATAR_SIZE}
 				alt={char.name ?? ""}
-				style={{ objectFit: "contain", marginTop: 8 }}
+				style={{ objectFit: "contain", marginTop: AVATAR_MARGIN_TOP }}
 			/>
 
 			{/* weapon */}
 			{char.weapon?.name ? (
 				<img
 					src={resolveAsset(weaponPath(char.weapon.name))}
-					width={55}
-					height={55}
+					width={WEAPON_SIZE}
+					height={WEAPON_SIZE}
 					alt=""
 					style={{
 						position: "absolute",
-						bottom: 4,
-						right: -4,
+						bottom: WEAPON_BOTTOM,
+						right: WEAPON_RIGHT,
 						objectFit: "contain",
-						opacity: 0.85,
+						opacity: ICON_OPACITY,
 					}}
 				/>
 			) : null}
 
-			{/* artifact set(s) — 35x35, or two 17.5-wide halves for a 2-set build */}
+			{/* artifact set(s) — full flower, or two half-width halves for a 2-set build */}
 			{sets.length > 0 ? (
 				<div
 					style={{
 						position: "absolute",
-						bottom: 1,
-						left: 1,
+						bottom: ARTIFACT_BOTTOM,
+						left: ARTIFACT_LEFT,
 						display: "flex",
 						flexDirection: "row",
-						opacity: 0.85,
+						opacity: ICON_OPACITY,
 					}}
 				>
 					<img
 						src={resolveAsset(artifactFlowerPath(sets[0]))}
-						width={twoSets || isHalfWidthSet ? 17.5 : 35}
-						height={35}
+						width={twoSets || isHalfWidthSet ? ARTIFACT_HALF : ARTIFACT_SIZE}
+						height={ARTIFACT_SIZE}
 						alt=""
 						style={{ objectFit: "cover" }}
 					/>
 					{twoSets ? (
 						<img
 							src={resolveAsset(artifactFlowerPath(sets[1]))}
-							width={17.5}
-							height={35}
+							width={ARTIFACT_HALF}
+							height={ARTIFACT_SIZE}
 							alt=""
 							style={{ objectFit: "cover" }}
 						/>

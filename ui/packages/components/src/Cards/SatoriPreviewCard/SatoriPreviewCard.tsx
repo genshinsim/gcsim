@@ -7,6 +7,7 @@ import { SLATE_700, SLATE_800 } from "./colors";
 import { FONT_FAMILY } from "./fonts";
 import { Metadata } from "./Metadata";
 import { Portraits } from "./Portraits";
+import { PORTRAIT_H, PORTRAIT_W } from "./portraitGeometry";
 
 // Default asset host, matching the live asset URL scheme. Absolute so Satori
 // (which has no dev-server proxy) can fetch the images at render time.
@@ -41,9 +42,8 @@ const CARD_W = 540;
 const CARD_H = 250;
 const INSET = 4; // the live card's m-1 / ml-1 / mr-1 / mb-1
 
-// Portrait row: 4 portraits, each 127x106 with a 4px margin (grid-cols-4 + m-1).
-const PORTRAIT_W = 127;
-const PORTRAIT_H = 106;
+// Portrait row: 4 portraits, each PORTRAIT_W x PORTRAIT_H (from ./portraitGeometry)
+// with a 4px margin (grid-cols-4 + m-1).
 const PORTRAIT_MARGIN = 4;
 
 // Graph row: timeline + histogram are wide (w-48 shrunk to 154), the two pies
