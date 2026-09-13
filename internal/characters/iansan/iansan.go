@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
@@ -21,6 +22,7 @@ type char struct {
 	burstRestoreNS    int
 	pointsOverflow    float64
 
+	a1Buff     []float64
 	a1Increase bool
 
 	c1Points    float64
@@ -51,6 +53,8 @@ func (c *char) Init() error {
 	c.a1()
 	c.a4()
 	c.c4()
+
+	c.Core.Events.Subscribe(event.OnActionExec, c.burstMovementRestore, burstBuffStatus)
 
 	return nil
 }

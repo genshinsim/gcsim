@@ -81,7 +81,7 @@ func (c *char) chargedSwift() action.Info {
 	ai := info.AttackInfo{
 		ActorIndex:       c.Index(),
 		Abil:             "Swift Stormflight",
-		AdditionalTags:   []attacks.AttackTag{attacks.AttackTagNightsoul, attacks.AttackTagIansanBisonsaurus},
+		AdditionalTags:   []attacks.AttackTag{attacks.AttackTagNightsoul},
 		PoiseDMG:         120,
 		AttackTag:        attacks.AttackTagExtra,
 		ICDTag:           attacks.ICDTagNone,

@@ -68,7 +68,6 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	if c.NormalCounter == 2 {
 		ai.PoiseDMG = 59.896
 		ai.StrikeType = attacks.StrikeTypeBlunt
-		ai.AdditionalTags = []attacks.AttackTag{attacks.AttackTagIansanBisonsaurus}
 		ap = combat.NewBoxHitOnTarget(
 			c.Core.Combat.Player(),
 			info.Point{Y: attackOffsets[c.NormalCounter]},

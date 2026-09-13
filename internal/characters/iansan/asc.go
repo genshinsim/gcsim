@@ -20,6 +20,9 @@ func (c *char) a1() {
 		return
 	}
 
+	c.a1Buff = make([]float64, attributes.EndStatType)
+	c.a1Buff[attributes.ATKP] = 0.2
+
 	cb := func(args ...interface{}) {
 		idx := args[0].(int)
 		if idx != c.Core.Player.Active() {
@@ -39,12 +42,10 @@ func (c *char) a1() {
 }
 
 func (c *char) a1ATK() {
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.ATKP] = 0.2
 	c.AddStatMod(character.StatMod{
 		Base: modifier.NewBaseWithHitlag(a1Status, 15*60),
 		Amount: func() []float64 {
-			return m
+			return c.a1Buff
 		},
 	})
 }

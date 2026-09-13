@@ -6,7 +6,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -35,7 +34,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		ActorIndex:       c.Index(),
 		Abil:             "The Three Principles of Power",
 		AttackTag:        attacks.AttackTagElementalBurst,
-		AdditionalTags:   []attacks.AttackTag{attacks.AttackTagNightsoul, attacks.AttackTagIansanBisonsaurus},
+		AdditionalTags:   []attacks.AttackTag{attacks.AttackTagNightsoul},
 		PoiseDMG:         180,
 		ICDTag:           attacks.ICDTagNone,
 		ICDGroup:         attacks.ICDGroupDefault,
@@ -65,7 +64,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.burstRestoreNS = 0
 	c.updateATKBuff(c.burstSrc)()
 	c.applyBuffTask(c.burstSrc)
-	c.Core.Events.Subscribe(event.OnActionExec, c.burstMovementRestore, burstBuffStatus)
 
 	if c.Base.Cons >= 2 {
 		c.a1ATK()
@@ -149,7 +147,6 @@ func (c *char) updateATKBuff(src int) func() {
 
 func (c *char) burstMovementRestore(args ...interface{}) {
 	if !c.StatusIsActive(burstStatus) {
-		c.Core.Events.Unsubscribe(event.OnActionExec, burstBuffStatus)
 		return
 	}
 
