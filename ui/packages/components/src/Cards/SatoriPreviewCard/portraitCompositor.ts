@@ -216,6 +216,10 @@ function backgroundImage(element: string): PhotonImage {
 }
 
 // Composite one character portrait into a flat PhotonImage at PORTRAIT * scale.
+// Never throws: a decode/resize/watermark failure (corrupt bytes, bad dims)
+// degrades to the element background — or the empty gray field — so a single
+// bad asset can't fail the whole OG render (the old layered path just fetched a
+// placeholder). Guarantees compositePortraits always yields a valid image.
 function compositePortrait(
 	char: model.Character | null,
 	resolveBytes: ResolveBytes,
@@ -223,6 +227,30 @@ function compositePortrait(
 ): PhotonImage {
 	const pw = Math.round(PORTRAIT_W * scale);
 	const ph = Math.round(PORTRAIT_H * scale);
+	try {
+		return composePortraitLayers(char, resolveBytes, scale, pw, ph);
+	} catch (e) {
+		console.error("portrait compositing failed; using plain background", e);
+		try {
+			return char
+				? resizeTo(backgroundImage(char.element ?? ""), pw, ph)
+				: solid(pw, ph, EMPTY_BG);
+		} catch {
+			return solid(pw, ph, EMPTY_BG);
+		}
+	}
+}
+
+// Stack a portrait's layers (element bg + avatar + weapon + artifact set(s), with
+// the white outline and two-set slice baked in). May throw on a Photon failure;
+// compositePortrait wraps it with the plain-background fallback.
+function composePortraitLayers(
+	char: model.Character | null,
+	resolveBytes: ResolveBytes,
+	scale: number,
+	pw: number,
+	ph: number,
+): PhotonImage {
 	const r = Math.max(1, Math.round(scale)); // outline radius ~ old 1px dilate
 
 	// Empty slot: gray field + centred, half-opacity Nahida placeholder.

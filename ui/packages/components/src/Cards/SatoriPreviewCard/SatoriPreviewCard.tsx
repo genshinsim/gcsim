@@ -30,9 +30,11 @@ export type SatoriPreviewCardProps = {
 	 * background + avatar + weapon + artifact set(s), with the white outline and
 	 * two-set slice baked in) renders as a single <img> and only the text badges
 	 * are layered on top. Produced by the Worker's Photon compositor; absent in
-	 * the browser/Storybook render, which stacks layers via resolveAsset.
+	 * the browser/Storybook render, which stacks layers via resolveAsset. This is
+	 * all-or-nothing: when set, the compositor always returns one image per slot
+	 * (empty slots included), so there is no mixed per-slot layered fallback.
 	 */
-	portraits?: readonly (string | null)[];
+	portraits?: readonly string[];
 };
 
 // Fixed card geometry (540x250), mirroring the live PreviewCard's measured

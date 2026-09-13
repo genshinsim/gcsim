@@ -296,7 +296,7 @@ type Props = {
 	margin: number;
 	resolveAsset: ResolveAsset;
 	// Pre-composited portrait images, one per character slot (see Portrait).
-	composited?: readonly (string | null)[];
+	composited?: readonly string[];
 };
 
 // The four-portrait row (flexbox, replacing the live card's CSS grid). Each
