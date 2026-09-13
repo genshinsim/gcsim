@@ -53,7 +53,7 @@ const TYPED_RE = /^(avatar|weapons|artifacts)\/(.+)\.png$/;
 //   hit       served from R2 (dynamic image, static file or traveler icon)
 //   origin    R2 miss, fetched from a source host and stored to R2
 //   fallback  every source failed; misc/default.png served (not cached)
-const STATUS_HEADER = "X-Gcsim-Asset";
+export const STATUS_HEADER = "X-Gcsim-Asset";
 
 export async function handleAssets(
 	request: IRequest,
@@ -73,11 +73,7 @@ export async function handleAssets(
 	}
 
 	const subpath = cacheUrl.pathname.replace(/^\/api\/assets\//, "");
-	const typed = subpath.match(TYPED_RE);
-
-	const response = typed
-		? await resolveTyped(typed[1] as AssetType, typed[2], subpath, env, ctx)
-		: await serveStatic(subpath, env);
+	const response = await resolveAsset(subpath, env, ctx);
 
 	// Never persist the no-cache fallback for a requested key, so a later
 	// successful fetch can still populate it (matches the Go service).
@@ -88,6 +84,23 @@ export async function handleAssets(
 		ctx.waitUntil(cache.put(cacheKey, response.clone()));
 	}
 	return response;
+}
+
+// Resolve one asset subpath (e.g. "avatar/Nahida.png" or "misc/logo.png") to a
+// Response carrying the X-Gcsim-Asset status header. This is the inner
+// resolution shared by the public /api/assets/* handler — which wraps it in the
+// edge cache above — and the preview render's in-process pre-fetch, which reads
+// the bytes and the status directly. It does not touch caches.default; R2
+// write-through on an origin hit still runs via ctx.waitUntil.
+export async function resolveAsset(
+	subpath: string,
+	env: Env,
+	ctx: ExecutionContext,
+): Promise<Response> {
+	const typed = subpath.match(TYPED_RE);
+	return typed
+		? resolveTyped(typed[1] as AssetType, typed[2], subpath, env, ctx)
+		: serveStatic(subpath, env);
 }
 
 async function resolveTyped(

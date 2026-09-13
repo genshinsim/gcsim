@@ -1,3 +1,4 @@
+import { enumerateAssetPaths } from "@gcsim/components/src/Cards/SatoriPreviewCard/assetPaths";
 import type { SatoriFont } from "@gcsim/components/src/Cards/SatoriPreviewCard/fonts";
 // Deep import (not the package root) so bundling pulls only the card subtree,
 // not the whole component library (which imports .png/.css assets).
@@ -7,6 +8,7 @@ import type { IRequest } from "itty-router";
 import { ImageResponse } from "workers-og";
 import type { Env } from "../bindings";
 import { cardFonts } from "./cardFonts";
+import { fetchCardAssets } from "./fetchCardAssets";
 
 // workers-og 0.0.27 derives its option type from @vercel/og, which it does not
 // depend on; the resulting `ImageResponseOptions` drops the `fonts` field satori
@@ -91,6 +93,13 @@ export async function handleOgPreview(
 		return new Response("invalid share data for " + key, { status: 400 });
 	}
 
+	// Pre-fetch the card's imagery here (deduped, in parallel) through the
+	// Worker's own asset resolver and feed it to the card as `data:` URIs, so
+	// Satori makes zero outbound image fetches. A missing asset resolves to the
+	// misc/default.png placeholder and marks the render uncacheable, so a card
+	// with a missing asset isn't frozen for the full TTL.
+	const assets = await fetchCardAssets(enumerateAssetPaths(result), env, ctx);
+
 	const options: ImageResponseOptions = {
 		width: CARD_W * SCALE,
 		height: CARD_H * SCALE,
@@ -107,10 +116,19 @@ export async function handleOgPreview(
 				transformOrigin: "top left",
 			}}
 		>
-			<SatoriPreviewCard data={result} />
+			<SatoriPreviewCard data={result} resolveAsset={assets.resolve} />
 		</div>,
 		options,
 	);
+
+	// A render that fell back to a placeholder must not be stored anywhere: skip
+	// caches.default and mark it no-store so the next request re-renders once the
+	// missing asset lands. It is still served (200 image/png).
+	if (assets.usedFallback) {
+		const uncacheable = new Response(image.body, image);
+		uncacheable.headers.set("Cache-Control", "no-store");
+		return uncacheable;
+	}
 
 	// Cache the rendered card (workers-og already sets a long immutable
 	// Cache-Control; caches.default is what actually spares the re-render). Only

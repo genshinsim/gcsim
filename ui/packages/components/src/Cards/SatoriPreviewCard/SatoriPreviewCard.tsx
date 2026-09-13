@@ -1,4 +1,5 @@
 import type { model } from "@gcsim/types";
+import type { ResolveAsset } from "./assetPaths";
 import { HistogramChart } from "./charts/HistogramChart";
 import { CharacterPie, ElementPie } from "./charts/PieChart";
 import { TimelineChart } from "./charts/TimelineChart";
@@ -15,6 +16,13 @@ export type SatoriPreviewCardProps = {
 	data: model.SimulationResult;
 	/** Injectable asset-base seam. Default: the live gcsim asset host. */
 	assetBase?: string;
+	/**
+	 * Injectable asset-resolver seam. Maps a relative asset path (see assetPaths)
+	 * to an <img src>. Defaults to `${assetBase}/${path}`, so Satori fetches the
+	 * assets itself; the edge worker overrides it to return pre-fetched `data:`
+	 * URIs. Does not affect layout.
+	 */
+	resolveAsset?: ResolveAsset;
 };
 
 // Fixed card geometry (540x250), mirroring the live PreviewCard's measured
@@ -52,6 +60,7 @@ const cell = {
 export const SatoriPreviewCard = ({
 	data,
 	assetBase = DEFAULT_ASSET_BASE,
+	resolveAsset = (path) => `${assetBase}/${path}`,
 }: SatoriPreviewCardProps) => {
 	return (
 		<div
@@ -69,7 +78,7 @@ export const SatoriPreviewCard = ({
 				width={PORTRAIT_W}
 				height={PORTRAIT_H}
 				margin={PORTRAIT_MARGIN}
-				assetBase={assetBase}
+				resolveAsset={resolveAsset}
 			/>
 
 			<Metadata data={data} />
