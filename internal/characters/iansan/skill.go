@@ -38,6 +38,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Element:            attributes.Electro,
 		Durability:         25,
 		Mult:               skill[c.TalentLvlSkill()],
+		HitlagFactor:       0.01,
 		CanBeDefenseHalted: true,
 		IsDeployable:       true,
 	}
