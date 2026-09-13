@@ -7,6 +7,9 @@ inputs:
   accountId:
     required: true
     description: cloudflare account id
+  rcloneConfig:
+    required: true
+    description: rclone config for cloudflare R2 (gcsim bucket static files)
 
 runs:
   using: composite
@@ -17,3 +20,18 @@ runs:
       apiToken: ${{ inputs.apiToken }}
       accountId: ${{ inputs.accountId }}
       workingDirectory: './ui/packages/workers'
+      # --keep-vars: don't wipe dashboard-managed vars (ASSET_SOURCE_HOSTS).
+      command: deploy --keep-vars
+
+  # Provision/refresh the static files the worker serves from R2 (fonts, logo,
+  # special/* traveler icons, misc/* including default.png). Sourced from the
+  # workers package's own static/ copy so the package is self-contained. Uses
+  # `copy` not `sync` so dynamically cached images already in the bucket survive.
+  - name: Setup rclone
+    uses: AnimMouse/setup-rclone@v1
+    with:
+      rclone_config: ${{ inputs.rcloneConfig }}
+      disable_base64: true
+  - name: Upload static assets to R2
+    shell: bash
+    run: rclone copy ./ui/packages/workers/static/ r2rclone:gcsim/ --progress
