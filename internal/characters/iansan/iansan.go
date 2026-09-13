@@ -22,10 +22,10 @@ type char struct {
 	pointsOverflow    float64
 
 	a1Increase bool
-	a4Src      int
 
-	c1Points float64
-	c4Stacks int
+	c1Points    float64
+	c4Generated bool
+	c4Stacks    int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -50,6 +50,7 @@ func (c *char) Init() error {
 
 	c.a1()
 	c.a4()
+	c.c4()
 
 	return nil
 }

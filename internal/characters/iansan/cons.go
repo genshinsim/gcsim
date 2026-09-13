@@ -58,7 +58,11 @@ func (c *char) c4() {
 		if c.Index() == c.Core.Player.Active() {
 			return
 		}
+		if c.c4Generated {
+			return
+		}
 		c.c4Stacks = 2
+		c.c4Generated = true
 	}, "iansan-c4")
 }
 

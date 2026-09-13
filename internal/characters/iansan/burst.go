@@ -70,6 +70,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 2 {
 		c.a1ATK()
 	}
+	c.c4Generated = false
 	c.c4Stacks = 0
 
 	duration := 12 * 60
