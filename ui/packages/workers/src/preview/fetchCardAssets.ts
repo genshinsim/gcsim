@@ -20,8 +20,8 @@ function base64FromArrayBuffer(buffer: ArrayBuffer): string {
 }
 
 export type ResolvedAssets = {
-	// path (e.g. "avatar/Nahida.png") -> `data:` URI, or the fallback for one the
-	// Worker resolves to an <img src>.
+	// Maps a relative asset path (e.g. "avatar/Nahida.png") to an <img src>: the
+	// fetched bytes as a `data:` URI, or the placeholder for a path that failed.
 	resolve: (path: string) => string;
 	// True when any asset failed to fetch and the fallback stood in — the render
 	// must not be cached so it re-renders once the asset lands.
