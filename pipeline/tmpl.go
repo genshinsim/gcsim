@@ -202,14 +202,20 @@ func (t *AssetsTmpl) Write() {
 	b := bytes.NewBuffer(nil)
 	b.WriteString("package assets\n")
 	fmt.Fprintf(b, "var %s = map[string]string{\n", t.Variable)
+	m := make(map[string]string, len(t.Key))
 	for i := range t.Key {
 		b.WriteString("\t")
 		fmt.Fprintf(b, "\"%s\":", t.Key[i])
 		fmt.Fprintf(b, "\"%s\",", t.Image[i])
 		b.WriteString("\n")
+		m[t.Key[i]] = t.Image[i]
 	}
 	b.WriteString("}\n")
 	writeFile(fmt.Sprintf("internal/services/assets/%s.dm.go", t.Kind), b.Bytes())
+
+	data, err := dumpJSON(m)
+	assert(err)
+	writeFile(fmt.Sprintf("ui/packages/workers/src/assets/%s.dm.json", t.Kind), data)
 }
 
 type CatalogTmpl struct {
