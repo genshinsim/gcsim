@@ -66,7 +66,7 @@ func (c *char) Condition(fields []string) (any, error) {
 }
 
 func (c *char) useSpecialSkill() bool {
-	return c.StatusIsActive(danceDoubleKey) && !c.StatusIsActive(danceDoubleUpgradeKey) && c.StatusIsActive(skillRecastKey)
+	return c.StatusIsActive(danceDoubleKey) && c.StatusIsActive(skillRecastKey)
 }
 
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
