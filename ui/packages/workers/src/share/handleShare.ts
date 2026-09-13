@@ -1,7 +1,11 @@
 import type { IRequest } from "itty-router";
+import type { Env } from "../bindings";
 import { validator } from "./validation";
 
-export async function handleShare(request: IRequest): Promise<Response> {
+export async function handleShare(
+	request: IRequest,
+	env: Env,
+): Promise<Response> {
 	let content: any;
 	console.log("share request received! processing data");
 	try {
@@ -23,7 +27,7 @@ export async function handleShare(request: IRequest): Promise<Response> {
 
 	//post to endpoint
 
-	return fetch(new Request(API_ENDPOINT + "/api/share"), {
+	return fetch(new Request(env.API_ENDPOINT + "/api/share"), {
 		method: "POST",
 		body: JSON.stringify(content),
 		headers: request.headers,

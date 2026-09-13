@@ -1,0 +1,11 @@
+{
+	"name": "gcsim-gateway",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-09-12",
+	"r2_buckets": [
+		{
+			"binding": "GCSIM_WASM",
+			"bucket_name": "wasm"
+		}
+	]
+}

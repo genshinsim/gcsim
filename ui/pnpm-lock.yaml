@@ -846,8 +846,8 @@ importers:
         specifier: ^1.12.5
         version: 1.12.8
       itty-router:
-        specifier: ^3.0.11
-        version: 3.0.12
+        specifier: ^5.0.24
+        version: 5.0.24
       pako:
         specifier: ^2.1.0
         version: 2.2.0
@@ -6790,8 +6790,8 @@ packages:
     resolution: {integrity: sha512-WhB9zCku7EGTj/HQQRz5aUQEUeoQZH2bWcltRErOpymJ4boYE6wL9Tbr23krRPSZ+C5zqNSrSw+Cc7sZZ4b7vg==}
     engines: {node: '>=0.10.0'}
 
-  itty-router@3.0.12:
-    resolution: {integrity: sha512-s98XTPhle6GGbaFf0kYrOD3Q8gyhnqvOqkwYijC3AmkceNKqWUp13YHg6dWmqmVv4pP7l7c94XI92I0EXVGO0w==}
+  itty-router@5.0.24:
+    resolution: {integrity: sha512-PXij1qGKtE6jg3dLgrTRdh/Frovl5Wc4Av67sD2xfhDPrgNt4u79++/il8/c/OfZGkhD/8uYJub8tjo+H165rA==}
 
   jest-util@29.7.0:
     resolution: {integrity: sha512-z6EbKajIpqGKU56y5KBUgy1dt1ihhQJgWzUlZHArA/+X2ad7Cb5iF+AK1EWVL/Bo7Rz9uurpqw6SiBCefUbCGA==}
@@ -16834,7 +16834,7 @@ snapshots:
 
   isobject@3.0.1: {}
 
-  itty-router@3.0.12: {}
+  itty-router@5.0.24: {}
 
   jest-util@29.7.0:
     dependencies:

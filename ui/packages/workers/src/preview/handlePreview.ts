@@ -1,8 +1,10 @@
 import type { IRequest } from "itty-router";
+import type { Env } from "../bindings";
 
 export async function handlePreview(
 	request: IRequest,
-	event: FetchEvent,
+	env: Env,
+	ctx: ExecutionContext,
 ): Promise<Response> {
 	//get last bit of url and change if valid uuid
 	const pn = new URL(request.url).pathname;
@@ -35,7 +37,7 @@ export async function handlePreview(
 		);
 
 		const resp = await fetch(
-			new Request(API_ENDPOINT + "/api/preview/" + last),
+			new Request(env.API_ENDPOINT + "/api/preview/" + last),
 			{
 				cf: {
 					cacheTtl: 60 * 24 * 60 * 60,
@@ -50,7 +52,7 @@ export async function handlePreview(
 			resp.headers.get("Cache-Control") !== "no-cache"
 		) {
 			response.headers.set("Cache-Control", "max-age=5184000");
-			event.waitUntil(cache.put(cacheKey, response.clone()));
+			ctx.waitUntil(cache.put(cacheKey, response.clone()));
 		}
 	}
 
