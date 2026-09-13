@@ -15,15 +15,16 @@ import (
 var burstFrames []int
 
 func init() {
-	burstFrames = frames.InitAbilSlice(72)
-	burstFrames[action.ActionAttack] = 71
-	burstFrames[action.ActionSkill] = 71
-	burstFrames[action.ActionJump] = 70
-	burstFrames[action.ActionSwap] = 69
+	burstFrames = frames.InitAbilSlice(45) // Q -> Walk
+	burstFrames[action.ActionAttack] = 43
+	burstFrames[action.ActionSkill] = 42
+	burstFrames[action.ActionDash] = 44
+	burstFrames[action.ActionJump] = 43
+	burstFrames[action.ActionSwap] = 41
 }
 
 const (
-	burstHitmark = 34
+	burstHitmark = 38
 
 	burstStatus     = "kinetic-energy"
 	burstBuffStatus = "iansan-burst-buff"
@@ -31,20 +32,23 @@ const (
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:     c.Index(),
-		Abil:           "The Three Principles of Power",
-		AdditionalTags: []attacks.AttackTag{attacks.AttackTagNightsoul},
-		AttackTag:      attacks.AttackTagElementalBurst,
-		ICDTag:         attacks.ICDTagNone,
-		ICDGroup:       attacks.ICDGroupDefault,
-		StrikeType:     attacks.StrikeTypeDefault,
-		Element:        attributes.Electro,
-		Durability:     25,
-		Mult:           burst[c.TalentLvlBurst()],
+		ActorIndex:       c.Index(),
+		Abil:             "The Three Principles of Power",
+		AttackTag:        attacks.AttackTagElementalBurst,
+		AdditionalTags:   []attacks.AttackTag{attacks.AttackTagNightsoul, attacks.AttackTagIansanBisonsaurus},
+		PoiseDMG:         180,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeBlunt,
+		Element:          attributes.Electro,
+		Durability:       25,
+		Mult:             burst[c.TalentLvlBurst()],
+		HitlagHaltFrames: 0.02 * 60,
+		HitlagFactor:     0.05,
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6),
+		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), nil, 5, 360),
 		burstHitmark,
 		burstHitmark,
 	)
@@ -55,11 +59,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		} else {
 			c.nightsoulState.GeneratePoints(15)
 		}
-	}, burstHitmark)
+	}, 40)
 
 	c.burstSrc = c.Core.F
 	c.burstRestoreNS = 0
-	c.updateATKBuff()
+	c.updateATKBuff(c.burstSrc)()
 	c.applyBuffTask(c.burstSrc)
 	c.Core.Events.Subscribe(event.OnActionExec, c.burstMovementRestore, burstBuffStatus)
 
@@ -74,7 +78,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	c.AddStatus(burstStatus, duration, false) // TODO: hitlag affected?
 	c.SetCD(action.ActionBurst, 18*60)
-	c.ConsumeEnergy(3)
+	c.ConsumeEnergy(6)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
@@ -113,20 +117,27 @@ func (c *char) applyBuffTask(src int) {
 			},
 		})
 		c.applyBuffTask(src)
-	}, 0.5*60) // TODO: refresh rate?
+	}, 1*60)
 }
 
-func (c *char) updateATKBuff() {
-	if !c.StatusIsActive(burstStatus) {
-		c.burstBuff[attributes.ATK] = 0
-		return
-	}
+func (c *char) updateATKBuff(src int) func() {
+	return func() {
+		if c.burstSrc != src {
+			return
+		}
+		if !c.StatusIsActive(burstStatus) {
+			c.burstBuff[attributes.ATK] = 0
+			return
+		}
 
-	rate := highATK
-	if c.nightsoulState.Points() < 42 {
-		rate = lowATK * c.nightsoulState.Points()
+		rate := highATK
+		if c.nightsoulState.Points() < 42 {
+			rate = lowATK * c.nightsoulState.Points()
+		}
+		c.burstBuff[attributes.ATK] = min(c.TotalAtk()*rate, maxATK[c.TalentLvlBurst()])
+
+		c.QueueCharTask(c.updateATKBuff(src), 0.3*60)
 	}
-	c.burstBuff[attributes.ATK] = min(c.TotalAtk()*rate, maxATK[c.TalentLvlBurst()])
 }
 
 func (c *char) burstMovementRestore(args ...interface{}) {

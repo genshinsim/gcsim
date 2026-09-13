@@ -91,6 +91,7 @@ func (c *char) enterNightsoul(points float64) {
 
 func (c *char) exitNightsoul() {
 	c.nightsoulSrc = -1
+	c.burstSrc = -1
 	c.nightsoulState.ExitBlessing()
 	c.nightsoulState.ClearPoints()
 	c.DeleteStatus(burstStatus)
@@ -109,7 +110,6 @@ func (c *char) nightsoulPointReduceTask(src int) {
 		points := 0.6
 		c.nightsoulState.ConsumePoints(points)
 		c.c1(points)
-		c.updateATKBuff()
 		if c.nightsoulState.Points() <= 0.2 {
 			c.exitNightsoul()
 			return
