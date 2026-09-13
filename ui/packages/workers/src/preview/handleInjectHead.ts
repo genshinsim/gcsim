@@ -1,4 +1,5 @@
 import type { IRequest } from "itty-router";
+import type { Env } from "../bindings";
 
 class ElementHandler {
 	private key;
@@ -64,8 +65,14 @@ class ElementHandler {
 	}
 }
 
-export async function handleInjectHead(request: IRequest): Promise<Response> {
-	const res = await fetch(request);
+export async function handleInjectHead(
+	request: IRequest,
+	env: Env,
+): Promise<Response> {
+	// Fetch the base HTML through the ASSETS binding (not a global fetch): with
+	// `run_worker_first: true` a global fetch(request) re-enters the Worker and
+	// yields a 404, so the head would be injected into the not-found page.
+	const res = await env.ASSETS.fetch(request);
 	const url = new URL(request.url);
 	const segments = url.pathname.split("/");
 	const key = segments.pop() || segments.pop();
@@ -77,8 +84,13 @@ export async function handleInjectHead(request: IRequest): Promise<Response> {
 		.transform(res);
 }
 
-export async function handleInjectHeadDB(request: IRequest): Promise<Response> {
-	const res = await fetch(request);
+export async function handleInjectHeadDB(
+	request: IRequest,
+	env: Env,
+): Promise<Response> {
+	// See handleInjectHead: fetch the base HTML via the ASSETS binding so the
+	// SPA index.html is rewritten, not the Worker's own 404 page.
+	const res = await env.ASSETS.fetch(request);
 	const url = new URL(request.url);
 	const segments = url.pathname.split("/");
 	const key = segments.pop() || segments.pop();
