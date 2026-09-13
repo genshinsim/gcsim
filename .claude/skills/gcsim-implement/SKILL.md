@@ -11,7 +11,7 @@ Implements a ticket, with the branch and PR steps around it.
 This repo uses the **fork workflow**. Your checkout has two remotes: `origin` is your personal
 fork, and `upstream` is the canonical repo. Always: branch off **`upstream/main`**, do the work
 on a branch in **your fork (`origin`)**, and open the PR **against `upstream`**. See
-`docs/agents/issue-tracker.md`.
+`docs/agents/issue-tracker.md`. Do this before you do any exploration. Your local code may be out of date.
 
 ## 1. Read the ticket
 

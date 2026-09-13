@@ -10,7 +10,7 @@ Move issues on the project issue tracker through a small state machine of triage
 
 Issues and labels live on the **upstream** repo, `genshinsim/gcsim`, not the `origin` fork. Read `docs/agents/issue-tracker.md` for the `gh` workflow (all commands scoped with `--repo genshinsim/gcsim`) and `docs/agents/triage-labels.md` for the role → label mapping.
 
-If this repo treats external pull requests as a request surface (see the issue-tracker config), triage covers them too: **a PR is an issue with attached code**, using the same roles, same states, and same machine, with a few deltas marked "for a PR" below. Resolve a bare `#42` to an issue or PR per the tracker config.
+This repo does not treat external pull requests as a request surface.
 
 Every comment or issue posted to the issue tracker during triage **must** start with this disclaimer:
 
@@ -68,6 +68,8 @@ When PRs are in scope, include external PRs in these buckets and tag each line `
 Show counts and a one-line summary per item. Let the maintainer pick.
 
 ## Triage a specific issue or PR
+
+**Before you start, always work off the latest `upstream/main` branch creating a copy if needed, and ensure your local code is up to date, UNLESS SPECIFICALLY ASKED OTHERWISE**
 
 1. **Gather context.** Read the full issue or PR (body, comments, labels, author, dates; for a PR, the diff too). Parse any prior triage notes so you don't re-ask resolved questions. Explore the codebase using the project's domain glossary, respecting ADRs in the area (see `docs/agents/domain.md`). Run two checks against the codebase: (a) **redundancy**: search for an existing implementation of the requested behavior by domain concept (not just the request's wording), and report where you looked. If found, it's an already-implemented `wontfix` (step 5). (b) **prior rejection**: read `.out-of-scope/*.md` and surface any that resembles this request.
 
