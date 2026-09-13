@@ -54,6 +54,7 @@ jobs:
         uses: ./.github/actions/deploy-workers
         with:
           apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
 
       - name: deploy-db
         uses: ./.github/actions/deploy-db
