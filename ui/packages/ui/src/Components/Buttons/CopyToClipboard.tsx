@@ -14,7 +14,7 @@ const CopyTo = ({ copyToast, config, className }: Props) => {
 	const action = () => {
 		navigator.clipboard.writeText(config ?? "").then(() => {
 			copyToast.current?.show({
-				message: t<string>("viewer.copied_to_clipboard"),
+				message: t("viewer.copied_to_clipboard"),
 				intent: Intent.SUCCESS,
 				timeout: 2000,
 			});
@@ -28,7 +28,7 @@ const CopyTo = ({ copyToast, config, className }: Props) => {
 				onClick={action}
 				disabled={config == null}
 			>
-				<div className={className}>{t<string>("viewer.copy")}</div>
+				<div className={className}>{t("viewer.copy")}</div>
 			</Button>
 		</>
 	);

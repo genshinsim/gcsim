@@ -14,7 +14,7 @@ export const Swap = memo(({ swap }: Props) => {
 	}
 	return (
 		<Item
-			title={t<string>("result.metadata_swap_delay")}
+			title={t("result.metadata_swap_delay")}
 			value={swap.toLocaleString(i18n.language) + "f"}
 			valueCase="lowercase"
 		/>

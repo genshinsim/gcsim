@@ -90,7 +90,7 @@ export default ({ data, running }: Props) => {
 		<Card className="flex flex-col col-span-full h-[450px]">
 			<div className="flex flex-col sm:flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
-					<CardTitle title={t<string>("result.cumu_dmg")} tooltip="x" />
+					<CardTitle title={t("result.cumu_dmg")} tooltip="x" />
 					<Options
 						graph={graph}
 						setGraph={setGraph}
@@ -134,13 +134,11 @@ const Options = ({
 }) => {
 	const { t } = useTranslation();
 	const graphLabel = (
-		<span className="text-xs font-mono text-gray-400">
-			{t<string>("result.type")}
-		</span>
+		<span className="text-xs font-mono text-gray-400">{t("result.type")}</span>
 	);
 	const targetLabel = (
 		<span className="text-xs font-mono text-gray-400">
-			{t<string>("viewer.target")}
+			{t("viewer.target")}
 		</span>
 	);
 
@@ -148,8 +146,8 @@ const Options = ({
 		<div className="flex flex-row gap-4">
 			<FormGroup label={graphLabel} inline={true} className="!mb-2">
 				<HTMLSelect value={graph} onChange={(e) => setGraph(e.target.value)}>
-					<option value={"overall"}>{t<string>("result.overall")}</option>
-					<option value={"target"}>{t<string>("viewer.target")}</option>
+					<option value={"overall"}>{t("result.overall")}</option>
+					<option value={"target"}>{t("viewer.target")}</option>
 				</HTMLSelect>
 			</FormGroup>
 			{graph === "target" ? (

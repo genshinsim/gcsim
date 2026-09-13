@@ -26,7 +26,7 @@ export default () => {
 		<div className={classNames("w-full", divider)}>
 			<div className="px-5 xs:px-16 py-3 flex justify-center gap-2 2xl:mx-auto 2xl:container">
 				<div className="self-center text-right text-gray-400 text-xs grow shrink-0 w-2/3 max-w-fit">
-					{t<string>("footer.gcsim_is_not")}
+					{t("footer.gcsim_is_not")}
 				</div>
 				<Divider />
 				<div className="flex flex-wrap gap-x-4 gap-y-2 text-lg font-medium shrink grow-0">

@@ -14,7 +14,7 @@ export const Standard = memo(({ standard }: Props) => {
 
 	return (
 		<Item
-			title={t<string>("result.metadata_standard")}
+			title={t("result.metadata_standard")}
 			value={standard}
 			intent="success"
 			bold

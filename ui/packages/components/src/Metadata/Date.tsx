@@ -18,7 +18,7 @@ export const DateItem = memo(({ date }: Props) => {
 
 	return (
 		<Item
-			title={t<string>("result.metadata_created")}
+			title={t("result.metadata_created")}
 			value={d.toLocaleDateString(i18n.language)}
 		/>
 	);

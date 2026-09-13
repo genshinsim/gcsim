@@ -18,11 +18,11 @@ export const SourceDPSCard = ({ data, running, names }: Props) => {
 	const { t } = useTranslation();
 	const graphs: Graphs = new Map([
 		["dps", "DPS"],
-		["damage_instances", t<string>("result.dmg_instances")],
+		["damage_instances", t("result.dmg_instances")],
 	]);
 	const [graph, setGraph] = useState("dps");
 
-	const all_filter = t<string>("result.all");
+	const all_filter = t("result.all");
 	//@ts-ignore
 	const filters: string[] = [all_filter, ...(names || [])];
 	const [filter, setFilter] = useState(all_filter);
@@ -52,7 +52,7 @@ export const SourceDPSCard = ({ data, running, names }: Props) => {
 			<div className="flex flex-col sm:flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
 					<CardTitle
-						title={t<string>("result.source", { s: graphs.get(graph) })}
+						title={t("result.source", { s: graphs.get(graph) })}
 						tooltip="x"
 						timer={timer}
 					/>
@@ -92,9 +92,7 @@ const Options = ({
 }) => {
 	const { t } = useTranslation();
 	const label = (
-		<span className="text-xs font-mono text-gray-400">
-			{t<string>("result.type")}
-		</span>
+		<span className="text-xs font-mono text-gray-400">{t("result.type")}</span>
 	);
 
 	return (
@@ -121,9 +119,7 @@ const Filters = ({
 }) => {
 	const { t } = useTranslation();
 	const label = (
-		<span className="text-xs font-mono text-gray-400">
-			{t<string>("db.character")}
-		</span>
+		<span className="text-xs font-mono text-gray-400">{t("db.character")}</span>
 	);
 
 	return (

@@ -40,7 +40,7 @@ export default ({ running, src, error, current, total, cancel }: Props) => {
 		if (current === undefined || total === undefined) {
 			key.current = loadingToast.current?.show(
 				{
-					message: t<string>("sim.loading"),
+					message: t("sim.loading"),
 					icon: "refresh",
 					intent: Intent.PRIMARY,
 					isCloseButtonShown: false,
@@ -54,7 +54,7 @@ export default ({ running, src, error, current, total, cancel }: Props) => {
 		if (current >= total && src === ResultSource.Loaded) {
 			key.current = loadingToast.current?.show(
 				{
-					message: t<string>("sim.loaded", { i: current }),
+					message: t("sim.loaded", { i: current }),
 					icon: "tick",
 					intent: Intent.SUCCESS,
 					isCloseButtonShown: true,
@@ -116,7 +116,7 @@ const ProgressToast = ({
 	return (
 		<div className="flex flex-row items-center justify-between gap-2">
 			<div className="min-w-fit">
-				{t<string>("sim.running")} ({current}/{total})
+				{t("sim.running")} ({current}/{total})
 			</div>
 			<ProgressBar
 				className={classNames("basis-1/2 flex-auto sm:min-w-", {
@@ -125,7 +125,7 @@ const ProgressToast = ({
 				intent={val < 1 ? Intent.PRIMARY : Intent.SUCCESS}
 				value={val}
 			/>
-			{action(val, toastKey, loadingToast, cancel, t<string>("db.cancel"))}
+			{action(val, toastKey, loadingToast, cancel, t("db.cancel"))}
 		</div>
 	);
 };

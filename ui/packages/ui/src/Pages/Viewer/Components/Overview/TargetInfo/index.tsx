@@ -16,7 +16,7 @@ const TargetInfo = (props: Props) => {
 	const { t } = useTranslation();
 	return (
 		<Card className="flex flex-col col-span-3">
-			<CardTitle title={t<string>("result.target_info")} tooltip="x" />
+			<CardTitle title={t("result.target_info")} tooltip="x" />
 			<CardData {...props} />
 		</Card>
 	);
@@ -40,7 +40,7 @@ const CardData = ({ enemies, player }: Props) => {
 			</div>
 			<div className="flex flex-col grow w-[236px] min-h-[100px] lg:self-auto self-center">
 				<div className="lg:flex flex-row justify-center text-gray-400 font-mono hidden">
-					{t<string>("result.target_pos")}
+					{t("result.target_pos")}
 				</div>
 				<ParentSize>
 					{({ width, height }) => (

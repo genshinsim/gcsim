@@ -104,7 +104,7 @@ const ExecutorSettings = ({ children }: { children: ReactNode }) => {
 		<Dialog
 			isOpen={isOpen}
 			onClose={() => dispatch(appActions.setSettingsOpen(false))}
-			title={t<string>("simple.settings")}
+			title={t("simple.settings")}
 			icon="settings"
 			className="!pb-0"
 		>
@@ -115,7 +115,7 @@ const ExecutorSettings = ({ children }: { children: ReactNode }) => {
 						checked={sampleOnLoad}
 						onChange={() => dispatch(appActions.setSampleOnLoad(!sampleOnLoad))}
 						className="pt-5"
-						labelElement={t<string>("simple.generate_sample")}
+						labelElement={t("simple.generate_sample")}
 					/>
 				</>
 			</div>
@@ -276,9 +276,7 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 						<Helmet>
 							<title>gcsim - simulation impact</title>
 						</Helmet>
-						<div className="m-2 text-center">
-							{t<string>("src.this_page_is")}
-						</div>
+						<div className="m-2 text-center">{t("src.this_page_is")}</div>
 					</Route>
 				</Switch>
 				<Footer />

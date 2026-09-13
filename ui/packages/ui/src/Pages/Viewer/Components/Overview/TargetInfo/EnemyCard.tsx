@@ -46,7 +46,7 @@ const EnemyTitle = ({ id, enemy }: Props) => {
 				className="text-gray-400 text-lg"
 				style={{ color: DataColorsConst.qualitative5(id) }}
 			>
-				{t<string>("viewer.target")} {id + 1} {name}
+				{t("viewer.target")} {id + 1} {name}
 			</div>
 		</div>
 	);
@@ -57,11 +57,11 @@ const EnemyInfo = ({ enemy }: Props) => {
 	const modified = enemy?.modified ?? false;
 	return (
 		<div className="flex flex-row font-mono gap-3 h-full items-center">
-			<InfoItem name={t<string>("character.lvl")} value={enemy?.level} />
-			<InfoItem name={t<string>("stats.hp")} value={enemy?.hp} />
+			<InfoItem name={t("character.lvl")} value={enemy?.level} />
+			<InfoItem name={t("stats.hp")} value={enemy?.hp} />
 			<InfoItem
-				name={t<string>("stats.modified")}
-				value={t<string>("states." + modified.toString())}
+				name={t("stats.modified")}
+				value={t("states." + modified.toString())}
 			/>
 		</div>
 	);

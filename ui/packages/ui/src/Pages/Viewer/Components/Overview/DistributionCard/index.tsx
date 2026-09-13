@@ -64,47 +64,17 @@ function useGraphDataRefresh(data: SimResults | null): Stats | null {
 const GraphTitle = ({ graph }: { graph: string }) => {
 	const { t } = useTranslation();
 	if (graph === "dps") {
-		return (
-			<CardTitle
-				title={t<string>("result.dist", { d: "DPS" })}
-				tooltip="test"
-			/>
-		);
+		return <CardTitle title={t("result.dist", { d: "DPS" })} tooltip="test" />;
 	} else if (graph === "eps") {
-		return (
-			<CardTitle
-				title={t<string>("result.dist", { d: "EPS" })}
-				tooltip="test"
-			/>
-		);
+		return <CardTitle title={t("result.dist", { d: "EPS" })} tooltip="test" />;
 	} else if (graph === "rps") {
-		return (
-			<CardTitle
-				title={t<string>("result.dist", { d: "RPS" })}
-				tooltip="test"
-			/>
-		);
+		return <CardTitle title={t("result.dist", { d: "RPS" })} tooltip="test" />;
 	} else if (graph === "hps") {
-		return (
-			<CardTitle
-				title={t<string>("result.dist", { d: "HPS" })}
-				tooltip="test"
-			/>
-		);
+		return <CardTitle title={t("result.dist", { d: "HPS" })} tooltip="test" />;
 	} else if (graph === "shp") {
-		return (
-			<CardTitle
-				title={t<string>("result.dist", { d: "SHP" })}
-				tooltip="test"
-			/>
-		);
+		return <CardTitle title={t("result.dist", { d: "SHP" })} tooltip="test" />;
 	} else if (graph === "dur") {
-		return (
-			<CardTitle
-				title={t<string>("result.dist", { d: "Dur" })}
-				tooltip="test"
-			/>
-		);
+		return <CardTitle title={t("result.dist", { d: "Dur" })} tooltip="test" />;
 	}
 	return null;
 };

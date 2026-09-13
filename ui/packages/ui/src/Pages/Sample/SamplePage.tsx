@@ -59,7 +59,7 @@ export default ({ sample, error, retry }: Props) => {
 		<div className="flex flex-col gap-2 w-full 2xl:mx-auto 2xl:container py-6">
 			<div className="flex flex-row justify-between pl-6 pr-4 pb-2">
 				<span className="text-lg font-bold font-mono">
-					{t<string>("db.number_of_targets") + sample.target_details?.length}
+					{t("db.number_of_targets") + sample.target_details?.length}
 				</span>
 				<ButtonGroup>
 					<CopyToClipboard
@@ -111,7 +111,7 @@ const ErrorAlert = ({ msg, retry }: ErrorProps) => {
 	let cancelButtonText: string | undefined;
 	let onCancel: (() => void) | undefined;
 	if (retry != null) {
-		cancelButtonText = t<string>("viewer.retry");
+		cancelButtonText = t("viewer.retry");
 		onCancel = () => retry();
 	}
 

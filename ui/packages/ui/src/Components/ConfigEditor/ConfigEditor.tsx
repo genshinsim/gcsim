@@ -61,7 +61,7 @@ export function ConfigEditor(props: Props) {
 		<div className="p-1 md:p-2">
 			{hideThemeSelector ? null : (
 				<div className="my-1 w-full flex flex-col gap-0.5 items-center md:flex-row-reverse md:gap-4 md:items-start">
-					<FormGroup label={t<string>("simple.editor_theme")} inline>
+					<FormGroup label={t("simple.editor_theme")} inline>
 						<HTMLSelect onChange={(e) => setTheme(e.currentTarget.value)}>
 							{themes.map((t) => (
 								<option key={t} selected={t === theme}>
@@ -70,7 +70,7 @@ export function ConfigEditor(props: Props) {
 							))}
 						</HTMLSelect>
 					</FormGroup>
-					<FormGroup label={t<string>("simple.font_size")} inline>
+					<FormGroup label={t("simple.font_size")} inline>
 						<NumericInput
 							defaultValue={fontSize}
 							onValueChange={(e) => setFontSize(e)}

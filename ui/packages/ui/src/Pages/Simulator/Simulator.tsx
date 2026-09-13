@@ -88,8 +88,7 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
 								<Callout
 									intent={Intent.DANGER}
 									title={
-										t<string>("viewer.error_encountered") +
-										t<string>("viewer.config_invalid")
+										t("viewer.error_encountered") + t("viewer.config_invalid")
 									}
 								>
 									<pre className="whitespace-pre-wrap pl-5">{err}</pre>

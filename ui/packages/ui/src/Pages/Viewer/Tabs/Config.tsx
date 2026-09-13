@@ -49,7 +49,7 @@ const ConfigUI = ({ config, running, resetTab }: ConfigProps) => {
 					<ExecutorSettingsButton />
 					<Button
 						icon="refresh"
-						text={t<string>("viewer.rerun")}
+						text={t("viewer.rerun")}
 						intent={Intent.SUCCESS}
 						disabled={
 							config.error !== "" || (!config.validated && config.modified)
@@ -81,10 +81,7 @@ const ConfigError = ({ error, cfg }: { error: string; cfg: string }) => {
 		<div className="px-6 pt-4">
 			<Callout
 				intent={Intent.DANGER}
-				title={
-					t<string>("viewer.error_encountered") +
-					+t<string>("viewer.config_invalid")
-				}
+				title={t("viewer.error_encountered") + +t("viewer.config_invalid")}
 			>
 				<pre className="whitespace-pre-wrap pl-5">{error}</pre>
 			</Callout>

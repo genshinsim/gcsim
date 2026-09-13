@@ -129,7 +129,7 @@ const SampleOptions = ({ settings, setSettings }: SampleOptionsProps) => {
 			<Button
 				onClick={() => setOpen(true)}
 				icon="cog"
-				text={t<string>("simple.settings")}
+				text={t("simple.settings")}
 			/>
 			<Options
 				isOpen={isOpen}
@@ -223,7 +223,7 @@ function SamplerUI({
 	return (
 		<>
 			<div className="flex flex-col sm:flex-row justify-between">
-				<FormGroup label={t<string>("viewer.search")} inline>
+				<FormGroup label={t("viewer.search")} inline>
 					<InputGroup
 						type="text"
 						inputRef={searchRef}
@@ -257,7 +257,7 @@ function SamplerUI({
 					<SampleOptions settings={settings} setSettings={setSettings} />
 					<Button
 						icon="bring-data"
-						text={t<string>("viewer.download")}
+						text={t("viewer.download")}
 						intent={Intent.SUCCESS}
 						onClick={() => {
 							const out = Pako.deflate(JSON.stringify(sample));

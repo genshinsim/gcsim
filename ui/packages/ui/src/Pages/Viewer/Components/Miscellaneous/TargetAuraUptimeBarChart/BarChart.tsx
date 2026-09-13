@@ -54,12 +54,12 @@ export const BarChart = ({
 			margin={{ top: 0, left: width * 0.25, right: width * 0.1, bottom: 20 }}
 			tooltipContent={(d, k) => (
 				<FloatStatTooltipContent
-					title={k + " " + t<string>("result.uptime")}
+					title={k + " " + t("result.uptime")}
 					data={d.data[k].data}
 					color={DataColors.reactableModifierLabel(k)}
 				/>
 			)}
-			bottomLabel={t<string>("result.p_of_total_dur")}
+			bottomLabel={t("result.p_of_total_dur")}
 		/>
 	);
 };

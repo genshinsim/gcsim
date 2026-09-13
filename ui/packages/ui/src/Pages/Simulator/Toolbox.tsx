@@ -106,8 +106,8 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
 				icon="help"
 				text={
 					settings.showTips
-						? t<string>("simple.tools_hide_tooltips")
-						: t<string>("simple.tools_show_tooltips")
+						? t("simple.tools_hide_tooltips")
+						: t("simple.tools_show_tooltips")
 				}
 				onClick={toggleTips}
 			/>
@@ -115,8 +115,8 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
 				icon="people"
 				text={
 					settings.showBuilder
-						? t<string>("simple.tools_hide_builder")
-						: t<string>("simple.tools_show_builder")
+						? t("simple.tools_hide_builder")
+						: t("simple.tools_show_builder")
 				}
 				onClick={toggleBuilder}
 			/>
@@ -124,31 +124,27 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
 				icon="search"
 				text={
 					settings.showNameSearch
-						? t<string>("simple.tools_hide_name_search")
-						: t<string>("simple.tools_show_name_search")
+						? t("simple.tools_hide_name_search")
+						: t("simple.tools_show_name_search")
 				}
 				onClick={toggleNameSearch}
 			/>
 			<MenuDivider />
 			<MenuItem
-				text={t<string>("simple.tools_sample_upload")}
+				text={t("simple.tools_sample_upload")}
 				icon="helper-management"
 				onClick={() => history.push("/sample/upload")}
 			/>
-			<MenuItem
-				icon="cut"
-				text={t<string>("simple.tools_substat_snippets")}
-				disabled
-			/>
+			<MenuItem icon="cut" text={t("simple.tools_substat_snippets")} disabled />
 			<MenuDivider />
 
 			<MenuItem
-				text={t<string>("simple.tools_import", { src: "GO" })}
+				text={t("simple.tools_import", { src: "GO" })}
 				icon="import"
 				onClick={() => setOpenGOODImport(true)}
 			/>
 			<MenuItem
-				text={t<string>("simple.tools_import", { src: "Enka" })}
+				text={t("simple.tools_import", { src: "Enka" })}
 				icon="import"
 				onClick={() => setOpenImportFromEnka(true)}
 			/>
@@ -167,7 +163,7 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
 					className="basis-full md:basis-1/2"
 					popoverClassName={Classes.POPOVER_DISMISS}
 				>
-					<Button icon="wrench" fill text={t<string>("simple.tools")} />
+					<Button icon="wrench" fill text={t("simple.tools")} />
 				</Popover2>
 				<Button
 					icon="play"
@@ -176,7 +172,7 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
 					onClick={run}
 					loading={!isReady}
 					disabled={!isValid}
-					text={t<string>("simple.run")}
+					text={t("simple.run")}
 				/>
 			</ButtonGroup>
 			<ImportFromGOODDialog

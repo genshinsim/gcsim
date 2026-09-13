@@ -12,11 +12,6 @@ export const Dirty = memo(({ modified }: Props) => {
 		return null;
 	}
 	return (
-		<Item
-			value={t<string>("result.metadata_dirty")}
-			intent="danger"
-			bright
-			bold
-		/>
+		<Item value={t("result.metadata_dirty")} intent="danger" bright bold />
 	);
 });

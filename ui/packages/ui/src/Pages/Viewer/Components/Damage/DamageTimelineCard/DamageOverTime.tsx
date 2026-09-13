@@ -240,17 +240,17 @@ export const DamageOverTimeGraph = ({
 									}
 								: undefined
 						}
-						label={t<string>("result.dmg_over_time")}
+						label={t("result.dmg_over_time")}
 					/>
 					<GraphAxisBottom
 						hideTicks
 						top={yMax}
 						scale={xScale}
 						axisLineClassName="stroke-2"
-						tickFormat={(s) => s + t<string>("result.seconds_short")}
+						tickFormat={(s) => s + t("result.seconds_short")}
 						numTicks={numXTicks}
 						labelOffset={10}
-						label={`${t<string>("result.dur_long")} (${t<string>("result.seconds")})`}
+						label={`${t("result.dur_long")} (${t("result.seconds")})`}
 					/>
 					<HoverLine
 						data={data}

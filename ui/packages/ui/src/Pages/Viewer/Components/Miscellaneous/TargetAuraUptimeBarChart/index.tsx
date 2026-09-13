@@ -23,7 +23,7 @@ export const TargetAuraUptimeCard = ({ data, running }: Props) => {
 								? {
 										sources: Object.fromEntries(
 											Object.entries(s.sources).map(([k, v]) => [
-												t<string>("elements." + k),
+												t("elements." + k),
 												v,
 											]),
 										),
@@ -72,7 +72,7 @@ export const TargetAuraUptimeCard = ({ data, running }: Props) => {
 			<div className="flex flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
 					<CardTitle
-						title={t<string>("result.target_aura_uptime")}
+						title={t("result.target_aura_uptime")}
 						tooltip="x"
 						timer={timer}
 					/>
@@ -106,7 +106,7 @@ const Options = ({
 	const { t } = useTranslation();
 	const label = (
 		<span className="text-xs font-mono text-gray-400">
-			{t<string>("viewer.target")}
+			{t("viewer.target")}
 		</span>
 	);
 

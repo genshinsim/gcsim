@@ -74,8 +74,8 @@ export const RenderTooltip = (props: Props) => {
 	const data = props.tooltipData;
 
 	const title = data.player
-		? t<string>("result.player")
-		: `${t<string>("viewer.target")} ${data.index + 1}`;
+		? t("result.player")
+		: `${t("viewer.target")} ${data.index + 1}`;
 	const titleColor = data.player
 		? DataColorsConst.gray
 		: DataColorsConst.qualitative5(data.index);

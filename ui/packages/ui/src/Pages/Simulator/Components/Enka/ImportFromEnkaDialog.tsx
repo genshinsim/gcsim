@@ -80,7 +80,7 @@ export function ImportFromEnkaDialog(props: Props) {
 			canEscapeKeyClose
 			canOutsideClickClose
 			icon="import"
-			title={t<string>("simple.tools_import", { src: "Enka.Network" })}
+			title={t("simple.tools_import", { src: "Enka.Network" })}
 			style={{ width: "85%" }}
 		>
 			<div className={Classes.DIALOG_BODY}>
@@ -91,7 +91,7 @@ export function ImportFromEnkaDialog(props: Props) {
 					</Trans>
 				</p>
 				<Callout intent="warning">
-					{t<string>("simple.tools_import_warning", { src: "GOOD/Enka" })}
+					{t("simple.tools_import_warning", { src: "GOOD/Enka" })}
 				</Callout>
 				<input
 					value={uid}
@@ -99,7 +99,7 @@ export function ImportFromEnkaDialog(props: Props) {
 						setUid(e.target.value.trim());
 					}}
 					className="w-full p-2 bg-gray-600 rounded-md mt-2"
-					placeholder={t<string>("simple.tools_paste_uid")}
+					placeholder={t("simple.tools_paste_uid")}
 				/>
 
 				{message === "success" ? (
@@ -150,15 +150,13 @@ export function ImportFromEnkaDialog(props: Props) {
 					</div>
 				)}
 
-				<p className="font-bold !pt-2">
-					{t<string>("simple.tools_import_after")}
-				</p>
+				<p className="font-bold !pt-2">{t("simple.tools_import_after")}</p>
 			</div>
 			<div className={Classes.DIALOG_FOOTER}>
 				<div className={Classes.DIALOG_FOOTER_ACTIONS}>
 					<ButtonGroup>
 						<Button onClick={handleClick} intent="primary">
-							{t<string>("simple.import")}
+							{t("simple.import")}
 						</Button>
 					</ButtonGroup>
 				</div>

@@ -127,14 +127,14 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
 	}
 	const [value, setValue] = useState(startValue);
 	const options: OptionProps[] = [
-		{ label: t<string>("viewer.seed_sample"), value: "sample" },
+		{ label: t("viewer.seed_sample"), value: "sample" },
 		// { label: "Random", value: "rand" },
-		{ label: t<string>("viewer.seed_min"), value: "min" },
-		{ label: t<string>("viewer.seed_max"), value: "max" },
-		{ label: t<string>("viewer.seed_p", { p: 25 }), value: "q1" },
-		{ label: t<string>("viewer.seed_p", { p: 50 }), value: "q2" },
-		{ label: t<string>("viewer.seed_p", { p: 75 }), value: "q3" },
-		{ label: t<string>("viewer.seed_custom"), value: "custom" },
+		{ label: t("viewer.seed_min"), value: "min" },
+		{ label: t("viewer.seed_max"), value: "max" },
+		{ label: t("viewer.seed_p", { p: 25 }), value: "q1" },
+		{ label: t("viewer.seed_p", { p: 50 }), value: "q2" },
+		{ label: t("viewer.seed_p", { p: 75 }), value: "q3" },
+		{ label: t("viewer.seed_custom"), value: "custom" },
 	];
 
 	const parsed = queryString.parse(location.hash);
@@ -208,7 +208,7 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
 			)}
 			<Button
 				large={true}
-				text={t<string>("viewer.generate")}
+				text={t("viewer.generate")}
 				icon="refresh"
 				intent={Intent.PRIMARY}
 				disabled={disabled()}

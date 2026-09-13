@@ -46,21 +46,21 @@ const SendTo = ({ config }: { config?: string }) => {
 				disabled={config == null}
 			>
 				<div className="hidden ml-[7px] sm:flex">
-					{t<string>("viewer.send_to_simulator")}
+					{t("viewer.send_to_simulator")}
 				</div>
 			</Button>
 			<Dialog
 				isOpen={isOpen}
 				onClose={() => setOpen(false)}
-				title={t<string>("viewer.load_this_configuration")}
+				title={t("viewer.load_this_configuration")}
 				icon="bring-data"
 			>
 				<div className={Classes.DIALOG_BODY}>
 					<Callout intent="warning" className="">
-						{t<string>("viewer.this_will_overwrite")}
+						{t("viewer.this_will_overwrite")}
 					</Callout>
 					<Checkbox
-						label={t<string>("viewer.copy_list_only")}
+						label={t("viewer.copy_list_only")}
 						className="my-3 mx-1"
 						checked={keepTeam}
 						onClick={toggleKeepTeam}
@@ -75,12 +75,9 @@ const SendTo = ({ config }: { config?: string }) => {
 					<Button
 						onClick={toSimulator}
 						intent={Intent.PRIMARY}
-						text={t<string>("viewer.continue")}
+						text={t("viewer.continue")}
 					/>
-					<Button
-						onClick={() => setOpen(false)}
-						text={t<string>("viewer.cancel")}
-					/>
+					<Button onClick={() => setOpen(false)} text={t("viewer.cancel")} />
 				</div>
 			</Dialog>
 		</>

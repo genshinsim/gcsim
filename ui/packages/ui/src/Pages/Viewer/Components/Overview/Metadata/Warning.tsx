@@ -19,7 +19,7 @@ export const WarningItem = memo(({ warnings }: Props) => {
 
 	return (
 		<Item
-			title={t<string>("result.metadata_warnings")}
+			title={t("result.metadata_warnings")}
 			value={count.toLocaleString()}
 			intent="warning"
 			bold

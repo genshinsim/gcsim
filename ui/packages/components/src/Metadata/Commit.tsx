@@ -22,9 +22,7 @@ export const Commit = memo(({ commit, className }: Props) => {
 	return (
 		<Badge className={cc}>
 			<div className="flex flex-row items-center gap-2">
-				<div className="text-gray-400">
-					{t<string>("result.metadata_commit")}
-				</div>
+				<div className="text-gray-400">{t("result.metadata_commit")}</div>
 				<a href={url} target="_blank" rel="noreferrer" className="font-bold">
 					{shortCommit}
 				</a>

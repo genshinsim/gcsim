@@ -29,7 +29,7 @@ export const EndingEnergyCard = ({ data, running, names }: Props) => {
 			<div className="flex flex-col sm:flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
 					<CardTitle
-						title={t<string>("result.ending_energy")}
+						title={t("result.ending_energy")}
 						tooltip="x"
 						timer={timer}
 					/>

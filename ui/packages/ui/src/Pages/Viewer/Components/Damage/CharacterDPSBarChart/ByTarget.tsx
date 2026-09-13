@@ -77,7 +77,7 @@ export const ByTargetChart = ({ width, height, names, dps }: Props) => {
 			hoverColor={(k) => DataColors.targetLabel(k)}
 			tooltipContent={(d, k) => (
 				<FloatStatTooltipContent
-					title={d.name + " " + t<string>("viewer.target") + " " + k + " DPS"}
+					title={d.name + " " + t("viewer.target") + " " + k + " DPS"}
 					data={d.data[k]}
 					color={DataColors.targetLabel(k)}
 					percent={(d.data[k].mean ?? 0) / d.total}

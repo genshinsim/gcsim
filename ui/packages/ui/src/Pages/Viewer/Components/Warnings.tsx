@@ -37,7 +37,7 @@ const IncompleteCharWarning = ({ data }: WarningProps) => {
 
 	return (
 		<DismissibleCallout
-			title={t<string>("warnings.incomplete_char_title")}
+			title={t("warnings.incomplete_char_title")}
 			intent={Intent.WARNING}
 			show={visible}
 			onDismiss={() => setShow(false)}
@@ -54,12 +54,12 @@ const IncompleteCharWarning = ({ data }: WarningProps) => {
 			</p>
 			<div className="flex flex-col justify-start gap-1 text-xs pt-2 font-mono text-gray-400">
 				<span className="font-bold">
-					{t<string>("warnings.incomplete_char_data_header")}
+					{t("warnings.incomplete_char_data_header")}
 				</span>
 				<ul className="list-disc pl-4 grid grid-cols-[auto_minmax(0,_1fr)] gap-x-3 justify-start">
 					{data?.incomplete_characters?.map((c) => (
 						<div key={c} className="list-item">
-							{t<string>("character_names." + c, { ns: "game" })}
+							{t("character_names." + c, { ns: "game" })}
 						</div>
 					))}
 				</ul>
@@ -75,12 +75,12 @@ const PositionOverlapWarning = ({ data }: WarningProps) => {
 
 	return (
 		<DismissibleCallout
-			title={t<string>("warnings.position_overlap_title")}
+			title={t("warnings.position_overlap_title")}
 			intent={Intent.WARNING}
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
-			<p>{t<string>("warnings.position_overlap_body")}</p>
+			<p>{t("warnings.position_overlap_body")}</p>
 		</DismissibleCallout>
 	);
 };
@@ -93,14 +93,14 @@ const EnergyWarning = ({ data }: WarningProps) => {
 
 	return (
 		<DismissibleCallout
-			title={t<string>("warnings.energy_title")}
+			title={t("warnings.energy_title")}
 			intent={Intent.WARNING}
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
-			<p>{t<string>("warnings.energy_body")}</p>
+			<p>{t("warnings.energy_body")}</p>
 			<FailedActionDetails
-				title={t<string>("warnings.energy_data_header")}
+				title={t("warnings.energy_data_header")}
 				data={data}
 				stat={(fa) => fa.insufficient_energy}
 			/>
@@ -115,14 +115,14 @@ const BurstWarningCD = ({ data }: WarningProps) => {
 
 	return (
 		<DismissibleCallout
-			title={t<string>("warnings.burst_cd_title")}
+			title={t("warnings.burst_cd_title")}
 			intent={Intent.WARNING}
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
-			<p>{t<string>("warnings.burst_cd_body")}</p>
+			<p>{t("warnings.burst_cd_body")}</p>
 			<FailedActionDetails
-				title={t<string>("warnings.burst_cd_data_header")}
+				title={t("warnings.burst_cd_data_header")}
 				data={data}
 				stat={(fa) => fa.burst_cd}
 			/>
@@ -137,14 +137,14 @@ const SkillWarning = ({ data }: WarningProps) => {
 
 	return (
 		<DismissibleCallout
-			title={t<string>("warnings.skill_title")}
+			title={t("warnings.skill_title")}
 			intent={Intent.WARNING}
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
-			<p>{t<string>("warnings.skill_body")}</p>
+			<p>{t("warnings.skill_body")}</p>
 			<FailedActionDetails
-				title={t<string>("warnings.skill_data_header")}
+				title={t("warnings.skill_data_header")}
 				data={data}
 				stat={(fa) => fa.skill_cd}
 			/>
@@ -160,14 +160,14 @@ const StaminaWarning = ({ data }: WarningProps) => {
 
 	return (
 		<DismissibleCallout
-			title={t<string>("warnings.stamina_title")}
+			title={t("warnings.stamina_title")}
 			intent={Intent.WARNING}
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
-			<p>{t<string>("warnings.stamina_body")}</p>
+			<p>{t("warnings.stamina_body")}</p>
 			<FailedActionDetails
-				title={t<string>("warnings.stamina_data_header")}
+				title={t("warnings.stamina_data_header")}
 				data={data}
 				stat={(fa) => fa.insufficient_stamina}
 			/>
@@ -182,14 +182,14 @@ const SwapWarning = ({ data }: WarningProps) => {
 
 	return (
 		<DismissibleCallout
-			title={t<string>("warnings.swap_title")}
+			title={t("warnings.swap_title")}
 			intent={Intent.WARNING}
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
-			<p>{t<string>("warnings.swap_body")}</p>
+			<p>{t("warnings.swap_body")}</p>
 			<FailedActionDetails
-				title={t<string>("warnings.swap_data_header")}
+				title={t("warnings.swap_data_header")}
 				data={data}
 				stat={(fa) => fa.swap_cd}
 			/>
@@ -204,14 +204,14 @@ const DashWarning = ({ data }: WarningProps) => {
 
 	return (
 		<DismissibleCallout
-			title={t<string>("warnings.dash_title")}
+			title={t("warnings.dash_title")}
 			intent={Intent.WARNING}
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
-			<p>{t<string>("warnings.dash_body")}</p>
+			<p>{t("warnings.dash_body")}</p>
 			<FailedActionDetails
-				title={t<string>("warnings.dash_data_header")}
+				title={t("warnings.dash_data_header")}
 				data={data}
 				stat={(fa) => fa.dash_cd}
 			/>
@@ -227,12 +227,12 @@ const IgnoreBurstEnergyMode = ({ data }: WarningProps) => {
 
 	return (
 		<DismissibleCallout
-			title={t<string>("warnings.ignore_burst_energy_title")}
+			title={t("warnings.ignore_burst_energy_title")}
 			intent={Intent.DANGER}
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
-			<p>{t<string>("warnings.ignore_burst_energy_body")}</p>
+			<p>{t("warnings.ignore_burst_energy_body")}</p>
 		</DismissibleCallout>
 	);
 };
@@ -253,7 +253,7 @@ const FailedActionDetails = ({ data, title, stat }: DetailsProps) => {
 	function fmt(val?: number) {
 		return (
 			val?.toLocaleString(i18n.language, { maximumFractionDigits: 2 }) +
-			t<string>("result.seconds_short")
+			t("result.seconds_short")
 		);
 	}
 
@@ -265,7 +265,7 @@ const FailedActionDetails = ({ data, title, stat }: DetailsProps) => {
 		return (
 			<>
 				<div className="list-item">
-					{t<string>("character_names." + data.character_details?.[i].name, {
+					{t("character_names." + data.character_details?.[i].name, {
 						ns: "game",
 					})}
 				</div>

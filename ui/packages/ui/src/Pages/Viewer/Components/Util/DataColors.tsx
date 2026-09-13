@@ -97,7 +97,7 @@ export const DataColorsConst = {
 export function useDataColors() {
 	const actions: Map<string, ActionColor> = new Map([
 		[
-			i18next.t<string>("actions.normal"),
+			i18next.t("actions.normal"),
 			{
 				highlight: Colors.CERULEAN5,
 				label: Colors.CERULEAN4,
@@ -105,7 +105,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("actions.charge"),
+			i18next.t("actions.charge"),
 			{
 				highlight: Colors.FOREST5,
 				label: Colors.FOREST4,
@@ -113,7 +113,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("actions.aim"),
+			i18next.t("actions.aim"),
 			{
 				highlight: Colors.GOLD5,
 				label: Colors.GOLD4,
@@ -121,7 +121,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("actions.skill"),
+			i18next.t("actions.skill"),
 			{
 				highlight: Colors.VERMILION5,
 				label: Colors.VERMILION4,
@@ -129,7 +129,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("actions.burst"),
+			i18next.t("actions.burst"),
 			{
 				highlight: Colors.VIOLET5,
 				label: Colors.VIOLET4,
@@ -137,7 +137,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("actions.low_plunge"),
+			i18next.t("actions.low_plunge"),
 			{
 				highlight: Colors.TURQUOISE5,
 				label: Colors.TURQUOISE4,
@@ -145,7 +145,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("actions.high_plunge"),
+			i18next.t("actions.high_plunge"),
 			{
 				highlight: Colors.ROSE5,
 				label: Colors.ROSE4,
@@ -153,7 +153,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("actions.dash"),
+			i18next.t("actions.dash"),
 			{
 				highlight: Colors.LIME5,
 				label: Colors.LIME4,
@@ -161,7 +161,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("actions.jump"),
+			i18next.t("actions.jump"),
 			{
 				highlight: Colors.SEPIA5,
 				label: Colors.SEPIA4,
@@ -169,7 +169,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("actions.walk"),
+			i18next.t("actions.walk"),
 			{
 				highlight: Colors.INDIGO5,
 				label: Colors.INDIGO4,
@@ -177,7 +177,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("actions.swap"),
+			i18next.t("actions.swap"),
 			{
 				highlight: Colors.ORANGE5,
 				label: Colors.ORANGE4,
@@ -203,7 +203,7 @@ export function useDataColors() {
 
 	const elements: Map<string, ElementColor> = new Map([
 		[
-			i18next.t<string>("elements.electro"),
+			i18next.t("elements.electro"),
 			{
 				highlight: Colors.VIOLET5,
 				label: Colors.VIOLET4,
@@ -211,7 +211,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.pyro"),
+			i18next.t("elements.pyro"),
 			{
 				highlight: Colors.VERMILION5,
 				label: Colors.VERMILION4,
@@ -219,7 +219,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.cryo"),
+			i18next.t("elements.cryo"),
 			{
 				highlight: "#FFF",
 				label: "#95CACB",
@@ -227,7 +227,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.hydro"),
+			i18next.t("elements.hydro"),
 			{
 				highlight: Colors.CERULEAN5,
 				label: Colors.CERULEAN4,
@@ -235,7 +235,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.dendro"),
+			i18next.t("elements.dendro"),
 			{
 				highlight: Colors.FOREST5,
 				label: Colors.FOREST4,
@@ -243,7 +243,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.anemo"),
+			i18next.t("elements.anemo"),
 			{
 				highlight: Colors.TURQUOISE5,
 				label: Colors.TURQUOISE4,
@@ -251,7 +251,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.geo"),
+			i18next.t("elements.geo"),
 			{
 				highlight: Colors.GOLD5,
 				label: Colors.GOLD4,
@@ -259,7 +259,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.physical"),
+			i18next.t("elements.physical"),
 			{
 				highlight: Colors.SEPIA5,
 				label: Colors.SEPIA4,
@@ -269,11 +269,11 @@ export function useDataColors() {
 
 		// not possible, but defined in attributes/element.go so here just in case
 		[
-			i18next.t<string>("elements.frozen"),
+			i18next.t("elements.frozen"),
 			{ highlight: "#000", label: "#000", value: "#000" },
 		],
 		[
-			i18next.t<string>("elements.quicken"),
+			i18next.t("elements.quicken"),
 			{ highlight: "#FFF", label: "#FFF", value: "#FFF" },
 		],
 	]);
@@ -295,7 +295,7 @@ export function useDataColors() {
 
 	const reactableModifiers: Map<string, ElementColor> = new Map([
 		[
-			i18next.t<string>("elements.electro"),
+			i18next.t("elements.electro"),
 			{
 				highlight: Colors.VIOLET5,
 				label: Colors.VIOLET4,
@@ -303,7 +303,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.pyro"),
+			i18next.t("elements.pyro"),
 			{
 				highlight: Colors.VERMILION5,
 				label: Colors.VERMILION4,
@@ -311,7 +311,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.cryo"),
+			i18next.t("elements.cryo"),
 			{
 				highlight: "#FFF",
 				label: "#95CACB",
@@ -319,7 +319,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.hydro"),
+			i18next.t("elements.hydro"),
 			{
 				highlight: Colors.CERULEAN5,
 				label: Colors.CERULEAN4,
@@ -327,7 +327,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.dendro"),
+			i18next.t("elements.dendro"),
 			{
 				highlight: Colors.FOREST5,
 				label: Colors.FOREST4,
@@ -335,7 +335,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.anemo"),
+			i18next.t("elements.anemo"),
 			{
 				highlight: Colors.TURQUOISE5,
 				label: Colors.TURQUOISE4,
@@ -343,7 +343,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.geo"),
+			i18next.t("elements.geo"),
 			{
 				highlight: Colors.GOLD5,
 				label: Colors.GOLD4,
@@ -351,7 +351,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.frozen"),
+			i18next.t("elements.frozen"),
 			{
 				highlight: Colors.TURQUOISE5,
 				label: Colors.TURQUOISE4,
@@ -359,7 +359,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.quicken"),
+			i18next.t("elements.quicken"),
 			{
 				highlight: Colors.GREEN5,
 				label: Colors.GREEN4,
@@ -367,7 +367,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.dendro-fuel"),
+			i18next.t("elements.dendro-fuel"),
 			{
 				highlight: Colors.LIME5,
 				label: Colors.LIME4,
@@ -375,7 +375,7 @@ export function useDataColors() {
 			},
 		],
 		[
-			i18next.t<string>("elements.burning"),
+			i18next.t("elements.burning"),
 			{
 				highlight: Colors.RED5,
 				label: Colors.RED4,

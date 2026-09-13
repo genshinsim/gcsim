@@ -41,15 +41,15 @@ const ServerMode = ({ children }: { children: ReactNode }) => {
 			gitCommit={import.meta.env.VITE_GIT_COMMIT_HASH}
 			mode={import.meta.env.MODE}
 		>
-			<FormGroup className="!m-0" label={t<string>("simple.workers")}>
+			<FormGroup className="!m-0" label={t("simple.workers")}>
 				{children}
 				<FormGroup
 					helperText={
-						t<string>("simple.server_mode_default") + "http://127.0.0.1:54321"
+						t("simple.server_mode_default") + "http://127.0.0.1:54321"
 					}
-					label={t<string>("simple.server_mode_url")}
+					label={t("simple.server_mode_url")}
 					labelFor="text-input"
-					labelInfo={t<string>("simple.server_mode_required")}
+					labelInfo={t("simple.server_mode_required")}
 				>
 					<InputGroup
 						id="text-input"

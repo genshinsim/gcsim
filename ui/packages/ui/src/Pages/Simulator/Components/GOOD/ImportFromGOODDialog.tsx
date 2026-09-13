@@ -36,7 +36,7 @@ export function ImportFromGOODDialog(props: Props) {
 			);
 			props.onClose();
 			AppToaster.show({
-				message: t<string>("importer.import_success"),
+				message: t("importer.import_success"),
 				intent: "success",
 			});
 		}
@@ -53,7 +53,7 @@ export function ImportFromGOODDialog(props: Props) {
 			canEscapeKeyClose
 			canOutsideClickClose
 			icon="import"
-			title={t<string>("simple.tools_import", {
+			title={t("simple.tools_import", {
 				src: "Genshin Optimizer/GOOD",
 			})}
 			style={{ width: "85%" }}
@@ -70,7 +70,7 @@ export function ImportFromGOODDialog(props: Props) {
 					</Trans>
 				</p>
 				<Callout intent="warning">
-					{t<string>("simple.tools_import_warning", { src: "GOOD/Enka" })}
+					{t("simple.tools_import_warning", { src: "GOOD/Enka" })}
 				</Callout>
 				<textarea
 					value={localStorage.getItem(lsKey) ?? ""}
@@ -78,13 +78,11 @@ export function ImportFromGOODDialog(props: Props) {
 					className="w-full p-2 bg-gray-600 rounded-md mt-2"
 					rows={7}
 				/>
-				<p className="font-bold !pt-2">
-					{t<string>("simple.tools_import_after")}
-				</p>
+				<p className="font-bold !pt-2">{t("simple.tools_import_after")}</p>
 				{data ? (
 					data.err === "" ? (
 						<Callout intent="success" className="mt-2 p-2">
-							{t<string>("simple.tools_import_post_go")}
+							{t("simple.tools_import_post_go")}
 						</Callout>
 					) : (
 						<Callout intent="warning" className="mt-2 p-2">
@@ -101,10 +99,10 @@ export function ImportFromGOODDialog(props: Props) {
 							disabled={!data || data.err !== ""}
 							intent="primary"
 						>
-							{t<string>("simple.import")}
+							{t("simple.import")}
 						</Button>
 						<Button onClick={props.onClose} intent="danger">
-							{t<string>("db.cancel")}
+							{t("db.cancel")}
 						</Button>
 					</ButtonGroup>
 				</div>

@@ -121,7 +121,7 @@ const Graph = ({
 							})
 						}
 						tickLabelX={0}
-						label={t<string>("result.num_of_iterations")}
+						label={t("result.num_of_iterations")}
 					/>
 					<GraphAxisBottom
 						hideAxisLine

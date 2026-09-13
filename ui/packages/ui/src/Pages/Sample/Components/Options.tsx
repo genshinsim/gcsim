@@ -64,22 +64,22 @@ export function Options(props: OptionsProp) {
 						)}
 					>
 						<Button onClick={() => props.handleSetPresets("simple")}>
-							{t<string>("viewer.simple")}
+							{t("viewer.simple")}
 						</Button>
 						<Button onClick={() => props.handleSetPresets("advanced")}>
-							{t<string>("viewer.advanced")}
+							{t("viewer.advanced")}
 						</Button>
 						<Button onClick={() => props.handleSetPresets("verbose")}>
-							{t<string>("viewer.verbose")}
+							{t("viewer.verbose")}
 						</Button>
 						<Button onClick={() => props.handleSetPresets("debug")}>
-							{t<string>("viewer.debug")}
+							{t("viewer.debug")}
 						</Button>
 						<Button intent="danger" onClick={props.handleClear}>
-							{t<string>("viewer.clear")}
+							{t("viewer.clear")}
 						</Button>
 						<Button intent="none" onClick={props.handleClose}>
-							{t<string>("viewer.close")}
+							{t("viewer.close")}
 						</Button>
 					</div>
 				</div>

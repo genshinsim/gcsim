@@ -29,8 +29,8 @@ export const TotalSourceEnergyCard = ({ data, running, names }: Props) => {
 			<div className="flex flex-col sm:flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
 					<CardTitle
-						title={t<string>("result.per_source", {
-							s: t<string>("result.total_energy"),
+						title={t("result.per_source", {
+							s: t("result.total_energy"),
 						})}
 						tooltip="x"
 						timer={timer}

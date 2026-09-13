@@ -31,9 +31,7 @@ export function Dash() {
 					setDataIsLoaded(true);
 				}
 			})
-			.catch((err) =>
-				console.log(t<string>("viewer.error_encountered") + err.message),
-			);
+			.catch((err) => console.log(t("viewer.error_encountered") + err.message));
 	}, [t]);
 
 	return (
@@ -45,14 +43,14 @@ export function Dash() {
 				tabIndex={0}
 			>
 				<span className="bp4-button-text text-3xl md:text-4xl lg:text-5xl font-semibold">
-					{t<string>("dash.get_started")}
+					{t("dash.get_started")}
 				</span>
 			</Link>
 			{/* mobile Chrome/Safari needs w-full for padding to work properly, mobile Firefox works fine though... */}
 			<div className="flex flex-col gap-4 w-full md:w-fit">
 				<Card className="flex flex-col gap-4 items-center">
 					<h1 className="text-center text-xl md:text-2xl lg:text-4xl">
-						<b>{t<string>("dash.users_submitted")}</b>
+						<b>{t("dash.users_submitted")}</b>
 					</h1>
 					<div>
 						{dataIsLoaded
@@ -75,7 +73,7 @@ export function Dash() {
 										}
 									/>
 								))
-							: t<string>("sim.loading")}
+							: t("sim.loading")}
 					</div>
 					<AnchorButton
 						href="https://simpact.app/"
@@ -84,7 +82,7 @@ export function Dash() {
 						className="!p-3 !rounded-md"
 					>
 						<span className="text-xl md:text-2xl font-semibold">
-							{t<string>("dash.visit_teams_db")}
+							{t("dash.visit_teams_db")}
 						</span>
 					</AnchorButton>
 				</Card>

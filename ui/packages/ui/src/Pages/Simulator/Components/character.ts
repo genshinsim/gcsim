@@ -36,7 +36,7 @@ export function ConsolidateCharStats(
 } {
 	const totalStats: CharViewableStats = {
 		hp: {
-			name: t<string>("stats.hp") + " / " + t<string>("stats.hp%"),
+			name: t("stats.hp") + " / " + t("stats.hp%"),
 			flatIndex: StatToIndexMap["HP"],
 			percentIndex: StatToIndexMap["HPP"],
 			val: {},
@@ -44,7 +44,7 @@ export function ConsolidateCharStats(
 			t: "both",
 		},
 		atk: {
-			name: t<string>("stats.atk") + " / " + t<string>("stats.atk%"),
+			name: t("stats.atk") + " / " + t("stats.atk%"),
 			flatIndex: StatToIndexMap["ATK"],
 			percentIndex: StatToIndexMap["ATKP"],
 			val: {},
@@ -52,7 +52,7 @@ export function ConsolidateCharStats(
 			t: "both",
 		},
 		def: {
-			name: t<string>("stats.def") + " / " + t<string>("stats.def%"),
+			name: t("stats.def") + " / " + t("stats.def%"),
 			flatIndex: StatToIndexMap["DEF"],
 			percentIndex: StatToIndexMap["DEFP"],
 			val: {},
@@ -60,7 +60,7 @@ export function ConsolidateCharStats(
 			t: "both",
 		},
 		em: {
-			name: t<string>("stats.em"),
+			name: t("stats.em"),
 			flatIndex: StatToIndexMap["EM"],
 			percentIndex: -1,
 			val: {},
@@ -68,7 +68,7 @@ export function ConsolidateCharStats(
 			t: "f",
 		},
 		er: {
-			name: t<string>("stats.er"),
+			name: t("stats.er"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["ER"],
 			val: {},
@@ -76,7 +76,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		cr: {
-			name: t<string>("stats.cr"),
+			name: t("stats.cr"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["CR"],
 			val: {},
@@ -84,7 +84,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		cd: {
-			name: t<string>("stats.cd"),
+			name: t("stats.cd"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["CD"],
 			val: {},
@@ -92,7 +92,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		electro: {
-			name: t<string>("stats.electro%"),
+			name: t("stats.electro%"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["ElectroP"],
 			val: {},
@@ -100,7 +100,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		pyro: {
-			name: t<string>("stats.pyro%"),
+			name: t("stats.pyro%"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["PyroP"],
 			val: {},
@@ -108,7 +108,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		cryo: {
-			name: t<string>("stats.cryo%"),
+			name: t("stats.cryo%"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["CryoP"],
 			val: {},
@@ -116,7 +116,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		hydro: {
-			name: t<string>("stats.hydro%"),
+			name: t("stats.hydro%"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["HydroP"],
 			val: {},
@@ -124,7 +124,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		geo: {
-			name: t<string>("stats.geo%"),
+			name: t("stats.geo%"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["GeoP"],
 			val: {},
@@ -132,7 +132,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		anemo: {
-			name: t<string>("stats.anemo%"),
+			name: t("stats.anemo%"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["AnemoP"],
 			val: {},
@@ -140,7 +140,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		phys: {
-			name: t<string>("stats.phys%"),
+			name: t("stats.phys%"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["PhyP"],
 			val: {},
@@ -148,7 +148,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		dendro: {
-			name: t<string>("stats.dendro%"),
+			name: t("stats.dendro%"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["DendroP"],
 			val: {},
@@ -156,7 +156,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		heal: {
-			name: t<string>("stats.heal"),
+			name: t("stats.heal"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["Heal"],
 			val: {},
@@ -166,7 +166,7 @@ export function ConsolidateCharStats(
 	};
 	const totalSnapshot: CharViewableStats = {
 		hp: {
-			name: t<string>("stats.hp"),
+			name: t("stats.hp"),
 			flatIndex: StatToIndexMap["HP"],
 			percentIndex: -1,
 			val: {},
@@ -174,7 +174,7 @@ export function ConsolidateCharStats(
 			t: "f",
 		},
 		atk: {
-			name: t<string>("stats.atk"),
+			name: t("stats.atk"),
 			flatIndex: StatToIndexMap["ATK"],
 			percentIndex: -1,
 			val: {},
@@ -182,7 +182,7 @@ export function ConsolidateCharStats(
 			t: "f",
 		},
 		def: {
-			name: t<string>("stats.def"),
+			name: t("stats.def"),
 			flatIndex: StatToIndexMap["DEF"],
 			percentIndex: -1,
 			val: {},
@@ -190,7 +190,7 @@ export function ConsolidateCharStats(
 			t: "f",
 		},
 		em: {
-			name: t<string>("stats.em"),
+			name: t("stats.em"),
 			flatIndex: StatToIndexMap["EM"],
 			percentIndex: -1,
 			val: {},
@@ -198,7 +198,7 @@ export function ConsolidateCharStats(
 			t: "f",
 		},
 		er: {
-			name: t<string>("stats.er"),
+			name: t("stats.er"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["ER"],
 			val: {},
@@ -206,7 +206,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		cr: {
-			name: t<string>("stats.cr"),
+			name: t("stats.cr"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["CR"],
 			val: {},
@@ -214,7 +214,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		cd: {
-			name: t<string>("stats.cd"),
+			name: t("stats.cd"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["CD"],
 			val: {},
@@ -222,7 +222,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		electro: {
-			name: t<string>("stats.electro%"),
+			name: t("stats.electro%"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["ElectroP"],
 			val: {},
@@ -230,7 +230,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		pyro: {
-			name: t<string>("stats.pyro%"),
+			name: t("stats.pyro%"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["PyroP"],
 			val: {},
@@ -238,7 +238,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		cryo: {
-			name: t<string>("stats.cryo%"),
+			name: t("stats.cryo%"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["CryoP"],
 			val: {},
@@ -246,7 +246,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		hydro: {
-			name: t<string>("stats.hydro%"),
+			name: t("stats.hydro%"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["HydroP"],
 			val: {},
@@ -254,7 +254,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		geo: {
-			name: t<string>("stats.geo%"),
+			name: t("stats.geo%"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["GeoP"],
 			val: {},
@@ -262,7 +262,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		anemo: {
-			name: t<string>("stats.anemo%"),
+			name: t("stats.anemo%"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["AnemoP"],
 			val: {},
@@ -270,7 +270,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		phys: {
-			name: t<string>("stats.phys%"),
+			name: t("stats.phys%"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["PhyP"],
 			val: {},
@@ -278,7 +278,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		dendro: {
-			name: t<string>("stats.dendro%"),
+			name: t("stats.dendro%"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["DendroP"],
 			val: {},
@@ -286,7 +286,7 @@ export function ConsolidateCharStats(
 			t: "%",
 		},
 		heal: {
-			name: t<string>("stats.heal"),
+			name: t("stats.heal"),
 			flatIndex: -1,
 			percentIndex: StatToIndexMap["Heal"],
 			val: {},
