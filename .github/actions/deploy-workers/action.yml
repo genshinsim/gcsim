@@ -14,15 +14,20 @@ inputs:
 runs:
   using: composite
   steps:
+  # Run wrangler directly via pnpm rather than cloudflare/wrangler-action.
+  # This is a pnpm workspace whose packages use the `workspace:` protocol.
+  # wrangler-action shells out to `npm i wrangler@...` when it decides to
+  # (re)install, and npm can't parse `workspace:` deps -> EUNSUPPORTEDPROTOCOL.
+  # `pnpm install` (in the setup step) already installed the pinned wrangler,
+  # so we just invoke it — matching how deploy-ui/db/docs drive the toolchain.
+  # --keep-vars: don't wipe dashboard-managed vars (ASSET_SOURCE_HOSTS).
   - name: Deploy to Cloudflare Workers
-    uses: cloudflare/wrangler-action@v4
-    with:
-      apiToken: ${{ inputs.apiToken }}
-      accountId: ${{ inputs.accountId }}
-      workingDirectory: './ui/packages/workers'
-      packageManager: pnpm
-      # --keep-vars: don't wipe dashboard-managed vars (ASSET_SOURCE_HOSTS).
-      command: deploy --keep-vars
+    working-directory: ./ui/packages/workers
+    shell: bash
+    run: pnpm exec wrangler deploy --keep-vars
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ inputs.apiToken }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ inputs.accountId }}
 
   # Provision/refresh the static files the worker serves from R2 (fonts, logo,
   # special/* traveler icons, misc/* including default.png). Sourced from the
