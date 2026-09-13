@@ -74,6 +74,9 @@ importers:
       '@blueprintjs/popover2':
         specifier: ^1.7.4
         version: 1.14.11(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      '@cf-wasm/photon':
+        specifier: ^0.4.0
+        version: 0.4.0
       '@gcsim/data':
         specifier: workspace:^
         version: link:../data
@@ -460,6 +463,9 @@ importers:
       '@gcsim/localization':
         specifier: workspace:^
         version: link:../localization
+      '@gcsim/types':
+        specifier: workspace:^
+        version: link:../types
       '@radix-ui/react-slot':
         specifier: ^1.0.2
         version: 1.3.3(@types/react@18.3.31)(react@18.3.1)
@@ -1654,6 +1660,12 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  '@cf-wasm/internals@0.2.0':
+    resolution: {integrity: sha512-QwMNETkTCtrx0uCzjJPRCTyok0OZNvOry9alfG8a8TpHo7oPJ17htPMDG4ptudpwe9F0VtJHy9+nOzJmupteiQ==}
+
+  '@cf-wasm/photon@0.4.0':
+    resolution: {integrity: sha512-PQcN6sThZAR/V6SH2MQmeFndDDhGfOxvra6UStyaBbkDHrgTPKvB+WapAhh0/TA9LsRAUaX/rEEw6hvY9uphbQ==}
 
   '@cfworker/json-schema@1.12.8':
     resolution: {integrity: sha512-hi//AkiNRh5e8yLtpmRHnboHX051bow36+sn68f7yB163vOd3EDpUzUKH/wuNETFAyZAovsAHGAyMt+6oVb2Xg==}
@@ -10972,6 +10984,12 @@ snapshots:
       tslib: 2.3.1
     optionalDependencies:
       '@types/react': 18.3.31
+
+  '@cf-wasm/internals@0.2.0': {}
+
+  '@cf-wasm/photon@0.4.0':
+    dependencies:
+      '@cf-wasm/internals': 0.2.0
 
   '@cfworker/json-schema@1.12.8': {}
 
