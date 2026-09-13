@@ -12,6 +12,7 @@ const (
 	a1Status = "precise-movement"
 	a1ICD    = "precise-movement-icd"
 	a4Status = "warming-up"
+	a4ICD    = "warming-up-icd"
 )
 
 func (c *char) a1() {
@@ -87,26 +88,24 @@ func (c *char) a4() {
 
 	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) {
 		c.AddStatus(a4Status, 10*60, true)
-		c.a4Src = c.Core.F
-		c.a4Task(c.a4Src)
 	}, "iansan-a4")
 }
 
-func (c *char) a4Task(src int) {
-	c.QueueCharTask(func() {
-		if c.a4Src != src {
-			return
-		}
+func (c *char) a4Heal() {
+	if !c.StatusIsActive(a4Status) {
+		return
+	}
+	if c.StatusIsActive(a4ICD) {
+		return
+	}
 
-		c.Core.Player.Heal(info.HealInfo{
-			Caller:  c.Index(),
-			Target:  c.Core.Player.Active(),
-			Message: "Warming Up",
-			Src:     c.TotalAtk() * 0.6,
-			Bonus:   c.Stat(attributes.Heal),
-		})
+	c.Core.Player.Heal(info.HealInfo{
+		Caller:  c.Index(),
+		Target:  c.Core.Player.Active(),
+		Message: "Warming Up",
+		Src:     c.TotalAtk() * 0.6,
+		Bonus:   c.Stat(attributes.Heal),
+	})
 
-		c.nightsoulState.GeneratePoints(1)
-		c.a4Task(src)
-	}, 2.8*60)
+	c.AddStatus(a4ICD, 2.8*60, true)
 }

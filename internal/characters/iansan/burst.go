@@ -107,6 +107,9 @@ func (c *char) applyBuffTask(src int) {
 		if points > 0.0 {
 			c.nightsoulState.GeneratePoints(points)
 		}
+		if points >= 1.0 {
+			c.a4Heal()
+		}
 
 		active := c.Core.Player.ActiveChar()
 		active.AddStatMod(character.StatMod{
