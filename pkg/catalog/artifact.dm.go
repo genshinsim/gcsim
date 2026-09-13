@@ -476,6 +476,18 @@ var ArtifactMap = map[keys.Set]*model.ArtifactData{
 			Circlet: "UI_RelicIcon_15015_3",
 		},
 	},
+	keys.ScarletProof: {
+		SetId:     15047,
+		TextMapId: 3710268723,
+		Key:       "scarletproof",
+		ImageNames: &model.ArtifactImageData{
+			Flower:  "UI_RelicIcon_15047_4",
+			Plume:   "UI_RelicIcon_15047_2",
+			Sands:   "UI_RelicIcon_15047_5",
+			Goblet:  "UI_RelicIcon_15047_1",
+			Circlet: "UI_RelicIcon_15047_3",
+		},
+	},
 	keys.Scholar: {
 		SetId:     10012,
 		TextMapId: 3618166787,

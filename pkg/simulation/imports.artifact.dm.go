@@ -43,6 +43,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/artifacts/oceanhuedclam"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/paleflame"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/reminiscence"
+	_ "github.com/genshinsim/gcsim/internal/artifacts/scarletproof"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/scholar"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/scrolloftheheroofcindercity"
 	_ "github.com/genshinsim/gcsim/internal/artifacts/silkenmoonsserenade"
