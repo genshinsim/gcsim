@@ -1,17 +1,23 @@
 import { memo } from "react";
-import { Item } from "./Item";
 import { useTranslation } from "react-i18next";
+import { Item } from "./Item";
 
 type Props = {
-  mode?: number;
+	mode?: number;
 };
 
 export const ModeItem = memo(({ mode }: Props) => {
-  const { t } = useTranslation();
-  if (mode == null) {
-    return null;
-  }
-  
-  const modeName = mode == 2 ? t<string>("db.ttk") : t<string>("db.duration");
-  return <Item title={t<string>("db.simMode")} value={modeName} valueCase="lowerCase" />;
+	const { t } = useTranslation();
+	if (mode == null) {
+		return null;
+	}
+
+	const modeName = mode === 2 ? t<string>("db.ttk") : t<string>("db.duration");
+	return (
+		<Item
+			title={t<string>("db.simMode")}
+			value={modeName}
+			valueCase="lowerCase"
+		/>
+	);
 });

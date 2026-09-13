@@ -80,6 +80,7 @@ const (
 	Cloudforged                                   // cloudforged
 	CompoundBow                                   // compoundbow
 	CoolSteel                                     // coolsteel
+	CovenantOfFrostAndSnow                        // covenantoffrostandsnow
 	CranesEchoingCall                             // cranesechoingcall
 	CrescentPike                                  // crescentpike
 	CrimsonMoonsSemblance                         // crimsonmoonssemblance
@@ -94,6 +95,7 @@ const (
 	DragonspineSpear                              // dragonspinespear
 	DullBlade                                     // dullblade
 	EarthShaker                                   // earthshaker
+	EchoesOfTheHeart                              // echoesoftheheart
 	ElegyForTheEnd                                // elegyfortheend
 	EmeraldOrb                                    // emeraldorb
 	EndOfTheLine                                  // endoftheline
@@ -319,6 +321,7 @@ var _WeaponNames = [...]string{
 	"cloudforged",
 	"compoundbow",
 	"coolsteel",
+	"covenantoffrostandsnow",
 	"cranesechoingcall",
 	"crescentpike",
 	"crimsonmoonssemblance",
@@ -333,6 +336,7 @@ var _WeaponNames = [...]string{
 	"dragonspinespear",
 	"dullblade",
 	"earthshaker",
+	"echoesoftheheart",
 	"elegyfortheend",
 	"emeraldorb",
 	"endoftheline",
@@ -558,6 +562,7 @@ var _WeaponValues = [...]Weapon{
 	Cloudforged,
 	CompoundBow,
 	CoolSteel,
+	CovenantOfFrostAndSnow,
 	CranesEchoingCall,
 	CrescentPike,
 	CrimsonMoonsSemblance,
@@ -572,6 +577,7 @@ var _WeaponValues = [...]Weapon{
 	DragonspineSpear,
 	DullBlade,
 	EarthShaker,
+	EchoesOfTheHeart,
 	ElegyForTheEnd,
 	EmeraldOrb,
 	EndOfTheLine,

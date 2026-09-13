@@ -1,57 +1,57 @@
 import nahida from "images/nahida.png";
 import { FaPlus } from "react-icons/fa";
-import { ArtifactSetFilter } from "./Filter.utils";
+import type { ArtifactSetFilter } from "./Filter.utils";
 
 interface FilterPortraitProps {
-  charName: string;
-  sets?: ArtifactSetFilter;
-  weapon?: string;
+	charName: string;
+	sets?: ArtifactSetFilter;
+	weapon?: string;
 }
 
 export function FilterPortrait(props: FilterPortraitProps) {
-  return (
-    <>
-      <div className="hidden lg:flex">
-        <FilterDesktopPortrait {...props} />
-      </div>
-      {/* <div className="lg:hidden block">
+	return (
+		<>
+			<div className="hidden lg:flex">
+				<FilterDesktopPortrait {...props} />
+			</div>
+			{/* <div className="lg:hidden block">
         <DBEntryMobilePortrait {...char} />
       </div> */}
-    </>
-  );
+		</>
+	);
 }
 
 function FilterDesktopPortrait({
-  charName: name,
-  //   sets,
-  weapon,
+	charName: name,
+	//   sets,
+	weapon,
 }: FilterPortraitProps) {
-  if (!name) {
-    return (
-      <div className="bg-slate-700 p-2 w-20 flex flex-row  h-fit justify-center">
-        <img src={nahida} className=" object-contain opacity-50 " />
-      </div>
-    );
-  }
-  return (
-    <div className="bg-slate-700 p-2 flex flex-row max-h-fit    w-20">
-      <div className="grid grid-cols-2 grid-rows-3 ">
-        <div className="col-span-2 row-span-2 border-b border-white/25">
-          <div className=" relative ">
-            {name && (
-              <img
-                src={"https://gcsim.app/api/assets/avatar/" + name + ".png"}
-                alt={name}
-              />
-            )}
-          </div>
-        </div>
+	if (!name) {
+		return (
+			<div className="bg-slate-700 p-2 w-20 flex flex-row  h-fit justify-center">
+				<img src={nahida} alt="" className=" object-contain opacity-50 " />
+			</div>
+		);
+	}
+	return (
+		<div className="bg-slate-700 p-2 flex flex-row max-h-fit    w-20">
+			<div className="grid grid-cols-2 grid-rows-3 ">
+				<div className="col-span-2 row-span-2 border-b border-white/25">
+					<div className=" relative ">
+						{name && (
+							<img
+								src={"https://gcsim.app/api/assets/avatar/" + name + ".png"}
+								alt={name}
+							/>
+						)}
+					</div>
+				</div>
 
-        {/* <PortraitArtifactsComponent artifactSet={sets} /> */}
-        <PortraitWeaponComponent weapon={weapon} />
-      </div>
-    </div>
-  );
+				{/* <PortraitArtifactsComponent artifactSet={sets} /> */}
+				<PortraitWeaponComponent weapon={weapon} />
+			</div>
+		</div>
+	);
 }
 
 // function DBEntryMobilePortrait({ name, sets, weapon, cons }: model.ICharacter) {
@@ -87,18 +87,18 @@ function FilterDesktopPortrait({
 // }
 
 function PortraitWeaponComponent({ weapon }: { weapon?: string }) {
-  return (
-    <button className={"bp4-button"}>
-      {weapon ? (
-        <img
-          src={"https://gcsim.app/api/assets/weapons/" + weapon + ".png"}
-          alt={weapon}
-        />
-      ) : (
-        <FaPlus />
-      )}
-    </button>
-  );
+	return (
+		<button type="button" className={"bp4-button"}>
+			{weapon ? (
+				<img
+					src={"https://gcsim.app/api/assets/weapons/" + weapon + ".png"}
+					alt={weapon}
+				/>
+			) : (
+				<FaPlus />
+			)}
+		</button>
+	);
 }
 
 // function PortraitArtifactsComponent({

@@ -259,6 +259,13 @@
       "weapon_class": "WEAPON_SWORD_ONE_HAND",
       "image_name": "UI_EquipIcon_Sword_Steel_Awaken"
     },
+    "covenantoffrostandsnow": {
+      "id": 15436,
+      "key": "covenantoffrostandsnow",
+      "rarity": 4,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_GlintstoneBow_Awaken"
+    },
     "cranesechoingcall": {
       "id": 14515,
       "key": "cranesechoingcall",
@@ -356,6 +363,13 @@
       "rarity": 4,
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Isikhulu_Awaken"
+    },
+    "echoesoftheheart": {
+      "id": 14436,
+      "key": "echoesoftheheart",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_GlintstoneCatalyst_Awaken"
     },
     "elegyfortheend": {
       "id": 15503,

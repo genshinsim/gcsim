@@ -1,22 +1,22 @@
 import { Button, DBCard } from "@gcsim/components";
-import type { Meta, StoryObj } from "@storybook/react";
-import _ from "lodash";
+import type { Meta, StoryObj } from "@storybook/react-vite";
+import { cloneDeep, merge } from "lodash-es";
 import { dbEntries } from "../samples";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta: Meta<typeof DBCard> = {
-  title: "Cards/DBCard",
-  component: DBCard,
-  parameters: {
-    // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
-    layout: "fullscreen",
-  },
-  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
-  tags: ["autodocs"],
-  // More on argTypes: https://storybook.js.org/docs/api/argtypes
-  argTypes: {},
-  // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
-  args: {},
+	title: "Cards/DBCard",
+	component: DBCard,
+	parameters: {
+		// Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
+		layout: "fullscreen",
+	},
+	// This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
+	tags: ["autodocs"],
+	// More on argTypes: https://storybook.js.org/docs/api/argtypes
+	argTypes: {},
+	// Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
+	args: {},
 };
 
 export default meta;
@@ -24,62 +24,54 @@ type Story = StoryObj<typeof meta>;
 
 // More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
 export const Primary: Story = {
-  args: {
-    entry: dbEntries.data[0],
-    footer: (
-      <a href="#">
-        <Button className="bg-blue-700 opacity-90">Show Results Page</Button>
-      </a>
-    ),
-  },
+	args: {
+		entry: dbEntries.data[0],
+		footer: (
+			<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
+		),
+	},
 };
 
 export const PrimaryTablet: Story = {
-  args: {
-    entry: dbEntries.data[0],
-    footer: (
-      <a href="#">
-        <Button className="bg-blue-700 opacity-90">Show Results Page</Button>
-      </a>
-    ),
-  },
-  parameters: {
-    viewport: {
-      defaultViewport: "tablet",
-    },
-  },
+	args: {
+		entry: dbEntries.data[0],
+		footer: (
+			<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
+		),
+	},
+	parameters: {
+		viewport: {
+			defaultViewport: "tablet",
+		},
+	},
 };
 
 export const PrimaryMobile: Story = {
-  args: {
-    entry: dbEntries.data[0],
-    footer: (
-      <a href="#">
-        <Button className="bg-blue-700 opacity-90">Show Results Page</Button>
-      </a>
-    ),
-  },
-  parameters: {
-    viewport: {
-      defaultViewport: "mobile1",
-    },
-  },
+	args: {
+		entry: dbEntries.data[0],
+		footer: (
+			<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
+		),
+	},
+	parameters: {
+		viewport: {
+			defaultViewport: "mobile1",
+		},
+	},
 };
 
 export const BGOverride: Story = {
-  args: {
-    className: "bg-orange-600",
-    entry: dbEntries.data[0],
-    footer: (
-      <a href="#">
-        <Button className="bg-blue-700 opacity-90">Show Results Page</Button>
-      </a>
-    ),
-  },
+	args: {
+		className: "bg-orange-600",
+		entry: dbEntries.data[0],
+		footer: (
+			<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
+		),
+	},
 };
 
-const longDesc = _.merge(_.cloneDeep(dbEntries.data[0]), {
-  description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ullamcorper eu felis vitae suscipit. Sed suscipit commodo lectus at rutrum. Integer dictum laoreet augue a tincidunt. Praesent rutrum nunc non sodales vulputate. Nunc eget purus tincidunt, euismod ligula nec, feugiat diam. Sed lobortis scelerisque nulla, at ultrices diam viverra quis. Pellentesque leo justo, venenatis id dapibus sit amet, mollis quis sem. Proin leo nunc, commodo a tempus non, vehicula id felis. Donec accumsan non odio at laoreet.
+const longDesc = merge(cloneDeep(dbEntries.data[0]), {
+	description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ullamcorper eu felis vitae suscipit. Sed suscipit commodo lectus at rutrum. Integer dictum laoreet augue a tincidunt. Praesent rutrum nunc non sodales vulputate. Nunc eget purus tincidunt, euismod ligula nec, feugiat diam. Sed lobortis scelerisque nulla, at ultrices diam viverra quis. Pellentesque leo justo, venenatis id dapibus sit amet, mollis quis sem. Proin leo nunc, commodo a tempus non, vehicula id felis. Donec accumsan non odio at laoreet.
 
   Vivamus ut tortor lacus. Pellentesque fringilla diam id justo accumsan, eget rutrum eros efficitur. Morbi vel pharetra tellus. Nullam velit libero, efficitur et ultricies vel, auctor sed eros. Fusce facilisis turpis a lacus convallis congue. Aenean in hendrerit diam. Cras nunc magna, efficitur quis mauris quis, lobortis bibendum enim. Duis feugiat tellus id urna commodo varius. In nec tellus augue. Mauris ac pharetra libero.
   
@@ -91,44 +83,38 @@ const longDesc = _.merge(_.cloneDeep(dbEntries.data[0]), {
 });
 
 export const LongDesc: Story = {
-  args: {
-    entry: longDesc,
-    footer: (
-      <a href="#">
-        <Button className="bg-blue-700 opacity-90">Show Results Page</Button>
-      </a>
-    ),
-  },
+	args: {
+		entry: longDesc,
+		footer: (
+			<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
+		),
+	},
 };
 
 export const LongDescTablet: Story = {
-  args: {
-    entry: longDesc,
-    footer: (
-      <a href="#">
-        <Button className="bg-blue-700 opacity-90">Show Results Page</Button>
-      </a>
-    ),
-  },
-  parameters: {
-    viewport: {
-      defaultViewport: "tablet",
-    },
-  },
+	args: {
+		entry: longDesc,
+		footer: (
+			<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
+		),
+	},
+	parameters: {
+		viewport: {
+			defaultViewport: "tablet",
+		},
+	},
 };
 
 export const LongDescMobile: Story = {
-  args: {
-    entry: longDesc,
-    footer: (
-      <a href="#">
-        <Button className="bg-blue-700 opacity-90">Show Results Page</Button>
-      </a>
-    ),
-  },
-  parameters: {
-    viewport: {
-      defaultViewport: "mobile1",
-    },
-  },
+	args: {
+		entry: longDesc,
+		footer: (
+			<Button className="bg-blue-700 opacity-90">Show Results Page</Button>
+		),
+	},
+	parameters: {
+		viewport: {
+			defaultViewport: "mobile1",
+		},
+	},
 };

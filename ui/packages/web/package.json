@@ -1,25 +1,25 @@
 {
-  "name": "@gcsim/web",
-  "private": true,
-  "scripts": {
-    "dev": "vite --host",
-    "build": "vite build",
-    "preview": "pnpm run build && vite preview --host"
-  },
-  "dependencies": {
-    "@blueprintjs/core": "^4.11.4",
-    "@gcsim/executors": "workspace:^",
-    "@gcsim/ui": "workspace:^",
-    "@gcsim/utils": "workspace:^",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-i18next": "^12.0.0"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^3.1.0",
-    "git-rev-sync": "^3.0.2",
-    "rollup-plugin-visualizer": "^5.8.3",
-    "vite": "^4.1.1",
-    "vite-tsconfig-paths": "^4.0.5"
-  }
+	"name": "@gcsim/web",
+	"private": true,
+	"scripts": {
+		"dev": "vite --host",
+		"build": "vite build",
+		"preview": "pnpm run build && vite preview --host"
+	},
+	"dependencies": {
+		"@blueprintjs/core": "^4.11.4",
+		"@gcsim/executors": "workspace:^",
+		"@gcsim/ui": "workspace:^",
+		"@gcsim/utils": "workspace:^",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"react-i18next": "^12.0.0"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-react": "^3.1.0",
+		"git-rev-sync": "^3.0.2",
+		"rollup-plugin-visualizer": "^5.8.3",
+		"vite": "^4.1.1",
+		"vite-tsconfig-paths": "^4.0.5"
+	}
 }

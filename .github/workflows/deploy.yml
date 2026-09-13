@@ -33,10 +33,6 @@ jobs:
         uses: ./.github/actions/yarn-setup-and-test
 
       # deploy
-      - name: deploy-workers
-        uses: ./.github/actions/deploy-workers
-        with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
 
       # wasm first because it takes the longest
       - name: deploy-wasm
@@ -46,14 +42,19 @@ jobs:
           branch: ${{ steps.branch-name.outputs.base_ref_branch }}
           shareKey: ${{ secrets.AES_KEY }}
 
+      # build the UI before deploying the Worker: the consolidated Worker
+      # uploads ui/packages/web/dist as its static assets
       - name: deploy-ui
         uses: ./.github/actions/deploy-ui
         with:
-          apiToken: ${{ secrets.CF_API_TOKEN }}
-          accountId: ${{ secrets.CF_ACCOUNT_ID }}
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
           # name needs to be "main" if on mainline
           branch: ${{ steps.branch-name.outputs.base_ref_branch == 'mainline' && 'main' || steps.branch-name.outputs.base_ref_branch }}
+
+      - name: deploy-workers
+        uses: ./.github/actions/deploy-workers
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
 
       - name: deploy-db
         uses: ./.github/actions/deploy-db

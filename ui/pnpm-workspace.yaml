@@ -29,6 +29,3 @@ peerDependencyRules:
     "react-virtual>react": "18"
     # tsconfck 3.x wants TS 5; monorepo still on TS 4.9 in places. Runs on 4.9.
     "tsconfck>typescript": "4"
-    # Storybook internal patch skew: @storybook/test 8.6.15 vs wanted 8.6.18.
-    "@storybook/react>@storybook/test": "8.6.15"
-    "@storybook/react-vite>@storybook/test": "8.6.15"

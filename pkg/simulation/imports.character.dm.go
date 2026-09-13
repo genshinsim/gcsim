@@ -77,6 +77,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/nilou"
 	_ "github.com/genshinsim/gcsim/internal/characters/ningguang"
 	_ "github.com/genshinsim/gcsim/internal/characters/noelle"
+	_ "github.com/genshinsim/gcsim/internal/characters/odette"
 	_ "github.com/genshinsim/gcsim/internal/characters/ororon"
 	_ "github.com/genshinsim/gcsim/internal/characters/prune"
 	_ "github.com/genshinsim/gcsim/internal/characters/qiqi"

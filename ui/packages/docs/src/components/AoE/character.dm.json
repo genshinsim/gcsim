@@ -10031,6 +10031,133 @@
       "radius": 4
     }
   ],
+  "odette": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1,
+      "radius": 2
+    },
+    {
+      "ability": "attack",
+      "name": "N2",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.5,
+      "radius": 1.6
+    },
+    {
+      "ability": "attack",
+      "name": "N3-1",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.4,
+      "radius": 1.8
+    },
+    {
+      "ability": "attack",
+      "name": "N3-2",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.4,
+      "radius": 1.8
+    },
+    {
+      "ability": "attack",
+      "name": "N4",
+      "shape": "Box",
+      "center": "Player",
+      "offset_x": -0.2,
+      "offset_y": -0.6,
+      "box_x": 3.3,
+      "box_y": 4.5
+    },
+    {
+      "ability": "attack",
+      "name": "N5",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.4,
+      "radius": 3.7
+    },
+    {
+      "ability": "charge",
+      "name": "CA",
+      "shape": "Box",
+      "center": "Player",
+      "offset_x": -0.2,
+      "offset_y": -0.6,
+      "box_x": 3.3,
+      "box_y": 4.8
+    },
+    {
+      "ability": "skill",
+      "name": "E-Initial",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 4
+    },
+    {
+      "ability": "skill",
+      "name": "E-Recast-DoT",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.5,
+      "radius": 4.2
+    },
+    {
+      "ability": "skill",
+      "name": "E-Recast-Final",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 4.6
+    },
+    {
+      "ability": "skill",
+      "name": "E-Dance-Plume",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 4
+    },
+    {
+      "ability": "skill",
+      "name": "E-Dance-Wing",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "offset_y": 1,
+      "radius": 4
+    },
+    {
+      "ability": "burst",
+      "name": "Q-DoT",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 7
+    },
+    {
+      "ability": "burst",
+      "name": "Q-Final",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 7
+    },
+    {
+      "ability": "cons",
+      "name": "C1",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 4.5
+    },
+    {
+      "ability": "cons",
+      "name": "C4",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 3
+    }
+  ],
   "ororon": [
     {
       "ability": "attack",
@@ -13782,6 +13909,19 @@
       "shape": "Circle",
       "center": "PrimaryTarget",
       "radius": 7
+    },
+    {
+      "ability": "asc",
+      "name": "A1",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 0.5
+    },
+    {
+      "ability": "asc",
+      "name": "Revelation",
+      "shape": "Single",
+      "center": "Target"
     }
   ],
   "yanfei": [

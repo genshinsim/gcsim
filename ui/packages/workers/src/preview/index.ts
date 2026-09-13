@@ -1,2 +1,2 @@
-export * from "./handlePreview";
 export * from "./handleInjectHead";
+export * from "./handleOgPreview";

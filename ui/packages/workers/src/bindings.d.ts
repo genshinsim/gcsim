@@ -1,9 +1,6 @@
-export {};
-
-declare global {
-  const API_ENDPOINT: string;
-  const PREVIEW_ENDPOINT: string;
-  const ASSETS_ENDPOINT: string;
-  const GCSIM_ASSETS: R2Bucket; //bucket
-  const GCSIM_WASM: R2Bucket; //bucket
+export interface Env {
+	API_ENDPOINT: string;
+	ASSETS_ENDPOINT: string;
+	ASSETS: Fetcher; //static-assets binding serving the SPA (../web/dist)
+	GCSIM_WASM: R2Bucket; //bucket
 }
