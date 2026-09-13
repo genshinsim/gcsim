@@ -1,3 +1,11 @@
 use: pipeline
 kind: weapon
 name: forgedbythegoldenmelody
+
+shortcuts:
+  - goldenmelody
+
+abilities:
+  - name: default
+    params:
+      buff_type: Sets the buff type to be applied first. 0 = ATK%, 1 = EM, 2 = Stellar. Default is 0.

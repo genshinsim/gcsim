@@ -32,7 +32,6 @@ type Weapon struct {
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error {
-	w.curBuff = 2
 	w.switchBuff()
 	return nil
 }
@@ -42,6 +41,13 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char: char,
 	}
 	r := p.Refine
+
+	if p.Params["buff_type"] != 0 {
+		buffType := p.Params["buff_type"]
+		w.curBuff = (buffType - 1) % 3
+	} else {
+		w.curBuff = 2
+	}
 
 	w.atkBuff = make([]float64, attributes.EndStatType)
 	w.atkBuff[attributes.ATKP] = 0.135 + float64(r)*0.045
@@ -100,8 +106,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 }
 
 func (w *Weapon) switchBuff() {
+	w.curBuff = (w.curBuff + 1) % 3
 	switch w.curBuff {
-	case 0:
+	case 1:
 		w.char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(emBuffKey, 10*60),
 			AffectedStat: attributes.EM,
@@ -109,7 +116,7 @@ func (w *Weapon) switchBuff() {
 				return w.emBuff
 			},
 		})
-	case 1:
+	case 2:
 		w.char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBaseWithHitlag(stellarBuffKey, 10*60),
 			Amount: func(ai info.AttackInfo) float64 {
@@ -128,6 +135,5 @@ func (w *Weapon) switchBuff() {
 			},
 		})
 	}
-	w.curBuff = (w.curBuff + 1) % 3
 	w.char.QueueCharTask(w.switchBuff, 10*60)
 }
