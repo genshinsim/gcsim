@@ -11,20 +11,21 @@ inputs:
 runs:
   using: composite
   steps:
-  - name: Build DB
-    working-directory: ./ui
-    shell: bash
-    run: pnpm build:db
+    - name: Build DB
+      working-directory: ./ui
+      shell: bash
+      run: pnpm build:db
 
-  - name: List DB dist
-    working-directory: ./ui/packages/db/dist
-    shell: bash
-    run: ls -lh
+    - name: List DB dist
+      working-directory: ./ui/packages/db/dist
+      shell: bash
+      run: ls -lh
 
-  - name: Deploy to Cloudflare Workers
-    uses: cloudflare/wrangler-action@v4
-    with:
-      apiToken: ${{ inputs.apiToken }}
-      accountId: ${{ inputs.accountId }}
-      workingDirectory: './ui/packages/db'
-      command: deploy
+    - name: Deploy to Cloudflare Workers
+      uses: cloudflare/wrangler-action@v4
+      with:
+        apiToken: ${{ inputs.apiToken }}
+        accountId: ${{ inputs.accountId }}
+        workingDirectory: "./ui/packages/db"
+        packageManager: pnpm
+        command: deploy --keep-vars
