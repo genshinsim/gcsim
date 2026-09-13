@@ -45,7 +45,7 @@ export default ({
 	// change the set link if url changes or rerun
 	useEffect(() => {
 		setShareLink(extractFromLocation(location.pathname));
-	}, [location.pathname, setShareLink]);
+	}, [location.pathname, setShareLink, data?.config_file]);
 
 	const handleShare = () => {
 		if (data === null || shareLink != null) {
