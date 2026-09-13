@@ -48,6 +48,13 @@ const CACHE_SECONDS = 60 * 24 * 60 * 60; // 60 days
 const LONG_CACHE = `max-age=${CACHE_SECONDS}`;
 const TYPED_RE = /^(avatar|weapons|artifacts)\/(.+)\.png$/;
 
+// Signals how the response was resolved, for observability:
+//   edge-hit  served from the edge cache (caches.default)
+//   hit       served from R2 (dynamic image, static file or traveler icon)
+//   origin    R2 miss, fetched from a source host and stored to R2
+//   fallback  every source failed; misc/default.png served (not cached)
+const STATUS_HEADER = "X-Gcsim-Asset";
+
 export async function handleAssets(
 	request: IRequest,
 	env: Env,
@@ -58,7 +65,11 @@ export async function handleAssets(
 	const cache = caches.default;
 	const cached = await cache.match(cacheKey);
 	if (cached) {
-		return cached;
+		// Override the stored resolution status: this is now an edge hit,
+		// whatever tier originally produced the cached response.
+		const headers = new Headers(cached.headers);
+		headers.set(STATUS_HEADER, "edge-hit");
+		return new Response(cached.body, { status: cached.status, headers });
 	}
 
 	const subpath = cacheUrl.pathname.replace(/^\/api\/assets\//, "");
@@ -90,7 +101,9 @@ async function resolveTyped(
 	// Checked for every type before the map lookup, matching the Go service.
 	if (SPECIAL_KEYS.has(key)) {
 		const special = await env.GCSIM_ASSETS.get(`special/${key}.png`);
-		return special ? r2Response(special, `special/${key}.png`) : fallback(env);
+		return special
+			? r2Response(special, `special/${key}.png`)
+			: fallback(env, subpath);
 	}
 
 	// R2 cache hit.
@@ -102,7 +115,7 @@ async function resolveTyped(
 	// Resolve the mihoyo CDN filename; unknown key -> default fallback.
 	const assetName = NAME_MAPS[type][key];
 	if (!assetName) {
-		return fallback(env);
+		return fallback(env, subpath);
 	}
 
 	// Try each source host in order; first valid image wins and is cached to R2.
@@ -123,11 +136,12 @@ async function resolveTyped(
 			headers: {
 				"Content-Type": image.contentType,
 				"Cache-Control": LONG_CACHE,
+				[STATUS_HEADER]: "origin",
 			},
 		});
 	}
 
-	return fallback(env);
+	return fallback(env, subpath);
 }
 
 function sourceHosts(type: AssetType, env: Env): string[] {
@@ -190,10 +204,14 @@ function r2Response(object: R2ObjectBody, key: string): Response {
 	if (!headers.has("Content-Type")) {
 		headers.set("Content-Type", contentTypeFor(key));
 	}
+	headers.set(STATUS_HEADER, "hit");
 	return new Response(object.body, { headers });
 }
 
-async function fallback(env: Env): Promise<Response> {
+async function fallback(env: Env, subpath: string): Promise<Response> {
+	// Logged (not just header-flagged) so fallback rate is observable
+	// server-side; the response is never edge-cached, so every fallback runs.
+	console.log(`[assets] fallback served for ${subpath}`);
 	const object = await env.GCSIM_ASSETS.get(DEFAULT_KEY);
 	if (!object) {
 		return new Response("Not Found", { status: 404 });
@@ -202,6 +220,7 @@ async function fallback(env: Env): Promise<Response> {
 		headers: {
 			"Content-Type": "image/png",
 			"Cache-Control": "no-cache",
+			[STATUS_HEADER]: "fallback",
 		},
 	});
 }
