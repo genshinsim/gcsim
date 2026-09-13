@@ -3,4 +3,5 @@
 // Cards/index.ts, which deliberately omits the Node font loader.)
 
 export * from "./fonts";
+export * from "./fontsNode";
 export * from "./SatoriPreviewCard";
