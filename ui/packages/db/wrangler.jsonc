@@ -1,5 +1,5 @@
 {
-	"name": "gcsim-db",
+	"name": "gcsim-db-worker",
 	"compatibility_date": "2026-09-12",
 	// Static-only Worker: no worker script, no R2 bindings, no API routes.
 	// Serves the built db SPA with SPA fallback so client-side (wouter) routes
