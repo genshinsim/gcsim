@@ -1,4 +1,4 @@
-import { Request } from "itty-router";
+import type { IRequest } from "itty-router";
 
 class ElementHandler {
 	private key;
@@ -64,7 +64,7 @@ class ElementHandler {
 	}
 }
 
-export async function handleInjectHead(request): Promise<Response> {
+export async function handleInjectHead(request: IRequest): Promise<Response> {
 	const res = await fetch(request);
 	const url = new URL(request.url);
 	const segments = url.pathname.split("/");
@@ -77,7 +77,7 @@ export async function handleInjectHead(request): Promise<Response> {
 		.transform(res);
 }
 
-export async function handleInjectHeadDB(request): Promise<Response> {
+export async function handleInjectHeadDB(request: IRequest): Promise<Response> {
 	const res = await fetch(request);
 	const url = new URL(request.url);
 	const segments = url.pathname.split("/");

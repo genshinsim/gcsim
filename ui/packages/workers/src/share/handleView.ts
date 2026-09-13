@@ -1,8 +1,10 @@
 import type { IRequest } from "itty-router";
+import type { Env } from "../bindings";
 
 export async function handleView(
 	request: IRequest,
-	event: FetchEvent,
+	env: Env,
+	ctx: ExecutionContext,
 ): Promise<Response> {
 	const { params } = request;
 	if (!params || !params.key) {
@@ -42,14 +44,14 @@ export async function handleView(
 		);
 
 		response = await fetch(
-			new Request(API_ENDPOINT + "/api/share/" + dbStr + key),
+			new Request(env.API_ENDPOINT + "/api/share/" + dbStr + key),
 		);
 
 		response = new Response(response.body, response);
 		response.headers.append("Cache-Control", "s-maxage=1800");
 		response.headers.append("Content-Encoding", "gzip");
 
-		event.waitUntil(cache.put(cacheKey, response.clone()));
+		ctx.waitUntil(cache.put(cacheKey, response.clone()));
 	} else {
 		console.log(`cache hit for: ${request.url}`);
 	}

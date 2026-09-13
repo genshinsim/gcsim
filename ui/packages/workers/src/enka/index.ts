@@ -33,8 +33,8 @@ export async function handleEnka(request: IRequest): Promise<Response> {
 		});
 	}
 
-	const avatars = [];
-	const d = await resp.json();
+	const avatars: any[] = [];
+	const d: any = await resp.json();
 	for (const avatar of d.avatarInfoList) {
 		avatars.push(avatar);
 	}
@@ -48,8 +48,8 @@ export async function handleEnka(request: IRequest): Promise<Response> {
 		);
 		const contentType = resp.headers.get("content-type") || "";
 		if (resp.ok && contentType.includes("application/json")) {
-			const d = await resp.json();
-			for (const [_, builds] of Object.entries(d)) {
+			const d: any = await resp.json();
+			for (const [_, builds] of Object.entries<any>(d)) {
 				for (const build of builds) {
 					if (build.live) {
 						continue;

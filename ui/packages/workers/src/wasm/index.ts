@@ -1,8 +1,10 @@
 import type { IRequest } from "itty-router";
+import type { Env } from "../bindings";
 
 export async function handleWasm(
 	request: IRequest,
-	event: FetchEvent,
+	env: Env,
+	ctx: ExecutionContext,
 ): Promise<Response> {
 	const cacheUrl = new URL(request.url);
 	const cacheKey = new Request(cacheUrl.toString(), request);
@@ -15,7 +17,7 @@ export async function handleWasm(
 		const key = new URL(request.url).pathname.replace("/api/wasm/", "");
 		console.log(`request key ${key}`);
 
-		const object = await GCSIM_WASM.get(key);
+		const object = await env.GCSIM_WASM.get(key);
 
 		if (object == null) {
 			console.log(`${key} not found in r2`);
@@ -32,7 +34,7 @@ export async function handleWasm(
 			headers,
 		});
 
-		event.waitUntil(cache.put(cacheKey, response.clone()));
+		ctx.waitUntil(cache.put(cacheKey, response.clone()));
 	}
 
 	return response;

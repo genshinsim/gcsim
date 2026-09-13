@@ -1,5 +1,6 @@
 import { Router } from "itty-router";
 import { handleAssets } from "./assets";
+import type { Env } from "./bindings";
 import { handleEnka } from "./enka";
 import { handleInjectHead, handleInjectHeadDB, handlePreview } from "./preview";
 import { proxyRequest } from "./proxy";
@@ -35,6 +36,12 @@ router.get("/db/:key", handleInjectHeadDB);
 router.get("/api/assets/*", handleAssets);
 router.get("/api/wasm/*", handleWasm);
 
-addEventListener("fetch", (event) => {
-	event.respondWith(router.handle(event.request, event));
-});
+export default {
+	async fetch(
+		request: Request,
+		env: Env,
+		ctx: ExecutionContext,
+	): Promise<Response> {
+		return router.fetch(request, env, ctx);
+	},
+};
