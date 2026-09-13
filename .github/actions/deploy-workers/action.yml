@@ -20,6 +20,7 @@ runs:
       apiToken: ${{ inputs.apiToken }}
       accountId: ${{ inputs.accountId }}
       workingDirectory: './ui/packages/workers'
+      packageManager: pnpm
       # --keep-vars: don't wipe dashboard-managed vars (ASSET_SOURCE_HOSTS).
       command: deploy --keep-vars
 
