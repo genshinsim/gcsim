@@ -15,7 +15,11 @@
 	},
 	"dependencies": {
 		"@cfworker/json-schema": "^1.12.5",
+		"@gcsim/components": "workspace:^",
+		"@gcsim/types": "workspace:^",
 		"itty-router": "^5.0.24",
-		"pako": "^2.1.0"
+		"pako": "^2.1.0",
+		"react": "^18.2.0",
+		"workers-og": "^0.0.27"
 	}
 }

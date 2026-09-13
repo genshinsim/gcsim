@@ -18,31 +18,16 @@ export const FONT_FAMILY = "DejaVu Sans Mono, monospace";
 export const FONT_NAME = "DejaVu Sans Mono";
 
 // Shape of a single Satori font entry (kept local so this package needs no
-// satori dependency).
+// satori dependency). `data` is typed `ArrayBuffer | Uint8Array` (not the Node
+// `Buffer` global) so this module needs no `@types/node`; a Node `Buffer` still
+// satisfies `Uint8Array`.
 export type SatoriFont = {
 	name: string;
-	data: ArrayBuffer | Buffer;
+	data: ArrayBuffer | Uint8Array;
 	weight: 400 | 700;
 	style: "normal";
 };
 
-// URLs of the bundled TTF files, resolved relative to this module.
-export const monoFontUrls = {
-	regular: new URL("./fonts/DejaVuSansMono-Regular.ttf", import.meta.url),
-	bold: new URL("./fonts/DejaVuSansMono-Bold.ttf", import.meta.url),
-};
-
-// Node helper: read the bundled TTFs and return them as Satori font entries.
-// `node:fs` is imported dynamically so this module stays safe to bundle for the
-// browser (Storybook renders the card without calling this).
-export async function loadCardFonts(): Promise<SatoriFont[]> {
-	const { readFile } = await import("node:fs/promises");
-	const [regular, bold] = await Promise.all([
-		readFile(monoFontUrls.regular),
-		readFile(monoFontUrls.bold),
-	]);
-	return [
-		{ name: FONT_NAME, data: regular, weight: 400, style: "normal" },
-		{ name: FONT_NAME, data: bold, weight: 700, style: "normal" },
-	];
-}
+// The Node TTF loader (monoFontUrls / loadCardFonts) lives in ./fontsNode so
+// this module stays free of any `node:*` reference — it is imported by the card
+// tree and must bundle cleanly for the browser and the Cloudflare Worker.

@@ -2,7 +2,12 @@ import { Router } from "itty-router";
 import { handleAssets } from "./assets";
 import type { Env } from "./bindings";
 import { handleEnka } from "./enka";
-import { handleInjectHead, handleInjectHeadDB, handlePreview } from "./preview";
+import {
+	handleInjectHead,
+	handleInjectHeadDB,
+	handleOgPreview,
+	handlePreview,
+} from "./preview";
 import { proxyRequest } from "./proxy";
 import { handleLegacy, handleShare, handleView } from "./share";
 import { handleWasm } from "./wasm";
@@ -25,6 +30,10 @@ router.get("/api/share/db/:key", handleView);
 router.get("/api/legacy-share/:key", handleLegacy); //TODO: this endpoint should be deleted once we convert over to new
 router.get("/api/preview/:key", handlePreview);
 router.get("/api/preview/db/:key", handlePreview);
+// Satori-rendered preview (manual eyeballing / OG-embed testing); distinct from
+// the live OG path above, which is unchanged. See handleOgPreview.
+router.get("/api/og-preview/:key", handleOgPreview);
+router.get("/api/og-preview/db/:key", handleOgPreview);
 
 //enka
 router.get("/api/enka/:key", handleEnka);
