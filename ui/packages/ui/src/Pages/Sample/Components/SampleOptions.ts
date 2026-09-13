@@ -63,7 +63,7 @@ export const VerbosePreset = [
   "player",
   "heal",
   "hurt",
-  "pre_damage_mod",
+  "pre_damage_mods",
   "icd", // ele and dmg app icd
   "calc", // detailed damage calc
   "snapshot", // detailed snapshot calc
