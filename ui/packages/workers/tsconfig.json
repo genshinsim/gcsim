@@ -10,5 +10,5 @@
 		"allowSyntheticDefaultImports": true,
 		"types": ["@cloudflare/workers-types"]
 	},
-	"include": ["src"]
+	"include": ["src", "src/**/*.json"]
 }
