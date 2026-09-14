@@ -79,9 +79,8 @@ func (c *char) Aimed(p map[string]int) (action.Info, error) {
 		aimedHitmarks[hold],
 		aimedHitmarks[hold]+travel,
 	)
-	if c.Base.Cons >= 1 {
-		c.c1(ai, aimedHitmarks[hold], travel)
-	}
+
+	c.c1(ai, aimedHitmarks[hold], travel)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(aimedFrames[hold]),
