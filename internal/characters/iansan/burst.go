@@ -27,6 +27,9 @@ const (
 
 	burstStatus     = "kinetic-energy"
 	burstBuffStatus = "iansan-burst-buff"
+
+	restoreNSCap   = 99999
+	restoreNSRatio = 0.67
 )
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
@@ -60,11 +63,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 	}, 40)
 
-	c.burstSrc = c.Core.F
-	c.burstRestoreNS = 0
-	c.updateATKBuff(c.burstSrc)()
-	c.applyBuffTask(c.burstSrc)
-
 	if c.Base.Cons >= 2 {
 		c.a1ATK()
 	}
@@ -79,6 +77,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.SetCD(action.ActionBurst, 18*60)
 	c.ConsumeEnergy(6)
 
+	c.burstSrc = c.Core.F
+	c.burstRestoreNS = 0
+	c.updateATKBuff(c.burstSrc)()
+	c.restorePointsTask(c.burstSrc)
+
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
 		AnimationLength: burstFrames[action.InvalidAction],
@@ -87,7 +90,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) applyBuffTask(src int) {
+func (c *char) restorePointsTask(src int) {
 	c.Core.Tasks.Add(func() {
 		if c.burstSrc != src {
 			return
@@ -97,7 +100,7 @@ func (c *char) applyBuffTask(src int) {
 			return
 		}
 
-		points := float64(c.burstRestoreNS) + c.a1Points() + c.c4Points()
+		points := float64(c.burstRestoreNS)*restoreNSRatio + c.a1Points() + c.c4Points()
 		c.burstRestoreNS = 0
 		c.pointsOverflow = max(c.nightsoulState.Points()+points-c.nightsoulState.MaxPoints, 0.0)
 		if c.pointsOverflow > 0 {
@@ -110,18 +113,7 @@ func (c *char) applyBuffTask(src int) {
 			c.a4Heal()
 		}
 
-		if c.Base.Ascension >= 1 {
-			active := c.Core.Player.ActiveChar()
-			active.AddStatMod(character.StatMod{
-				Base: modifier.NewBaseWithHitlag(burstBuffStatus, 1*60),
-				Amount: func() []float64 {
-					c.c2ATKBuff(active)
-					return c.burstBuff
-				},
-			})
-		}
-
-		c.applyBuffTask(src)
+		c.restorePointsTask(src)
 	}, 1*60)
 }
 
@@ -131,7 +123,7 @@ func (c *char) updateATKBuff(src int) func() {
 			return
 		}
 		if !c.StatusIsActive(burstStatus) {
-			c.burstBuff[attributes.ATK] = 0
+			clear(c.burstBuff)
 			return
 		}
 
@@ -140,6 +132,15 @@ func (c *char) updateATKBuff(src int) func() {
 			rate = lowATK * c.nightsoulState.Points()
 		}
 		c.burstBuff[attributes.ATK] = min(c.TotalAtk()*rate, maxATK[c.TalentLvlBurst()])
+
+		active := c.Core.Player.ActiveChar()
+		active.AddStatMod(character.StatMod{
+			Base: modifier.NewBaseWithHitlag(burstBuffStatus, 0.3*60),
+			Amount: func() []float64 {
+				c.c2ATKBuff(active)
+				return c.burstBuff
+			},
+		})
 
 		c.QueueCharTask(c.updateATKBuff(src), 0.3*60)
 	}
@@ -153,6 +154,6 @@ func (c *char) burstMovementRestore(args ...interface{}) {
 	param := args[2].(map[string]int)
 	movement, ok := param["movement"]
 	if ok {
-		c.burstRestoreNS += movement
+		c.burstRestoreNS = min(c.burstRestoreNS+movement, restoreNSCap)
 	}
 }
