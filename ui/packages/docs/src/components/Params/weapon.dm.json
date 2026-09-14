@@ -13,6 +13,13 @@
       "desc": "Number of frames until the Leaf is picked up by the active character after every proc."
     }
   ],
+  "forgedbythegoldenmelody": [
+    {
+      "ability": "-",
+      "param": "buff_type",
+      "desc": "Sets the buff type to be applied first. 0 = ATK%, 1 = EM, 2 = Stellar. Default is 0."
+    }
+  ],
   "lostprayertothesacredwinds": [
     {
       "ability": "-",
