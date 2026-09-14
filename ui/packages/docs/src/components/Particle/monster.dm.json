@@ -1,27 +1,11 @@
 {
   "abyssheraldfrostfall": [
     {
-      "drop_id": 22010036,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010036,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010026,
       "hp_percent": 0
     }
   ],
   "abyssheraldwickedtorrents": [
-    {
-      "drop_id": 22010032,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010032,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010022,
       "hp_percent": 0
@@ -29,27 +13,11 @@
   ],
   "abysslectorfathomlessflames": [
     {
-      "drop_id": 22010031,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010031,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010021,
       "hp_percent": 0
     }
   ],
   "abysslectorvioletlightning": [
-    {
-      "drop_id": 22010034,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010034,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010024,
       "hp_percent": 0
@@ -57,27 +25,11 @@
   ],
   "aeonblightdrake": [
     {
-      "drop_id": 22010030,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010020,
       "hp_percent": 0
     }
   ],
   "algorithmofsemiintransientmatrixofoverseernetwork": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
@@ -86,30 +38,10 @@
   "anemohilichurlrogue": [
     {
       "drop_id": 22010015,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010015,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010015,
       "hp_percent": 0
     }
   ],
   "anemohypostasis": [
-    {
-      "drop_id": 22010035,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010035,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010035,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010035,
       "hp_percent": 0
@@ -118,18 +50,10 @@
   "anemosamachurl": [
     {
       "drop_id": 22010015,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010015,
       "hp_percent": 0
     }
   ],
   "anemoslime": [
-    {
-      "drop_id": 22010015,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010015,
       "hp_percent": 0
@@ -138,26 +62,10 @@
   "anemospecter": [
     {
       "drop_id": 22010015,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010015,
       "hp_percent": 0
     }
   ],
   "annihilationspecialistmek": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
@@ -166,18 +74,10 @@
   "areaalertmek": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "arithmeticenhancermek": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -185,35 +85,11 @@
   ],
   "assaultspecialistmek": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "battlehardenedbitingcoldwayobmanifestation": [
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010046,
       "hp_percent": 0
@@ -221,31 +97,11 @@
   ],
   "battlehardenedburningaflamewayobmanifestation": [
     {
-      "drop_id": 22010011,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010041,
       "hp_percent": 0
     }
   ],
   "battlehardenedchimericburrowbeast": [
-    {
-      "drop_id": 22010024,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010024,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010044,
       "hp_percent": 0
@@ -253,27 +109,11 @@
   ],
   "battlehardenedchimericvolkodlakarcher": [
     {
-      "drop_id": 22010026,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010026,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010046,
       "hp_percent": 0
     }
   ],
   "battlehardeneddomovoysculptor": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010050,
       "hp_percent": 0
@@ -281,35 +121,11 @@
   ],
   "battlehardenedelitetreasurehoarder": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010050,
       "hp_percent": 0
     }
   ],
   "battlehardenedflowinvertedwayobmanifestation": [
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010042,
       "hp_percent": 0
@@ -317,35 +133,11 @@
   ],
   "battlehardenedfoliarswiftwayobmanifestation": [
     {
-      "drop_id": 22010013,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010043,
       "hp_percent": 0
     }
   ],
   "battlehardenedgroundedgeoshroom": [
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010047,
       "hp_percent": 0
@@ -353,35 +145,11 @@
   ],
   "battlehardenediktomisaurus": [
     {
-      "drop_id": 22010016,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010046,
       "hp_percent": 0
     }
   ],
   "battlehardenedlightkeeper": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010050,
       "hp_percent": 0
@@ -389,31 +157,11 @@
   ],
   "battlehardenedpipilpanidol": [
     {
-      "drop_id": 22010014,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010044,
       "hp_percent": 0
     }
   ],
   "battlehardenedprecursorssecretsourcematrixofoverseernetwork": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010050,
       "hp_percent": 0
@@ -421,31 +169,11 @@
   ],
   "battlehardenedprimordialbathysmalvishap": [
     {
-      "drop_id": 22010012,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010042,
       "hp_percent": 0
     }
   ],
   "battlehardenedprismslime": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010050,
       "hp_percent": 0
@@ -453,35 +181,11 @@
   ],
   "battlehardenedrockcavernouswayobmanifestation": [
     {
-      "drop_id": 22010017,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010047,
       "hp_percent": 0
     }
   ],
   "battlehardenedruindrakeearthguard": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010050,
       "hp_percent": 0
@@ -489,53 +193,17 @@
   ],
   "battlehardenedsamachurl": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010050,
       "hp_percent": 0
     }
   ],
   "battlehardenedtatankasaurus": [
     {
-      "drop_id": 22010011,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010041,
       "hp_percent": 0
     }
   ],
   "battlehardenedthunderingwayobmanifestation": [
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010044,
       "hp_percent": 0
@@ -549,23 +217,11 @@
   ],
   "bitingcoldwayobmanifestation": [
     {
-      "drop_id": 22010016,
-      "hp_percent": 0.6
-    },
-    {
       "drop_id": 22010026,
       "hp_percent": 0
     }
   ],
   "blackserpentknightrockbreakerax": [
-    {
-      "drop_id": 22010027,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010027,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010027,
       "hp_percent": 0
@@ -574,30 +230,10 @@
   "blackserpentknightwindcutter": [
     {
       "drop_id": 22010025,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010025,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010025,
       "hp_percent": 0
     }
   ],
   "blazingaxemitachurl": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
@@ -606,40 +242,16 @@
   "blazingbrilliancefrostnightscion": [
     {
       "drop_id": 22010021,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010021,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010021,
       "hp_percent": 0
     }
   ],
   "bolteaterbathysmalvishap": [
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010034,
       "hp_percent": 0
     }
   ],
   "burningaflamewayobmanifestation": [
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010021,
       "hp_percent": 0
@@ -666,10 +278,6 @@
   "chimerichornedbear": [
     {
       "drop_id": 22010011,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010011,
       "hp_percent": 0
     }
   ],
@@ -681,23 +289,11 @@
   ],
   "chimericwingedlion": [
     {
-      "drop_id": 22010034,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010034,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010024,
       "hp_percent": 0
     }
   ],
   "closecombatscoutlandcruiser": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -706,22 +302,10 @@
   "closecombatstormlandcruiser": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "consecratedfangedbeast": [
-    {
-      "drop_id": 22010023,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010023,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010023,
       "hp_percent": 0
@@ -730,26 +314,10 @@
   "consecratedflyingserpent": [
     {
       "drop_id": 22010025,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010025,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010025,
       "hp_percent": 0
     }
   ],
   "consecratedhornedcrocodile": [
-    {
-      "drop_id": 22010022,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010022,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010022,
       "hp_percent": 0
@@ -758,26 +326,10 @@
   "consecratedredvulture": [
     {
       "drop_id": 22010021,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010021,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010021,
       "hp_percent": 0
     }
   ],
   "consecratedscorpion": [
-    {
-      "drop_id": 22010024,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010024,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010024,
       "hp_percent": 0
@@ -785,53 +337,17 @@
   ],
   "constructionspecialistmek": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "cracklingaxemitachurl": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "cryoabyssmage": [
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010036,
       "hp_percent": 0
@@ -840,32 +356,16 @@
   "cryohilichurlgrenadier": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "cryohilichurlshooter": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "cryohypostasis": [
-    {
-      "drop_id": 22010036,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010036,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010026,
       "hp_percent": 0
@@ -874,26 +374,10 @@
   "cryoregisvine": [
     {
       "drop_id": 22010036,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010036,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010036,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010036,
       "hp_percent": 0
     }
   ],
   "cryosamachurl": [
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010016,
       "hp_percent": 0
@@ -902,36 +386,16 @@
   "cryoslime": [
     {
       "drop_id": 22010016,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010016,
       "hp_percent": 0
     }
   ],
   "cryospecter": [
     {
       "drop_id": 22010016,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010016,
       "hp_percent": 0
     }
   ],
   "cryowhopperflower": [
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010036,
       "hp_percent": 0
@@ -940,30 +404,10 @@
   "cuttingedgeallpurposestormlandcruiser": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "dendrohypostasis": [
-    {
-      "drop_id": 22010033,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010033,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010033,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010023,
       "hp_percent": 0
@@ -972,18 +416,10 @@
   "dendrosamachurl": [
     {
       "drop_id": 22010013,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010013,
       "hp_percent": 0
     }
   ],
   "dendroslime": [
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010013,
       "hp_percent": 0
@@ -992,44 +428,16 @@
   "dendrospecter": [
     {
       "drop_id": 22010013,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010013,
       "hp_percent": 0
     }
   ],
   "domainkeeper": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "electroabyssmage": [
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010034,
       "hp_percent": 0
@@ -1038,18 +446,10 @@
   "electrohilichurlgrenadier": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "electrohilichurlshooter": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -1058,34 +458,10 @@
   "electrohypostasis": [
     {
       "drop_id": 22010034,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010034,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010034,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010034,
       "hp_percent": 0
     }
   ],
   "electroregisvine": [
-    {
-      "drop_id": 22010034,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010034,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010034,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010034,
       "hp_percent": 0
@@ -1094,18 +470,10 @@
   "electrosamachurl": [
     {
       "drop_id": 22010014,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010014,
       "hp_percent": 0
     }
   ],
   "electroslime": [
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010014,
       "hp_percent": 0
@@ -1114,26 +482,10 @@
   "electrospecter": [
     {
       "drop_id": 22010014,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010014,
       "hp_percent": 0
     }
   ],
   "electrowhopperflower": [
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010034,
       "hp_percent": 0
@@ -1142,26 +494,10 @@
   "emperoroffireandiron": [
     {
       "drop_id": 22010031,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010031,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010031,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010031,
       "hp_percent": 0
     }
   ],
   "eremiteaxevanguard": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -1170,44 +506,16 @@
   "eremitecrossbow": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "eremitedaythunder": [
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010024,
       "hp_percent": 0
     }
   ],
   "eremitedesertclearwater": [
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010022,
       "hp_percent": 0
@@ -1216,34 +524,10 @@
   "eremitefloralringdancer": [
     {
       "drop_id": 22010013,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010013,
       "hp_percent": 0
     }
   ],
   "eremitegalehunter": [
-    {
-      "drop_id": 22010015,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010015,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010015,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010015,
       "hp_percent": 0
@@ -1252,18 +536,10 @@
   "eremitelinebreaker": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "eremiteravenbeakhalberdier": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -1272,52 +548,16 @@
   "eremitescorchingloremaster": [
     {
       "drop_id": 22010011,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010011,
       "hp_percent": 0
     }
   ],
   "eremitestoneenchanter": [
     {
       "drop_id": 22010017,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010017,
       "hp_percent": 0
     }
   ],
   "eremitesunfrost": [
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010026,
       "hp_percent": 0
@@ -1326,22 +566,10 @@
   "eremitesworddancer": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "erodingavataroflava": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -1350,26 +578,10 @@
   "experimentalfieldgenerator": [
     {
       "drop_id": 22010030,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "eyeofthestorm": [
-    {
-      "drop_id": 22010035,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010035,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010035,
       "hp_percent": 0
@@ -1378,26 +590,10 @@
   "fangedzealot": [
     {
       "drop_id": 22010011,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010011,
       "hp_percent": 0
     }
   ],
   "fatuicryocicinmage": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
@@ -1406,26 +602,10 @@
   "fatuielectrocicinmage": [
     {
       "drop_id": 22010030,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "fatuipyroagent": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
@@ -1434,26 +614,10 @@
   "fatuiskirmisheranemoboxervanguard": [
     {
       "drop_id": 22010025,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010025,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010025,
       "hp_percent": 0
     }
   ],
   "fatuiskirmishercryogunnerlegionnaire": [
-    {
-      "drop_id": 22010026,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010026,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010026,
       "hp_percent": 0
@@ -1462,26 +626,10 @@
   "fatuiskirmisherelectrohammervanguard": [
     {
       "drop_id": 22010024,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010024,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010024,
       "hp_percent": 0
     }
   ],
   "fatuiskirmishergeochanterbracer": [
-    {
-      "drop_id": 22010027,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010027,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010027,
       "hp_percent": 0
@@ -1490,26 +638,10 @@
   "fatuiskirmisherhydrogunnerlegionnaire": [
     {
       "drop_id": 22010022,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010022,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010022,
       "hp_percent": 0
     }
   ],
   "fatuiskirmisherpyroslingerbracer": [
-    {
-      "drop_id": 22010021,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010021,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010021,
       "hp_percent": 0
@@ -1518,18 +650,10 @@
   "ferociouswarriorgrappler": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "ferociouswarriorhumanram": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -1538,22 +662,10 @@
   "ferociouswarriorwrestler": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "fisherofhiddendepths": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
@@ -1580,18 +692,10 @@
   "flowingbladegreasesaw": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "flowingbladeharpoonthrower": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -1600,18 +704,10 @@
   "flowingbladeskirmisher": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "flowinvertedwayobmanifestation": [
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010022,
       "hp_percent": 0
@@ -1620,22 +716,10 @@
   "fluidavataroflava": [
     {
       "drop_id": 22010011,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010011,
       "hp_percent": 0
     }
   ],
   "foliarswiftwayobmanifestation": [
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010023,
       "hp_percent": 0
@@ -1644,18 +728,10 @@
   "forcereconstormlandcruiser": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "forgedsandinterrogator": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -1664,18 +740,10 @@
   "forgedsandjavelineer": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "forgedsandshieldbreaker": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -1684,52 +752,16 @@
   "frostarmlawachurl": [
     {
       "drop_id": 22010050,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010050,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010050,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010050,
       "hp_percent": 0
     }
   ],
   "frostnightherra": [
     {
       "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "frostoperative": [
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010026,
       "hp_percent": 0
@@ -1738,30 +770,10 @@
   "furnaceshellmountainweasel": [
     {
       "drop_id": 22010021,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010021,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010021,
       "hp_percent": 0
     }
   ],
   "geohypostasis": [
-    {
-      "drop_id": 22010037,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010037,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010037,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010037,
       "hp_percent": 0
@@ -1770,18 +782,10 @@
   "geologicalsurveymek": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "geosamachurl": [
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010017,
       "hp_percent": 0
@@ -1790,18 +794,10 @@
   "geoslime": [
     {
       "drop_id": 22010017,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010017,
       "hp_percent": 0
     }
   ],
   "geospecter": [
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010017,
       "hp_percent": 0
@@ -1809,27 +805,11 @@
   ],
   "geovishap": [
     {
-      "drop_id": 22010017,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010037,
       "hp_percent": 0
     }
   ],
   "geovishaphatchling": [
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010037,
       "hp_percent": 0
@@ -1838,26 +818,10 @@
   "gildedsunshardfrostnightscion": [
     {
       "drop_id": 22010027,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010027,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010027,
       "hp_percent": 0
     }
   ],
   "glacialwarden": [
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010016,
       "hp_percent": 0
@@ -1872,26 +836,10 @@
   "gleamingchargefrostnightscion": [
     {
       "drop_id": 22010024,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010024,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010024,
       "hp_percent": 0
     }
   ],
   "gluttonousyumkasaurmountainking": [
-    {
-      "drop_id": 22010033,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010033,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010033,
       "hp_percent": 0
@@ -1900,34 +848,10 @@
   "goldenwolflord": [
     {
       "drop_id": 22010040,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010040,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010040,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010040,
       "hp_percent": 0
     }
   ],
   "goldflamequcusaurtyrant": [
-    {
-      "drop_id": 22010031,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010031,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010031,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010031,
       "hp_percent": 0
@@ -1936,36 +860,16 @@
   "groundedgeoshroom": [
     {
       "drop_id": 22010017,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010017,
       "hp_percent": 0
     }
   ],
   "groundedhydroshroom": [
     {
       "drop_id": 22010012,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010012,
       "hp_percent": 0
     }
   ],
   "hexadecatonicbattlehardenedmandragora": [
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010043,
       "hp_percent": 0
@@ -1974,18 +878,10 @@
   "hilichurl": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "hilichurlberserker": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -1994,18 +890,10 @@
   "hilichurlfighter": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "hilichurlgrenadier": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -2014,26 +902,10 @@
   "hilichurlshooter": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "hydroabyssmage": [
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010032,
       "hp_percent": 0
@@ -2042,36 +914,16 @@
   "hydrocicin": [
     {
       "drop_id": 22010012,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010012,
       "hp_percent": 0
     }
   ],
   "hydrohilichurlrogue": [
     {
       "drop_id": 22010012,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010012,
       "hp_percent": 0
     }
   ],
   "hydrohypostasis": [
-    {
-      "drop_id": 22010032,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010032,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010022,
       "hp_percent": 0
@@ -2097,23 +949,11 @@
   ],
   "hydromimicfinch": [
     {
-      "drop_id": 22010012,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010032,
       "hp_percent": 0
     }
   ],
   "hydromimicfrog": [
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010012,
       "hp_percent": 0
@@ -2140,18 +980,10 @@
   "hydrosamachurl": [
     {
       "drop_id": 22010012,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010012,
       "hp_percent": 0
     }
   ],
   "hydroslime": [
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010012,
       "hp_percent": 0
@@ -2160,22 +992,10 @@
   "hydrospecter": [
     {
       "drop_id": 22010012,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010012,
       "hp_percent": 0
     }
   ],
   "hydrotulpa": [
-    {
-      "drop_id": 22010032,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010032,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010022,
       "hp_percent": 0
@@ -2184,44 +1004,16 @@
   "iceshieldhilichurlguard": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "iceshieldwallmitachurl": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "icewindsuite": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010050,
       "hp_percent": 0
@@ -2230,26 +1022,10 @@
   "icycrystalfrostnightscion": [
     {
       "drop_id": 22010026,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010026,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010026,
       "hp_percent": 0
     }
   ],
   "iktomisaurus": [
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010016,
       "hp_percent": 0
@@ -2263,27 +1039,11 @@
   ],
   "iktomisauruswarriorcryocrystalcannon": [
     {
-      "drop_id": 22010016,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010026,
       "hp_percent": 0
     }
   ],
   "iktomisauruswarrioricytidebearer": [
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010026,
       "hp_percent": 0
@@ -2292,34 +1052,10 @@
   "immortalconstruct": [
     {
       "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "infinitesimal": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010050,
       "hp_percent": 0
@@ -2328,30 +1064,10 @@
   "iniquitousbaptist": [
     {
       "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "jadeplumeterrorshroom": [
-    {
-      "drop_id": 22010033,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010033,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010043,
       "hp_percent": 0
@@ -2365,35 +1081,11 @@
   ],
   "kairagidancingthunder": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010020,
       "hp_percent": 0
     }
   ],
   "knuckleduckle": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
@@ -2402,40 +1094,16 @@
   "koholasaurus": [
     {
       "drop_id": 22010012,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010012,
       "hp_percent": 0
     }
   ],
   "koholasauruswarriorreefsplitter": [
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010022,
       "hp_percent": 0
     }
   ],
   "koholasauruswarriorwaveshuttler": [
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010022,
       "hp_percent": 0
@@ -2449,27 +1117,11 @@
   ],
   "largeanemoslime": [
     {
-      "drop_id": 22010015,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010015,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010035,
       "hp_percent": 0
     }
   ],
   "largecryoslime": [
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010036,
       "hp_percent": 0
@@ -2477,27 +1129,11 @@
   ],
   "largedendroslime": [
     {
-      "drop_id": 22010013,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010033,
       "hp_percent": 0
     }
   ],
   "largeelectroslime": [
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010034,
       "hp_percent": 0
@@ -2505,27 +1141,11 @@
   ],
   "largegeoslime": [
     {
-      "drop_id": 22010017,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010037,
       "hp_percent": 0
     }
   ],
   "largehydroslime": [
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010032,
       "hp_percent": 0
@@ -2533,31 +1153,11 @@
   ],
   "largeovergrownbreacherprimus": [
     {
-      "drop_id": 22010013,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010033,
       "hp_percent": 0
     }
   ],
   "largepyroslime": [
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010031,
       "hp_percent": 0
@@ -2565,49 +1165,17 @@
   ],
   "largeshatterstonebreacherprimus": [
     {
-      "drop_id": 22010017,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010037,
       "hp_percent": 0
     }
   ],
   "lavadragonstatue": [
     {
-      "drop_id": 22010031,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010031,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010021,
       "hp_percent": 0
     }
   ],
   "legatusgolem": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
@@ -2620,18 +1188,6 @@
     }
   ],
   "liam": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010050,
       "hp_percent": 0
@@ -2646,34 +1202,10 @@
   "lordofthehiddendepthswhispererofnightmares": [
     {
       "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "maguukenki": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010040,
       "hp_percent": 0
@@ -2681,35 +1213,11 @@
   ],
   "maguukenkigallopingfrost": [
     {
-      "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010040,
       "hp_percent": 0
     }
   ],
   "maguukenkilonegale": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010040,
       "hp_percent": 0
@@ -2717,49 +1225,17 @@
   ],
   "maguukenkimaskofterror": [
     {
-      "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010040,
       "hp_percent": 0
     }
   ],
   "millelithsergeant": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010020,
       "hp_percent": 0
     }
   ],
   "millelithsoldier": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
@@ -2768,30 +1244,10 @@
   "millennialpearlseahorse": [
     {
       "drop_id": 22010034,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010034,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010034,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010034,
       "hp_percent": 0
     }
   ],
   "mirrormaiden": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
@@ -2799,31 +1255,11 @@
   ],
   "mutantelectroslime": [
     {
-      "drop_id": 22010014,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010034,
       "hp_percent": 0
     }
   ],
   "mystifyingmegachurl": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010040,
       "hp_percent": 0
@@ -2832,18 +1268,10 @@
   "nimbleharvestermek": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "nobushihitsukeban": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -2852,18 +1280,10 @@
   "nobushijintouban": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "nobushikikouban": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -2877,35 +1297,11 @@
   ],
   "ochimushacankeredflame": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010020,
       "hp_percent": 0
     }
   ],
   "ochimushaensorcelledthunder": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
@@ -2932,22 +1328,10 @@
   "overgrownbreacherprimus": [
     {
       "drop_id": 22010013,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010013,
       "hp_percent": 0
     }
   ],
   "perpetualmechanicalarray": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
@@ -2955,35 +1339,11 @@
   ],
   "praetoriangolem": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "precursorssecretsourcematrixofoverseernetwork": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
@@ -2992,34 +1352,10 @@
   "primalconstructprospector": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "primalconstructrepulsor": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -3028,30 +1364,10 @@
   "primalconstructreshaper": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "primogeovishap": [
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010037,
       "hp_percent": 0
@@ -3059,35 +1375,11 @@
   ],
   "primordialbathysmalvishap": [
     {
-      "drop_id": 22010012,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010022,
       "hp_percent": 0
     }
   ],
   "pyroabyssmage": [
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010031,
       "hp_percent": 0
@@ -3096,26 +1388,10 @@
   "pyrohilichurlshooter": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "pyrohypostasis": [
-    {
-      "drop_id": 22010031,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010031,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010031,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010031,
       "hp_percent": 0
@@ -3124,26 +1400,10 @@
   "pyroregisvine": [
     {
       "drop_id": 22010031,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010031,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010031,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010031,
       "hp_percent": 0
     }
   ],
   "pyroslime": [
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010011,
       "hp_percent": 0
@@ -3152,40 +1412,16 @@
   "pyrospecter": [
     {
       "drop_id": 22010011,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010011,
       "hp_percent": 0
     }
   ],
   "pyrowhopperflower": [
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010031,
       "hp_percent": 0
     }
   ],
   "qucusaurus": [
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010011,
       "hp_percent": 0
@@ -3199,27 +1435,11 @@
   ],
   "qucusauruswarriorblazingsky": [
     {
-      "drop_id": 22010011,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010021,
       "hp_percent": 0
     }
   ],
   "qucusauruswarriorheartstarhammer": [
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010021,
       "hp_percent": 0
@@ -3228,26 +1448,10 @@
   "radiantantelope": [
     {
       "drop_id": 22010024,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010024,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010024,
       "hp_percent": 0
     }
   ],
   "radiantbladehorn": [
-    {
-      "drop_id": 22010025,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010025,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010025,
       "hp_percent": 0
@@ -3256,26 +1460,10 @@
   "radiantglacialwolf": [
     {
       "drop_id": 22010026,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010026,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010026,
       "hp_percent": 0
     }
   ],
   "radiantlunapod": [
-    {
-      "drop_id": 22010022,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010022,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010022,
       "hp_percent": 0
@@ -3284,34 +1472,10 @@
   "radiantmoonfly": [
     {
       "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "radiantmoongecko": [
-    {
-      "drop_id": 22010037,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010037,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010037,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010027,
       "hp_percent": 0
@@ -3320,36 +1484,16 @@
   "reconlogmek": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "rimebiterbathysmalvishap": [
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010036,
       "hp_percent": 0
     }
   ],
   "rockcavernouswayobmanifestation": [
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010027,
       "hp_percent": 0
@@ -3358,22 +1502,10 @@
   "rockfondrifthound": [
     {
       "drop_id": 22010027,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010027,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010027,
       "hp_percent": 0
     }
   ],
   "rockfondrifthoundwhelp": [
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010017,
       "hp_percent": 0
@@ -3382,44 +1514,16 @@
   "rockshieldhilichurlguard": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "rockshieldwallmitachurl": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "rockyavildsen": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010050,
       "hp_percent": 0
@@ -3428,26 +1532,10 @@
   "ruggedelderleshy": [
     {
       "drop_id": 22010017,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010017,
       "hp_percent": 0
     }
   ],
   "ruincruiser": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
@@ -3455,27 +1543,11 @@
   ],
   "ruindefender": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010020,
       "hp_percent": 0
     }
   ],
   "ruindestroyer": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
@@ -3483,27 +1555,11 @@
   ],
   "ruindrakeearthguard": [
     {
-      "drop_id": 22010030,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010020,
       "hp_percent": 0
     }
   ],
   "ruindrakeskywatch": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
@@ -3511,35 +1567,11 @@
   ],
   "ruingrader": [
     {
-      "drop_id": 22010040,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010040,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010040,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "ruinguard": [
-    {
-      "drop_id": 22010040,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010040,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010040,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
@@ -3547,31 +1579,11 @@
   ],
   "ruinhunter": [
     {
-      "drop_id": 22010040,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010040,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010040,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "ruinscout": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
@@ -3579,49 +1591,17 @@
   ],
   "ruinserpent": [
     {
-      "drop_id": 22010030,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010020,
       "hp_percent": 0
     }
   ],
   "rulerofthechizhangmountainstianyu": [
     {
-      "drop_id": 22010016,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010046,
       "hp_percent": 0
     }
   ],
   "rulerofthechizhangmountainsyiji": [
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010041,
       "hp_percent": 0
@@ -3630,26 +1610,10 @@
   "sangonomiyacohort": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "secretsourceautomatonconfigurationdevice": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
@@ -3658,30 +1622,10 @@
   "secretsourceautomatonhunterseeker": [
     {
       "drop_id": 22010011,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010011,
       "hp_percent": 0
     }
   ],
   "secretsourceautomatonoverseerdevice": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
@@ -3690,34 +1634,10 @@
   "setekhwenut": [
     {
       "drop_id": 22010035,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010035,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010035,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010035,
       "hp_percent": 0
     }
   ],
   "shadowyhuskdefender": [
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010016,
       "hp_percent": 0
@@ -3726,30 +1646,10 @@
   "shadowyhusklinebreaker": [
     {
       "drop_id": 22010022,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010022,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010022,
       "hp_percent": 0
     }
   ],
   "shadowyhuskstandardbearer": [
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010021,
       "hp_percent": 0
@@ -3758,18 +1658,10 @@
   "shatterstonebreacherprimus": [
     {
       "drop_id": 22010017,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010017,
       "hp_percent": 0
     }
   ],
   "shogunateinfantry": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -3778,30 +1670,10 @@
   "shogunateinfantrycaptain": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "solitarysuanni": [
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
@@ -3810,18 +1682,10 @@
   "spiritofomendendrospiritserpent": [
     {
       "drop_id": 22010013,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010013,
       "hp_percent": 0
     }
   ],
   "spiritofomenpyroscorpion": [
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010011,
       "hp_percent": 0
@@ -3830,18 +1694,10 @@
   "spiritofomenstonedrake": [
     {
       "drop_id": 22010017,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010017,
       "hp_percent": 0
     }
   ],
   "spiritofomenwindglede": [
-    {
-      "drop_id": 22010015,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010015,
       "hp_percent": 0
@@ -3850,18 +1706,10 @@
   "spiritspeakerwarriorcontemplator": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "spiritspeakerwarriordeterminator": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -3870,26 +1718,10 @@
   "spiritspeakerwarriorpsychokinetic": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "stonehidelawachurl": [
-    {
-      "drop_id": 22010050,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010050,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010050,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010050,
       "hp_percent": 0
@@ -3922,34 +1754,10 @@
   "superheavylandrovermechanizedfortress": [
     {
       "drop_id": 22010030,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "suppressionspecialistmek": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
@@ -3958,22 +1766,10 @@
   "surgingcurrentsfrostnightscion": [
     {
       "drop_id": 22010022,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010022,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010022,
       "hp_percent": 0
     }
   ],
   "swiftsteparmedcourier": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -3982,18 +1778,10 @@
   "swiftstepseeker": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "swiftstepstormscout": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -4001,27 +1789,11 @@
   ],
   "taintedwatersplittingphantasm": [
     {
-      "drop_id": 22010012,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010022,
       "hp_percent": 0
     }
   ],
   "taintedwaterspoutingphantasm": [
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010022,
       "hp_percent": 0
@@ -4030,26 +1802,10 @@
   "tangledvinesfrostnightscion": [
     {
       "drop_id": 22010023,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010023,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010023,
       "hp_percent": 0
     }
   ],
   "tatankasaurus": [
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010014,
       "hp_percent": 0
@@ -4057,27 +1813,11 @@
   ],
   "tatankasauruswarriorskybreaker": [
     {
-      "drop_id": 22010014,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010024,
       "hp_percent": 0
     }
   ],
   "tatankasauruswarriorspiritlightchaser": [
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010024,
       "hp_percent": 0
@@ -4092,26 +1832,10 @@
   "tenebrousmimiflora": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "tenebrouspapillatypei": [
-    {
-      "drop_id": 22010040,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010040,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010040,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010040,
       "hp_percent": 0
@@ -4120,40 +1844,16 @@
   "tepetlisaurus": [
     {
       "drop_id": 22010017,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010017,
       "hp_percent": 0
     }
   ],
   "tepetlisauruswarriorrockbreakerblade": [
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010027,
       "hp_percent": 0
     }
   ],
   "tepetlisauruswarriorshardstriker": [
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010017,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010027,
       "hp_percent": 0
@@ -4168,22 +1868,10 @@
   "thundercravenrifthound": [
     {
       "drop_id": 22010024,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010024,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010024,
       "hp_percent": 0
     }
   ],
   "thundercravenrifthoundwhelp": [
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010014,
       "hp_percent": 0
@@ -4192,26 +1880,10 @@
   "thunderhelmlawachurl": [
     {
       "drop_id": 22010050,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010050,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010050,
-      "hp_percent": 0.25
-    },
-    {
-      "drop_id": 22010050,
       "hp_percent": 0
     }
   ],
   "thunderingwayobmanifestation": [
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010024,
       "hp_percent": 0
@@ -4219,35 +1891,11 @@
   ],
   "thundermanifestation": [
     {
-      "drop_id": 22010034,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010034,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010034,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010024,
       "hp_percent": 0
     }
   ],
   "treasurehoardersboss": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
@@ -4255,31 +1903,11 @@
   ],
   "treasurehoarderscarmen": [
     {
-      "drop_id": 22010020,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010020,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "treasurehoarderscrusher": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
@@ -4287,27 +1915,11 @@
   ],
   "treasurehoarderscryopotioneer": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010020,
       "hp_percent": 0
     }
   ],
   "treasurehoarderselectropotioneer": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
@@ -4315,35 +1927,11 @@
   ],
   "treasurehoardersgravedigger": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010020,
       "hp_percent": 0
     }
   ],
   "treasurehoardershandyman": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
@@ -4351,27 +1939,11 @@
   ],
   "treasurehoardershydropotioneer": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010020,
       "hp_percent": 0
     }
   ],
   "treasurehoardersliuliu": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
@@ -4380,30 +1952,10 @@
   "treasurehoardersmarksman": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "treasurehoarderspugilist": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
@@ -4411,27 +1963,11 @@
   ],
   "treasurehoarderspyropotioneer": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010020,
       "hp_percent": 0
     }
   ],
   "treasurehoardersraptor": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
@@ -4440,44 +1976,16 @@
   "treasurehoardersscout": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "treasurehoardersseaman": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
     }
   ],
   "treasurehoarderswallenstein": [
-    {
-      "drop_id": 22010020,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010020,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
@@ -4486,22 +1994,10 @@
   "unusualhilichurl": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "veiledcloudchaserfrostnightscion": [
-    {
-      "drop_id": 22010025,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010025,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010025,
       "hp_percent": 0
@@ -4509,35 +2005,11 @@
   ],
   "veteranarithmeticenhancermek": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010050,
       "hp_percent": 0
     }
   ],
   "veteranfatuipyroagent": [
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010041,
       "hp_percent": 0
@@ -4545,27 +2017,11 @@
   ],
   "veteranfatuiskirmishercryogunnerlegionnaire": [
     {
-      "drop_id": 22010016,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010046,
       "hp_percent": 0
     }
   ],
   "veteranfatuiskirmisherelectrohammervanguard": [
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010014,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010044,
       "hp_percent": 0
@@ -4573,31 +2029,11 @@
   ],
   "veteranfatuiskirmisherpyroslingerbracer": [
     {
-      "drop_id": 22010011,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010011,
-      "hp_percent": 0.33
-    },
-    {
       "drop_id": 22010041,
       "hp_percent": 0
     }
   ],
   "veteranfrostoperative": [
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010016,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010046,
       "hp_percent": 0
@@ -4605,53 +2041,17 @@
   ],
   "veterantaintedwatersplittingphantasm": [
     {
-      "drop_id": 22010012,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010042,
       "hp_percent": 0
     }
   ],
   "veterantaintedwaterspoutingphantasm": [
     {
-      "drop_id": 22010012,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010012,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010042,
       "hp_percent": 0
     }
   ],
   "veteranwindoperative": [
-    {
-      "drop_id": 22010015,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010015,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010015,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010045,
       "hp_percent": 0
@@ -4684,44 +2084,16 @@
   "voywolfhunter": [
     {
       "drop_id": 22010016,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010016,
       "hp_percent": 0
     }
   ],
   "watcherfallenvigil": [
-    {
-      "drop_id": 22010040,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010040,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010040,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "waywardhermeticspiritspeaker": [
-    {
-      "drop_id": 22010036,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010036,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010036,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010026,
       "hp_percent": 0
@@ -4748,44 +2120,16 @@
   "wildernessexile": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "wildernesshunter": [
     {
       "drop_id": 22010030,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010030,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "windoperative": [
-    {
-      "drop_id": 22010015,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010015,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010015,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010025,
       "hp_percent": 0
@@ -4794,18 +2138,10 @@
   "wingedcryoshroom": [
     {
       "drop_id": 22010016,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010016,
       "hp_percent": 0
     }
   ],
   "wingeddendroshroom": [
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010013,
       "hp_percent": 0
@@ -4826,18 +2162,10 @@
   "wingedwarriorfeathershedder": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "wingedwarriorskymaster": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -4846,18 +2174,10 @@
   "wingedwarriorskysoarer": [
     {
       "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
-    {
-      "drop_id": 22010010,
       "hp_percent": 0
     }
   ],
   "woodenshieldhilichurlguard": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.6
-    },
     {
       "drop_id": 22010010,
       "hp_percent": 0
@@ -4865,53 +2185,17 @@
   ],
   "woodenshieldwallmitachurl": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "xuanwenbeast": [
     {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
-    {
       "drop_id": 22010030,
       "hp_percent": 0
     }
   ],
   "yorikisamurai": [
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.75
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.5
-    },
-    {
-      "drop_id": 22010010,
-      "hp_percent": 0.25
-    },
     {
       "drop_id": 22010020,
       "hp_percent": 0
@@ -4920,40 +2204,16 @@
   "yumkasaurus": [
     {
       "drop_id": 22010013,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.33
-    },
-    {
-      "drop_id": 22010013,
       "hp_percent": 0
     }
   ],
   "yumkasauruswarriorflowingskyfire": [
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010023,
       "hp_percent": 0
     }
   ],
   "yumkasauruswarriorwhirlingleaves": [
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.66
-    },
-    {
-      "drop_id": 22010013,
-      "hp_percent": 0.33
-    },
     {
       "drop_id": 22010023,
       "hp_percent": 0

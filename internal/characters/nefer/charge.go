@@ -342,7 +342,7 @@ func (c *char) queueBasicChargeRelease() {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
-		Mult:       charge[0][c.TalentLvlAttack()],
+		Mult:       charge[c.TalentLvlAttack()],
 	}
 
 	c.Core.QueueAttack(

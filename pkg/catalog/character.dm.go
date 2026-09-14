@@ -12016,6 +12016,159 @@ var CharacterMap = map[keys.Char]*model.AvatarData{
 			BurstEnergyCost: 60.0,
 		},
 	},
+	keys.Nefer: {
+		Id:          10000122,
+		SubId:       12201,
+		Key:         "nefer",
+		Rarity:      model.QualityType_QUALITY_ORANGE,
+		Body:        model.BodyType_BODY_LADY,
+		Region:      model.AssocType_ASSOC_TYPE_NODKRAI,
+		Element:     model.ElementType_Grass,
+		WeaponClass: model.WeaponType_WEAPON_CATALYST,
+		IconName:    "UI_AvatarIcon_Nefer",
+		Stats: &model.AvatarStatsData{
+			BaseHp:   988.9742,
+			BaseAtk:  26.8128,
+			BaseDef:  62.2232,
+			HpCurve:  model.GrowCurveType_GROW_CURVE_HP_S5,
+			AtkCurve: model.GrowCurveType_GROW_CURVE_ATTACK_S5,
+			DefCruve: model.GrowCurveType_GROW_CURVE_HP_S5,
+			PromoData: []*model.PromotionData{
+				{
+					MaxLevel: 20,
+				},
+				{
+					MaxLevel: 40,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    847.95593,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    53.352,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    22.987871,
+						},
+					},
+				},
+				{
+					MaxLevel: 50,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    1450.4509,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    91.26,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    39.32136,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_CRITICAL_HURT,
+							Value:    0.096,
+						},
+					},
+				},
+				{
+					MaxLevel: 60,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    2253.7776,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    141.804,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    61.099342,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_CRITICAL_HURT,
+							Value:    0.192,
+						},
+					},
+				},
+				{
+					MaxLevel: 70,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    2856.2727,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    179.712,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    77.43283,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_CRITICAL_HURT,
+							Value:    0.192,
+						},
+					},
+				},
+				{
+					MaxLevel: 80,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    3458.7676,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    217.62,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    93.76632,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_CRITICAL_HURT,
+							Value:    0.288,
+						},
+					},
+				},
+				{
+					MaxLevel: 90,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    4061.2627,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    255.528,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    110.09981,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_CRITICAL_HURT,
+							Value:    0.384,
+						},
+					},
+				},
+			},
+			ElementMastery: 100.0,
+		},
+		SkillDetails: &model.AvatarSkillsData{
+			Skill:           11222,
+			Burst:           11225,
+			Attack:          11221,
+			BurstEnergyCost: 60.0,
+		},
+	},
 	keys.Neuvillette: {
 		Id:          10000087,
 		SubId:       8701,

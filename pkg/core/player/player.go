@@ -71,7 +71,7 @@ type Handler struct {
 	partialDewCount       float64
 
 	moonridgeDew int
-
+}
 
 type Opt struct {
 	F            *int
@@ -377,6 +377,7 @@ func (h *Handler) verdantDewTick() {
 		}
 	}
 }
+
 
 func (h *Handler) OnLunarBloom() {
 	verdantDewEnd := *h.F + verdantDewEndFrame

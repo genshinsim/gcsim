@@ -191,6 +191,7 @@ ace.define(
         'lesserlordkusanali',
         'navia',
         'demoiselle',
+        'nefer',
         'neuvillette',
         'chiefjusticeoffontaine',
         'neuv',

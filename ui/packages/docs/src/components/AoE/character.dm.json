@@ -9514,6 +9514,92 @@
       "radius": 3
     }
   ],
+  "nefer": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 2
+    },
+    {
+      "ability": "attack",
+      "name": "N2",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 2
+    },
+    {
+      "ability": "attack",
+      "name": "N3-1",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 2
+    },
+    {
+      "ability": "attack",
+      "name": "N3-2",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 2
+    },
+    {
+      "ability": "attack",
+      "name": "N4",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 2
+    },
+    {
+      "ability": "charge",
+      "name": "CA",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 2
+    },
+    {
+      "ability": "skill",
+      "name": "E-Skill",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 4
+    },
+    {
+      "ability": "skill",
+      "name": "E-Phantasm-Nefer",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 3
+    },
+    {
+      "ability": "skill",
+      "name": "E-Phantasm-Shade",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 3
+    },
+    {
+      "ability": "burst",
+      "name": "Q-Hit1",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 5
+    },
+    {
+      "ability": "burst",
+      "name": "Q-Hit2",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 5
+    },
+    {
+      "ability": "cons",
+      "name": "C2",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 3
+    }
+  ],
   "neuvillette": [
     {
       "ability": "attack",
@@ -10147,7 +10233,7 @@
       "ability": "cons",
       "name": "C1",
       "shape": "Circle",
-      "center": "PrimaryTarget",
+      "center": "Player",
       "radius": 4.5
     },
     {

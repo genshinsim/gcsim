@@ -122,6 +122,7 @@ const (
 	Mualani                       // mualani
 	Nahida                        // nahida
 	Navia                         // navia
+	Nefer                         // nefer
 	Neuvillette                   // neuvillette
 	Nicole                        // nicole
 	Nilou                         // nilou
@@ -248,6 +249,7 @@ var _CharNames = [...]string{
 	"mualani",
 	"nahida",
 	"navia",
+	"nefer",
 	"neuvillette",
 	"nicole",
 	"nilou",
@@ -374,6 +376,7 @@ var _CharValues = [...]Char{
 	Mualani,
 	Nahida,
 	Navia,
+	Nefer,
 	Neuvillette,
 	Nicole,
 	Nilou,

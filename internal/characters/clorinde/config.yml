@@ -37,12 +37,6 @@ talents:
   - burstDamage: burst(Skill DMG)
   - burstBOL: burst(Bond of Life Gain)
 
-  - a1Duration: a1#0
-  - a1FlatDmg: a1#1
-  - a1PercentBuff: a1#2
-
-  - a4CritBuff: a4#2
-  - a4Duration: a4#3
 
 docs:
   frames:

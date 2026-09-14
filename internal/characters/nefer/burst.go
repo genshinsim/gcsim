@@ -41,7 +41,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	stacks := c.consumeVeilStacks()
 	bonus := 0.0
 	if stacks > 0 {
-		bonus = float64(stacks) * veil[0][c.TalentLvlBurst()]
+		bonus = float64(stacks) * burst[4][c.TalentLvlBurst()]
 	}
 
 	if bonus > 0 {
@@ -67,8 +67,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
-		Mult:       vow[0][c.TalentLvlBurst()],
-		FlatDmg:    c.Stat(attributes.EM) * vow[1][c.TalentLvlBurst()],
+		Mult:       burst[0][c.TalentLvlBurst()],
+		FlatDmg:    c.Stat(attributes.EM) * burst[1][c.TalentLvlBurst()],
 	}
 	ai2 := info.AttackInfo{
 		ActorIndex: c.Index(),
@@ -79,8 +79,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Dendro,
 		Durability: 25,
-		Mult:       vow[2][c.TalentLvlBurst()],
-		FlatDmg:    c.Stat(attributes.EM) * vow[3][c.TalentLvlBurst()],
+		Mult:       burst[2][c.TalentLvlBurst()],
+		FlatDmg:    c.Stat(attributes.EM) * burst[3][c.TalentLvlBurst()],
 	}
 
 	ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6, 10)

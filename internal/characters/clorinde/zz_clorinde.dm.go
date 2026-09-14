@@ -36,11 +36,6 @@ const (
 	healingBOL            = 0.8  // skill: HuntersVigil - Bond of Life Conversion: {8} Healing
 	arkheCD               = 10   // skill: HuntersVigil - Surging Blade Interval: {10}s
 	skillStateDuration    = 7.5  // skill: HuntersVigil - Night Vigil Duration: {11}s
-	a1Duration            = 15   // a1: DarkShatteringFlame
-	a1FlatDmg             = 1800 // a1: DarkShatteringFlame
-	a1PercentBuff         = 0.2  // a1: DarkShatteringFlame
-	a4CritBuff            = 0.1  // a4: LawfulRemuneration
-	a4Duration            = 15   // a4: LawfulRemuneration
 )
 
 var (

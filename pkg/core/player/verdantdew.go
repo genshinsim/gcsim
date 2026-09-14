@@ -13,45 +13,45 @@ const (
 )
 
 // this has to be checked after the animation handler, since the task is set by the handler
-func (h *Handler) verdantDewTick() {
-	if h.verdantDew >= 3 {
-		return
-	}
+// func (h *Handler) verdantDewTick() {
+// 	if h.verdantDew >= 3 {
+// 		return
+// 	}
 
-	if h.verdantDewExpiryFrame < *h.F {
-		return
-	}
+// 	if h.verdantDewExpiryFrame < *h.F {
+// 		return
+// 	}
 
-	if h.verdantDewExpiryFrame == *h.F {
-		h.Log.NewEvent("verdant dew generation stopped", glog.LogElementEvent, -1)
-	}
+// 	if h.verdantDewExpiryFrame == *h.F {
+// 		h.Log.NewEvent("verdant dew generation stopped", glog.LogElementEvent, -1)
+// 	}
 
-	h.partialDewCount++
-	if h.partialDewCount >= maxPartialDew {
-		h.AddVerdantDew()
-		h.partialDewCount = 0
-	}
-}
+// 	h.partialDewCount++
+// 	if h.partialDewCount >= maxPartialDew {
+// 		h.AddVerdantDew()
+// 		h.partialDewCount = 0
+// 	}
+// }
 
-func (h *Handler) OnLunarBloom() {
-	verdantDewEnd := *h.F + verdantDewEndFrame
-	h.Tasks.Add(func() { h.verdantDewExpiryFrame = verdantDewEnd }, 1)
-}
+// func (h *Handler) OnLunarBloom() {
+// 	verdantDewEnd := *h.F + verdantDewEndFrame
+// 	h.Tasks.Add(func() { h.verdantDewExpiryFrame = verdantDewEnd }, 1)
+// }
 
 // sets verdant dew to an amt between 0 and 3, inclusive.
-func (h *Handler) SetVerdantDew(amt int) {
-	h.verdantDew = max(min(amt, 3), 0)
-	h.Log.NewEvent(fmt.Sprintf("verdant dew set to %v", h.moonridgeDew), glog.LogElementEvent, -1)
-}
+// func (h *Handler) SetVerdantDew(amt int) {
+// 	h.verdantDew = max(min(amt, 3), 0)
+// 	h.Log.NewEvent(fmt.Sprintf("verdant dew set to %v", h.moonridgeDew), glog.LogElementEvent, -1)
+// }
 
-func (h *Handler) AddVerdantDew() {
-	if h.verdantDew >= MaxVerdantDew {
-		return
-	}
-	h.verdantDew++
+// func (h *Handler) AddVerdantDew() {
+// 	if h.verdantDew >= MaxVerdantDew {
+// 		return
+// 	}
+// 	h.verdantDew++
 
-	h.Log.NewEvent(fmt.Sprintf("verdant dew gained: %v", h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
-}
+// 	h.Log.NewEvent(fmt.Sprintf("verdant dew gained: %v", h.verdantDew), glog.LogElementEvent, -1).Write("max", MaxVerdantDew)
+// }
 
 // returns the number of verdant and moonridge dew the player has
 func (h *Handler) Dew() int {
@@ -77,9 +77,9 @@ func (h *Handler) ConsumeDew(amt int) int {
 }
 
 // returns the number of verdant  dew the player has
-func (h *Handler) VerdantDew() int {
-	return h.verdantDew
-}
+// func (h *Handler) VerdantDew() int {
+// 	return h.verdantDew
+// }
 
 func (h *Handler) consumeVerdantDew(amt int) int {
 	consumed := min(amt, h.verdantDew)

@@ -58,9 +58,9 @@ type StaminaProvider interface {
 }
 
 // Base contains basic information for a character
-type Base interface {
-	Data() *model.AvatarData
-}
+// type Base interface {
+// 	Data() *model.AvatarData
+// }
 
 // HP contains info and helper for dealing with character hp
 type HP interface {

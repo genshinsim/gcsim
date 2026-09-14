@@ -86,11 +86,11 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) HighPlungeAttack(map[string]int) (action.Info, error) {
-	return c.plungeAttack(high[0][c.TalentLvlAttack()])
+	return c.plungeAttack(high[c.TalentLvlAttack()])
 }
 
 func (c *char) LowPlungeAttack(map[string]int) (action.Info, error) {
-	return c.plungeAttack(low[0][c.TalentLvlAttack()])
+	return c.plungeAttack(low[c.TalentLvlAttack()])
 }
 
 func (c *char) plungeAttack(mult float64) (action.Info, error) {

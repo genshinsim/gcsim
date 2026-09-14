@@ -16,9 +16,13 @@ import (
 
 const (
 	clorindeA1BuffKey      = `clorinde-a1-buff`
-	clordineA1BuffDuration = int(a1Duration * 60)
+	clordineA1BuffDuration = int(15 * 60)
 	clorindeA4BuffKey      = `clorinde-a4-buff`
-	clordineA4BuffDuration = int(a4Duration * 60)
+	clordineA4BuffDuration = int(15 * 60)
+	a1FlatDmg = 1800
+	a1PercentBuff  = 0.20
+	a4CritBuff = 0.1
+
 )
 
 func (c *char) a1() {

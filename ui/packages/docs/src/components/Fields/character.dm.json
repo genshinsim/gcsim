@@ -187,6 +187,16 @@
       "desc": "Number of Crystal Shrapnel stacks."
     }
   ],
+  "nefer": [
+    {
+      "field": ".nefer.phantasmCharges",
+      "desc": "Current number of Phantasm charges."
+    },
+    {
+      "field": ".nefer.veilStacks",
+      "desc": "Current number of Veil of Falsehood stacks."
+    }
+  ],
   "neuvillette": [
     {
       "field": ".neuvillette.droplets",
