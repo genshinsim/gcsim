@@ -109,12 +109,20 @@ func (s *Simulation) popQueue() int {
 
 func initialize(s *Simulation) (stateFn, error) {
 	go s.eval.Start()
+
+	s.C.Flags.DamageMode = s.cfg.Settings.DamageMode
+
 	// run sim for 90s if no duration set
 	if s.cfg.Settings.Duration == 0 {
 		// fmt.Println("no duration set, running for 90s")
 		s.cfg.Settings.Duration = 90
 	}
-	s.C.Flags.DamageMode = s.cfg.Settings.DamageMode
+
+	// Damage Mode Duration is currently only used in damage mode
+	// Cap sim at 10 min (600s) if no duration set
+	if s.cfg.Settings.DamageModeDuration == 0 {
+		s.cfg.Settings.DamageModeDuration = 10 * 60
+	}
 
 	return s.advanceFrames(1, queuePhase)
 }
@@ -301,6 +309,12 @@ func (s *Simulation) stopCheck() bool {
 		if s.noMoreActions {
 			return true
 		}
+
+		// stop if frames threshold passed
+		if s.C.F == int(s.cfg.Settings.DamageModeDuration*60) {
+			return true
+		}
+
 		// stop if all targets are reporting dead
 		allDead := true
 		for _, t := range s.C.Combat.Enemies() {
