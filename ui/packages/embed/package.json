@@ -5,7 +5,8 @@
 	"scripts": {
 		"dev": "vite --host",
 		"build": "vite build",
-		"preview": "pnpm run build && vite preview --host"
+		"preview": "pnpm run build && vite preview --host",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@gcsim/components": "workspace:^",
@@ -23,8 +24,7 @@
 	"devDependencies": {
 		"@types/react": "^18.2.66",
 		"@types/react-dom": "^18.2.22",
-		"@vitejs/plugin-react-swc": "^3.5.0",
-		"typescript": "^5.2.2",
-		"vite": "^5.2.0"
+		"@vitejs/plugin-react-swc": "^4",
+		"vite": "^8"
 	}
 }

@@ -248,9 +248,9 @@ export const RenderTooltip = (props: TooltipProps) => {
 				<ul className="grid grid-cols-[repeat(2,_max-content)] gap-x-2 justify-start">
 					<Item
 						color={Colors.SEPIA4}
-						name={t<string>("result.time")}
+						name={t("result.time")}
 						value={point.x}
-						suffix={t<string>("result.seconds_short")}
+						suffix={t("result.seconds_short")}
 					/>
 					<Item
 						color={DataColorsConst.qualitative4(3)}

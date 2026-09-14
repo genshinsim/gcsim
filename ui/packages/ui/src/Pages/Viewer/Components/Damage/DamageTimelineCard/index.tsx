@@ -83,7 +83,7 @@ export default ({ data, running, names }: Props) => {
 		<Card className="flex flex-col col-span-full h-[450px]">
 			<div className="flex flex-col sm:flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
-					<CardTitle title={t<string>("result.dmg_timeline")} tooltip="x" />
+					<CardTitle title={t("result.dmg_timeline")} tooltip="x" />
 					<Options graph={graph} setGraph={setGraph} />
 				</div>
 				<div className="flex flex-grow justify-start sm:justify-center pb-5 sm:pb-0 items-center">
@@ -109,16 +109,14 @@ const Options = ({
 }) => {
 	const { t } = useTranslation();
 	const label = (
-		<span className="text-xs font-mono text-gray-400">
-			{t<string>("result.type")}
-		</span>
+		<span className="text-xs font-mono text-gray-400">{t("result.type")}</span>
 	);
 
 	return (
 		<FormGroup label={label} inline={true} className="!mb-2">
 			<HTMLSelect value={graph} onChange={(e) => setGraph(e.target.value)}>
-				<option value={"total"}>{t<string>("result.dmg_over_time")}</option>
-				<option value={"cumu"}>{t<string>("result.cumu_contrib")}</option>
+				<option value={"total"}>{t("result.dmg_over_time")}</option>
+				<option value={"cumu"}>{t("result.cumu_contrib")}</option>
 			</HTMLSelect>
 		</FormGroup>
 	);

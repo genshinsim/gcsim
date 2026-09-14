@@ -106,7 +106,7 @@ const Graph = ({
 						numTicks={numVerticalTicks}
 						labelOffset={55}
 						labelProps={
-							specialLocales.includes(i18n.resolvedLanguage)
+							specialLocales.includes(i18n.resolvedLanguage ?? "")
 								? {
 										transform: "scale(1 1) translate(40 160)",
 										style: { writingMode: "vertical-lr" },
@@ -121,7 +121,7 @@ const Graph = ({
 							})
 						}
 						tickLabelX={0}
-						label={t<string>("result.num_of_iterations")}
+						label={t("result.num_of_iterations")}
 					/>
 					<GraphAxisBottom
 						hideAxisLine

@@ -24,7 +24,7 @@ export default ({ data, running }: Props) => {
 			d?.statistics?.element_dps
 				? Object.fromEntries(
 						Object.entries(d?.statistics?.element_dps).map(([k, v]) => [
-							t<string>("elements." + k),
+							t("elements." + k),
 							v,
 						]),
 					)
@@ -37,7 +37,7 @@ export default ({ data, running }: Props) => {
 	return (
 		<Card className="flex flex-col col-span-2 h-72 min-h-full gap-0">
 			<CardTitle
-				title={t<string>("result.dist", { d: t<string>("result.element_dps") })}
+				title={t("result.dist", { d: t("result.element_dps") })}
 				tooltip="x"
 				timer={timer}
 			/>

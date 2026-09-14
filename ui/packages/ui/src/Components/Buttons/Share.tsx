@@ -85,12 +85,12 @@ export default ({
 					setOpen(true);
 				}}
 			>
-				<div className={className}>{t<string>("viewer.share")}</div>
+				<div className={className}>{t("viewer.share")}</div>
 			</Button>
 			<Dialog
 				isOpen={isOpen}
 				onClose={() => setOpen(false)}
-				title={t<string>("viewer.create_a_shareable")}
+				title={t("viewer.create_a_shareable")}
 				icon="link"
 				className="!pb-0"
 			>
@@ -120,7 +120,7 @@ const DialogBody = ({ shareLink, copy }: DialogProps) => {
 
 	return (
 		<Label>
-			{t<string>("viewer.share_link")}
+			{t("viewer.share_link")}
 			<InputGroup
 				readOnly={true}
 				fill={true}

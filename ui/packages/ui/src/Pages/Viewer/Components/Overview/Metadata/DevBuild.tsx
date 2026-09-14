@@ -14,7 +14,7 @@ export const DevBuild = ({ signKey }: Props) => {
 	if (signKey !== "dev") {
 		return (
 			<Item
-				value={t<string>("result.metadata_dev_unofficial")}
+				value={t("result.metadata_dev_unofficial")}
 				intent="danger"
 				bright
 				bold
@@ -22,11 +22,6 @@ export const DevBuild = ({ signKey }: Props) => {
 		);
 	}
 	return (
-		<Item
-			value={t<string>("result.metadata_dev_build")}
-			intent="danger"
-			bright
-			bold
-		/>
+		<Item value={t("result.metadata_dev_build")} intent="danger" bright bold />
 	);
 };

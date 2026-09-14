@@ -236,15 +236,15 @@ const TooltipContent = ({
 			)) ||
 				null}
 			<span className="justify-self-end text-gray-400">
-				{t<string>("result.lower")}
+				{t("result.lower")}
 			</span>
 			<span>{lowerVal}</span>
 			<span className="justify-self-end text-gray-400">
-				{t<string>("result.upper")}
+				{t("result.upper")}
 			</span>
 			<span>{upperVal}</span>
 			<span className="justify-self-end text-gray-400">
-				{t<string>("result.iterations_short")}
+				{t("result.iterations_short")}
 			</span>
 			<span>{countVal}</span>
 		</div>

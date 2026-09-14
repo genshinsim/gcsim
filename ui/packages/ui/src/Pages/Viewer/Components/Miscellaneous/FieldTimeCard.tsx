@@ -30,7 +30,7 @@ export default ({ data, running, names }: Props) => {
 	return (
 		<Card className="flex flex-col col-span-3 h-72 min-h-full gap-0">
 			<CardTitle
-				title={t<string>("result.dist", { d: t<string>("result.field_time") })}
+				title={t("result.dist", { d: t("result.field_time") })}
 				tooltip="x"
 				timer={timer}
 			/>
@@ -75,7 +75,7 @@ const FieldTimePie = memo(({ names, field_time }: PieProps) => {
 							title={
 								d.name +
 								" " +
-								`${t<string>("result.field_time")} (${t<string>("result.seconds_short")})`
+								`${t("result.field_time")} (${t("result.seconds_short")})`
 							}
 							data={d.value}
 							color={DataColors.characterLabel(d.index)}

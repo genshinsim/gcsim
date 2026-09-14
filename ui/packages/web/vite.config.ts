@@ -1,4 +1,4 @@
-import react from "@vitejs/plugin-react";
+import react from "@vitejs/plugin-react-swc";
 import * as git from "git-rev-sync";
 import { visualizer } from "rollup-plugin-visualizer";
 import { type ConfigEnv, defineConfig } from "vite";

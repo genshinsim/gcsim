@@ -46,13 +46,13 @@ export default function Nav() {
 						value={i18n.resolvedLanguage}
 						onChange={(e) => i18n.changeLanguage(e.target.value)}
 					>
-						<option value="en">{t<string>("nav.english")}</option>
-						<option value="zh">{t<string>("nav.chinese")}</option>
-						<option value="ja">{t<string>("nav.japanese")}</option>
-						<option value="ko">{t<string>("nav.korean")}</option>
-						<option value="es">{t<string>("nav.spanish")}</option>
-						<option value="ru">{t<string>("nav.russian")}</option>
-						<option value="de">{t<string>("nav.german")}</option>
+						<option value="en">{t("nav.english")}</option>
+						<option value="zh">{t("nav.chinese")}</option>
+						<option value="ja">{t("nav.japanese")}</option>
+						<option value="ko">{t("nav.korean")}</option>
+						<option value="es">{t("nav.spanish")}</option>
+						<option value="ru">{t("nav.russian")}</option>
+						<option value="de">{t("nav.german")}</option>
 					</HTMLSelect>
 				</Navbar.Group>
 			</div>

@@ -232,7 +232,7 @@ export const DamageOverTimeGraph = ({
 						numTicks={numYTicks}
 						labelOffset={65}
 						labelProps={
-							specialLocales.includes(i18n.resolvedLanguage)
+							specialLocales.includes(i18n.resolvedLanguage ?? "")
 								? {
 										transform: "scale(1 1) translate(56 204)",
 										style: { writingMode: "vertical-lr" },
@@ -240,17 +240,17 @@ export const DamageOverTimeGraph = ({
 									}
 								: undefined
 						}
-						label={t<string>("result.dmg_over_time")}
+						label={t("result.dmg_over_time")}
 					/>
 					<GraphAxisBottom
 						hideTicks
 						top={yMax}
 						scale={xScale}
 						axisLineClassName="stroke-2"
-						tickFormat={(s) => s + t<string>("result.seconds_short")}
+						tickFormat={(s) => s + t("result.seconds_short")}
 						numTicks={numXTicks}
 						labelOffset={10}
-						label={`${t<string>("result.dur_long")} (${t<string>("result.seconds")})`}
+						label={`${t("result.dur_long")} (${t("result.seconds")})`}
 					/>
 					<HoverLine
 						data={data}

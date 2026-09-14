@@ -11,7 +11,7 @@ export default () => {
 	return (
 		<Button
 			icon="cog"
-			text={t<string>("simple.settings")}
+			text={t("simple.settings")}
 			onClick={() => dispatch(appActions.setSettingsOpen(true))}
 		/>
 	);

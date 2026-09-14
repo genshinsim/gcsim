@@ -4,7 +4,8 @@
 	"scripts": {
 		"dev": "vite --host",
 		"build": "vite build",
-		"preview": "pnpm run build && vite preview --host"
+		"preview": "pnpm run build && vite preview --host",
+		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
 		"@blueprintjs/core": "^4.11.4",
@@ -33,9 +34,9 @@
 	"devDependencies": {
 		"@types/react": "^18.0.21",
 		"@types/react-dom": "^18.0.6",
-		"@vitejs/plugin-react": "^3.1.0",
+		"@vitejs/plugin-react-swc": "^4",
 		"rollup-plugin-visualizer": "^5.8.3",
-		"vite": "^4.1.1",
+		"vite": "^8",
 		"vite-tsconfig-paths": "^4.0.5",
 		"wrangler": "4.131.1"
 	}

@@ -66,7 +66,7 @@ export default ({
 	const names = useMemo(
 		() =>
 			data?.character_details?.map((c) =>
-				t<string>("character_names." + c.name, { ns: "game" }),
+				t("character_names." + c.name, { ns: "game" }),
 			),
 		[data?.character_details, t],
 	);
@@ -136,7 +136,7 @@ const ErrorAlert = ({
 	let cancelButtonText: string | undefined;
 	let onCancel: (() => void) | undefined;
 	if (retry != null) {
-		cancelButtonText = t<string>("viewer.retry");
+		cancelButtonText = t("viewer.retry");
 		onCancel = () => retry();
 	}
 
@@ -147,15 +147,12 @@ const ErrorAlert = ({
 			onCancel={onCancel}
 			canEscapeKeyCancel={false}
 			canOutsideClickCancel={false}
-			confirmButtonText={t<string>("viewer.return_to_sim")}
+			confirmButtonText={t("viewer.return_to_sim")}
 			cancelButtonText={cancelButtonText}
 			intent={Intent.DANGER}
 		>
 			<div className="flex flex-col gap-2 mb-1">
-				<Callout
-					intent={Intent.DANGER}
-					title={t<string>("viewer.error_encountered")}
-				>
+				<Callout intent={Intent.DANGER} title={t("viewer.error_encountered")}>
 					<pre className="whitespace-pre-wrap pl-5">{msg}</pre>
 				</Callout>
 				{recoveryConfig != null ? (

@@ -22,7 +22,7 @@ export const SourceReactionsCard = ({ data, running, names }: Props) => {
 								? {
 										sources: Object.fromEntries(
 											Object.entries(s.sources).map(([k, v]) => [
-												t<string>("reactions." + k),
+												t("reactions." + k),
 												v,
 											]),
 										),
@@ -42,8 +42,8 @@ export const SourceReactionsCard = ({ data, running, names }: Props) => {
 			<div className="flex flex-col sm:flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
 					<CardTitle
-						title={t<string>("result.per_source", {
-							s: t<string>("result.reactions"),
+						title={t("result.per_source", {
+							s: t("result.reactions"),
 						})}
 						tooltip="x"
 						timer={timer}

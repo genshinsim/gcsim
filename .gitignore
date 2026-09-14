@@ -43,6 +43,8 @@ computebin
 node_modules
 .task/
 .venv
+# TS incremental typecheck cache (emitted by `pnpm -r typecheck`)
+*.tsbuildinfo
 # release binaries to avoid tinting repo
 gcsim_windows_arm64.exe
 gcsim_windows_amd64.exe

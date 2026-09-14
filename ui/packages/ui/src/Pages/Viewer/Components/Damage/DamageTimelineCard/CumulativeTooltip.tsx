@@ -178,10 +178,8 @@ export const RenderTooltip = (props: TooltipProps) => {
 			onMouseLeave={() => props.handles.mouseLeave()}
 		>
 			<div className="flex flex-row px-2 py-1 font-mono text-xs gap-2 whitespace-nowrap">
-				<span style={{ color: Colors.SEPIA4 }}>
-					{t<string>("result.time")}:{" "}
-				</span>
-				<span>{point.x + t<string>("result.seconds_short")}</span>
+				<span style={{ color: Colors.SEPIA4 }}>{t("result.time")}: </span>
+				<span>{point.x + t("result.seconds_short")}</span>
 			</div>
 			{point.y
 				.slice(0)
@@ -191,7 +189,7 @@ export const RenderTooltip = (props: TooltipProps) => {
 					return (
 						<FloatStatTooltipContent
 							key={"tooltip-" + i}
-							title={props.names?.[i] + " " + t<string>("result.contribution")}
+							title={props.names?.[i] + " " + t("result.contribution")}
 							data={val}
 							color={DataColors.characterLabel(i)}
 							format={(s) =>

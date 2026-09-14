@@ -21,7 +21,7 @@ const App = () => {
 			onChange={() => setServerMode(!serverMode)}
 			labelElement={
 				<span>
-					{t<string>(
+					{t(
 						serverMode
 							? "simple.server_mode_disable"
 							: "simple.server_mode_enable",

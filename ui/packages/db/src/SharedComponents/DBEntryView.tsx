@@ -1,13 +1,13 @@
 import type { db, model } from "@gcsim/types";
 import type { Long } from "protobufjs";
-import { type ReactI18NextChild, useTranslation } from "react-i18next";
+import { useTranslation } from "react-i18next";
 import { DBEntryPortrait } from "./DBEntryViewComponents/DBEntryPortrait";
 import DBEntryTags from "./DBEntryViewComponents/DBEntryTags";
 
 //displays one database entry
 export default function DBEntryView({ dbEntry }: { dbEntry: db.Entry }) {
 	const { t: translate } = useTranslation();
-	const t = (key: string) => translate(key) as ReactI18NextChild; // idk why this is needed
+	const t = (key: string) => translate(key);
 
 	const team = dbEntry.summary?.team ?? [];
 	if (team.length < 4) {
@@ -77,7 +77,7 @@ function DBEntryDetails({
 }) {
 	const { t: translate } = useTranslation();
 
-	const t = (key: string) => translate(key) as ReactI18NextChild; // idk why this is needed
+	const t = (key: string) => translate(key);
 	let date = t("db.unknown");
 	if (create_date) {
 		date = new Date((create_date as number) * 1000).toLocaleDateString();
@@ -87,7 +87,7 @@ function DBEntryDetails({
 			<thead>
 				<tr className="text-xs">
 					<th className="priority-5">
-						<div>{t("db.simMode") as ReactI18NextChild}</div>
+						<div>{t("db.simMode")}</div>
 					</th>
 					<th className="priority-5">{t("db.targetCount")}</th>
 					<th className="priority-1">{t("db.dpsPerTarget")}</th>

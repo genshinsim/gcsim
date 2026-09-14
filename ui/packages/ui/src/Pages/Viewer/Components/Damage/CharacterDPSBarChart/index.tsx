@@ -38,7 +38,7 @@ export default ({ data, running, names }: Props) => {
 								? {
 										elements: Object.fromEntries(
 											Object.entries(s.elements).map(([k, v]) => [
-												t<string>("elements." + k),
+												t("elements." + k),
 												v,
 											]),
 										),
@@ -60,7 +60,7 @@ export default ({ data, running, names }: Props) => {
 			<div className="flex flex-col sm:flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
 					<CardTitle
-						title={t<string>("result.character_dps")}
+						title={t("result.character_dps")}
 						tooltip="x"
 						timer={timer}
 					/>
@@ -95,16 +95,16 @@ const Options = ({
 	const { t } = useTranslation();
 	const label = (
 		<span className="text-xs font-mono text-gray-400">
-			{t<string>("result.grouping")}
+			{t("result.grouping")}
 		</span>
 	);
 
 	return (
 		<FormGroup label={label} inline={true} className="!mb-2">
 			<HTMLSelect value={graph} onChange={(e) => setGraph(e.target.value)}>
-				<option value={"character"}>{t<string>("db.character")}</option>
-				<option value={"element"}>{t<string>("result.element")}</option>
-				<option value={"target"}>{t<string>("viewer.target")}</option>
+				<option value={"character"}>{t("db.character")}</option>
+				<option value={"element"}>{t("result.element")}</option>
+				<option value={"target"}>{t("viewer.target")}</option>
 			</HTMLSelect>
 		</FormGroup>
 	);

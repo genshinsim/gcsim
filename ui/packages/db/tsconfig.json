@@ -2,6 +2,12 @@
 	"extends": "../../tsconfig.json",
 	"include": ["src", "src/**/*.json", "protos_gen"],
 	"compilerOptions": {
-		"baseUrl": "./src"
+		// TS7 removed `baseUrl`; this wildcard reproduces the old
+		// `baseUrl: "./src"` behavior so bare imports (e.g. "Pages/Home",
+		// "images/eula.png") still resolve from src, falling back to
+		// node_modules when no src file matches.
+		"paths": {
+			"*": ["./src/*"]
+		}
 	}
 }

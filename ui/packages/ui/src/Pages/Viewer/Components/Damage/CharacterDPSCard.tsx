@@ -30,8 +30,8 @@ export default ({ data, running, names }: Props) => {
 	return (
 		<Card className="flex flex-col col-span-2 h-72 min-h-full gap-0">
 			<CardTitle
-				title={t<string>("result.dist", {
-					d: t<string>("result.character_dps"),
+				title={t("result.dist", {
+					d: t("result.character_dps"),
 				})}
 				tooltip="x"
 				timer={timer}

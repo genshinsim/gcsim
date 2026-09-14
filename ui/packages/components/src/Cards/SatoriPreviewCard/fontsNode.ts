@@ -1,3 +1,4 @@
+/// <reference path="./node-fs.d.ts" />
 // Node-only font loading for the Satori preview card. Kept in a separate module
 // from ./fonts (which the card tree imports) so that ./fonts stays free of any
 // `node:*` reference and bundles cleanly for the browser and Cloudflare Workers.

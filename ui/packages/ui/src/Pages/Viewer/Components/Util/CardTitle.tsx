@@ -68,7 +68,7 @@ const RefreshStatus = ({ timer }: { timer: number }) => {
 				size={12}
 				className="pt-[3px]"
 			/>
-			<span>{time + t<string>("result.seconds_short")}</span>
+			<span>{time + t("result.seconds_short")}</span>
 		</div>
 	);
 };

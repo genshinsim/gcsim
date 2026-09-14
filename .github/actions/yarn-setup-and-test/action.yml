@@ -19,6 +19,10 @@ runs:
       working-directory: ./ui
       shell: bash
       run: pnpm install --frozen-lockfile
+    - name: Typecheck
+      working-directory: ./ui
+      shell: bash
+      run: pnpm -r typecheck
     # - name: Lint
     #   working-directory: ./ui
     #   shell: bash

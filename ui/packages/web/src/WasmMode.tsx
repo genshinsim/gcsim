@@ -48,7 +48,7 @@ const WasmMode = ({ children }: { children: ReactNode }) => {
 			gitCommit={import.meta.env.VITE_GIT_COMMIT_HASH}
 			mode={import.meta.env.MODE}
 		>
-			<FormGroup className="!m-0" label={t<string>("simple.workers")}>
+			<FormGroup className="!m-0" label={t("simple.workers")}>
 				{children}
 				<NumericInput
 					value={workers}

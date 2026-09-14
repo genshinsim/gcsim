@@ -29,7 +29,7 @@ export default ({ data, running }: Props) => {
 	return (
 		<Card className="flex flex-col col-span-2 h-72 min-h-full gap-0">
 			<CardTitle
-				title={t<string>("result.dist", { d: t<string>("result.target_dps") })}
+				title={t("result.dist", { d: t("result.target_dps") })}
 				tooltip="x"
 				timer={timer}
 			/>
@@ -70,7 +70,7 @@ const DPSPie = memo(({ dps }: PieProps) => {
 					}}
 					tooltipContent={(d) => (
 						<FloatStatTooltipContent
-							title={t<string>("viewer.target") + " " + d.label + " DPS"}
+							title={t("viewer.target") + " " + d.label + " DPS"}
 							data={d.value}
 							color={DataColors.targetLabel(d.label)}
 							percent={d.pct}

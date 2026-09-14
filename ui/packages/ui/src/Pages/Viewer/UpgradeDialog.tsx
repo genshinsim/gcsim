@@ -78,7 +78,7 @@ export default ({
 	return (
 		<Dialog
 			isOpen={isOpen}
-			title={t<string>("viewer.results_outdated")}
+			title={t("viewer.results_outdated")}
 			icon="outdated"
 			usePortal={false}
 			canEscapeKeyClose={minor}
@@ -209,10 +209,10 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
 	if (mismatch === MismatchType.CommitMismatch) {
 		return (
 			<Callout
-				title={t<string>("viewer.commit_mismatch_title_hash")}
+				title={t("viewer.commit_mismatch_title_hash")}
 				intent={Intent.WARNING}
 			>
-				<div>{t<string>("viewer.commit_mismatch_body_hash")}</div>
+				<div>{t("viewer.commit_mismatch_body_hash")}</div>
 				<VersionInfo />
 			</Callout>
 		);
@@ -221,20 +221,20 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
 	if (mismatch === MismatchType.MinorVersionMismatch) {
 		return (
 			<Callout
-				title={t<string>("viewer.commit_mismatch_title_minor")}
+				title={t("viewer.commit_mismatch_title_minor")}
 				intent={Intent.WARNING}
 			>
-				<div>{t<string>("viewer.commit_mismatch_body_minor")}</div>
+				<div>{t("viewer.commit_mismatch_body_minor")}</div>
 				<VersionInfo />
 			</Callout>
 		);
 	}
 	return (
 		<Callout
-			title={t<string>("viewer.commit_mismatch_title_major")}
+			title={t("viewer.commit_mismatch_title_major")}
 			intent={Intent.DANGER}
 		>
-			<div>{t<string>("viewer.commit_mismatch_body_major")}</div>
+			<div>{t("viewer.commit_mismatch_body_major")}</div>
 			<VersionInfo />
 		</Callout>
 	);
@@ -278,7 +278,7 @@ const UpgradeButton = ({
 
 	return (
 		<Button
-			text={t<string>("viewer.upgrade")}
+			text={t("viewer.upgrade")}
 			intent={Intent.SUCCESS}
 			loading={!isReady}
 			onClick={run}
@@ -301,13 +301,11 @@ const CancelButton = ({
 	if (mismatch === MismatchType.MajorVersionMismatch) {
 		return (
 			<Button
-				text={t<string>("db.cancel")}
+				text={t("db.cancel")}
 				intent={Intent.DANGER}
 				onClick={() => history.push(redirect)}
 			/>
 		);
 	}
-	return (
-		<Button text={t<string>("viewer.ignore")} onClick={() => setOpen(false)} />
-	);
+	return <Button text={t("viewer.ignore")} onClick={() => setOpen(false)} />;
 };

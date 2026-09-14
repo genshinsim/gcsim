@@ -37,7 +37,7 @@ export default () => {
 			href="https://simpact.app/"
 			target="_blank"
 		>
-			<span>{t<string>("nav.teams_db")}</span>
+			<span>{t("nav.teams_db")}</span>
 		</AnchorButton>,
 		<AnchorButton
 			key="doc"
@@ -46,7 +46,7 @@ export default () => {
 			href="https://docs.gcsim.app"
 			target="_blank"
 		>
-			<span>{t<string>("nav.documentation")}</span>
+			<span>{t("nav.documentation")}</span>
 		</AnchorButton>,
 		<AnchorButton
 			key="update"
@@ -55,7 +55,7 @@ export default () => {
 			href="https://github.com/genshinsim/gcsim/releases"
 			target="_blank"
 		>
-			<span>{t<string>("nav.releases")}</span>
+			<span>{t("nav.releases")}</span>
 		</AnchorButton>,
 		<AnchorButton
 			key="discord"
@@ -104,13 +104,13 @@ export default () => {
 								value={i18n.resolvedLanguage}
 								onChange={(e) => i18n.changeLanguage(e.target.value)}
 							>
-								<option value="en">{t<string>("nav.english")}</option>
-								<option value="zh">{t<string>("nav.chinese")}</option>
-								<option value="ja">{t<string>("nav.japanese")}</option>
-								<option value="ko">{t<string>("nav.korean")}</option>
-								<option value="es">{t<string>("nav.spanish")}</option>
-								<option value="ru">{t<string>("nav.russian")}</option>
-								<option value="de">{t<string>("nav.german")}</option>
+								<option value="en">{t("nav.english")}</option>
+								<option value="zh">{t("nav.chinese")}</option>
+								<option value="ja">{t("nav.japanese")}</option>
+								<option value="ko">{t("nav.korean")}</option>
+								<option value="es">{t("nav.spanish")}</option>
+								<option value="ru">{t("nav.russian")}</option>
+								<option value="de">{t("nav.german")}</option>
 							</HTMLSelect>
 						</Navbar.Group>
 						<Navbar.Group
@@ -136,13 +136,13 @@ export default () => {
 						value={i18n.resolvedLanguage}
 						onChange={(e) => i18n.changeLanguage(e.target.value)}
 					>
-						<option value="en">{t<string>("nav.english")}</option>
-						<option value="zh">{t<string>("nav.chinese")}</option>
-						<option value="ja">{t<string>("nav.japanese")}</option>
-						<option value="ko">{t<string>("nav.korean")}</option>
-						<option value="es">{t<string>("nav.spanish")}</option>
-						<option value="ru">{t<string>("nav.russian")}</option>
-						<option value="de">{t<string>("nav.german")}</option>
+						<option value="en">{t("nav.english")}</option>
+						<option value="zh">{t("nav.chinese")}</option>
+						<option value="ja">{t("nav.japanese")}</option>
+						<option value="ko">{t("nav.korean")}</option>
+						<option value="es">{t("nav.spanish")}</option>
+						<option value="ru">{t("nav.russian")}</option>
+						<option value="de">{t("nav.german")}</option>
 					</HTMLSelect>
 				</Navbar>
 			</Collapse>
