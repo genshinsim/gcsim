@@ -52,6 +52,8 @@ Write commit messages tight: a `<type>(<scope>): <subject>` subject line, then p
 
 Once done, use `/gcsim-review-changes` to review the work.
 
+If the diff adds any comments, spawn a fresh general-purpose subagent on the diff and hand it [`comment-sicko.md`](comment-sicko.md) as its entire instruction — do not summarize it. Delete every comment it calls meat; keep one only where it proves an exception. Fix trivial `MUST KILL` flags in scope and report the rest open. Do not restore a deletion without a proven reason.
+
 ## 4. Open the PR
 
 Before creating the PR, always check again if `upstream/main` has changed. If it has, rebase your branch onto it (resolve any conflicts) and re-run the tests:
