@@ -104,6 +104,7 @@ var SetNameToKey = map[string]keys.Set{
 	"sojourner":                          keys.ResolutionOfSojourner,
 	"retracingbolide":                    keys.RetracingBolide,
 	"bolide":                             keys.RetracingBolide,
+	"scarletproof":                       keys.ScarletProof,
 	"scholar":                            keys.Scholar,
 	"scrolloftheheroofcindercity":        keys.ScrollOfTheHeroOfCinderCity,
 	"scroll":                             keys.ScrollOfTheHeroOfCinderCity,
