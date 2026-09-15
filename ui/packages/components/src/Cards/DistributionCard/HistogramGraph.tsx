@@ -1,5 +1,5 @@
 import { specialLocales } from "@gcsim/localization";
-import type { SummaryStat } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import { Group } from "@visx/group";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { BoxPlot } from "@visx/stats";
@@ -22,7 +22,7 @@ type Props = {
 	height: number;
 	margin?: { left: number; right: number; top: number; bottom: number };
 
-	data?: SummaryStat;
+	data?: model.OverviewStats;
 	barColor?: string;
 	hoverColor?: string;
 	accentColor?: string;
@@ -200,7 +200,7 @@ const Graph = ({
 };
 
 export function useScales(
-	data: SummaryStat | undefined,
+	data: model.OverviewStats | undefined,
 	xMax: number,
 	yMax: number,
 ) {

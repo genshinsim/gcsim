@@ -1,7 +1,11 @@
-import { Popover2 } from "@blueprintjs/popover2";
-import type { SummaryStat } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import type { ScaleBand, ScaleLinear } from "d3-scale";
 import { useTranslation } from "react-i18next";
+import {
+	Popover,
+	PopoverAnchor,
+	PopoverContent,
+} from "../../common/ui/popover";
 
 export interface TooltipData {
 	x: number;
@@ -9,7 +13,7 @@ export interface TooltipData {
 
 export interface TooltipHandles {
 	mouseLeave: () => void;
-	mouseHover: (e: React.MouseEvent, data?: SummaryStat) => void;
+	mouseHover: (e: React.MouseEvent, data?: model.OverviewStats) => void;
 	clearTimeout: () => void;
 }
 
@@ -38,7 +42,7 @@ export function useTooltipHandles(
 		}
 	};
 
-	const mouseHover = (e: React.MouseEvent, data?: SummaryStat) => {
+	const mouseHover = (e: React.MouseEvent, data?: model.OverviewStats) => {
 		if (
 			delta == null ||
 			data?.min == null ||
@@ -66,7 +70,7 @@ export function useTooltipHandles(
 }
 
 type Props = {
-	data?: SummaryStat;
+	data?: model.OverviewStats;
 	tooltipOpen: boolean;
 	tooltipData?: TooltipData;
 	tooltipTop?: number;
@@ -130,18 +134,20 @@ export const RenderTooltip = (props: Props) => {
 	);
 
 	return (
-		<div style={{ top: tooltipTop, left: tooltipLeft, position: "absolute" }}>
-			<Popover2
-				isOpen={true}
-				enforceFocus={false}
-				autoFocus={false}
-				usePortal={false}
-				placement="top"
-				content={content}
+		<Popover open={true}>
+			<PopoverAnchor asChild>
+				<div
+					style={{ top: tooltipTop, left: tooltipLeft, position: "absolute" }}
+				/>
+			</PopoverAnchor>
+			<PopoverContent
+				side="top"
+				className="w-auto p-0"
+				onOpenAutoFocus={(e) => e.preventDefault()}
 			>
-				<div></div>
-			</Popover2>
-		</div>
+				{content}
+			</PopoverContent>
+		</Popover>
 	);
 };
 
@@ -150,7 +156,7 @@ type TooltipContentProps = {
 	lower: number;
 	upper: number;
 	count: number;
-	stat?: SummaryStat;
+	stat?: model.OverviewStats;
 };
 
 const TooltipContent = ({
