@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
-	"path/filepath"
 	"reflect"
 	"regexp"
 	"runtime"
@@ -17,7 +16,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/adrg/xdg"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/shizukayuki/excel-hk4e"
 	"github.com/urfave/cli/v3"
@@ -60,9 +58,6 @@ var app = &cli.Command{
 			HideDefault: true,
 			Value: []string{
 				"github:iam-akuzihs/excel/live",
-				filepath.Join(xdg.Home, "git", "GenshinData"),
-				"github:DimbreathBot/AnimeGameData/main",
-				"gitlab:Dimbreath/AnimeGameData2/main",
 			},
 			Sources: cli.NewValueSourceChain(
 				cli.EnvVar("DM_REPO"),

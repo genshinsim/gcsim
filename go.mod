@@ -14,7 +14,6 @@ tool (
 
 require (
 	github.com/aclements/go-moremath v0.0.0-20210112150236-f10218a38794
-	github.com/adrg/xdg v0.5.3
 	github.com/caarlos0/env/v10 v10.0.0
 	github.com/chromedp/chromedp v0.9.2
 	github.com/containrrr/shoutrrr v0.8.0
