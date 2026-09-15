@@ -2,10 +2,10 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react-swc";
 import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
-	plugins: [tailwindcss(), react(), tsconfigPaths(), visualizer()],
+	plugins: [tailwindcss(), react(), visualizer()],
+	resolve: { tsconfigPaths: true },
 	build: {
 		rollupOptions: {
 			output: {

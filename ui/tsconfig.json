@@ -7,7 +7,6 @@
 		"jsx": "react-jsx",
 		"lib": ["DOM", "DOM.Iterable", "ES2022", "ESNext"],
 		"paths": {
-			"react": ["./node_modules/@types/react"],
 			"@ui/*": ["./packages/ui/src/*"]
 		},
 		"resolveJsonModule": true,
