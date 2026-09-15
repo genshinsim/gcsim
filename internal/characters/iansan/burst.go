@@ -160,6 +160,10 @@ func (c *char) burstMovementRestore(args ...any) {
 		return
 	}
 
+	if c.Core.Player.Active() == c.Index() {
+		return
+	}
+
 	movement := args[0].(float64)
 	c.burstRestoreNS = min(c.burstRestoreNS+movement, restoreNSCap)
 }
