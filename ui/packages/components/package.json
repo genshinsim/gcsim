@@ -26,6 +26,7 @@
 		"@visx/shape": "^3.0.0",
 		"@visx/stats": "^3.0.0",
 		"@visx/text": "^3.0.0",
+		"@visx/threshold": "^3.0.0",
 		"@visx/tooltip": "^3.0.0",
 		"ace-builds": "^1.32.8",
 		"axios": "^1.1.3",

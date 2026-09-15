@@ -128,6 +128,9 @@ importers:
       '@visx/text':
         specifier: ^3.0.0
         version: 3.12.0(react@18.3.1)
+      '@visx/threshold':
+        specifier: ^3.0.0
+        version: 3.12.0(react@18.3.1)
       '@visx/tooltip':
         specifier: ^3.0.0
         version: 3.12.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
