@@ -1,4 +1,3 @@
-import type { model } from "@gcsim/types";
 import { LegendOrdinal } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 import { useMemo } from "react";
@@ -8,17 +7,16 @@ import {
 	NoData,
 	useDataColors,
 } from "../../../../common/gcsim";
-
-type ElementDPS = { [key: string]: model.DescriptiveStats };
+import { type StatMap, type StatMapDatum, useStatMapData } from "./StatMap";
 
 type Props = {
 	width: number;
 	height: number;
 	names?: string[];
-	dps?: ElementDPS[];
+	dps?: StatMap[];
 };
 
-export const ByElementLegend = ({ dps }: { dps?: ElementDPS[] }) => {
+export const ByElementLegend = ({ dps }: { dps?: StatMap[] }) => {
 	const { DataColors } = useDataColors();
 	const keys = useMemo(() => {
 		if (dps == null) {
@@ -51,14 +49,14 @@ export const ByElementLegend = ({ dps }: { dps?: ElementDPS[] }) => {
 
 export const ByElementChart = ({ width, height, names, dps }: Props) => {
 	const { DataColors } = useDataColors();
-	const { data, keys, xMax } = useData(dps, names);
+	const { data, keys, xMax } = useStatMapData(dps, names);
 
 	if (dps == null || names == null || keys.length === 0) {
 		return <NoData />;
 	}
 
 	return (
-		<HorizontalBarStack<ElementData, string>
+		<HorizontalBarStack<StatMapDatum, string>
 			width={width}
 			height={height}
 			xDomain={[0, xMax]}
@@ -81,51 +79,3 @@ export const ByElementChart = ({ width, height, names, dps }: Props) => {
 		/>
 	);
 };
-
-type ElementData = {
-	name: string;
-	data: ElementDPS;
-	total: number;
-};
-
-type ChartData = {
-	data: ElementData[];
-	keys: string[];
-	xMax: number;
-};
-
-function useData(dps?: ElementDPS[], names?: string[]): ChartData {
-	return useMemo(() => {
-		if (dps == null || names == null) {
-			return { data: [], keys: [], xMax: 0 };
-		}
-
-		const elements = new Set<string>();
-		const data: ElementData[] = [];
-
-		let maxDPS = 0;
-		for (let i = 0; i < dps.length; i++) {
-			const char = dps[i];
-			if (char == null) {
-				continue;
-			}
-
-			let maxTotal = 0;
-			let total = 0;
-			for (const key in char) {
-				elements.add(key);
-				const mean = char[key].mean ?? 0;
-				maxTotal += Math.max(char[key].max ?? 0, mean + (char[key].sd ?? 0));
-				total += mean;
-			}
-			maxDPS = Math.max(maxDPS, maxTotal);
-			data.push({ name: names[i], data: char, total: total });
-		}
-
-		return {
-			data: data,
-			keys: Array.from(elements),
-			xMax: maxDPS,
-		};
-	}, [dps, names]);
-}

@@ -9,6 +9,7 @@ import {
 	NoData,
 	useDataColors,
 } from "../../../../common/gcsim";
+import { type StatMapDatum, useStatMapData } from "./StatMap";
 
 type Props = {
 	width: number;
@@ -51,14 +52,17 @@ export const ByTargetLegend = ({ dps }: { dps?: model.TargetStats[] }) => {
 export const ByTargetChart = ({ width, height, names, dps }: Props) => {
 	const { DataColors } = useDataColors();
 	const { t } = useTranslation();
-	const { data, keys, xMax } = useData(dps, names);
+	const { data, keys, xMax } = useStatMapData(
+		dps?.map((d) => d.targets),
+		names,
+	);
 
 	if (dps == null || names == null || keys.length === 0) {
 		return <NoData />;
 	}
 
 	return (
-		<HorizontalBarStack<TargetData, string>
+		<HorizontalBarStack<StatMapDatum, string>
 			width={width}
 			height={height}
 			xDomain={[0, xMax]}
@@ -81,51 +85,3 @@ export const ByTargetChart = ({ width, height, names, dps }: Props) => {
 		/>
 	);
 };
-
-type TargetData = {
-	name: string;
-	data: { [key: string]: model.DescriptiveStats };
-	total: number;
-};
-
-type ChartData = {
-	data: TargetData[];
-	keys: string[];
-	xMax: number;
-};
-
-function useData(dps?: model.TargetStats[], names?: string[]): ChartData {
-	return useMemo(() => {
-		if (dps == null || names == null) {
-			return { data: [], keys: [], xMax: 0 };
-		}
-
-		const targets = new Set<string>();
-		const data: TargetData[] = [];
-
-		let maxDPS = 0;
-		for (let i = 0; i < dps.length; i++) {
-			const char = dps[i].targets;
-			if (char == null) {
-				continue;
-			}
-
-			let maxTotal = 0;
-			let total = 0;
-			for (const key in char) {
-				targets.add(key);
-				const mean = char[key].mean ?? 0;
-				maxTotal += Math.max(char[key].max ?? 0, mean + (char[key].sd ?? 0));
-				total += mean;
-			}
-			maxDPS = Math.max(maxDPS, maxTotal);
-			data.push({ name: names[i], data: char, total: total });
-		}
-
-		return {
-			data: data,
-			keys: Array.from(targets),
-			xMax: maxDPS,
-		};
-	}, [dps, names]);
-}

@@ -11,11 +11,10 @@ import { Card } from "../../../../common/ui/card";
 import { ByCharacterChart, ByCharacterLegend } from "./ByCharacter";
 import { ByElementChart, ByElementLegend } from "./ByElement";
 import { ByTargetChart, ByTargetLegend } from "./ByTarget";
-
-type ElementDPS = { [key: string]: model.DescriptiveStats };
+import type { StatMap } from "./StatMap";
 
 type GraphData = {
-	byElement?: ElementDPS[];
+	byElement?: StatMap[];
 	byCharacter?: model.DescriptiveStats[];
 	byTarget?: model.TargetStats[];
 };

@@ -1,5 +1,6 @@
 import { CharacterDPSBarChart } from "@gcsim/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { expect, userEvent, within } from "storybook/test";
 import { sampleResult } from "../samples";
 
 const meta: Meta<typeof CharacterDPSBarChart> = {
@@ -18,11 +19,43 @@ const meta: Meta<typeof CharacterDPSBarChart> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {
+const names = sampleResult.character_details?.map((c) => c.name ?? "");
+
+const selectGrouping = async (canvasElement: HTMLElement, value: string) => {
+	const canvas = within(canvasElement);
+	const select = await canvas.findByRole("combobox");
+	await userEvent.selectOptions(select, value);
+	await expect(select).toHaveValue(value);
+};
+
+// Default grouping renders the by-element breakdown.
+export const ByElement: Story = {
 	args: {
 		data: sampleResult,
 		running: false,
-		names: sampleResult.character_details?.map((c) => c.name ?? ""),
+		names: names,
+	},
+};
+
+export const ByCharacter: Story = {
+	args: {
+		data: sampleResult,
+		running: false,
+		names: names,
+	},
+	play: async ({ canvasElement }) => {
+		await selectGrouping(canvasElement, "character");
+	},
+};
+
+export const ByTarget: Story = {
+	args: {
+		data: sampleResult,
+		running: false,
+		names: names,
+	},
+	play: async ({ canvasElement }) => {
+		await selectGrouping(canvasElement, "target");
 	},
 };
 
