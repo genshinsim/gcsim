@@ -1,0 +1,40 @@
+package_name: linnea
+genshin_id: 10000130
+key: linnea
+action_param_keys:
+    attack:
+        - param: "travel"
+    aim:
+        - param: "hold"
+        - param: "travel"
+        - param: "weakspot"
+    skill:
+      - param: "recast"
+skill_data_mapping:
+  attack:
+    attack_1:
+      - 0
+    attack_2:
+      - 1
+    attack_3:
+      - 2
+    aim:
+      - 3
+    fullaim:
+      - 4
+  skill:
+    skillPound:
+      - 0
+    skillHeavy:
+      - 1
+    skillMillion:
+      - 2
+  burst:
+    burstInitialDef:
+      - 1
+    burstInitialFlat:
+      - 0
+    burstTickDef:
+      - 3
+    burstTickFlat:
+      - 2
