@@ -6,6 +6,7 @@
 	"scripts": {
 		"test": "playwright test",
 		"test:headed": "playwright test --headed",
+		"test:docs": "playwright test --config playwright.docs.config.ts",
 		"report": "playwright show-report"
 	},
 	"devDependencies": {
