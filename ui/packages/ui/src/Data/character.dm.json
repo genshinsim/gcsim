@@ -17,6 +17,23 @@
         "burst_energy_cost": 60
       }
     },
+    "aethercryo": {
+      "id": 10000005,
+      "sub_id": 505,
+      "key": "aethercryo",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Ice",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerBoy",
+      "skill_details": {
+        "skill": 10127,
+        "burst": 10128,
+        "attack": 100544,
+        "burst_energy_cost": 60
+      }
+    },
     "aetherdendro": {
       "id": 10000005,
       "sub_id": 508,
@@ -1119,6 +1136,23 @@
         "skill": 10067,
         "burst": 10068,
         "attack": 100553,
+        "burst_energy_cost": 60
+      }
+    },
+    "luminecryo": {
+      "id": 10000007,
+      "sub_id": 705,
+      "key": "luminecryo",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_MAINACTOR",
+      "element": "Ice",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_PlayerGirl",
+      "skill_details": {
+        "skill": 10127,
+        "burst": 10128,
+        "attack": 100554,
         "burst_energy_cost": 60
       }
     },

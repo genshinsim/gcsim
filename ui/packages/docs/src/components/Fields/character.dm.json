@@ -1,4 +1,14 @@
 {
+  "aethercryo": [
+    {
+      "field": ".aethercryo.frostglow",
+      "desc": "Number of flowglow stacks the traveler has"
+    },
+    {
+      "field": ".aethercryo.icepoint",
+      "desc": "Number of icepoint stacks the traveler has"
+    }
+  ],
   "albedo": [
     {
       "field": ".<character>.mods.albedo-a4",
@@ -151,6 +161,16 @@
     {
       "field": ".kinich.blind_spot",
       "desc": "The direction of the Blind Spot relatively to Kinich. -1 - in clock-wise direction; 1 - in counter clock-wise direction; 0 - does not exist at the moment."
+    }
+  ],
+  "luminecryo": [
+    {
+      "field": ".luminecryo.frostglow",
+      "desc": "Number of flowglow stacks the traveler has"
+    },
+    {
+      "field": ".luminecryo.icepoint",
+      "desc": "Number of icepoint stacks the traveler has"
     }
   ],
   "lyney": [
