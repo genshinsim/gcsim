@@ -55,6 +55,9 @@
                 gotools
                 self'.packages.golangci-lint-v2
 
+                # protos
+                buf
+
                 # ui
                 nodejs
                 pnpm

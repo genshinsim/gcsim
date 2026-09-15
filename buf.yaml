@@ -1,0 +1,26 @@
+version: v2
+# Module root is the repo root because the .proto files import each other with
+# repo-root-relative paths, e.g. `import "protos/model/result.proto";`.
+# `ui` is excluded so buf does not pick up the stray *.proto files vendored
+# under ui/node_modules.
+modules:
+  - path: .
+    excludes:
+      - ui
+lint:
+  use:
+    - STANDARD
+  # The existing hand-written protos predate buf's lint rules; keep the prototype
+  # focused on codegen parity rather than churning the schema to satisfy lint.
+  except:
+    - PACKAGE_DIRECTORY_MATCH
+    - ENUM_VALUE_PREFIX
+    - ENUM_ZERO_VALUE_SUFFIX
+    - PACKAGE_VERSION_SUFFIX
+    - RPC_REQUEST_STANDARD_NAME
+    - RPC_RESPONSE_STANDARD_NAME
+    - RPC_REQUEST_RESPONSE_UNIQUE
+    - FIELD_LOWER_SNAKE_CASE
+breaking:
+  use:
+    - FILE
