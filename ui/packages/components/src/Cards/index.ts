@@ -8,6 +8,7 @@ export { default as CharacterDPSBarChart } from "./ResultCards/Damage/CharacterD
 export { default as CumulativeDamageCard } from "./ResultCards/Damage/CumulativeDamageCard";
 export { default as DamageTimelineCard } from "./ResultCards/Damage/DamageTimelineCard";
 export { default as TargetDPSCard } from "./ResultCards/Damage/TargetDPSCard";
+export { default as CharacterActionsBarChart } from "./ResultCards/Miscellaneous/CharacterActionsBarChart";
 export { default as FieldTimeCard } from "./ResultCards/Miscellaneous/FieldTimeCard";
 // Component-only surface (browser-safe). The Node font loader lives in
 // SatoriPreviewCard/fontsNode and is intentionally not re-exported here.
