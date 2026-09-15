@@ -66,6 +66,7 @@ const (
 	GladiatorsFinale                              // gladiatorsfinale
 	GoldenTroupe                                  // goldentroupe
 	HeartOfDepth                                  // heartofdepth
+	HeartOfTheFurnace                             // heartofthefurnace
 	HuskOfOpulentDreams                           // huskofopulentdreams
 	Instructor                                    // instructor
 	Lavawalker                                    // lavawalker
@@ -124,6 +125,7 @@ var _SetNames = [...]string{
 	"gladiatorsfinale",
 	"goldentroupe",
 	"heartofdepth",
+	"heartofthefurnace",
 	"huskofopulentdreams",
 	"instructor",
 	"lavawalker",
@@ -182,6 +184,7 @@ var _SetValues = [...]Set{
 	GladiatorsFinale,
 	GoldenTroupe,
 	HeartOfDepth,
+	HeartOfTheFurnace,
 	HuskOfOpulentDreams,
 	Instructor,
 	Lavawalker,
