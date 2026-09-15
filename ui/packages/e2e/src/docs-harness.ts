@@ -42,4 +42,26 @@ export class DocsHarness {
 		await this.page.goto(path);
 		await expect(this.content).toBeVisible();
 	}
+
+	/**
+	 * Docusaurus marks doc images `loading="lazy"`, so off-screen ones never
+	 * fetch on their own — each is scrolled into view first to start the load.
+	 */
+	async assertImagesLoaded(container: Locator): Promise<void> {
+		const images = container.locator("img");
+		const count = await images.count();
+		for (let i = 0; i < count; i++) {
+			await images.nth(i).scrollIntoViewIfNeeded();
+		}
+		await expect(async () => {
+			const broken = await images.evaluateAll((els) =>
+				(els as HTMLImageElement[])
+					.filter((img) => !img.complete || img.naturalWidth === 0)
+					.map((img) => img.currentSrc || img.src),
+			);
+			expect(broken, `images failed to load:\n${broken.join("\n")}`).toEqual(
+				[],
+			);
+		}).toPass();
+	}
 }
