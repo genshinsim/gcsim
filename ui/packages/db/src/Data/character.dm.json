@@ -782,6 +782,23 @@
         "burst_energy_cost": 60
       }
     },
+    "iansan": {
+      "id": 10000110,
+      "sub_id": 11001,
+      "key": "iansan",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_LOLI",
+      "region": "ASSOC_TYPE_NATLAN",
+      "element": "Electric",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Iansan",
+      "skill_details": {
+        "skill": 11102,
+        "burst": 11105,
+        "attack": 11101,
+        "burst_energy_cost": 70
+      }
+    },
     "ifa": {
       "id": 10000113,
       "sub_id": 11301,

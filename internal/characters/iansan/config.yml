@@ -1,0 +1,88 @@
+use: pipeline
+kind: character
+name: iansan
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - swift: attack(Swift Stormflight DMG)
+
+  - skill: skill(Skill DMG)
+
+  - burst: burst(Skill DMG)
+  - highATK: burst(High Nightsoul Points ATK Conversion Rate)
+  - lowATK: burst(Low Nightsoul Points ATK Conversion Rate)
+  - maxATK: burst(Max ATK Bonus)
+
+docs:
+  issues:
+    - Movement must be provided by the user in the action params or by using the `movement` system
+      function to generate Nightsoul points.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/14Cz9g01vOPr2_Zj-n2sjhLazUQgIiKiepfASyASwYks/edit
+      count_credit: caramielle.
+      video: https://youtu.be/ns6bXswGrIs
+      video_credit: caramielle.
+    - count: https://docs.google.com/spreadsheets/d/14Cz9g01vOPr2_Zj-n2sjhLazUQgIiKiepfASyASwYks/edit
+      count_credit: caramielle.
+      video: https://youtu.be/EE1OMPWksjM
+      video_credit: caramielle.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.4]
+        radius: 1.75
+        fan_angle: 260
+        hitlag: { time: 0.01, scale: 0.01, defense_halt: true }
+
+      - name: N2
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 1.6
+        hitlag: { time: 0.06, scale: 0.01, defense_halt: true }
+
+      - name: N3
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [2.2, 3]
+
+  - name: charge
+    note: Need to use attack right before charge.
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.8
+        hitlag: { scale: 0.01, defense_halt: true, deployable: true }
+      - name: CA-Swift
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2.5
+        hitlag: { time: 0.05, scale: 0.01 }
+
+  - name: skill
+    hitbox:
+      - name: E
+        shape: Circle
+        center: PrimaryTarget
+        radius: 0.8
+        hitlag: { scale: 0.01, defense_halt: true, deployable: true }
+
+  - name: burst
+    note:
+      Must use the 'movement' argument on action params or `movement` system function to
+      generate Nightsoul points.
+    hitbox:
+      - name: Q
+        shape: Circle
+        center: Player
+        radius: 5

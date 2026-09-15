@@ -38,6 +38,7 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("is_target_dead", e.isTargetDead, env)
 	e.addSysFunc("pick_up_crystallize", e.pickUpCrystallize, env)
 	e.addSysFunc("set_starting_verdant_dew", e.setStartingVerdantDew, env)
+	e.addSysFunc("movement", e.movement, env)
 
 	// math
 	e.addSysFunc("sin", e.sin, env)
@@ -359,6 +360,22 @@ func (e *Eval) setStartingVerdantDew(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	e.Core.Player.SetVerdantDew(int(f))
+	return &null{}, nil
+}
+
+func (e *Eval) movement(c *ast.CallExpr, env *Env) (Obj, error) {
+	objs, err := e.validateArguments(c, env, typNum)
+	if err != nil {
+		return nil, err
+	}
+	f := ntof(objs[0].(*number))
+
+	if f < 0 {
+		return nil, fmt.Errorf("invalid value for movement, expected non-negative number, got %v", f)
+	}
+
+	e.Core.Events.Emit(event.OnMovement, f)
+
 	return &null{}, nil
 }
 

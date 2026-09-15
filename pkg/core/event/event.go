@@ -67,6 +67,7 @@ const (
 	OnNightsoulBurst    // target, AttackEvent
 	OnNightsoulGenerate // char, amount
 	OnNightsoulConsume  // char, amount
+	OnMovement          // float64; distance moved
 	// ability use
 	OnActionFailed // ActiveCharIndex, action.Action, param, action.ActionFailure
 	OnActionExec   // ActiveCharIndex, action.Action, param

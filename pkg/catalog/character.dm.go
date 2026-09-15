@@ -7000,6 +7000,158 @@ var CharacterMap = map[keys.Char]*model.AvatarData{
 			BurstEnergyCost: 60.0,
 		},
 	},
+	keys.Iansan: {
+		Id:          10000110,
+		SubId:       11001,
+		Key:         "iansan",
+		Rarity:      model.QualityType_QUALITY_PURPLE,
+		Body:        model.BodyType_BODY_LOLI,
+		Region:      model.AssocType_ASSOC_TYPE_NATLAN,
+		Element:     model.ElementType_Electric,
+		WeaponClass: model.WeaponType_WEAPON_POLE,
+		IconName:    "UI_AvatarIcon_Iansan",
+		Stats: &model.AvatarStatsData{
+			BaseHp:   893.5552,
+			BaseAtk:  21.54768,
+			BaseDef:  53.505375,
+			HpCurve:  model.GrowCurveType_GROW_CURVE_HP_S4,
+			AtkCurve: model.GrowCurveType_GROW_CURVE_ATTACK_S4,
+			DefCruve: model.GrowCurveType_GROW_CURVE_HP_S4,
+			PromoData: []*model.PromotionData{
+				{
+					MaxLevel: 20,
+				},
+				{
+					MaxLevel: 40,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    667.5315,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    39.97125,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    16.097597,
+						},
+					},
+				},
+				{
+					MaxLevel: 50,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    1141.8302,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    68.37187,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    27.535364,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_ATTACK_PERCENT,
+							Value:    0.06,
+						},
+					},
+				},
+				{
+					MaxLevel: 60,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    1774.2284,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    106.23937,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    42.78572,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_ATTACK_PERCENT,
+							Value:    0.12,
+						},
+					},
+				},
+				{
+					MaxLevel: 70,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    2248.527,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    134.64,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    54.223488,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_ATTACK_PERCENT,
+							Value:    0.12,
+						},
+					},
+				},
+				{
+					MaxLevel: 80,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    2722.8257,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    163.04062,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    65.661255,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_ATTACK_PERCENT,
+							Value:    0.18,
+						},
+					},
+				},
+				{
+					MaxLevel: 90,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    3197.1245,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    191.44125,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    77.09902,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_ATTACK_PERCENT,
+							Value:    0.24,
+						},
+					},
+				},
+			},
+		},
+		SkillDetails: &model.AvatarSkillsData{
+			Skill:           11102,
+			Burst:           11105,
+			Attack:          11101,
+			BurstEnergyCost: 70.0,
+		},
+	},
 	keys.Ifa: {
 		Id:          10000113,
 		SubId:       11301,
