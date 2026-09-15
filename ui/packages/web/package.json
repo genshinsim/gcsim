@@ -18,7 +18,7 @@
 	},
 	"devDependencies": {
 		"@tailwindcss/vite": "^4.3.3",
-		"@vitejs/plugin-react-swc": "^4",
+		"@vitejs/plugin-react": "^6",
 		"git-rev-sync": "^3.0.2",
 		"rollup-plugin-visualizer": "^5.8.3",
 		"tailwindcss": "^4.3.3",
