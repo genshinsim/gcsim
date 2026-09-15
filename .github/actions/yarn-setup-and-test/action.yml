@@ -23,10 +23,10 @@ runs:
       working-directory: ./ui
       shell: bash
       run: pnpm -r typecheck
-    # - name: Lint
-    #   working-directory: ./ui
-    #   shell: bash
-    #   run: pnpm lint-ci
+    - name: Lint
+      working-directory: ./ui
+      shell: bash
+      run: pnpm lint-ci
     # - name: Detect Dependency Version Mismatches
     #   working-directory: ./ui
     #   shell: bash
