@@ -490,10 +490,6 @@ func run(ctx context.Context, cmd *cli.Command) error {
 }
 
 func configTemplate(ctx context.Context, cmd *cli.Command) error {
-	if err := fetch(ctx, cmd); err != nil {
-		return err
-	}
-
 	cfg := &Config{
 		Name: excel.SlugLower(cmd.String("name")),
 		Override: Override{
@@ -501,6 +497,15 @@ func configTemplate(ctx context.Context, cmd *cli.Command) error {
 			Depot: uint32(cmd.Int("depot")),
 		},
 	}
+	if cfg.Name == "" && cfg.Override.Id == 0 && cfg.Override.Depot == 0 {
+		cli.ShowSubcommandHelp(cmd)
+		return nil
+	}
+
+	if err := fetch(ctx, cmd); err != nil {
+		return err
+	}
+
 	var err error
 	if cfg.Artifact, err = buildArtifactSpec(cfg); err != nil {
 		Log(slog.LevelError, "%v: %v", KindArtifact, err)
