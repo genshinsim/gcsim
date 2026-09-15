@@ -1,7 +1,25 @@
-import type { Preview } from "@storybook/react-vite";
+import type { Decorator, Preview } from "@storybook/react-vite";
+import React from "react";
 import { INITIAL_VIEWPORTS, MINIMAL_VIEWPORTS } from "storybook/viewport";
 import "../src/index.css";
 import i18n from "./i18n";
+
+const withTheme: Decorator = (Story, context) => {
+	const dark = context.globals.theme !== "light";
+	return React.createElement(
+		"div",
+		{
+			className: dark ? "dark" : undefined,
+			style: {
+				backgroundColor: "hsl(var(--background))",
+				color: "hsl(var(--foreground))",
+				minHeight: "100vh",
+				padding: "1rem",
+			},
+		},
+		React.createElement(Story),
+	);
+};
 
 const customViewports = {
 	desktop1024: {
@@ -58,8 +76,24 @@ const preview: Preview = {
 		},
 		i18n,
 	},
+	decorators: [withTheme],
+	globalTypes: {
+		theme: {
+			description: "shadcn theme",
+			toolbar: {
+				title: "Theme",
+				icon: "circlehollow",
+				items: [
+					{ value: "dark", title: "Dark" },
+					{ value: "light", title: "Light" },
+				],
+				dynamicTitle: true,
+			},
+		},
+	},
 	globals: {
 		locale: "en",
+		theme: "dark",
 		locales: {
 			en: "English",
 			zh: "中文",
