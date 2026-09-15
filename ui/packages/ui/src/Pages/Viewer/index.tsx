@@ -2,15 +2,18 @@ import type { Executor, ExecutorSupplier } from "@gcsim/executors";
 import type { SimResults } from "@gcsim/types";
 import axios from "axios";
 import { throttle } from "lodash-es";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useHistory, useLocation } from "react-router";
+import { useSendToSimulator } from "../../Components/Buttons/useSendToSimulator";
 import {
 	type RootState,
 	useAppDispatch,
 	useAppSelector,
 } from "../../Stores/store";
 import { viewerActions } from "../../Stores/viewerSlice";
+import { runSim } from "../Simulator/Toolbox";
 import UpgradeDialog from "./UpgradeDialog";
-import Viewer from "./Viewer";
+import Viewer, { type ViewerActions } from "./Viewer";
 
 // TODO: make this flush rate configurable?
 export const VIEWER_THROTTLE = 100;
@@ -221,6 +224,8 @@ type UpgradableViewerProps = {
 };
 
 const UpgradableViewer = (props: UpgradableViewerProps) => {
+	const actions = useViewerActions(props.exec);
+	const location = useLocation();
 	return (
 		<>
 			<Viewer
@@ -233,6 +238,8 @@ const UpgradableViewer = (props: UpgradableViewerProps) => {
 				redirect={props.redirect}
 				exec={props.exec}
 				retry={props.retry}
+				actions={actions}
+				existingShareLink={extractFromLocation(location.pathname)}
 			/>
 			<UpgradeDialog
 				exec={props.exec}
@@ -246,3 +253,38 @@ const UpgradableViewer = (props: UpgradableViewerProps) => {
 		</>
 	);
 };
+
+function useViewerActions(exec: ExecutorSupplier<Executor>): ViewerActions {
+	const dispatch = useAppDispatch();
+	const history = useHistory();
+	const onSendToSimulator = useSendToSimulator();
+	return useMemo(
+		() => ({
+			onSendToSimulator,
+			onRerun: (cfg: string) => {
+				dispatch(runSim(exec(), cfg));
+				history.push("/web");
+			},
+			onShare: (data: SimResults, hash: string | null) =>
+				axios
+					.post("/api/share", data, {
+						headers: { "X-GCSIM-SHARE-AUTH": hash ?? "" },
+					})
+					.then((resp) => link("sh", resp.data)),
+		}),
+		[dispatch, history, exec, onSendToSimulator],
+	);
+}
+
+function link(route: string, id: string): string {
+	return `${window.location.protocol}//${window.location.host}/${route}/${id}`;
+}
+
+function extractFromLocation(location: string) {
+	if (location.startsWith("/sh/")) {
+		return link("sh", location.substring(location.lastIndexOf("/") + 1));
+	} else if (location.startsWith("/db/")) {
+		return link("db", location.substring(location.lastIndexOf("/") + 1));
+	}
+	return null;
+}
