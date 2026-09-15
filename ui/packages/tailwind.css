@@ -19,10 +19,14 @@
 @source "./web/src";
 
 @theme {
-	/* Extra breakpoints on top of the v4 defaults (sm/md/lg/xl/2xl match). */
-	--breakpoint-xs: 400px;
-	--breakpoint-hd: 1000px;
-	--breakpoint-wide: 1160px;
+	/* Extra breakpoints on top of the v4 defaults (sm/md/lg/xl/2xl match).
+	 * Declared in rem to match the v4 default breakpoints: the cascade sorts
+	 * media queries by value, and mixing px with the defaults' rem makes the
+	 * px ones sort out of order (e.g. sm@40rem landing after hd/wide), so a
+	 * later, smaller breakpoint wins on wide screens. */
+	--breakpoint-xs: 25rem; /* 400px */
+	--breakpoint-hd: 62.5rem; /* 1000px */
+	--breakpoint-wide: 72.5rem; /* 1160px */
 
 	/* spacing overrides */
 	--spacing-320: 320px;
