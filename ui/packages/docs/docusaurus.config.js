@@ -110,9 +110,9 @@ async function createConfig() {
 				return {
 					name: "docusaurus-tailwindcss",
 					configurePostCss(postcssOptions) {
-						// Appends TailwindCSS and AutoPrefixer.
-						postcssOptions.plugins.push(require("tailwindcss"));
-						postcssOptions.plugins.push(require("autoprefixer"));
+						// Appends the Tailwind v4 PostCSS plugin (v4 handles
+						// vendor prefixing, so autoprefixer is dropped).
+						postcssOptions.plugins.push(require("@tailwindcss/postcss"));
 						return postcssOptions;
 					},
 				};
