@@ -4,13 +4,14 @@ import (
 	"slices"
 
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
 // generic params that can be used for any character
 var ignoreParams = []string{
 	// iansan burst
-	"movement",
+	info.ParamMovement,
 }
 
 func ValidateCharParamKeys(c keys.Char, a action.Action, keys []string) error {

@@ -18,6 +18,9 @@ talents:
   - maxATK: burst(Max ATK Bonus)
 
 docs:
+  issues:
+    - Movement must be provided by the user in the action params or by using the `movement` system
+      function to generate Nightsoul points.
   frames:
     - count: https://docs.google.com/spreadsheets/d/14Cz9g01vOPr2_Zj-n2sjhLazUQgIiKiepfASyASwYks/edit
       count_credit: caramielle.
@@ -75,7 +78,9 @@ abilities:
         hitlag: { scale: 0.01, defense_halt: true, deployable: true }
 
   - name: burst
-    note: Requires to use the 'movement' argument on action params to generate Nightsoul points.
+    note:
+      Must use the 'movement' argument on action params or `movement` system function to
+      generate Nightsoul points.
     hitbox:
       - name: Q
         shape: Circle

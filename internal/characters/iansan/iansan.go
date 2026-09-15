@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
@@ -19,7 +18,7 @@ type char struct {
 	particleGenerated bool
 	burstSrc          int
 	burstBuff         []float64
-	burstRestoreNS    int
+	burstRestoreNS    float64
 	pointsOverflow    float64
 
 	a1Buff     []float64
@@ -57,7 +56,6 @@ func (c *char) Init() error {
 	c.c4Init()
 	c.c6Init()
 
-	c.Core.Events.Subscribe(event.OnActionExec, c.burstMovementRestore, burstBuffStatus)
 	// TODO: subscribe to a player moved event
 	return nil
 }

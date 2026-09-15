@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -100,6 +101,8 @@ func (c *char) burstInit() {
 			},
 		})
 	}
+
+	c.Core.Events.Subscribe(event.OnMovement, c.burstMovementRestore, burstBuffStatus)
 }
 
 func (c *char) restorePointsTask(src int) {
@@ -152,14 +155,11 @@ func (c *char) updateATKBuff(src int) func() {
 	}
 }
 
-func (c *char) burstMovementRestore(args ...interface{}) {
+func (c *char) burstMovementRestore(args ...any) {
 	if !c.StatusIsActive(burstStatus) {
 		return
 	}
 
-	param := args[2].(map[string]int)
-	movement, ok := param["movement"]
-	if ok {
-		c.burstRestoreNS = min(c.burstRestoreNS+movement, restoreNSCap)
-	}
+	movement := args[0].(float64)
+	c.burstRestoreNS = min(c.burstRestoreNS+movement, restoreNSCap)
 }
