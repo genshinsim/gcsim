@@ -7,8 +7,9 @@ Playwright config:
 - **web** (`playwright.config.ts`, default) — boots the web app, waits for
   wasm + workers, validates and runs a config, and asserts the viewer renders.
 - **docs** (`playwright.docs.config.ts`) — builds and serves the Docusaurus docs
-  site, then asserts the landing page and a nested doc render with a clean
-  console.
+  site, then asserts one page per top-level sidebar section renders (route,
+  title, `<h1>`, non-empty body) with its content images loaded, failing only on
+  an uncaught exception — not on ambient console noise.
 - **db** ("Simpact", `playwright.db.config.ts`) — boots the db app and asserts
   the home and browse views render. The db app is pure front-end (no wasm), and
   the spec stubs every `/api` call, so it needs neither Go nor network.
@@ -137,17 +138,26 @@ same sidebar chrome), so one class owns the whole surface plus a
 - `sidebar` — the `<nav aria-label="Docs sidebar">`; `sidebarLink(name)` is a
   sidebar entry by its exact label.
 - `heading(name)` — the current doc's `<h1>` by accessible name.
+- `assertImagesLoaded(container)` — every `<img>` under `container` finished
+  loading (`complete` and `naturalWidth > 0`); scrolls lazy images into view
+  first. The deterministic replacement for the old blanket 404 console sweep.
 
 ### `ConsoleMonitor` (`src/console-monitor.ts`)
 
-Watches the page console for its whole lifetime. It collects uncaught
-`console.error` / `pageerror` — `assertNoErrors()` fails the test if any
-un-ignored error was seen across the flow — and buffers every message so
-`waitForLog(re)` can match a signal even if it already fired. A short, justified
-ignore-list filters known dev-mode noise: React StrictMode `Warning:`s (dev-only,
-absent from prod builds — a real crash is a `pageerror` or a non-`Warning:`
-error, which is **not** masked), a pre-existing visx negative-radius chart quirk,
-and a Vite HMR websocket blip on teardown.
+Watches the page console for its whole lifetime, and offers two contracts:
+
+- `assertNoErrors()` fails on any un-ignored `console.error` or `pageerror` seen
+  across the flow (used by the web, db, and taghelper suites);
+- `assertNoCrashes()` fails only on an uncaught exception (`pageerror`), ignoring
+  ambient `console.error` noise such as a transient resource 404 (used by the
+  docs suite, whose production build serves noisy static assets on cold start).
+
+It also buffers every message so `waitForLog(re)` can match a signal even if it
+already fired. A short, justified ignore-list filters known dev-mode noise for
+`assertNoErrors`: React StrictMode `Warning:`s (dev-only, absent from prod builds
+— a real crash is a `pageerror` or a non-`Warning:` error, which is **not**
+masked), a pre-existing visx negative-radius chart quirk, and a Vite HMR
+websocket blip on teardown.
 
 ### Config fixture
 
