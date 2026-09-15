@@ -1,5 +1,6 @@
 import CardTitle from "./GraphComponents/CardTitle";
 import FloatStatTooltipContent from "./GraphComponents/FloatStatTooltipContent";
+import HorizontalBarStack from "./GraphComponents/HorizontalBarStack";
 import OuterLabelPie from "./GraphComponents/OuterLabelPie";
 
 export * from "./GraphComponents/Axes";
@@ -12,4 +13,9 @@ export * from "./LatestVersion";
 export * from "./NoData";
 export * from "./Refresh";
 export * from "./Warning";
-export { CardTitle, FloatStatTooltipContent, OuterLabelPie };
+export {
+	CardTitle,
+	FloatStatTooltipContent,
+	HorizontalBarStack,
+	OuterLabelPie,
+};
