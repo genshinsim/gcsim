@@ -20,7 +20,7 @@ var abilities = []string{
 	"plunge", "low_plunge", "high_plunge",
 	"skill", "burst",
 	"asc", "a1", "a4",
-	"passive", "passive1", "passive2",
+	"passive", "passive1", "passive2", "upgrade",
 	"cons",
 	"dash", "jump", "walk", "swap",
 	"c1", "c2", "c3", "c4", "c5", "c6",
