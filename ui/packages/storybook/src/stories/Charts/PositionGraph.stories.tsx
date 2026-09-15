@@ -31,7 +31,6 @@ export const NoTargets: Story = {
 	},
 };
 
-// Hovering a target opens the popover-primitive tooltip.
 export const WithTooltip: Story = {
 	args: {
 		enemies: sampleResult.target_details as model.Enemy[],
