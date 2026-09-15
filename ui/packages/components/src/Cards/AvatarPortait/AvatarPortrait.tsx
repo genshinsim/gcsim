@@ -113,7 +113,7 @@ export const AvatarPortrait = ({
 		>
 			<div className={`relative w-full pt-2 z-0 ${charBG(char.element ?? "")}`}>
 				<div
-					className="absolute top-0 left-0 right-0 bottom-0 !bg-cover !bg-center mix-blend-luminosity z-1 "
+					className="absolute top-0 left-0 right-0 bottom-0 !bg-cover !bg-center mix-blend-luminosity"
 					style={{ background: `url(/api/assets/misc/overlay.jpg)` }}
 				></div>
 
