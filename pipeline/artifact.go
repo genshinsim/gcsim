@@ -159,7 +159,7 @@ func (c *Compiled) GenerateArtifacts() error {
 
 		b := bytes.NewBuffer(nil)
 		for _, attr := range config.Attributes {
-			b.WriteString(attr.EmitDesc("// "))
+			b.WriteString(attr.EmitDesc("// ", attr.Desc, ""))
 		}
 		fmt.Fprintf(b, "package %s\n", path.Base(config.Dir()))
 		b.WriteString("import (\n")
