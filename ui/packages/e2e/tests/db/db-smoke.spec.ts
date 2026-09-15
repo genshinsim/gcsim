@@ -31,6 +31,9 @@ test.describe("db smoke", () => {
 		await expect(db.database.tagsSection).toBeVisible();
 		await expect(db.database.sortBySection).toBeVisible();
 
+		// The Characters section expands to its portrait picker.
+		await db.database.expandCharacters();
+
 		// Exercising a character filter narrows the list (2 -> 1 simulations).
 		await db.page.keyboard.press("Escape");
 		await db.database.filterByCharacter("Nahida");

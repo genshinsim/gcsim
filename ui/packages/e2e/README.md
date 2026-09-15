@@ -162,6 +162,21 @@ navigation via `installDbRoutes` (`src/db-fixtures.ts`):
 The db dev server proxies `/api` to production by default; these routes keep the
 spec deterministic and offline.
 
+#### `DbHomePage` (`src/pages/db-home-page.ts`) — the `/` route
+
+- `goto()` — navigate and wait for React to mount into `#root`.
+- `waitForLoaded()` — assert the welcome copy, the tag-list copy, and the "Get
+  started" CTA rendered.
+
+#### `DbDatabasePage` (`src/pages/db-database-page.ts`) — the `/database` route
+
+- `goto()` / `waitForBrowse()` — open the route; assert the count, search box,
+  filter funnel, and an entry card's Copy Config / Open in Viewer controls.
+- `openFilterPanel()` / `expandCharacters()` — open the filter drawer; expand
+  the Characters section to its portrait picker.
+- `filterByCharacter(name)` — pick a character from the search box, which
+  refetches `/api/db` with the narrowed query; pair with `expectShowing(n)`.
+
 ## Out of scope
 
 CI integration, the production/preview (R2 wasm) path, server mode, the

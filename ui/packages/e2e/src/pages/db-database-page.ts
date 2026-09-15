@@ -11,7 +11,11 @@ export class DbDatabasePage {
 	readonly page: Page;
 	/** The character MultiSelect search box (placeholder "Type to search..."). */
 	readonly searchBox: Locator;
-	/** The funnel button that opens the filter drawer (48x48 primary button). */
+	/**
+	 * The funnel button that opens the filter drawer. It carries no accessible
+	 * name, so it rides its Blueprint intent class plus its icon: it is the only
+	 * primary button with an `<svg>` (the filter-section headers have none).
+	 */
 	readonly filterButton: Locator;
 	/** "Copy Config" button in each entry card's footer — one per entry. */
 	readonly copyConfigButtons: Locator;
@@ -21,13 +25,13 @@ export class DbDatabasePage {
 	readonly charactersSection: Locator;
 	readonly tagsSection: Locator;
 	readonly sortBySection: Locator;
+	/** Character portrait images in the expanded Characters section / cards. */
+	readonly characterPortraits: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
 		this.searchBox = page.getByPlaceholder("Type to search...");
-		this.filterButton = page.locator(
-			"button.bp4-button.bp4-intent-primary.w-12.h-12",
-		);
+		this.filterButton = page.locator("button.bp4-intent-primary:has(svg)");
 		this.copyConfigButtons = page.getByRole("button", { name: "Copy Config" });
 		this.openInViewerLinks = page.locator("a", {
 			has: page.getByRole("button", { name: "Open in Viewer" }),
@@ -35,6 +39,7 @@ export class DbDatabasePage {
 		this.charactersSection = page.getByRole("button", { name: /Characters/ });
 		this.tagsSection = page.getByRole("button", { name: /Tags/ });
 		this.sortBySection = page.getByRole("button", { name: /Sort by/ });
+		this.characterPortraits = page.locator('img[src^="/api/assets/avatar/"]');
 	}
 
 	/** Navigate to the browse route and wait for React to mount into `#root`. */
@@ -65,6 +70,12 @@ export class DbDatabasePage {
 	async openFilterPanel(): Promise<void> {
 		await this.filterButton.click();
 		await expect(this.charactersSection).toBeVisible();
+	}
+
+	/** Expand the Characters section and wait for its portrait picker to render. */
+	async expandCharacters(): Promise<void> {
+		await this.charactersSection.click();
+		await expect(this.characterPortraits.first()).toBeVisible();
 	}
 
 	/**
