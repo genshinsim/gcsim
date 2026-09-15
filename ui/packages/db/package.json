@@ -28,7 +28,6 @@
 		"react-i18next": "^12.0.0",
 		"react-icons": "^4.6.0",
 		"react-infinite-scroll-component": "^6.1.0",
-		"tailwindcss": "^4.3.3",
 		"wouter": "^2.9.0"
 	},
 	"devDependencies": {
@@ -37,6 +36,7 @@
 		"@types/react-dom": "^18.0.6",
 		"@vitejs/plugin-react-swc": "^4",
 		"rollup-plugin-visualizer": "^5.8.3",
+		"tailwindcss": "^4.3.3",
 		"vite": "^8",
 		"vite-tsconfig-paths": "^4.0.5",
 		"wrangler": "4.131.1"

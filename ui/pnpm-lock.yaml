@@ -272,9 +272,6 @@ importers:
       react-infinite-scroll-component:
         specifier: ^6.1.0
         version: 6.1.1(react@18.3.1)
-      tailwindcss:
-        specifier: ^4.3.3
-        version: 4.3.3
       wouter:
         specifier: ^2.9.0
         version: 2.12.1(react@18.3.1)
@@ -294,6 +291,9 @@ importers:
       rollup-plugin-visualizer:
         specifier: ^5.8.3
         version: 5.14.0(rolldown@1.2.8)(rollup@4.63.1)
+      tailwindcss:
+        specifier: ^4.3.3
+        version: 4.3.3
       vite:
         specifier: ^8
         version: 8.3.0(@types/node@22.20.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.51.2)
