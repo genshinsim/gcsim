@@ -1,0 +1,138 @@
+/*
+ * Shared Tailwind v4 theme for the gcsim UI workspace.
+ *
+ * Imported once per build by each package's CSS entrypoint (or `@reference`d
+ * from files that only need `@apply`). Automatic source detection is disabled
+ * via `source(none)`; the `@source` list below mirrors the cross-package
+ * content globs the old JS config carried, so classes used in one package but
+ * defined in another are still emitted.
+ */
+@import "tailwindcss" source(none);
+@import "tw-animate-css";
+
+@source "./components/src";
+@source "./ui/src";
+@source "./db/src";
+@source "./storybook/src";
+@source "./embed/src";
+@source "./taghelper/src";
+@source "./web/src";
+
+@theme {
+	/* Extra breakpoints on top of the v4 defaults (sm/md/lg/xl/2xl match). */
+	--breakpoint-xs: 400px;
+	--breakpoint-hd: 1000px;
+	--breakpoint-wide: 1160px;
+
+	/* spacing overrides */
+	--spacing-320: 320px;
+	--spacing-280: 280px;
+
+	/* min-width scale (min-w-* reads from the container namespace) */
+	--container-wsm: 600px;
+	--container-wmd: 700px;
+	--container-wlg: 950px;
+	--container-wxl: 1100px;
+
+	/* hand-written blueprint literals */
+	--color-bp-header-color: #394b59;
+	--color-bp-card-color: #30404d;
+	--color-bp-bg: #293742;
+
+	/* element colours */
+	--color-anemo: #61dbbb;
+	--color-geo: #f8ba4e;
+	--color-electro: #b25dcd;
+	--color-hydro: #2f63d4;
+	--color-pyro: #bf2818;
+	--color-cryo: #77a2e6;
+	--color-dendro: #a5c83b;
+
+	/* accordion animation (shadcn) */
+	--animate-accordion-down: accordion-down 0.2s ease-out;
+	--animate-accordion-up: accordion-up 0.2s ease-out;
+
+	@keyframes accordion-down {
+		from {
+			height: 0;
+		}
+		to {
+			height: var(--radix-accordion-content-height);
+		}
+	}
+	@keyframes accordion-up {
+		from {
+			height: var(--radix-accordion-content-height);
+		}
+		to {
+			height: 0;
+		}
+	}
+}
+
+/*
+ * shadcn tokens: kept as `hsl(var(--...))` indirection over the CSS variables
+ * declared in the `:root`/`.dark` blocks of the consuming entrypoints, so
+ * `bg-background`, `text-foreground`, `rounded-lg`, ... resolve as before.
+ * `inline` makes the utilities emit the value rather than a second variable.
+ */
+@theme inline {
+	--color-border: hsl(var(--border));
+	--color-input: hsl(var(--input));
+	--color-ring: hsl(var(--ring));
+	--color-background: hsl(var(--background));
+	--color-foreground: hsl(var(--foreground));
+
+	--color-primary: hsl(var(--primary));
+	--color-primary-foreground: hsl(var(--primary-foreground));
+
+	--color-secondary: hsl(var(--secondary));
+	--color-secondary-foreground: hsl(var(--secondary-foreground));
+
+	--color-destructive: hsl(var(--destructive));
+	--color-destructive-foreground: hsl(var(--destructive-foreground));
+
+	--color-muted: hsl(var(--muted));
+	--color-muted-foreground: hsl(var(--muted-foreground));
+
+	--color-accent: hsl(var(--accent));
+	--color-accent-foreground: hsl(var(--accent-foreground));
+
+	--color-popover: hsl(var(--popover));
+	--color-popover-foreground: hsl(var(--popover-foreground));
+
+	--color-card: hsl(var(--card));
+	--color-card-foreground: hsl(var(--card-foreground));
+
+	--radius-lg: var(--radius);
+	--radius-md: calc(var(--radius) - 2px);
+	--radius-sm: calc(var(--radius) - 4px);
+}
+
+/*
+ * BlueprintJS colours, hardcoded from the core v4 palette so the build no
+ * longer imports that package. https://blueprintjs.com/docs/#core/colors
+ * `static` forces every token to emit even when unused, so the full scale
+ * stays available (and verifiable) in the built CSS.
+ */
+@theme static {
+	--color-bp4-black: #111418;
+
+	--color-bp4-dark-gray-100: #1c2127;
+	--color-bp4-dark-gray-200: #252a31;
+	--color-bp4-dark-gray-300: #2f343c;
+	--color-bp4-dark-gray-400: #383e47;
+	--color-bp4-dark-gray-500: #404854;
+
+	--color-bp4-gray-100: #5f6b7c;
+	--color-bp4-gray-200: #738091;
+	--color-bp4-gray-300: #8f99a8;
+	--color-bp4-gray-400: #abb3bf;
+	--color-bp4-gray-500: #c5cbd3;
+
+	--color-bp4-light-gray-100: #d3d8de;
+	--color-bp4-light-gray-200: #dce0e5;
+	--color-bp4-light-gray-300: #e5e8eb;
+	--color-bp4-light-gray-400: #edeff2;
+	--color-bp4-light-gray-500: #f6f7f9;
+}

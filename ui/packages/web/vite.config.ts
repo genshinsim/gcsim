@@ -1,3 +1,4 @@
+import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react-swc";
 import * as git from "git-rev-sync";
 import { visualizer } from "rollup-plugin-visualizer";
@@ -9,7 +10,7 @@ export default (_env: ConfigEnv) => {
 	process.env.VITE_GIT_BRANCH = git.branch();
 
 	return defineConfig({
-		plugins: [react(), tsconfigPaths(), visualizer()],
+		plugins: [tailwindcss(), react(), tsconfigPaths(), visualizer()],
 		build: {
 			rollupOptions: {
 				output: {
