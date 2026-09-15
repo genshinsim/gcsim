@@ -1,7 +1,7 @@
 # @gcsim/e2e
 
 Local, Playwright-driven end-to-end smoke tests for gcsim, catching regressions
-where a site *builds* but breaks at *runtime*. Two suites, each its own
+where a site *builds* but breaks at *runtime*. Three suites, each its own
 Playwright config:
 
 - **web** (`playwright.config.ts`, default) — boots the web app, waits for
@@ -9,6 +9,9 @@ Playwright config:
 - **docs** (`playwright.docs.config.ts`) — builds and serves the Docusaurus docs
   site, then asserts the landing page and a nested doc render with a clean
   console.
+- **db** ("Simpact", `playwright.db.config.ts`) — boots the db app and asserts
+  the home and browse views render. The db app is pure front-end (no wasm), and
+  the spec stubs every `/api` call, so it needs neither Go nor network.
 
 Two layers:
 
@@ -39,13 +42,18 @@ has no wasm, workers, or backend, and building first makes the smoke spec catch
 build-time breakage too (broken links, MDX compile errors, a bad sidebar entry).
 It still needs the pnpm deps and the Chromium browser above.
 
+The **db** suite also needs none of the wasm toolchain. It runs the db vite dev
+server and stubs every `/api` call, so it needs no Go, no backend, and no
+network — only the pnpm deps and the Chromium browser above.
+
 ## Run it
 
 From the `ui/` workspace root:
 
 ```sh
-pnpm test:e2e       # web app suite
+pnpm test:e2e       # web app suite  (builds wasm; needs Go + task)
 pnpm test:e2e:docs  # docs site suite
+pnpm test:e2e:db    # db app suite    (no wasm, no network)
 ```
 
 `test:e2e` builds the wasm binary, boots the dev server on a fixed strict port
@@ -55,9 +63,13 @@ A running dev server on `5173` is reused (locally) instead of restarted.
 `test:e2e:docs` builds the docs site, serves it on port `4173`, runs the suite,
 and tears the server down after — a running server on `4173` is reused locally.
 
+`test:e2e:db` boots the db dev server on `5273` and runs the db suite; a running
+server on `5273` is reused locally.
+
 Other entry points (from `ui/packages/e2e`):
 
-- `pnpm --filter @gcsim/e2e test:headed` — watch it drive a real browser.
+- `pnpm --filter @gcsim/e2e test:headed` / `test:db:headed` — watch it drive a
+  real browser.
 - `pnpm --filter @gcsim/e2e report` — open the HTML report from the last run.
 
 ## On failure
@@ -134,9 +146,41 @@ and a Vite HMR websocket blip on teardown.
 `fixtures/sucrose.txt` is the known-good, minimal Sucrose config
 (`iteration=1`), re-exported as `sucroseConfig` from `src/config.ts`.
 
+### `DbHarness` (`src/db-harness.ts`) — the db app
+
+Bundles the db page objects (`DbHomePage`, `DbDatabasePage`) and a
+`ConsoleMonitor`. The `db` test fixture stubs the app's network before any
+navigation via `installDbRoutes` (`src/db-fixtures.ts`):
+
+- `/api/db` returns the two `dbEntries`, narrowed to the characters an included
+  filter names — so a character filter visibly shrinks the list (2 → 1);
+- `/api/assets/**` returns a 1x1 PNG (avatars, art);
+- `api.github.com` (the home page's latest-release lookup) returns a fixed
+  payload;
+- any other `/api/**` returns an empty 200.
+
+The db dev server proxies `/api` to production by default; these routes keep the
+spec deterministic and offline.
+
+#### `DbHomePage` (`src/pages/db-home-page.ts`) — the `/` route
+
+- `goto()` — navigate and wait for React to mount into `#root`.
+- `waitForLoaded()` — assert the welcome copy, the tag-list copy, and the "Get
+  started" CTA rendered.
+
+#### `DbDatabasePage` (`src/pages/db-database-page.ts`) — the `/database` route
+
+- `goto()` / `waitForBrowse()` — open the route; assert the count, search box,
+  filter funnel, and an entry card's Copy Config / Open in Viewer controls.
+- `openFilterPanel()` / `expandCharacters()` — open the filter drawer; expand
+  the Characters section to its portrait picker.
+- `filterByCharacter(name)` — pick a character from the search box, which
+  refetches `/api/db` with the narrowed query; pair with `expectShowing(n)`.
+
 ## Out of scope
 
-CI integration, the production/preview (R2 wasm) path, server mode, share/db/
-local viewer routes, Enka/GOOD import, engine-correctness or numeric assertions,
-and non-Chromium browsers. See issue #2805. For docs: the search backend,
-i18n/translations, and visual regression (issue #2868).
+CI integration, the production/preview (R2 wasm) path, server mode, the
+`/db/:id` viewer render, local/share viewer routes, Enka/GOOD import,
+engine-correctness or numeric assertions, and non-Chromium browsers. See issues
+#2805 and #2869. For docs: the search backend, i18n/translations, and visual
+regression (issue #2868).
