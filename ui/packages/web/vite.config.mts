@@ -5,8 +5,8 @@ import { visualizer } from "rollup-plugin-visualizer";
 import { type ConfigEnv, defineConfig } from "vite";
 
 export default (_env: ConfigEnv) => {
-	process.env.VITE_GIT_COMMIT_HASH = git.long();
-	process.env.VITE_GIT_BRANCH = git.branch();
+	process.env.VITE_GIT_COMMIT_HASH = git.long(import.meta.dirname);
+	process.env.VITE_GIT_BRANCH = git.branch(import.meta.dirname);
 
 	return defineConfig({
 		plugins: [tailwindcss(), react(), visualizer()],
