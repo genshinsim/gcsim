@@ -1,6 +1,7 @@
 import { Group } from "@visx/group";
 import { Pie } from "@visx/shape";
 import { useTooltip } from "@visx/tooltip";
+import { TooltipProvider } from "../../../ui";
 import { OuterLabels } from "./OuterLabels";
 import { RenderTooltip, type TooltipData, useTooltipHandles } from "./Tooltip";
 
@@ -50,88 +51,94 @@ export default <Datum,>({
 
 	const radius = Math.min(width - margin, height) / 2;
 	return (
-		<div className="relative">
-			<svg width={width} height={height} role="img" aria-label="Pie chart">
-				<Group left={width / 2} top={height / 2}>
-					{/* label arcs */}
-					{labelText != null && labelValue != null && (
+		<TooltipProvider>
+			<div className="relative">
+				<svg width={width} height={height} role="img" aria-label="Pie chart">
+					<Group left={width / 2} top={height / 2}>
+						{/* label arcs */}
+						{labelText != null && labelValue != null && (
+							<Pie
+								data={data}
+								pieValue={pieValue}
+								innerRadius={radius * labelRadius}
+								outerRadius={radius * labelRadius}
+							>
+								{(pie) => (
+									<OuterLabels
+										arcs={pie.arcs}
+										labelRadius={radius * labelRadius}
+										pieRadius={radius * pieRadius}
+										labelColor={labelColor}
+										labelText={labelText}
+										labelValue={labelValue}
+										mouseHover={tooltipHandles.mouseHover}
+										mouseLeave={tooltipHandles.mouseLeave}
+										tail={tail}
+									/>
+								)}
+							</Pie>
+						)}
+
+						{/* tooltip hover arcs */}
 						<Pie
 							data={data}
 							pieValue={pieValue}
-							innerRadius={radius * labelRadius}
-							outerRadius={radius * labelRadius}
+							outerRadius={radius * pieRadius + (tail * 2) / 3}
 						>
-							{(pie) => (
-								<OuterLabels
-									arcs={pie.arcs}
-									labelRadius={radius * labelRadius}
-									pieRadius={radius * pieRadius}
-									labelColor={labelColor}
-									labelText={labelText}
-									labelValue={labelValue}
-									mouseHover={tooltipHandles.mouseHover}
-									mouseLeave={tooltipHandles.mouseLeave}
-									tail={tail}
-								/>
-							)}
+							{(pie) => {
+								return pie.arcs.map((arc, index) => {
+									if (tooltip.tooltipData?.index !== index) {
+										return null;
+									}
+
+									return (
+										<path
+											key={labelText?.(arc.data) ?? index}
+											d={pie.path(arc) ?? ""}
+											fill={color(arc.data)}
+											opacity={0.5}
+										/>
+									);
+								});
+							}}
 						</Pie>
-					)}
 
-					{/* tooltip hover arcs */}
-					<Pie
-						data={data}
-						pieValue={pieValue}
-						outerRadius={radius * pieRadius + (tail * 2) / 3}
-					>
-						{(pie) => {
-							return pie.arcs.map((arc, index) => {
-								if (tooltip.tooltipData?.index !== index) {
-									return null;
-								}
-
-								return (
-									<path
-										key={labelText?.(arc.data) ?? index}
-										d={pie.path(arc) ?? ""}
-										fill={color(arc.data)}
-										opacity={0.5}
-									/>
-								);
-							});
-						}}
-					</Pie>
-
-					{/* pie arcs */}
-					<Pie data={data} pieValue={pieValue} outerRadius={radius * pieRadius}>
-						{(pie) => {
-							return pie.arcs.map((arc, index) => {
-								return (
-									// biome-ignore lint/a11y/noStaticElementInteractions: mouse-only chart tooltip hover region, no interactive semantics
-									<path
-										key={labelText?.(arc.data) ?? index}
-										d={pie.path(arc) ?? ""}
-										fill={color(arc.data)}
-										stroke={outline}
-										strokeWidth={outlineWidth}
-										onMouseMove={(e) => tooltipHandles.mouseHover(e, index)}
-										onMouseLeave={() => tooltipHandles.mouseLeave()}
-									/>
-								);
-							});
-						}}
-					</Pie>
-				</Group>
-			</svg>
-			<RenderTooltip
-				data={data}
-				tooltipOpen={tooltip.tooltipOpen}
-				tooltipData={tooltip.tooltipData}
-				tooltipLeft={tooltip.tooltipLeft}
-				tooltipTop={tooltip.tooltipTop}
-				content={tooltipContent}
-				handles={tooltipHandles}
-				showTooltip={tooltip.showTooltip}
-			/>
-		</div>
+						{/* pie arcs */}
+						<Pie
+							data={data}
+							pieValue={pieValue}
+							outerRadius={radius * pieRadius}
+						>
+							{(pie) => {
+								return pie.arcs.map((arc, index) => {
+									return (
+										// biome-ignore lint/a11y/noStaticElementInteractions: mouse-only chart tooltip hover region, no interactive semantics
+										<path
+											key={labelText?.(arc.data) ?? index}
+											d={pie.path(arc) ?? ""}
+											fill={color(arc.data)}
+											stroke={outline}
+											strokeWidth={outlineWidth}
+											onMouseMove={(e) => tooltipHandles.mouseHover(e, index)}
+											onMouseLeave={() => tooltipHandles.mouseLeave()}
+										/>
+									);
+								});
+							}}
+						</Pie>
+					</Group>
+				</svg>
+				<RenderTooltip
+					data={data}
+					tooltipOpen={tooltip.tooltipOpen}
+					tooltipData={tooltip.tooltipData}
+					tooltipLeft={tooltip.tooltipLeft}
+					tooltipTop={tooltip.tooltipTop}
+					content={tooltipContent}
+					handles={tooltipHandles}
+					showTooltip={tooltip.showTooltip}
+				/>
+			</div>
+		</TooltipProvider>
 	);
 };

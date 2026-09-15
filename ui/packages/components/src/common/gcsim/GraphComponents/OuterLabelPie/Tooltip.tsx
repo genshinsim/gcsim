@@ -1,5 +1,5 @@
 import type React from "react";
-import { Tooltip } from "../../../ui";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui";
 
 export interface TooltipData {
 	index: number;
@@ -91,17 +91,16 @@ export const RenderTooltip = <Datum,>(props: Props<Datum>) => {
 				position: "absolute",
 			}}
 		>
-			<Tooltip
-				// @ts-expect-error legacy Blueprint Tooltip props on the migrated Radix Tooltip; predates the migration and is out of scope to rewrite here
-				isOpen={true}
-				enforceFocus={false}
-				autoFocus={false}
-				usePortal={false}
-				minimal={true}
-				placement="top"
-				content={content}
-			>
-				<div></div>
+			<Tooltip open={true} onOpenChange={() => {}}>
+				<TooltipTrigger asChild>
+					<div />
+				</TooltipTrigger>
+				<TooltipContent
+					side="top"
+					onPointerDownOutside={(e) => e.preventDefault()}
+				>
+					{content}
+				</TooltipContent>
 			</Tooltip>
 		</div>
 	);

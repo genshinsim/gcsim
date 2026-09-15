@@ -6,6 +6,7 @@ export { HistogramGraph } from "./DistributionCard/HistogramGraph";
 export { PreviewCard } from "./PreviewCard";
 export { default as CumulativeDamageCard } from "./ResultCards/Damage/CumulativeDamageCard";
 export { default as DamageTimelineCard } from "./ResultCards/Damage/DamageTimelineCard";
+export { default as TargetDPSCard } from "./ResultCards/Damage/TargetDPSCard";
 // Component-only surface (browser-safe). The Node font loader lives in
 // SatoriPreviewCard/fontsNode and is intentionally not re-exported here.
 export {
