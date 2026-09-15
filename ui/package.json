@@ -34,7 +34,8 @@
 		"storybook": "pnpm --filter @gcsim/storybook storybook",
 		"test:e2e": "pnpm --filter @gcsim/e2e test",
 		"test:e2e:docs": "pnpm --filter @gcsim/e2e test:docs",
-		"test:e2e:db": "pnpm --filter @gcsim/e2e test:db"
+		"test:e2e:db": "pnpm --filter @gcsim/e2e test:db",
+		"test:e2e:taghelper": "pnpm --filter @gcsim/e2e test:taghelper"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.13",

@@ -14,10 +14,11 @@ const HOST = `http://localhost:${PORT}`;
  */
 export default defineConfig({
 	testDir: "./tests",
-	// The docs and db suites have their own configs (playwright.docs.config.ts,
-	// playwright.db.config.ts) with their own web servers; keep their specs out
-	// of this wasm-backed run.
-	testIgnore: ["**/docs/**", "**/db/**"],
+	// The docs, db and taghelper suites have their own configs
+	// (playwright.docs.config.ts, playwright.db.config.ts,
+	// playwright.taghelper.config.ts) with their own web servers; keep their
+	// specs out of this wasm-backed run.
+	testIgnore: ["**/docs/**", "**/db/**", "**/taghelper/**"],
 	fullyParallel: true,
 	forbidOnly: !!process.env.CI,
 	retries: process.env.CI ? 1 : 0,

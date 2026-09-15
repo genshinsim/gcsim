@@ -9,3 +9,12 @@ export { DbDatabasePage } from "./pages/db-database-page";
 export { DbHomePage } from "./pages/db-home-page";
 export { SimulatorPage } from "./pages/simulator-page";
 export { ViewerPage } from "./pages/viewer-page";
+export {
+	installTaghelperRoutes,
+	MAIN_ID,
+	mainEntry,
+	relatedEntry,
+	SOURCE_TAG_NAME,
+	type TaghelperEntry,
+} from "./taghelper-fixtures";
+export { TaghelperHarness } from "./taghelper-harness";

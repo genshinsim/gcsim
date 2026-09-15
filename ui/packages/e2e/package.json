@@ -9,6 +9,8 @@
 		"test:docs": "playwright test --config playwright.docs.config.ts",
 		"test:db": "playwright test --config playwright.db.config.ts",
 		"test:db:headed": "playwright test --config playwright.db.config.ts --headed",
+		"test:taghelper": "playwright test --config playwright.taghelper.config.ts",
+		"test:taghelper:headed": "playwright test --config playwright.taghelper.config.ts --headed",
 		"report": "playwright show-report"
 	},
 	"devDependencies": {
