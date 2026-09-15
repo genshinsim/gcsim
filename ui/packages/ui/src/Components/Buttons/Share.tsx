@@ -43,6 +43,7 @@ export default ({
 	const [shareLink, setShareLink] = shareState;
 
 	// change the set link if url changes or rerun
+	// biome-ignore lint/correctness/useExhaustiveDependencies: data?.config_file re-runs this on a rerun that keeps the same pathname
 	useEffect(() => {
 		setShareLink(extractFromLocation(location.pathname));
 	}, [location.pathname, setShareLink, data?.config_file]);
