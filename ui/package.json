@@ -32,7 +32,8 @@
 		"deploy:workers": "pnpm --filter @gcsim/workers deploy",
 		"start:workers": "pnpm --filter @gcsim/workers start",
 		"storybook": "pnpm --filter @gcsim/storybook storybook",
-		"test:e2e": "pnpm --filter @gcsim/e2e test"
+		"test:e2e": "pnpm --filter @gcsim/e2e test",
+		"test:e2e:docs": "pnpm --filter @gcsim/e2e test:docs"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.13",

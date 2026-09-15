@@ -1,9 +1,14 @@
 # @gcsim/e2e
 
-Local, Playwright-driven end-to-end smoke test for the gcsim web app. It boots
-the app, waits for wasm + workers to load, validates and runs a config, and
-asserts the viewer renders — catching regressions where the app *builds* but
-breaks at *runtime*.
+Local, Playwright-driven end-to-end smoke tests for gcsim, catching regressions
+where a site *builds* but breaks at *runtime*. Two suites, each its own
+Playwright config:
+
+- **web** (`playwright.config.ts`, default) — boots the web app, waits for
+  wasm + workers, validates and runs a config, and asserts the viewer renders.
+- **docs** (`playwright.docs.config.ts`) — builds and serves the Docusaurus docs
+  site, then asserts the landing page and a nested doc render with a clean
+  console.
 
 Two layers:
 
@@ -15,9 +20,9 @@ Two layers:
 
 ## Prerequisites
 
-The suite runs against the **dev server**, not a production build: in a prod
-build the wasm URL points at a remote origin (R2 / `/api/wasm/...`) that isn't
-available locally.
+The **web** suite runs against the **dev server**, not a production build: in a
+prod build the wasm URL points at a remote origin (R2 / `/api/wasm/...`) that
+isn't available locally.
 
 The Playwright `webServer` builds the wasm binary and then starts `vite`. The
 wasm build shells out to `task wasm` (`go build` for `GOOS=js`), so you need:
@@ -28,17 +33,27 @@ wasm build shells out to `task wasm` (`go build` for `GOOS=js`), so you need:
 - **Playwright's Chromium** browser: from `ui/`, run
   `pnpm --filter @gcsim/e2e exec playwright install chromium`.
 
+The **docs** suite needs none of the wasm toolchain — no Go, no `task`. It
+serves a *production build* (`docusaurus build` then `docusaurus serve`): docs
+has no wasm, workers, or backend, and building first makes the smoke spec catch
+build-time breakage too (broken links, MDX compile errors, a bad sidebar entry).
+It still needs the pnpm deps and the Chromium browser above.
+
 ## Run it
 
 From the `ui/` workspace root:
 
 ```sh
-pnpm test:e2e
+pnpm test:e2e       # web app suite
+pnpm test:e2e:docs  # docs site suite
 ```
 
-That builds the wasm binary, boots the dev server on a fixed strict port
+`test:e2e` builds the wasm binary, boots the dev server on a fixed strict port
 (`5173`), runs the suite headless in Chromium, and tears the server down after.
 A running dev server on `5173` is reused (locally) instead of restarted.
+
+`test:e2e:docs` builds the docs site, serves it on port `4173`, runs the suite,
+and tears the server down after — a running server on `4173` is reused locally.
 
 Other entry points (from `ui/packages/e2e`):
 
@@ -54,10 +69,10 @@ with `pnpm --filter @gcsim/e2e exec playwright show-trace <trace.zip>`.
 
 ## What the harness helpers do
 
-The app ships **no data-testids**, so every locator rides an observable
-contract (a DOM id, a Blueprint class, or an accessible name).
+Neither app ships **data-testids**, so every locator rides an observable
+contract (a DOM id, a Blueprint/theme class, or an accessible name).
 
-### `AppHarness` (`src/app-harness.ts`)
+### `AppHarness` (`src/app-harness.ts`) — web app
 
 Owns the full boot → run → complete flow and bundles the page objects and the
 console monitor.
@@ -91,6 +106,18 @@ console monitor.
   (`bp4-card`) and one inline `<svg>` chart. **Structural only** — never asserts
   DPS or any numeric result.
 
+### `DocsHarness` (`src/docs-harness.ts`) — docs site
+
+Docs is a single, uniform surface (every route is a rendered MDX page with the
+same sidebar chrome), so one class owns the whole surface plus a
+`ConsoleMonitor`.
+
+- `goto(path = "/")` — navigate and wait for the doc body
+  (`article .theme-doc-markdown`) to render.
+- `sidebar` — the `<nav aria-label="Docs sidebar">`; `sidebarLink(name)` is a
+  sidebar entry by its exact label.
+- `heading(name)` — the current doc's `<h1>` by accessible name.
+
 ### `ConsoleMonitor` (`src/console-monitor.ts`)
 
 Watches the page console for its whole lifetime. It collects uncaught
@@ -111,4 +138,5 @@ and a Vite HMR websocket blip on teardown.
 
 CI integration, the production/preview (R2 wasm) path, server mode, share/db/
 local viewer routes, Enka/GOOD import, engine-correctness or numeric assertions,
-and non-Chromium browsers. See issue #2805.
+and non-Chromium browsers. See issue #2805. For docs: the search backend,
+i18n/translations, and visual regression (issue #2868).
