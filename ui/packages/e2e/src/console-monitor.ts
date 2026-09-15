@@ -40,6 +40,7 @@ type Waiter = (text: string) => void;
  */
 export class ConsoleMonitor {
 	readonly errors: string[] = [];
+	readonly crashes: string[] = [];
 	private readonly logs: string[] = [];
 	private readonly waiters = new Set<Waiter>();
 
@@ -54,6 +55,7 @@ export class ConsoleMonitor {
 		page.on("pageerror", (err) => {
 			const text = err.stack ?? err.message;
 			this.record(text);
+			this.crashes.push(`pageerror: ${text}`);
 			if (!isIgnored(text)) {
 				this.errors.push(`pageerror: ${text}`);
 			}
@@ -106,6 +108,13 @@ export class ConsoleMonitor {
 		expect(
 			this.errors,
 			`expected no uncaught console errors, saw:\n${this.errors.join("\n")}`,
+		).toEqual([]);
+	}
+
+	assertNoCrashes(): void {
+		expect(
+			this.crashes,
+			`expected no uncaught page exceptions, saw:\n${this.crashes.join("\n")}`,
 		).toEqual([]);
 	}
 }
