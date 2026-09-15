@@ -13,6 +13,7 @@ import { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router";
 import { CopyToClipboard, SendToSimulator } from "../../Components/Buttons";
+import { useSendToSimulator } from "../../Components/Buttons/useSendToSimulator";
 import { CharacterCard } from "../../Components/Cards";
 import { characterCardsClassNames } from "../Viewer/Components/Overview/TeamHeader";
 import {
@@ -42,6 +43,7 @@ export default ({ sample, error, retry }: Props) => {
 	const { t } = useTranslation();
 	const data = useSample(sample);
 	const copyToast = useRef<Toaster>(null);
+	const onSendToSimulator = useSendToSimulator();
 
 	if (sample == null || data.team == null || data.parsed == null) {
 		return (
@@ -67,7 +69,10 @@ export default ({ sample, error, retry }: Props) => {
 						config={sample.config}
 						className="hidden ml-[7px] sm:flex"
 					/>
-					<SendToSimulator config={sample.config} />
+					<SendToSimulator
+						config={sample.config}
+						onSendToSimulator={onSendToSimulator}
+					/>
 				</ButtonGroup>
 			</div>
 			<div className="flex flex-row gap-2 justify-center flex-wrap px-4 pb-2">

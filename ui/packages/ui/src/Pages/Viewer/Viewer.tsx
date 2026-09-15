@@ -17,6 +17,15 @@ import ConfigUI, { useConfig } from "./Tabs/Config";
 import Results from "./Tabs/Results";
 import SampleUI, { useSample } from "./Tabs/Sample";
 
+// The viewer only announces intent through these callbacks; the host supplies the effect
+// (redux, routing, share API). A button is rendered only when its callback is provided, so a
+// read-only host can pass `{}` (or nothing) to get a viewer with no send/rerun/share buttons.
+export type ViewerActions = {
+	onSendToSimulator?: (cfg: string, opts: { keepTeam: boolean }) => void;
+	onRerun?: (cfg: string) => void;
+	onShare?: (data: SimResults, hash: string | null) => Promise<string>;
+};
+
 type ViewerProps = {
 	running: boolean;
 	data: SimResults | null;
@@ -27,6 +36,8 @@ type ViewerProps = {
 	redirect: string;
 	exec: ExecutorSupplier<Executor>;
 	retry?: () => void;
+	actions?: ViewerActions;
+	existingShareLink?: string | null;
 };
 
 // The viewer is read-only against the data. Any mutations to the data (resim) must be performed
@@ -43,6 +54,8 @@ export default ({
 	redirect,
 	exec,
 	retry,
+	actions,
+	existingShareLink,
 }: ViewerProps) => {
 	const { t } = useTranslation();
 	const parsed = queryString.parse(location.hash);
@@ -73,7 +86,14 @@ export default ({
 
 	const tabs: { [k: string]: React.ReactNode } = {
 		results: <Results data={data} running={running} names={names} />,
-		config: <ConfigUI config={config} running={running} resetTab={resetTab} />,
+		config: (
+			<ConfigUI
+				config={config}
+				running={running}
+				resetTab={resetTab}
+				onRerun={actions?.onRerun}
+			/>
+		),
 		analyze: <div></div>,
 		sample: (
 			<SampleUI
@@ -97,6 +117,8 @@ export default ({
 					tabState={[tabId, setTabId]}
 					data={data}
 					running={running}
+					actions={actions}
+					existingShareLink={existingShareLink}
 				/>
 			</div>
 			<div className="basis-full pt-0 mt-0">{tabs[tabId]}</div>
@@ -113,6 +135,7 @@ export default ({
 				recoveryConfig={recoveryConfig}
 				redirect={redirect}
 				retry={retry}
+				onSendToSimulator={actions?.onSendToSimulator}
 			/>
 		</div>
 	);
@@ -123,11 +146,13 @@ const ErrorAlert = ({
 	recoveryConfig,
 	redirect,
 	retry,
+	onSendToSimulator,
 }: {
 	msg: string | null;
 	recoveryConfig: string | null;
 	redirect: string;
 	retry?: () => void;
+	onSendToSimulator?: ViewerActions["onSendToSimulator"];
 }) => {
 	const { t } = useTranslation();
 	const copyToast = useRef<Toaster>(null);
@@ -162,7 +187,10 @@ const ErrorAlert = ({
 							config={recoveryConfig}
 							className="hidden ml-[7px] sm:flex"
 						/>
-						<SendToSimulator config={recoveryConfig} />
+						<SendToSimulator
+							config={recoveryConfig}
+							onSendToSimulator={onSendToSimulator}
+						/>
 					</>
 				) : null}
 			</div>

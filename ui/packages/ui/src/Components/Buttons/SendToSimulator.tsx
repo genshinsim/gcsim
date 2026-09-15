@@ -10,20 +10,24 @@ import {
 import classNames from "classnames";
 import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router";
-import { appActions } from "../../Stores/appSlice";
-import { useAppDispatch } from "../../Stores/store";
 
-const SendTo = ({ config }: { config?: string }) => {
+type SendToProps = {
+	config?: string;
+	onSendToSimulator?: (cfg: string, opts: { keepTeam: boolean }) => void;
+};
+
+const SendTo = ({ config, onSendToSimulator }: SendToProps) => {
 	const LOCALSTORAGE_KEY = "gcsim-viewer-cpy-cfg-settings";
 	const { t } = useTranslation();
-	const dispatch = useAppDispatch();
-	const history = useHistory();
 
 	const [isOpen, setOpen] = useState(false);
 	const [keepTeam, setKeep] = useState<boolean>(() => {
 		return localStorage.getItem(LOCALSTORAGE_KEY) === "true";
 	});
+
+	if (onSendToSimulator == null) {
+		return null;
+	}
 
 	const toggleKeepTeam = () => {
 		localStorage.setItem(LOCALSTORAGE_KEY, String(!keepTeam));
@@ -34,8 +38,7 @@ const SendTo = ({ config }: { config?: string }) => {
 		if (config == null) {
 			return;
 		}
-		dispatch(appActions.setCfg({ cfg: config, keepTeam: keepTeam }));
-		history.push("/simulator");
+		onSendToSimulator(config, { keepTeam });
 	};
 
 	return (

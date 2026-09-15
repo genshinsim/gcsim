@@ -11,11 +11,8 @@ import type { SimResults } from "@gcsim/types";
 import { ConfigEditor } from "@ui/Components";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router";
 import ExecutorSettingsButton from "../../../Components/Buttons/ExecutorSettingsButton";
-import { useAppDispatch } from "../../../Stores/store";
 import { useConfigValidateListener } from "../../Simulator";
-import { runSim } from "../../Simulator/Toolbox";
 
 type UseConfigData = {
 	cfg?: string;
@@ -31,12 +28,11 @@ type ConfigProps = {
 	config: UseConfigData;
 	running: boolean;
 	resetTab: () => void;
+	onRerun?: (cfg: string) => void;
 };
 
-const ConfigUI = ({ config, running, resetTab }: ConfigProps) => {
+const ConfigUI = ({ config, running, resetTab, onRerun }: ConfigProps) => {
 	const { t } = useTranslation();
-	const dispatch = useAppDispatch();
-	const history = useHistory();
 
 	if (config.cfg == null) {
 		return <NonIdealState icon={<Spinner size={SpinnerSize.LARGE} />} />;
@@ -47,21 +43,22 @@ const ConfigUI = ({ config, running, resetTab }: ConfigProps) => {
 			<div className="sticky top-0 bg-bp4-dark-gray-100 py-4 z-10">
 				<div className="flex gap-2 justify-center">
 					<ExecutorSettingsButton />
-					<Button
-						icon="refresh"
-						text={t("viewer.rerun")}
-						intent={Intent.SUCCESS}
-						disabled={
-							config.error !== "" || (!config.validated && config.modified)
-						}
-						loading={!config.isReady || running}
-						className="basis-1/2"
-						onClick={() => {
-							dispatch(runSim(config.exec(), config.cfg ?? ""));
-							resetTab();
-							history.push("/web");
-						}}
-					/>
+					{onRerun != null ? (
+						<Button
+							icon="refresh"
+							text={t("viewer.rerun")}
+							intent={Intent.SUCCESS}
+							disabled={
+								config.error !== "" || (!config.validated && config.modified)
+							}
+							loading={!config.isReady || running}
+							className="basis-1/2"
+							onClick={() => {
+								resetTab();
+								onRerun(config.cfg ?? "");
+							}}
+						/>
+					) : null}
 				</div>
 				<ConfigError error={config.error} cfg={config.cfg} />
 			</div>

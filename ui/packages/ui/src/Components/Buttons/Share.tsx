@@ -12,11 +12,9 @@ import {
 	type Toaster,
 } from "@blueprintjs/core";
 import type { SimResults } from "@gcsim/types";
-import axios from "axios";
 import classNames from "classnames";
-import { type RefObject, useEffect, useState } from "react";
+import { type RefObject, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation } from "react-router";
 
 type ShareProps = {
 	running: boolean;
@@ -24,10 +22,10 @@ type ShareProps = {
 	data: SimResults | null;
 	hash: string | null;
 	shareState: [string | null, (link: string | null) => void];
+	onShare?: (data: SimResults, hash: string | null) => Promise<string>;
 	className?: string;
 };
 
-// TODO: separate share handling away from the button for caching across pages
 export default ({
 	running,
 	copyToast,
@@ -35,30 +33,25 @@ export default ({
 	hash,
 	className,
 	shareState,
+	onShare,
 }: ShareProps) => {
 	const { t } = useTranslation();
-	const location = useLocation();
 
 	const [isOpen, setOpen] = useState(false);
 	const [shareLink, setShareLink] = shareState;
 
-	// change the set link if url changes or rerun
-	// biome-ignore lint/correctness/useExhaustiveDependencies: data?.config_file re-runs this on a rerun that keeps the same pathname
-	useEffect(() => {
-		setShareLink(extractFromLocation(location.pathname));
-	}, [location.pathname, setShareLink, data?.config_file]);
+	if (onShare == null) {
+		return null;
+	}
 
 	const handleShare = () => {
 		if (data === null || shareLink != null) {
 			return;
 		}
 
-		axios
-			.post("/api/share", data, {
-				headers: { "X-GCSIM-SHARE-AUTH": hash ?? "" },
-			})
-			.then((resp) => {
-				setShareLink(link("sh", resp.data));
+		onShare(data, hash)
+			.then((url) => {
+				setShareLink(url);
 			})
 			.catch((err) => {
 				console.log(err);
@@ -137,16 +130,3 @@ const DialogBody = ({ shareLink, copy }: DialogProps) => {
 		</Label>
 	);
 };
-
-function link(route: string, id: string): string {
-	return `${window.location.protocol}//${window.location.host}/${route}/${id}`;
-}
-
-function extractFromLocation(location: string) {
-	if (location.startsWith("/sh/")) {
-		return link("sh", location.substring(location.lastIndexOf("/") + 1));
-	} else if (location.startsWith("/db/")) {
-		return link("db", location.substring(location.lastIndexOf("/") + 1));
-	}
-	return null;
-}

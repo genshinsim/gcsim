@@ -1,13 +1,14 @@
 import { ButtonGroup, Position, Tab, Tabs, Toaster } from "@blueprintjs/core";
 import type { SimResults } from "@gcsim/types";
 import classNames from "classnames";
-import { type MouseEvent, useRef, useState } from "react";
+import { type MouseEvent, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
 	CopyToClipboard,
 	SendToSimulator,
 	Share,
 } from "../../../Components/Buttons";
+import type { ViewerActions } from "../Viewer";
 
 const btnClass = classNames("hidden ml-[7px] sm:flex");
 
@@ -16,13 +17,28 @@ type NavProps = {
 	hash: string | null;
 	tabState: [string, (tab: string) => void];
 	running: boolean;
+	actions?: ViewerActions;
+	existingShareLink?: string | null;
 };
 
-export default ({ tabState, data, hash, running }: NavProps) => {
+export default ({
+	tabState,
+	data,
+	hash,
+	running,
+	actions,
+	existingShareLink,
+}: NavProps) => {
 	const { t } = useTranslation();
 	const [tabId, setTabId] = tabState;
 	const copyToast = useRef<Toaster>(null);
-	const shareState = useState<string | null>(null);
+	const shareState = useState<string | null>(existingShareLink ?? null);
+	const [, setShareLink] = shareState;
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: data?.config_file re-runs this on a rerun that keeps the same existingShareLink
+	useEffect(() => {
+		setShareLink(existingShareLink ?? null);
+	}, [existingShareLink, setShareLink, data?.config_file]);
 
 	return (
 		<Tabs selectedTabId={tabId} onChange={(s) => setTabId(s as string)}>
@@ -51,7 +67,10 @@ export default ({ tabState, data, hash, running }: NavProps) => {
 					config={data?.config_file}
 					className={btnClass}
 				/>
-				<SendToSimulator config={data?.config_file} />
+				<SendToSimulator
+					config={data?.config_file}
+					onSendToSimulator={actions?.onSendToSimulator}
+				/>
 				<Share
 					copyToast={copyToast}
 					shareState={shareState}
@@ -59,6 +78,7 @@ export default ({ tabState, data, hash, running }: NavProps) => {
 					hash={hash}
 					running={running}
 					className={btnClass}
+					onShare={actions?.onShare}
 				/>
 			</ButtonGroup>
 			<Toaster ref={copyToast} position={Position.TOP_RIGHT} />
