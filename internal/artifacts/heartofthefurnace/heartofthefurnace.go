@@ -1,8 +1,6 @@
 package heartofthefurnace
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -12,15 +10,13 @@ import (
 )
 
 const (
-	setKey2     = "heartofthefurnace-2pc"
-	setKey4     = "heartofthefurnace-4pc"
+	setKey2     = "furnace-2pc"
+	setKey4     = "furnace-4pc"
 	atkKey      = setKey4 + "-atk"
-	reactionKey = setKey4 + "-reaction"
+	reactionKey = setKey4 + "-react"
 )
 
 type Set struct {
-	char  *character.CharWrapper
-	core  *core.Core
 	Index int
 	Count int
 }
@@ -31,99 +27,79 @@ func (s *Set) Init() error      { return nil }
 
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{
-		char:  char,
-		core:  c,
 		Count: count,
 	}
 
-	if count >= 2 {
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.ATKP] = 0.18
-
-		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase(setKey2, -1),
-			AffectedStat: attributes.ATKP,
-			Amount: func() []float64 {
-				return m
-			},
-		})
+	if count < 2 {
+		return &s, nil
 	}
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.ATKP] = 0.18
+
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase(setKey2, -1),
+		AffectedStat: attributes.ATKP,
+		Amount: func() []float64 {
+			return m
+		},
+	})
 
 	if count < 4 {
 		return &s, nil
 	}
 
-	char.AddStatMod(character.StatMod{
-		Base:         modifier.NewBase(atkKey, -1),
+	m2 := make([]float64, attributes.EndStatType)
+	m2[attributes.ATKP] = 0.12
+
+	atkpBuff := character.StatMod{
+		Base:         modifier.NewBaseWithHitlag(atkKey, 12*60),
 		AffectedStat: attributes.ATKP,
 		Amount: func() []float64 {
-			m := make([]float64, attributes.EndStatType)
-			if char.StatusIsActive(atkKey) {
-				m[attributes.ATKP] = 0.12
-			}
-			return m
+			return m2
 		},
-	})
-
-	for _, partyChar := range s.core.Player.Chars() {
-		partyChar.AddReactBonusMod(character.ReactBonusMod{
-			Base: modifier.NewBase(setKey4+"-reaction-dmg", -1),
-			Amount: func(ai info.AttackInfo) float64 {
-				if !partyChar.StatusIsActive(reactionKey) {
-					return 0
-				}
-				if !ai.AttackTag.IsStellarReact() {
-					return 0
-				}
-				return 0.50
-			},
-		})
 	}
 
-	trigger := func() {
-		s.char.AddStatus(atkKey, 12*60, true)
+	stellarBuff := character.ReactBonusMod{
+		Base: modifier.NewBaseWithHitlag(reactionKey, 12*60),
+		Amount: func(ai info.AttackInfo) float64 {
+			if !ai.AttackTag.IsStellar() {
+				return 0
+			}
+			return 0.50
+		},
+	}
 
-		for _, partyChar := range s.core.Player.Chars() {
-			partyChar.AddStatus(reactionKey, 12*60, true)
+	addBuffs := func() {
+		char.AddStatMod(atkpBuff)
+
+		for _, partyChar := range c.Player.Chars() {
+			partyChar.AddReactBonusMod(stellarBuff)
 		}
 	}
 
-	s.core.Events.Subscribe(
-		event.OnStellarConduct,
-		func(args ...any) {
-			ae := args[1].(*info.AttackEvent)
-			if ae.Info.ActorIndex == s.char.Index() {
-				trigger()
-			}
-		},
-		fmt.Sprintf("%s-conduct-%v", setKey4, s.char.Base.Key.String()),
-	)
+	onReaction := func(args ...any) {
+		ae := args[1].(*info.AttackEvent)
+		if ae.Info.ActorIndex != char.Index() {
+			return
+		}
+		addBuffs()
+	}
 
-	s.core.Events.Subscribe(
-		event.OnStellarSwirl,
-		func(args ...any) {
-			ae := args[1].(*info.AttackEvent)
-			if ae.Info.ActorIndex == s.char.Index() {
-				trigger()
-			}
-		},
-		fmt.Sprintf("%s-swirl-%v", setKey4, s.char.Base.Key.String()),
-	)
+	onStellarDamage := func(args ...any) {
+		ae := args[1].(*info.AttackEvent)
+		if ae.Info.ActorIndex != char.Index() {
+			return
+		}
+		if !ae.Info.AttackTag.IsStellar() {
+			return
+		}
+		addBuffs()
+	}
 
-	s.core.Events.Subscribe(
-		event.OnEnemyDamage,
-		func(args ...any) {
-			ae := args[1].(*info.AttackEvent)
-			if ae.Info.ActorIndex != s.char.Index() {
-				return
-			}
-			if !ae.Info.AttackTag.IsStellarReact() {
-				return
-			}
-			trigger()
-		},
-		fmt.Sprintf("%s-dmg-%v", setKey4, s.char.Base.Key.String()),
-	)
+	c.Events.Subscribe(event.OnStellarConduct, onReaction, setKey4+"-"+char.Base.Key.String())
+	c.Events.Subscribe(event.OnStellarSwirl, onReaction, setKey4+"-"+char.Base.Key.String())
+	c.Events.Subscribe(event.OnEnemyDamage, onStellarDamage, setKey4+"-"+char.Base.Key.String())
 
 	return &s, nil
 }

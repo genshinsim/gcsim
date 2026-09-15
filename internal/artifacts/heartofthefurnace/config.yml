@@ -1,3 +1,6 @@
 use: pipeline
 kind: artifact
 name: heartofthefurnace
+
+shortcuts:
+  - furnance
