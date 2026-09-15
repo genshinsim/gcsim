@@ -7,6 +7,8 @@
 		"test": "playwright test",
 		"test:headed": "playwright test --headed",
 		"test:docs": "playwright test --config playwright.docs.config.ts",
+		"test:db": "playwright test --config playwright.db.config.ts",
+		"test:db:headed": "playwright test --config playwright.db.config.ts --headed",
 		"report": "playwright show-report"
 	},
 	"devDependencies": {
