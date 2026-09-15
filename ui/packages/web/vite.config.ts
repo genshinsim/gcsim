@@ -1,5 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 import * as git from "git-rev-sync";
 import { visualizer } from "rollup-plugin-visualizer";
 import { type ConfigEnv, defineConfig } from "vite";
