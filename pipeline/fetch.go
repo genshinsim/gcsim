@@ -56,7 +56,7 @@ func FetchLocal(dir string) FetchFunc {
 
 func FetchHTTP(base string) FetchFunc {
 	return func(_, name string) ([]byte, error) {
-		ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
+		ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
 		defer cancel()
 
 		url, err := url.JoinPath(base, name)
