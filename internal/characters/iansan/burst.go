@@ -25,7 +25,7 @@ func init() {
 const (
 	burstHitmark = 38
 
-	burstStatus     = "kinetic-energy"
+	burstStatus     = "iansan-burst"
 	burstBuffStatus = "iansan-burst-buff"
 
 	restoreNSCap   = 99999
@@ -50,7 +50,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), nil, 5, 360),
+		combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5),
 		burstHitmark,
 		burstHitmark,
 	)
@@ -63,17 +63,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 	}, 40)
 
-	if c.Base.Cons >= 2 {
-		c.a1ATK()
-	}
-	c.c4Generated = false
-	c.c4Stacks = 0
+	c.c2OnBurst()
+	c.c4OnBurst()
 
-	duration := 12 * 60
-	if c.Base.Cons >= 6 {
-		duration += 3.0
-	}
-	c.AddStatus(burstStatus, duration, false) // TODO: hitlag affected?
+	duration := 12*60 + c.c6BurstBonusDur()
+
+	c.AddStatus(burstStatus, duration, true)
 	c.SetCD(action.ActionBurst, 18*60)
 	c.ConsumeEnergy(6)
 
@@ -90,6 +85,23 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
+func (c *char) burstInit() {
+	c.burstBuff = make([]float64, attributes.EndStatType)
+
+	for _, char := range c.Core.Player.Chars() {
+		char.AddStatMod(character.StatMod{
+			Base:  modifier.NewBaseWithHitlag(burstBuffStatus, -1),
+			Extra: true,
+			Amount: func() []float64 {
+				if !c.StatusIsActive(burstStatus) {
+					return nil
+				}
+				return c.burstBuff
+			},
+		})
+	}
+}
+
 func (c *char) restorePointsTask(src int) {
 	c.Core.Tasks.Add(func() {
 		if c.burstSrc != src {
@@ -104,7 +116,7 @@ func (c *char) restorePointsTask(src int) {
 		c.burstRestoreNS = 0
 		c.pointsOverflow = max(c.nightsoulState.Points()+points-c.nightsoulState.MaxPoints, 0.0)
 		if c.pointsOverflow > 0 {
-			c.c6()
+			c.c6OnOverflow()
 		}
 		if points > 0.0 {
 			c.nightsoulState.GeneratePoints(points)
@@ -122,8 +134,9 @@ func (c *char) updateATKBuff(src int) func() {
 		if c.burstSrc != src {
 			return
 		}
+
 		if !c.StatusIsActive(burstStatus) {
-			clear(c.burstBuff)
+			c.burstBuff[attributes.ATK] = 0
 			return
 		}
 
@@ -131,16 +144,9 @@ func (c *char) updateATKBuff(src int) func() {
 		if c.nightsoulState.Points() < 42 {
 			rate = lowATK * c.nightsoulState.Points()
 		}
-		c.burstBuff[attributes.ATK] = min(c.TotalAtk()*rate, maxATK[c.TalentLvlBurst()])
 
-		active := c.Core.Player.ActiveChar()
-		active.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag(burstBuffStatus, 0.3*60),
-			Amount: func() []float64 {
-				c.c2ATKBuff(active)
-				return c.burstBuff
-			},
-		})
+		nonExtraAtk := c.SelectStat(true, attributes.BaseATK, attributes.ATKP, attributes.ATK).TotalATK()
+		c.burstBuff[attributes.ATK] = min(nonExtraAtk*rate, maxATK[c.TalentLvlBurst()])
 
 		c.QueueCharTask(c.updateATKBuff(src), 0.3*60)
 	}

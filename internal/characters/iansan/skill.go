@@ -96,7 +96,7 @@ func (c *char) exitNightsoul() {
 	c.nightsoulState.ExitBlessing()
 	c.nightsoulState.ClearPoints()
 	c.DeleteStatus(burstStatus)
-	c.DeleteStatus(a1Status)
+	c.DeleteStatus(a1Key)
 }
 
 func (c *char) reduceNightsoulPoints(points float64) {

@@ -9,13 +9,13 @@ import (
 )
 
 const (
-	a1Status = "precise-movement"
-	a1ICD    = "precise-movement-icd"
-	a4Status = "warming-up"
-	a4ICD    = "warming-up-icd"
+	a1Key    = "precise-movement"
+	a1ICDKey = "precise-movement-icd"
+	a4Key    = "warming-up"
+	a4ICDKey = "warming-up-icd"
 )
 
-func (c *char) a1() {
+func (c *char) a1Init() {
 	if c.Base.Ascension < 1 {
 		return
 	}
@@ -23,27 +23,31 @@ func (c *char) a1() {
 	c.a1Buff = make([]float64, attributes.EndStatType)
 	c.a1Buff[attributes.ATKP] = 0.2
 
-	cb := func(args ...interface{}) {
+	cb := func(args ...any) {
 		idx := args[0].(int)
 		if idx != c.Core.Player.Active() {
 			return
 		}
-		if !c.StatModIsActive(a1Status) {
+
+		if !c.StatModIsActive(a1Key) {
 			return
 		}
-		if c.StatusIsActive(a1ICD) {
+
+		if c.StatusIsActive(a1ICDKey) {
 			return
 		}
-		c.AddStatus(a1ICD, 2.8*60, true)
+
+		c.AddStatus(a1ICDKey, 2.8*60, true)
 		c.a1Increase = true
 	}
+
 	c.Core.Events.Subscribe(event.OnNightsoulGenerate, cb, "iansan-a1-generate")
 	c.Core.Events.Subscribe(event.OnNightsoulConsume, cb, "iansan-a1-consume")
 }
 
-func (c *char) a1ATK() {
+func (c *char) a1AddBuff() {
 	c.AddStatMod(character.StatMod{
-		Base: modifier.NewBaseWithHitlag(a1Status, 15*60),
+		Base: modifier.NewBaseWithHitlag(a1Key, 15*60),
 		Amount: func() []float64 {
 			return c.a1Buff
 		},
@@ -63,7 +67,7 @@ func (c *char) makeA1CB() func(_ info.AttackCB) {
 		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
-		c.a1ATK()
+		c.a1AddBuff()
 		done = true
 	}
 }
@@ -72,7 +76,7 @@ func (c *char) a1Points() float64 {
 	if c.Base.Ascension < 1 {
 		return 0.0
 	}
-	if !c.StatModIsActive(a1Status) {
+	if !c.StatModIsActive(a1Key) {
 		return 0.0
 	}
 	if c.a1Increase {
@@ -82,21 +86,21 @@ func (c *char) a1Points() float64 {
 	return 1.0
 }
 
-func (c *char) a4() {
+func (c *char) a4Init() {
 	if c.Base.Ascension < 4 {
 		return
 	}
 
 	c.Core.Events.Subscribe(event.OnNightsoulBurst, func(args ...interface{}) {
-		c.AddStatus(a4Status, 10*60, true)
+		c.AddStatus(a4Key, 10*60, true)
 	}, "iansan-a4")
 }
 
 func (c *char) a4Heal() {
-	if !c.StatusIsActive(a4Status) {
+	if !c.StatusIsActive(a4Key) {
 		return
 	}
-	if c.StatusIsActive(a4ICD) {
+	if c.StatusIsActive(a4ICDKey) {
 		return
 	}
 
@@ -108,5 +112,5 @@ func (c *char) a4Heal() {
 		Bonus:   c.Stat(attributes.Heal),
 	})
 
-	c.AddStatus(a4ICD, 2.8*60, true)
+	c.AddStatus(a4ICDKey, 2.8*60, true)
 }

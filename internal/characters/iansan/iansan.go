@@ -5,9 +5,9 @@ import (
 	"github.com/genshinsim/gcsim/internal/template/nightsoul"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -26,8 +26,10 @@ type char struct {
 	a1Increase bool
 
 	c1Points    float64
+	c2Buff      []float64
 	c4Generated bool
 	c4Stacks    int
+	c6Buff      []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -48,14 +50,15 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	c.burstBuff = make([]float64, attributes.EndStatType)
-
-	c.a1()
-	c.a4()
-	c.c4()
+	c.burstInit()
+	c.a1Init()
+	c.a4Init()
+	c.c2Init()
+	c.c4Init()
+	c.c6Init()
 
 	c.Core.Events.Subscribe(event.OnActionExec, c.burstMovementRestore, burstBuffStatus)
-
+	// TODO: subscribe to a player moved event
 	return nil
 }
 
@@ -80,4 +83,12 @@ func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 		return 10
 	}
 	return c.Character.AnimationStartDelay(k)
+}
+
+func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
+	if a == action.ActionCharge && c.StatusIsActive(fastSkill) {
+		// allow skill, charge
+		return nil
+	}
+	return c.Character.NextQueueItemIsValid(k, a, p)
 }
