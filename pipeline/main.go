@@ -296,6 +296,12 @@ func (c *Compiled) build(config *Config) error {
 		c.ICDGroup[name] = att
 	}
 
+	for _, attr := range config.Attributes {
+		if !slices.Contains(abilities, attr.Type) && !strings.HasPrefix(attr.Type, "effect") {
+			return fmt.Errorf("unknown ability type: %v", attr.Type)
+		}
+	}
+
 	for _, abil := range config.Abilities {
 		if !slices.Contains(abilities, abil.Name) {
 			return fmt.Errorf("unknown ability name: %v", abil.Name)

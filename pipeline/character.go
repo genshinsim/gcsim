@@ -164,12 +164,18 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 		"skill":  skill.ProudSkillGroupId,
 		"burst":  burst.ProudSkillGroupId,
 	}
+
+	var passive int
 	for _, v := range spec.depot.InherentProudSkillOpens {
 		if v.ProudSkillGroupId == 0 {
 			continue
 		}
 		if v.NeedAvatarPromoteLevel > 0 {
 			typ := fmt.Sprintf("a%d", v.NeedAvatarPromoteLevel)
+			skills[typ] = v.ProudSkillGroupId
+		} else {
+			passive++
+			typ := fmt.Sprintf("passive%d", passive)
 			skills[typ] = v.ProudSkillGroupId
 		}
 	}
