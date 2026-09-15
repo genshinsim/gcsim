@@ -38,7 +38,6 @@
 		"rollup-plugin-visualizer": "^5.8.3",
 		"tailwindcss": "^4.3.3",
 		"vite": "^8",
-		"vite-tsconfig-paths": "^4.0.5",
 		"wrangler": "4.131.1"
 	}
 }
