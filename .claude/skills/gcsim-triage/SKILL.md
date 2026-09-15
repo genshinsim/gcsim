@@ -21,7 +21,6 @@ Every comment or issue posted to the issue tracker during triage **must** start 
 ## Reference docs
 
 - [AGENT-BRIEF.md](AGENT-BRIEF.md): how to write durable agent briefs
-- [OUT-OF-SCOPE.md](OUT-OF-SCOPE.md): how the `.out-of-scope/` knowledge base works
 
 ## Roles
 
@@ -71,7 +70,7 @@ Show counts and a one-line summary per item. Let the maintainer pick.
 
 **Before you start, always work off the latest `upstream/main` branch creating a copy if needed, and ensure your local code is up to date, UNLESS SPECIFICALLY ASKED OTHERWISE**
 
-1. **Gather context.** Read the full issue or PR (body, comments, labels, author, dates; for a PR, the diff too). Parse any prior triage notes so you don't re-ask resolved questions. Explore the codebase using the project's domain glossary, respecting ADRs in the area (see `docs/agents/domain.md`). Run two checks against the codebase: (a) **redundancy**: search for an existing implementation of the requested behavior by domain concept (not just the request's wording), and report where you looked. If found, it's an already-implemented `wontfix` (step 5). (b) **prior rejection**: read `.out-of-scope/*.md` and surface any that resembles this request.
+1. **Gather context.** Read the full issue or PR (body, comments, labels, author, dates; for a PR, the diff too). Parse any prior triage notes so you don't re-ask resolved questions. Explore the codebase using the project's domain glossary, respecting ADRs in the area (see `docs/agents/domain.md`). Run a **redundancy** check against the codebase: search for an existing implementation of the requested behavior by domain concept (not just the request's wording), and report where you looked. If found, it's an already-implemented `wontfix` (step 5).
 
 2. **Recommend.** Tell the maintainer your category and state recommendation with reasoning, plus a brief codebase summary relevant to the request (including whether it's already implemented). Wait for direction.
 
@@ -83,10 +82,9 @@ Show counts and a one-line summary per item. Let the maintainer pick.
    - `ready-for-agent`: post an agent brief comment ([AGENT-BRIEF.md](AGENT-BRIEF.md)).
    - `ready-for-human`: same structure as an agent brief, but note why it can't be delegated (judgment calls, external access, design decisions, manual testing).
    - `needs-info`: post triage notes (template below).
-   - For `wontfix`, close the issue, with the comment depending on _why_:
-     - **Already implemented**: the change already exists in the codebase. Point to where it lives; do **not** write to `.out-of-scope/` (that KB is for _rejected_ requests, not built ones).
-     - **Rejected (bug)**: give a polite explanation, then close.
-     - **Rejected (enhancement)**: write to `.out-of-scope/`, link to it from a comment, then close ([OUT-OF-SCOPE.md](OUT-OF-SCOPE.md)).
+   - For `wontfix`, post a comment explaining why, then close the issue:
+     - **Already implemented**: the change already exists in the codebase. Point to where it lives.
+     - **Rejected (bug or enhancement)**: give reasoning why it's currently out of scope. Reasoning should be specific enough that a future reader can tell whether circumstances have changed.
    - `needs-triage`: apply the role. Optional comment if there's partial progress.
 
 ## Quick state override
