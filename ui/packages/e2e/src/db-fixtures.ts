@@ -75,11 +75,20 @@ const PNG_1x1 = Buffer.from(
 const GITHUB_RELEASE = { name: "v5.0", body: "e2e stub release notes" };
 
 /**
+ * The characters an included filter names in a `/api/db` query. `craftQuery`
+ * serializes an included char as `"summary.char_names":"<char>"`; an excluded
+ * char uses a `{ "$ne": ... }` object, which this pattern does not match.
+ */
+function includedCharsFromQuery(q: string): string[] {
+	return [...q.matchAll(/"summary\.char_names":"(\w+)"/g)].map((m) => m[1]);
+}
+
+/**
  * Route every network dependency of the db app to a local, deterministic stub:
  *
  *  - `/api/db` returns {@link dbEntries}, filtered to the characters an included
- *    char filter names (the `"summary.char_names":"<char>"` include form the app
- *    emits) so a character filter visibly narrows the list;
+ *    filter names (see {@link includedCharsFromQuery}) so a character filter
+ *    visibly narrows the list;
  *  - `/api/assets/**` (avatars, weapons, misc art) returns a 1x1 PNG;
  *  - `api.github.com` (latest-release lookup) returns a fixed payload;
  *  - any other `/api/**` call returns an empty 200 so nothing reaches prod.
@@ -103,11 +112,7 @@ export async function installDbRoutes(page: Page): Promise<void> {
 	);
 	await page.route("**/api/db*", (route) => {
 		const q = new URL(route.request().url()).searchParams.get("q") ?? "";
-		// The app emits included characters as `"summary.char_names":"<char>"`;
-		// excluded ones use a `{ "$ne": ... }` object, which this doesn't match.
-		const included = [...q.matchAll(/"summary\.char_names":"(\w+)"/g)].map(
-			(m) => m[1],
-		);
+		const included = includedCharsFromQuery(q);
 		const data =
 			included.length > 0
 				? dbEntries.filter((e) =>

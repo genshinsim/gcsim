@@ -38,7 +38,6 @@ export default defineConfig({
 			"pnpm --filter @gcsim/db exec vite --host --port 5273 --strictPort",
 		url: HOST,
 		reuseExistingServer: !process.env.CI,
-		// The dev server's first compile can be slow on a cold cache.
 		timeout: 120_000,
 		stdout: "pipe",
 		stderr: "pipe",
