@@ -13,11 +13,17 @@ tasks:
     cmds:
       - buf generate
       - task: protos:post
-  # Post-generation: add bson tags to the generated Go structs (preview is
-  # intentionally excluded) and regenerate msgp code.
+  # Post-generation: patch the ts-proto struct.ts WKT, add bson tags to the
+  # generated Go structs (preview is intentionally excluded), and regenerate
+  # msgp code.
   protos:post:
     internal: true
     cmds:
+      # TEMPORARY: works around a ts-proto struct.ts codegen bug (camelCase
+      # interface vs snake_case Value helpers). Drop this line and delete
+      # scripts/structpatch once the upstream ts-proto fix is merged and the
+      # pinned ts-proto version includes it. See scripts/structpatch/main.go.
+      - go run scripts/structpatch/main.go
       - go run scripts/bsontags/main.go -dir ./pkg/model -verbose
       - go run scripts/bsontags/main.go -dir ./backend/pkg/services/db -verbose
       - go run scripts/bsontags/main.go -dir ./backend/pkg/services/share -verbose
