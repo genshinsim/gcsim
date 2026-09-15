@@ -15,12 +15,15 @@
 //
 // REMOVE THIS SCRIPT (and its Taskfile step) once the upstream ts-proto fix is
 // merged and the pinned ts-proto version includes it:
-//   upstream fix: https://github.com/stephenh/ts-proto (PR submitted by srliao)
+//
+//	upstream fix: https://github.com/stephenh/ts-proto (PR submitted by srliao)
+//
 // After bumping ts-proto past the fix, `task protos` should produce a clean
 // struct.ts with no snake_case Value fields and this step is dead weight.
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"os"
@@ -49,7 +52,7 @@ func main() {
 		out = re.ReplaceAll(out, []byte(f+"Value"))
 	}
 
-	if string(out) == string(src) {
+	if bytes.Equal(out, src) {
 		fmt.Printf("structpatch: %s already clean (no-op)\n", file)
 		return
 	}
