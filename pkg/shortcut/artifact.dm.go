@@ -67,7 +67,7 @@ var SetNameToKey = map[string]keys.Set{
 	"heartofdepth":                       keys.HeartOfDepth,
 	"hod":                                keys.HeartOfDepth,
 	"heartofthefurnace":                  keys.HeartOfTheFurnace,
-	"furnance":                           keys.HeartOfTheFurnace,
+	"furnace":                            keys.HeartOfTheFurnace,
 	"huskofopulentdreams":                keys.HuskOfOpulentDreams,
 	"hood":                               keys.HuskOfOpulentDreams,
 	"husk":                               keys.HuskOfOpulentDreams,
