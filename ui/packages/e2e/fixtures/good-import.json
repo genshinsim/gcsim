@@ -1,0 +1,24 @@
+{
+	"format": "GOOD",
+	"version": 1,
+	"source": "gcsim-e2e",
+	"characters": [
+		{
+			"key": "Bennett",
+			"level": 90,
+			"constellation": 0,
+			"ascension": 6,
+			"talent": { "auto": 1, "skill": 8, "burst": 10 }
+		}
+	],
+	"weapons": [
+		{
+			"key": "AquilaFavonia",
+			"level": 90,
+			"ascension": 6,
+			"refinement": 1,
+			"location": "Bennett",
+			"lock": true
+		}
+	]
+}

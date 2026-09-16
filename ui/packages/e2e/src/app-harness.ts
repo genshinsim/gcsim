@@ -1,5 +1,6 @@
 import type { Page } from "@playwright/test";
 import { ConsoleMonitor } from "./console-monitor";
+import { DashPage } from "./pages/dash-page";
 import { SimulatorPage } from "./pages/simulator-page";
 import { ViewerPage } from "./pages/viewer-page";
 
@@ -12,12 +13,14 @@ import { ViewerPage } from "./pages/viewer-page";
  */
 export class AppHarness {
 	readonly page: Page;
+	readonly dash: DashPage;
 	readonly simulator: SimulatorPage;
 	readonly viewer: ViewerPage;
 	readonly console: ConsoleMonitor;
 
 	constructor(page: Page) {
 		this.page = page;
+		this.dash = new DashPage(page);
 		this.simulator = new SimulatorPage(page);
 		this.viewer = new ViewerPage(page);
 		this.console = new ConsoleMonitor(page);

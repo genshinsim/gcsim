@@ -6,6 +6,9 @@ Playwright config:
 
 - **web** (`playwright.config.ts`, default) — boots the web app, waits for
   wasm + workers, validates and runs a config, and asserts the viewer renders.
+  Beyond that smoke path it also covers the dash home, the viewer's Config and
+  Sample tabs, and the GOOD / Enka toolbox imports (each stubbing the network it
+  needs so it stays offline).
 - **docs** (`playwright.docs.config.ts`) — builds and serves the Docusaurus docs
   site, then asserts one page per top-level sidebar section renders (route,
   title, `<h1>`, non-empty body) with its content images loaded, failing only on
@@ -105,6 +108,15 @@ console monitor.
   because a one-iteration sim can log it before a post-click listener would
   attach.
 
+### `DashPage` (`src/pages/dash-page.ts`) — the dash home (`/`)
+
+- `goto()` — navigate and wait for React to mount into `#root`.
+- `waitForLoaded()` — assert the title, the nav bar's Simulator entry, and the
+  "Get started" CTA. **Structural only.**
+- `waitForFeatured()` — assert the featured-submission card's "Show Detail" link
+  and the "Visit the Teams DB" CTA. The card fetches `/api/db`, so a spec stubs
+  that route (reusing `installDbRoutes`) before navigating.
+
 ### `SimulatorPage` (`src/pages/simulator-page.ts`) — the `/simulator` route
 
 - `goto()` — navigate and wait for React to mount into `#root`.
@@ -118,6 +130,9 @@ console monitor.
 - `waitForConfigValid()` — wait for Run to become enabled with no "Invalid
   Config" callout (console: `all is good`).
 - `run()` — click Run and wait for the app to navigate to `/web`.
+- `openImportDialog("GO" | "Enka")` — open the Toolbox "Tools" popover, click the
+  matching import entry, and return the resulting Blueprint dialog. Wasm need not
+  be ready — the toolbox renders on mount.
 
 ### `ViewerPage` (`src/pages/viewer-page.ts`) — the `/web` route
 
@@ -126,6 +141,10 @@ console monitor.
 - `waitForResults()` — assert the Results tab rendered at least one card
   (`bp4-card`) and one inline `<svg>` chart. **Structural only** — never asserts
   DPS or any numeric result.
+- `openConfig()` — click the Config tab and assert the config editor
+  (`#config_editor`) rendered and is non-empty.
+- `openSample()` — click the Sample tab and assert its "Generate" control
+  rendered. Does not generate a sample.
 
 ### `DocsHarness` (`src/docs-harness.ts`) — docs site
 
@@ -163,6 +182,18 @@ websocket blip on teardown.
 
 `fixtures/sucrose.txt` is the known-good, minimal Sucrose config
 (`iteration=1`), re-exported as `sucroseConfig` from `src/config.ts`.
+
+### Import fixtures (`src/import-fixtures.ts`)
+
+The toolbox-import specs' fixtures, both re-exported from `src/`:
+
+- `goodImport` — a minimal, parseable GOOD payload (one character, Bennett),
+  read from `fixtures/good-import.json` (committed as JSON so it reads like a
+  payload a user would paste, mirroring `sucrose.txt`).
+- `installEnkaRoutes(page)` — stubs `/api/enka/:uid` (which the dev server
+  otherwise proxies to production) so the Enka import resolves offline. It
+  returns `enkaImportPayload`, a minimal Enka response that `EnkaToGOOD` parses
+  into one character (Bennett), for `ENKA_UID`.
 
 ### `DbHarness` (`src/db-harness.ts`) — the db app
 
@@ -220,7 +251,7 @@ default; these routes keep the spec deterministic and offline.
 ## Out of scope
 
 CI integration, the production/preview (R2 wasm) path, server mode, the
-`/db/:id` viewer render, local/share viewer routes, Enka/GOOD import,
+`/db/:id` viewer render, local/share viewer routes and the share flow,
 engine-correctness or numeric assertions, and non-Chromium browsers. See issues
-#2805 and #2869. For docs: the search backend, i18n/translations, and visual
-regression (issue #2868).
+#2805, #2869 and #2871. For docs: the search backend, i18n/translations, and
+visual regression (issue #2868).
