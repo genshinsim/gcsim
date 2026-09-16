@@ -10,6 +10,7 @@
 	"dependencies": {
 		"@blueprintjs/core": "^4.11.4",
 		"@gcsim/executors": "workspace:^",
+		"@gcsim/localization": "workspace:^",
 		"@gcsim/ui": "workspace:^",
 		"@gcsim/utils": "workspace:^",
 		"react": "^18.2.0",

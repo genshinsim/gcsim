@@ -1,6 +1,6 @@
 import { Colors } from "@blueprintjs/core";
+import { specialLocales } from "@gcsim/localization";
 import type { SummaryStat } from "@gcsim/types";
-import { specialLocales } from "@ui/i18n";
 import { Group } from "@visx/group";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { BoxPlot } from "@visx/stats";
