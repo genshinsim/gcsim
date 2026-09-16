@@ -1,18 +1,7 @@
-import {
-	Button,
-	Classes,
-	Intent,
-	Position,
-	ProgressBar,
-	Toaster,
-} from "@blueprintjs/core";
+import { Button, Classes, Intent, ProgressBar } from "@blueprintjs/core";
+import { toast } from "@gcsim/primitives";
 import classNames from "classnames";
-import {
-	type MutableRefObject,
-	type RefObject,
-	useEffect,
-	useRef,
-} from "react";
+import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ResultSource } from "..";
 
@@ -28,40 +17,35 @@ type Props = {
 // TODO: Add translations + number format
 export default ({ running, src, error, current, total, cancel }: Props) => {
 	const { t } = useTranslation();
-	const loadingToast = useRef<Toaster>(null);
-	const key = useRef<string | undefined>(undefined);
+	const toastId = useRef<string | number | undefined>(undefined);
 
 	useEffect(() => {
+		const dismiss = () => {
+			if (toastId.current !== undefined) {
+				toast.dismiss(toastId.current);
+				toastId.current = undefined;
+			}
+		};
+
 		if (error != null) {
-			loadingToast.current?.clear();
+			dismiss();
 			return;
 		}
 
 		if (current === undefined || total === undefined) {
-			key.current = loadingToast.current?.show(
-				{
-					message: t("sim.loading"),
-					icon: "refresh",
-					intent: Intent.PRIMARY,
-					isCloseButtonShown: false,
-					timeout: 0,
-				},
-				key.current,
-			);
+			toastId.current = toast.loading(t("sim.loading"), {
+				id: toastId.current,
+				duration: Number.POSITIVE_INFINITY,
+			});
 			return;
 		}
 
 		if (current >= total && src === ResultSource.Loaded) {
-			key.current = loadingToast.current?.show(
-				{
-					message: t("sim.loaded", { i: current }),
-					icon: "tick",
-					intent: Intent.SUCCESS,
-					isCloseButtonShown: true,
-					timeout: 2000,
-				},
-				key.current,
-			);
+			toastId.current = toast.success(t("sim.loaded", { i: current }), {
+				id: toastId.current,
+				duration: 2000,
+				closeButton: true,
+			});
 			return;
 		}
 
@@ -69,52 +53,45 @@ export default ({ running, src, error, current, total, cancel }: Props) => {
 		//    flush from the throttled set calls. Need to find a way to have it ignore these cases
 		//    or disappear on its own. This check "fixes" it but makes success timeout not correct.
 		if (!running) {
-			loadingToast.current?.clear();
+			dismiss();
 			return;
 		}
 
-		key.current = loadingToast.current?.show(
+		toastId.current = toast(
+			<ProgressToast
+				cancel={() => {
+					cancel();
+					dismiss();
+				}}
+				current={current}
+				total={total}
+			/>,
 			{
-				message: (
-					<ProgressToast
-						cancel={cancel}
-						current={current}
-						total={total}
-						toastKey={key}
-						loadingToast={loadingToast}
-					/>
-				),
-				className: "w-full !max-w-2xl",
-				intent: Intent.NONE,
-				isCloseButtonShown: current >= total,
-				timeout: current < total ? 0 : 2000,
+				id: toastId.current,
+				duration: current < total ? Number.POSITIVE_INFINITY : 2000,
+				closeButton: current >= total,
+				className: "w-full",
+				style: { width: "min(90vw, 42rem)" },
 			},
-			key.current,
 		);
 	}, [current, total, src, error, running, cancel, t]);
 
-	return (
-		<Toaster ref={loadingToast} position={Position.TOP} className="z-50" />
-	);
+	return null;
 };
 
 const ProgressToast = ({
 	cancel,
 	current,
 	total,
-	toastKey,
-	loadingToast,
 }: {
 	cancel: () => void;
 	current: number;
 	total: number;
-	toastKey: MutableRefObject<string | undefined>;
-	loadingToast: RefObject<Toaster>;
 }) => {
 	const { t } = useTranslation();
 	const val = current / total;
 	return (
-		<div className="flex flex-row items-center justify-between gap-2">
+		<div className="flex flex-row items-center justify-between gap-2 w-full">
 			<div className="min-w-fit">
 				{t("sim.running")} ({current}/{total})
 			</div>
@@ -125,31 +102,14 @@ const ProgressToast = ({
 				intent={val < 1 ? Intent.PRIMARY : Intent.SUCCESS}
 				value={val}
 			/>
-			{action(val, toastKey, loadingToast, cancel, t("db.cancel"))}
+			{val < 1 ? (
+				<Button
+					className="!min-w-fit"
+					text={t("db.cancel")}
+					intent={Intent.DANGER}
+					onClick={cancel}
+				/>
+			) : null}
 		</div>
 	);
 };
-
-function action(
-	val: number,
-	key: MutableRefObject<string | undefined>,
-	loadingToast: RefObject<Toaster>,
-	cancel: () => void,
-	cancelText: string,
-) {
-	if (val >= 1) {
-		return null;
-	}
-	return (
-		<Button
-			className="!min-w-fit"
-			text={cancelText}
-			intent={Intent.DANGER}
-			onClick={() => {
-				cancel();
-				loadingToast.current?.clear();
-				key.current = undefined;
-			}}
-		/>
-	);
-}

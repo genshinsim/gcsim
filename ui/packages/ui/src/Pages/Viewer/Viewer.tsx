@@ -1,4 +1,4 @@
-import { Alert, Callout, Intent, Position, Toaster } from "@blueprintjs/core";
+import { Alert, Callout, Intent } from "@blueprintjs/core";
 import { RiskWarning } from "@gcsim/components";
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { dynamicKey } from "@gcsim/localization";
@@ -7,7 +7,7 @@ import CopyToClipboard from "@ui/Components/Buttons/CopyToClipboard";
 import SendToSimulator from "@ui/Components/Buttons/SendToSimulator";
 import { type RootState, useAppSelector } from "@ui/Stores/store";
 import queryString from "query-string";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router";
 import type { ResultSource } from ".";
@@ -156,7 +156,6 @@ const ErrorAlert = ({
 	onSendToSimulator?: ViewerActions["onSendToSimulator"];
 }) => {
 	const { t } = useTranslation();
-	const copyToast = useRef<Toaster>(null);
 	const history = useHistory();
 
 	let cancelButtonText: string | undefined;
@@ -184,7 +183,6 @@ const ErrorAlert = ({
 				{recoveryConfig != null ? (
 					<>
 						<CopyToClipboard
-							copyToast={copyToast}
 							config={recoveryConfig}
 							className="hidden ml-[7px] sm:flex"
 						/>
@@ -195,7 +193,6 @@ const ErrorAlert = ({
 					</>
 				) : null}
 			</div>
-			<Toaster ref={copyToast} position={Position.TOP_RIGHT} />
 		</Alert>
 	);
 };

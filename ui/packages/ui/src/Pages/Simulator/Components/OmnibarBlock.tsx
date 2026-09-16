@@ -1,4 +1,5 @@
-import { Button, Intent, Position, Toaster } from "@blueprintjs/core";
+import { Button } from "@blueprintjs/core";
+import { toast } from "@gcsim/primitives";
 import type {
 	IAction,
 	IArtifact,
@@ -12,7 +13,7 @@ import { ActionSelect } from "@ui/Components/Select/ActionSelect";
 import { CharacterSelect } from "@ui/Components/Select/CharacterSelect";
 import { EnemySelect } from "@ui/Components/Select/EnemySelect";
 import { StatSelect } from "@ui/Components/Select/StatSelect";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 export function OmnibarBlock() {
@@ -24,7 +25,13 @@ export function OmnibarBlock() {
 	const [statsOpen, setStatsOpen] = useState(false);
 	const [enemiesOpen, setEnemiesOpen] = useState(false);
 
-	const copyToast = useRef<Toaster>(null);
+	const copyToClipboard = (item: string) => {
+		navigator.clipboard.writeText(item ?? "").then(() => {
+			toast.success(t("simple.copied_to_clipboard", { item }), {
+				duration: 2000,
+			});
+		});
+	};
 
 	return (
 		<div className="flex flex-col gap-1.5">
@@ -43,15 +50,7 @@ export function OmnibarBlock() {
 					onClose={() => setCharactersOpen(false)}
 					onSelect={(character: ICharacter) => {
 						setCharactersOpen(false);
-						navigator.clipboard.writeText(character ?? "").then(() => {
-							copyToast.current?.show({
-								message: `${t("simple.copied_to_clipboard", {
-									item: character,
-								})}`,
-								intent: Intent.SUCCESS,
-								timeout: 2000,
-							});
-						});
+						copyToClipboard(character);
 					}}
 				/>
 
@@ -69,13 +68,7 @@ export function OmnibarBlock() {
 					onClose={() => setWeaponsOpen(false)}
 					onSelect={(weapon: IWeapon) => {
 						setWeaponsOpen(false);
-						navigator.clipboard.writeText(weapon ?? "").then(() => {
-							copyToast.current?.show({
-								message: `${t("simple.copied_to_clipboard", { item: weapon })}`,
-								intent: Intent.SUCCESS,
-								timeout: 2000,
-							});
-						});
+						copyToClipboard(weapon);
 					}}
 				/>
 
@@ -93,15 +86,7 @@ export function OmnibarBlock() {
 					onClose={() => setArtifactsOpen(false)}
 					onSelect={(artifact: IArtifact) => {
 						setArtifactsOpen(false);
-						navigator.clipboard.writeText(artifact ?? "").then(() => {
-							copyToast.current?.show({
-								message: `${t("simple.copied_to_clipboard", {
-									item: artifact,
-								})}`,
-								intent: Intent.SUCCESS,
-								timeout: 2000,
-							});
-						});
+						copyToClipboard(artifact);
 					}}
 				/>
 			</div>
@@ -120,13 +105,7 @@ export function OmnibarBlock() {
 					onClose={() => setEnemiesOpen(false)}
 					onSelect={(enemy: IEnemy) => {
 						setActionsOpen(false);
-						navigator.clipboard.writeText(enemy ?? "").then(() => {
-							copyToast.current?.show({
-								message: `${t("simple.copied_to_clipboard", { item: enemy })}`,
-								intent: Intent.SUCCESS,
-								timeout: 2000,
-							});
-						});
+						copyToClipboard(enemy);
 					}}
 				/>
 				<Button
@@ -143,13 +122,7 @@ export function OmnibarBlock() {
 					onClose={() => setActionsOpen(false)}
 					onSelect={(action: IAction) => {
 						setActionsOpen(false);
-						navigator.clipboard.writeText(action ?? "").then(() => {
-							copyToast.current?.show({
-								message: `${t("simple.copied_to_clipboard", { item: action })}`,
-								intent: Intent.SUCCESS,
-								timeout: 2000,
-							});
-						});
+						copyToClipboard(action);
 					}}
 				/>
 
@@ -167,17 +140,10 @@ export function OmnibarBlock() {
 					onClose={() => setStatsOpen(false)}
 					onSelect={(stat: IStat) => {
 						setStatsOpen(false);
-						navigator.clipboard.writeText(stat ?? "").then(() => {
-							copyToast.current?.show({
-								message: `${t("simple.copied_to_clipboard", { item: stat })}`,
-								intent: Intent.SUCCESS,
-								timeout: 2000,
-							});
-						});
+						copyToClipboard(stat);
 					}}
 				/>
 			</div>
-			<Toaster ref={copyToast} position={Position.TOP_RIGHT} />
 		</div>
 	);
 }

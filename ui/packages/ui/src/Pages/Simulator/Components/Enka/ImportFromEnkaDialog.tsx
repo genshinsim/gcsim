@@ -4,9 +4,8 @@ import {
 	Callout,
 	Classes,
 	Dialog,
-	Position,
-	Toaster,
 } from "@blueprintjs/core";
+import { toast } from "@gcsim/primitives";
 import type { Character } from "@gcsim/types";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -18,10 +17,6 @@ type Props = {
 	isOpen: boolean;
 	onClose: () => void;
 };
-
-const AppToaster = Toaster.create({
-	position: Position.BOTTOM,
-});
 
 const lsKey = "Enka-UID";
 
@@ -167,10 +162,7 @@ export function ImportFromEnkaDialog(props: Props) {
 
 function validateUid(uid: string) {
 	if (!/^(18|[1-35-9])\d{8}$/.test(uid)) {
-		AppToaster.show({
-			message: "Invalid UID",
-			intent: "danger",
-		});
+		toast.error("Invalid UID");
 		return false;
 	}
 	return true;

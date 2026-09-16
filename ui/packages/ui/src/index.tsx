@@ -5,6 +5,7 @@ import {
 	Switch as SwitchInput,
 } from "@blueprintjs/core";
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
+import { Toaster } from "@gcsim/primitives";
 import { type ReactNode, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet";
 import { useTranslation } from "react-i18next";
@@ -167,6 +168,7 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 
 	return (
 		<div className="bp4-dark h-screen flex flex-col">
+			<Toaster position="top-right" theme="dark" />
 			<Nav />
 			<div
 				ref={content}

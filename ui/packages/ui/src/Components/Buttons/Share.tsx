@@ -9,16 +9,15 @@ import {
 	NonIdealState,
 	Spinner,
 	SpinnerSize,
-	type Toaster,
 } from "@blueprintjs/core";
+import { toast } from "@gcsim/primitives";
 import type { SimResults } from "@gcsim/types";
 import classNames from "classnames";
-import { type RefObject, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 type ShareProps = {
 	running: boolean;
-	copyToast: RefObject<Toaster>;
 	data: SimResults | null;
 	hash: string | null;
 	shareState: [string | null, (link: string | null) => void];
@@ -28,7 +27,6 @@ type ShareProps = {
 
 export default ({
 	running,
-	copyToast,
 	data,
 	hash,
 	className,
@@ -60,11 +58,7 @@ export default ({
 
 	const copy = () => {
 		navigator.clipboard.writeText(shareLink ?? "").then(() => {
-			copyToast.current?.show({
-				message: "Link copied to clipboard!",
-				intent: Intent.SUCCESS,
-				timeout: 2000,
-			});
+			toast.success("Link copied to clipboard!", { duration: 2000 });
 		});
 	};
 
