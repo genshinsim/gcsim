@@ -456,9 +456,18 @@ importers:
 
   packages/localization:
     dependencies:
+      i18next:
+        specifier: ^23.10.1
+        version: 23.16.8
+      i18next-browser-languagedetector:
+        specifier: ^7.2.0
+        version: 7.2.2
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
+      react-i18next:
+        specifier: ^12.0.0
+        version: 12.3.1(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
     devDependencies:
       '@types/lodash-es':
         specifier: ^4
@@ -879,6 +888,9 @@ importers:
       '@gcsim/executors':
         specifier: workspace:^
         version: link:../executors
+      '@gcsim/localization':
+        specifier: workspace:^
+        version: link:../localization
       '@gcsim/ui':
         specifier: workspace:^
         version: link:../ui
