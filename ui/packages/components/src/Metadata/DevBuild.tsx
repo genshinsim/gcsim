@@ -16,7 +16,7 @@ export const DevBuild = ({ signKey }: Props) => {
 		return (
 			<Item
 				value={t("result.metadata_dev_unofficial") ?? ""}
-				intent="danger"
+				intent="destructive"
 				bright
 				bold
 			/>
@@ -25,7 +25,7 @@ export const DevBuild = ({ signKey }: Props) => {
 	return (
 		<Item
 			value={t("result.metadata_dev_build") ?? ""}
-			intent="danger"
+			intent="destructive"
 			bright
 			bold
 		/>

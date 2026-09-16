@@ -33,16 +33,16 @@ export const Item = ({
 
 	return (
 		<Badge variant={intent} className={cc}>
-			<div className="flex flex-row items-center gap-2 select-none">
-				{title != null && <div className={titleCls}>{title}</div>}
-				<div
+			<span className="flex flex-row items-center gap-2 select-none">
+				{title != null && <span className={titleCls}>{title}</span>}
+				<span
 					className={`${
 						bold ? "font-bold" : ""
 					} leading-4 align-bottom text-sm ${valueCase}`}
 				>
 					{value}
-				</div>
-			</div>
+				</span>
+			</span>
 		</Badge>
 	);
 };
