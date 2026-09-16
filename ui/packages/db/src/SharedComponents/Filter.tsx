@@ -7,6 +7,7 @@ import {
 	Position,
 } from "@blueprintjs/core";
 import tagData from "@gcsim/data/src/tags.json";
+import { dynamicKey } from "@gcsim/localization";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FaArrowDown, FaArrowUp, FaFilter, FaSearch } from "react-icons/fa";
@@ -24,7 +25,7 @@ import {
 export function Filter() {
 	// https://github.com/i18next/next-i18next/issues/1795
 	const { t: translation } = useTranslation();
-	const t = (s: string) => translation(s) as string;
+	const t = (s: string) => translation(dynamicKey(s)) as string;
 
 	const dispatch = useContext(FilterDispatchContext);
 	const [isOpen, setIsOpen] = useState(false);
@@ -93,7 +94,7 @@ export function Filter() {
 
 function ClearFilterButton() {
 	const { t: translation } = useTranslation();
-	const t = (s: string) => translation(s) as string;
+	const t = (s: string) => translation(dynamicKey(s)) as string;
 	const dispatch = useContext(FilterDispatchContext);
 	return (
 		<button
@@ -109,7 +110,7 @@ function ClearFilterButton() {
 function TagFilter() {
 	const [tagIsOpen, setTagIsOpen] = useState(false);
 	const { t: translation } = useTranslation();
-	const t = (s: string) => translation(s) as string;
+	const t = (s: string) => translation(dynamicKey(s)) as string;
 	const sortedTagnames = Object.keys(tagData)
 		.filter((key) => {
 			return key !== "0" && key !== "1" && key !== "2";
@@ -176,7 +177,7 @@ function TagFilterButton({ tag, name }: { tag; name: string }) {
 function CharacterFilter() {
 	const [charIsOpen, setCharIsOpen] = useState(false);
 	const { t: translation } = useTranslation();
-	const t = (s: string) => translation(s) as string;
+	const t = (s: string) => translation(dynamicKey(s)) as string;
 	const sortedCharNames = charNames.sort((a, b) => {
 		if (t(a) < t(b)) {
 			return -1;
@@ -285,7 +286,7 @@ function CharFilterButton({ charName }: { charName: string }) {
 
 function CharFilterButtonChild({ charName }: { charName: string }) {
 	const { t: translation } = useTranslation();
-	const t = (s: string) => translation(s) as string;
+	const t = (s: string) => translation(dynamicKey(s)) as string;
 	const displayCharName = t("game:character_names." + charName);
 
 	const travelerName = (
@@ -313,7 +314,7 @@ function CharFilterButtonChild({ charName }: { charName: string }) {
 function SortBy() {
 	const [sortIsOpen, setSortIsOpen] = useState(false);
 	const { t: translation } = useTranslation();
-	const t = (s: string) => translation(s) as string;
+	const t = (s: string) => translation(dynamicKey(s)) as string;
 
 	return (
 		<div className="w-full  overflow-x-hidden no-scrollbar">

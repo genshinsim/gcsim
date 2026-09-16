@@ -1,4 +1,5 @@
 import { Card, FormGroup, HTMLSelect } from "@blueprintjs/core";
+import { dynamicKey } from "@gcsim/localization";
 import type {
 	ElementStats,
 	FloatStat,
@@ -38,7 +39,7 @@ export default ({ data, running, names }: Props) => {
 								? {
 										elements: Object.fromEntries(
 											Object.entries(s.elements).map(([k, v]) => [
-												t("elements." + k),
+												t(dynamicKey("elements." + k)),
 												v,
 											]),
 										),

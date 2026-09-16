@@ -4,6 +4,7 @@ import {
 	type ItemRenderer,
 	Omnibar,
 } from "@blueprintjs/select";
+import { dynamicKey } from "@gcsim/localization";
 import i18n from "i18next";
 import type React from "react";
 import { CharMap } from "../../Data";
@@ -117,12 +118,12 @@ function highlightText(text: string, query: string) {
 
 export function GenerateDefaultCharacters(): Item[] {
 	return Object.keys(CharMap).map((k) => {
-		const ele = i18n.t(`elements.${CharMap[k].element}`);
+		const ele = i18n.t(dynamicKey(`elements.${CharMap[k].element}`));
 		return {
 			key: k,
 			char_key: k,
 			char_source: "default",
-			text: i18n.t("game:character_names." + k),
+			text: i18n.t(dynamicKey("game:character_names." + k)),
 			label: "",
 		};
 	});

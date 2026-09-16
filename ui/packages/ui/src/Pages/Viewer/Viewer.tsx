@@ -1,6 +1,7 @@
 import { Alert, Callout, Intent, Position, Toaster } from "@blueprintjs/core";
 import { RiskWarning } from "@gcsim/components";
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
+import { dynamicKey } from "@gcsim/localization";
 import type { SimResults } from "@gcsim/types";
 import CopyToClipboard from "@ui/Components/Buttons/CopyToClipboard";
 import SendToSimulator from "@ui/Components/Buttons/SendToSimulator";
@@ -79,7 +80,7 @@ export default ({
 	const names = useMemo(
 		() =>
 			data?.character_details?.map((c) =>
-				t("character_names." + c.name, { ns: "game" }),
+				t(dynamicKey("game:character_names." + c.name)),
 			),
 		[data?.character_details, t],
 	);

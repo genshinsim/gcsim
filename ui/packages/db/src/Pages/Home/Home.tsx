@@ -1,6 +1,7 @@
 import { Button, Card } from "@blueprintjs/core";
 import { LatestVersion } from "@gcsim/components";
 import tagData from "@gcsim/data/src/tags.json";
+import { dynamicKey } from "@gcsim/localization";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 
@@ -20,7 +21,7 @@ export const Home = () => {
 			return (
 				<li key={key}>
 					<span className="font-semibold text-rose-600">{name}</span>
-					{`: ${t("db.home.tag_desc_" + key)}`}
+					{`: ${t(dynamicKey("db.home.tag_desc_" + key))}`}
 				</li>
 			);
 		});

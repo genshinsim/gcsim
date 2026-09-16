@@ -1,4 +1,5 @@
 import { Position, Toaster } from "@blueprintjs/core";
+import { dynamicKey } from "@gcsim/localization";
 import axios from "axios";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
@@ -13,7 +14,7 @@ export default function DBEntryActions({
 }) {
 	const { t: translate } = useTranslation();
 
-	const t = (key: string) => translate(key);
+	const t = (key: string) => translate(dynamicKey(key));
 
 	const isAdmin = useContext(AuthContext).isAdmin;
 

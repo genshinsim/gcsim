@@ -1,4 +1,5 @@
 import { Intent } from "@blueprintjs/core";
+import { dynamicKey } from "@gcsim/localization";
 import type { FailedActions, FloatStat, SimResults } from "@gcsim/types";
 import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -59,7 +60,7 @@ const IncompleteCharWarning = ({ data }: WarningProps) => {
 				<ul className="list-disc pl-4 grid grid-cols-[auto_minmax(0,_1fr)] gap-x-3 justify-start">
 					{data?.incomplete_characters?.map((c) => (
 						<div key={c} className="list-item">
-							{t("character_names." + c, { ns: "game" })}
+							{t(dynamicKey("game:character_names." + c))}
 						</div>
 					))}
 				</ul>
@@ -265,9 +266,11 @@ const FailedActionDetails = ({ data, title, stat }: DetailsProps) => {
 		return (
 			<>
 				<div className="list-item">
-					{t("character_names." + data.character_details?.[i].name, {
-						ns: "game",
-					})}
+					{t(
+						dynamicKey(
+							"game:character_names." + data.character_details?.[i].name,
+						),
+					)}
 				</div>
 				<div>
 					{`mean: ` +

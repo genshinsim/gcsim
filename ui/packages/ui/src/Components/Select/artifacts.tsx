@@ -1,5 +1,6 @@
 import { MenuItem } from "@blueprintjs/core";
 import type { ItemPredicate, ItemRenderer } from "@blueprintjs/select";
+import { dynamicKey } from "@gcsim/localization";
 import type { IArtifact } from "@gcsim/types";
 import i18n from "i18next";
 import { valid_artifacts } from "../../Data";
@@ -21,7 +22,7 @@ export const render: ItemRenderer<IArtifact> = (
 			key={item}
 			onClick={handleClick}
 			text={highlightText(
-				i18n.t("artifact_names." + item, { ns: "game" }),
+				i18n.t(dynamicKey("game:artifact_names." + item)),
 				query,
 			)}
 		/>
@@ -36,7 +37,7 @@ export const filter: ItemPredicate<IArtifact> = (
 ) => {
 	const normalizedQuery = query.toLowerCase();
 	const transItem = i18n
-		.t("artifact_names." + item, { ns: "game" })
+		.t(dynamicKey("game:artifact_names." + item))
 		.replace(" ", "")
 		.toLowerCase();
 	if (exactMatch) {
