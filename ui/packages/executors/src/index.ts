@@ -1,7 +1,4 @@
-import type { Executor } from "./Executor";
-
-export type { Executor };
-export type ExecutorSupplier<T extends Executor> = () => T;
+export type { Executor, ExecutorSupplier } from "@gcsim/types";
 
 export { ServerExecutor } from "./ServerExecutor";
 export { WasmExecutor } from "./WasmExecutor";
