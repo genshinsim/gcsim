@@ -189,9 +189,9 @@ export const AvatarPortrait = ({
 				{invalid && (
 					<div className="absolute left-0 top-1/3 w-full">
 						<Badge className="flex flex-row items-center justify-center gap-2">
-							<div className="font-mono select-none text-red-500 font-bold text-xs uppercase">
+							<span className="font-mono select-none text-red-500 font-bold text-xs uppercase">
 								WIP
-							</div>
+							</span>
 						</Badge>
 					</div>
 				)}

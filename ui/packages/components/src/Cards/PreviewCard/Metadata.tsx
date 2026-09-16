@@ -18,7 +18,7 @@ export const Metadata = ({ data }: Props) => {
 	if (data.schema_version == null) {
 		return (
 			<Card className="flex flex-row flex-wrap !p-2 gap-2 justify-center">
-				<Item value="legacy sim" intent="danger" bold bright />
+				<Item value="legacy sim" intent="destructive" bold bright />
 			</Card>
 		);
 	}

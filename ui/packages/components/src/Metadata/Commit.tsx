@@ -21,12 +21,12 @@ export const Commit = memo(({ commit, className }: Props) => {
 
 	return (
 		<Badge className={cc}>
-			<div className="flex flex-row items-center gap-2">
-				<div className="text-gray-400">{t("result.metadata_commit")}</div>
+			<span className="flex flex-row items-center gap-2">
+				<span className="text-gray-400">{t("result.metadata_commit")}</span>
 				<a href={url} target="_blank" rel="noreferrer" className="font-bold">
 					{shortCommit}
 				</a>
-			</div>
+			</span>
 		</Badge>
 	);
 });

@@ -10,17 +10,17 @@ import {
 } from "./colors";
 import { FONT_FAMILY } from "./fonts";
 
-type Intent = "default" | "warning" | "danger";
+type Intent = "default" | "warning" | "destructive";
 
 // Matches the live badge variants: default = slate-900 with a muted title, and
-// warning/amber and danger/rose fill the whole pill with white text.
+// warning/amber and destructive/rose fill the whole pill with white text.
 const intentStyles: Record<
 	Intent,
 	{ bg: string; titleFg: string; fg: string }
 > = {
 	default: { bg: PRIMARY_BG, titleFg: GRAY_400, fg: PRIMARY_FG },
 	warning: { bg: AMBER_700, titleFg: "#f5f5f5", fg: "#ffffff" },
-	danger: { bg: ROSE_700, titleFg: "#ffe4e6", fg: "#ffffff" },
+	destructive: { bg: ROSE_700, titleFg: "#ffe4e6", fg: "#ffffff" },
 };
 
 type ItemProps = {
@@ -116,7 +116,7 @@ export const Metadata = ({ data }: Props) => {
 	);
 
 	if (data.schema_version == null) {
-		return row(<Item value="legacy sim" intent="danger" />);
+		return row(<Item value="legacy sim" intent="destructive" />);
 	}
 
 	// @ts-ignore: generated proto uses lower-case `dps`, not `DPS`.
@@ -140,12 +140,12 @@ export const Metadata = ({ data }: Props) => {
 	// Build state.
 	if (isProd) {
 		if (data.modified) {
-			items.push(<Item key="dirty" value="dirty" intent="danger" />);
+			items.push(<Item key="dirty" value="dirty" intent="destructive" />);
 		}
 	} else if (data.key_type === "dev") {
-		items.push(<Item key="build" value="dev build" intent="danger" />);
+		items.push(<Item key="build" value="dev build" intent="destructive" />);
 	} else {
-		items.push(<Item key="build" value="unofficial" intent="danger" />);
+		items.push(<Item key="build" value="unofficial" intent="destructive" />);
 	}
 
 	if (showDps) {
