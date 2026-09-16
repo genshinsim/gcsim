@@ -10,7 +10,6 @@ import (
 	"runtime/debug"
 
 	"github.com/genshinsim/gcsim/backend/pkg/api"
-	"github.com/genshinsim/gcsim/backend/pkg/services/preview"
 	"github.com/genshinsim/gcsim/backend/pkg/services/share"
 	"github.com/genshinsim/gcsim/backend/pkg/user"
 	"go.uber.org/zap"
@@ -34,10 +33,9 @@ func main() {
 	keys := getKeys()
 
 	s, err := api.New(api.Config{
-		ShareStore:   makeShareStore(),
-		UserStore:    makeUserStore(sugar),
-		DBAddr:       os.Getenv("DB_STORE_URL"),
-		PreviewStore: makePreviewStore(),
+		ShareStore: makeShareStore(),
+		UserStore:  makeUserStore(sugar),
+		DBAddr:     os.Getenv("DB_STORE_URL"),
 		Discord: api.DiscordConfig{
 			RedirectURL:  os.Getenv("REDIRECT_URL"),
 			ClientID:     os.Getenv("DISCORD_ID"),
@@ -92,16 +90,6 @@ func makeUserStore(sugar *zap.SugaredLogger) api.UserStore {
 		panic(err)
 	}
 
-	return store
-}
-
-func makePreviewStore() api.PreviewStore {
-	store, err := preview.NewClient(preview.ClientCfg{
-		Addr: os.Getenv("PREVIEW_STORE_URL"),
-	})
-	if err != nil {
-		panic(err)
-	}
 	return store
 }
 

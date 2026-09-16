@@ -11,7 +11,7 @@ plugins:
     opt:
       - module=github.com/genshinsim/gcsim
 
-  # gRPC service stubs (db, preview, share).
+  # gRPC service stubs (db, share).
   - remote: buf.build/grpc/go:v1.6.2
     out: .
     opt:

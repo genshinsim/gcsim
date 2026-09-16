@@ -29,19 +29,6 @@ services:
       - ./mosquitto/log:/mosquitto/log
     ports:
       - 1883:1883
-  # generating embed for discord etc
-  preview:
-    container_name: preview
-    build:
-      context: .
-      dockerfile: ./preview.Dockerfile
-    volumes:
-      - ~/assets/assets:/assets
-    environment:
-      - ASSETS_DATA_PATH=/assets
-    ports:
-      - 9011:3000
-    restart: unless-stopped
   share:
     container_name: share
     build:
@@ -93,7 +80,6 @@ services:
       - REDIRECT_URL
       - SHARE_STORE_URL=share:3000
       - DB_STORE_URL=db:3000
-      - PREVIEW_STORE_URL=preview:3000
       - SHARE_KEY_FILE=/keys.json
       # mqtt env for notification service
       - MQTT_URL=mqtt:1883

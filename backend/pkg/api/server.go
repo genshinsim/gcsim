@@ -40,7 +40,6 @@ type Config struct {
 	UserStore         UserStore
 	Discord           DiscordConfig
 	DBAddr            string
-	PreviewStore      PreviewStore
 	RoleCheck         RoleChecker
 	AESDecryptionKeys map[string][]byte
 	// mqtt for notification purposes
@@ -144,11 +143,6 @@ func (s *Server) routes() {
 	r.Use(s.tokenCheck)
 
 	r.Route("/api", func(r chi.Router) {
-		r.Route("/preview", func(r chi.Router) {
-			r.Get("/{share-key}", s.GetPreview())
-			r.Get("/db/{db-key}", s.GetPreviewByDBID())
-		})
-
 		r.Route("/share", func(r chi.Router) {
 			r.Post("/", s.CreateShare())        // share a sim
 			r.Get("/{share-key}", s.GetShare()) // get a shared sim

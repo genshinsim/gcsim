@@ -98,11 +98,7 @@ jobs:
         uses: ./.github/actions/build-backend-binary
         with:
           cmd: share
-      - name: build preview generator 
-        uses: ./.github/actions/build-backend-binary
-        with:
-          cmd: preview
-      - name: build notification binary 
+      - name: build notification binary
         uses: ./.github/actions/build-backend-binary
         with:
           cmd: notification
