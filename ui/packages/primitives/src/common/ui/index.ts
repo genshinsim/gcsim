@@ -13,6 +13,7 @@ export * from "./field";
 export * from "./input";
 export * from "./label";
 export * from "./non-ideal-state";
+export * from "./number-input";
 export * from "./popover";
 export * from "./progress";
 export * from "./select";
