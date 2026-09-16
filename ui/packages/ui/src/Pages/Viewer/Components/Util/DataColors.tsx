@@ -97,7 +97,7 @@ export const DataColorsConst = {
 export function useDataColors() {
 	const actions: Map<string, ActionColor> = new Map([
 		[
-			i18next.t("actions.normal"),
+			i18next.t("actions.attack"),
 			{
 				highlight: Colors.CERULEAN5,
 				label: Colors.CERULEAN4,
