@@ -284,6 +284,18 @@ var ArtifactMap = map[keys.Set]*model.ArtifactData{
 			Circlet: "UI_RelicIcon_15016_3",
 		},
 	},
+	keys.HeartOfTheFurnace: {
+		SetId:     15048,
+		TextMapId: 1035953267,
+		Key:       "heartofthefurnace",
+		ImageNames: &model.ArtifactImageData{
+			Flower:  "UI_RelicIcon_15048_4",
+			Plume:   "UI_RelicIcon_15048_2",
+			Sands:   "UI_RelicIcon_15048_5",
+			Goblet:  "UI_RelicIcon_15048_1",
+			Circlet: "UI_RelicIcon_15048_3",
+		},
+	},
 	keys.HuskOfOpulentDreams: {
 		SetId:     15021,
 		TextMapId: 2546254299,
