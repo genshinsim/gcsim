@@ -121,7 +121,7 @@ func (c *char) skillCharge() (action.Info, error) {
 			Element:            ele[i],
 			IgnoreInfusion:     ele[i] != attributes.Physical,
 			Durability:         25,
-			Mult:               charge[i][c.TalentLvlSkill()] * c.a1SkillMulti(),
+			Mult:               skillCharge[i][c.TalentLvlSkill()] * c.a1SkillMulti(),
 			HitlagHaltFrames:   chargeHitlagHaltFrames[i] * 60,
 			HitlagFactor:       0.01,
 			CanBeDefenseHalted: chargeCanBeDefenseHalted[i],
