@@ -1,5 +1,5 @@
 import { DBCard } from "@gcsim/components";
-import { Button, Separator, Toaster, useToast } from "@gcsim/primitives";
+import { Button, Separator, Toaster, toast } from "@gcsim/primitives";
 import "@gcsim/components/src/index.css";
 import type { Entry } from "@gcsim/types/src/generated/index.db";
 import axios from "axios";
@@ -9,7 +9,6 @@ import { Route, Switch } from "wouter";
 function App({ id }: { id: string }) {
 	const [main, setMain] = React.useState<Entry | null>(null);
 	const [data, setData] = React.useState<Entry[]>([]);
-	const { toast } = useToast();
 
 	React.useEffect(() => {
 		axios.get(`/api/db/id/${id}`).then((res) => {
@@ -78,8 +77,7 @@ function App({ id }: { id: string }) {
 		const s = `/${cmd} id:${id}`;
 		navigator.clipboard.writeText(s).then(() => {
 			console.log("copy ok");
-			toast({
-				title: "Copied to clipboard",
+			toast("Copied to clipboard", {
 				description: `Copied ${s} to clipboard`,
 			});
 		});
@@ -90,8 +88,7 @@ function App({ id }: { id: string }) {
 		console.log("copying command: ", s);
 		navigator.clipboard.writeText(s).then(() => {
 			console.log("copy ok");
-			toast({
-				title: "Copied to clipboard",
+			toast("Copied to clipboard", {
 				description: `Copied replace command ${s} to clipboard`,
 			});
 		});
