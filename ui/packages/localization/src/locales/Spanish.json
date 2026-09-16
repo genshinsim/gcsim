@@ -404,6 +404,6 @@
 		"false": "falso"
 	},
 	"common": {
-		"data_not_found": "Data not found"
+		"data_not_found": "No se encontraron datos"
 	}
 }
