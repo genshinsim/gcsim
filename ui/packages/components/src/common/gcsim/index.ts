@@ -4,6 +4,7 @@ import HorizontalBarStack from "./GraphComponents/HorizontalBarStack";
 import OuterLabelPie from "./GraphComponents/OuterLabelPie";
 import PositionGraph from "./GraphComponents/PositionGraph";
 
+export * from "./DbNotice";
 export * from "./GraphComponents/Axes";
 export * from "./GraphComponents/colors";
 export * from "./GraphComponents/DataColors";
@@ -11,6 +12,7 @@ export * from "./GraphComponents/Grids";
 export * from "./GraphComponents/OuterLabelPie/OuterLabels";
 export * from "./GraphComponents/OuterLabelPie/Tooltip";
 export * from "./LatestVersion";
+export * from "./LatestVersionNext";
 export * from "./NoData";
 export * from "./Refresh";
 export * from "./Warning";
