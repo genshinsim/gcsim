@@ -69,18 +69,6 @@
 		"hyperbloom": "만개",
 		"lunarbloom": "달 개화"
 	},
-	"characteredit": {
-		"add_set_bonus": "세트 효과 추가",
-		"artifact_stats_main": "성유물 속성 (주 속성+부 속성)",
-		"ascension": "돌파",
-		"change": "변경",
-		"character": "캐릭터",
-		"cons": "운명의 자리",
-		"level": "레벨",
-		"refine": "재련",
-		"set_bonus": "세트 효과:",
-		"weapons_and_artifacts": "무기 및 성유물"
-	},
 	"dash": {
 		"get_started": "시작하기",
 		"users_submitted": "유저들이 제출한 심을 구경해보세요:",
@@ -414,5 +402,8 @@
 	"states": {
 		"true": "참",
 		"false": "거짓"
+	},
+	"common": {
+		"data_not_found": "데이터를 찾을 수 없습니다"
 	}
 }
