@@ -1,9 +1,23 @@
+import type { Character } from "@gcsim/types";
+import type React from "react";
+
 export interface EditorProps {
-	cfg: string;
-	onChange: (v: string) => void;
+	config: string;
+	setConfig: (v: string) => void;
+	isValid: boolean;
+	error: string | null;
+	parsedTeam: Character[];
+	run: () => void;
+	settings?: React.ReactNode;
+	showTeam?: boolean;
+	showTools?: boolean;
+	showThemeSelector?: boolean;
 }
 
-export interface AceEditorWrapperProps extends EditorProps {
+export interface AceEditorWrapperProps {
+	cfg: string;
+	onChange: (v: string) => void;
+	onRun?: () => void;
 	maxLines?: number;
 	fontSize?: number;
 	theme?: Theme;

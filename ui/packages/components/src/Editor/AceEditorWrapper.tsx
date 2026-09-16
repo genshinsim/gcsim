@@ -21,6 +21,7 @@ import type { AceEditorWrapperProps } from "./types.js";
 export function AceEditorWrapper({
 	cfg,
 	onChange,
+	onRun,
 	maxLines = 35,
 	fontSize = 14,
 	theme = "tomorrow_night",
@@ -33,6 +34,17 @@ export function AceEditorWrapper({
 			onChange={onChange}
 			value={cfg}
 			name="config_editor"
+			commands={
+				onRun
+					? [
+							{
+								name: "run",
+								bindKey: { win: "Ctrl-Enter", mac: "Command-Enter" },
+								exec: onRun,
+							},
+						]
+					: []
+			}
 			editorProps={{
 				$blockScrolling: true,
 			}}
