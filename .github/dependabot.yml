@@ -21,7 +21,6 @@ updates:
   - package-ecosystem: docker
     directories:
       - /containers/assets
-      - /containers/embedgenerator
     schedule:
       interval: weekly
     groups:
