@@ -374,61 +374,6 @@ importers:
         specifier: ^20.11.0
         version: 20.19.43
 
-  packages/embed:
-    dependencies:
-      '@gcsim/components':
-        specifier: workspace:^
-        version: link:../components
-      '@gcsim/localization':
-        specifier: workspace:^
-        version: link:../localization
-      '@gcsim/types':
-        specifier: workspace:^
-        version: link:../types
-      axios:
-        specifier: ^1.2.1
-        version: 1.20.0
-      i18next:
-        specifier: ^26.4.2
-        version: 26.4.2(typescript@7.0.2)
-      i18next-browser-languagedetector:
-        specifier: ^8.2.1
-        version: 8.2.1
-      react:
-        specifier: ^18.2.0
-        version: 18.3.1
-      react-dom:
-        specifier: ^18.2.0
-        version: 18.3.1(react@18.3.1)
-      react-error-boundary:
-        specifier: ^4.0.13
-        version: 4.1.2(react@18.3.1)
-      react-i18next:
-        specifier: ^17.0.14
-        version: 17.0.14(i18next@26.4.2(typescript@7.0.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@7.0.2)
-      wouter:
-        specifier: ^3.1.0
-        version: 3.11.0(react@18.3.1)
-    devDependencies:
-      '@tailwindcss/vite':
-        specifier: ^4.3.3
-        version: 4.3.3(vite@8.3.0(@types/node@22.20.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.51.2))
-      '@types/react':
-        specifier: ^18.2.66
-        version: 18.3.31
-      '@types/react-dom':
-        specifier: ^18.2.22
-        version: 18.3.7(@types/react@18.3.31)
-      '@vitejs/plugin-react':
-        specifier: ^6
-        version: 6.1.1(vite@8.3.0(@types/node@22.20.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.51.2))
-      tailwindcss:
-        specifier: ^4.3.3
-        version: 4.3.3
-      vite:
-        specifier: ^8
-        version: 8.3.0(@types/node@22.20.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.51.2)
-
   packages/executors:
     dependencies:
       '@gcsim/types':
@@ -9408,10 +9353,6 @@ packages:
     resolution: {integrity: sha512-dYqgNSZbDwkaJ2ceRd9ojCGjBq+mOm9LmtXnAnEGyHhN/5R7iDW2TRw3h+o/jCFxus3P2LfWIIiwowAjANm7IA==}
     engines: {node: '>= 0.4'}
 
-  regexparam@3.0.0:
-    resolution: {integrity: sha512-RSYAtP31mvYLkAHrOlh25pCNQ5hWnT106VukGaaFfuJrZFkGRX5GhUAdPqpSDXxOhA2c4akmRuplv1mRqnBn6Q==}
-    engines: {node: '>=8'}
-
   regexpu-core@6.4.0:
     resolution: {integrity: sha512-0ghuzq67LI9bLXpOX/ISfve/Mq33a4aFRzoQYhnnok1JOFpmE/A2TBGkNVenOGEeSBCjIiWcc6MVOG5HEQv0sA==}
     engines: {node: '>=4'}
@@ -10700,11 +10641,6 @@ packages:
 
   wouter@2.12.1:
     resolution: {integrity: sha512-G7a6JMSLSNcu6o8gdOfIzqxuo8Qx1qs+9rpVnlurH69angsSFPZP5gESNuVNeJct/MGpQg191pDo4HUjTx7IIQ==}
-    peerDependencies:
-      react: '>=16.8.0'
-
-  wouter@3.11.0:
-    resolution: {integrity: sha512-xyMLHhytdGhIjXVRcSjeYbXd7TR1lrxVTPLGBWmmyW52ZuWVQ1jXmsgoJ4G5s4tjloJCq7h4i2eREljWUQ4+/A==}
     peerDependencies:
       react: '>=16.8.0'
 
@@ -20808,8 +20744,6 @@ snapshots:
       gopd: 1.2.0
       set-function-name: 2.0.2
 
-  regexparam@3.0.0: {}
-
   regexpu-core@6.4.0:
     dependencies:
       regenerate: 1.4.2
@@ -22287,12 +22221,6 @@ snapshots:
   wouter@2.12.1(react@18.3.1):
     dependencies:
       react: 18.3.1
-      use-sync-external-store: 1.7.0(react@18.3.1)
-
-  wouter@3.11.0(react@18.3.1):
-    dependencies:
-      react: 18.3.1
-      regexparam: 3.0.0
       use-sync-external-store: 1.7.0(react@18.3.1)
 
   wrangler@4.131.1(@cloudflare/workers-types@5.20260911.1)(@types/node@22.20.2):
