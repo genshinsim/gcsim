@@ -1,4 +1,5 @@
 import { Card } from "@blueprintjs/core";
+import { dynamicKey } from "@gcsim/localization";
 import type { Enemy } from "@gcsim/types";
 import { isNumber } from "lodash-es";
 import { useTranslation } from "react-i18next";
@@ -37,7 +38,7 @@ const EnemyTitle = ({ id, enemy }: Props) => {
 	const { t } = useTranslation();
 	let name = enemy?.name;
 	if (name) {
-		name = `(${t("game:monster_names." + name)})`;
+		name = `(${t(dynamicKey("game:monster_names." + name))})`;
 	}
 
 	return (
@@ -61,7 +62,7 @@ const EnemyInfo = ({ enemy }: Props) => {
 			<InfoItem name={t("stats.hp")} value={enemy?.hp} />
 			<InfoItem
 				name={t("stats.modified")}
-				value={t("states." + modified.toString())}
+				value={t(dynamicKey("states." + modified.toString()))}
 			/>
 		</div>
 	);

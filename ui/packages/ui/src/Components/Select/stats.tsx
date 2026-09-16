@@ -1,5 +1,6 @@
 import { MenuItem } from "@blueprintjs/core";
 import type { ItemPredicate, ItemRenderer } from "@blueprintjs/select";
+import { dynamicKey } from "@gcsim/localization";
 import type { IStat } from "@gcsim/types";
 import i18n from "i18next";
 import { valid_stats } from "../../Data";
@@ -20,7 +21,7 @@ export const render: ItemRenderer<IStat> = (
 			label={""}
 			key={item}
 			onClick={handleClick}
-			text={highlightText(i18n.t("stats." + item), query)}
+			text={highlightText(i18n.t(dynamicKey("stats." + item)), query)}
 		/>
 	);
 };
@@ -33,7 +34,7 @@ export const filter: ItemPredicate<IStat> = (
 ) => {
 	const normalizedQuery = query.toLowerCase();
 	const transItem = i18n
-		.t("stats." + item)
+		.t(dynamicKey("stats." + item))
 		.replace(" ", "")
 		.toLowerCase();
 	if (exactMatch) {

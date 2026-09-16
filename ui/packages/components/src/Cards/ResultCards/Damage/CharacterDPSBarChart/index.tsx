@@ -1,3 +1,4 @@
+import { dynamicKey } from "@gcsim/localization";
 import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
@@ -37,7 +38,7 @@ export default ({ data, running, names }: Props) => {
 							s.elements
 								? Object.fromEntries(
 										Object.entries(s.elements).map(([k, v]) => [
-											t(`elements.${k}`),
+											t(dynamicKey(`elements.${k}`)),
 											v,
 										]),
 									)

@@ -1,5 +1,6 @@
 import { Button } from "@blueprintjs/core";
 import { Tooltip2 } from "@blueprintjs/popover2";
+import { dynamicKey } from "@gcsim/localization";
 import type { Character } from "@gcsim/types";
 import classNames from "classnames";
 import { Trans, useTranslation } from "react-i18next";
@@ -248,7 +249,7 @@ export function CharacterCard({
 							<Trans>character.c_pre</Trans>
 							{char.cons ? char.cons : 0}
 							<Trans>character.c_post</Trans>{" "}
-							{t(`game:character_names.${char.name}`)}{" "}
+							{t(dynamicKey(`game:character_names.${char.name}`))}{" "}
 						</>
 					</div>
 					<div className="w-1/2 text-sm">

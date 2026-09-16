@@ -1,5 +1,6 @@
 import { MenuItem } from "@blueprintjs/core";
 import type { ItemPredicate, ItemRenderer } from "@blueprintjs/select";
+import { dynamicKey } from "@gcsim/localization";
 import type { IAction } from "@gcsim/types";
 import i18n from "i18next";
 import { valid_actions } from "../../Data";
@@ -20,7 +21,7 @@ export const render: ItemRenderer<IAction> = (
 			label={""}
 			key={item}
 			onClick={handleClick}
-			text={highlightText(i18n.t("actions." + item), query)}
+			text={highlightText(i18n.t(dynamicKey("actions." + item)), query)}
 		/>
 	);
 };
@@ -33,7 +34,7 @@ export const filter: ItemPredicate<IAction> = (
 ) => {
 	const normalizedQuery = query.toLowerCase();
 	const transItem = i18n
-		.t("actions." + item)
+		.t(dynamicKey("actions." + item))
 		.replace(" ", "")
 		.toLowerCase();
 	if (exactMatch) {

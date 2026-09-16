@@ -1,5 +1,6 @@
 import { MenuItem } from "@blueprintjs/core";
 import type { ItemPredicate, ItemRenderer } from "@blueprintjs/select";
+import { dynamicKey } from "@gcsim/localization";
 import type { ICharacter } from "@gcsim/types";
 import i18n from "i18next";
 import { valid_characters } from "../../Data";
@@ -20,7 +21,10 @@ export const renderCharacter: ItemRenderer<ICharacter> = (
 			label={""}
 			key={character}
 			onClick={handleClick}
-			text={highlightText(i18n.t("game:character_names." + character), query)}
+			text={highlightText(
+				i18n.t(dynamicKey("game:character_names." + character)),
+				query,
+			)}
 		/>
 	);
 };
@@ -33,7 +37,7 @@ export const filterCharacter: ItemPredicate<ICharacter> = (
 ) => {
 	const normalizedQuery = query.toLowerCase();
 	const transWeapon = i18n
-		.t("game:character_names." + character)
+		.t(dynamicKey("game:character_names." + character))
 		.replace(" ", "")
 		.toLowerCase();
 	if (exactMatch) {

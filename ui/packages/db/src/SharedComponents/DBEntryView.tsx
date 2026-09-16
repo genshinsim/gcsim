@@ -1,3 +1,4 @@
+import { dynamicKey } from "@gcsim/localization";
 import type { db, model } from "@gcsim/types";
 import type { Long } from "protobufjs";
 import { useTranslation } from "react-i18next";
@@ -7,7 +8,7 @@ import DBEntryTags from "./DBEntryViewComponents/DBEntryTags";
 //displays one database entry
 export default function DBEntryView({ dbEntry }: { dbEntry: db.Entry }) {
 	const { t: translate } = useTranslation();
-	const t = (key: string) => translate(key);
+	const t = (key: string) => translate(dynamicKey(key));
 
 	const team = dbEntry.summary?.team ?? [];
 	if (team.length < 4) {
@@ -77,7 +78,7 @@ function DBEntryDetails({
 }) {
 	const { t: translate } = useTranslation();
 
-	const t = (key: string) => translate(key);
+	const t = (key: string) => translate(dynamicKey(key));
 	let date = t("db.unknown");
 	if (create_date) {
 		date = new Date((create_date as number) * 1000).toLocaleDateString();

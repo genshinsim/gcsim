@@ -1,4 +1,5 @@
 import { Card } from "@blueprintjs/core";
+import { dynamicKey } from "@gcsim/localization";
 import type { SimResults } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { useTranslation } from "react-i18next";
@@ -23,7 +24,7 @@ export const CharacterActionsCard = ({ data, running, names }: Props) => {
 								? {
 										sources: Object.fromEntries(
 											Object.entries(s.sources).map(([k, v]) => [
-												t("actions." + k),
+												t(dynamicKey("actions." + k)),
 												v,
 											]),
 										),

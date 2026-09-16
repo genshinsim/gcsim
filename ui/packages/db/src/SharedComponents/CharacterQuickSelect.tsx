@@ -1,5 +1,6 @@
 import { MenuItem } from "@blueprintjs/core";
 import { MultiSelect2 } from "@blueprintjs/select";
+import { dynamicKey } from "@gcsim/localization";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
 import {
@@ -20,7 +21,7 @@ export function CharacterQuickSelect() {
 		.map(([charName]) => charName);
 
 	const translateCharName = (charName: string) =>
-		t("game:character_names." + charName);
+		t(dynamicKey("game:character_names." + charName));
 	return (
 		<div className="grow max-w-xl">
 			<MultiSelect2

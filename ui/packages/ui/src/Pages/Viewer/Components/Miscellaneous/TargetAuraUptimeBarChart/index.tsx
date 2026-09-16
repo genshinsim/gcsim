@@ -1,4 +1,5 @@
 import { Card, FormGroup, HTMLSelect } from "@blueprintjs/core";
+import { dynamicKey } from "@gcsim/localization";
 import type { SimResults } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { useMemo, useState } from "react";
@@ -23,7 +24,7 @@ export const TargetAuraUptimeCard = ({ data, running }: Props) => {
 								? {
 										sources: Object.fromEntries(
 											Object.entries(s.sources).map(([k, v]) => [
-												t("elements." + k),
+												t(dynamicKey("elements." + k)),
 												v,
 											]),
 										),

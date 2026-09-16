@@ -1,3 +1,4 @@
+import { dynamicKey } from "@gcsim/localization";
 import type { Character } from "@gcsim/types";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -86,7 +87,7 @@ export function Team() {
 			key: k,
 			char_key: e.name,
 			char_source: "user",
-			text: t("game:character_names." + e.name),
+			text: t(dynamicKey("game:character_names." + e.name)),
 			label: label,
 		});
 	});

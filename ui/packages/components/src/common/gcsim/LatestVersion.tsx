@@ -1,5 +1,6 @@
 import { AnchorButton, Card } from "@blueprintjs/core";
 import LatestCharactersData from "@gcsim/data/src/latest_chars.json";
+import { dynamicKey } from "@gcsim/localization";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -63,7 +64,7 @@ export function LatestVersion() {
 										onImageLoaded={() => {}}
 										hideDetails
 									/>
-									{t(`game:character_names.${char}`)}
+									{t(dynamicKey(`game:character_names.${char}`))}
 								</div>
 							))}
 						</div>

@@ -1,3 +1,4 @@
+import { dynamicKey } from "@gcsim/localization";
 import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { memo, useMemo } from "react";
@@ -23,7 +24,7 @@ export default ({ data, running }: Props) => {
 			d?.statistics?.element_dps
 				? Object.fromEntries(
 						Object.entries(d?.statistics?.element_dps).map(([k, v]) => [
-							t("elements." + k),
+							t(dynamicKey("elements." + k)),
 							v,
 						]),
 					)

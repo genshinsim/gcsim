@@ -1,4 +1,5 @@
-import i18n from "i18next";
+/// <reference path="./react-i18next.d.ts" />
+import i18n, { type ParseKeys } from "i18next";
 import LanguageDetector from "i18next-browser-languagedetector";
 import { merge } from "lodash-es";
 import { initReactI18next } from "react-i18next";
@@ -44,6 +45,11 @@ export const resources = {
 };
 
 export const specialLocales = ["zh", "ja", "ko"];
+
+// Assert a translation key that is built at runtime (from ids, element or action
+// names, etc.) and so cannot be checked statically. Wrap only such keys; static
+// keys must stay unwrapped so that typos remain compile errors.
+export const dynamicKey = (key: string) => key as ParseKeys;
 
 type I18nModule = Parameters<typeof i18n.use>[0];
 
