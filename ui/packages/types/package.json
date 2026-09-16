@@ -11,6 +11,7 @@
 		"protobufjs-cli": "^1.1.1"
 	},
 	"dependencies": {
+		"@bufbuild/protobuf": "^2.15.0",
 		"long": "^5.2.3"
 	}
 }

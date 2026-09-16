@@ -676,6 +676,9 @@ importers:
 
   packages/types:
     dependencies:
+      '@bufbuild/protobuf':
+        specifier: ^2.15.0
+        version: 2.15.0
       long:
         specifier: ^5.2.3
         version: 5.3.2
@@ -1734,6 +1737,9 @@ packages:
     peerDependenciesMeta:
       '@types/react':
         optional: true
+
+  '@bufbuild/protobuf@2.15.0':
+    resolution: {integrity: sha512-DAheWUkVr/SJTWCc+lg9dhY0eN4SaWlf4+bG1KzHeXbnqt0AfB/NX0Z+VunGlM1ki1B4zVvye27MpKh/svySUA==}
 
   '@cf-wasm/internals@0.2.0':
     resolution: {integrity: sha512-QwMNETkTCtrx0uCzjJPRCTyok0OZNvOry9alfG8a8TpHo7oPJ17htPMDG4ptudpwe9F0VtJHy9+nOzJmupteiQ==}
@@ -11814,6 +11820,8 @@ snapshots:
       tslib: 2.3.1
     optionalDependencies:
       '@types/react': 18.3.31
+
+  '@bufbuild/protobuf@2.15.0': {}
 
   '@cf-wasm/internals@0.2.0': {}
 
