@@ -10147,7 +10147,7 @@
       "ability": "cons",
       "name": "C1",
       "shape": "Circle",
-      "center": "PrimaryTarget",
+      "center": "Player",
       "radius": 4.5
     },
     {
