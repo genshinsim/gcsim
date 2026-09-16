@@ -18,7 +18,7 @@ plugins:
       - module=github.com/genshinsim/gcsim
 
   # TypeScript for the UI. Same options as the old protoc invocation.
-  - remote: buf.build/community/stephenh-ts-proto:v1.181.2
+  - remote: buf.build/community/stephenh-ts-proto:v2.12.1
     out: ui/packages/types/src/generated
     opt:
       - useOptionals=all
