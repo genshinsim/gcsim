@@ -149,6 +149,9 @@ importers:
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
+      lucide-react:
+        specifier: ^0.360.0
+        version: 0.360.0(react@18.3.1)
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -177,6 +180,9 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
     devDependencies:
+      '@testing-library/jest-dom':
+        specifier: ^6.9.1
+        version: 6.9.1
       '@testing-library/react':
         specifier: ^16.3.0
         version: 16.3.3(@testing-library/dom@10.4.1)(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
