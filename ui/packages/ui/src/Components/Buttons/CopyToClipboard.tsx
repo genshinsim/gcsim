@@ -1,23 +1,19 @@
-import { Button, Icon, Intent, type Toaster } from "@blueprintjs/core";
-import { memo, type RefObject } from "react";
+import { Button, Icon } from "@blueprintjs/core";
+import { toast } from "@gcsim/primitives";
+import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
 type Props = {
-	copyToast: RefObject<Toaster>;
 	config?: string;
 	className?: string;
 };
 
-const CopyTo = ({ copyToast, config, className }: Props) => {
+const CopyTo = ({ config, className }: Props) => {
 	const { t } = useTranslation();
 
 	const action = () => {
 		navigator.clipboard.writeText(config ?? "").then(() => {
-			copyToast.current?.show({
-				message: t("viewer.copied_to_clipboard"),
-				intent: Intent.SUCCESS,
-				timeout: 2000,
-			});
+			toast.success(t("viewer.copied_to_clipboard"), { duration: 2000 });
 		});
 	};
 

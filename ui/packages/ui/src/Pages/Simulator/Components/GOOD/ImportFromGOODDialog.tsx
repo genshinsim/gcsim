@@ -4,9 +4,8 @@ import {
 	Callout,
 	Classes,
 	Dialog,
-	Position,
-	Toaster,
 } from "@blueprintjs/core";
+import { toast } from "@gcsim/primitives";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
 import { useAppDispatch } from "../../../../Stores/store";
@@ -17,10 +16,6 @@ type Props = {
 	isOpen: boolean;
 	onClose: () => void;
 };
-
-const AppToaster = Toaster.create({
-	position: Position.BOTTOM_RIGHT,
-});
 
 const lsKey = "GOOD-import";
 
@@ -35,10 +30,7 @@ export function ImportFromGOODDialog(props: Props) {
 				userDataActions.loadFromGOOD({ data: data.characters, source: "good" }),
 			);
 			props.onClose();
-			AppToaster.show({
-				message: t("importer.import_success"),
-				intent: "success",
-			});
+			toast.success(t("importer.import_success"));
 		}
 	};
 	const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

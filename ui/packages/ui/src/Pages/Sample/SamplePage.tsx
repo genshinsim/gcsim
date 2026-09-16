@@ -3,13 +3,11 @@ import {
 	ButtonGroup,
 	Intent,
 	NonIdealState,
-	Position,
 	Spinner,
 	SpinnerSize,
-	Toaster,
 } from "@blueprintjs/core";
 import type { Sample } from "@gcsim/types";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router";
 import { CopyToClipboard, SendToSimulator } from "../../Components/Buttons";
@@ -42,7 +40,6 @@ type Props = {
 export default ({ sample, error, retry }: Props) => {
 	const { t } = useTranslation();
 	const data = useSample(sample);
-	const copyToast = useRef<Toaster>(null);
 	const onSendToSimulator = useSendToSimulator();
 
 	if (sample == null || data.team == null || data.parsed == null) {
@@ -65,7 +62,6 @@ export default ({ sample, error, retry }: Props) => {
 				</span>
 				<ButtonGroup>
 					<CopyToClipboard
-						copyToast={copyToast}
 						config={sample.config}
 						className="hidden ml-[7px] sm:flex"
 					/>
@@ -99,7 +95,6 @@ export default ({ sample, error, retry }: Props) => {
 				/>
 				<ErrorAlert msg={error} retry={retry} />
 			</div>
-			<Toaster ref={copyToast} position={Position.TOP_RIGHT} />
 		</div>
 	);
 };
