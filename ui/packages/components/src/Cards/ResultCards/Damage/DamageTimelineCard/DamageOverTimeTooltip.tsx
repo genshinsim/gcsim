@@ -1,3 +1,4 @@
+import { Popover, PopoverAnchor, PopoverContent } from "@gcsim/primitives";
 import { localPoint } from "@visx/event";
 import { Group } from "@visx/group";
 import { Line } from "@visx/shape";
@@ -6,11 +7,6 @@ import type { ScaleLinear } from "d3-scale";
 import type { MutableRefObject } from "react";
 import { useTranslation } from "react-i18next";
 import { Colors, DataColorsConst } from "../../../../common/gcsim";
-import {
-	Popover,
-	PopoverAnchor,
-	PopoverContent,
-} from "../../../../common/ui/popover";
 import type { Point } from "./DamageOverTimeData";
 
 export interface TooltipData {

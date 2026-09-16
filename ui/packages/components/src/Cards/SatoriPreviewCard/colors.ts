@@ -71,7 +71,7 @@ export const GRAY_600 = "#4b5563";
 export const GRAY_700 = "#374151";
 export const GRAY_400 = "#9ca3af";
 
-// Metadata pill palette, matching the live badge variants (common/ui/badge).
+// Metadata pill palette, matching the live badge variants (@gcsim/primitives badge).
 export const PRIMARY_BG = "#0f172a"; // bg-primary (slate-900)
 export const PRIMARY_FG = "#f8fafc"; // text-primary-foreground
 export const AMBER_700 = "#b45309"; // warning bg

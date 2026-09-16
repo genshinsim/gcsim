@@ -1,11 +1,7 @@
+import { Popover, PopoverAnchor, PopoverContent } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import type { ScaleBand, ScaleLinear } from "d3-scale";
 import { useTranslation } from "react-i18next";
-import {
-	Popover,
-	PopoverAnchor,
-	PopoverContent,
-} from "../../common/ui/popover";
 
 export interface TooltipData {
 	x: number;

@@ -1,5 +1,5 @@
+import { Popover, PopoverAnchor, PopoverContent } from "@gcsim/primitives";
 import { useTranslation } from "react-i18next";
-import { Popover, PopoverAnchor, PopoverContent } from "../../../ui";
 import { DataColorsConst } from "../DataColors";
 
 export interface TooltipData {

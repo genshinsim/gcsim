@@ -1,5 +1,6 @@
 import { Spinner } from "@blueprintjs/core";
-import { Button, DBCard, Toaster, useToast } from "@gcsim/components";
+import { DBCard } from "@gcsim/components";
+import { Button, Toaster, useToast } from "@gcsim/primitives";
 import type { db } from "@gcsim/types";
 
 export function ListView({ data }: { data: db.Entry[] }) {

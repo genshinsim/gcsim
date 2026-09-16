@@ -1,4 +1,4 @@
-import { Popover, PopoverContent, PopoverTrigger } from "@gcsim/components";
+import { Popover, PopoverContent, PopoverTrigger } from "@gcsim/primitives";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 
 const meta: Meta<typeof Popover> = {

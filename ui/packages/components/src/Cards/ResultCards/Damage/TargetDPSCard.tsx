@@ -1,3 +1,4 @@
+import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { memo, useMemo } from "react";
@@ -10,7 +11,6 @@ import {
 	useDataColors,
 	useRefreshWithTimer,
 } from "../../../common/gcsim";
-import { Card } from "../../../common/ui/card";
 
 type Props = {
 	data: model.SimulationResult | null;

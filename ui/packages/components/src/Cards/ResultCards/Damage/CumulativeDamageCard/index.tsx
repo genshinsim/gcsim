@@ -1,3 +1,4 @@
+import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { useMemo, useState } from "react";
@@ -7,7 +8,6 @@ import {
 	DataColorsConst,
 	useRefreshWithTimer,
 } from "../../../../common/gcsim";
-import { Card } from "../../../../common/ui/card";
 import { CumulativeGraph, CumulativeLegend } from "./CumulativeDamage";
 
 export type LegendGlyph = {

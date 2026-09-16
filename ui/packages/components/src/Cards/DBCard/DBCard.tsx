@@ -1,6 +1,6 @@
 import tagData from "@gcsim/data/src/tags.json";
+import { Card, CardContent, CardFooter } from "@gcsim/primitives";
 import type { db, model } from "@gcsim/types";
-import { Card, CardContent, CardFooter } from "../../common/ui/card";
 import { cn } from "../../lib/utils";
 import { AvatarCard } from "../AvatarCard/AvatarCard";
 import { CardBadge } from "../CardBadge/CardBadge";

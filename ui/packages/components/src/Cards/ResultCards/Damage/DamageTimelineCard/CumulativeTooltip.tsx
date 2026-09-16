@@ -1,3 +1,4 @@
+import { Popover, PopoverAnchor, PopoverContent } from "@gcsim/primitives";
 import { localPoint } from "@visx/event";
 import { Group } from "@visx/group";
 import { Line } from "@visx/shape";
@@ -10,11 +11,6 @@ import {
 	FloatStatTooltipContent,
 	useDataColors,
 } from "../../../../common/gcsim";
-import {
-	Popover,
-	PopoverAnchor,
-	PopoverContent,
-} from "../../../../common/ui/popover";
 import type { CumulativePoint } from "./CumulativeData";
 
 export interface TooltipData {
