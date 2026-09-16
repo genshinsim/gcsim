@@ -14,7 +14,6 @@ tool (
 
 require (
 	github.com/aclements/go-moremath v0.0.0-20210112150236-f10218a38794
-	github.com/adrg/xdg v0.5.3
 	github.com/caarlos0/env/v10 v10.0.0
 	github.com/containrrr/shoutrrr v0.8.0
 	github.com/creativeprojects/go-selfupdate v1.1.3
@@ -31,7 +30,7 @@ require (
 	github.com/ory/dockertest/v3 v3.10.0
 	github.com/sanity-io/litter v1.5.9-0.20260504104730-2ddefc21bc33
 	github.com/schollz/progressbar/v3 v3.18.0
-	github.com/shizukayuki/excel-hk4e v0.0.0-20260717230206-c93b17a7e33b
+	github.com/shizukayuki/excel-hk4e v0.0.0-20260915142431-9bbfc7d4f9eb
 	github.com/tinylib/msgp v1.1.9
 	github.com/urfave/cli/v3 v3.10.1
 	go.mongodb.org/mongo-driver v1.12.1
