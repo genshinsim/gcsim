@@ -3,10 +3,7 @@ import { resources } from "./index";
 
 type LocaleKey = keyof typeof resources;
 
-// zh/ja/ko still carry untranslated `translation` copy; folding them in is
-// tracked in genshinsim/gcsim#2934. (This is unrelated to `specialLocales`,
-// which is a CJK chart-axis rendering flag, not a translation-status list.)
-const deferredLocales: LocaleKey[] = ["zh", "ja", "ko"];
+const deferredLocales: LocaleKey[] = [];
 
 function flattenKeys(obj: Record<string, unknown>, prefix = ""): string[] {
 	const keys: string[] = [];
