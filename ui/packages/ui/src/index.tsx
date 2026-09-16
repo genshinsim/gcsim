@@ -17,7 +17,6 @@ import {
 	useHistory,
 	useLocation,
 } from "react-router-dom";
-import "./i18n";
 import {
 	Dash,
 	DBViewer,

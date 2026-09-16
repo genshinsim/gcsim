@@ -1,5 +1,5 @@
+import { specialLocales } from "@gcsim/localization";
 import type { CharacterBucketStats } from "@gcsim/types";
-import { specialLocales } from "@ui/i18n";
 import { Group } from "@visx/group";
 import { LegendItem, LegendLabel, LegendOrdinal } from "@visx/legend";
 import { scaleLinear, scaleOrdinal } from "@visx/scale";

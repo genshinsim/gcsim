@@ -3,7 +3,10 @@
 	"main": "src/index.ts",
 	"private": true,
 	"dependencies": {
-		"lodash-es": "^4.17.21"
+		"i18next": "^23.10.1",
+		"i18next-browser-languagedetector": "^7.2.0",
+		"lodash-es": "^4.17.21",
+		"react-i18next": "^12.0.0"
 	},
 	"devDependencies": {
 		"@types/lodash-es": "^4"
