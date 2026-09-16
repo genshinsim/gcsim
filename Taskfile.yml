@@ -4,7 +4,6 @@ tasks:
   build:
     cmds:
       - task: protos
-      - task: embed
       - task: pipeline
   # Generate protobuf code with buf (uses hosted remote plugins, so no local
   # protoc / protoc-gen-* toolchain is required). Config: buf.gen.yaml.
@@ -14,8 +13,7 @@ tasks:
       - buf generate
       - task: protos:post
   # Post-generation: patch the ts-proto struct.ts WKT, add bson tags to the
-  # generated Go structs (preview is intentionally excluded), and regenerate
-  # msgp code.
+  # generated Go structs, and regenerate msgp code.
   protos:post:
     internal: true
     cmds:
@@ -30,8 +28,6 @@ tasks:
       - task: msgp
   msgp:
     cmd: go generate ./pkg/stats
-  embed:
-    cmd: ./scripts/build_preview.sh
 
   pipeline:
     desc: Run pipeline

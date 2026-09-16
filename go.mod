@@ -16,7 +16,6 @@ require (
 	github.com/aclements/go-moremath v0.0.0-20210112150236-f10218a38794
 	github.com/adrg/xdg v0.5.3
 	github.com/caarlos0/env/v10 v10.0.0
-	github.com/chromedp/chromedp v0.9.2
 	github.com/containrrr/shoutrrr v0.8.0
 	github.com/creativeprojects/go-selfupdate v1.1.3
 	github.com/davecgh/go-spew v1.1.1
@@ -26,12 +25,10 @@ require (
 	github.com/fatih/color v1.15.0
 	github.com/go-chi/chi v1.5.5
 	github.com/go-chi/cors v1.2.1
-	github.com/go-rod/rod v0.114.8
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/jaevor/go-nanoid v1.3.0
 	github.com/mailru/easyjson v0.7.7
 	github.com/ory/dockertest/v3 v3.10.0
-	github.com/redis/go-redis/v9 v9.5.1
 	github.com/sanity-io/litter v1.5.9-0.20260504104730-2ddefc21bc33
 	github.com/schollz/progressbar/v3 v3.18.0
 	github.com/shizukayuki/excel-hk4e v0.0.0-20260717230206-c93b17a7e33b
@@ -55,12 +52,9 @@ require (
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
-	github.com/chromedp/cdproto v0.0.0-20230914224007-a15a36ccbc2e // indirect
-	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/containerd/continuity v0.4.2 // indirect
 	github.com/davidmz/go-pageant v1.0.2 // indirect
 	github.com/dgraph-io/ristretto v0.1.1 // indirect
-	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dmarkham/enumer v1.6.3 // indirect
 	github.com/docker/cli v24.0.6+incompatible // indirect
 	github.com/docker/docker v24.0.6+incompatible // indirect
@@ -68,9 +62,6 @@ require (
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
-	github.com/gobwas/httphead v0.1.0 // indirect
-	github.com/gobwas/pool v0.2.1 // indirect
-	github.com/gobwas/ws v1.3.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v1.2.2 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
@@ -111,11 +102,6 @@ require (
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/xeipuuv/gojsonschema v1.2.0 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect
-	github.com/ysmood/fetchup v0.2.3 // indirect
-	github.com/ysmood/goob v0.4.0 // indirect
-	github.com/ysmood/got v0.34.1 // indirect
-	github.com/ysmood/gson v0.7.3 // indirect
-	github.com/ysmood/leakless v0.8.0 // indirect
 	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.50.0 // indirect
