@@ -2,10 +2,14 @@
 	"name": "@gcsim/localization",
 	"main": "src/index.ts",
 	"private": true,
+	"scripts": {
+		"test": "vitest run"
+	},
 	"dependencies": {
 		"lodash-es": "^4.17.21"
 	},
 	"devDependencies": {
-		"@types/lodash-es": "^4"
+		"@types/lodash-es": "^4",
+		"vitest": "^3.2.4"
 	}
 }

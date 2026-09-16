@@ -27,6 +27,11 @@ runs:
       working-directory: ./ui
       shell: bash
       run: pnpm lint-ci
+    - name: Test
+      working-directory: ./ui
+      shell: bash
+      # e2e (playwright) is exercised by the dedicated test:e2e workflows, not this unit-test step
+      run: pnpm --filter '!@gcsim/e2e' -r test
     # - name: Detect Dependency Version Mismatches
     #   working-directory: ./ui
     #   shell: bash
