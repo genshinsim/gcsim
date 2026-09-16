@@ -68,6 +68,9 @@ func (c *char) a1Ascendant() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase("lauma-a1-ascendant", -1),
 			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+				if !c.StatusIsActive(a1Key) {
+					return nil
+				}
 				if atk.Info.AttackTag == attacks.AttackTagDirectLunarBloom {
 					return m
 				}

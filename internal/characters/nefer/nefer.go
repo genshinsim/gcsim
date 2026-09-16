@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/core/stacks"
@@ -30,15 +31,17 @@ type char struct {
 	veilTracker       *stacks.MultipleRefreshNoRemove
 	maxVeilStacks     int
 	phantasmCharges   int
+	phantasmCommitSrc int
+	phantasmVeilMultiplier float64
 	chargeRoute       chargeRouteState
 }
 
 type chargeRouteState struct {
-	src               int
-	slitherSrc        int
-	releaseStartFrame int
+	src                int
+	slitherSrc         int
+	releaseStartFrame  int
 	phantasmStartFrame int
-	phantasmEndFrame  int
+	phantasmEndFrame   int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
@@ -81,7 +84,7 @@ func (c *char) hasPhantasmCharge() bool {
 }
 
 func (c *char) canTriggerPhantasm() bool {
-	return c.StatusIsActive(shadowDanceKey) && c.hasPhantasmCharge() && c.Core.Player.VerdantDew() > 0
+	return c.StatusIsActive(shadowDanceKey) && c.hasPhantasmCharge() && c.Core.Player.Dew() > 0
 }
 
 func (c *char) phantasmActive() bool {
@@ -144,9 +147,18 @@ func (c *char) addVeilStacks(count int) {
 	}
 	prev := c.currentVeilStacks()
 	for range count {
-		c.veilTracker.Add(c.veilStackDuration())
+		duration := c.veilStackDuration()
+		c.veilTracker.Add(duration)
 		next := c.currentVeilStacks()
 		c.applyVeilThresholdBuff(prev, next, 1)
+		if c.Core.Flags.LogDebug {
+			c.Core.Log.NewEvent("nefer veil gained", glog.LogCharacterEvent, c.Index()).
+				Write("stacks_added", 1).
+				Write("stacks", next).
+				Write("bonus", float64(next)*0.08).
+				Write("duration_frames", duration).
+				Write("expires_frame", c.Core.F+duration)
+		}
 		prev = next
 	}
 }
