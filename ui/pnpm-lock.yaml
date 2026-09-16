@@ -144,8 +144,8 @@ importers:
         specifier: ^3.2.0
         version: 3.2.0
       i18next:
-        specifier: ^23.10.1
-        version: 23.16.8
+        specifier: ^26.4.2
+        version: 26.4.2(typescript@7.0.2)
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
@@ -162,8 +162,8 @@ importers:
         specifier: ^4.0.13
         version: 4.1.2(react@18.3.1)
       react-i18next:
-        specifier: ^12.0.0
-        version: 12.3.1(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^17.0.14
+        version: 17.0.14(i18next@26.4.2(typescript@7.0.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@7.0.2)
       react-markdown:
         specifier: ^9.0.1
         version: 9.1.0(@types/react@18.3.31)(react@18.3.1)
@@ -258,11 +258,11 @@ importers:
         specifier: ^1.1.3
         version: 1.20.0
       i18next:
-        specifier: ^23.10.1
-        version: 23.16.8
+        specifier: ^26.4.2
+        version: 26.4.2(typescript@7.0.2)
       i18next-browser-languagedetector:
-        specifier: ^7.2.0
-        version: 7.2.2
+        specifier: ^8.2.1
+        version: 8.2.1
       protobufjs:
         specifier: ^7.1.2
         version: 7.6.6
@@ -273,8 +273,8 @@ importers:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
       react-i18next:
-        specifier: ^12.0.0
-        version: 12.3.1(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^17.0.14
+        version: 17.0.14(i18next@26.4.2(typescript@7.0.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@7.0.2)
       react-icons:
         specifier: ^4.6.0
         version: 4.12.0(react@18.3.1)
@@ -389,11 +389,11 @@ importers:
         specifier: ^1.2.1
         version: 1.20.0
       i18next:
-        specifier: ^23.10.1
-        version: 23.16.8
+        specifier: ^26.4.2
+        version: 26.4.2(typescript@7.0.2)
       i18next-browser-languagedetector:
-        specifier: ^7.2.0
-        version: 7.2.2
+        specifier: ^8.2.1
+        version: 8.2.1
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -404,8 +404,8 @@ importers:
         specifier: ^4.0.13
         version: 4.1.2(react@18.3.1)
       react-i18next:
-        specifier: ^12.0.0
-        version: 12.3.1(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^17.0.14
+        version: 17.0.14(i18next@26.4.2(typescript@7.0.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@7.0.2)
       wouter:
         specifier: ^3.1.0
         version: 3.11.0(react@18.3.1)
@@ -457,17 +457,17 @@ importers:
   packages/localization:
     dependencies:
       i18next:
-        specifier: ^23.10.1
-        version: 23.16.8
+        specifier: ^26.4.2
+        version: 26.4.2(typescript@7.0.2)
       i18next-browser-languagedetector:
-        specifier: ^7.2.0
-        version: 7.2.2
+        specifier: ^8.2.1
+        version: 8.2.1
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
       react-i18next:
-        specifier: ^12.0.0
-        version: 12.3.1(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^17.0.14
+        version: 17.0.14(i18next@26.4.2(typescript@7.0.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@7.0.2)
     devDependencies:
       '@types/lodash-es':
         specifier: ^4
@@ -540,14 +540,14 @@ importers:
         specifier: ^2.1.0
         version: 2.1.1
       i18next:
-        specifier: ^23.10.1
-        version: 23.16.8
+        specifier: ^26.4.2
+        version: 26.4.2(typescript@7.0.2)
       i18next-browser-languagedetector:
-        specifier: ^7.2.0
-        version: 7.2.2
+        specifier: ^8.2.1
+        version: 8.2.1
       i18next-http-backend:
-        specifier: ^2.5.0
-        version: 2.7.3
+        specifier: ^4.0.2
+        version: 4.0.2
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
@@ -561,8 +561,8 @@ importers:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
       react-i18next:
-        specifier: ^12.0.0
-        version: 12.3.1(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^17.0.14
+        version: 17.0.14(i18next@26.4.2(typescript@7.0.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@7.0.2)
       tailwind-merge:
         specifier: ^2.2.2
         version: 2.6.1
@@ -604,8 +604,8 @@ importers:
         specifier: ^10.6.0
         version: 10.6.0(@types/react@18.3.31)(prettier@2.8.8)(react@18.3.1)
       storybook-react-i18next:
-        specifier: ^10.1.2
-        version: 10.1.2(i18next-browser-languagedetector@7.2.2)(i18next-http-backend@2.7.3)(i18next@23.16.8)(react-i18next@12.3.1(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(storybook@10.6.0(@types/react@18.3.31)(prettier@2.8.8)(react@18.3.1))
+        specifier: ^10.1.4
+        version: 10.1.4(i18next-browser-languagedetector@8.2.1)(i18next-http-backend@4.0.2)(i18next@26.4.2(typescript@7.0.2))(react-i18next@17.0.14(i18next@26.4.2(typescript@7.0.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@7.0.2))(react@18.3.1)(storybook@10.6.0(@types/react@18.3.31)(prettier@2.8.8)(react@18.3.1))
       tailwindcss:
         specifier: ^4.3.3
         version: 4.3.3
@@ -631,11 +631,11 @@ importers:
         specifier: ^1.1.3
         version: 1.20.0
       i18next:
-        specifier: ^23.10.1
-        version: 23.16.8
+        specifier: ^26.4.2
+        version: 26.4.2(typescript@7.0.2)
       i18next-browser-languagedetector:
-        specifier: ^7.2.0
-        version: 7.2.2
+        specifier: ^8.2.1
+        version: 8.2.1
       react:
         specifier: ^18.2.0
         version: 18.3.1
@@ -643,8 +643,8 @@ importers:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
       react-i18next:
-        specifier: ^12.0.0
-        version: 12.3.1(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^17.0.14
+        version: 17.0.14(i18next@26.4.2(typescript@7.0.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@7.0.2)
       react-router:
         specifier: ^6.22.3
         version: 6.30.6(react@18.3.1)
@@ -786,11 +786,11 @@ importers:
         specifier: ^7.6.2
         version: 7.10.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       i18next:
-        specifier: ^23.10.1
-        version: 23.16.8
+        specifier: ^26.4.2
+        version: 26.4.2(typescript@7.0.2)
       i18next-browser-languagedetector:
-        specifier: ^7.2.0
-        version: 7.2.2
+        specifier: ^8.2.1
+        version: 8.2.1
       lodash-es:
         specifier: ^4.17.21
         version: 4.18.1
@@ -819,8 +819,8 @@ importers:
         specifier: ^6.1.0
         version: 6.1.0(react@18.3.1)
       react-i18next:
-        specifier: ^12.0.0
-        version: 12.3.1(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^17.0.14
+        version: 17.0.14(i18next@26.4.2(typescript@7.0.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@7.0.2)
       react-icons:
         specifier: ^4.6.0
         version: 4.12.0(react@18.3.1)
@@ -910,8 +910,8 @@ importers:
         specifier: ^18.2.0
         version: 18.3.1(react@18.3.1)
       react-i18next:
-        specifier: ^12.0.0
-        version: 12.3.1(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^17.0.14
+        version: 17.0.14(i18next@26.4.2(typescript@7.0.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@7.0.2)
     devDependencies:
       '@tailwindcss/vite':
         specifier: ^4.3.3
@@ -5988,9 +5988,6 @@ packages:
       typescript:
         optional: true
 
-  cross-fetch@4.0.0:
-    resolution: {integrity: sha512-e4a5N8lVvuLgAWgnCrLr2PP0YyDOTHa9H/Rj54dirp61qXnNq46m82bRhNqIA5VccJtWBvPTFRV3TtvHUKPB1g==}
-
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
     engines: {node: '>= 8'}
@@ -7089,8 +7086,8 @@ packages:
     engines: {node: ^14.13.1 || >=16.0.0}
     hasBin: true
 
-  html-parse-stringify@3.1.0:
-    resolution: {integrity: sha512-E0oAXcELOtsXe+BmpJ2EZyedbldPpriV5vICzEuo6xjC/D1lDukOI7KrpfQGF2Qc4wWEy0nk3bFORS2K5ZAhFQ==}
+  html-parse-stringify@4.0.1:
+    resolution: {integrity: sha512-0zHsZJrK7S3K2aucXWL6ycoYJ/iNtIcFHC/nYQgFklPtrv5LpJctIiSCroWZWeuoXvuyFdzp6KzjJQ+OT5MfFw==}
 
   html-tags@3.3.1:
     resolution: {integrity: sha512-ztqyC3kLto0e9WbNp0aeP+M3kTt+nbaIveGmUxAtZa+8iFgKLUOD4YKM5j+f3QD89bra7UeumolZHKuOXnTmeQ==}
@@ -7174,14 +7171,20 @@ packages:
     resolution: {integrity: sha512-Y93lCzHYgGWdrJ66yIktxiaGULYc6oGiABxhcO5AufBeOyoIdZF7bIfLaOrbM0iGIOXQQgxxRrFEnb+Y6w1n4A==}
     engines: {node: '>=10.18'}
 
-  i18next-browser-languagedetector@7.2.2:
-    resolution: {integrity: sha512-6b7r75uIJDWCcCflmbof+sJ94k9UQO4X0YR62oUfqGI/GjCLVzlCwu8TFdRZIqVLzWbzNcmkmhfqKEr4TLz4HQ==}
+  i18next-browser-languagedetector@8.2.1:
+    resolution: {integrity: sha512-bZg8+4bdmaOiApD7N7BPT9W8MLZG+nPTOFlLiJiT8uzKXFjhxw4v2ierCXOwB5sFDMtuA5G4kgYZ0AznZxQ/cw==}
 
-  i18next-http-backend@2.7.3:
-    resolution: {integrity: sha512-FgZxrXdRA5u44xfYsJlEBL4/KH3f2IluBpgV/7riW0YW2VEyM8FzVt2XHAOi6id0Ppj7vZvCZVpp5LrGXnc8Ig==}
+  i18next-http-backend@4.0.2:
+    resolution: {integrity: sha512-oay62dIB2kL7+WHzoUXBjWfL3+mwijD3pQkQkIEaRLhy6kjXxUhrRenV0gInwlCASAaJaDy94+XvYizK+cAGdA==}
+    engines: {node: '>=18'}
 
-  i18next@23.16.8:
-    resolution: {integrity: sha512-06r/TitrM88Mg5FdUXAKL96dJMzgqLE5dv3ryBAra4KCwD9mJ4ndOTS95ZuymIGoE+2hzfdaMak2X11/es7ZWg==}
+  i18next@26.4.2:
+    resolution: {integrity: sha512-RX+R0VLg13IbvRuJSxnqykUFS9vQZTl8wYpWPCIUDWVrSGjsQywB5Y+pjzrkboxGAuYfJZVH1InFTdgBdxq6ug==}
+    peerDependencies:
+      typescript: ^5 || ^6 || ^7
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
@@ -8269,15 +8272,6 @@ packages:
     resolution: {integrity: sha512-Z3lTE9pLaJF47NyMhd4ww1yFTAP8YhYI8SleJiHzM46Fgpm5cnNzSl9XfzFNqbaz+VlJrIj3fXQ4DeN1Rjm6cw==}
     engines: {node: '>=18'}
 
-  node-fetch@2.7.0:
-    resolution: {integrity: sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==}
-    engines: {node: 4.x || >=6.0.0}
-    peerDependencies:
-      encoding: ^0.1.0
-    peerDependenciesMeta:
-      encoding:
-        optional: true
-
   node-releases@2.0.55:
     resolution: {integrity: sha512-mIrE/Cw9y+9Au6dS5vDKDhQza9YvG6w+ZrS6X+ZzA7yFW/soAeaups4Qzn1bL6g5FVy8WtP79+0j82oPIbqRjQ==}
     engines: {node: '>=18'}
@@ -9147,17 +9141,20 @@ packages:
     peerDependencies:
       react: '>=16.3.0'
 
-  react-i18next@12.3.1:
-    resolution: {integrity: sha512-5v8E2XjZDFzK7K87eSwC7AJcAkcLt5xYZ4+yTPDAW1i7C93oOY1dnr4BaQM7un4Hm+GmghuiPvevWwlca5PwDA==}
+  react-i18next@17.0.14:
+    resolution: {integrity: sha512-ZpMBfJL3BiXPuYHj5QMY1GwvKJNhE1vCxOJQ8BoMBdHP5XONTfi/Qss1nuRlnFdIl72PKo2jPmw+fxuLjRFgaQ==}
     peerDependencies:
-      i18next: '>= 19.0.0'
+      i18next: '>= 26.2.0'
       react: '>= 16.8.0'
       react-dom: '*'
       react-native: '*'
+      typescript: ^5 || ^6 || ^7
     peerDependenciesMeta:
       react-dom:
         optional: true
       react-native:
+        optional: true
+      typescript:
         optional: true
 
   react-icons@4.12.0:
@@ -9841,17 +9838,17 @@ packages:
   std-env@3.10.0:
     resolution: {integrity: sha512-5GS12FdOZNliM5mAOxFRg7Ir0pWz8MdpYm6AY6VPkGpbA7ZzmbzNcBJQ0GPvvyWgcY7QAhCgf9Uy89I03faLkg==}
 
-  storybook-i18n@10.1.1:
-    resolution: {integrity: sha512-A2cFaGCysU2VkjDQUFY0aQsppAFIhZU3Tx38/NYLhWShTRkUpE3huGHP59CAgArxLQEzEjLmieiTSuNT2bwA4Q==}
+  storybook-i18n@10.1.2:
+    resolution: {integrity: sha512-2hL7QlLmwRpPZFelCNjFtKvCauStB+fceSTKcJgsoa3cH/oEYz7RzjDO6uw/pYeaPABKY4fveBuGQWw8AYI1XQ==}
     peerDependencies:
       storybook: ^9.0.0 || ^10.0.0
 
-  storybook-react-i18next@10.1.2:
-    resolution: {integrity: sha512-1tH5dcrQT52P7nX3poX/5PPXIqxPJYdTeBM3TZON7RAdryG7dolxbbqNLlRgmHhEDRIR7Q+Kqm94ypWvfHaIYw==}
+  storybook-react-i18next@10.1.4:
+    resolution: {integrity: sha512-FmwIK8+ap9tYH1w0D3GBbui+3Bh7LkB41VGWR7uEWPxmFZzaBQ4YTcqEPy9dfItlW17XLOFsbxaPfUE1/rU85Q==}
     peerDependencies:
       i18next: ^22.0.0 || ^23.0.0 || ^24.0.0 || ^25.0.0 || ^26.0.0
       i18next-browser-languagedetector: ^7.0.0 || ^8.0.0
-      i18next-http-backend: ^2.0.0 || ^3.0.0
+      i18next-http-backend: ^2.0.0 || ^3.0.0 || ^4.0.0
       react-i18next: ^12.0.0 || ^13.0.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
       storybook: ^9.0.0 || ^10.0.0
 
@@ -10137,9 +10134,6 @@ packages:
   tough-cookie@5.1.2:
     resolution: {integrity: sha512-FVDYdxtnj0G6Qm/DhNPSb8Ju59ULcup3tuJxkFb5K8Bv2pUXILbf0xZWU8PX8Ov19OXljbUyveOFwRMwkXzO+A==}
     engines: {node: '>=16'}
-
-  tr46@0.0.3:
-    resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
 
   tr46@5.1.1:
     resolution: {integrity: sha512-hdF5ZgjTqgAntKkklYw0R03MG2x/bSzTtkxmIRw/sTNV8YXsCJ1tfLAX23lhxhHJlEf3CRCOCGGWw3vI3GaSPw==}
@@ -10551,10 +10545,6 @@ packages:
       jsdom:
         optional: true
 
-  void-elements@3.1.0:
-    resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
-    engines: {node: '>=0.10.0'}
-
   w3c-xmlserializer@5.0.0:
     resolution: {integrity: sha512-o8qghlI8NZHU1lLPrpi2+Uq7abh4GGPpYANlalzWxyWteJOCsr/P+oPBA49TOLu5FTZO4d3F9MnWJfiMo4BkmA==}
     engines: {node: '>=18'}
@@ -10583,9 +10573,6 @@ packages:
 
   web-namespaces@2.0.1:
     resolution: {integrity: sha512-bKr1DkiNa2krS7qxNtdrtHAmzuYGFQLiQ13TsorsdT6ULTkPLKuu5+GsFpDlg6JFjUTwX2DyhMPG2be8uPrqsQ==}
-
-  webidl-conversions@3.0.1:
-    resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
 
   webidl-conversions@7.0.0:
     resolution: {integrity: sha512-VwddBukDzu71offAQR975unBIGqfKZpM+8ZX6ySk8nYhVoo5CYaZyzt3YBvYtRtO+aoGlqxPg/B87NGVZ/fu6g==}
@@ -10675,9 +10662,6 @@ packages:
   whatwg-url@14.2.0:
     resolution: {integrity: sha512-De72GdQZzNTUBBChsXueQUnPKDkg/5A5zp7pFDuQAj5UFoENpiACU0wlCvzpAGnTkj++ihpKwKyYewn/XNUbKw==}
     engines: {node: '>=18'}
-
-  whatwg-url@5.0.0:
-    resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
 
   which@2.0.2:
     resolution: {integrity: sha512-BLI3Tl1TW3Pvl70l3yq3Y64i+awpwXqsGBYWkkqMtnbXgrMD+yj7rhW0kuEDxzJaYXGjEW5ogapKNMEKNMjibA==}
@@ -16758,12 +16742,6 @@ snapshots:
     optionalDependencies:
       typescript: 7.0.2
 
-  cross-fetch@4.0.0:
-    dependencies:
-      node-fetch: 2.7.0
-    transitivePeerDependencies:
-      - encoding
-
   cross-spawn@7.0.6:
     dependencies:
       path-key: 3.1.1
@@ -18078,9 +18056,7 @@ snapshots:
       relateurl: 0.2.7
       terser: 5.51.2
 
-  html-parse-stringify@3.1.0:
-    dependencies:
-      void-elements: 3.1.0
+  html-parse-stringify@4.0.1: {}
 
   html-tags@3.3.1: {}
 
@@ -18184,19 +18160,15 @@ snapshots:
 
   hyperdyperid@1.2.0: {}
 
-  i18next-browser-languagedetector@7.2.2:
+  i18next-browser-languagedetector@8.2.1:
     dependencies:
       '@babel/runtime': 7.29.7
 
-  i18next-http-backend@2.7.3:
-    dependencies:
-      cross-fetch: 4.0.0
-    transitivePeerDependencies:
-      - encoding
+  i18next-http-backend@4.0.2: {}
 
-  i18next@23.16.8:
-    dependencies:
-      '@babel/runtime': 7.29.7
+  i18next@26.4.2(typescript@7.0.2):
+    optionalDependencies:
+      typescript: 7.0.2
 
   iconv-lite@0.4.24:
     dependencies:
@@ -19454,10 +19426,6 @@ snapshots:
       emojilib: 2.4.0
       skin-tone: 2.0.0
 
-  node-fetch@2.7.0:
-    dependencies:
-      whatwg-url: 5.0.0
-
   node-releases@2.0.55: {}
 
   node-source-walk@4.3.0:
@@ -20522,14 +20490,16 @@ snapshots:
       react-fast-compare: 3.2.2
       react-side-effect: 2.1.2(react@18.3.1)
 
-  react-i18next@12.3.1(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-i18next@17.0.14(i18next@26.4.2(typescript@7.0.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@7.0.2):
     dependencies:
       '@babel/runtime': 7.29.7
-      html-parse-stringify: 3.1.0
-      i18next: 23.16.8
+      html-parse-stringify: 4.0.1
+      i18next: 26.4.2(typescript@7.0.2)
       react: 18.3.1
+      use-sync-external-store: 1.7.0(react@18.3.1)
     optionalDependencies:
       react-dom: 18.3.1(react@18.3.1)
+      typescript: 7.0.2
 
   react-icons@4.12.0(react@18.3.1):
     dependencies:
@@ -21432,21 +21402,21 @@ snapshots:
 
   std-env@3.10.0: {}
 
-  storybook-i18n@10.1.1(react@18.3.1)(storybook@10.6.0(@types/react@18.3.31)(prettier@2.8.8)(react@18.3.1)):
+  storybook-i18n@10.1.2(react@18.3.1)(storybook@10.6.0(@types/react@18.3.31)(prettier@2.8.8)(react@18.3.1)):
     dependencies:
       '@storybook/icons': 2.1.0(react@18.3.1)
       storybook: 10.6.0(@types/react@18.3.31)(prettier@2.8.8)(react@18.3.1)
     transitivePeerDependencies:
       - react
 
-  storybook-react-i18next@10.1.2(i18next-browser-languagedetector@7.2.2)(i18next-http-backend@2.7.3)(i18next@23.16.8)(react-i18next@12.3.1(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)(storybook@10.6.0(@types/react@18.3.31)(prettier@2.8.8)(react@18.3.1)):
+  storybook-react-i18next@10.1.4(i18next-browser-languagedetector@8.2.1)(i18next-http-backend@4.0.2)(i18next@26.4.2(typescript@7.0.2))(react-i18next@17.0.14(i18next@26.4.2(typescript@7.0.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@7.0.2))(react@18.3.1)(storybook@10.6.0(@types/react@18.3.31)(prettier@2.8.8)(react@18.3.1)):
     dependencies:
-      i18next: 23.16.8
-      i18next-browser-languagedetector: 7.2.2
-      i18next-http-backend: 2.7.3
-      react-i18next: 12.3.1(i18next@23.16.8)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      i18next: 26.4.2(typescript@7.0.2)
+      i18next-browser-languagedetector: 8.2.1
+      i18next-http-backend: 4.0.2
+      react-i18next: 17.0.14(i18next@26.4.2(typescript@7.0.2))(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@7.0.2)
       storybook: 10.6.0(@types/react@18.3.31)(prettier@2.8.8)(react@18.3.1)
-      storybook-i18n: 10.1.1(react@18.3.1)(storybook@10.6.0(@types/react@18.3.31)(prettier@2.8.8)(react@18.3.1))
+      storybook-i18n: 10.1.2(react@18.3.1)(storybook@10.6.0(@types/react@18.3.31)(prettier@2.8.8)(react@18.3.1))
     transitivePeerDependencies:
       - react
 
@@ -21690,8 +21660,6 @@ snapshots:
   tough-cookie@5.1.2:
     dependencies:
       tldts: 6.1.86
-
-  tr46@0.0.3: {}
 
   tr46@5.1.1:
     dependencies:
@@ -22095,8 +22063,6 @@ snapshots:
       - tsx
       - yaml
 
-  void-elements@3.1.0: {}
-
   w3c-xmlserializer@5.0.0:
     dependencies:
       xml-name-validator: 5.0.0
@@ -22125,8 +22091,6 @@ snapshots:
       defaults: 1.0.4
 
   web-namespaces@2.0.1: {}
-
-  webidl-conversions@3.0.1: {}
 
   webidl-conversions@7.0.0: {}
 
@@ -22279,11 +22243,6 @@ snapshots:
     dependencies:
       tr46: 5.1.1
       webidl-conversions: 7.0.0
-
-  whatwg-url@5.0.0:
-    dependencies:
-      tr46: 0.0.3
-      webidl-conversions: 3.0.1
 
   which@2.0.2:
     dependencies:
