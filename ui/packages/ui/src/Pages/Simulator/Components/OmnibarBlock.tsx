@@ -25,6 +25,14 @@ export function OmnibarBlock() {
 	const [statsOpen, setStatsOpen] = useState(false);
 	const [enemiesOpen, setEnemiesOpen] = useState(false);
 
+	const copyToClipboard = (item: string) => {
+		navigator.clipboard.writeText(item ?? "").then(() => {
+			toast.success(t("simple.copied_to_clipboard", { item }), {
+				duration: 2000,
+			});
+		});
+	};
+
 	return (
 		<div className="flex flex-col gap-1.5">
 			<div className="flex flex-row gap-1.5 my-1 mx-2">
@@ -42,12 +50,7 @@ export function OmnibarBlock() {
 					onClose={() => setCharactersOpen(false)}
 					onSelect={(character: ICharacter) => {
 						setCharactersOpen(false);
-						navigator.clipboard.writeText(character ?? "").then(() => {
-							toast.success(
-								t("simple.copied_to_clipboard", { item: character }),
-								{ duration: 2000 },
-							);
-						});
+						copyToClipboard(character);
 					}}
 				/>
 
@@ -65,11 +68,7 @@ export function OmnibarBlock() {
 					onClose={() => setWeaponsOpen(false)}
 					onSelect={(weapon: IWeapon) => {
 						setWeaponsOpen(false);
-						navigator.clipboard.writeText(weapon ?? "").then(() => {
-							toast.success(t("simple.copied_to_clipboard", { item: weapon }), {
-								duration: 2000,
-							});
-						});
+						copyToClipboard(weapon);
 					}}
 				/>
 
@@ -87,12 +86,7 @@ export function OmnibarBlock() {
 					onClose={() => setArtifactsOpen(false)}
 					onSelect={(artifact: IArtifact) => {
 						setArtifactsOpen(false);
-						navigator.clipboard.writeText(artifact ?? "").then(() => {
-							toast.success(
-								t("simple.copied_to_clipboard", { item: artifact }),
-								{ duration: 2000 },
-							);
-						});
+						copyToClipboard(artifact);
 					}}
 				/>
 			</div>
@@ -111,11 +105,7 @@ export function OmnibarBlock() {
 					onClose={() => setEnemiesOpen(false)}
 					onSelect={(enemy: IEnemy) => {
 						setActionsOpen(false);
-						navigator.clipboard.writeText(enemy ?? "").then(() => {
-							toast.success(t("simple.copied_to_clipboard", { item: enemy }), {
-								duration: 2000,
-							});
-						});
+						copyToClipboard(enemy);
 					}}
 				/>
 				<Button
@@ -132,11 +122,7 @@ export function OmnibarBlock() {
 					onClose={() => setActionsOpen(false)}
 					onSelect={(action: IAction) => {
 						setActionsOpen(false);
-						navigator.clipboard.writeText(action ?? "").then(() => {
-							toast.success(t("simple.copied_to_clipboard", { item: action }), {
-								duration: 2000,
-							});
-						});
+						copyToClipboard(action);
 					}}
 				/>
 
@@ -154,11 +140,7 @@ export function OmnibarBlock() {
 					onClose={() => setStatsOpen(false)}
 					onSelect={(stat: IStat) => {
 						setStatsOpen(false);
-						navigator.clipboard.writeText(stat ?? "").then(() => {
-							toast.success(t("simple.copied_to_clipboard", { item: stat }), {
-								duration: 2000,
-							});
-						});
+						copyToClipboard(stat);
 					}}
 				/>
 			</div>

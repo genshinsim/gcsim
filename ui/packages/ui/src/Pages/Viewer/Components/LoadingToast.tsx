@@ -71,7 +71,7 @@ export default ({ running, src, error, current, total, cancel }: Props) => {
 				duration: current < total ? Number.POSITIVE_INFINITY : 2000,
 				closeButton: current >= total,
 				className: "w-full",
-				style: { width: "min(90vw, 32rem)" },
+				style: { width: "min(90vw, 42rem)" },
 			},
 		);
 	}, [current, total, src, error, running, cancel, t]);
