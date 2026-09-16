@@ -1,10 +1,9 @@
 import { Spinner } from "@blueprintjs/core";
 import { DBCard } from "@gcsim/components";
-import { Button, Toaster, useToast } from "@gcsim/primitives";
+import { Button, Toaster, toast } from "@gcsim/primitives";
 import type { db } from "@gcsim/types";
 
 export function ListView({ data }: { data: db.Entry[] }) {
-	const { toast } = useToast();
 	if (!data) {
 		return (
 			<div>
@@ -15,15 +14,13 @@ export function ListView({ data }: { data: db.Entry[] }) {
 
 	const copyConfig = (cfg: string) => {
 		if (cfg === "") {
-			toast({
-				title: "Failed",
+			toast("Failed", {
 				description: "Copied failed unexpected, no config found.",
 			});
 		}
 		navigator.clipboard.writeText(cfg).then(() => {
 			console.log("copy ok");
-			toast({
-				title: "Copied to clipboard",
+			toast("Copied to clipboard", {
 				description: `Copied config to clipboard`,
 			});
 		});
