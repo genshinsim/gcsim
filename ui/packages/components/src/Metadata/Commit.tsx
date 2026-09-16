@@ -1,6 +1,6 @@
+import { Badge } from "@gcsim/primitives";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { Badge } from "../common/ui/badge";
 import { cn } from "../lib/utils";
 
 type Props = {

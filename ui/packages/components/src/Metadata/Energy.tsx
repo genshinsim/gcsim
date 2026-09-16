@@ -1,7 +1,7 @@
+import { Badge } from "@gcsim/primitives";
 import type { EnergySettings } from "@gcsim/types";
 import { memo } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { Badge } from "../common/ui/badge";
 
 type Props = {
 	energy?: EnergySettings;

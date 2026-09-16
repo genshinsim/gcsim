@@ -1,5 +1,5 @@
+import { Tooltip, TooltipContent, TooltipTrigger } from "@gcsim/primitives";
 import type React from "react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../../../ui";
 
 export interface TooltipData {
 	index: number;

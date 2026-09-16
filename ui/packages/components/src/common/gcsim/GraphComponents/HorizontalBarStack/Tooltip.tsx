@@ -1,4 +1,4 @@
-import { Popover, PopoverAnchor, PopoverContent } from "../../../ui";
+import { Popover, PopoverAnchor, PopoverContent } from "@gcsim/primitives";
 
 export interface TooltipData<Key> {
 	key: Key;

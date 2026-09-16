@@ -1,5 +1,6 @@
 import { AnchorButton, Card } from "@blueprintjs/core";
-import { Button, DBCard, LatestVersion } from "@gcsim/components";
+import { DBCard, LatestVersion } from "@gcsim/components";
+import { Button } from "@gcsim/primitives";
 import type { db } from "@gcsim/types";
 import axios from "axios";
 import { useEffect, useState } from "react";

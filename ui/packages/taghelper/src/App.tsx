@@ -1,10 +1,5 @@
-import {
-	Button,
-	DBCard,
-	Separator,
-	Toaster,
-	useToast,
-} from "@gcsim/components";
+import { DBCard } from "@gcsim/components";
+import { Button, Separator, Toaster, useToast } from "@gcsim/primitives";
 import "@gcsim/components/src/index.css";
 import type { Entry } from "@gcsim/types/src/generated/index.db";
 import axios from "axios";

@@ -1,9 +1,9 @@
+import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { CardTitle, useRefreshWithTimer } from "../../../../common/gcsim";
-import { Card } from "../../../../common/ui/card";
 import { BarChart, BarChartLegend } from "./BarChart";
 
 type Props = {

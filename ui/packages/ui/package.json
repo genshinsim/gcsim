@@ -11,6 +11,7 @@
 		"@gcsim/components": "workspace:^",
 		"@gcsim/executors": "workspace:^",
 		"@gcsim/localization": "workspace:^",
+		"@gcsim/primitives": "workspace:^",
 		"@gcsim/types": "workspace:^",
 		"@gcsim/utils": "workspace:^",
 		"@reduxjs/toolkit": "^1.8.6",

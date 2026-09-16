@@ -11,6 +11,7 @@
 @import "tw-animate-css";
 
 @source "./components/src";
+@source "./primitives/src";
 @source "./ui/src";
 @source "./db/src";
 @source "./storybook/src";

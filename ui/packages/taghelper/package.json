@@ -12,6 +12,7 @@
 	"dependencies": {
 		"@gcsim/components": "workspace:^",
 		"@gcsim/localization": "workspace:^",
+		"@gcsim/primitives": "workspace:^",
 		"@gcsim/types": "workspace:^",
 		"axios": "^1.1.3",
 		"i18next": "^23.10.1",

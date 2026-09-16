@@ -1,7 +1,10 @@
-export { Button } from "./button";
-export { Input } from "./input";
+export * from "./badge";
+export * from "./button";
+export * from "./card";
+export * from "./input";
 export * from "./popover";
 export * from "./separator";
+export * from "./table";
 export * from "./toast";
 export * from "./toaster";
 export * from "./tooltip";

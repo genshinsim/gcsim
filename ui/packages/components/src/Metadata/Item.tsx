@@ -1,6 +1,5 @@
+import { Badge, type BadgeProps } from "@gcsim/primitives";
 import classNames from "classnames";
-
-import { Badge, type BadgeProps } from "../common/ui/badge";
 import { cn } from "../lib/utils";
 
 type ItemProps = {

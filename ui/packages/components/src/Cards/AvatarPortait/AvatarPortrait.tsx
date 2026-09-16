@@ -1,6 +1,6 @@
+import { Badge } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { DataColorsConst } from "../../common/gcsim";
-import { Badge } from "../../common/ui/badge";
 import { charBG } from "../../lib/helper";
 import ArtifactsIcon from "./ArtifactsIcon";
 

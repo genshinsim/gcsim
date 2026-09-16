@@ -1,6 +1,6 @@
+import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { useTranslation } from "react-i18next";
-import { Card } from "../../common/ui/card";
 import {
 	DevBuild,
 	Dirty,

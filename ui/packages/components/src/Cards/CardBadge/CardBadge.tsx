@@ -1,5 +1,5 @@
+import { Badge } from "@gcsim/primitives";
 import classNames from "classnames";
-import { Badge } from "../../common/ui/badge";
 
 type CardBadgeProps = {
 	title?: string;

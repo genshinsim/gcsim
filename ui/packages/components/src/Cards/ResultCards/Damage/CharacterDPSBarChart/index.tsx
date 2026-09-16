@@ -1,3 +1,4 @@
+import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { memo, useState } from "react";
@@ -7,7 +8,6 @@ import {
 	NoData,
 	useRefreshWithTimer,
 } from "../../../../common/gcsim";
-import { Card } from "../../../../common/ui/card";
 import { ByCharacterChart, ByCharacterLegend } from "./ByCharacter";
 import { ByElementChart, ByElementLegend } from "./ByElement";
 import { ByTargetChart, ByTargetLegend } from "./ByTarget";

@@ -1,4 +1,5 @@
-import { Button, DBCard } from "@gcsim/components";
+import { DBCard } from "@gcsim/components";
+import { Button } from "@gcsim/primitives";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { cloneDeep, merge } from "lodash-es";
 import { dbEntries } from "../samples";
