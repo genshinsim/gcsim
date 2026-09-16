@@ -105,7 +105,7 @@
 		"avgTotalDmg": "Daño Total Promedio",
 		"avgSimTime": "Tiempo Promedio de Simulación",
 		"createDate": "Fecha de creación",
-		"timeToKill": "Tiempo de Eliminación",
+		"ttk": "Tiempo de Eliminación",
 		"duration": "Duración",
 		"unknown": "Desconocido",
 		"openInViewer": "Abrir en el Visor",
@@ -402,5 +402,8 @@
 	"states": {
 		"true": "verdadero",
 		"false": "falso"
+	},
+	"common": {
+		"data_not_found": "Data not found"
 	}
 }
