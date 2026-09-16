@@ -472,6 +472,9 @@ importers:
       '@types/lodash-es':
         specifier: ^4
         version: 4.17.12
+      vitest:
+        specifier: ^3.2.4
+        version: 3.2.7(@types/debug@4.1.13)(@types/node@22.20.2)(jiti@2.7.0)(jsdom@25.0.1)(lightningcss@1.33.0)(terser@5.51.2)
 
   packages/primitives:
     dependencies:

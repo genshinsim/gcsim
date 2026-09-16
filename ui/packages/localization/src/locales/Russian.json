@@ -402,5 +402,8 @@
 	"states": {
 		"true": "правда",
 		"false": "ложь"
+	},
+	"common": {
+		"data_not_found": "Data not found"
 	}
 }
