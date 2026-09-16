@@ -16,6 +16,7 @@ export * from "./LatestVersionNext";
 export * from "./Navbar";
 export * from "./NoData";
 export * from "./Refresh";
+export * from "./Select";
 export * from "./Warning";
 export {
 	CardTitle,
