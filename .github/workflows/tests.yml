@@ -9,11 +9,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    # test-go is a required check, so the job always runs; the test step is
+    # gated on Go changes, keeping non-Go PRs green.
+    - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+      id: filter
+      with:
+        filters: |
+          go:
+            - '**.go'
+            - 'go.mod'
+            - 'go.sum'
+            - '.github/actions/go-setup-and-test/**'
+            - '.github/workflows/tests.yml'
     - name: go-setup-and-test
+      if: steps.filter.outputs.go == 'true'
       uses: ./.github/actions/go-setup-and-test
   test-ui:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+    # test-ui is a required check, so the job always runs; the test step is
+    # gated on UI changes, keeping non-UI PRs green.
+    - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+      id: filter
+      with:
+        filters: |
+          ui:
+            - 'ui/**'
+            - '.github/actions/yarn-setup-and-test/**'
+            - '.github/workflows/tests.yml'
     - name: yarn-setup-and-test
+      if: steps.filter.outputs.ui == 'true'
       uses: ./.github/actions/yarn-setup-and-test
