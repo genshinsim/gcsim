@@ -82,7 +82,7 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
 						hideThemeSelector={false}
 					/>
 
-					<div className="sticky bottom-0 bg-bp4-dark-gray-100 flex flex-col gap-y-1 z-10">
+					<div className="sticky bottom-0 bg-page flex flex-col gap-y-1 z-10">
 						{err !== "" && cfg !== "" ? (
 							<div className="pl-2 pr-2 pt-2 mt-1">
 								<Alert variant="destructive">
