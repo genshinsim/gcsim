@@ -1,5 +1,5 @@
 import { Card, Colors } from "@blueprintjs/core";
-import type { SimResults } from "@gcsim/types";
+import type { model, SimResults } from "@gcsim/types";
 import classNames from "classnames";
 import { type ReactNode, useEffect, useRef } from "react";
 import { FiLink2 } from "react-icons/fi";
@@ -29,6 +29,7 @@ import Metadata from "../Components/Overview/Metadata";
 
 type Props = {
 	data: SimResults | null;
+	modelData: model.SimulationResult | null;
 	running: boolean;
 	names?: string[];
 };

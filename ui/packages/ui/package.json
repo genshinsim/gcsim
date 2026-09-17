@@ -69,9 +69,11 @@
 		"@types/react-helmet": "^6",
 		"@types/react-virtualized-auto-sizer": "^1",
 		"@types/uuid": "^9.0.0",
-		"tailwindcss": "^4.3.3"
+		"tailwindcss": "^4.3.3",
+		"vitest": "^3.2.4"
 	},
 	"scripts": {
-		"typecheck": "tsc --noEmit"
+		"typecheck": "tsc --noEmit",
+		"test": "vitest run"
 	}
 }
