@@ -166,7 +166,7 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 	}, [location, exec]);
 
 	return (
-		<div className="bp4-dark h-screen flex flex-col">
+		<div className="h-screen flex flex-col">
 			<Toaster position="top-right" theme="dark" />
 			<Nav />
 			<div
