@@ -19,7 +19,7 @@ import { type RootState, useAppSelector } from "@ui/Stores/store";
 import queryString from "query-string";
 import { useCallback, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import type { ResultSource } from ".";
 import LoadingToast from "./Components/LoadingToast";
 import ViewerNav from "./Components/ViewerNav";
@@ -178,7 +178,7 @@ const ErrorAlert = ({
 	onSendToSimulator?: ViewerActions["onSendToSimulator"];
 }) => {
 	const { t } = useTranslation();
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	return (
 		<AlertDialog open={msg != null}>
@@ -213,7 +213,7 @@ const ErrorAlert = ({
 					) : null}
 					<AlertDialogAction
 						variant="destructive"
-						onClick={() => history.push(redirect)}
+						onClick={() => navigate(redirect)}
 					>
 						{t("viewer.return_to_sim")}
 					</AlertDialogAction>

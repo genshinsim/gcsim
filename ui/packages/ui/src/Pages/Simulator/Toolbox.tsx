@@ -23,7 +23,7 @@ import {
 } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import ExecutorSettingsButton from "../../Components/Buttons/ExecutorSettingsButton";
 import {
 	type AppThunk,
@@ -64,7 +64,7 @@ export function runSim(pool: Executor, cfg: string): AppThunk {
 
 export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
 	const { t } = useTranslation();
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	const [openImport, setOpenGOODImport] = React.useState<boolean>(false);
 	const [openImportFromEnka, setOpenImportFromEnka] =
@@ -88,7 +88,7 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
 
 	const run = () => {
 		dispatch(runSim(exec(), cfg));
-		history.push("/web");
+		navigate("/web");
 	};
 
 	const toggleBuilder = () => {
@@ -144,7 +144,7 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
 								: t("simple.tools_show_name_search")}
 						</DropdownMenuItem>
 						<DropdownMenuSeparator />
-						<DropdownMenuItem onClick={() => history.push("/sample/upload")}>
+						<DropdownMenuItem onClick={() => navigate("/sample/upload")}>
 							<Upload />
 							{t("simple.tools_sample_upload")}
 						</DropdownMenuItem>

@@ -16,7 +16,7 @@ import classNames from "classnames";
 import { History } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory, useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import ExecutorSettingsButton from "../../Components/Buttons/ExecutorSettingsButton";
 
 // THIS MUST ALWAYS BE IN SYNC WITH THE GCSIM BINARY
@@ -318,11 +318,11 @@ const CancelButton = ({
 	redirect: string;
 }) => {
 	const { t } = useTranslation();
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	if (mismatch === MismatchType.MajorVersionMismatch) {
 		return (
-			<Button variant="destructive" onClick={() => history.push(redirect)}>
+			<Button variant="destructive" onClick={() => navigate(redirect)}>
 				{t("db.cancel")}
 			</Button>
 		);

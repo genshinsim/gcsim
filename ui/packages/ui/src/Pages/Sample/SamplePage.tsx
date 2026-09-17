@@ -13,7 +13,7 @@ import {
 import type { Sample } from "@gcsim/types";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { CopyToClipboard, SendToSimulator } from "../../Components/Buttons";
 import { useSendToSimulator } from "../../Components/Buttons/useSendToSimulator";
 import { CharacterCard } from "../../Components/Cards";
@@ -110,7 +110,7 @@ type ErrorProps = {
 
 const ErrorAlert = ({ msg, retry }: ErrorProps) => {
 	const { t } = useTranslation();
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	return (
 		<AlertDialog open={msg != null}>
@@ -127,7 +127,7 @@ const ErrorAlert = ({ msg, retry }: ErrorProps) => {
 					)}
 					<AlertDialogAction
 						variant="destructive"
-						onClick={() => history.push("/")}
+						onClick={() => navigate("/")}
 					>
 						{t("viewer.close")}
 					</AlertDialogAction>

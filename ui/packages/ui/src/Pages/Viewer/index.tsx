@@ -3,7 +3,7 @@ import type { SimResults } from "@gcsim/types";
 import axios from "axios";
 import { throttle } from "lodash-es";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useHistory, useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { useSendToSimulator } from "../../Components/Buttons/useSendToSimulator";
 import {
 	type RootState,
@@ -256,14 +256,14 @@ const UpgradableViewer = (props: UpgradableViewerProps) => {
 
 function useViewerActions(exec: ExecutorSupplier<Executor>): ViewerActions {
 	const dispatch = useAppDispatch();
-	const history = useHistory();
+	const navigate = useNavigate();
 	const onSendToSimulator = useSendToSimulator();
 	return useMemo(
 		() => ({
 			onSendToSimulator,
 			onRerun: (cfg: string) => {
 				dispatch(runSim(exec(), cfg));
-				history.push("/web");
+				navigate("/web");
 			},
 			onShare: (data: SimResults, hash: string | null) =>
 				axios
@@ -272,7 +272,7 @@ function useViewerActions(exec: ExecutorSupplier<Executor>): ViewerActions {
 					})
 					.then((resp) => link("sh", resp.data)),
 		}),
-		[dispatch, history, exec, onSendToSimulator],
+		[dispatch, navigate, exec, onSendToSimulator],
 	);
 }
 
