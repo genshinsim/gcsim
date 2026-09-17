@@ -16,11 +16,11 @@ import { Builder } from "./Components/TeamBuilder/Builder";
 type CharSource = "user" | "default";
 
 interface TeamCharacterItem {
-	key: string; // UI key
-	charKey: string; // unique gcsim character key
-	source: CharSource; // source for the char data
-	text: string; // main text shown on search
-	label: string; // secondary notes
+	key: string;
+	charKey: string;
+	source: CharSource;
+	text: string;
+	label: string;
 }
 
 const itemKey = (item: TeamCharacterItem) => `${item.source}-${item.key}`;
@@ -93,7 +93,6 @@ export function Team() {
 		}
 	};
 
-	// characters already on the team are excluded from the picker
 	const onTeam = new Set(team.map((c) => c.name));
 
 	const items: TeamCharacterItem[] = [];

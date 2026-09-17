@@ -4,7 +4,6 @@ import { X } from "lucide-react";
 
 type AlertVariant = "default" | "destructive" | "warning" | "success";
 
-// callers still pass Blueprint-style intent strings until the viewer is ported
 function variantForIntent(intent?: string): AlertVariant {
 	switch (intent) {
 		case "danger":
