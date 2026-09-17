@@ -1,14 +1,13 @@
-import type { model } from "@gcsim/types";
 import { throttle } from "lodash-es";
 import { useRef, useState } from "react";
 
 const MAX_JITTER = 50;
 
 // TODO: optional runnning pass to immediately flush if not running?
-export function useRefresh<T>(
-	getter: (data: model.SimulationResult | null) => T,
+export function useRefresh<D, T>(
+	getter: (data: D | null) => T,
 	rate: number,
-	data: model.SimulationResult | null,
+	data: D | null,
 ): T | null {
 	const refreshFunc = useRef(
 		throttle(getter, rate + Math.random() * MAX_JITTER, {
@@ -34,17 +33,17 @@ export function useRefresh<T>(
 	return next === undefined ? last : next;
 }
 
-export function useRefreshWithTimer<T>(
-	getter: (data: model.SimulationResult | null) => T,
+export function useRefreshWithTimer<D, T>(
+	getter: (data: D | null) => T,
 	rate: number,
-	data: model.SimulationResult | null,
+	data: D | null,
 	running = true,
 ): [T, number] {
 	const [last, setLast] = useState<[T, number] | null>(null);
 	const refreshRate = useRef(rate + Math.random() * MAX_JITTER);
 	const refreshFunc = useRef(
 		throttle(
-			(data: model.SimulationResult | null) => {
+			(data: D | null) => {
 				return [getter(data), Date.now() + refreshRate.current];
 			},
 			refreshRate.current,
