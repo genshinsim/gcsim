@@ -1,14 +1,19 @@
-import {
-	Button,
-	Callout,
-	Classes,
-	Dialog,
-	Divider,
-	Intent,
-} from "@blueprintjs/core";
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
+import {
+	Alert,
+	AlertDescription,
+	AlertTitle,
+	Button,
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	Separator,
+	Spinner,
+} from "@gcsim/primitives";
 import type { SimResults, Version } from "@gcsim/types";
 import classNames from "classnames";
+import { History } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useLocation } from "react-router";
@@ -77,36 +82,52 @@ export default ({
 
 	return (
 		<Dialog
-			isOpen={isOpen}
-			title={t("viewer.results_outdated")}
-			icon="outdated"
-			usePortal={false}
-			canEscapeKeyClose={minor}
-			canOutsideClickClose={minor}
-			isCloseButtonShown={minor}
-			onClose={() => setOpen(false)}
+			open={isOpen}
+			onOpenChange={(open) => {
+				if (!open && minor) {
+					setOpen(false);
+				}
+			}}
 		>
-			<div className={Classes.DIALOG_BODY}>
+			<DialogContent
+				showCloseButton={minor}
+				onEscapeKeyDown={(e) => {
+					if (!minor) {
+						e.preventDefault();
+					}
+				}}
+				onInteractOutside={(e) => {
+					if (!minor) {
+						e.preventDefault();
+					}
+				}}
+			>
+				<DialogHeader>
+					<DialogTitle className="flex items-center gap-2">
+						<History className="size-5" />
+						{t("viewer.results_outdated")}
+					</DialogTitle>
+				</DialogHeader>
 				<DialogBody mismatch={mismatch} data={data} latestCommit={commit} />
-			</div>
-			<div className="flex justify-between items-end gap-16 mx-4">
-				<div className="max-w-[196px] min-w-[120px] flex-auto">
-					<ExecutorSettingsButton />
+				<div className="flex justify-between items-end gap-16 mx-4">
+					<div className="max-w-[196px] min-w-[120px] flex-auto">
+						<ExecutorSettingsButton />
+					</div>
+					<div className="flex justify-end gap-[10px]">
+						<UpgradeButton
+							exec={exec}
+							cfg={data.config_file}
+							setResult={setResult}
+							setError={setError}
+						/>
+						<CancelButton
+							mismatch={mismatch}
+							setOpen={setOpen}
+							redirect={redirect}
+						/>
+					</div>
 				</div>
-				<div className="flex justify-end gap-[10px]">
-					<UpgradeButton
-						exec={exec}
-						cfg={data.config_file}
-						setResult={setResult}
-						setError={setError}
-					/>
-					<CancelButton
-						mismatch={mismatch}
-						setOpen={setOpen}
-						redirect={redirect}
-					/>
-				</div>
-			</div>
+			</DialogContent>
 		</Dialog>
 	);
 };
@@ -174,7 +195,7 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
 			<div>
 				{major == null || minor == null ? "legacy" : `${major}.${minor}`}
 			</div>
-			<Divider className="h-full" />
+			<Separator orientation="vertical" className="h-full" />
 			<div>latest</div>
 			<div>
 				{MAJOR}.{MINOR}{" "}
@@ -186,7 +207,10 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
 			<a href={resultCommitUrl} target="_blank" rel="noreferrer">
 				{shortResultCommit}
 			</a>
-			<Divider className={classNames({ ["h-full"]: dirty })} />
+			<Separator
+				orientation="vertical"
+				className={classNames({ ["h-full"]: dirty })}
+			/>
 			<div>latest</div>
 			<a href={latestCommitUrl} target="_blank" rel="noreferrer">
 				{shortLatestCommit}
@@ -200,7 +224,7 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
 				<>
 					<div className="justify-self-end">dirty?</div>
 					<div className="text-red-500">true</div>
-					<Divider />
+					<Separator orientation="vertical" />
 				</>
 			)}
 		</div>
@@ -208,35 +232,35 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
 
 	if (mismatch === MismatchType.CommitMismatch) {
 		return (
-			<Callout
-				title={t("viewer.commit_mismatch_title_hash")}
-				intent={Intent.WARNING}
-			>
-				<div>{t("viewer.commit_mismatch_body_hash")}</div>
-				<VersionInfo />
-			</Callout>
+			<Alert variant="warning">
+				<AlertTitle>{t("viewer.commit_mismatch_title_hash")}</AlertTitle>
+				<AlertDescription>
+					<div>{t("viewer.commit_mismatch_body_hash")}</div>
+					<VersionInfo />
+				</AlertDescription>
+			</Alert>
 		);
 	}
 
 	if (mismatch === MismatchType.MinorVersionMismatch) {
 		return (
-			<Callout
-				title={t("viewer.commit_mismatch_title_minor")}
-				intent={Intent.WARNING}
-			>
-				<div>{t("viewer.commit_mismatch_body_minor")}</div>
-				<VersionInfo />
-			</Callout>
+			<Alert variant="warning">
+				<AlertTitle>{t("viewer.commit_mismatch_title_minor")}</AlertTitle>
+				<AlertDescription>
+					<div>{t("viewer.commit_mismatch_body_minor")}</div>
+					<VersionInfo />
+				</AlertDescription>
+			</Alert>
 		);
 	}
 	return (
-		<Callout
-			title={t("viewer.commit_mismatch_title_major")}
-			intent={Intent.DANGER}
-		>
-			<div>{t("viewer.commit_mismatch_body_major")}</div>
-			<VersionInfo />
-		</Callout>
+		<Alert variant="destructive">
+			<AlertTitle>{t("viewer.commit_mismatch_title_major")}</AlertTitle>
+			<AlertDescription>
+				<div>{t("viewer.commit_mismatch_body_major")}</div>
+				<VersionInfo />
+			</AlertDescription>
+		</Alert>
 	);
 };
 
@@ -277,12 +301,10 @@ const UpgradeButton = ({
 	};
 
 	return (
-		<Button
-			text={t("viewer.upgrade")}
-			intent={Intent.SUCCESS}
-			loading={!isReady}
-			onClick={run}
-		/>
+		<Button disabled={!isReady} onClick={run}>
+			{!isReady ? <Spinner /> : null}
+			{t("viewer.upgrade")}
+		</Button>
 	);
 };
 
@@ -300,12 +322,14 @@ const CancelButton = ({
 
 	if (mismatch === MismatchType.MajorVersionMismatch) {
 		return (
-			<Button
-				text={t("db.cancel")}
-				intent={Intent.DANGER}
-				onClick={() => history.push(redirect)}
-			/>
+			<Button variant="destructive" onClick={() => history.push(redirect)}>
+				{t("db.cancel")}
+			</Button>
 		);
 	}
-	return <Button text={t("viewer.ignore")} onClick={() => setOpen(false)} />;
+	return (
+		<Button variant="secondary" onClick={() => setOpen(false)}>
+			{t("viewer.ignore")}
+		</Button>
+	);
 };

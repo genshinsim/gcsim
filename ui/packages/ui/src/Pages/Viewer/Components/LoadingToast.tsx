@@ -1,6 +1,4 @@
-import { Button, Classes, Intent, ProgressBar } from "@blueprintjs/core";
-import { toast } from "@gcsim/primitives";
-import classNames from "classnames";
+import { Button, Progress, toast } from "@gcsim/primitives";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { ResultSource } from "..";
@@ -95,20 +93,14 @@ const ProgressToast = ({
 			<div className="min-w-fit">
 				{t("sim.running")} ({current}/{total})
 			</div>
-			<ProgressBar
-				className={classNames("basis-1/2 flex-auto sm:min-w-", {
-					[Classes.PROGRESS_NO_STRIPES]: val >= 1,
-				})}
-				intent={val < 1 ? Intent.PRIMARY : Intent.SUCCESS}
-				value={val}
+			<Progress
+				className="basis-1/2 flex-auto"
+				value={Math.min(val, 1) * 100}
 			/>
 			{val < 1 ? (
-				<Button
-					className="!min-w-fit"
-					text={t("db.cancel")}
-					intent={Intent.DANGER}
-					onClick={cancel}
-				/>
+				<Button className="!min-w-fit" variant="destructive" onClick={cancel}>
+					{t("db.cancel")}
+				</Button>
 			) : null}
 		</div>
 	);

@@ -1,7 +1,17 @@
-import { Alert, Callout, Intent } from "@blueprintjs/core";
 import { RiskWarning } from "@gcsim/components";
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { dynamicKey } from "@gcsim/localization";
+import {
+	Alert,
+	AlertDescription,
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
+} from "@gcsim/primitives";
 import type { SimResults } from "@gcsim/types";
 import CopyToClipboard from "@ui/Components/Buttons/CopyToClipboard";
 import SendToSimulator from "@ui/Components/Buttons/SendToSimulator";
@@ -170,41 +180,45 @@ const ErrorAlert = ({
 	const { t } = useTranslation();
 	const history = useHistory();
 
-	let cancelButtonText: string | undefined;
-	let onCancel: (() => void) | undefined;
-	if (retry != null) {
-		cancelButtonText = t("viewer.retry");
-		onCancel = () => retry();
-	}
-
 	return (
-		<Alert
-			isOpen={msg != null}
-			onConfirm={() => history.push(redirect)}
-			onCancel={onCancel}
-			canEscapeKeyCancel={false}
-			canOutsideClickCancel={false}
-			confirmButtonText={t("viewer.return_to_sim")}
-			cancelButtonText={cancelButtonText}
-			intent={Intent.DANGER}
-		>
-			<div className="flex flex-col gap-2 mb-1">
-				<Callout intent={Intent.DANGER} title={t("viewer.error_encountered")}>
-					<pre className="whitespace-pre-wrap pl-5">{msg}</pre>
-				</Callout>
-				{recoveryConfig != null ? (
-					<>
-						<CopyToClipboard
-							config={recoveryConfig}
-							className="hidden ml-[7px] sm:flex"
-						/>
-						<SendToSimulator
-							config={recoveryConfig}
-							onSendToSimulator={onSendToSimulator}
-						/>
-					</>
-				) : null}
-			</div>
-		</Alert>
+		<AlertDialog open={msg != null}>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>{t("viewer.error_encountered")}</AlertDialogTitle>
+				</AlertDialogHeader>
+				<div className="flex flex-col gap-2 mb-1">
+					<Alert variant="destructive">
+						<AlertDescription>
+							<pre className="whitespace-pre-wrap pl-5">{msg}</pre>
+						</AlertDescription>
+					</Alert>
+					{recoveryConfig != null ? (
+						<>
+							<CopyToClipboard
+								config={recoveryConfig}
+								className="hidden ml-[7px] sm:flex"
+							/>
+							<SendToSimulator
+								config={recoveryConfig}
+								onSendToSimulator={onSendToSimulator}
+							/>
+						</>
+					) : null}
+				</div>
+				<AlertDialogFooter>
+					{retry != null ? (
+						<AlertDialogCancel onClick={() => retry()}>
+							{t("viewer.retry")}
+						</AlertDialogCancel>
+					) : null}
+					<AlertDialogAction
+						variant="destructive"
+						onClick={() => history.push(redirect)}
+					>
+						{t("viewer.return_to_sim")}
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
 	);
 };

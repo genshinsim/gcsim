@@ -1,14 +1,15 @@
+import type { Executor, ExecutorSupplier } from "@gcsim/executors";
 import {
+	Alert,
+	AlertDescription,
+	AlertTitle,
 	Button,
-	Callout,
-	Intent,
 	NonIdealState,
 	Spinner,
-	SpinnerSize,
-} from "@blueprintjs/core";
-import type { Executor, ExecutorSupplier } from "@gcsim/executors";
+} from "@gcsim/primitives";
 import type { SimResults } from "@gcsim/types";
 import { ConfigEditor } from "@ui/Components";
+import { RefreshCw } from "lucide-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ExecutorSettingsButton from "../../../Components/Buttons/ExecutorSettingsButton";
@@ -35,8 +36,12 @@ const ConfigUI = ({ config, running, resetTab, onRerun }: ConfigProps) => {
 	const { t } = useTranslation();
 
 	if (config.cfg == null) {
-		return <NonIdealState icon={<Spinner size={SpinnerSize.LARGE} />} />;
+		return <NonIdealState loading />;
 	}
+
+	const loading = !config.isReady || running;
+	const rerunDisabled =
+		config.error !== "" || (!config.validated && config.modified);
 
 	return (
 		<div className="w-full 2xl:mx-auto 2xl:container -mt-4 px-2">
@@ -45,19 +50,16 @@ const ConfigUI = ({ config, running, resetTab, onRerun }: ConfigProps) => {
 					<ExecutorSettingsButton />
 					{onRerun != null ? (
 						<Button
-							icon="refresh"
-							text={t("viewer.rerun")}
-							intent={Intent.SUCCESS}
-							disabled={
-								config.error !== "" || (!config.validated && config.modified)
-							}
-							loading={!config.isReady || running}
+							disabled={rerunDisabled || loading}
 							className="basis-1/2"
 							onClick={() => {
 								resetTab();
 								onRerun(config.cfg ?? "");
 							}}
-						/>
+						>
+							{loading ? <Spinner /> : <RefreshCw />}
+							{t("viewer.rerun")}
+						</Button>
 					) : null}
 				</div>
 				<ConfigError error={config.error} cfg={config.cfg} />
@@ -76,12 +78,14 @@ const ConfigError = ({ error, cfg }: { error: string; cfg: string }) => {
 	}
 	return (
 		<div className="px-6 pt-4">
-			<Callout
-				intent={Intent.DANGER}
-				title={t("viewer.error_encountered") + +t("viewer.config_invalid")}
-			>
-				<pre className="whitespace-pre-wrap pl-5">{error}</pre>
-			</Callout>
+			<Alert variant="destructive">
+				<AlertTitle>
+					{t("viewer.error_encountered") + " " + t("viewer.config_invalid")}
+				</AlertTitle>
+				<AlertDescription>
+					<pre className="whitespace-pre-wrap pl-5">{error}</pre>
+				</AlertDescription>
+			</Alert>
 		</div>
 	);
 };
