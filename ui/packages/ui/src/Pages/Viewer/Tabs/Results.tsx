@@ -1,4 +1,12 @@
 import { Card, Colors } from "@blueprintjs/core";
+import {
+	CharacterActionsBarChart,
+	EndingEnergyBarChart,
+	FieldTimeCard,
+	SourceReactionsBarChart,
+	TargetAuraUptimeBarChart,
+	TotalSourceEnergyBarChart,
+} from "@gcsim/components";
 import type { model, SimResults } from "@gcsim/types";
 import classNames from "classnames";
 import { type ReactNode, useEffect, useRef } from "react";
@@ -13,12 +21,6 @@ import {
 	TargetDPSCard,
 } from "../Components/Damage";
 import { SourceDPSCard } from "../Components/Damage/SourceDPSBarChart";
-import { CharacterActionsCard } from "../Components/Miscellaneous/CharacterActionsBarChart";
-import { EndingEnergyCard } from "../Components/Miscellaneous/EndingEnergyBarChart";
-import FieldTimeCard from "../Components/Miscellaneous/FieldTimeCard";
-import { SourceReactionsCard } from "../Components/Miscellaneous/SourceReactionsBarChart";
-import { TargetAuraUptimeCard } from "../Components/Miscellaneous/TargetAuraUptimeBarChart";
-import { TotalSourceEnergyCard } from "../Components/Miscellaneous/TotalSourceEnergyBarChart";
 import {
 	DistributionCard,
 	RollupCards,
@@ -51,7 +53,7 @@ export default (props: Props) => {
 	);
 };
 
-const SingleGroup = ({ data, running, names }: Props) => (
+const SingleGroup = ({ data, modelData, running, names }: Props) => (
 	<Group>
 		<TeamHeader characters={data?.character_details} />
 		<Metadata data={data} />
@@ -70,17 +72,25 @@ const SingleGroup = ({ data, running, names }: Props) => (
 
 		<SourceDPSCard data={data} running={running} names={names} />
 
-		<CharacterActionsCard data={data} running={running} names={names} />
+		<CharacterActionsBarChart
+			data={modelData}
+			running={running}
+			names={names}
+		/>
 
-		<FieldTimeCard data={data} running={running} names={names} />
+		<FieldTimeCard data={modelData} running={running} names={names} />
 
-		<TotalSourceEnergyCard data={data} running={running} names={names} />
+		<TotalSourceEnergyBarChart
+			data={modelData}
+			running={running}
+			names={names}
+		/>
 
-		<EndingEnergyCard data={data} running={running} names={names} />
+		<EndingEnergyBarChart data={modelData} running={running} names={names} />
 
-		<SourceReactionsCard data={data} running={running} names={names} />
+		<SourceReactionsBarChart data={modelData} running={running} names={names} />
 
-		<TargetAuraUptimeCard data={data} running={running} />
+		<TargetAuraUptimeBarChart data={modelData} running={running} />
 	</Group>
 );
 
