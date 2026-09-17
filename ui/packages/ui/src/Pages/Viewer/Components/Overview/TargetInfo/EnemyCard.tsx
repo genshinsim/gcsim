@@ -1,6 +1,6 @@
-import { Card } from "@blueprintjs/core";
 import { dynamicKey } from "@gcsim/localization";
-import type { Enemy } from "@gcsim/types";
+import { Card } from "@gcsim/primitives";
+import type { model } from "@gcsim/types";
 import { isNumber } from "lodash-es";
 import { useTranslation } from "react-i18next";
 import {
@@ -17,7 +17,7 @@ import { DataColorsConst } from "../../Util";
 
 type Props = {
 	id: number;
-	enemy?: Enemy;
+	enemy?: model.Enemy;
 };
 
 export const EnemyCard = (props: Props) => {
@@ -25,7 +25,7 @@ export const EnemyCard = (props: Props) => {
 
 	return (
 		<div className="flex pl-1 min-w-fit" style={{ background: bgColor }}>
-			<Card className="flex flex-auto flex-col gap-1">
+			<Card className="flex flex-auto flex-col gap-1 p-5">
 				<EnemyTitle {...props} />
 				<EnemyInfo {...props} />
 				<EnemyResistances {...props} />
@@ -87,7 +87,7 @@ const InfoItem = ({
 	return (
 		<div className="flex flex-row gap-1 text-xs items-center">
 			<div className="text-gray-400">{name}</div>
-			<div className="font-black text-current text-sm text-bp4-light-gray-500">
+			<div className="font-black text-current text-sm text-gray-100">
 				{value}
 			</div>
 		</div>
