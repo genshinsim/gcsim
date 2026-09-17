@@ -12,7 +12,6 @@ export * from "./GraphComponents/Grids";
 export * from "./GraphComponents/OuterLabelPie/OuterLabels";
 export * from "./GraphComponents/OuterLabelPie/Tooltip";
 export * from "./LatestVersion";
-export * from "./LatestVersionNext";
 export * from "./Navbar";
 export * from "./NoData";
 export * from "./Refresh";
