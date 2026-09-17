@@ -1,5 +1,7 @@
-import { Card, Colors, Icon } from "@blueprintjs/core";
+import { Colors } from "@gcsim/components";
+import { Card } from "@gcsim/primitives";
 import classNames from "classnames";
+import { ChevronRight } from "lucide-react";
 import { memo, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router";
@@ -42,8 +44,7 @@ const CardTemplate = ({
 			style={{ background: color }}
 		>
 			<Card
-				className="flex flex-auto flex-row items-stretch justify-between"
-				interactive={interactable}
+				className="flex flex-auto flex-row items-stretch justify-between gap-0 p-5"
 				onClick={() => interactable && value !== undefined && click()}
 			>
 				<div className="flex flex-col justify-start">
@@ -70,7 +71,7 @@ const CardValue = ({
 
 	const out = value == null ? 1234 : value;
 	const valueClass = classNames("text-5xl font-bold tabular-nums", {
-		"bp4-skeleton": value == null,
+		"animate-pulse rounded bg-muted text-transparent": value == null,
 	});
 
 	let lbl: ReactNode;
@@ -94,12 +95,7 @@ const CardChevron = ({ interactable }: { interactable: boolean }) => {
 	}
 	return (
 		<div className="flex flex-grow justify-end self-stretch justify-self-end">
-			<Icon
-				icon="chevron-right"
-				size={36}
-				color={Colors.GRAY1}
-				className="self-center"
-			/>
+			<ChevronRight size={36} color={Colors.GRAY1} className="self-center" />
 		</div>
 	);
 };
@@ -121,10 +117,9 @@ const CardAux = ({ aux }: { aux?: Array<AuxStat> }) => {
 const AuxItem = ({ stat }: { stat: AuxStat }) => {
 	const { i18n } = useTranslation();
 
-	const cls = classNames(
-		"font-black text-current text-sm text-bp4-light-gray-500",
-		{ "bp4-skeleton": stat.value == null },
-	);
+	const cls = classNames("font-black text-current text-sm text-gray-100", {
+		"animate-pulse rounded bg-muted text-transparent": stat.value == null,
+	});
 	const val = stat.value == null ? 123.45 : stat.value;
 
 	return (

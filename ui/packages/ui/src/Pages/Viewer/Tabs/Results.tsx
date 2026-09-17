@@ -54,10 +54,13 @@ export default (props: Props) => {
 const SingleGroup = ({ data, modelData, running, names }: Props) => (
 	<Group>
 		<TeamHeader characters={data?.character_details} />
-		<Metadata data={data} />
+		<Metadata modelData={modelData} />
 		<RollupCards data={data} />
-		<TargetInfo enemies={data?.target_details} player={data?.player_position} />
-		<DistributionCard data={data} />
+		<TargetInfo
+			enemies={modelData?.target_details}
+			player={modelData?.player_position}
+		/>
+		<DistributionCard modelData={modelData} />
 
 		<DamageTimelineCard data={modelData} running={running} names={names} />
 		<CumulativeDamageCard data={modelData} running={running} />
@@ -92,13 +95,16 @@ const SingleGroup = ({ data, modelData, running, names }: Props) => (
 	</Group>
 );
 
-const Overview = ({ data }: Props) => (
+const Overview = ({ data, modelData }: Props) => (
 	<Group>
 		<TeamHeader characters={data?.character_details} />
-		<Metadata data={data} />
+		<Metadata modelData={modelData} />
 		<RollupCards data={data} />
-		<TargetInfo enemies={data?.target_details} player={data?.player_position} />
-		<DistributionCard data={data} />
+		<TargetInfo
+			enemies={modelData?.target_details}
+			player={modelData?.player_position}
+		/>
+		<DistributionCard modelData={modelData} />
 	</Group>
 );
 

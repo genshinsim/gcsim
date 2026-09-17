@@ -1,4 +1,4 @@
-import { Colors } from "@blueprintjs/core";
+import { Colors } from "@gcsim/components";
 import type { SimResults } from "@gcsim/types";
 import { DPSRollupCard } from "./DPSRollupCard";
 import { EPSRollupCard } from "./EPSRollupCard";

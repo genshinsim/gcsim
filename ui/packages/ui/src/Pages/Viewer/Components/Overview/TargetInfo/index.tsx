@@ -1,21 +1,21 @@
-import { Card } from "@blueprintjs/core";
-import type { Coord, Enemy } from "@gcsim/types";
+import { PositionGraph } from "@gcsim/components";
+import { Card } from "@gcsim/primitives";
+import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { CardTitle, NoData } from "../../Util";
 import { EnemyCard } from "./EnemyCard";
-import { PositionGraph } from "./PositionGraph";
 
 type Props = {
-	enemies?: Enemy[];
-	player?: Coord;
+	enemies?: model.Enemy[];
+	player?: model.Coord;
 };
 
 const TargetInfo = (props: Props) => {
 	const { t } = useTranslation();
 	return (
-		<Card className="flex flex-col col-span-3">
+		<Card className="flex flex-col col-span-3 gap-0 p-5">
 			<CardTitle title={t("result.target_info")} tooltip="x" />
 			<CardData {...props} />
 		</Card>
