@@ -1,5 +1,5 @@
 import React from "react";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import { useAppDispatch } from "../../Stores/store";
 import { userActions } from "../../Stores/userSlice";
 import { authProvider } from "./Login";
@@ -7,7 +7,7 @@ import { authProvider } from "./Login";
 export function DiscordCallback() {
 	const [error, setError] = React.useState("");
 	const dispatch = useAppDispatch();
-	const history = useHistory();
+	const navigate = useNavigate();
 
 	React.useEffect(() => {
 		const params = new URLSearchParams(window.location.search);
@@ -20,13 +20,13 @@ export function DiscordCallback() {
 			.auth(code)
 			.then((user) => {
 				dispatch(userActions.mergeUser(user));
-				history.push("/account");
+				navigate("/account");
 			})
 			.catch((error) => {
 				setError(JSON.stringify(error));
-				history.push("/account");
+				navigate("/account");
 			});
-	}, [dispatch, history]);
+	}, [dispatch, navigate]);
 
 	if (error === "") {
 		return (

@@ -14,11 +14,11 @@ import { useTranslation } from "react-i18next";
 import { Provider } from "react-redux";
 import {
 	BrowserRouter,
-	Redirect,
+	Navigate,
 	Route,
-	Switch,
-	useHistory,
+	Routes,
 	useLocation,
+	useParams,
 } from "react-router-dom";
 import {
 	Dash,
@@ -124,6 +124,33 @@ const ExecutorSettings = ({ children }: { children: ReactNode }) => {
 
 const viewerPaths = ["/web", "/local", "/sh/", "/db/"];
 
+type ShareRouteProps = {
+	exec: ExecutorSupplier<Executor>;
+	gitCommit: string;
+	mode: string;
+};
+
+function ShareViewerRoute({ exec, gitCommit, mode }: ShareRouteProps) {
+	const { id } = useParams();
+	useEffect(() => {
+		document.title = "gcsim sh - " + id;
+	}, [id]);
+	return <ShareViewer exec={exec} id={id} gitCommit={gitCommit} mode={mode} />;
+}
+
+function DBViewerRoute({ exec, gitCommit, mode }: ShareRouteProps) {
+	const { id } = useParams();
+	useEffect(() => {
+		document.title = "gcsim db - " + id;
+	}, [id]);
+	return <DBViewer exec={exec} id={id} gitCommit={gitCommit} mode={mode} />;
+}
+
+function RedirectToShare() {
+	const { id } = useParams();
+	return <Navigate to={"/sh/" + id} replace />;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function movedOffViewer(location: any, prevLocation: any): boolean {
 	let prevWasViewer = false;
@@ -140,17 +167,14 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 	const { t } = useTranslation();
 	const content = useRef<HTMLDivElement>(null);
 	const location = useLocation();
-	const history = useHistory();
 
 	// every time you change location, scroll to top of page. This is necessary since the outer
 	// content div will never rerender through the entire lifespan of the app and will always retain
 	// its scroll position.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: location is the trigger, not a value used in the effect body
 	useEffect(() => {
-		const unlisten = history.listen(() => {
-			content.current?.scrollTo(0, 0);
-		});
-		return () => unlisten();
-	}, [history]);
+		content.current?.scrollTo(0, 0);
+	}, [location]);
 
 	// cancel the run every time we navigate away from the web viewer page
 	const prevLocation = useRef(location);
@@ -173,112 +197,142 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 				ref={content}
 				className="flex flex-col flex-auto overflow-y-scroll overflow-x-clip"
 			>
-				<Switch>
-					<Route exact path="/">
-						<Helmet>
-							<title>gcsim - simulation impact</title>
-						</Helmet>
-						<Dash />
-					</Route>
+				<Routes>
+					<Route
+						path="/"
+						element={
+							<>
+								<Helmet>
+									<title>gcsim - simulation impact</title>
+								</Helmet>
+								<Dash />
+							</>
+						}
+					/>
 
 					{/* Simulator */}
-					<Route exact path="/simulator">
-						<Helmet>
-							<title>gcsim - simulator</title>
-						</Helmet>
-						<Simulator exec={exec} />
-					</Route>
+					<Route
+						path="/simulator"
+						element={
+							<>
+								<Helmet>
+									<title>gcsim - simulator</title>
+								</Helmet>
+								<Simulator exec={exec} />
+							</>
+						}
+					/>
 
 					{/* Viewer Routes */}
-					<Route path="/web">
-						<Helmet>
-							<title>gcsim - viewer</title>
-						</Helmet>
-						<WebViewer exec={exec} gitCommit={gitCommit} mode={mode} />
-					</Route>
-					<Route path="/local">
-						<Helmet>
-							<title>gcsim - local viewer</title>
-						</Helmet>
-						<LocalViewer exec={exec} gitCommit={gitCommit} mode={mode} />
-					</Route>
-					<Route path="/sh/:id">
-						{({ match }) => {
-							document.title = "gcsim sh - " + match?.params.id;
-							return (
-								<ShareViewer
-									exec={exec}
-									id={match?.params.id}
-									gitCommit={gitCommit}
-									mode={mode}
-								/>
-							);
-						}}
-					</Route>
-					<Route path="/db/:id">
-						{({ match }) => {
-							document.title = "gcsim db - " + match?.params.id;
-							return (
-								<DBViewer
-									exec={exec}
-									id={match?.params.id}
-									gitCommit={gitCommit}
-									mode={mode}
-								/>
-							);
-						}}
-					</Route>
+					<Route
+						path="/web/*"
+						element={
+							<>
+								<Helmet>
+									<title>gcsim - viewer</title>
+								</Helmet>
+								<WebViewer exec={exec} gitCommit={gitCommit} mode={mode} />
+							</>
+						}
+					/>
+					<Route
+						path="/local/*"
+						element={
+							<>
+								<Helmet>
+									<title>gcsim - local viewer</title>
+								</Helmet>
+								<LocalViewer exec={exec} gitCommit={gitCommit} mode={mode} />
+							</>
+						}
+					/>
+					<Route
+						path="/sh/:id"
+						element={
+							<ShareViewerRoute exec={exec} gitCommit={gitCommit} mode={mode} />
+						}
+					/>
+					<Route
+						path="/db/:id"
+						element={
+							<DBViewerRoute exec={exec} gitCommit={gitCommit} mode={mode} />
+						}
+					/>
 
 					{/* Sample Routes */}
-					<Route path="/sample/upload">
-						<Helmet>
-							<title>gcsim - sample</title>
-						</Helmet>
-						<UploadSample />
-					</Route>
-					<Route path="/sample/local">
-						<Helmet>
-							<title>gcsim - local sample</title>
-						</Helmet>
-						<LocalSample />
-					</Route>
+					<Route
+						path="/sample/upload"
+						element={
+							<>
+								<Helmet>
+									<title>gcsim - sample</title>
+								</Helmet>
+								<UploadSample />
+							</>
+						}
+					/>
+					<Route
+						path="/sample/local"
+						element={
+							<>
+								<Helmet>
+									<title>gcsim - local sample</title>
+								</Helmet>
+								<LocalSample />
+							</>
+						}
+					/>
 
 					{/* Redirects */}
-					<Route path={["/v3/viewer/share/:id", "/viewer/share/:id", "/s/:id"]}>
-						{({ match }) => <Redirect to={"/sh/" + match?.params.id} />}
-					</Route>
-					<Route path={"/viewer/web"}>
-						<Redirect to="/web" />
-					</Route>
-					<Route path={"/viewer/local"}>
-						<Redirect to="/local" />
-					</Route>
-					<Route path={["/simple", "/advanced", "/viewer"]}>
-						<Redirect to="/simulator" />
-					</Route>
+					<Route path="/v3/viewer/share/:id" element={<RedirectToShare />} />
+					<Route path="/viewer/share/:id" element={<RedirectToShare />} />
+					<Route path="/s/:id" element={<RedirectToShare />} />
+					<Route path="/viewer/web" element={<Navigate to="/web" replace />} />
+					<Route
+						path="/viewer/local"
+						element={<Navigate to="/local" replace />}
+					/>
+					<Route
+						path="/simple"
+						element={<Navigate to="/simulator" replace />}
+					/>
+					<Route
+						path="/advanced"
+						element={<Navigate to="/simulator" replace />}
+					/>
+					<Route
+						path="/viewer"
+						element={<Navigate to="/simulator" replace />}
+					/>
 
 					{/* DB & Account */}
-					<Route path="/db">
-						<RedirectDB />
-					</Route>
-					<Route path="/account">
-						<Helmet>
-							<title>gcsim - account</title>
-						</Helmet>
-						<PageUserAccount />
-					</Route>
-					<Route path="/auth/discord">
-						<DiscordCallback />
-					</Route>
+					<Route path="/db" element={<RedirectDB />} />
+					<Route
+						path="/account"
+						element={
+							<>
+								<Helmet>
+									<title>gcsim - account</title>
+								</Helmet>
+								<PageUserAccount />
+							</>
+						}
+					/>
+					<Route path="/auth/discord" element={<DiscordCallback />} />
 
 					{/* Default (404 case) */}
-					<Route>
-						<Helmet>
-							<title>gcsim - simulation impact</title>
-						</Helmet>
-						<div className="m-2 text-center">{t("src.this_page_is")}</div>
-					</Route>
-				</Switch>
+					<Route
+						path="*"
+						element={
+							<>
+								<Helmet>
+									<title>gcsim - simulation impact</title>
+								</Helmet>
+								<div className="m-2 text-center">{t("src.this_page_is")}</div>
+							</>
+						}
+					/>
+				</Routes>
 				<Footer />
 				<ExecutorSettings>{children}</ExecutorSettings>
 			</div>
