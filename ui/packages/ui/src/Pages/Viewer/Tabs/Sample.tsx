@@ -1,14 +1,15 @@
 import {
 	Button,
-	HTMLSelect,
-	Intent,
+	Input,
 	NonIdealState,
-	NumericInput,
-	type OptionProps,
-	Spinner,
-	SpinnerSize,
-} from "@blueprintjs/core";
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@gcsim/primitives";
 import type { Sample, SimResults } from "@gcsim/types";
+import { FlaskConical, RefreshCw } from "lucide-react";
 import queryString from "query-string";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -49,13 +50,13 @@ export default ({ sampler, data, sample, running }: Props) => {
 	}, [data?.character_details]);
 
 	if (names == null || data?.config_file == null || sample.generating) {
-		return <NonIdealState icon={<Spinner size={SpinnerSize.LARGE} />} />;
+		return <NonIdealState loading />;
 	}
 
 	if (sample.sample == null || sample.parsed == null) {
 		return (
 			<NonIdealState
-				icon="helper-management"
+				icon={<FlaskConical />}
 				action={
 					<Generate
 						sampler={sampler}
@@ -126,7 +127,7 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
 			break;
 	}
 	const [value, setValue] = useState(startValue);
-	const options: OptionProps[] = [
+	const options = [
 		{ label: t("viewer.seed_sample"), value: "sample" },
 		// { label: "Random", value: "rand" },
 		{ label: t("viewer.seed_min"), value: "min" },
@@ -137,10 +138,12 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
 		{ label: t("viewer.seed_custom"), value: "custom" },
 	];
 
+	// Seeds are uint64 (serialized as strings) and routinely exceed 2^53, so the
+	// custom seed is kept as a string; Number() would silently truncate it.
 	const parsed = queryString.parse(location.hash);
 	const [customSeed, setCustomSeed] = useState<string>(
 		(parsed.sample as string) ??
-			Math.floor(Number.MAX_SAFE_INTEGER * Math.random()),
+			String(Math.floor(Number.MAX_SAFE_INTEGER * Math.random())),
 	);
 
 	const disabled = () => {
@@ -172,7 +175,7 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
 				seed = data.statistics?.p75_seed ?? seed;
 				break;
 			case "custom":
-				seed = "" + customSeed;
+				seed = customSeed;
 		}
 
 		const parsed = queryString.parse(location.hash);
@@ -189,32 +192,35 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
 
 	return (
 		<div className="flex flex-col gap-2 w-full mx-auto">
-			<HTMLSelect
-				options={options}
-				value={value}
-				onChange={(e) => setValue(e.currentTarget.value)}
-				fill={true}
-			/>
+			<Select value={value} onValueChange={setValue}>
+				<SelectTrigger className="w-full">
+					<SelectValue />
+				</SelectTrigger>
+				<SelectContent>
+					{options.map((o) => (
+						<SelectItem key={o.value} value={o.value}>
+							{o.label}
+						</SelectItem>
+					))}
+				</SelectContent>
+			</Select>
 			{value === "custom" ? (
-				<NumericInput
+				<Input
 					value={customSeed}
-					onValueChange={(valueAsNumber, valueAsString) =>
-						setCustomSeed(valueAsString)
-					}
-					fill={true}
+					onChange={(e) => setCustomSeed(e.target.value)}
+					inputMode="numeric"
+					className="w-full"
 				/>
-			) : (
-				<></>
-			)}
+			) : null}
 			<Button
-				large={true}
-				text={t("viewer.generate")}
-				icon="refresh"
-				intent={Intent.PRIMARY}
+				size="lg"
+				className="w-full"
 				disabled={disabled()}
 				onClick={click}
-				fill={true}
-			/>
+			>
+				<RefreshCw />
+				{t("viewer.generate")}
+			</Button>
 		</div>
 	);
 };
