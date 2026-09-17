@@ -1,4 +1,5 @@
-import { Button, ButtonGroup, Checkbox } from "@blueprintjs/core";
+import { Button, ButtonGroup, Checkbox, Label } from "@gcsim/primitives";
+import { LogOut, Save } from "lucide-react";
 import { Viewport } from "../../Components";
 import {
 	type AppThunk,
@@ -37,51 +38,56 @@ export function PageUserAccount() {
 	return (
 		<Viewport>
 			<div className="flex flex-col ">
-				<div>
-					<Checkbox
-						checked={user.data.settings.showTips}
-						onChange={() => {
-							dispatch(
-								userActions.setUserSettings({
-									showTips: !user.data.settings.showTips,
-									showBuilder: user.data.settings.showBuilder,
-									showNameSearch: user.data.settings.showNameSearch,
-								}),
-							);
-						}}
-					>
-						Show tips
-					</Checkbox>
-					<Checkbox
-						checked={user.data.settings.showBuilder}
-						onChange={() => {
-							dispatch(
-								userActions.setUserSettings({
-									showTips: user.data.settings.showTips,
-									showBuilder: !user.data.settings.showBuilder,
-									showNameSearch: user.data.settings.showNameSearch,
-								}),
-							);
-						}}
-					>
-						Show builder
-					</Checkbox>
+				<div className="flex flex-col gap-2">
+					<div className="flex items-center gap-2">
+						<Checkbox
+							id="show-tips"
+							checked={user.data.settings.showTips}
+							onCheckedChange={() => {
+								dispatch(
+									userActions.setUserSettings({
+										showTips: !user.data.settings.showTips,
+										showBuilder: user.data.settings.showBuilder,
+										showNameSearch: user.data.settings.showNameSearch,
+									}),
+								);
+							}}
+						/>
+						<Label htmlFor="show-tips">Show tips</Label>
+					</div>
+					<div className="flex items-center gap-2">
+						<Checkbox
+							id="show-builder"
+							checked={user.data.settings.showBuilder}
+							onCheckedChange={() => {
+								dispatch(
+									userActions.setUserSettings({
+										showTips: user.data.settings.showTips,
+										showBuilder: !user.data.settings.showBuilder,
+										showNameSearch: user.data.settings.showNameSearch,
+									}),
+								);
+							}}
+						/>
+						<Label htmlFor="show-builder">Show builder</Label>
+					</div>
 				</div>
 				<div className="flex flex-row place-content-center mt-2">
 					<ButtonGroup>
 						<Button
-							icon="saved"
-							large
+							variant="secondary"
+							size="lg"
 							onClick={() => dispatch(saveUserSettings())}
 						>
+							<Save />
 							Save Settings
 						</Button>
 						<Button
-							icon="log-out"
-							intent="danger"
-							large
+							variant="destructive"
+							size="lg"
 							onClick={() => dispatch(logout())}
 						>
+							<LogOut />
 							Logout
 						</Button>
 					</ButtonGroup>
