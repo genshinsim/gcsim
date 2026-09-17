@@ -11,6 +11,7 @@
 		"@gcsim/types": "workspace:^",
 		"@gcsim/utils": "workspace:^",
 		"@reduxjs/toolkit": "^2.9.0",
+		"@tanstack/react-virtual": "^3.14.13",
 		"d3-scale": "^4.0.2",
 		"@visx/annotation": "^3.0.0",
 		"@visx/axis": "^3.0.0",
@@ -52,7 +53,6 @@
 		"react-router": "^6.22.3",
 		"react-router-dom": "^6.22.3",
 		"react-simple-code-editor": "^0.13.1",
-		"react-virtual": "^2.10.4",
 		"react-virtualized-auto-sizer": "^1.0.7",
 		"remark-gfm": "^4.0.0",
 		"uuid": "^9.0.0"
