@@ -1,3 +1,4 @@
+import { DataColorsConst } from "@gcsim/components";
 import { dynamicKey } from "@gcsim/localization";
 import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
@@ -13,7 +14,6 @@ import {
 	IconPhysical,
 	IconPyro,
 } from "../../../../../Components/Icons";
-import { DataColorsConst } from "../../Util";
 
 type Props = {
 	id: number;

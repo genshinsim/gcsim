@@ -1,64 +1,38 @@
-import { Colors } from "@gcsim/components";
 import { Card } from "@gcsim/primitives";
 import classNames from "classnames";
-import { ChevronRight } from "lucide-react";
 import { memo, type ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { useHistory } from "react-router";
-import { CardTitle } from "../../Util";
+import { CardTitle } from "../../../common/gcsim";
 
-type AuxStat = {
+export type AuxStat = {
 	title: string;
 	value?: string;
 };
 
-type CardProps = {
+type Props = {
 	title: string;
 	color: string;
 	value?: string;
 	label?: string;
 	auxStats?: Array<AuxStat>;
-	tooltip?: string | JSX.Element;
-	hashLink?: string;
 };
 
-const CardTemplate = ({
-	title,
-	color,
-	value,
-	label,
-	auxStats,
-	tooltip,
-	hashLink,
-}: CardProps) => {
-	const history = useHistory();
-	// const interactable = hashLink != null;
-	const interactable = false;
-	const click = () => {
-		history.replace({ hash: hashLink });
-	};
+const RollupCard = ({ title, color, value, label, auxStats }: Props) => (
+	<div
+		className="flex basis-1/4 flex-auto pl-1 min-w-fit"
+		style={{ background: color }}
+	>
+		<Card className="flex flex-auto flex-row items-stretch justify-between gap-0 p-5">
+			<div className="flex flex-col justify-start">
+				<CardTitle title={title} />
+				<CardValue value={value} label={label} />
+				<CardAux aux={auxStats} />
+			</div>
+		</Card>
+	</div>
+);
 
-	return (
-		<div
-			className="flex basis-1/4 flex-auto pl-1 min-w-fit"
-			style={{ background: color }}
-		>
-			<Card
-				className="flex flex-auto flex-row items-stretch justify-between gap-0 p-5"
-				onClick={() => interactable && value !== undefined && click()}
-			>
-				<div className="flex flex-col justify-start">
-					<CardTitle title={title} tooltip={tooltip} />
-					<CardValue value={value} label={label} />
-					<CardAux aux={auxStats} />
-				</div>
-				<CardChevron interactable={interactable} />
-			</Card>
-		</div>
-	);
-};
-
-export const RollupCard = memo(CardTemplate);
+export default memo(RollupCard);
 
 const CardValue = ({
 	value,
@@ -85,17 +59,6 @@ const CardValue = ({
 		<div className="flex flex-row py-2 gap-1 justify-start">
 			<div className={valueClass}>{out.toLocaleString(i18n.language)}</div>
 			{lbl}
-		</div>
-	);
-};
-
-const CardChevron = ({ interactable }: { interactable: boolean }) => {
-	if (!interactable) {
-		return null;
-	}
-	return (
-		<div className="flex flex-grow justify-end self-stretch justify-self-end">
-			<ChevronRight size={36} color={Colors.GRAY1} className="self-center" />
 		</div>
 	);
 };

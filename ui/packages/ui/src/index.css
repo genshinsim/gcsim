@@ -81,13 +81,12 @@ body {
 }
 
 /*
- * BlueprintJS's `.bp4-dark a` sets a light-blue anchor color that bleeds into
- * the @gcsim/primitives (shadcn) components, which render their interactive
- * elements as anchors (Button `asChild` -> <a>, DropdownMenuItem `asChild` ->
- * <a>, ...). Those anchors carry a `data-slot` attribute, so scope the reset
- * to them and let each primitive control its own color again. This rule loads
- * after blueprint.css, so it wins the specificity tie with `.bp4-dark a`.
- * Remove once the remaining BlueprintJS styles are gone.
+ * @gcsim/primitives (shadcn) render interactive elements as anchors (Button
+ * `asChild` -> <a>, DropdownMenuItem `asChild` -> <a>, ...). Colorless variants
+ * (outline, ghost) set no base text color, so an anchor with an `href` would
+ * otherwise pick up the browser's default link color. Those anchors carry a
+ * `data-slot` attribute; reset them to inherit so each primitive controls its
+ * own color.
  */
 a[data-slot] {
   color: inherit;
