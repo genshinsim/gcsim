@@ -1,5 +1,5 @@
 import { craftQuery, type DbQuery } from "SharedHooks/databaseQuery";
-import { Spinner } from "@blueprintjs/core";
+import { Spinner } from "@gcsim/primitives";
 import type { db } from "@gcsim/types";
 import axios from "axios";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
@@ -89,7 +89,7 @@ export const Database = ({ initialFilter = defaultFilter }: Props) => {
 	if (isLoading || !data)
 		return (
 			<div className="h-screen flex flex-col justify-center items-center">
-				<Spinner />
+				<Spinner className="size-12" />
 			</div>
 		);
 

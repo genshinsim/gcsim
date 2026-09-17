@@ -1,13 +1,16 @@
-import {
-	Button,
-	Collapse,
-	Drawer,
-	DrawerSize,
-	Intent,
-	Position,
-} from "@blueprintjs/core";
 import tagData from "@gcsim/data/src/tags.json";
 import { dynamicKey } from "@gcsim/localization";
+import {
+	Button,
+	Collapsible,
+	CollapsibleContent,
+	Input,
+	Sheet,
+	SheetContent,
+	SheetDescription,
+	SheetHeader,
+	SheetTitle,
+} from "@gcsim/primitives";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FaArrowDown, FaArrowUp, FaFilter, FaSearch } from "react-icons/fa";
@@ -22,6 +25,8 @@ import {
 	sortByParams,
 } from "./FilterComponents/Filter.utils";
 
+const activeFilterClasses = "bg-emerald-600 text-white hover:bg-emerald-600/90";
+
 export function Filter() {
 	// https://github.com/i18next/next-i18next/issues/1795
 	const { t: translation } = useTranslation();
@@ -29,13 +34,6 @@ export function Filter() {
 
 	const dispatch = useContext(FilterDispatchContext);
 	const [isOpen, setIsOpen] = useState(false);
-
-	// const filter = useContext(FilterContext);
-	// const includedCharacterFilters: CharFilterState[] = Object.keys(
-	//   filter.charFilter
-	// )
-	//   .filter((key) => filter.charFilter[key].state === ItemFilterState.include)
-	//   .map((key) => filter.charFilter[key]);
 
 	const [value, setValue] = useState<string>("");
 	const debouncedValue = useDebounce<string>(value, 500);
@@ -46,48 +44,40 @@ export function Filter() {
 
 	return (
 		<div>
-			<button
-				type="button"
-				className="flex flex-row gap-2 bp4-button justify-center items-center p-3 bp4-intent-primary h-12 w-12"
-				onClick={() => setIsOpen(!isOpen)}
+			<Button
+				className="h-12 w-12 p-3"
+				onClick={() => setIsOpen(true)}
+				aria-label={t("db.filter")}
 			>
 				<FaFilter size={24} className="opacity-80" />
-			</button>
+			</Button>
 
-			<Drawer
-				isOpen={isOpen}
-				canEscapeKeyClose={true}
-				canOutsideClickClose
-				autoFocus
-				isCloseButtonShown
-				title={
-					<div
-						className="flex flex-row justify-between
-          "
-					>
-						<div className="text-xl pb-1 ">{t("db.filter")}</div>
-						<ClearFilterButton />
+			<Sheet open={isOpen} onOpenChange={setIsOpen}>
+				<SheetContent side="left" className="overflow-y-auto">
+					<SheetHeader>
+						<div className="flex flex-row justify-between pr-6">
+							<SheetTitle className="text-xl">{t("db.filter")}</SheetTitle>
+							<ClearFilterButton />
+						</div>
+						<SheetDescription className="sr-only">
+							{t("db.filter")}
+						</SheetDescription>
+					</SheetHeader>
+					<div className="flex flex-col gap-2 overflow-y-auto overflow-x-hidden p-2">
+						<Input
+							placeholder={t("db.customFilter")}
+							type="text"
+							dir="auto"
+							onChange={(e) => {
+								setValue(e.target.value);
+							}}
+						/>
+						<CharacterFilter />
+						<TagFilter />
+						<SortBy />
 					</div>
-				}
-				onClose={() => setIsOpen(false)}
-				position={Position.LEFT}
-				size={DrawerSize.SMALL}
-			>
-				<div className="flex flex-col gap-2 overflow-y-auto overflow-x-hidden p-2">
-					<input
-						className="bp4-input bp4-icon bp4-icon-filter"
-						placeholder={t("db.customFilter")}
-						type="text"
-						dir="auto"
-						onChange={(e) => {
-							setValue(e.target.value);
-						}}
-					/>
-					<CharacterFilter />
-					<TagFilter />
-					<SortBy />
-				</div>
-			</Drawer>
+				</SheetContent>
+			</Sheet>
 		</div>
 	);
 }
@@ -97,13 +87,13 @@ function ClearFilterButton() {
 	const t = (s: string) => translation(dynamicKey(s)) as string;
 	const dispatch = useContext(FilterDispatchContext);
 	return (
-		<button
-			type="button"
-			className="bp4-button bp4-intent-danger bp4-small  "
+		<Button
+			variant="destructive"
+			size="sm"
 			onClick={() => dispatch({ type: "clearFilter" })}
 		>
 			{t("db.clear")}
-		</button>
+		</Button>
 	);
 }
 
@@ -124,22 +114,23 @@ function TagFilter() {
 
 	return (
 		<div className="w-full  overflow-x-hidden no-scrollbar">
-			<button
-				type="button"
-				className=" bp4-button bp4-intent-primary w-full flex-row flex justify-between items-center "
+			<Button
+				className="w-full justify-between"
 				onClick={() => setTagIsOpen(!tagIsOpen)}
 			>
 				<div className=" grow">{t("db.tags")}</div>
 
 				<div className="">{tagIsOpen ? "-" : "+"}</div>
-			</button>
-			<Collapse isOpen={tagIsOpen}>
-				<div className="grid grid-cols-3 gap-2 mt-2 bg-gray-800 p-1">
-					{sortedTagnames.map((t) => (
-						<TagFilterButton key={t.key} name={t.name} tag={t.key} />
-					))}
-				</div>
-			</Collapse>
+			</Button>
+			<Collapsible open={tagIsOpen}>
+				<CollapsibleContent>
+					<div className="grid grid-cols-3 gap-2 mt-2 bg-gray-800 p-1">
+						{sortedTagnames.map((t) => (
+							<TagFilterButton key={t.key} name={t.name} tag={t.key} />
+						))}
+					</div>
+				</CollapsibleContent>
+			</Collapsible>
 		</div>
 	);
 }
@@ -154,21 +145,16 @@ function TagFilterButton({ tag, name }: { tag; name: string }) {
 			tag: tag,
 		});
 	};
-	let intent: Intent;
-	switch (filter.tagFilter[tag].state) {
-		case ItemFilterState.include:
-			intent = Intent.SUCCESS;
-			break;
-		case ItemFilterState.exclude:
-			intent = Intent.DANGER;
-			break;
-		default:
-			intent = Intent.NONE;
-			break;
-	}
 
+	const state = filter.tagFilter[tag].state;
 	return (
-		<Button intent={intent} onClick={handleClick}>
+		<Button
+			variant={state === ItemFilterState.exclude ? "destructive" : "secondary"}
+			className={
+				state === ItemFilterState.include ? activeFilterClasses : undefined
+			}
+			onClick={handleClick}
+		>
 			<div className="text-center">{name}</div>
 		</Button>
 	);
@@ -194,46 +180,47 @@ function CharacterFilter() {
 
 	return (
 		<div className="w-full  overflow-x-hidden no-scrollbar">
-			<button
-				type="button"
-				className=" bp4-button bp4-intent-primary w-full flex-row flex justify-between items-center "
+			<Button
+				className="w-full justify-between"
 				onClick={() => setCharIsOpen(!charIsOpen)}
 			>
 				<div className=" grow">{t("db.characters")}</div>
 
 				<div className="">{charIsOpen ? "-" : "+"}</div>
-			</button>
-			<Collapse isOpen={charIsOpen}>
-				<div className="flex flex-col mt-2 bg-gray-800 p-1">
-					<label
-						htmlFor="email"
-						className="relative text-gray-400 focus-within:text-gray-600 flex flex-row"
-					>
-						<FaSearch className="pointer-events-none w-4 h-4 absolute top-2 transform   right-2 " />
+			</Button>
+			<Collapsible open={charIsOpen}>
+				<CollapsibleContent>
+					<div className="flex flex-col mt-2 bg-gray-800 p-1">
+						<label
+							htmlFor="email"
+							className="relative text-gray-400 focus-within:text-gray-600 flex flex-row"
+						>
+							<FaSearch className="pointer-events-none w-4 h-4 absolute top-2 transform   right-2 " />
 
-						<input
-							className="bp4-input bp4-icon bp4-icon-filter grow"
-							type="text"
-							dir="auto"
-							onChange={(e) => {
-								setCharSearch(e.target.value);
-							}}
-						/>
-					</label>
+							<Input
+								className="grow"
+								type="text"
+								dir="auto"
+								onChange={(e) => {
+									setCharSearch(e.target.value);
+								}}
+							/>
+						</label>
 
-					<div className="grid grid-cols-4 gap-1 mt-1 overflow-y-auto overflow-x-hidden">
-						{sortedCharNames
-							.filter((charName) =>
-								translateCharName(charName)
-									.toLocaleLowerCase()
-									.includes(charSearch.toLocaleLowerCase()),
-							)
-							.map((charName) => (
-								<CharFilterButton key={charName} charName={charName} />
-							))}
+						<div className="grid grid-cols-4 gap-1 mt-1 overflow-y-auto overflow-x-hidden">
+							{sortedCharNames
+								.filter((charName) =>
+									translateCharName(charName)
+										.toLocaleLowerCase()
+										.includes(charSearch.toLocaleLowerCase()),
+								)
+								.map((charName) => (
+									<CharFilterButton key={charName} charName={charName} />
+								))}
+						</div>
 					</div>
-				</div>
-			</Collapse>
+				</CollapsibleContent>
+			</Collapsible>
 		</div>
 	);
 }
@@ -249,39 +236,24 @@ function CharFilterButton({ charName }: { charName: string }) {
 		});
 	};
 
-	switch (filter.charFilter[charName].state) {
-		case ItemFilterState.include:
-			return (
-				<button
-					type="button"
-					className={"bp4-button bp4-intent-success block"}
-					onClick={handleClick}
-				>
-					<CharFilterButtonChild charName={charName} />
-				</button>
-			);
-		case ItemFilterState.exclude:
-			return (
-				<button
-					type="button"
-					className={"bp4-button bp4-intent-danger block"}
-					onClick={handleClick}
-				>
-					<CharFilterButtonChild charName={charName} />
-				</button>
-			);
-		case ItemFilterState.none:
-		default:
-			return (
-				<button
-					type="button"
-					className={"bp4-button block "}
-					onClick={handleClick}
-				>
-					<CharFilterButtonChild charName={charName} />
-				</button>
-			);
-	}
+	const state = filter.charFilter[charName].state;
+	return (
+		<Button
+			variant={
+				state === ItemFilterState.exclude
+					? "destructive"
+					: state === ItemFilterState.include
+						? "default"
+						: "secondary"
+			}
+			className={`block h-auto ${
+				state === ItemFilterState.include ? activeFilterClasses : ""
+			}`}
+			onClick={handleClick}
+		>
+			<CharFilterButtonChild charName={charName} />
+		</Button>
+	);
 }
 
 function CharFilterButtonChild({ charName }: { charName: string }) {
@@ -318,28 +290,29 @@ function SortBy() {
 
 	return (
 		<div className="w-full  overflow-x-hidden no-scrollbar">
-			<button
-				type="button"
-				className=" bp4-button bp4-intent-primary w-full flex-row flex justify-between items-center "
+			<Button
+				className="w-full justify-between"
 				onClick={() => setSortIsOpen(!sortIsOpen)}
 			>
 				<div className=" grow">{t("db.sort_by")}</div>
 
 				<div className="">{sortIsOpen ? "-" : "+"}</div>
-			</button>
-			<Collapse isOpen={sortIsOpen}>
-				<div className="flex flex-col mt-2 bg-gray-800 p-1">
-					<div className="flex flex-row gap-4">
-						{sortByParams.map((param) => (
-							<SortByParamButton
-								key={param.sortKey}
-								sortKey={param.sortKey}
-								translation={t(param.translationKey)}
-							/>
-						))}
+			</Button>
+			<Collapsible open={sortIsOpen}>
+				<CollapsibleContent>
+					<div className="flex flex-col mt-2 bg-gray-800 p-1">
+						<div className="flex flex-row gap-4">
+							{sortByParams.map((param) => (
+								<SortByParamButton
+									key={param.sortKey}
+									sortKey={param.sortKey}
+									translation={t(param.translationKey)}
+								/>
+							))}
+						</div>
 					</div>
-				</div>
-			</Collapse>
+				</CollapsibleContent>
+			</Collapsible>
 		</div>
 	);
 }
@@ -361,28 +334,20 @@ function SortByParamButton({
 		});
 	};
 
-	let intent: Intent;
-	if (filter.sortBy.sortKey !== sortKey) {
-		intent = "none";
-	} else {
-		switch (filter.sortBy.sortByDirection) {
-			case SortByDirection.asc:
-				intent = "success";
-				break;
-			case SortByDirection.dsc:
-				intent = "danger";
-				break;
-			default:
-				intent = "none";
-				break;
-		}
-	}
+	const active = filter.sortBy.sortKey === sortKey;
+	const direction = active ? filter.sortBy.sortByDirection : null;
 
 	return (
-		<Button onClick={handleClick} intent={intent}>
+		<Button
+			onClick={handleClick}
+			variant={direction === SortByDirection.dsc ? "destructive" : "secondary"}
+			className={
+				direction === SortByDirection.asc ? activeFilterClasses : undefined
+			}
+		>
 			<div className="flex flex-row gap-1 justify-center items-center">
-				{intent === "success" && <FaArrowUp />}
-				{intent === "danger" && <FaArrowDown />}
+				{direction === SortByDirection.asc && <FaArrowUp />}
+				{direction === SortByDirection.dsc && <FaArrowDown />}
 				{translation}
 			</div>
 		</Button>

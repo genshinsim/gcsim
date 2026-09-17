@@ -1,77 +1,67 @@
-import { Alignment, HTMLSelect, Navbar } from "@blueprintjs/core";
+import {
+	Navbar,
+	NavbarDivider,
+	NavbarGroup,
+	NavbarHeading,
+} from "@gcsim/components";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@gcsim/primitives";
 import { useTranslation } from "react-i18next";
 import { Link } from "wouter";
 import logo from "./logo.png";
 
+const LANGUAGES = [
+	{ value: "en", key: "nav.english" },
+	{ value: "zh", key: "nav.chinese" },
+	{ value: "ja", key: "nav.japanese" },
+	{ value: "ko", key: "nav.korean" },
+	{ value: "es", key: "nav.spanish" },
+	{ value: "ru", key: "nav.russian" },
+	{ value: "de", key: "nav.german" },
+] as const;
+
 export default function Nav() {
 	const { t, i18n } = useTranslation();
 
-	const PageNavs = [
-		// <NavLink key="database" href="/database" icon="database" text="" />,
-		// <NavLink
-		//   key="management"
-		//   href="/management"
-		//   icon="clipboard"
-		//   text={t("nav.management")}
-		// />,
-	];
-
 	return (
-		<Navbar>
-			<div className="w-full 2xl:mx-auto 2xl:container">
-				<Navbar.Group align={Alignment.LEFT}>
-					<Navbar.Heading className="!mr-[10px]">
-						<Link href="/" className="flex h-[50px] items-center">
-							<img
-								src={logo}
-								alt=""
-								className="object-scale-down max-h-[75%] m-auto mr-2"
-							/>
-							<span className="font-medium font-mono">simpact</span>
-						</Link>
-					</Navbar.Heading>
-				</Navbar.Group>
-				<Navbar.Group
-					align={Alignment.LEFT}
-					className=" min-[550px]:!flex !items-stretch"
-				>
-					<Navbar.Divider className="self-center" />
-					{PageNavs}
-				</Navbar.Group>
-				<Navbar.Group align={Alignment.RIGHT}>
-					{/* <Link href="/account">
-              <Button minimal={true} icon="user" text="Guest" />
-            </Link> */}
-					<HTMLSelect
+		<Navbar className="h-[50px]">
+			<div className="flex w-full 2xl:mx-auto 2xl:container">
+				<NavbarHeading className="!mr-[10px]">
+					<Link href="/" className="flex h-[50px] items-center">
+						<img
+							src={logo}
+							alt=""
+							className="object-scale-down max-h-[75%] m-auto mr-2"
+						/>
+						<span className="font-medium font-mono">simpact</span>
+					</Link>
+				</NavbarHeading>
+				<NavbarGroup className="min-[550px]:flex items-stretch">
+					<NavbarDivider />
+				</NavbarGroup>
+				<NavbarGroup align="end">
+					<Select
 						value={i18n.resolvedLanguage}
-						onChange={(e) => i18n.changeLanguage(e.target.value)}
+						onValueChange={(value) => i18n.changeLanguage(value)}
 					>
-						<option value="en">{t("nav.english")}</option>
-						<option value="zh">{t("nav.chinese")}</option>
-						<option value="ja">{t("nav.japanese")}</option>
-						<option value="ko">{t("nav.korean")}</option>
-						<option value="es">{t("nav.spanish")}</option>
-						<option value="ru">{t("nav.russian")}</option>
-						<option value="de">{t("nav.german")}</option>
-					</HTMLSelect>
-				</Navbar.Group>
+						<SelectTrigger>
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent>
+							{LANGUAGES.map(({ value, key }) => (
+								<SelectItem key={value} value={value}>
+									{t(key)}
+								</SelectItem>
+							))}
+						</SelectContent>
+					</Select>
+				</NavbarGroup>
 			</div>
 		</Navbar>
 	);
 }
-
-// type NavLinkProps = {
-//   href: string;
-//   icon: IconName | MaybeElement;
-//   text: string;
-// };
-
-// const NavLink = ({ href, icon, text }: NavLinkProps) => {
-//   return (
-//     <Link href={href}>
-//       <AnchorButton minimal={true} icon={icon}>
-//         <span className="hidden min-[798px]:block">{text}</span>
-//       </AnchorButton>
-//     </Link>
-//   );
-// };

@@ -1,3 +1,4 @@
+import { Button } from "@gcsim/primitives";
 import nahida from "images/nahida.png";
 import { FaPlus } from "react-icons/fa";
 import type { ArtifactSetFilter } from "./Filter.utils";
@@ -88,7 +89,7 @@ function FilterDesktopPortrait({
 
 function PortraitWeaponComponent({ weapon }: { weapon?: string }) {
 	return (
-		<button type="button" className={"bp4-button"}>
+		<Button type="button" variant="secondary" size="icon">
 			{weapon ? (
 				<img
 					src={"https://gcsim.app/api/assets/weapons/" + weapon + ".png"}
@@ -97,7 +98,7 @@ function PortraitWeaponComponent({ weapon }: { weapon?: string }) {
 			) : (
 				<FaPlus />
 			)}
-		</button>
+		</Button>
 	);
 }
 

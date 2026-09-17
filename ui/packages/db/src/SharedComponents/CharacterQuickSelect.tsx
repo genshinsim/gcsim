@@ -1,8 +1,9 @@
-import { MenuItem } from "@blueprintjs/core";
-import { MultiSelect2 } from "@blueprintjs/select";
+import { MultiSelect } from "@gcsim/components";
 import { dynamicKey } from "@gcsim/localization";
+import { Badge, CommandItem } from "@gcsim/primitives";
 import { useContext } from "react";
 import { useTranslation } from "react-i18next";
+import { FaCheck, FaTimes } from "react-icons/fa";
 import {
 	charNames,
 	FilterContext,
@@ -11,7 +12,6 @@ import {
 } from "./FilterComponents/Filter.utils";
 
 export function CharacterQuickSelect() {
-	//dispatch
 	const dispatch = useContext(FilterDispatchContext);
 	const filter = useContext(FilterContext);
 	const { t } = useTranslation();
@@ -22,93 +22,64 @@ export function CharacterQuickSelect() {
 
 	const translateCharName = (charName: string) =>
 		t(dynamicKey("game:character_names." + charName));
+
 	return (
 		<div className="grow max-w-xl">
-			<MultiSelect2
-				placeholder={t("db.type_to_search")}
+			<MultiSelect<string>
 				items={charNames}
-				itemRenderer={(charName, itemProps) => {
+				itemKey={(charName) => charName}
+				value={includedChars}
+				placeholder={t("db.type_to_search")}
+				itemPredicate={(charName, query) => {
+					const normalizedQuery = query.toLocaleLowerCase();
 					return (
-						<MenuItem
-							key={charName}
-							text={translateCharName(charName)}
-							icon={
-								<img
-									src={`/api/assets/avatar/${charName}.png`}
-									alt=""
-									className="w-6 h-6"
-								/>
-							}
-							onClick={() => {
-								dispatch({
-									type: "includeChar",
-									char: charName,
-								});
-							}}
-							active={itemProps.modifiers.active}
-						/>
+						charName.toLowerCase().includes(normalizedQuery) ||
+						translateCharName(charName).toLowerCase().includes(normalizedQuery)
 					);
 				}}
-				tagRenderer={(charName) => (
-					<div className="flex flex-row gap-1" key={charName}>
+				itemRenderer={(charName, { selected, onSelect }) => (
+					<CommandItem value={charName} onSelect={onSelect}>
 						<img
-							className="w-4 h-4"
-							alt=""
 							src={`/api/assets/avatar/${charName}.png`}
+							alt=""
+							className="w-6 h-6"
+						/>
+						<span className="flex-1">{translateCharName(charName)}</span>
+						{selected && <FaCheck className="size-4" />}
+					</CommandItem>
+				)}
+				tagRenderer={(charName, { onRemove }) => (
+					<Badge variant="secondary" className="gap-1">
+						<img
+							src={`/api/assets/avatar/${charName}.png`}
+							alt=""
+							className="w-4 h-4"
 						/>
 						{translateCharName(charName)}
-					</div>
+						<button
+							type="button"
+							aria-label={`remove ${translateCharName(charName)}`}
+							onClick={onRemove}
+						>
+							<FaTimes className="size-3" />
+						</button>
+					</Badge>
 				)}
-				onItemSelect={(charName) => {
-					if (!charName) {
-						return;
+				onChange={(next) => {
+					const nextChars = new Set(next);
+					const prevChars = new Set(includedChars);
+					for (const charName of next) {
+						if (!prevChars.has(charName)) {
+							dispatch({ type: "includeChar", char: charName });
+						}
 					}
-					dispatch({
-						type: "handleChar",
-						char: charName,
-					});
+					for (const charName of includedChars) {
+						if (!nextChars.has(charName)) {
+							dispatch({ type: "removeChar", char: charName });
+						}
+					}
 				}}
-				itemListPredicate={(query, items) => {
-					return items.filter((item) => {
-						const normalizedItem = item.toLowerCase();
-						const normalizedLocalizedItem =
-							translateCharName(item).toLowerCase();
-						const normalizedQuery = query.toLocaleLowerCase();
-						return (
-							normalizedItem.includes(normalizedQuery) ||
-							normalizedLocalizedItem.includes(normalizedQuery)
-						);
-					});
-				}}
-				selectedItems={includedChars}
-				onClear={() => {
-					dispatch({
-						type: "clearFilter",
-					});
-				}}
-				onRemove={(charName) => {
-					dispatch({
-						type: "includeChar",
-						char: charName,
-					});
-				}}
-				resetOnSelect
-				resetOnQuery
-				openOnKeyDown
-				tagInputProps={{
-					tagProps: {
-						minimal: true,
-					},
-					onRemove: (value) => {
-						if (!value) return;
-						if (!value["key"]) return;
-						dispatch({
-							type: "removeChar",
-							char: value["key"],
-						});
-					},
-				}}
-			></MultiSelect2>
+			/>
 		</div>
 	);
 }
