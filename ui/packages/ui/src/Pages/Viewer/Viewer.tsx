@@ -14,6 +14,7 @@ import type { ResultSource } from ".";
 import LoadingToast from "./Components/LoadingToast";
 import ViewerNav from "./Components/ViewerNav";
 import Warnings from "./Components/Warnings";
+import { simResultsToModel } from "./simResultsToModel";
 import ConfigUI, { useConfig } from "./Tabs/Config";
 import Results from "./Tabs/Results";
 import SampleUI, { useSample } from "./Tabs/Sample";
@@ -77,6 +78,10 @@ export default ({
 
 	const sample = useSample(running, data, sampleOnLoad, sampler);
 	const config = useConfig(data, exec);
+	const modelData = useMemo(
+		() => (data != null ? simResultsToModel(data) : null),
+		[data],
+	);
 	const names = useMemo(
 		() =>
 			data?.character_details?.map((c) =>
@@ -86,7 +91,14 @@ export default ({
 	);
 
 	const tabs: { [k: string]: React.ReactNode } = {
-		results: <Results data={data} running={running} names={names} />,
+		results: (
+			<Results
+				data={data}
+				modelData={modelData}
+				running={running}
+				names={names}
+			/>
+		),
 		config: (
 			<ConfigUI
 				config={config}
