@@ -1,6 +1,5 @@
-import { AnchorButton, Card } from "@blueprintjs/core";
 import { DBCard, LatestVersion } from "@gcsim/components";
-import { Button } from "@gcsim/primitives";
+import { Button, Card } from "@gcsim/primitives";
 import type { db } from "@gcsim/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -76,16 +75,17 @@ export function Dash() {
 								))
 							: t("sim.loading")}
 					</div>
-					<AnchorButton
-						href="https://simpact.app/"
-						intent="primary"
-						target="_blank"
-						className="!p-3 !rounded-md"
-					>
-						<span className="text-xl md:text-2xl font-semibold">
-							{t("dash.visit_teams_db")}
-						</span>
-					</AnchorButton>
+					<Button asChild className="!p-3 !rounded-md">
+						<a
+							href="https://simpact.app/"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<span className="text-xl md:text-2xl font-semibold">
+								{t("dash.visit_teams_db")}
+							</span>
+						</a>
+					</Button>
 				</Card>
 				<LatestVersion />
 			</div>

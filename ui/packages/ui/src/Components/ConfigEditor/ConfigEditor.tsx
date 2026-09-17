@@ -3,7 +3,15 @@ import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/ext-language_tools";
 import "../../util/mode-gcsim.dm.js";
 //manually import supported themes cause we can't get for loop to work here
-import { FormGroup, HTMLSelect, NumericInput } from "@blueprintjs/core";
+import {
+	Label,
+	NumberInput,
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@gcsim/primitives";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/theme-kuroir";
 import "ace-builds/src-noconflict/theme-monokai";
@@ -61,21 +69,25 @@ export function ConfigEditor(props: Props) {
 		<div className="p-1 md:p-2">
 			{hideThemeSelector ? null : (
 				<div className="my-1 w-full flex flex-col gap-0.5 items-center md:flex-row-reverse md:gap-4 md:items-start">
-					<FormGroup label={t("simple.editor_theme")} inline>
-						<HTMLSelect onChange={(e) => setTheme(e.currentTarget.value)}>
-							{themes.map((t) => (
-								<option key={t} selected={t === theme}>
-									{t}
-								</option>
-							))}
-						</HTMLSelect>
-					</FormGroup>
-					<FormGroup label={t("simple.font_size")} inline>
-						<NumericInput
-							defaultValue={fontSize}
-							onValueChange={(e) => setFontSize(e)}
-						/>
-					</FormGroup>
+					<div className="flex items-center gap-2">
+						<Label>{t("simple.editor_theme")}</Label>
+						<Select value={theme} onValueChange={(v) => setTheme(v)}>
+							<SelectTrigger>
+								<SelectValue />
+							</SelectTrigger>
+							<SelectContent>
+								{themes.map((th) => (
+									<SelectItem key={th} value={th}>
+										{th}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
+					<div className="flex items-center gap-2">
+						<Label>{t("simple.font_size")}</Label>
+						<NumberInput value={fontSize} onValueChange={setFontSize} />
+					</div>
 				</div>
 			)}
 			<AceEditor

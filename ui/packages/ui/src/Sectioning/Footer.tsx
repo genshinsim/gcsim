@@ -1,4 +1,4 @@
-import { Divider } from "@blueprintjs/core";
+import { Separator } from "@gcsim/primitives";
 import classNames from "classnames";
 import { useTranslation } from "react-i18next";
 import { IconContext } from "react-icons";
@@ -28,7 +28,7 @@ export default () => {
 				<div className="self-center text-right text-gray-400 text-xs grow shrink-0 w-2/3 max-w-fit">
 					{t("footer.gcsim_is_not")}
 				</div>
-				<Divider />
+				<Separator orientation="vertical" className="h-auto" />
 				<div className="flex flex-wrap gap-x-4 gap-y-2 text-lg font-medium shrink grow-0">
 					<IconContext.Provider value={{ size: "32px", color: "inherit" }}>
 						<a

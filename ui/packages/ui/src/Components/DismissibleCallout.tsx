@@ -1,10 +1,27 @@
-import { Button, Callout, type Intent } from "@blueprintjs/core";
+import { Alert, AlertDescription, Button } from "@gcsim/primitives";
 import { AnimatePresence, motion } from "framer-motion";
+import { X } from "lucide-react";
+
+type AlertVariant = "default" | "destructive" | "warning" | "success";
+
+// callers still pass Blueprint-style intent strings until the viewer is ported
+function variantForIntent(intent?: string): AlertVariant {
+	switch (intent) {
+		case "danger":
+			return "destructive";
+		case "warning":
+			return "warning";
+		case "success":
+			return "success";
+		default:
+			return "default";
+	}
+}
 
 type Props = {
 	title: string;
 	show: boolean;
-	intent?: Intent;
+	intent?: string;
 	onDismiss?: (event: React.MouseEvent<HTMLElement>) => void;
 	children: React.ReactNode;
 };
@@ -14,21 +31,22 @@ export default ({ title, show, intent, onDismiss, children }: Props) => {
 		<AnimatePresence>
 			{show && (
 				<motion.div exit={{ opacity: 0 }}>
-					<Callout intent={intent}>
-						<div className="flex justify-between">
-							<h4 className="bp4-heading">{title}</h4>
-							<Button
-								icon="cross"
-								className="self-start"
-								minimal={true}
-								small={true}
-								onClick={(e: React.MouseEvent<HTMLElement>) =>
-									onDismiss != null && onDismiss(e)
-								}
-							/>
-						</div>
-						{children}
-					</Callout>
+					<Alert variant={variantForIntent(intent)}>
+						<AlertDescription className="block text-current">
+							<div className="flex justify-between">
+								<h4 className="font-medium">{title}</h4>
+								<Button
+									variant="ghost"
+									size="icon-sm"
+									className="self-start"
+									onClick={(e) => onDismiss?.(e)}
+								>
+									<X />
+								</Button>
+							</div>
+							{children}
+						</AlertDescription>
+					</Alert>
 				</motion.div>
 			)}
 		</AnimatePresence>
