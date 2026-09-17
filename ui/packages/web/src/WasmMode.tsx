@@ -1,5 +1,5 @@
-import { FormGroup, NumericInput } from "@blueprintjs/core";
 import { type ExecutorSupplier, WasmExecutor } from "@gcsim/executors";
+import { Field, FieldTitle, NumberInput } from "@gcsim/primitives";
 import { UI } from "@gcsim/ui";
 import { useLocalStorage } from "@gcsim/utils";
 import { type ReactNode, useRef } from "react";
@@ -48,16 +48,16 @@ const WasmMode = ({ children }: { children: ReactNode }) => {
 			gitCommit={import.meta.env.VITE_GIT_COMMIT_HASH}
 			mode={import.meta.env.MODE}
 		>
-			<FormGroup className="!m-0" label={t("simple.workers")}>
+			<Field>
+				<FieldTitle>{t("simple.workers")}</FieldTitle>
 				{children}
-				<NumericInput
+				<NumberInput
 					value={workers}
-					onValueChange={(v) => updateWorkers(v)}
+					onValueChange={updateWorkers}
 					min={minWorkers}
 					max={maxWorkers}
-					fill={true}
 				/>
-			</FormGroup>
+			</Field>
 		</UI>
 	);
 };

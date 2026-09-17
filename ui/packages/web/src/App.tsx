@@ -1,4 +1,4 @@
-import { Switch } from "@blueprintjs/core";
+import { Label, Switch } from "@gcsim/primitives";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import ServerMode from "./ServerMode";
@@ -16,19 +16,20 @@ const App = () => {
 	}, [serverMode]);
 
 	const children = (
-		<Switch
-			checked={serverMode}
-			onChange={() => setServerMode(!serverMode)}
-			labelElement={
-				<span>
-					{t(
-						serverMode
-							? "simple.server_mode_disable"
-							: "simple.server_mode_enable",
-					)}
-				</span>
-			}
-		/>
+		<div className="flex items-center gap-2">
+			<Switch
+				id="server-mode-switch"
+				checked={serverMode}
+				onCheckedChange={setServerMode}
+			/>
+			<Label htmlFor="server-mode-switch">
+				{t(
+					serverMode
+						? "simple.server_mode_disable"
+						: "simple.server_mode_enable",
+				)}
+			</Label>
+		</div>
 	);
 
 	return (
