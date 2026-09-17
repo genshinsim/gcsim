@@ -3,17 +3,18 @@ import { expect, type Locator, type Page } from "@playwright/test";
 /**
  * Drives the `/web` viewer route: the tab strip and the Results tab content.
  *
- * Locators ride observable contracts (page title, tab accessible names,
- * Blueprint `bp4-card`, inline `<svg>`) since the app ships no data-testids.
+ * Locators ride observable contracts (page title, tab accessible names, the
+ * `data-slot="card"` hook on ported cards, chart `role="img"`) since the app
+ * ships no data-testids.
  */
 export class ViewerPage {
 	readonly page: Page;
 	readonly resultsTab: Locator;
 	readonly configTab: Locator;
 	readonly sampleTab: Locator;
-	/** Blueprint cards on the Results tab. */
+	/** Ported cards on the Results tab (shadcn `data-slot="card"`). */
 	readonly cards: Locator;
-	/** Inline visx charts on the Results tab. */
+	/** Inline visx charts on the Results tab (each svg is `role="img"`). */
 	readonly charts: Locator;
 	/** Ace editor container (`#config_editor`) shown on the Config tab. */
 	readonly configEditor: Locator;
@@ -25,8 +26,8 @@ export class ViewerPage {
 		this.resultsTab = page.getByRole("tab", { name: "Results" });
 		this.configTab = page.getByRole("tab", { name: "Config" });
 		this.sampleTab = page.getByRole("tab", { name: "Sample" });
-		this.cards = page.locator(".bp4-card");
-		this.charts = page.locator(".bp4-card svg");
+		this.cards = page.locator('[data-slot="card"]');
+		this.charts = page.locator('svg[role="img"]');
 		this.configEditor = page.locator("#config_editor");
 		this.generateButton = page.getByRole("button", { name: "Generate" });
 	}

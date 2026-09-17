@@ -44,6 +44,9 @@
 	--color-bp-card-color: #30404d;
 	--color-bp-bg: #293742;
 
+	/* page background */
+	--color-page: #1c2127;
+
 	/* element colours */
 	--color-anemo: #61dbbb;
 	--color-geo: #f8ba4e;
@@ -120,30 +123,3 @@
 	--radius-sm: calc(var(--radius) - 4px);
 }
 
-/*
- * BlueprintJS colours, hardcoded from the core v4 palette so the build no
- * longer imports that package. https://blueprintjs.com/docs/#core/colors
- * `static` forces every token to emit even when unused, so the full scale
- * stays available (and verifiable) in the built CSS.
- */
-@theme static {
-	--color-bp4-black: #111418;
-
-	--color-bp4-dark-gray-100: #1c2127;
-	--color-bp4-dark-gray-200: #252a31;
-	--color-bp4-dark-gray-300: #2f343c;
-	--color-bp4-dark-gray-400: #383e47;
-	--color-bp4-dark-gray-500: #404854;
-
-	--color-bp4-gray-100: #5f6b7c;
-	--color-bp4-gray-200: #738091;
-	--color-bp4-gray-300: #8f99a8;
-	--color-bp4-gray-400: #abb3bf;
-	--color-bp4-gray-500: #c5cbd3;
-
-	--color-bp4-light-gray-100: #d3d8de;
-	--color-bp4-light-gray-200: #dce0e5;
-	--color-bp4-light-gray-300: #e5e8eb;
-	--color-bp4-light-gray-400: #edeff2;
-	--color-bp4-light-gray-500: #f6f7f9;
-}

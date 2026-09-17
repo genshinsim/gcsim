@@ -128,8 +128,11 @@ export default ({
 		),
 	};
 
+	// bp4-dark scopes Blueprint's dark theme to the Viewer, the last subtree still
+	// rendering Blueprint components (Util cards/tooltips, #2979); drop it with
+	// those and the Blueprint CSS imports.
 	return (
-		<div className="flex flex-col flex-grow w-full pb-6">
+		<div className="bp4-dark flex flex-col flex-grow w-full pb-6">
 			<div className="flex flex-col px-2 pt-4 empty:pt-0 2xl:mx-auto items-center justify-center">
 				<RiskWarning />
 			</div>

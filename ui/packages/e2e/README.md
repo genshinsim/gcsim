@@ -94,7 +94,7 @@ with `pnpm --filter @gcsim/e2e exec playwright show-trace <trace.zip>`.
 ## What the harness helpers do
 
 None of the apps ship **data-testids**, so every locator rides an observable
-contract (a DOM id, a Blueprint/theme class, or an accessible name).
+contract (a DOM id, an ARIA role, or an accessible name).
 
 ### `AppHarness` (`src/app-harness.ts`) — web app
 
@@ -120,10 +120,9 @@ console monitor.
 ### `SimulatorPage` (`src/pages/simulator-page.ts`) — the `/simulator` route
 
 - `goto()` — navigate and wait for React to mount into `#root`.
-- `waitForReady()` — wait for the **Run** button (Blueprint, accessible name
-  "Run") to leave its loading state (`bp4-loading` spinner). That transition is
-  wasm + workers becoming ready (console: `aggregator loaded okay`,
-  `loading N workers`).
+- `waitForReady()` — wait for the **Run** button (accessible name "Run") to drop
+  its loading spinner (`role="status"`). That transition is wasm + workers
+  becoming ready (console: `aggregator loaded okay`, `loading N workers`).
 - `setConfig(cfg)` — replace the Ace editor (`#config_editor`) contents by
   dispatching a native **paste** on its proxy textarea. Typing key-by-key would
   trip Ace's auto-indent/bracket-matching and corrupt the config.
@@ -131,16 +130,16 @@ console monitor.
   Config" callout (console: `all is good`).
 - `run()` — click Run and wait for the app to navigate to `/web`.
 - `openImportDialog("GO" | "Enka")` — open the Toolbox "Tools" popover, click the
-  matching import entry, and return the resulting Blueprint dialog. Wasm need not
-  be ready — the toolbox renders on mount.
+  matching import entry, and return the resulting dialog (`role="dialog"`). Wasm
+  need not be ready — the toolbox renders on mount.
 
 ### `ViewerPage` (`src/pages/viewer-page.ts`) — the `/web` route
 
 - `waitForViewer()` — assert the page title `gcsim - viewer` and the
   **Results / Config / Sample** tab strip.
 - `waitForResults()` — assert the Results tab rendered at least one card
-  (`bp4-card`) and one inline `<svg>` chart. **Structural only** — never asserts
-  DPS or any numeric result.
+  (`data-slot="card"`) and one inline chart (`svg[role="img"]`). **Structural
+  only** — never asserts DPS or any numeric result.
 - `openConfig()` — click the Config tab and assert the config editor
   (`#config_editor`) rendered and is non-empty.
 - `openSample()` — click the Sample tab and assert its "Generate" control

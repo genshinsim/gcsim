@@ -4,18 +4,17 @@ import { expect, type Locator, type Page } from "@playwright/test";
  * Drives the db app's browse route (`/database`): the action bar (search box,
  * filter funnel, result count), the entry cards, and the filter drawer.
  *
- * Locators ride observable contracts — accessible names, visible copy, and
- * Blueprint classes — since the app ships no data-testids.
+ * Locators ride observable contracts — accessible names, visible copy, and ARIA
+ * roles — since the app ships no data-testids.
  */
 export class DbDatabasePage {
 	readonly page: Page;
-	/** The character MultiSelect search box (placeholder "Type to search..."). */
-	readonly searchBox: Locator;
 	/**
-	 * The funnel button that opens the filter drawer. It carries no accessible
-	 * name, so it rides its Blueprint intent class plus its icon: it is the only
-	 * primary button with an `<svg>` (the filter-section headers have none).
+	 * The character MultiSelect trigger, labelled "Type to search...". Clicking
+	 * it opens the cmdk popover holding the actual search input.
 	 */
+	readonly searchBox: Locator;
+	/** The funnel button that opens the filter drawer (aria-label "Filter"). */
 	readonly filterButton: Locator;
 	/** "Copy Config" button in each entry card's footer — one per entry. */
 	readonly copyConfigButtons: Locator;
@@ -30,8 +29,11 @@ export class DbDatabasePage {
 
 	constructor(page: Page) {
 		this.page = page;
-		this.searchBox = page.getByPlaceholder("Type to search...");
-		this.filterButton = page.locator("button.bp4-intent-primary:has(svg)");
+		this.searchBox = page.getByRole("button", { name: "Type to search..." });
+		this.filterButton = page.getByRole("button", {
+			name: "Filter",
+			exact: true,
+		});
 		this.copyConfigButtons = page.getByRole("button", { name: "Copy Config" });
 		this.openInViewerLinks = page.locator("a", {
 			has: page.getByRole("button", { name: "Open in Viewer" }),
@@ -79,16 +81,13 @@ export class DbDatabasePage {
 	}
 
 	/**
-	 * Filter to a single character via the search box: type its name, then pick
-	 * it from the suggestion menu. Dispatches an include filter, which refetches
-	 * `/api/db` with the narrowed query.
+	 * Filter to a single character: open the search popover, type the name into
+	 * its cmdk input, then pick the matching option. Dispatches an include
+	 * filter, which refetches `/api/db` with the narrowed query.
 	 */
 	async filterByCharacter(name: string): Promise<void> {
 		await this.searchBox.click();
-		await this.searchBox.pressSequentially(name);
-		await this.page
-			.locator(".bp4-menu-item", { hasText: name })
-			.first()
-			.click();
+		await this.page.getByPlaceholder("Type to search...").fill(name);
+		await this.page.getByRole("option", { name }).first().click();
 	}
 }

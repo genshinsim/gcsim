@@ -5,11 +5,11 @@ import { expect, type Locator, type Page } from "@playwright/test";
  *
  * This encodes the app's implicit boot protocol once. The app ships no
  * data-testids, so every locator here rides an observable contract (a DOM id,
- * a Blueprint class, or the button's accessible name) documented in the README.
+ * an ARIA role, or the button's accessible name) documented in the README.
  */
 export class SimulatorPage {
 	readonly page: Page;
-	/** Blueprint button, accessible name "Run". */
+	/** The Run button, accessible name "Run". */
 	readonly runButton: Locator;
 	/** Ace editor container (`#config_editor`) holding the config text. */
 	readonly editor: Locator;
@@ -31,15 +31,15 @@ export class SimulatorPage {
 	}
 
 	/**
-	 * Wait for wasm + workers to finish loading. While loading, the Blueprint
-	 * Run button carries `bp4-loading` (a spinner); readiness is that class
-	 * leaving. Console emits "aggregator loaded okay" / "loading N workers"
-	 * during this window.
+	 * Wait for wasm + workers to finish loading. While loading, the Run button
+	 * shows a spinner (`role="status"`, "Loading") in place of the play icon;
+	 * readiness is that spinner leaving. Console emits "aggregator loaded okay" /
+	 * "loading N workers" during this window.
 	 */
 	async waitForReady(): Promise<void> {
-		await expect(this.runButton).not.toHaveClass(/bp4-loading/, {
-			timeout: 60_000,
-		});
+		await expect(
+			this.runButton.getByRole("status", { name: "Loading" }),
+		).toHaveCount(0, { timeout: 60_000 });
 	}
 
 	/**
@@ -87,16 +87,16 @@ export class SimulatorPage {
 
 	/**
 	 * Open the Toolbox "Tools" popover and click one of its import entries,
-	 * returning the resulting Blueprint dialog. The menu items are named
-	 * "Import from GO" / "Import from Enka" (the dialogs themselves carry longer
-	 * titles). Wasm need not be ready — the toolbox renders on mount.
+	 * returning the resulting dialog. The menu items are named "Import from GO" /
+	 * "Import from Enka" (the dialogs themselves carry longer titles). Wasm need
+	 * not be ready — the toolbox renders on mount.
 	 */
 	async openImportDialog(source: "GO" | "Enka"): Promise<Locator> {
 		await this.toolsButton.click();
 		await this.page
 			.getByRole("menuitem", { name: `Import from ${source}` })
 			.click();
-		const dialog = this.page.locator(".bp4-dialog");
+		const dialog = this.page.getByRole("dialog");
 		await expect(dialog).toBeVisible();
 		return dialog;
 	}
