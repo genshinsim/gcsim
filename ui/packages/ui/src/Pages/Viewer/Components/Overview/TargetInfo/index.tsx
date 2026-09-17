@@ -1,10 +1,9 @@
-import { PositionGraph } from "@gcsim/components";
+import { CardTitle, NoData, PositionGraph } from "@gcsim/components";
 import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { CardTitle, NoData } from "../../Util";
 import { EnemyCard } from "./EnemyCard";
 
 type Props = {
@@ -16,7 +15,7 @@ const TargetInfo = (props: Props) => {
 	const { t } = useTranslation();
 	return (
 		<Card className="flex flex-col col-span-3 gap-0 p-5">
-			<CardTitle title={t("result.target_info")} tooltip="x" />
+			<CardTitle title={t("result.target_info")} />
 			<CardData {...props} />
 		</Card>
 	);

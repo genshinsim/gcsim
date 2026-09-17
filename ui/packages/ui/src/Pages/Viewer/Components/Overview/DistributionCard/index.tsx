@@ -1,4 +1,4 @@
-import { Colors, HistogramGraph } from "@gcsim/components";
+import { CardTitle, Colors, HistogramGraph } from "@gcsim/components";
 import {
 	Card,
 	Select,
@@ -11,7 +11,6 @@ import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CardTitle } from "../../Util";
 
 type Props = {
 	modelData: model.SimulationResult | null;
@@ -93,10 +92,7 @@ export default ({ modelData }: Props) => {
 				</Select>
 				<div className="flex flex-grow justify-center items-end">
 					{cfg != null && (
-						<CardTitle
-							title={t("result.dist", { d: cfg.label })}
-							tooltip="test"
-						/>
+						<CardTitle title={t("result.dist", { d: cfg.label })} />
 					)}
 				</div>
 			</div>
