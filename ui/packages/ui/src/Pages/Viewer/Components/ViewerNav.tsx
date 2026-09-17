@@ -1,4 +1,4 @@
-import { ButtonGroup, Tab, Tabs } from "@blueprintjs/core";
+import { ButtonGroup, Tabs, TabsList, TabsTrigger } from "@gcsim/primitives";
 import type { SimResults } from "@gcsim/types";
 import classNames from "classnames";
 import { type MouseEvent, useEffect, useState } from "react";
@@ -40,47 +40,55 @@ export default ({
 	}, [existingShareLink, setShareLink, data?.config_file]);
 
 	return (
-		<Tabs selectedTabId={tabId} onChange={(s) => setTabId(s as string)}>
-			<Tab id="results" className="focus:outline-none">
-				{/* biome-ignore lint/a11y/useValidAnchor: intentional nav anchor — href drives URL-hash tab deep-linking (reload/bookmark/share to a tab) and native ctrl/cmd-click open-in-new-tab; a <button> would lose both */}
-				<a href="#" onClick={ignoreCtrlClick}>
-					{t("viewer.results")}
-				</a>
-			</Tab>
-			<Tab id="config" className="focus:outline-none">
-				{/* biome-ignore lint/a11y/useValidAnchor: intentional nav anchor — href drives URL-hash tab deep-linking (reload/bookmark/share to a tab) and native ctrl/cmd-click open-in-new-tab; a <button> would lose both */}
-				<a href="#tab=config" onClick={ignoreCtrlClick}>
-					{t("viewer.config")}
-				</a>
-			</Tab>
-			<Tab id="sample" className="focus:outline-none">
-				{/* biome-ignore lint/a11y/useValidAnchor: intentional nav anchor — href drives URL-hash tab deep-linking (reload/bookmark/share to a tab) and native ctrl/cmd-click open-in-new-tab; a <button> would lose both */}
-				<a href="#tab=sample" onClick={ignoreCtrlClick}>
-					{t("viewer.sample")}
-				</a>
-			</Tab>
-			<Tabs.Expander />
-			<ButtonGroup>
-				<CopyToClipboard config={data?.config_file} className={btnClass} />
-				<SendToSimulator
-					config={data?.config_file}
-					onSendToSimulator={actions?.onSendToSimulator}
-				/>
-				<Share
-					shareState={shareState}
-					data={data}
-					hash={hash}
-					running={running}
-					className={btnClass}
-					onShare={actions?.onShare}
-				/>
-			</ButtonGroup>
+		<Tabs value={tabId} onValueChange={setTabId}>
+			<div className="flex flex-row items-center justify-between gap-2">
+				<TabsList variant="line">
+					<TabsTrigger value="results" asChild>
+						{/* biome-ignore lint/a11y/useValidAnchor: intentional nav anchor — href drives URL-hash tab deep-linking (reload/bookmark/share to a tab) and native ctrl/cmd-click open-in-new-tab; a <button> would lose both */}
+						<a href="#" onMouseDown={keepModifierClickInNewTab}>
+							{t("viewer.results")}
+						</a>
+					</TabsTrigger>
+					<TabsTrigger value="config" asChild>
+						{/* biome-ignore lint/a11y/useValidAnchor: intentional nav anchor — href drives URL-hash tab deep-linking (reload/bookmark/share to a tab) and native ctrl/cmd-click open-in-new-tab; a <button> would lose both */}
+						<a href="#tab=config" onMouseDown={keepModifierClickInNewTab}>
+							{t("viewer.config")}
+						</a>
+					</TabsTrigger>
+					<TabsTrigger value="sample" asChild>
+						{/* biome-ignore lint/a11y/useValidAnchor: intentional nav anchor — href drives URL-hash tab deep-linking (reload/bookmark/share to a tab) and native ctrl/cmd-click open-in-new-tab; a <button> would lose both */}
+						<a href="#tab=sample" onMouseDown={keepModifierClickInNewTab}>
+							{t("viewer.sample")}
+						</a>
+					</TabsTrigger>
+				</TabsList>
+				<ButtonGroup>
+					<CopyToClipboard config={data?.config_file} className={btnClass} />
+					<SendToSimulator
+						config={data?.config_file}
+						onSendToSimulator={actions?.onSendToSimulator}
+					/>
+					<Share
+						shareState={shareState}
+						data={data}
+						hash={hash}
+						running={running}
+						className={btnClass}
+						onShare={actions?.onShare}
+					/>
+				</ButtonGroup>
+			</div>
 		</Tabs>
 	);
 };
 
-function ignoreCtrlClick(e: MouseEvent) {
-	if (e.ctrlKey) {
-		e.stopPropagation();
+// A ctrl/cmd-click on a tab must open that tab in a new browser tab (the
+// anchor's native behavior) without switching the current tab. Preventing the
+// mousedown default both blocks focus and trips Radix's composeEventHandlers
+// gate so the trigger skips activation, while the click's new-tab navigation
+// still fires.
+function keepModifierClickInNewTab(e: MouseEvent) {
+	if (e.ctrlKey || e.metaKey) {
+		e.preventDefault();
 	}
 }
