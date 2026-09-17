@@ -1,10 +1,17 @@
 import { Card, Colors } from "@blueprintjs/core";
 import {
 	CharacterActionsBarChart,
+	CharacterDPSBarChart,
+	CharacterDPSCard,
+	CumulativeDamageCard,
+	DamageTimelineCard,
+	ElementDPSCard,
 	EndingEnergyBarChart,
 	FieldTimeCard,
+	SourceDPSBarChart,
 	SourceReactionsBarChart,
 	TargetAuraUptimeBarChart,
+	TargetDPSCard,
 	TotalSourceEnergyBarChart,
 } from "@gcsim/components";
 import type { model, SimResults } from "@gcsim/types";
@@ -12,15 +19,6 @@ import classNames from "classnames";
 import { type ReactNode, useEffect, useRef } from "react";
 import { FiLink2 } from "react-icons/fi";
 import { useLocation } from "react-router";
-import {
-	CharacterDPSBarChart,
-	CharacterDPSCard,
-	CumulativeDamageCard,
-	DamageTimelineCard,
-	ElementDPSCard,
-	TargetDPSCard,
-} from "../Components/Damage";
-import { SourceDPSCard } from "../Components/Damage/SourceDPSBarChart";
 import {
 	DistributionCard,
 	RollupCards,
@@ -61,16 +59,16 @@ const SingleGroup = ({ data, modelData, running, names }: Props) => (
 		<TargetInfo enemies={data?.target_details} player={data?.player_position} />
 		<DistributionCard data={data} />
 
-		<DamageTimelineCard data={data} running={running} names={names} />
-		<CumulativeDamageCard data={data} running={running} />
+		<DamageTimelineCard data={modelData} running={running} names={names} />
+		<CumulativeDamageCard data={modelData} running={running} />
 
-		<CharacterDPSCard data={data} running={running} names={names} />
-		<ElementDPSCard data={data} running={running} />
-		<TargetDPSCard data={data} running={running} />
+		<CharacterDPSCard data={modelData} running={running} names={names} />
+		<ElementDPSCard data={modelData} running={running} />
+		<TargetDPSCard data={modelData} running={running} />
 
-		<CharacterDPSBarChart data={data} running={running} names={names} />
+		<CharacterDPSBarChart data={modelData} running={running} names={names} />
 
-		<SourceDPSCard data={data} running={running} names={names} />
+		<SourceDPSBarChart data={modelData} running={running} names={names} />
 
 		<CharacterActionsBarChart
 			data={modelData}
@@ -104,16 +102,16 @@ const Overview = ({ data }: Props) => (
 	</Group>
 );
 
-const Damage = ({ data, running, names }: Props) => (
+const Damage = ({ modelData, running, names }: Props) => (
 	<Group>
 		<Heading text="Damage" target="damage" color={Colors.VERMILION5} />
-		<DamageTimelineCard data={data} running={running} names={names} />
+		<DamageTimelineCard data={modelData} running={running} names={names} />
 
-		<CharacterDPSCard data={data} running={running} names={names} />
-		<ElementDPSCard data={data} running={running} />
-		<TargetDPSCard data={data} running={running} />
+		<CharacterDPSCard data={modelData} running={running} names={names} />
+		<ElementDPSCard data={modelData} running={running} />
+		<TargetDPSCard data={modelData} running={running} />
 
-		<CharacterDPSBarChart data={data} running={running} names={names} />
+		<CharacterDPSBarChart data={modelData} running={running} names={names} />
 
 		{/* <Card className="flex col-span-full h-64 min-h-full">
       Damage breakdown table(s)
