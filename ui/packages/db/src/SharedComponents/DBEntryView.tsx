@@ -1,4 +1,5 @@
 import { dynamicKey } from "@gcsim/localization";
+import { Button } from "@gcsim/primitives";
 import type { db, model } from "@gcsim/types";
 import type { Long } from "protobufjs";
 import { useTranslation } from "react-i18next";
@@ -47,14 +48,11 @@ export default function DBEntryView({ dbEntry }: { dbEntry: db.Entry }) {
 					</div>
 				</div>
 				<div className="flex flex-col justify-center w-full lg:w-fit">
-					<a
-						href={link}
-						target="_blank"
-						className="bp4-button bp4-intent-primary w-full"
-						rel="noreferrer"
-					>
-						<div className="m-0">{t("db.openInViewer")}</div>
-					</a>
+					<Button asChild className="w-full">
+						<a href={link} target="_blank" rel="noreferrer">
+							<div className="m-0">{t("db.openInViewer")}</div>
+						</a>
+					</Button>
 				</div>
 				<div className="basis-full text-xs font-bold w-full flex place-content-start">
 					{dbEntry.submitter === "migrated"
@@ -84,7 +82,7 @@ function DBEntryDetails({
 		date = new Date((create_date as number) * 1000).toLocaleDateString();
 	}
 	return (
-		<table className="bp4-html-table w-full">
+		<table className="w-full">
 			<thead>
 				<tr className="text-xs">
 					<th className="priority-5">

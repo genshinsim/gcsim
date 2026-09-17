@@ -1,7 +1,7 @@
-import { Button, Card } from "@blueprintjs/core";
 import { LatestVersion } from "@gcsim/components";
 import tagData from "@gcsim/data/src/tags.json";
 import { dynamicKey } from "@gcsim/localization";
+import { Button, Card } from "@gcsim/primitives";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
 
@@ -27,17 +27,13 @@ export const Home = () => {
 		});
 	return (
 		<main className="w-full flex flex-col items-center flex-grow gap-4 py-4 px-4">
-			<Button
-				className="bp4-button !p-3 !rounded-md"
-				intent="primary"
-				onClick={() => to("/database")}
-			>
-				<span className="bp4-button-text text-3xl md:text-4xl lg:text-5xl font-semibold">
+			<Button className="h-auto p-3 rounded-md" onClick={() => to("/database")}>
+				<span className="text-3xl md:text-4xl lg:text-5xl font-semibold">
 					{t("db.home.get_started")}
 				</span>
 			</Button>
 			<div className="flex flex-col gap-4 w-full md:w-fit">
-				<Card className="flex flex-col gap-4 items-center">
+				<Card className="flex flex-col gap-4 items-center p-4">
 					<h1 className="text-center text-xl md:text-2xl lg:text-4xl font-bold">
 						{t("db.home.welcome")}
 					</h1>

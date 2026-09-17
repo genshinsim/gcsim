@@ -1,13 +1,12 @@
-import { Spinner } from "@blueprintjs/core";
 import { DBCard } from "@gcsim/components";
-import { Button, Toaster, toast } from "@gcsim/primitives";
+import { Button, Spinner, toast } from "@gcsim/primitives";
 import type { db } from "@gcsim/types";
 
 export function ListView({ data }: { data: db.Entry[] }) {
 	if (!data) {
 		return (
 			<div>
-				<Spinner />
+				<Spinner className="size-8" />
 			</div>
 		);
 	}
@@ -57,7 +56,6 @@ export function ListView({ data }: { data: db.Entry[] }) {
 						/>
 					);
 				})}
-				<Toaster />
 			</div>
 			{/* <div className="flex flex-col gap-2">
         {data.map((entry, index) => {
