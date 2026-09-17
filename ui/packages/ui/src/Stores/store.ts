@@ -1,5 +1,6 @@
 import {
 	type Action,
+	combineReducers,
 	configureStore,
 	createListenerMiddleware,
 	type ThunkAction,
@@ -18,13 +19,22 @@ import { viewerSlice } from "./viewerSlice";
 
 const listenerMiddleware = createListenerMiddleware();
 
+const rootReducer = combineReducers({
+	[userDataSlice.name]: userDataSlice.reducer,
+	[userSlice.name]: userSlice.reducer,
+	[viewerSlice.name]: viewerSlice.reducer,
+	[appSlice.name]: appSlice.reducer,
+});
+
+export type RootState = ReturnType<typeof rootReducer>;
+
 const userDataKey = "redux-user-data-v0.0.1";
 const userLocalSettings = "redux-user-local-settings";
 const userAppDataKey = "redux-app-data";
 const userLocalResults = "redux-local-results";
 const userLocalResultsHash = "redux-local-results-hash";
 
-const persistedState = JSON.parse(
+const persistedState: RootState = JSON.parse(
 	JSON.stringify({
 		[userDataSlice.name]: userDataSlice.getInitialState(),
 		[userSlice.name]: userSlice.getInitialState(),
@@ -61,12 +71,7 @@ if (item) {
 }
 
 export const store = configureStore({
-	reducer: {
-		[userDataSlice.name]: userDataSlice.reducer,
-		[userSlice.name]: userSlice.reducer,
-		[viewerSlice.name]: viewerSlice.reducer,
-		[appSlice.name]: appSlice.reducer,
-	},
+	reducer: rootReducer,
 	preloadedState: persistedState,
 	middleware: (getDefaultMiddleware) =>
 		getDefaultMiddleware({
@@ -105,7 +110,6 @@ store.subscribe(() => {
 });
 
 export type AppDispatch = typeof store.dispatch;
-export type RootState = ReturnType<typeof store.getState>;
 
 export type AppThunk<ReturnType = void> = ThunkAction<
 	ReturnType,
