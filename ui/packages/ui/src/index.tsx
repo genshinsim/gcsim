@@ -41,11 +41,9 @@ import {
 	useAppSelector,
 } from "./Stores/store";
 
-// all the css styling we need (except tailwind)
-import "@blueprintjs/core/lib/css/blueprint.css";
-import "@blueprintjs/icons/lib/css/blueprint-icons.css";
-import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
-import "@blueprintjs/select/lib/css/blueprint-select.css";
+// all the css styling we need (except tailwind).
+// Blueprint's stylesheets are imported from the viewer, the only tree that still
+// renders Blueprint components.
 import "@gcsim/components/src/index.css";
 import "./index.css";
 
