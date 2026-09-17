@@ -8,10 +8,6 @@
 		"typecheck": "tsc --noEmit"
 	},
 	"dependencies": {
-		"@blueprintjs/core": "^4.11.4",
-		"@blueprintjs/icons": "^4.16.0",
-		"@blueprintjs/popover2": "^1.7.4",
-		"@blueprintjs/select": "4.8.4",
 		"@gcsim/components": "workspace:^",
 		"@gcsim/data": "workspace:^",
 		"@gcsim/executors": "workspace:^",

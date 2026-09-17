@@ -218,18 +218,6 @@ importers:
 
   packages/db:
     dependencies:
-      '@blueprintjs/core':
-        specifier: ^4.11.4
-        version: 4.20.2(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@blueprintjs/icons':
-        specifier: ^4.16.0
-        version: 4.16.0
-      '@blueprintjs/popover2':
-        specifier: ^1.7.4
-        version: 1.14.11(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@blueprintjs/select':
-        specifier: 4.8.4
-        version: 4.8.4(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@gcsim/components':
         specifier: workspace:^
         version: link:../components
