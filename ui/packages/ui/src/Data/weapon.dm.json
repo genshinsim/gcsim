@@ -378,6 +378,13 @@
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Widsith_Awaken"
     },
+    "emberwell": {
+      "id": 11436,
+      "key": "emberwell",
+      "rarity": 4,
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "image_name": "UI_EquipIcon_Sword_GlintstoneSword_Awaken"
+    },
     "emeraldorb": {
       "id": 14304,
       "key": "emeraldorb",
