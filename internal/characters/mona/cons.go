@@ -148,7 +148,7 @@ func (c *char) c2HexereiCB(a info.AttackCB) {
 
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("mona-hexerei-c2-em", 60*8),
+			Base:         modifier.NewBaseWithHitlag("mona-hexerei-c2-em", 12*60),
 			AffectedStat: attributes.EM,
 			Amount: func() []float64 {
 				return m
