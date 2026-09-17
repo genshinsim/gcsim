@@ -1,11 +1,11 @@
 import { Button, ButtonGroup, Card, Input, Label } from "@gcsim/primitives";
 import type { Sample } from "@gcsim/types";
+import { useVirtualizer } from "@tanstack/react-virtual";
 import { saveAs } from "file-saver";
 import { ArrowDown, Download, RotateCcw, Settings } from "lucide-react";
 import Pako from "pako";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useVirtual } from "react-virtual";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Options } from "./Options";
 import type { SampleItem, SampleRow } from "./parse";
@@ -158,7 +158,12 @@ function SamplerUI({
 	setSettings,
 }: SamplerProps) {
 	const { t } = useTranslation();
-	const parentRef = React.useRef<HTMLDivElement>(null);
+	// State-backed ref (not useRef) so the virtualizer re-measures once AutoSizer
+	// mounts the scroll element — AutoSizer defers rendering its child until it has
+	// a non-zero size, so a plain ref is still null on the virtualizer's first pass.
+	const [scrollParent, setScrollParent] = React.useState<HTMLDivElement | null>(
+		null,
+	);
 	const searchRef = React.useRef<HTMLInputElement>(null);
 	const [hl, sethl] = React.useState<buffSetting>({
 		start: 0,
@@ -176,10 +181,11 @@ function SamplerUI({
 		sethl(next);
 	};
 
-	const rowVirtualizer = useVirtual({
-		size: data.length,
-		parentRef,
-		keyExtractor: React.useCallback(
+	const rowVirtualizer = useVirtualizer({
+		count: data.length,
+		getScrollElement: () => scrollParent,
+		estimateSize: () => 30,
+		getItemKey: React.useCallback(
 			(index: number) => {
 				return data[index].f;
 			},
@@ -266,7 +272,7 @@ function SamplerUI({
 					<AutoSizer disableWidth={true}>
 						{({ height }) => (
 							<div
-								ref={parentRef}
+								ref={setScrollParent}
 								style={{
 									minHeight: "100px",
 									height: height,
@@ -295,22 +301,16 @@ function SamplerUI({
 								<div
 									className="ListInner"
 									style={{
-										// Set the scrolling inner div of the parent to be the
-										// height of all items combined. This makes the scroll bar work.
-										height: `${rowVirtualizer.totalSize}px`,
+										height: `${rowVirtualizer.getTotalSize()}px`,
 										width: "100%",
 										position: "relative",
 									}}
 								>
-									{
-										// The meat and potatoes, an array of the virtual items
-										// we currently want to render and their index in the original data.
-									}
-									{rowVirtualizer.virtualItems.map((virtualRow) => (
+									{rowVirtualizer.getVirtualItems().map((virtualRow) => (
 										<div
 											key={virtualRow.index}
-											// ref={virtualRow.measureRef}
-											ref={(el) => virtualRow.measureRef(el)}
+											ref={rowVirtualizer.measureElement}
+											data-index={virtualRow.index}
 											style={{
 												position: "absolute",
 												top: 0,
