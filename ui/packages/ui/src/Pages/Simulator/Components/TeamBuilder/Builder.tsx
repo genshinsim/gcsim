@@ -1,7 +1,7 @@
-import { Icon } from "@blueprintjs/core";
 import type { Character } from "@gcsim/types";
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { LuPlus } from "react-icons/lu";
 import { CharacterCard } from "../../../../Components/Cards";
 import { ConsolidateCharStats } from "../character";
 
@@ -55,7 +55,7 @@ export const Builder = (props: Props) => {
 				className="bg-gray-600 shadow rounded-md hover:bg-gray-500 flex items-center justify-center min-h-[226px] h-full w-full"
 				onClick={props.handleAdd}
 			>
-				<Icon icon="plus" size={30} color="white" />
+				<LuPlus size={30} color="white" />
 			</button>
 		</div>
 	);

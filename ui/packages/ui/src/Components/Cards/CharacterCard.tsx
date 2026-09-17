@@ -1,9 +1,20 @@
-import { Button } from "@blueprintjs/core";
-import { Tooltip2 } from "@blueprintjs/popover2";
 import { dynamicKey } from "@gcsim/localization";
+import {
+	Button,
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@gcsim/primitives";
 import type { Character } from "@gcsim/types";
-import classNames from "classnames";
 import { Trans, useTranslation } from "react-i18next";
+import {
+	LuChevronDown,
+	LuChevronUp,
+	LuSearch,
+	LuX,
+	LuZoomIn,
+} from "react-icons/lu";
 import type { CharStatBlock } from "../../Pages/Simulator/Components/character";
 import {
 	IconAnemo,
@@ -122,15 +133,20 @@ export function CharacterCard({
 	for (const key in char.sets) {
 		arts.push(
 			<div className="w-8 flex flex-col rounded-md" key={key}>
-				<Tooltip2 content={key}>
-					<img
-						key="key"
-						src={`/api/assets/artifacts/${key}_flower.png`}
-						alt={key}
-						className="w-full h-8"
-						onError={(e) => ((e.target as HTMLImageElement).src = placeholder)}
-					/>
-				</Tooltip2>
+				<Tooltip>
+					<TooltipTrigger asChild>
+						<img
+							key="key"
+							src={`/api/assets/artifacts/${key}_flower.png`}
+							alt={key}
+							className="w-full h-8"
+							onError={(e) =>
+								((e.target as HTMLImageElement).src = placeholder)
+							}
+						/>
+					</TooltipTrigger>
+					<TooltipContent>{key}</TooltipContent>
+				</Tooltip>
 
 				<span className="text-center text-xs">{char.sets[key]}</span>
 			</div>,
@@ -206,11 +222,13 @@ export function CharacterCard({
 		);
 	}
 
-	const skeleton = classNames({ ["bp4-skeleton"]: isSkeleton });
+	const skeleton = isSkeleton
+		? "animate-pulse rounded bg-muted text-transparent"
+		: "";
 
 	return (
 		<div className={className}>
-			<div className="min-h-24 bg-bp4-dark-gray-400 shadow text-sm flex flex-col justify-center gap-2 border border-gray-600">
+			<div className="min-h-24 bg-card text-card-foreground shadow text-sm flex flex-col justify-center gap-2 border border-border">
 				<div
 					className={
 						"character-parent flex flex-row pt-4 pl-4 pr-2 " +
@@ -220,25 +238,30 @@ export function CharacterCard({
 					<div className="flex flex-row gap-1 absolute top-1 right-1">
 						<div className="flex flex-col gap-1">
 							<Button
-								icon={showDetails ? "caret-up" : "caret-down"}
-								small
+								variant="secondary"
+								size="icon-xs"
 								onClick={handleToggleDetail}
-							/>
+							>
+								{showDetails ? <LuChevronUp /> : <LuChevronDown />}
+							</Button>
 							{showDetails && viewerMode ? (
 								<Button
-									icon={showSnapshot ? "glass" : "zoom-in"}
-									small
+									variant="secondary"
+									size="icon-xs"
 									onClick={handleToggleSnapshot}
-								/>
+								>
+									{showSnapshot ? <LuSearch /> : <LuZoomIn />}
+								</Button>
 							) : null}
 						</div>
 						{viewerMode ? null : (
 							<Button
-								icon="cross"
-								intent="danger"
-								small
+								variant="destructive"
+								size="icon-xs"
 								onClick={handleDelete}
-							/>
+							>
+								<LuX />
+							</Button>
 						)}
 					</div>
 					<div className="character-header"></div>
@@ -261,7 +284,9 @@ export function CharacterCard({
 								<Trans>character.talents</Trans> {char.talents.attack}/
 								{char.talents.skill}/{char.talents.burst}
 							</div>
-							<div className="mt-1 mr-2 grid grid-cols-5">{arts}</div>
+							<TooltipProvider>
+								<div className="mt-1 mr-2 grid grid-cols-5">{arts}</div>
+							</TooltipProvider>
 						</div>
 					</div>
 					<div className="w-1/2 h-32">
