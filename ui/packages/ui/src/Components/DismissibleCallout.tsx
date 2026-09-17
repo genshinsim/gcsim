@@ -1,6 +1,6 @@
 import { Alert, AlertDescription, Button } from "@gcsim/primitives";
-import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 
 type AlertVariant = "default" | "destructive" | "warning" | "success";
 
