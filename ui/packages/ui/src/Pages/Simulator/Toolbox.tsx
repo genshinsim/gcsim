@@ -1,15 +1,26 @@
+import type { Executor, ExecutorSupplier } from "@gcsim/executors";
 import {
 	Button,
 	ButtonGroup,
-	Classes,
-	Menu,
-	MenuDivider,
-	MenuItem,
-} from "@blueprintjs/core";
-import { Popover2 } from "@blueprintjs/popover2";
-import type { Executor, ExecutorSupplier } from "@gcsim/executors";
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuSeparator,
+	DropdownMenuTrigger,
+	Spinner,
+} from "@gcsim/primitives";
 import type { SimResults } from "@gcsim/types";
 import { throttle } from "lodash-es";
+import {
+	Download,
+	HelpCircle,
+	Play,
+	Scissors,
+	Search,
+	Upload,
+	Users,
+	Wrench,
+} from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory } from "react-router";
@@ -100,80 +111,66 @@ export const Toolbox = ({ exec, cfg, isReady, isValid }: Props) => {
 		);
 	};
 
-	const ToolMenu = (
-		<Menu>
-			<MenuItem
-				icon="help"
-				text={
-					settings.showTips
-						? t("simple.tools_hide_tooltips")
-						: t("simple.tools_show_tooltips")
-				}
-				onClick={toggleTips}
-			/>
-			<MenuItem
-				icon="people"
-				text={
-					settings.showBuilder
-						? t("simple.tools_hide_builder")
-						: t("simple.tools_show_builder")
-				}
-				onClick={toggleBuilder}
-			/>
-			<MenuItem
-				icon="search"
-				text={
-					settings.showNameSearch
-						? t("simple.tools_hide_name_search")
-						: t("simple.tools_show_name_search")
-				}
-				onClick={toggleNameSearch}
-			/>
-			<MenuDivider />
-			<MenuItem
-				text={t("simple.tools_sample_upload")}
-				icon="helper-management"
-				onClick={() => history.push("/sample/upload")}
-			/>
-			<MenuItem icon="cut" text={t("simple.tools_substat_snippets")} disabled />
-			<MenuDivider />
-
-			<MenuItem
-				text={t("simple.tools_import", { src: "GO" })}
-				icon="import"
-				onClick={() => setOpenGOODImport(true)}
-			/>
-			<MenuItem
-				text={t("simple.tools_import", { src: "Enka" })}
-				icon="import"
-				onClick={() => setOpenImportFromEnka(true)}
-			/>
-		</Menu>
-	);
-
 	return (
 		<div className="p-2 wide:ml-2 wide:mr-2 flex flex-row flex-wrap place-items-center gap-x-1 gap-y-1">
 			<div className="basis-full wide:basis-0 flex-grow p-1 flex flex-row items-center">
 				<ExecutorSettingsButton />
 			</div>
-			<ButtonGroup className="basis-full wide:basis-2/3 p-1 flex flex-row flex-wrap">
-				<Popover2
-					content={ToolMenu}
-					placement="top"
-					className="basis-full md:basis-1/2"
-					popoverClassName={Classes.POPOVER_DISMISS}
-				>
-					<Button icon="wrench" fill text={t("simple.tools")} />
-				</Popover2>
+			<ButtonGroup className="basis-full wide:basis-2/3 p-1 w-full flex-wrap">
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant="secondary" className="basis-full md:basis-1/2">
+							<Wrench />
+							{t("simple.tools")}
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent side="top">
+						<DropdownMenuItem onClick={toggleTips}>
+							<HelpCircle />
+							{settings.showTips
+								? t("simple.tools_hide_tooltips")
+								: t("simple.tools_show_tooltips")}
+						</DropdownMenuItem>
+						<DropdownMenuItem onClick={toggleBuilder}>
+							<Users />
+							{settings.showBuilder
+								? t("simple.tools_hide_builder")
+								: t("simple.tools_show_builder")}
+						</DropdownMenuItem>
+						<DropdownMenuItem onClick={toggleNameSearch}>
+							<Search />
+							{settings.showNameSearch
+								? t("simple.tools_hide_name_search")
+								: t("simple.tools_show_name_search")}
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem onClick={() => history.push("/sample/upload")}>
+							<Upload />
+							{t("simple.tools_sample_upload")}
+						</DropdownMenuItem>
+						<DropdownMenuItem disabled>
+							<Scissors />
+							{t("simple.tools_substat_snippets")}
+						</DropdownMenuItem>
+						<DropdownMenuSeparator />
+						<DropdownMenuItem onClick={() => setOpenGOODImport(true)}>
+							<Download />
+							{t("simple.tools_import", { src: "GO" })}
+						</DropdownMenuItem>
+						<DropdownMenuItem onClick={() => setOpenImportFromEnka(true)}>
+							<Download />
+							{t("simple.tools_import", { src: "Enka" })}
+						</DropdownMenuItem>
+					</DropdownMenuContent>
+				</DropdownMenu>
 				<Button
-					icon="play"
-					intent="primary"
-					className="!basis-full md:!basis-1/2"
+					className="basis-full md:basis-1/2"
 					onClick={run}
-					loading={!isReady}
-					disabled={!isValid}
-					text={t("simple.run")}
-				/>
+					disabled={!isReady || !isValid}
+				>
+					{isReady ? <Play /> : <Spinner />}
+					{t("simple.run")}
+				</Button>
 			</ButtonGroup>
 			<ImportFromGOODDialog
 				isOpen={openImport}

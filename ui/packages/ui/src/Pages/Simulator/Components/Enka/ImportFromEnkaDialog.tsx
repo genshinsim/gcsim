@@ -1,11 +1,15 @@
 import {
+	Alert,
+	AlertDescription,
 	Button,
 	ButtonGroup,
-	Callout,
-	Classes,
 	Dialog,
-} from "@blueprintjs/core";
-import { toast } from "@gcsim/primitives";
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	toast,
+} from "@gcsim/primitives";
 import type { Character } from "@gcsim/types";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
@@ -66,96 +70,105 @@ export function ImportFromEnkaDialog(props: Props) {
 
 	return (
 		<Dialog
-			className="w-screen"
-			isOpen={props.isOpen}
-			onClose={() => {
-				props.onClose();
-				setMessage("");
+			open={props.isOpen}
+			onOpenChange={(open) => {
+				if (!open) {
+					props.onClose();
+					setMessage("");
+				}
 			}}
-			canEscapeKeyClose
-			canOutsideClickClose
-			icon="import"
-			title={t("simple.tools_import", { src: "Enka.Network" })}
-			style={{ width: "85%" }}
 		>
-			<div className={Classes.DIALOG_BODY}>
-				<p className="!pb-2">
-					<Trans i18nKey="simple.tools_import_pre_enka">
-						{/* biome-ignore lint/a11y/useAnchorContent: text injected at runtime by <Trans> */}
-						<a href="https://enka.network/" target="_blank" rel="noreferrer" />
-					</Trans>
-				</p>
-				<Callout intent="warning">
-					{t("simple.tools_import_warning", { src: "GOOD/Enka" })}
-				</Callout>
-				<input
-					value={uid}
-					onChange={(e) => {
-						setUid(e.target.value.trim());
-					}}
-					className="w-full p-2 bg-gray-600 rounded-md mt-2"
-					placeholder={t("simple.tools_paste_uid")}
-				/>
+			<DialogContent className="sm:max-w-[85%]">
+				<DialogHeader>
+					<DialogTitle>
+						{t("simple.tools_import", { src: "Enka.Network" })}
+					</DialogTitle>
+				</DialogHeader>
+				<div>
+					<p className="!pb-2">
+						<Trans i18nKey="simple.tools_import_pre_enka">
+							{/* biome-ignore lint/a11y/useAnchorContent: text injected at runtime by <Trans> */}
+							<a
+								href="https://enka.network/"
+								target="_blank"
+								rel="noreferrer"
+							/>
+						</Trans>
+					</p>
+					<Alert variant="warning">
+						<AlertDescription>
+							{t("simple.tools_import_warning", { src: "GOOD/Enka" })}
+						</AlertDescription>
+					</Alert>
+					<input
+						value={uid}
+						onChange={(e) => {
+							setUid(e.target.value.trim());
+						}}
+						className="w-full p-2 bg-gray-600 rounded-md mt-2"
+						placeholder={t("simple.tools_paste_uid")}
+					/>
 
-				{message === "success" ? (
-					<>
-						<Callout intent="success" className="mt-2 p-2">
-							{characters.length > 0 ? (
-								<Trans i18nKey="simple.tools_import_post_enka">
-									<CustDiv i18nIsDynamicList>
-										{characters.map((e, i) => {
+					{message === "success" ? (
+						<>
+							<Alert variant="success" className="mt-2">
+								<AlertDescription>
+									{characters.length > 0 ? (
+										<Trans i18nKey="simple.tools_import_post_enka">
+											<CustDiv i18nIsDynamicList>
+												{characters.map((e, i) => {
+													return (
+														<div
+															// biome-ignore lint/suspicious/noArrayIndexKey: character names may duplicate so index completes the composite; list is set wholesale after import, never reordered
+															key={e.name + "-" + i}
+															className="ml-2"
+														>
+															{e.name}{" "}
+															{e.enka_build_name
+																? "(" + e.enka_build_name + ")"
+																: ""}
+														</div>
+													);
+												})}
+											</CustDiv>
+										</Trans>
+									) : null}
+								</AlertDescription>
+							</Alert>
+							{errors.length > 0 ? (
+								<Alert variant="warning" className="mt-2">
+									<AlertDescription>
+										Encountered the following issue(s) importing data:
+										{errors.map((e, i) => {
 											return (
-												<div
-													// biome-ignore lint/suspicious/noArrayIndexKey: character names may duplicate so index completes the composite; list is set wholesale after import, never reordered
-													key={e.name + "-" + i}
-													className="ml-2"
-												>
-													{e.name}{" "}
-													{e.enka_build_name
-														? "(" + e.enka_build_name + ")"
-														: ""}
+												// biome-ignore lint/suspicious/noArrayIndexKey: string[] error messages, may duplicate, append-only
+												<div key={i} className="ml-2">
+													{e}
 												</div>
 											);
 										})}
-									</CustDiv>
-								</Trans>
+									</AlertDescription>
+								</Alert>
 							) : null}
-						</Callout>
-						{errors.length > 0 ? (
-							<Callout intent="warning" className="mt-2 p-2">
-								Encountered the following issue(s) importing data:
-								{errors.map((e, i) => {
-									return (
-										// biome-ignore lint/suspicious/noArrayIndexKey: string[] error messages, may duplicate, append-only
-										<div key={i} className="ml-2">
-											{e}
-										</div>
-									);
-								})}
-							</Callout>
-						) : null}
-					</>
-				) : (
-					<div>
-						{message && (
-							<Callout intent="warning" className="mt-2 p-2">
-								{message}
-							</Callout>
-						)}
-					</div>
-				)}
+						</>
+					) : (
+						<div>
+							{message && (
+								<Alert variant="warning" className="mt-2">
+									<AlertDescription>{message}</AlertDescription>
+								</Alert>
+							)}
+						</div>
+					)}
 
-				<p className="font-bold !pt-2">{t("simple.tools_import_after")}</p>
-			</div>
-			<div className={Classes.DIALOG_FOOTER}>
-				<div className={Classes.DIALOG_FOOTER_ACTIONS}>
-					<ButtonGroup>
-						<Button onClick={handleClick} intent="primary">
-							{t("simple.import")}
-						</Button>
-					</ButtonGroup>
+					<p className="font-bold !pt-2">{t("simple.tools_import_after")}</p>
 				</div>
-			</div>
+				<DialogFooter>
+					<ButtonGroup>
+						<Button onClick={handleClick}>{t("simple.import")}</Button>
+					</ButtonGroup>
+				</DialogFooter>
+			</DialogContent>
 		</Dialog>
 	);
 }
