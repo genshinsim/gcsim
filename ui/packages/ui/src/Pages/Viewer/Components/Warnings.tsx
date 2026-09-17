@@ -1,4 +1,3 @@
-import { Intent } from "@blueprintjs/core";
 import { dynamicKey } from "@gcsim/localization";
 import type { FailedActions, FloatStat, SimResults } from "@gcsim/types";
 import { useState } from "react";
@@ -39,7 +38,7 @@ const IncompleteCharWarning = ({ data }: WarningProps) => {
 	return (
 		<DismissibleCallout
 			title={t("warnings.incomplete_char_title")}
-			intent={Intent.WARNING}
+			intent="warning"
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
@@ -77,7 +76,7 @@ const PositionOverlapWarning = ({ data }: WarningProps) => {
 	return (
 		<DismissibleCallout
 			title={t("warnings.position_overlap_title")}
-			intent={Intent.WARNING}
+			intent="warning"
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
@@ -95,7 +94,7 @@ const EnergyWarning = ({ data }: WarningProps) => {
 	return (
 		<DismissibleCallout
 			title={t("warnings.energy_title")}
-			intent={Intent.WARNING}
+			intent="warning"
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
@@ -117,7 +116,7 @@ const BurstWarningCD = ({ data }: WarningProps) => {
 	return (
 		<DismissibleCallout
 			title={t("warnings.burst_cd_title")}
-			intent={Intent.WARNING}
+			intent="warning"
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
@@ -139,7 +138,7 @@ const SkillWarning = ({ data }: WarningProps) => {
 	return (
 		<DismissibleCallout
 			title={t("warnings.skill_title")}
-			intent={Intent.WARNING}
+			intent="warning"
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
@@ -162,7 +161,7 @@ const StaminaWarning = ({ data }: WarningProps) => {
 	return (
 		<DismissibleCallout
 			title={t("warnings.stamina_title")}
-			intent={Intent.WARNING}
+			intent="warning"
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
@@ -184,7 +183,7 @@ const SwapWarning = ({ data }: WarningProps) => {
 	return (
 		<DismissibleCallout
 			title={t("warnings.swap_title")}
-			intent={Intent.WARNING}
+			intent="warning"
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
@@ -206,7 +205,7 @@ const DashWarning = ({ data }: WarningProps) => {
 	return (
 		<DismissibleCallout
 			title={t("warnings.dash_title")}
-			intent={Intent.WARNING}
+			intent="warning"
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
@@ -229,7 +228,7 @@ const IgnoreBurstEnergyMode = ({ data }: WarningProps) => {
 	return (
 		<DismissibleCallout
 			title={t("warnings.ignore_burst_energy_title")}
-			intent={Intent.DANGER}
+			intent="danger"
 			show={visible}
 			onDismiss={() => setShow(false)}
 		>
