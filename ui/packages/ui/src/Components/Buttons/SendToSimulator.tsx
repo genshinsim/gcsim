@@ -1,13 +1,16 @@
 import {
+	Alert,
+	AlertDescription,
 	Button,
-	Callout,
 	Checkbox,
-	Classes,
 	Dialog,
-	Icon,
-	Intent,
-} from "@blueprintjs/core";
-import classNames from "classnames";
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	Label,
+} from "@gcsim/primitives";
+import { Send } from "lucide-react";
 import { memo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -44,44 +47,40 @@ const SendTo = ({ config, onSendToSimulator }: SendToProps) => {
 	return (
 		<>
 			<Button
-				icon={<Icon icon="send-to" className="!mr-0" />}
+				variant="secondary"
 				onClick={() => setOpen(true)}
 				disabled={config == null}
 			>
+				<Send />
 				<div className="hidden ml-[7px] sm:flex">
 					{t("viewer.send_to_simulator")}
 				</div>
 			</Button>
-			<Dialog
-				isOpen={isOpen}
-				onClose={() => setOpen(false)}
-				title={t("viewer.load_this_configuration")}
-				icon="bring-data"
-			>
-				<div className={Classes.DIALOG_BODY}>
-					<Callout intent="warning" className="">
-						{t("viewer.this_will_overwrite")}
-					</Callout>
-					<Checkbox
-						label={t("viewer.copy_list_only")}
-						className="my-3 mx-1"
-						checked={keepTeam}
-						onClick={toggleKeepTeam}
-					/>
-				</div>
-				<div
-					className={classNames(
-						Classes.DIALOG_FOOTER,
-						Classes.DIALOG_FOOTER_ACTIONS,
-					)}
-				>
-					<Button
-						onClick={toSimulator}
-						intent={Intent.PRIMARY}
-						text={t("viewer.continue")}
-					/>
-					<Button onClick={() => setOpen(false)} text={t("viewer.cancel")} />
-				</div>
+			<Dialog open={isOpen} onOpenChange={(open) => !open && setOpen(false)}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>{t("viewer.load_this_configuration")}</DialogTitle>
+					</DialogHeader>
+					<Alert variant="warning">
+						<AlertDescription>
+							{t("viewer.this_will_overwrite")}
+						</AlertDescription>
+					</Alert>
+					<div className="flex items-center gap-2">
+						<Checkbox
+							id="keep-team"
+							checked={keepTeam}
+							onCheckedChange={toggleKeepTeam}
+						/>
+						<Label htmlFor="keep-team">{t("viewer.copy_list_only")}</Label>
+					</div>
+					<DialogFooter>
+						<Button variant="outline" onClick={() => setOpen(false)}>
+							{t("viewer.cancel")}
+						</Button>
+						<Button onClick={toSimulator}>{t("viewer.continue")}</Button>
+					</DialogFooter>
+				</DialogContent>
 			</Dialog>
 		</>
 	);

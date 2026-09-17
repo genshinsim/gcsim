@@ -1,4 +1,5 @@
-import { Button } from "@blueprintjs/core";
+import { Button } from "@gcsim/primitives";
+import { Settings } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { appActions } from "../../Stores/appSlice";
 import { useAppDispatch } from "../../Stores/store";
@@ -10,9 +11,11 @@ export default () => {
 
 	return (
 		<Button
-			icon="cog"
-			text={t("simple.settings")}
+			variant="secondary"
 			onClick={() => dispatch(appActions.setSettingsOpen(true))}
-		/>
+		>
+			<Settings />
+			{t("simple.settings")}
+		</Button>
 	);
 };
