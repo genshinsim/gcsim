@@ -59,7 +59,7 @@ const SingleGroup = ({ data, modelData, running, names }: Props) => (
 		<Metadata modelData={modelData} />
 		<RollupCards data={data} />
 		<TargetInfo enemies={data?.target_details} player={data?.player_position} />
-		<DistributionCard data={data} />
+		<DistributionCard modelData={modelData} />
 
 		<DamageTimelineCard data={data} running={running} names={names} />
 		<CumulativeDamageCard data={data} running={running} />
@@ -100,7 +100,7 @@ const Overview = ({ data, modelData }: Props) => (
 		<Metadata modelData={modelData} />
 		<RollupCards data={data} />
 		<TargetInfo enemies={data?.target_details} player={data?.player_position} />
-		<DistributionCard data={data} />
+		<DistributionCard modelData={modelData} />
 	</Group>
 );
 
