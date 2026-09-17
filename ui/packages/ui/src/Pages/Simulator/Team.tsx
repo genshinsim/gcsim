@@ -17,7 +17,6 @@ type CharSource = "user" | "default";
 
 interface TeamCharacterItem {
 	key: string;
-	charKey: string;
 	source: CharSource;
 	text: string;
 	label: string;
@@ -102,7 +101,6 @@ export function Team() {
 		}
 		items.push({
 			key: k,
-			charKey: k,
 			source: "default",
 			text: t(dynamicKey("game:character_names." + k)),
 			label: "",
@@ -117,7 +115,6 @@ export function Team() {
 		label += e.date_added !== undefined ? ` (Imported on ${e.date_added})` : "";
 		items.push({
 			key: k,
-			charKey: e.name,
 			source: "user",
 			text: t(dynamicKey("game:character_names." + e.name)),
 			label,
