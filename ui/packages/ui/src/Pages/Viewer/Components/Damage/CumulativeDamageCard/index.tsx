@@ -90,7 +90,7 @@ export default ({ data, running }: Props) => {
 		<Card className="flex flex-col col-span-full h-[450px]">
 			<div className="flex flex-col sm:flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
-					<CardTitle title={t("result.cumu_dmg")} tooltip="x" />
+					<CardTitle title={t("result.cumu_dmg")} />
 					<Options
 						graph={graph}
 						setGraph={setGraph}

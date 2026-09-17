@@ -38,7 +38,6 @@ export const HPSRollupCard = ({
 			title={`${t("result.hps_long")} (HPS)`}
 			value={fmt(hps?.mean)}
 			auxStats={auxStats}
-			tooltip="help"
 			hashLink="healing"
 		/>
 	);

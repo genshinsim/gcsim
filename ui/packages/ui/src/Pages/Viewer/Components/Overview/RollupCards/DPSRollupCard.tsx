@@ -38,7 +38,6 @@ export const DPSRollupCard = ({
 			title={`${t("result.dps_long")} (DPS)`}
 			value={fmt(dps?.mean)}
 			auxStats={auxStats}
-			tooltip="help"
 			hashLink="damage"
 		/>
 	);

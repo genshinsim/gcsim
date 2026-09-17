@@ -39,7 +39,6 @@ export const SimDurRollupCard = ({
 			label={t("result.seconds_short")}
 			value={fmt(duration?.mean)}
 			auxStats={auxStats}
-			tooltip="help"
 			hashLink="sim"
 		/>
 	);

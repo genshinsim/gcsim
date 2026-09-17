@@ -64,17 +64,17 @@ function useGraphDataRefresh(data: SimResults | null): Stats | null {
 const GraphTitle = ({ graph }: { graph: string }) => {
 	const { t } = useTranslation();
 	if (graph === "dps") {
-		return <CardTitle title={t("result.dist", { d: "DPS" })} tooltip="test" />;
+		return <CardTitle title={t("result.dist", { d: "DPS" })} />;
 	} else if (graph === "eps") {
-		return <CardTitle title={t("result.dist", { d: "EPS" })} tooltip="test" />;
+		return <CardTitle title={t("result.dist", { d: "EPS" })} />;
 	} else if (graph === "rps") {
-		return <CardTitle title={t("result.dist", { d: "RPS" })} tooltip="test" />;
+		return <CardTitle title={t("result.dist", { d: "RPS" })} />;
 	} else if (graph === "hps") {
-		return <CardTitle title={t("result.dist", { d: "HPS" })} tooltip="test" />;
+		return <CardTitle title={t("result.dist", { d: "HPS" })} />;
 	} else if (graph === "shp") {
-		return <CardTitle title={t("result.dist", { d: "SHP" })} tooltip="test" />;
+		return <CardTitle title={t("result.dist", { d: "SHP" })} />;
 	} else if (graph === "dur") {
-		return <CardTitle title={t("result.dist", { d: "Dur" })} tooltip="test" />;
+		return <CardTitle title={t("result.dist", { d: "Dur" })} />;
 	}
 	return null;
 };

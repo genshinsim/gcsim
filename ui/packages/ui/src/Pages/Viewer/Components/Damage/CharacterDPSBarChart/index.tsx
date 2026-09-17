@@ -60,11 +60,7 @@ export default ({ data, running, names }: Props) => {
 		<Card className="flex flex-col col-span-full min-h-[384px]">
 			<div className="flex flex-col sm:flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
-					<CardTitle
-						title={t("result.character_dps")}
-						tooltip="x"
-						timer={timer}
-					/>
+					<CardTitle title={t("result.character_dps")} timer={timer} />
 					<Options graph={graph} setGraph={setGraph} />
 				</div>
 				<div className="flex flex-grow justify-start sm:justify-center pb-5 sm:pb-0 items-center">

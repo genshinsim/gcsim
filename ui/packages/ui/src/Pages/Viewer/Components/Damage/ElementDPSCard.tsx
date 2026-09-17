@@ -39,7 +39,6 @@ export default ({ data, running }: Props) => {
 		<Card className="flex flex-col col-span-2 h-72 min-h-full gap-0">
 			<CardTitle
 				title={t("result.dist", { d: t("result.element_dps") })}
-				tooltip="x"
 				timer={timer}
 			/>
 			<DPSPie dps={dps} />

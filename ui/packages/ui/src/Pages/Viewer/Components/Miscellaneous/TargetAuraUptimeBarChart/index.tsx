@@ -72,11 +72,7 @@ export const TargetAuraUptimeCard = ({ data, running }: Props) => {
 		<Card className="flex flex-col col-span-3 min-h-[384px]">
 			<div className="flex flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
-					<CardTitle
-						title={t("result.target_aura_uptime")}
-						tooltip="x"
-						timer={timer}
-					/>
+					<CardTitle title={t("result.target_aura_uptime")} timer={timer} />
 					<Options target={target} setTarget={setTarget} targets={targets} />
 				</div>
 			</div>

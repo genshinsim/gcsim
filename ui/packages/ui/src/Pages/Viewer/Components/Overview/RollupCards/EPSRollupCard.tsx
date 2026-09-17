@@ -38,7 +38,6 @@ export const EPSRollupCard = ({
 			title={`${t("result.eps_long")} (EPS)`}
 			value={fmt(eps?.mean)}
 			auxStats={auxStats}
-			tooltip="help"
 			hashLink="energy"
 		/>
 	);

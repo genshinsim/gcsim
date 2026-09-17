@@ -38,7 +38,6 @@ export const SHPRollupCard = ({
 			title={`${t("result.shp_long")} (SHP)`}
 			value={fmt(shp?.mean)}
 			auxStats={auxStats}
-			tooltip="help"
 			hashLink="shields"
 		/>
 	);

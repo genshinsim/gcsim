@@ -38,7 +38,6 @@ export const RPSRollupCard = ({
 			title={`${t("result.rps_long")} (RPS)`}
 			value={fmt(rps?.mean)}
 			auxStats={auxStats}
-			tooltip="help"
 			hashLink="reactions"
 		/>
 	);

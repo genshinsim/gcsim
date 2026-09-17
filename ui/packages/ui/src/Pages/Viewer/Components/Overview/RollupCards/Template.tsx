@@ -16,7 +16,6 @@ type CardProps = {
 	value?: string;
 	label?: string;
 	auxStats?: Array<AuxStat>;
-	tooltip?: string | JSX.Element;
 	hashLink?: string;
 };
 
@@ -26,7 +25,6 @@ const CardTemplate = ({
 	value,
 	label,
 	auxStats,
-	tooltip,
 	hashLink,
 }: CardProps) => {
 	const history = useHistory();
@@ -47,7 +45,7 @@ const CardTemplate = ({
 				onClick={() => interactable && value !== undefined && click()}
 			>
 				<div className="flex flex-col justify-start">
-					<CardTitle title={title} tooltip={tooltip} />
+					<CardTitle title={title} />
 					<CardValue value={value} label={label} />
 					<CardAux aux={auxStats} />
 				</div>

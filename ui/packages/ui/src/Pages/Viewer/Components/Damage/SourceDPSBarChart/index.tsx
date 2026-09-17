@@ -53,7 +53,6 @@ export const SourceDPSCard = ({ data, running, names }: Props) => {
 				<div className="flex flex-col gap-2">
 					<CardTitle
 						title={t("result.source", { s: graphs.get(graph) })}
-						tooltip="x"
 						timer={timer}
 					/>
 					<div className="flex flex-row gap-4">

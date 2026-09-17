@@ -32,7 +32,6 @@ export const TotalSourceEnergyCard = ({ data, running, names }: Props) => {
 						title={t("result.per_source", {
 							s: t("result.total_energy"),
 						})}
-						tooltip="x"
 						timer={timer}
 					/>
 				</div>

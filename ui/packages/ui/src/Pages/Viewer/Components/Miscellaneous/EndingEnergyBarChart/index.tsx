@@ -28,11 +28,7 @@ export const EndingEnergyCard = ({ data, running, names }: Props) => {
 		<Card className="flex flex-col col-span-full h-auto">
 			<div className="flex flex-col sm:flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
-					<CardTitle
-						title={t("result.ending_energy")}
-						tooltip="x"
-						timer={timer}
-					/>
+					<CardTitle title={t("result.ending_energy")} timer={timer} />
 				</div>
 			</div>
 			<ParentSize>

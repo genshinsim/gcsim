@@ -16,7 +16,7 @@ const TargetInfo = (props: Props) => {
 	const { t } = useTranslation();
 	return (
 		<Card className="flex flex-col col-span-3">
-			<CardTitle title={t("result.target_info")} tooltip="x" />
+			<CardTitle title={t("result.target_info")} />
 			<CardData {...props} />
 		</Card>
 	);

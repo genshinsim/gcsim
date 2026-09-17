@@ -46,7 +46,6 @@ export const SourceReactionsCard = ({ data, running, names }: Props) => {
 						title={t("result.per_source", {
 							s: t("result.reactions"),
 						})}
-						tooltip="x"
 						timer={timer}
 					/>
 				</div>

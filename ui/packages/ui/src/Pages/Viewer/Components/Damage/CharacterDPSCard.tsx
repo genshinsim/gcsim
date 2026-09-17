@@ -33,7 +33,6 @@ export default ({ data, running, names }: Props) => {
 				title={t("result.dist", {
 					d: t("result.character_dps"),
 				})}
-				tooltip="x"
 				timer={timer}
 			/>
 			<DPSPie names={names} dps={dps} />
