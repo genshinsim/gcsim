@@ -839,15 +839,15 @@ importers:
 
   packages/web:
     dependencies:
-      '@blueprintjs/core':
-        specifier: ^4.11.4
-        version: 4.20.2(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@gcsim/executors':
         specifier: workspace:^
         version: link:../executors
       '@gcsim/localization':
         specifier: workspace:^
         version: link:../localization
+      '@gcsim/primitives':
+        specifier: workspace:^
+        version: link:../primitives
       '@gcsim/ui':
         specifier: workspace:^
         version: link:../ui
