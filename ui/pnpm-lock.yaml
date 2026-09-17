@@ -62,12 +62,6 @@ importers:
 
   packages/components:
     dependencies:
-      '@blueprintjs/core':
-        specifier: ^4.11.4
-        version: 4.20.2(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      '@blueprintjs/popover2':
-        specifier: ^1.7.4
-        version: 1.14.11(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@cf-wasm/photon':
         specifier: ^0.4.0
         version: 0.4.0

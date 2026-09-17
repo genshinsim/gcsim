@@ -1,6 +1,6 @@
-import { AnchorButton, Card } from "@blueprintjs/core";
 import LatestCharactersData from "@gcsim/data/src/latest_chars.json";
 import { dynamicKey } from "@gcsim/localization";
+import { Button, Card } from "@gcsim/primitives";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -39,7 +39,7 @@ export function LatestVersion() {
 	}, [t]);
 
 	return (
-		<Card className="flex flex-col items-center gap-4 overflow-x-auto">
+		<Card className="flex flex-col items-center gap-4 overflow-x-auto px-6">
 			{isLoaded ? (
 				<>
 					<div className="flex flex-col gap-4">
@@ -72,16 +72,17 @@ export function LatestVersion() {
 					<div className="self-start">
 						<ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
 					</div>
-					<AnchorButton
-						href="https://github.com/genshinsim/gcsim/releases"
-						intent="primary"
-						target="_blank"
-						className="!p-3 !rounded-md"
-					>
-						<span className="text-xl md:text-2xl font-semibold">
-							{t("dash.view_releases")}
-						</span>
-					</AnchorButton>
+					<Button asChild size="lg" className="h-auto p-3">
+						<a
+							href="https://github.com/genshinsim/gcsim/releases"
+							target="_blank"
+							rel="noreferrer"
+						>
+							<span className="text-xl md:text-2xl font-semibold">
+								{t("dash.view_releases")}
+							</span>
+						</a>
+					</Button>
 				</>
 			) : (
 				<>{t("sim.loading")}</>

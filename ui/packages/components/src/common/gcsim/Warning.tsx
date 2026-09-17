@@ -1,8 +1,14 @@
-import { Button } from "@blueprintjs/core";
 import { dynamicKey } from "@gcsim/localization";
+import { Alert, AlertDescription, AlertTitle, Button } from "@gcsim/primitives";
+import { Cross2Icon } from "@radix-ui/react-icons";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
 import tanuki from "../../images/tanuki.png";
+import { cn } from "../../lib/utils";
+
+type WarningVariant = NonNullable<
+	React.ComponentProps<typeof Alert>["variant"]
+>;
 
 interface WarningProps {
 	hideKey: string;
@@ -10,6 +16,7 @@ interface WarningProps {
 	bodyKey: string;
 	bodyComponents?: Record<string, React.ReactElement>;
 	showButton?: boolean;
+	variant?: WarningVariant;
 	className?: string;
 }
 
@@ -19,7 +26,8 @@ export function Warning({
 	bodyKey,
 	bodyComponents,
 	showButton = true,
-	className = "bg-slate-900 border-blue-800",
+	variant = "default",
+	className,
 }: WarningProps) {
 	const { t } = useTranslation();
 	const [hide, setHide] = React.useState<boolean>(() => {
@@ -31,18 +39,12 @@ export function Warning({
 
 	if (hide) {
 		if (!showButton) {
-			return <></>;
+			return null;
 		}
 		return (
 			<div className="flex flex-col py-0 min-[1300px]:w-[1100px]">
 				<div className="ml-auto">
-					<Button
-						small
-						intent="success"
-						onClick={() => {
-							setHide(false);
-						}}
-					>
+					<Button size="sm" variant="outline" onClick={() => setHide(false)}>
 						{t("db.readme_show")}
 					</Button>
 				</div>
@@ -51,34 +53,37 @@ export function Warning({
 	}
 
 	return (
-		<div
-			className={`relative flex flex-col gap-2 items-center px-5 py-0 border min-[1300px]:w-[1100px] ${className}`}
+		<Alert
+			variant={variant}
+			className={cn(
+				"relative flex flex-col items-center gap-2 min-[1300px]:w-[1100px]",
+				className,
+			)}
 		>
-			<div className="absolute top-1 right-1">
-				<Button
-					icon="cross"
-					small
-					intent="danger"
-					onClick={() => {
-						setHide(true);
-					}}
-				/>
-			</div>
-			<div className="inline-flex pt-4">
-				<img src={tanuki} alt="" className="w-15 h-10 mx-0" />
-				<div className="font-semibold px-3 pt-2 text-xl w-50 text-gray-200">
+			<Button
+				size="icon-xs"
+				variant="ghost"
+				className="absolute top-2 right-2"
+				aria-label={t("viewer.close")}
+				onClick={() => setHide(true)}
+			>
+				<Cross2Icon />
+			</Button>
+			<div className="flex items-center justify-center gap-3 py-2">
+				<img src={tanuki} alt="" className="h-10 w-15" />
+				<AlertTitle className="line-clamp-none text-center text-xl font-semibold">
 					{t(dynamicKey(headerKey))}
-				</div>
-				<img src={tanuki} alt="" className="w-15 h-10 mx-0" />
+				</AlertTitle>
+				<img src={tanuki} alt="" className="h-10 w-15" />
 			</div>
-			<div className="space-y-3 pb-3 text-s leading-5 text-gray-400">
+			<AlertDescription className="pb-3 leading-5">
 				<Trans i18nKey={bodyKey as never} components={bodyComponents}>
 					<p />
 					<p>{{ rerun: t("viewer.rerun") } as never}</p>
-					<p className="font-semibold leading-6 text-gray-200" />
+					<p className="font-semibold leading-6" />
 				</Trans>
-			</div>
-		</div>
+			</AlertDescription>
+		</Alert>
 	);
 }
 
@@ -89,7 +94,7 @@ export const RiskWarning = () => (
 		bodyKey="warnings.gcsim_risk_body"
 		bodyComponents={{
 			b: <b />,
-			p: <p className="text-gray-200" />,
+			p: <p />,
 			discordlink: (
 				// biome-ignore lint/a11y/useAnchorContent: text injected at runtime by <Trans>
 				<a
@@ -115,7 +120,7 @@ export const RiskWarning = () => (
 				/>
 			),
 		}}
-		className="bg-red-950 border-red-800"
+		variant="destructive"
 		showButton={false}
 	/>
 );
