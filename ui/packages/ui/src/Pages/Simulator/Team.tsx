@@ -1,12 +1,9 @@
+import { OmniSelect } from "@gcsim/components";
 import { dynamicKey } from "@gcsim/localization";
+import { CommandItem } from "@gcsim/primitives";
 import type { Character } from "@gcsim/types";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import {
-	GenerateDefaultCharacters,
-	type Item,
-	OmniSelect,
-} from "../../Components/Select";
 import { CharMap } from "../../Data";
 import { appActions } from "../../Stores/appSlice";
 import {
@@ -16,8 +13,28 @@ import {
 } from "../../Stores/store";
 import { Builder } from "./Components/TeamBuilder/Builder";
 
+type CharSource = "user" | "default";
+
+interface TeamCharacterItem {
+	key: string;
+	source: CharSource;
+	text: string;
+	label: string;
+}
+
+const itemKey = (item: TeamCharacterItem) => `${item.source}-${item.key}`;
+
+const itemPredicate = (item: TeamCharacterItem, query: string) => {
+	const normalized = query.trim().toLowerCase();
+	if (normalized.length === 0) {
+		return true;
+	}
+	return `${item.label} ${item.key} ${item.text}`
+		.toLowerCase()
+		.includes(normalized);
+};
+
 function newCharFromKey(k: string): Character {
-	console.log(k);
 	return {
 		name: k,
 		level: 80,
@@ -61,34 +78,46 @@ export function Team() {
 		};
 	};
 
-	const handleAdd = (item: Item) => {
+	const handleAdd = (item: TeamCharacterItem) => {
 		setOpen(false);
-		if (item.char_source === "user") {
+		if (item.source === "user") {
 			const character: Character = JSON.parse(
 				JSON.stringify(imported[item.key]),
 			);
 			dispatch(appActions.addCharacter({ character }));
 		} else {
-			const character = newCharFromKey(item.key);
-			dispatch(appActions.addCharacter({ character }));
+			dispatch(
+				appActions.addCharacter({ character: newCharFromKey(item.key) }),
+			);
 		}
 	};
 
-	// filter based on char_key,which is c.name from Character
-	const disabled: string[] = team.map((c) => c.name);
+	const onTeam = new Set(team.map((c) => c.name));
 
-	const items: Item[] = GenerateDefaultCharacters();
-
+	const items: TeamCharacterItem[] = [];
+	Object.keys(CharMap).forEach((k) => {
+		if (onTeam.has(k)) {
+			return;
+		}
+		items.push({
+			key: k,
+			source: "default",
+			text: t(dynamicKey("game:character_names." + k)),
+			label: "",
+		});
+	});
 	Object.keys(imported).forEach((k) => {
 		const e = imported[k];
+		if (onTeam.has(e.name)) {
+			return;
+		}
 		let label = e.enka_build_name !== undefined ? ` ${e.enka_build_name}` : "";
 		label += e.date_added !== undefined ? ` (Imported on ${e.date_added})` : "";
 		items.push({
 			key: k,
-			char_key: e.name,
-			char_source: "user",
+			source: "user",
 			text: t(dynamicKey("game:character_names." + e.name)),
-			label: label,
+			label,
 		});
 	});
 
@@ -100,12 +129,25 @@ export function Team() {
 				handleRemove={handleRemove}
 			/>
 
-			<OmniSelect
+			<OmniSelect<TeamCharacterItem>
 				isOpen={open}
-				items={items}
 				onClose={() => setOpen(false)}
+				items={items}
+				itemKey={itemKey}
+				itemPredicate={itemPredicate}
+				itemRenderer={(item, state) => (
+					<CommandItem value={itemKey(item)} onSelect={state.onSelect}>
+						<span className="flex-1">{item.text}</span>
+						{item.label && (
+							<span className="text-muted-foreground text-xs">
+								{item.label}
+							</span>
+						)}
+					</CommandItem>
+				)}
 				onSelect={handleAdd}
-				disabled={disabled}
+				title={t("db.characters")}
+				placeholder={t("db.type_to_search")}
 			/>
 		</div>
 	);

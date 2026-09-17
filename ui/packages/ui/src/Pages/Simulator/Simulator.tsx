@@ -1,5 +1,5 @@
-import { Callout, Intent } from "@blueprintjs/core";
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
+import { Alert, AlertDescription, AlertTitle } from "@gcsim/primitives";
 import type { Character } from "@gcsim/types";
 import { debounce } from "lodash-es";
 import { useEffect, useRef, useState } from "react";
@@ -85,14 +85,14 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
 					<div className="sticky bottom-0 bg-bp4-dark-gray-100 flex flex-col gap-y-1 z-10">
 						{err !== "" && cfg !== "" ? (
 							<div className="pl-2 pr-2 pt-2 mt-1">
-								<Callout
-									intent={Intent.DANGER}
-									title={
-										t("viewer.error_encountered") + t("viewer.config_invalid")
-									}
-								>
-									<pre className="whitespace-pre-wrap pl-5">{err}</pre>
-								</Callout>
+								<Alert variant="destructive">
+									<AlertTitle>
+										{t("viewer.error_encountered") + t("viewer.config_invalid")}
+									</AlertTitle>
+									<AlertDescription>
+										<pre className="whitespace-pre-wrap pl-5">{err}</pre>
+									</AlertDescription>
+								</Alert>
 							</div>
 						) : null}
 						<Toolbox

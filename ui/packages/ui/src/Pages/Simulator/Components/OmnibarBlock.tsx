@@ -1,5 +1,12 @@
-import { Button } from "@blueprintjs/core";
-import { toast } from "@gcsim/primitives";
+import {
+	ActionSelect,
+	ArtifactSelect,
+	CharacterSelect,
+	EnemySelect,
+	StatSelect,
+	WeaponSelect,
+} from "@gcsim/components";
+import { Button, toast } from "@gcsim/primitives";
 import type {
 	IAction,
 	IArtifact,
@@ -8,11 +15,7 @@ import type {
 	IStat,
 	IWeapon,
 } from "@gcsim/types";
-import { ArtifactSelect, WeaponSelect } from "@ui/Components/Select";
-import { ActionSelect } from "@ui/Components/Select/ActionSelect";
-import { CharacterSelect } from "@ui/Components/Select/CharacterSelect";
-import { EnemySelect } from "@ui/Components/Select/EnemySelect";
-import { StatSelect } from "@ui/Components/Select/StatSelect";
+import { BarChart3, Bug, Footprints, Gem, Sword, Users } from "lucide-react";
 import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
@@ -37,12 +40,13 @@ export function OmnibarBlock() {
 		<div className="flex flex-col gap-1.5">
 			<div className="flex flex-row gap-1.5 my-1 mx-2">
 				<Button
-					icon="people"
-					fill
+					variant="secondary"
+					className="flex-1"
 					onClick={() => {
 						setCharactersOpen(true);
 					}}
 				>
+					<Users />
 					<Trans>db.characters</Trans>
 				</Button>
 				<CharacterSelect
@@ -55,12 +59,13 @@ export function OmnibarBlock() {
 				/>
 
 				<Button
-					icon="build"
-					fill
+					variant="secondary"
+					className="flex-1"
 					onClick={() => {
 						setWeaponsOpen(true);
 					}}
 				>
+					<Sword />
 					<Trans>simple.weapons</Trans>
 				</Button>
 				<WeaponSelect
@@ -73,12 +78,13 @@ export function OmnibarBlock() {
 				/>
 
 				<Button
-					icon="glass"
-					fill
+					variant="secondary"
+					className="flex-1"
 					onClick={() => {
 						setArtifactsOpen(true);
 					}}
 				>
+					<Gem />
 					<Trans>simple.artifacts</Trans>
 				</Button>
 				<ArtifactSelect
@@ -92,12 +98,13 @@ export function OmnibarBlock() {
 			</div>
 			<div className="flex flex-row gap-1.5 my-1 mx-2">
 				<Button
-					icon="virus"
-					fill
+					variant="secondary"
+					className="flex-1"
 					onClick={() => {
 						setEnemiesOpen(true);
 					}}
 				>
+					<Bug />
 					<Trans>simple.enemies</Trans>
 				</Button>
 				<EnemySelect
@@ -109,12 +116,13 @@ export function OmnibarBlock() {
 					}}
 				/>
 				<Button
-					icon="walk"
-					fill
+					variant="secondary"
+					className="flex-1"
 					onClick={() => {
 						setActionsOpen(true);
 					}}
 				>
+					<Footprints />
 					<Trans>simple.actions</Trans>
 				</Button>
 				<ActionSelect
@@ -127,12 +135,13 @@ export function OmnibarBlock() {
 				/>
 
 				<Button
-					icon="panel-stats"
-					fill
+					variant="secondary"
+					className="flex-1"
 					onClick={() => {
 						setStatsOpen(true);
 					}}
 				>
+					<BarChart3 />
 					<Trans>simple.stats</Trans>
 				</Button>
 				<StatSelect

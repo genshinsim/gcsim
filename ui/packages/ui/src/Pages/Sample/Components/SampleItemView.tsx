@@ -1,4 +1,9 @@
-import { Dialog } from "@blueprintjs/core";
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from "@gcsim/primitives";
 import React from "react";
 import type { SampleItem } from "./parse";
 
@@ -33,18 +38,13 @@ export function SampleItemView({
 				{item.msg}
 			</button>
 			<div>{item.target}</div>
-			<Dialog
-				canEscapeKeyClose
-				canOutsideClickClose
-				autoFocus
-				enforceFocus
-				shouldReturnFocusOnClose
-				isOpen={open}
-				onClose={() => {
-					setOpen(false);
-				}}
-			>
-				<pre className="m-2 whitespace-pre-wrap">{item.raw}</pre>
+			<Dialog open={open} onOpenChange={setOpen}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>{item.msg}</DialogTitle>
+					</DialogHeader>
+					<pre className="m-2 whitespace-pre-wrap">{item.raw}</pre>
+				</DialogContent>
 			</Dialog>
 		</div>
 	);

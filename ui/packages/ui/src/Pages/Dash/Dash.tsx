@@ -1,6 +1,5 @@
-import { AnchorButton, Card } from "@blueprintjs/core";
 import { DBCard, LatestVersion } from "@gcsim/components";
-import { Button } from "@gcsim/primitives";
+import { Button, Card } from "@gcsim/primitives";
 import type { db } from "@gcsim/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -37,16 +36,16 @@ export function Dash() {
 
 	return (
 		<main className="w-full flex flex-col items-center flex-grow gap-4 py-4 px-4">
-			<Link
-				to="/simulator"
-				role="button"
-				className="bp4-button bp4-intent-success !p-3 !rounded-md"
-				tabIndex={0}
+			<Button
+				asChild
+				className="h-auto bg-green-600 hover:bg-green-700 !p-3 !rounded-md"
 			>
-				<span className="bp4-button-text text-3xl md:text-4xl lg:text-5xl font-semibold">
-					{t("dash.get_started")}
-				</span>
-			</Link>
+				<Link to="/simulator">
+					<span className="text-3xl md:text-4xl lg:text-5xl font-semibold">
+						{t("dash.get_started")}
+					</span>
+				</Link>
+			</Button>
 			{/* mobile Chrome/Safari needs w-full for padding to work properly, mobile Firefox works fine though... */}
 			<div className="flex flex-col gap-4 w-full md:w-fit">
 				<Card className="flex flex-col gap-4 items-center">
@@ -76,16 +75,17 @@ export function Dash() {
 								))
 							: t("sim.loading")}
 					</div>
-					<AnchorButton
-						href="https://simpact.app/"
-						intent="primary"
-						target="_blank"
-						className="!p-3 !rounded-md"
-					>
-						<span className="text-xl md:text-2xl font-semibold">
-							{t("dash.visit_teams_db")}
-						</span>
-					</AnchorButton>
+					<Button asChild className="!p-3 !rounded-md">
+						<a
+							href="https://simpact.app/"
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							<span className="text-xl md:text-2xl font-semibold">
+								{t("dash.visit_teams_db")}
+							</span>
+						</a>
+					</Button>
 				</Card>
 				<LatestVersion />
 			</div>

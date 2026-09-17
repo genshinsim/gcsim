@@ -1,18 +1,16 @@
 import {
 	Button,
-	Classes,
 	Dialog,
-	Icon,
-	InputGroup,
-	Intent,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	Input,
 	Label,
 	NonIdealState,
-	Spinner,
-	SpinnerSize,
-} from "@blueprintjs/core";
-import { toast } from "@gcsim/primitives";
+	toast,
+} from "@gcsim/primitives";
 import type { SimResults } from "@gcsim/types";
-import classNames from "classnames";
+import { Copy, Link } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -65,31 +63,24 @@ export default ({
 	return (
 		<>
 			<Button
-				icon={<Icon icon="link" className="!mr-0" />}
-				intent={Intent.PRIMARY}
 				disabled={running || data == null}
 				onClick={() => {
 					handleShare();
 					setOpen(true);
 				}}
 			>
+				<Link />
 				<div className={className}>{t("viewer.share")}</div>
 			</Button>
-			<Dialog
-				isOpen={isOpen}
-				onClose={() => setOpen(false)}
-				title={t("viewer.create_a_shareable")}
-				icon="link"
-				className="!pb-0"
-			>
-				<div
-					className={classNames(
-						Classes.DIALOG_BODY,
-						"flex flex-col justify-center gap-2",
-					)}
-				>
-					<DialogBody shareLink={shareLink} copy={copy} />
-				</div>
+			<Dialog open={isOpen} onOpenChange={(open) => !open && setOpen(false)}>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>{t("viewer.create_a_shareable")}</DialogTitle>
+					</DialogHeader>
+					<div className="flex flex-col justify-center gap-2">
+						<DialogBody shareLink={shareLink} copy={copy} />
+					</div>
+				</DialogContent>
 			</Dialog>
 		</>
 	);
@@ -103,24 +94,25 @@ type DialogProps = {
 const DialogBody = ({ shareLink, copy }: DialogProps) => {
 	const { t } = useTranslation();
 	if (shareLink == null) {
-		return <NonIdealState icon={<Spinner size={SpinnerSize.LARGE} />} />;
+		return <NonIdealState loading />;
 	}
 
 	return (
-		<Label>
-			{t("viewer.share_link")}
-			<InputGroup
-				readOnly={true}
-				fill={true}
-				onFocus={(e) => {
-					e.target.select();
-					copy();
-				}}
-				value={shareLink ?? ""}
-				className={classNames({ "bp4-skeleton": shareLink == null })}
-				large={true}
-				rightElement={<Button icon="duplicate" onClick={() => copy()} />}
-			/>
-		</Label>
+		<div className="flex flex-col gap-1">
+			<Label>{t("viewer.share_link")}</Label>
+			<div className="flex gap-1">
+				<Input
+					readOnly
+					value={shareLink}
+					onFocus={(e) => {
+						e.currentTarget.select();
+						copy();
+					}}
+				/>
+				<Button variant="secondary" size="icon" onClick={copy}>
+					<Copy />
+				</Button>
+			</div>
+		</div>
 	);
 };

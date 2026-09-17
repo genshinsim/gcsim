@@ -1,13 +1,7 @@
-import {
-	Button,
-	ButtonGroup,
-	Card,
-	FormGroup,
-	InputGroup,
-	Intent,
-} from "@blueprintjs/core";
+import { Button, ButtonGroup, Card, Input, Label } from "@gcsim/primitives";
 import type { Sample } from "@gcsim/types";
 import { saveAs } from "file-saver";
+import { ArrowDown, Download, RotateCcw, Settings } from "lucide-react";
 import Pako from "pako";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -126,11 +120,10 @@ const SampleOptions = ({ settings, setSettings }: SampleOptionsProps) => {
 
 	return (
 		<>
-			<Button
-				onClick={() => setOpen(true)}
-				icon="cog"
-				text={t("simple.settings")}
-			/>
+			<Button variant="secondary" onClick={() => setOpen(true)}>
+				<Settings />
+				{t("simple.settings")}
+			</Button>
 			<Options
 				isOpen={isOpen}
 				handleClose={() => setOpen(false)}
@@ -223,52 +216,53 @@ function SamplerUI({
 	return (
 		<>
 			<div className="flex flex-col sm:flex-row justify-between">
-				<FormGroup label={t("viewer.search")} inline>
-					<InputGroup
-						type="text"
-						inputRef={searchRef}
-						rightElement={
-							<FormGroup>
-								<Button
-									icon="arrow-down"
-									intent="warning"
-									onClick={() => {
-										if (searchRef.current != null) {
-											searchAndScroll(searchRef.current.value);
-										}
-									}}
-								/>
-								<Button
-									icon="reset"
-									intent="warning"
-									onClick={() => {
-										if (searchRef.current != null) {
-											searchRef.current.value = "";
-										}
-										lastSearchIndex = 0;
-										rowVirtualizer.scrollToIndex(0);
-									}}
-								/>
-							</FormGroup>
-						}
-					/>
-				</FormGroup>
+				<div className="flex flex-row items-center gap-2">
+					<Label>{t("viewer.search")}</Label>
+					<div className="flex flex-row gap-1">
+						<Input type="text" ref={searchRef} />
+						<Button
+							variant="secondary"
+							size="icon"
+							onClick={() => {
+								if (searchRef.current != null) {
+									searchAndScroll(searchRef.current.value);
+								}
+							}}
+						>
+							<ArrowDown />
+						</Button>
+						<Button
+							variant="secondary"
+							size="icon"
+							onClick={() => {
+								if (searchRef.current != null) {
+									searchRef.current.value = "";
+								}
+								lastSearchIndex = 0;
+								rowVirtualizer.scrollToIndex(0);
+							}}
+						>
+							<RotateCcw />
+						</Button>
+					</div>
+				</div>
 				<ButtonGroup className="mb-[15px]">
 					<SampleOptions settings={settings} setSettings={setSettings} />
 					<Button
-						icon="bring-data"
-						text={t("viewer.download")}
-						intent={Intent.SUCCESS}
+						variant="secondary"
 						onClick={() => {
 							const out = Pako.deflate(JSON.stringify(sample));
 							const blob = new Blob([out], { type: "application/base64" });
 							saveAs(blob, "sample.gz");
 						}}
-					/>
+					>
+						<Download />
+						{t("viewer.download")}
+					</Button>
 				</ButtonGroup>
 			</div>
 			<div className="flex flex-col overflow-x-auto h-[80vh]">
-				<Card className="flex-auto !bg-gray-600 !text-xs min-w-[60rem] ">
+				<Card className="flex-auto gap-0 p-2 !bg-gray-600 !text-xs min-w-[60rem] ">
 					<AutoSizer disableWidth={true}>
 						{({ height }) => (
 							<div

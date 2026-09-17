@@ -1,4 +1,4 @@
-import { Button } from "@blueprintjs/core";
+import { Button } from "@gcsim/primitives";
 import { Viewport } from "../../Components";
 //@ts-ignore
 import DiscordLogo from "../../Components/Icons/discord-icon.svg";
@@ -15,17 +15,12 @@ export function Login() {
 	return (
 		<Viewport>
 			<div className="flex flex-row place-content-center mt-2">
-				<Button
-					large
-					icon={
-						<img
-							src={DiscordLogo}
-							alt="Discord Logo"
-							className="object-contain h-[16px]"
-						/>
-					}
-					onClick={() => authProvider.login()}
-				>
+				<Button size="lg" onClick={() => authProvider.login()}>
+					<img
+						src={DiscordLogo}
+						alt="Discord Logo"
+						className="object-contain h-[16px]"
+					/>
 					Login with Discord
 				</Button>
 			</div>

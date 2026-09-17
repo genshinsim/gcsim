@@ -1,5 +1,11 @@
-import { Button, Classes, Dialog } from "@blueprintjs/core";
-import classNames from "classnames";
+import {
+	Button,
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@gcsim/primitives";
 import { Trans, useTranslation } from "react-i18next";
 import { eventColor } from "./parse";
 
@@ -40,50 +46,49 @@ export function Options(props: OptionsProp) {
 
 	return (
 		<Dialog
-			canEscapeKeyClose
-			canOutsideClickClose
-			autoFocus
-			enforceFocus
-			shouldReturnFocusOnClose
-			isOpen={props.isOpen}
-			onClose={props.handleClose}
+			open={props.isOpen}
+			onOpenChange={(open) => !open && props.handleClose()}
 		>
-			<div className="p-2">
-				<div className={Classes.DIALOG_BODY}>
-					<div className="text-md font-medium">
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>
 						<Trans>viewer.log_options</Trans>
-					</div>
-					<div className="grid grid-cols-2 sm:grid-cols-3">{cols}</div>
-					<div>{/* <ButtonGroup></ButtonGroup> */}</div>
-				</div>
-				<div className={Classes.DIALOG_FOOTER}>
-					<div
-						className={classNames(
-							Classes.DIALOG_FOOTER_ACTIONS,
-							"!flex !flex-col !gap-1.5 sm:!flex-row sm:!gap-0",
-						)}
+					</DialogTitle>
+				</DialogHeader>
+				<div className="grid grid-cols-2 sm:grid-cols-3">{cols}</div>
+				<DialogFooter className="!flex !flex-col !gap-1.5 sm:!flex-row sm:!gap-0">
+					<Button
+						variant="secondary"
+						onClick={() => props.handleSetPresets("simple")}
 					>
-						<Button onClick={() => props.handleSetPresets("simple")}>
-							{t("viewer.simple")}
-						</Button>
-						<Button onClick={() => props.handleSetPresets("advanced")}>
-							{t("viewer.advanced")}
-						</Button>
-						<Button onClick={() => props.handleSetPresets("verbose")}>
-							{t("viewer.verbose")}
-						</Button>
-						<Button onClick={() => props.handleSetPresets("debug")}>
-							{t("viewer.debug")}
-						</Button>
-						<Button intent="danger" onClick={props.handleClear}>
-							{t("viewer.clear")}
-						</Button>
-						<Button intent="none" onClick={props.handleClose}>
-							{t("viewer.close")}
-						</Button>
-					</div>
-				</div>
-			</div>
+						{t("viewer.simple")}
+					</Button>
+					<Button
+						variant="secondary"
+						onClick={() => props.handleSetPresets("advanced")}
+					>
+						{t("viewer.advanced")}
+					</Button>
+					<Button
+						variant="secondary"
+						onClick={() => props.handleSetPresets("verbose")}
+					>
+						{t("viewer.verbose")}
+					</Button>
+					<Button
+						variant="secondary"
+						onClick={() => props.handleSetPresets("debug")}
+					>
+						{t("viewer.debug")}
+					</Button>
+					<Button variant="destructive" onClick={props.handleClear}>
+						{t("viewer.clear")}
+					</Button>
+					<Button variant="outline" onClick={props.handleClose}>
+						{t("viewer.close")}
+					</Button>
+				</DialogFooter>
+			</DialogContent>
 		</Dialog>
 	);
 }

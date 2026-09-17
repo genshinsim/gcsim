@@ -1,11 +1,15 @@
 import {
-	Alert,
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogFooter,
+	AlertDialogHeader,
+	AlertDialogTitle,
 	ButtonGroup,
-	Intent,
 	NonIdealState,
-	Spinner,
-	SpinnerSize,
-} from "@blueprintjs/core";
+} from "@gcsim/primitives";
 import type { Sample } from "@gcsim/types";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -45,7 +49,7 @@ export default ({ sample, error, retry }: Props) => {
 	if (sample == null || data.team == null || data.parsed == null) {
 		return (
 			<>
-				<NonIdealState icon={<Spinner size={SpinnerSize.LARGE} />} />
+				<NonIdealState loading />
 				<ErrorAlert msg={error} retry={retry} />
 			</>
 		);
@@ -108,26 +112,28 @@ const ErrorAlert = ({ msg, retry }: ErrorProps) => {
 	const { t } = useTranslation();
 	const history = useHistory();
 
-	let cancelButtonText: string | undefined;
-	let onCancel: (() => void) | undefined;
-	if (retry != null) {
-		cancelButtonText = t("viewer.retry");
-		onCancel = () => retry();
-	}
-
 	return (
-		<Alert
-			isOpen={msg != null}
-			onConfirm={() => history.push("/")}
-			onCancel={onCancel}
-			canEscapeKeyCancel={false}
-			canOutsideClickCancel={false}
-			confirmButtonText="Close"
-			cancelButtonText={cancelButtonText}
-			intent={Intent.DANGER}
-		>
-			<p>{msg}</p>
-		</Alert>
+		<AlertDialog open={msg != null}>
+			<AlertDialogContent>
+				<AlertDialogHeader>
+					<AlertDialogTitle>{t("viewer.error_encountered")}</AlertDialogTitle>
+					<AlertDialogDescription>{msg}</AlertDialogDescription>
+				</AlertDialogHeader>
+				<AlertDialogFooter>
+					{retry != null && (
+						<AlertDialogCancel onClick={() => retry()}>
+							{t("viewer.retry")}
+						</AlertDialogCancel>
+					)}
+					<AlertDialogAction
+						variant="destructive"
+						onClick={() => history.push("/")}
+					>
+						{t("viewer.close")}
+					</AlertDialogAction>
+				</AlertDialogFooter>
+			</AlertDialogContent>
+		</AlertDialog>
 	);
 };
 

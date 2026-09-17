@@ -1,5 +1,5 @@
-import { Button, Icon } from "@blueprintjs/core";
-import { toast } from "@gcsim/primitives";
+import { Button, toast } from "@gcsim/primitives";
+import { Clipboard } from "lucide-react";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -18,15 +18,10 @@ const CopyTo = ({ config, className }: Props) => {
 	};
 
 	return (
-		<>
-			<Button
-				icon={<Icon icon="clipboard" className="!mr-0" />}
-				onClick={action}
-				disabled={config == null}
-			>
-				<div className={className}>{t("viewer.copy")}</div>
-			</Button>
-		</>
+		<Button variant="secondary" onClick={action} disabled={config == null}>
+			<Clipboard />
+			<div className={className}>{t("viewer.copy")}</div>
+		</Button>
 	);
 };
 

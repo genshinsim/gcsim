@@ -1,11 +1,13 @@
-import {
-	Classes,
-	Dialog,
-	HotkeysProvider,
-	Switch as SwitchInput,
-} from "@blueprintjs/core";
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
-import { Toaster } from "@gcsim/primitives";
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	Label,
+	Switch as SwitchInput,
+	Toaster,
+} from "@gcsim/primitives";
 import { type ReactNode, useEffect, useRef } from "react";
 import { Helmet } from "react-helmet";
 import { useTranslation } from "react-i18next";
@@ -39,11 +41,6 @@ import {
 	useAppSelector,
 } from "./Stores/store";
 
-// all the css styling we need (except tailwind)
-import "@blueprintjs/core/lib/css/blueprint.css";
-import "@blueprintjs/icons/lib/css/blueprint-icons.css";
-import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
-import "@blueprintjs/select/lib/css/blueprint-select.css";
 import "@gcsim/components/src/index.css";
 import "./index.css";
 
@@ -70,9 +67,7 @@ export const UI = (props: UIProps) => {
 	return (
 		<BrowserRouter>
 			<Provider store={store}>
-				<HotkeysProvider>
-					<Main {...props} />
-				</HotkeysProvider>
+				<Main {...props} />
 			</Provider>
 		</BrowserRouter>
 	);
@@ -102,23 +97,27 @@ const ExecutorSettings = ({ children }: { children: ReactNode }) => {
 
 	return (
 		<Dialog
-			isOpen={isOpen}
-			onClose={() => dispatch(appActions.setSettingsOpen(false))}
-			title={t("simple.settings")}
-			icon="settings"
-			className="!pb-0"
+			open={isOpen}
+			onOpenChange={(open) =>
+				!open && dispatch(appActions.setSettingsOpen(false))
+			}
 		>
-			<div className={Classes.DIALOG_BODY}>
-				<>
-					{children}
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>{t("simple.settings")}</DialogTitle>
+				</DialogHeader>
+				{children}
+				<div className="flex items-center gap-2 pt-5">
 					<SwitchInput
+						id="sample-on-load"
 						checked={sampleOnLoad}
-						onChange={() => dispatch(appActions.setSampleOnLoad(!sampleOnLoad))}
-						className="pt-5"
-						labelElement={t("simple.generate_sample")}
+						onCheckedChange={() =>
+							dispatch(appActions.setSampleOnLoad(!sampleOnLoad))
+						}
 					/>
-				</>
-			</div>
+					<Label htmlFor="sample-on-load">{t("simple.generate_sample")}</Label>
+				</div>
+			</DialogContent>
 		</Dialog>
 	);
 };

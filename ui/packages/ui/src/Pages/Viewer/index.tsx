@@ -15,6 +15,11 @@ import { runSim } from "../Simulator/Toolbox";
 import UpgradeDialog from "./UpgradeDialog";
 import Viewer, { type ViewerActions } from "./Viewer";
 
+import "@blueprintjs/core/lib/css/blueprint.css";
+import "@blueprintjs/icons/lib/css/blueprint-icons.css";
+import "@blueprintjs/popover2/lib/css/blueprint-popover2.css";
+import "@blueprintjs/select/lib/css/blueprint-select.css";
+
 // TODO: make this flush rate configurable?
 export const VIEWER_THROTTLE = 100;
 
