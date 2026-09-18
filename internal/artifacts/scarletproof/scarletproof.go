@@ -1,8 +1,6 @@
 package scarletproof
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -29,18 +27,20 @@ func (s *Set) Init() error      { return nil }
 func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[string]int) (info.Set, error) {
 	s := Set{Count: count}
 
-	if count >= 2 {
-		m := make([]float64, attributes.EndStatType)
-		m[attributes.ATKP] = 0.18
-
-		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBase("scarletproof-2pc", -1),
-			AffectedStat: attributes.ATKP,
-			Amount: func() []float64 {
-				return m
-			},
-		})
+	if count < 2 {
+		return &s, nil
 	}
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.ATKP] = 0.18
+
+	char.AddStatMod(character.StatMod{
+		Base:         modifier.NewBase("scarletproof-2pc", -1),
+		AffectedStat: attributes.ATKP,
+		Amount: func() []float64 {
+			return m
+		},
+	})
 
 	if count < 4 {
 		return &s, nil
@@ -60,7 +60,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 	dmgMod := character.ReactBonusMod{
 		Base: modifier.NewBaseWithHitlag(dmgKey, 10*60),
 		Amount: func(ai info.AttackInfo) float64 {
-			if ai.AttackTag == attacks.AttackTagReactionStellarSwirl {
+			switch ai.AttackTag {
+			case attacks.AttackTagReactionStellarSwirl,
+				attacks.AttackTagDirectStellarSwirl:
 				return 0.40
 			}
 			return 0
@@ -76,15 +78,9 @@ func NewSet(c *core.Core, char *character.CharWrapper, count int, param map[stri
 		if ae.Info.ActorIndex != char.Index() {
 			return
 		}
-
-		if !char.ExtendStatus(crKey, 10*60) {
-			char.AddStatMod(crMod)
-		}
-
-		if !char.ExtendStatus(dmgKey, 10*60) {
-			char.AddReactBonusMod(dmgMod)
-		}
-	}, fmt.Sprintf("scarletproof-4pc-%v", char.Base.Key.String()))
+		char.AddStatMod(crMod)
+		char.AddReactBonusMod(dmgMod)
+	}, "scarletproof-4pc-"+char.Base.Key.String())
 
 	return &s, nil
 }
