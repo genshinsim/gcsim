@@ -105,8 +105,8 @@
 
 ## [internal/characters/nefer/burst.go](internal/characters/nefer/burst.go): unresolved frame rows
 
-- `Sacred Vow: True Eye's Phantasm (Hit 1) hitmark` currently uses `26`; workbook 1 row is mixed `99-101`.
-- `Sacred Vow: True Eye's Phantasm (Hit 2) hitmark` currently uses `46`; workbook 1 row is mixed `40-44`.
+- `Sacred Vow: True Eye's Phantasm (Hit 1) hitmark` uses `104` based on the latest in-game timing observation.
+- `Sacred Vow: True Eye's Phantasm (Hit 2) hitmark` uses `149` based on the latest in-game timing observation.
 - `Burst energy drain timing` currently consumes energy immediately through `ConsumeEnergy(60)`; workbook 1 row is mixed around `6-7` and includes an outlier.
 - `Burst -> Normal 1` currently uses `119`; workbook 1 row is mixed `118-119`.
 - `Burst -> Normal CA` currently uses `131` when the ordinary CA route is selected; workbook 1 row is mixed `129-131` including CA windup.

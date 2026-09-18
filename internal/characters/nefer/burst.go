@@ -84,8 +84,10 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	ap := combat.NewBoxHit(c.Core.Combat.Player(), c.Core.Combat.PrimaryTarget(), nil, 6, 10)
-	c.Core.QueueAttack(ai1, ap, 26, 26)
-	c.Core.QueueAttack(ai2, ap, 46, 46)
+	// The burst animation can be cancelled into a swap before the delayed
+	// second hit lands. Keep the hit tasks independent from the animation lock.
+	c.Core.QueueAttack(ai1, ap, 104, 104)
+	c.Core.QueueAttack(ai2, ap, 149, 149)
 
 	c.SetCD(action.ActionBurst, 15*60)
 	c.ConsumeEnergy(60)

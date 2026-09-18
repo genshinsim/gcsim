@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -186,6 +187,10 @@ func (c *char) addMoonSong(moonsong int) {
 
 	if c.StatusIsActive(burstKey) && !c.StatusIsActive(moonSongIcdKey) {
 		c.setPaleHymnMoonsong(moonsong * 6)
+		c.Core.Log.NewEvent("lauma moon song converted to pale hymn", glog.LogCharacterEvent, c.Index()).
+			Write("moonsong", moonsong).
+			Write("stacks", moonsong*6).
+			Write("remaining", c.paleHymnCount())
 		c.AddStatus(moonSongIcdKey, c.StatusDuration(burstKey), true)
 		c.moonSong = 0
 		c.moonSongSrc = -1
