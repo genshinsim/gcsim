@@ -126,13 +126,13 @@ func (c *char) omenRefreshCB(t info.Enemy) {
 		return
 	}
 
-	if c.StatusIsActive(omenRefreshICDKey) {
+	if t.StatusIsActive(omenRefreshICDKey) {
 		return
 	}
 
 	t.SetTag(omenKey, omenRefreshCount-1)
 
-	c.AddStatus(omenRefreshICDKey, 0.5*60, false) // 0.5s ICD
+	t.AddStatus(omenRefreshICDKey, 0.5*60, true) // 0.5s ICD
 
 	omenExp := t.StatusExpiry(omenKey)
 
