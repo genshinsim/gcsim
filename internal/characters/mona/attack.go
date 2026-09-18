@@ -46,18 +46,20 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		Durability: 25,
 		Mult:       attack[c.NormalCounter][c.TalentLvlAttack()],
 	}
+
+	ap := combat.NewCircleHit(
+		c.Core.Combat.Player(),
+		c.Core.Combat.PrimaryTarget(),
+		nil,
+		attackRadius[c.NormalCounter],
+	)
+
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(
-			c.Core.Combat.Player(),
-			c.Core.Combat.PrimaryTarget(),
-			nil,
-			attackRadius[c.NormalCounter],
-		),
+		ap,
 		attackHitmarks[c.NormalCounter],
 		attackHitmarks[c.NormalCounter],
 		c.astralGlowGainCB,
-		c.omenRefreshCB,
 	)
 
 	defer c.AdvanceNormalIndex()

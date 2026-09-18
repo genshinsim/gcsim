@@ -108,17 +108,12 @@ func (c *char) astralGlowGainCB(a info.AttackCB) {
 	c.AddStatus(astralGlowKey, 8*60, true)
 }
 
-func (c *char) omenRefreshCB(a info.AttackCB) {
+func (c *char) triggerOmenRefresh(t *enemy.Enemy) {
 	if !c.IsHexerei {
 		return
 	}
 
 	if c.Core.Player.GetHexereiCount() < 2 {
-		return
-	}
-	t, ok := a.Target.(*enemy.Enemy)
-
-	if !ok {
 		return
 	}
 
@@ -132,13 +127,13 @@ func (c *char) omenRefreshCB(a info.AttackCB) {
 		return
 	}
 
-	if c.StatusIsActive(omenRefreshICDKey) {
+	if t.StatusIsActive(omenRefreshICDKey) {
 		return
 	}
 
 	t.SetTag(omenKey, omenRefreshCount-1)
 
-	c.AddStatus(omenRefreshICDKey, 0.5*60, false) // 0.5s ICD
+	t.AddStatus(omenRefreshICDKey, 0.5*60, true) // 0.5s ICD
 
 	omenExp := t.StatusExpiry(omenKey)
 
