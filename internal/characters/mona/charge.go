@@ -61,13 +61,6 @@ func (c *char) doCA(target info.Target, delay int) {
 		3,
 	)
 
-	c.Core.Tasks.Add(func() {
-		enemies := c.Core.Combat.EnemiesWithinArea(ap, nil)
-		for _, e := range enemies {
-			c.omenRefreshCB(e)
-		}
-	}, delay)
-	
 	c.Core.QueueAttack(
 		ai,
 		ap,

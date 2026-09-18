@@ -54,13 +54,6 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 		attackRadius[c.NormalCounter],
 	)
 
-	c.Core.Tasks.Add(func() {
-		enemies := c.Core.Combat.EnemiesWithinArea(ap, nil)
-		for _, e := range enemies {
-			c.omenRefreshCB(e)
-		}
-	}, attackHitmarks[c.NormalCounter])
-	
 	c.Core.QueueAttack(
 		ai,
 		ap,

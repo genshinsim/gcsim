@@ -122,11 +122,23 @@ func (c *char) burstHook() {
 		if !ok {
 			return
 		}
+
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex == c.Index() {
+			switch atk.Info.AttackTag {
+			case attacks.AttackTagNormal:
+			case attacks.AttackTagExtra:
+			default:
+				return
+			}
+			c.triggerOmenRefresh(t)
+		}
+
 		if !t.StatusIsActive(bubbleKey) {
 			return
 		}
 		// always break if it's due to time up
-		atk := args[1].(*info.AttackEvent)
+
 		if atk.Info.AttackTag == attacks.AttackTagMonaBubbleBreak {
 			c.triggerBubbleBurst(t)
 			return

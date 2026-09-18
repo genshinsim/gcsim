@@ -8,6 +8,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
@@ -107,7 +108,7 @@ func (c *char) astralGlowGainCB(a info.AttackCB) {
 	c.AddStatus(astralGlowKey, 8*60, true)
 }
 
-func (c *char) omenRefreshCB(t info.Enemy) {
+func (c *char) triggerOmenRefresh(t *enemy.Enemy) {
 	if !c.IsHexerei {
 		return
 	}
