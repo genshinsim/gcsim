@@ -1,8 +1,7 @@
 import type { model } from "@gcsim/types";
 import { Group } from "@visx/group";
 import { scaleBand, scaleLinear } from "@visx/scale";
-import { BarStackHorizontal } from "@visx/shape";
-import type { StackKey } from "@visx/shape/lib/types";
+import { BarStackHorizontal, type StackKey } from "@visx/shape";
 import { useTooltip } from "@visx/tooltip";
 import { useTranslation } from "react-i18next";
 import { GraphAxisBottom, GraphAxisLeft } from "../Axes";
