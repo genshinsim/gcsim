@@ -110,6 +110,8 @@ func (c *char) burstDamageBonus() {
 
 // bubble bursts when hit by an attack either while not frozen, or when the attack breaks freeze
 // i.e. impulse > 0
+// we also check for omen extend here, before the bubble is popped, since Mona's NA/CAs that pop
+// the bubble don't extend Omen.
 func (c *char) burstHook() {
 	// hook on to OnDamage; leave this always active
 	// since freeze will trigger an attack, this should be ok
@@ -126,12 +128,10 @@ func (c *char) burstHook() {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex == c.Index() {
 			switch atk.Info.AttackTag {
-			case attacks.AttackTagNormal:
-			case attacks.AttackTagExtra:
-			default:
-				return
+			case attacks.AttackTagNormal,
+				attacks.AttackTagExtra:
+				c.triggerOmenRefresh(t)
 			}
-			c.triggerOmenRefresh(t)
 		}
 
 		if !t.StatusIsActive(bubbleKey) {
