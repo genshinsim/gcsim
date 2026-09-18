@@ -52,13 +52,13 @@ func (c *char) c2Init() {
 		}
 
 		if prev != c.Index() {
-			c.Core.Player.Chars()[prev].DeleteStatMod(c2Key)
+			c.Core.Player.ByIndex(prev).DeleteStatMod(c2Key)
 		}
 
 		if next != c.Index() {
 			// we don't need to worry about granting this buff when iansan gains her A1, because she
 			// will always be the active character (using skill or using burst)
-			c.Core.Player.Chars()[next].AddStatMod(character.StatMod{
+			c.Core.Player.ByIndex(next).AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag(c2Key, buffDur),
 				AffectedStat: attributes.ATKP,
 				Amount: func() []float64 {

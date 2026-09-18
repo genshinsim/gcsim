@@ -97,6 +97,9 @@ func (c *char) burstInit() {
 				if !c.StatusIsActive(burstStatus) {
 					return nil
 				}
+				if c.Core.Player.Active() != char.Index() {
+					return nil
+				}
 				return c.burstBuff
 			},
 		})
