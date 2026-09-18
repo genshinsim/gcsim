@@ -1,4 +1,5 @@
 import type { model } from "@gcsim/types";
+import type { JSX } from "react";
 import { useTranslation } from "react-i18next";
 
 type Props = {

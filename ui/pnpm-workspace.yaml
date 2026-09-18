@@ -23,10 +23,6 @@ allowBuilds:
 strictPeerDependencies: true
 peerDependencyRules:
   allowedVersions:
-    # react-popper v1 predates React 18; range never updated. Works on 18.
-    "react-popper>react": "18"
-    # react-virtual v2 (old @tanstack/react-virtual) declares react 16/17 only.
-    "react-virtual>react": "18"
     # tsconfck's declared typescript peer range predates the TS7 native
     # compiler; the monorepo standardizes on typescript@7. tsconfck's core
     # tsconfig parser is self-contained and does not need the peer. Runs on 7.

@@ -3,7 +3,7 @@ import { Button, Separator, Toaster, toast } from "@gcsim/primitives";
 import "@gcsim/components/src/index.css";
 import type { Entry } from "@gcsim/types/src/generated/index.db";
 import axios from "axios";
-import React from "react";
+import React, { type JSX } from "react";
 import { Route, Switch } from "wouter";
 
 function App({ id }: { id: string }) {

@@ -1,4 +1,5 @@
 import { Popover, PopoverAnchor, PopoverContent } from "@gcsim/primitives";
+import type { JSX } from "react";
 
 export interface TooltipData<Key> {
 	key: Key;

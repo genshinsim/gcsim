@@ -9,7 +9,6 @@ import {
 	Toaster,
 } from "@gcsim/primitives";
 import { type ReactNode, useEffect, useRef } from "react";
-import { Helmet } from "react-helmet";
 import { useTranslation } from "react-i18next";
 import { Provider } from "react-redux";
 import {
@@ -202,9 +201,7 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 						path="/"
 						element={
 							<>
-								<Helmet>
-									<title>gcsim - simulation impact</title>
-								</Helmet>
+								<title>gcsim - simulation impact</title>
 								<Dash />
 							</>
 						}
@@ -215,9 +212,7 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 						path="/simulator"
 						element={
 							<>
-								<Helmet>
-									<title>gcsim - simulator</title>
-								</Helmet>
+								<title>gcsim - simulator</title>
 								<Simulator exec={exec} />
 							</>
 						}
@@ -228,9 +223,7 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 						path="/web/*"
 						element={
 							<>
-								<Helmet>
-									<title>gcsim - viewer</title>
-								</Helmet>
+								<title>gcsim - viewer</title>
 								<WebViewer exec={exec} gitCommit={gitCommit} mode={mode} />
 							</>
 						}
@@ -239,9 +232,7 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 						path="/local/*"
 						element={
 							<>
-								<Helmet>
-									<title>gcsim - local viewer</title>
-								</Helmet>
+								<title>gcsim - local viewer</title>
 								<LocalViewer exec={exec} gitCommit={gitCommit} mode={mode} />
 							</>
 						}
@@ -264,9 +255,7 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 						path="/sample/upload"
 						element={
 							<>
-								<Helmet>
-									<title>gcsim - sample</title>
-								</Helmet>
+								<title>gcsim - sample</title>
 								<UploadSample />
 							</>
 						}
@@ -275,9 +264,7 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 						path="/sample/local"
 						element={
 							<>
-								<Helmet>
-									<title>gcsim - local sample</title>
-								</Helmet>
+								<title>gcsim - local sample</title>
 								<LocalSample />
 							</>
 						}
@@ -311,9 +298,7 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 						path="/account"
 						element={
 							<>
-								<Helmet>
-									<title>gcsim - account</title>
-								</Helmet>
+								<title>gcsim - account</title>
 								<PageUserAccount />
 							</>
 						}
@@ -325,9 +310,7 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 						path="*"
 						element={
 							<>
-								<Helmet>
-									<title>gcsim - simulation impact</title>
-								</Helmet>
+								<title>gcsim - simulation impact</title>
 								<div className="m-2 text-center">{t("src.this_page_is")}</div>
 							</>
 						}

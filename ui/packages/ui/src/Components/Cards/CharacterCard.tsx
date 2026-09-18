@@ -7,6 +7,7 @@ import {
 	TooltipTrigger,
 } from "@gcsim/primitives";
 import type { Character } from "@gcsim/types";
+import type { JSX } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import {
 	LuChevronDown,

@@ -13,8 +13,8 @@
 		"@gcsim/primitives": "workspace:^",
 		"@gcsim/ui": "workspace:^",
 		"@gcsim/utils": "workspace:^",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
+		"react": "^19.3.0",
+		"react-dom": "^19.3.0",
 		"react-i18next": "^17.0.14"
 	},
 	"devDependencies": {
