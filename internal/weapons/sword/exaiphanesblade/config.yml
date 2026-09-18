@@ -2,6 +2,9 @@ use: pipeline
 kind: weapon
 name: exaiphanesblade
 
+shortcuts:
+  - exaiphanes
+
 abilities:
   - name: default
     params:
