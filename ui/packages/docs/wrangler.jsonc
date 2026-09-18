@@ -1,0 +1,9 @@
+{
+	"name": "gcsim-docs-worker",
+	"compatibility_date": "2026-09-18",
+	"workers_dev": false,
+	"assets": {
+		"directory": "./build",
+		"not_found_handling": "single-page-application"
+	}
+}
