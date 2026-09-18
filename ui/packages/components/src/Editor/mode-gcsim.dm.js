@@ -80,6 +80,7 @@ ace.define(
 
       var gcsimAvatars = [
         'aetheranemo',
+        'aethercryo',
         'aetherdendro',
         'aetherelectro',
         'aethergeo',
@@ -170,6 +171,8 @@ ace.define(
         'lisa',
         'lumineanemo',
         'traveleranemo',
+        'luminecryo',
+        'travelercryo',
         'luminedendro',
         'travelerdendro',
         'lumineelectro',

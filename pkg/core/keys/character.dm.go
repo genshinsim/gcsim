@@ -44,6 +44,7 @@ func _comptime_Char() {
 const (
 	NoChar            Char = iota //
 	AetherAnemo                   // aetheranemo
+	AetherCryo                    // aethercryo
 	AetherDendro                  // aetherdendro
 	AetherElectro                 // aetherelectro
 	AetherGeo                     // aethergeo
@@ -110,6 +111,7 @@ const (
 	Layla                         // layla
 	Lisa                          // lisa
 	LumineAnemo                   // lumineanemo
+	LumineCryo                    // luminecryo
 	LumineDendro                  // luminedendro
 	LumineElectro                 // lumineelectro
 	LumineGeo                     // luminegeo
@@ -171,6 +173,7 @@ const (
 var _CharNames = [...]string{
 	"",
 	"aetheranemo",
+	"aethercryo",
 	"aetherdendro",
 	"aetherelectro",
 	"aethergeo",
@@ -237,6 +240,7 @@ var _CharNames = [...]string{
 	"layla",
 	"lisa",
 	"lumineanemo",
+	"luminecryo",
 	"luminedendro",
 	"lumineelectro",
 	"luminegeo",
@@ -298,6 +302,7 @@ var _CharNames = [...]string{
 var _CharValues = [...]Char{
 	NoChar,
 	AetherAnemo,
+	AetherCryo,
 	AetherDendro,
 	AetherElectro,
 	AetherGeo,
@@ -364,6 +369,7 @@ var _CharValues = [...]Char{
 	Layla,
 	Lisa,
 	LumineAnemo,
+	LumineCryo,
 	LumineDendro,
 	LumineElectro,
 	LumineGeo,

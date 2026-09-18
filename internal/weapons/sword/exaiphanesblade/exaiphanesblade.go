@@ -30,12 +30,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	case keys.AetherDendro:
 	case keys.AetherHydro:
 	case keys.AetherPyro:
+	case keys.AetherCryo:
 	case keys.LumineAnemo:
 	case keys.LumineGeo:
 	case keys.LumineElectro:
 	case keys.LumineDendro:
 	case keys.LumineHydro:
 	case keys.LuminePyro:
+	case keys.LumineCryo:
 	default:
 		return w, nil
 	}
