@@ -78,48 +78,38 @@
 	}
 }
 
-/*
- * shadcn tokens: kept as `hsl(var(--...))` indirection over the CSS variables
- * declared in the `:root`/`.dark` blocks of the consuming entrypoints, so
- * `bg-background`, `text-foreground`, `rounded-lg`, ... resolve as before.
- * `inline` makes the utilities emit the value rather than a second variable.
- */
 @theme inline {
-	--color-border: hsl(var(--border));
-	--color-input: hsl(var(--input));
-	--color-ring: hsl(var(--ring));
-	--color-background: hsl(var(--background));
-	--color-foreground: hsl(var(--foreground));
+	--color-deprecated-border: hsl(var(--deprecated-border));
+	--color-deprecated-input: hsl(var(--deprecated-input));
+	--color-deprecated-ring: hsl(var(--deprecated-ring));
+	--color-deprecated-background: hsl(var(--deprecated-background));
+	--color-deprecated-foreground: hsl(var(--deprecated-foreground));
 
-	--color-primary: hsl(var(--primary));
-	--color-primary-foreground: hsl(var(--primary-foreground));
+	--color-deprecated-primary: hsl(var(--deprecated-primary));
+	--color-deprecated-primary-foreground: hsl(var(--deprecated-primary-foreground));
 
-	--color-secondary: hsl(var(--secondary));
-	--color-secondary-foreground: hsl(var(--secondary-foreground));
+	--color-deprecated-secondary: hsl(var(--deprecated-secondary));
+	--color-deprecated-secondary-foreground: hsl(var(--deprecated-secondary-foreground));
 
-	--color-destructive: hsl(var(--destructive));
-	--color-destructive-foreground: hsl(var(--destructive-foreground));
+	--color-deprecated-destructive: hsl(var(--deprecated-destructive));
+	--color-deprecated-destructive-foreground: hsl(var(--deprecated-destructive-foreground));
 
-	--color-success: hsl(var(--success));
-	--color-success-foreground: hsl(var(--success-foreground));
+	--color-deprecated-success: hsl(var(--deprecated-success));
+	--color-deprecated-success-foreground: hsl(var(--deprecated-success-foreground));
 
-	--color-warning: hsl(var(--warning));
-	--color-warning-foreground: hsl(var(--warning-foreground));
+	--color-deprecated-warning: hsl(var(--deprecated-warning));
+	--color-deprecated-warning-foreground: hsl(var(--deprecated-warning-foreground));
 
-	--color-muted: hsl(var(--muted));
-	--color-muted-foreground: hsl(var(--muted-foreground));
+	--color-deprecated-muted: hsl(var(--deprecated-muted));
+	--color-deprecated-muted-foreground: hsl(var(--deprecated-muted-foreground));
 
-	--color-accent: hsl(var(--accent));
-	--color-accent-foreground: hsl(var(--accent-foreground));
+	--color-deprecated-accent: hsl(var(--deprecated-accent));
+	--color-deprecated-accent-foreground: hsl(var(--deprecated-accent-foreground));
 
-	--color-popover: hsl(var(--popover));
-	--color-popover-foreground: hsl(var(--popover-foreground));
+	--color-deprecated-popover: hsl(var(--deprecated-popover));
+	--color-deprecated-popover-foreground: hsl(var(--deprecated-popover-foreground));
 
-	--color-card: hsl(var(--card));
-	--color-card-foreground: hsl(var(--card-foreground));
-
-	--radius-lg: var(--radius);
-	--radius-md: calc(var(--radius) - 2px);
-	--radius-sm: calc(var(--radius) - 4px);
+	--color-deprecated-card: hsl(var(--deprecated-card));
+	--color-deprecated-card-foreground: hsl(var(--deprecated-card-foreground));
 }
 

@@ -45,7 +45,7 @@ const CardValue = ({
 
 	const out = value == null ? 1234 : value;
 	const valueClass = classNames("text-5xl font-bold tabular-nums", {
-		"animate-pulse rounded bg-muted text-transparent": value == null,
+		"animate-pulse rounded bg-deprecated-muted text-transparent": value == null,
 	});
 
 	let lbl: ReactNode;
@@ -81,7 +81,8 @@ const AuxItem = ({ stat }: { stat: AuxStat }) => {
 	const { i18n } = useTranslation();
 
 	const cls = classNames("font-black text-current text-sm text-gray-100", {
-		"animate-pulse rounded bg-muted text-transparent": stat.value == null,
+		"animate-pulse rounded bg-deprecated-muted text-transparent":
+			stat.value == null,
 	});
 	const val = stat.value == null ? 123.45 : stat.value;
 

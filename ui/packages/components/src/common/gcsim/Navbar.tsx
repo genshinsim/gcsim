@@ -7,7 +7,7 @@ function Navbar({ className, ...props }: React.ComponentProps<"nav">) {
 		<nav
 			data-slot="navbar"
 			className={cn(
-				"flex h-12 w-full items-center gap-1 border-b border-border bg-background px-4 text-foreground",
+				"flex h-12 w-full items-center gap-1 border-b border-deprecated-border bg-deprecated-background px-4 text-deprecated-foreground",
 				className,
 			)}
 			{...props}

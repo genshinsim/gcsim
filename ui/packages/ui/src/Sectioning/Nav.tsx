@@ -161,7 +161,7 @@ const MobileMenu = () => {
 export default () => {
 	const links = useNavLinks();
 	return (
-		<nav className="bg-bp-header-color text-foreground shadow-md">
+		<nav className="bg-bp-header-color text-deprecated-foreground shadow-md">
 			<div className="flex w-full 2xl:mx-auto 2xl:container">
 				<div className="flex h-[50px] w-full items-center px-2">
 					<Link to="/" className="mr-2.5 flex h-[50px] items-center">

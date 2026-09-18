@@ -223,12 +223,12 @@ export function CharacterCard({
 	}
 
 	const skeleton = isSkeleton
-		? "animate-pulse rounded bg-muted text-transparent"
+		? "animate-pulse rounded bg-deprecated-muted text-transparent"
 		: "";
 
 	return (
 		<div className={className}>
-			<div className="min-h-24 bg-card text-card-foreground shadow text-sm flex flex-col justify-center gap-2 border border-border">
+			<div className="min-h-24 bg-deprecated-card text-deprecated-card-foreground shadow text-sm flex flex-col justify-center gap-2 border border-deprecated-border">
 				<div
 					className={
 						"character-parent flex flex-row pt-4 pl-4 pr-2 " +
