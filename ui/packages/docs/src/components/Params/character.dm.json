@@ -1191,6 +1191,16 @@
       "desc": "0 for no buffs, 1 (default) for +10% CR, +20% DEF, +20% ER, +60 EM, +20% HP, +20% ATK, +20% CD and special CA. Set via '+params=[true_moon_story_buff=...]' in the char's line."
     },
     {
+      "ability": "low_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
+      "ability": "high_plunge",
+      "param": "collision",
+      "desc": "0 for no collision dmg (default), 1 for collision dmg."
+    },
+    {
       "ability": "skill",
       "param": "travel",
       "desc": "Projectile travel time. Default 9 frames."

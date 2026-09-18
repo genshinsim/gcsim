@@ -3280,11 +3280,13 @@
     },
     {
       "ability": "low_plunge",
-      "invalid": true
+      "note": "Only available for Lumine. Previous action must be a jump buffed via Xianyun's burst.",
+      "invalid": false
     },
     {
       "ability": "high_plunge",
-      "invalid": true
+      "note": "Only available for Lumine. Previous action must be a jump buffed via Xianyun's burst.",
+      "invalid": false
     },
     {
       "ability": "skill",
