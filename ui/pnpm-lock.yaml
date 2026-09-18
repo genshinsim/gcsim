@@ -612,6 +612,9 @@ importers:
       vite:
         specifier: ^8
         version: 8.3.0(@types/node@22.20.2)(esbuild@0.28.1)(jiti@2.7.0)(terser@5.51.2)
+      wrangler:
+        specifier: 4.131.1
+        version: 4.131.1(@cloudflare/workers-types@5.20260911.1)(@types/node@22.20.2)
 
   packages/types:
     dependencies:

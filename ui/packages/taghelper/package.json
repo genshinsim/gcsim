@@ -30,6 +30,7 @@
 		"@types/react-dom": "^19.3.0",
 		"@vitejs/plugin-react": "^6",
 		"tailwindcss": "^4.3.3",
-		"vite": "^8"
+		"vite": "^8",
+		"wrangler": "4.131.1"
 	}
 }

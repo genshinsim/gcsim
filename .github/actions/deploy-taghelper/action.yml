@@ -7,32 +7,25 @@ inputs:
   accountId:
     required: true
     description: cloudflare account id
-  gitHubToken:
-    required: true
-    description: github token
-  branch:
-    required: true
-    description: name of the branch
 
 runs:
   using: composite
   steps:
-  - name: Build UI
-    working-directory: ./ui
-    shell: bash
-    run: pnpm build:taghelper
+    - name: Build UI
+      working-directory: ./ui
+      shell: bash
+      run: pnpm build:taghelper
 
-  - name: List UI dist
-    working-directory: ./ui/packages/taghelper/dist
-    shell: bash
-    run: ls -lh
-  
-  - name: Publish to Cloudflare Pages
-    uses: cloudflare/pages-action@1
-    with:
-      apiToken: ${{ inputs.apiToken }}
-      accountId: ${{ inputs.accountId }}
-      gitHubToken: ${{ inputs.gitHubToken }}
-      projectName: taghelper 
-      branch: ${{ inputs.branch }}
-      directory: ./ui/packages/taghelper/dist
+    - name: List UI dist
+      working-directory: ./ui/packages/taghelper/dist
+      shell: bash
+      run: ls -lh
+
+    - name: Deploy to Cloudflare Workers
+      uses: cloudflare/wrangler-action@v4
+      with:
+        apiToken: ${{ inputs.apiToken }}
+        accountId: ${{ inputs.accountId }}
+        workingDirectory: "./ui/packages/taghelper"
+        packageManager: pnpm
+        command: deploy --keep-vars
