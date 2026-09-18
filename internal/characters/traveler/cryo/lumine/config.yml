@@ -29,7 +29,7 @@ docs:
       video: https://youtu.be/XKQ9Wn1uA9U
       video_credit: charliex3000
   fields:
-    .luminecryo.frostglow: Number of Flowglow stacks the traveler has
+    .luminecryo.frostglow: Number of Frostglow stacks the traveler has
     .luminecryo.icepoint: Number of Icepoint stacks the traveler has
 
 abilities:
@@ -125,3 +125,33 @@ abilities:
         center: PrimaryTarget
         offset: [0, -0.3]
         radius: 4.5
+
+  - name: plunge
+    hitbox:
+      - name: Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+
+      - name: Low_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: High_Plunge
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 5
+
+  - name: low_plunge
+    note: Only available for Lumine. Previous action must be a jump buffed via Xianyun's burst.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.
+
+  - name: high_plunge
+    note: Only available for Lumine. Previous action must be a jump buffed via Xianyun's burst.
+    params:
+      collision: 0 for no collision dmg (default), 1 for collision dmg.

@@ -18,7 +18,7 @@ type Traveler struct {
 	*tmpl.Character
 	gender          int
 	skillSrc        int
-	flostglowStacks int
+	frostglowStacks int
 	skillTravel     int
 	trueMoonBuff    bool
 	trueMoonStacks  int
@@ -72,7 +72,7 @@ func (c *Traveler) AnimationStartDelay(k info.AnimationDelayKey) int {
 func (c *Traveler) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "frostglow":
-		return c.flostglowStacks, nil
+		return c.frostglowStacks, nil
 	case "icepoint":
 		return c.trueMoonStacks, nil
 	default:

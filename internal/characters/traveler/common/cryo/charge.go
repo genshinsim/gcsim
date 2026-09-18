@@ -109,7 +109,7 @@ func (c *Traveler) chargeAttackTruemoon() func(*info.AttackInfo, *info.AttackPat
 	// the ICD seems to be added on hitmark (ICD lasts 914f for Lumine) but gets checked on CA start
 	c.AddStatus(chargeTrueMoonICDKey, 15*60+chargeHitmarks[c.gender][0], true)
 	c.trueMoonStacks = 0
-	c.flostglowStacks = min(c.flostglowStacks+2, skillStacksMax)
+	c.frostglowStacks = min(c.frostglowStacks+2, frostglowMax)
 
 	return func(ai *info.AttackInfo, ap *info.AttackPattern) {
 		ai.Element = attributes.Cryo

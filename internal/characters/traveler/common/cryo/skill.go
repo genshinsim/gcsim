@@ -23,7 +23,7 @@ const (
 	particleICDKey      = "travelercryo-particle-icd"
 	skillKey            = "travelercryo-e"
 	skillICDKey         = "travelercryo-e-icd"
-	skillStacksMax      = 8
+	frostglowMax        = 8
 )
 
 func init() {
@@ -169,7 +169,7 @@ func (c *Traveler) crystalCB(a info.AttackCB) {
 		return
 	}
 
-	c.flostglowStacks = min(c.flostglowStacks+1, skillStacksMax)
+	c.frostglowStacks = min(c.frostglowStacks+1, frostglowMax)
 }
 
 func (c *Traveler) particleCB(a info.AttackCB) {

@@ -56,7 +56,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 			StrikeType: attacks.StrikeTypeDefault,
 			Element:    attributes.Cryo,
 			Durability: 25,
-			Mult:       burst[c.TalentLvlBurst()] + flowGlowBonus[c.TalentLvlBurst()]*float64(c.flostglowStacks),
+			Mult:       burst[c.TalentLvlBurst()] + flowGlowBonus[c.TalentLvlBurst()]*float64(c.frostglowStacks),
 		}
 
 		switch c.getRadiance() {
@@ -64,19 +64,19 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 			ai.Abil += stellarConductText
 			ai.AttackTag = attacks.AttackTagDirectStellarConduct
 			ai.Durability = 0
-			ai.Mult = burstSSC[c.TalentLvlBurst()] + flowGlowBonusSSC[c.TalentLvlBurst()]*float64(c.flostglowStacks)
+			ai.Mult = burstSSC[c.TalentLvlBurst()] + flowGlowBonusSSC[c.TalentLvlBurst()]*float64(c.frostglowStacks)
 			ai.IgnoreDefPercent = 1
 		case radianceStellarSwirl:
 			ai.Abil += stellarSwirlText
 			ai.AttackTag = attacks.AttackTagDirectStellarSwirl
 			ai.Durability = 0
-			ai.Mult = burstSSw[c.TalentLvlBurst()] + flowGlowBonusSSw[c.TalentLvlBurst()]*float64(c.flostglowStacks)
+			ai.Mult = burstSSw[c.TalentLvlBurst()] + frostGlowBonusSSw[c.TalentLvlBurst()]*float64(c.frostglowStacks)
 			ai.IgnoreDefPercent = 1
 		default:
 		}
 
 		hits := 3
-		if c.flostglowStacks == skillStacksMax {
+		if c.frostglowStacks == frostglowMax {
 			hits += 2
 		}
 
@@ -88,8 +88,8 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 				travel+delay,
 			)
 		}
-		c.c6OnBurst(c.flostglowStacks)
-		c.flostglowStacks = 0
+		c.c6OnBurst(c.frostglowStacks)
+		c.frostglowStacks = 0
 	}
 
 	c.QueueCharTask(attack, burstSpawnFrame)

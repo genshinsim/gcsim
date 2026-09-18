@@ -17,7 +17,7 @@ docs:
       video: https://youtu.be/XKQ9Wn1uA9U
       video_credit: charliex3000
   fields:
-    .aethercryo.frostglow: Number of Flowglow stacks the traveler has
+    .aethercryo.frostglow: Number of Frostglow stacks the traveler has
     .aethercryo.icepoint: Number of Icepoint stacks the traveler has
 
 abilities:

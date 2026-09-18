@@ -348,7 +348,7 @@ var (
 	}
 
 	// skill: flowGlowBonus = [2]
-	flowGlowBonusSSw = []float64{
+	frostGlowBonusSSw = []float64{
 		0.027565,
 		0.029633,
 		0.0317,
