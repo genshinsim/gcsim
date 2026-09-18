@@ -1,3 +1,8 @@
 use: pipeline
 kind: weapon
 name: exaiphanesblade
+
+abilities:
+  - name: default
+    params:
+      elements: Number of elements the traveler has resonanted with. Default 7, valid values 1-7, inclusive.

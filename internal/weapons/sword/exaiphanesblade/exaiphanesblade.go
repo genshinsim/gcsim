@@ -79,6 +79,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	if !ok {
 		ele = 7
 	}
+	ele = max(min(ele, 7), 1)
 
 	critBuff := make([]float64, attributes.EndStatType)
 	critBuff[attributes.CD] = float64(ele) * 0.06
