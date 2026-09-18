@@ -1,8 +1,9 @@
 import { curveBasis } from "@visx/curve";
 import { Group } from "@visx/group";
-import { LinePath } from "@visx/shape";
-import type { PieArcDatum } from "@visx/shape/lib/shapes/Pie";
+import { LinePath, type PieProvidedProps } from "@visx/shape";
 import { useMemo } from "react";
+
+type PieArcDatum<Datum> = PieProvidedProps<Datum>["arcs"][number];
 
 type Props<Datum> = {
 	arcs: PieArcDatum<Datum>[];

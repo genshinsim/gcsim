@@ -1,14 +1,16 @@
-import { Grid } from "@visx/grid";
-import type { GridProps } from "@visx/grid/lib/grids/Grid";
-import GridColumns, {
+import {
 	type AllGridColumnsProps,
-} from "@visx/grid/lib/grids/GridColumns";
-import GridRows, { type AllGridRowsProps } from "@visx/grid/lib/grids/GridRows";
-import type { GridScale } from "@visx/grid/lib/types";
+	type AllGridRowsProps,
+	Grid,
+	GridColumns,
+	GridRows,
+	type GridScale,
+} from "@visx/grid";
+import type { ComponentProps } from "react";
 import { DataColorsConst } from "./DataColors";
 
 export const GraphGrid = <XScale extends GridScale, YScale extends GridScale>(
-	props: GridProps<XScale, YScale>,
+	props: ComponentProps<typeof Grid<XScale, YScale>>,
 ) => {
 	return <Grid stroke={DataColorsConst.gray} opacity={0.5} {...props} />;
 };
