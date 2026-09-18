@@ -10,7 +10,6 @@ import {
 
 type Props = {
 	width: number;
-	height: number;
 	names?: string[];
 	end_stats?: model.EndStats[];
 };

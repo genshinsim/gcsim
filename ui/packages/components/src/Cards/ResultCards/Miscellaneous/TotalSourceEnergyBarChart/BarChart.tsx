@@ -12,7 +12,6 @@ import {
 
 type Props = {
 	width: number;
-	height: number;
 	names?: string[];
 	energy?: model.SourceStats[];
 };

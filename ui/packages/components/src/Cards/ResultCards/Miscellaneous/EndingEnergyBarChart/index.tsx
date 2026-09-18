@@ -1,8 +1,11 @@
 import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
-import { ParentSize } from "@visx/responsive";
 import { useTranslation } from "react-i18next";
-import { CardTitle, useRefreshWithTimer } from "../../../../common/gcsim";
+import {
+	CardTitle,
+	ParentWidth,
+	useRefreshWithTimer,
+} from "../../../../common/gcsim";
 import { BarChart } from "./BarChart";
 
 type Props = {
@@ -31,16 +34,11 @@ export default ({ data, running, names }: Props) => {
 					<CardTitle title={t("result.ending_energy")} timer={timer} />
 				</div>
 			</div>
-			<ParentSize>
-				{({ width, height }) => (
-					<BarChart
-						width={width}
-						height={height}
-						end_stats={stats.data}
-						names={names}
-					/>
+			<ParentWidth>
+				{(width) => (
+					<BarChart width={width} end_stats={stats.data} names={names} />
 				)}
-			</ParentSize>
+			</ParentWidth>
 		</Card>
 	);
 };
