@@ -140,6 +140,7 @@ ace.define(
         'hutao',
         'ht',
         'tao',
+        'iansan',
         'ifa',
         'ineffa',
         'jahoda',

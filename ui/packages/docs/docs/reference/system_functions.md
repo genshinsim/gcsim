@@ -11,25 +11,29 @@ The following system functions are available:
 print(arg1, arg2, arg3, ...);
 ```
 
-- The `print` command allows the user to print any arbitrary expression. 
-- The printed message can be viewed in the Sample tab of the viewer under the `user` log category. 
+- The `print` command allows the user to print any arbitrary expression.
+- The printed message can be viewed in the Sample tab of the viewer under the `user` log category.
 - There is no limit on the number of arguments that can be passed to `print`.
 - `print` will always evaluate to 0.
 
 :::info
-As an exception, `print` can take both number and string as arguments. 
+As an exception, `print` can take both number and string as arguments.
 The following is valid:
+
 ```
 print("this is a number: ", 1); // note the space after the :
 ```
+
 `print` will evaluate each argument and concatenate them all into one string, then displaying it on the debug.
 :::
 
 :::info
 Note that any valid expression that evaluates into a number can also be printed. For example:
+
 ```
 print("bennett's current energy is: ", .bennett.energy);
 ```
+
 :::
 
 ## sleep/wait
@@ -43,7 +47,7 @@ sleep(arg);
 wait(arg); //deprecated, use sleep(arg)
 ```
 
-- `sleep` is a special function that will ask gcsim to wait a number of frames. 
+- `sleep` is a special function that will ask gcsim to wait a number of frames.
 - `sleep` will always evaluate to 0.
 
 :::danger
@@ -55,29 +59,30 @@ Due to how gcsim handles actions, the current implementation of `sleep` is not i
 Please use `delay` for this purpose instead.
 
 Example:
+
 ```
 keqing attack;  // Keqing N1
 sleep(2);       // sleeps for 2 frames
 keqing attack;  // Keqing N2
 ```
 
-Many users would expect that gcsim sleeps for 2 frames *after* Keqing's N1 action ends. 
+Many users would expect that gcsim sleeps for 2 frames _after_ Keqing's N1 action ends.
 This is not how `sleep` works.
-`sleep` makes the sim sleep for 2 frames *after* Keqing's N1 action has reached its specified `CanQueueAfter` value. 
+`sleep` makes the sim sleep for 2 frames _after_ Keqing's N1 action has reached its specified `CanQueueAfter` value.
 The duration of `sleep` counts towards the action length.
 
-- expected: 
-    - N1 starts
-    - N1 ends after 15 frames
-    - gcsim sleeps for 2 frames 
-    - N2 starts after a total of 15 + 2 = 17 frames
-- reality: 
-    - N1 starts
-    - N1 `CanQueueAfter` is reached after 11 frames
-    - gcsim sleeps for 2 frames
-    - now there are 15 - (11 + 2) = 2 frames left in the N1 animation
-    - N1 continues for 2 more frames until the N1 animation is over
-    - N2 starts after a total of 11 + 2 + 2 = 15 frames
+- expected:
+  - N1 starts
+  - N1 ends after 15 frames
+  - gcsim sleeps for 2 frames
+  - N2 starts after a total of 15 + 2 = 17 frames
+- reality:
+  - N1 starts
+  - N1 `CanQueueAfter` is reached after 11 frames
+  - gcsim sleeps for 2 frames
+  - now there are 15 - (11 + 2) = 2 frames left in the N1 animation
+  - N1 continues for 2 more frames until the N1 animation is over
+  - N2 starts after a total of 11 + 2 + 2 = 15 frames
 
 To make gcsim sleep for 1 frame after Keqing's N1 action ends, the user would have to insert a `sleep(5);`.
 :::
@@ -88,7 +93,7 @@ To make gcsim sleep for 1 frame after Keqing's N1 action ends, the user would ha
 delay(arg);
 ```
 
-- `delay` is a special function that will ask gcsim to delay the start of the following action by a number of frames. 
+- `delay` is a special function that will ask gcsim to delay the start of the following action by a number of frames.
 - `delay` will always evaluate to 0.
 
 :::danger
@@ -96,9 +101,10 @@ delay(arg);
 :::
 
 :::caution
-`delay` is executed before the sim checks if the next action is ready. 
+`delay` is executed before the sim checks if the next action is ready.
 
 Example:
+
 ```
 keqing burst;
 delay(5);
@@ -106,17 +112,19 @@ keqing burst;
 ```
 
 In this case, the sim would do the following:
+
 - Keqing's 1st Burst is executed
 - gcsim executes a `delay` for 5 frames at the end of the previous action
 - Once the delay is over, gcsim checks if Keqing's 2nd Burst can be executed
 - Since there is not enough energy, the sim will be stuck waiting for energy
 - After enough particles were collected from energy drops, Keqing's 2nd Burst is executed
-:::
+  :::
 
 :::caution
 If the active character is affected by hitlag during the execution of `delay`, then it will last longer than specified.
 
 Example:
+
 ```
 noelle skill;
 sleep(700);
@@ -128,12 +136,11 @@ This example uses C4 Noelle to show a source of hitlag that can occur during `de
 The `sleep` is used so that the C4 shield explosion happens during `delay`.
 
 - Noelle's Skill is executed
-- gcsim will sleep for 700 frames after the `CanQueueAfter` of the previous action 
+- gcsim will sleep for 700 frames after the `CanQueueAfter` of the previous action
 - gcsim starts executing a `delay` that should last 50 frames
 - A few frames after `delay` starts, C4 Noelle applies 13 frames of hitlag
 - Noelle's Attack is executed 50 + 13 = 63 frames after the start of `delay`
-:::
-
+  :::
 
 ## f
 
@@ -183,12 +190,12 @@ execute_action(char, action, params);
 The intent behind this system function is to allow for proper typing/functional support in the future.
 It being exposed here is an unintended side effect which can be used to implement a function that runs before every action.
 
-
 :::danger
 The following example is subject to breaking in the future!
 :::
 
 With that in mind it is possible to add (random) frame delays before each action:
+
 ```
 fn rand_delay(mean, stddev) {
     let del = randnorm() * stddev + mean;
@@ -223,8 +230,30 @@ fn execute_action(char_id number, action_id number, p map) {
 ```
 
 :::danger
-- `char` and `action` must be a number or an expression that evaluates to a number. 
+
+- `char` and `action` must be a number or an expression that evaluates to a number.
 - `params` must be a map or an expression that evaluates to a map.
+  :::
+
+## movement
+
+```
+movement(arg1);
+```
+
+- `movement` will cause the simulation to record movement, such as for Iansan's Burst
+
+:::danger
+`arg1` must be a number or an expression that evaluates to a number.
+:::
+
+:::info
+Example:
+
+```
+movement(1.5);
+```
+
 :::
 
 ## set_particle_delay
@@ -233,16 +262,17 @@ fn execute_action(char_id number, action_id number, p map) {
 set_particle_delay(arg1, arg2);
 ```
 
-- `set_particle_delay` will set the default particle delay for the character supplied in `arg1` to the value in `arg2`. 
+- `set_particle_delay` will set the default particle delay for the character supplied in `arg1` to the value in `arg2`.
 - If `arg2` evaluates to a number that is less than 0, 0 will be used.
 - `set_particle_delay` will always evaluate to 0.
 
 :::danger
-`arg1` must be a string (wrapped in double quotes) and `arg2` must be a number or an expression that evaluates to a number. 
+`arg1` must be a string (wrapped in double quotes) and `arg2` must be a number or an expression that evaluates to a number.
 :::
 
 :::info
 Example:
+
 ```
 set_particle_delay("xingqiu", 100);
 ```
@@ -254,21 +284,23 @@ set_particle_delay("xingqiu", 100);
 ```
 set_swap_icd(arg1);
 ```
+
 :::caution
-- This function replicates behavior not found in typical gameplay. 
+
+- This function replicates behavior not found in typical gameplay.
 - By default, characters in Genshin cannot swap more than once per second. However, by 'booking' (opening the Adventurer's Handbook mid-combat), the swap timer can continue while other in-game timers (such as the Spiral Abyss timer) remain paused.
 - If you use this function, the resulting dps will not represent damage per real time, but will instead represent damage per in-game time.
-:::
+  :::
 
 - `set_swap_icd` will set the default swap ICD for all characters equal to the number of frames in `arg1`.
 - If `arg1` evaluates to a number that is less than 0, an error will be returned.
 - `set_swap_icd` will always evaluate to 0.
 
-:::danger 
-`arg1` must be a number or an expression that evaluates to a number. 
+:::danger
+`arg1` must be a number or an expression that evaluates to a number.
 :::
 
-:::info 
+:::info
 Example:
 
 ```
@@ -304,11 +336,11 @@ set_starting_verdant_dew(3);
 set_default_target(arg);
 ```
 
-- `set_default_target` will set the default target to the index supplied by `arg`. 
+- `set_default_target` will set the default target to the index supplied by `arg`.
 - `set_default_target` will always evaluate to 0.
 
 :::danger
-`arg` must be a number or an expression that evaluates to a number. 
+`arg` must be a number or an expression that evaluates to a number.
 :::
 
 :::danger
@@ -316,7 +348,7 @@ If `arg` is an invalid target (i.e. 3 when there are only 2 targets), then gcsim
 :::
 
 :::info
-For example, if there are 2 targets, then `set_default_target(2)` will set the default target to the 2nd one. 
+For example, if there are 2 targets, then `set_default_target(2)` will set the default target to the 2nd one.
 Note that it starts at 1 and not 0 because 0 is a special case (target 0 represents the player).
 :::
 
@@ -326,7 +358,7 @@ Note that it starts at 1 and not 0 because 0 is a special case (target 0 represe
 set_player_pos(x, y);
 ```
 
-- `set_player_pos` will set the player's current position to the supplied `x` and `y` coordinate. 
+- `set_player_pos` will set the player's current position to the supplied `x` and `y` coordinate.
 - `set_player_pos` will always evaluate to 0.
 
 :::danger
@@ -339,7 +371,7 @@ set_player_pos(x, y);
 set_target_pos(arg, x, y);
 ```
 
-- `set_target_pos` will set the target with index `arg` to the supplied `x` and `y` coordinates. 
+- `set_target_pos` will set the target with index `arg` to the supplied `x` and `y` coordinates.
 - `set_target_pos` will always evaluate to 0.
 
 :::danger
@@ -389,7 +421,6 @@ is_target_dead(arg);
 If `arg` is an invalid target (i.e. 3 when there are only 2 targets), then gcsim will exit with an error.
 :::
 
-
 ## pick_up_crystallize
 
 ```
@@ -398,8 +429,8 @@ pick_up_crystallize(element);
 
 - `pick_up_crystallize` will pick up the oldest crystallize shard with the specified `element` supplied as a string.
 - `pick_up_crystallize` will not pick up any shard if:
- - no shard with the specified `element` exists 
- - there is a shard with the specfied `element`, but it cannot be picked up yet
+- no shard with the specified `element` exists
+- there is a shard with the specfied `element`, but it cannot be picked up yet
 - `pick_up_crystallize` will return the number of crystallize shards that were picked up (either 0 or 1).
 
 :::info
@@ -416,7 +447,7 @@ pick_up_crystallize(element);
 is_even(arg);
 ```
 
-`is_even` evaluates if a given number is even or not. If a number is a floating point, the number if floored first. 
+`is_even` evaluates if a given number is even or not. If a number is a floating point, the number if floored first.
 
 :::danger
 `arg` must be a number or an expression that evaluates to a number.
@@ -485,6 +516,7 @@ set_on_tick(func);
 `set_on_tick` evaluates to null and is a way to make the sim execute a user-defined function every frame.
 
 In the following example, the player's stamina will be printed every frame:
+
 ```
 fn stam() {
     print(.stam);

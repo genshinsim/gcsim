@@ -8,6 +8,9 @@
   "chasca": [
     "Cannot jump while in Nightsoul Blessing"
   ],
+  "iansan": [
+    "Movement must be provided by the user in the action params or by using the `movement` system function to generate Nightsoul points."
+  ],
   "jahoda": [
     "Smoke Bomb skill is not implemented, since it only trigger when no enemies are nearby."
   ],

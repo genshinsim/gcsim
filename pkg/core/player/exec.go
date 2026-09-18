@@ -11,6 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
+	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 )
 
@@ -166,6 +167,11 @@ func (h *Handler) Exec(t action.Action, k keys.Char, param map[string]int) error
 
 	if t != action.ActionAttack {
 		h.ResetAllNormalCounter()
+	}
+
+	// emit movement param
+	if dist, ok := param[info.ParamMovement]; ok {
+		h.Events.Emit(event.OnMovement, float64(dist))
 	}
 
 	h.Events.Emit(event.OnActionExec, h.active, t, param)
