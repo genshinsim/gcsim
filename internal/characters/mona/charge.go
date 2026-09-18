@@ -53,19 +53,28 @@ func (c *char) doCA(target info.Target, delay int) {
 		Durability: 25,
 		Mult:       charge[c.TalentLvlAttack()],
 	}
+
+	ap := combat.NewCircleHit(
+		c.Core.Combat.Player(),
+		target,
+		nil,
+		3,
+	)
+
+	c.Core.Tasks.Add(func() {
+		enemies := c.Core.Combat.EnemiesWithinArea(ap, nil)
+		for _, e := range enemies {
+			c.omenRefreshCB(e)
+		}
+	}, delay)
+	
 	c.Core.QueueAttack(
 		ai,
-		combat.NewCircleHit(
-			c.Core.Combat.Player(),
-			target,
-			nil,
-			3,
-		),
+		ap,
 		delay,
 		delay,
 		c.makeC6CAResetCB(),
 		c.astralGlowGainCB,
-		c.omenRefreshCB,
 		c.c2HexereiCB,
 	)
 }
