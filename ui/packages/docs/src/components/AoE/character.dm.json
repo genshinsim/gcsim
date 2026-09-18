@@ -8214,6 +8214,30 @@
       "radius": 3.2
     },
     {
+      "ability": "plunge",
+      "name": "Plunge",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1,
+      "radius": 1
+    },
+    {
+      "ability": "plunge",
+      "name": "Low_Plunge",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1,
+      "radius": 3
+    },
+    {
+      "ability": "plunge",
+      "name": "High_Plunge",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1,
+      "radius": 5
+    },
+    {
       "ability": "skill",
       "name": "E",
       "shape": "Circle",
