@@ -25,7 +25,6 @@ type char struct {
 	a1Increase bool
 
 	c1Points    float64
-	c2Buff      []float64
 	c4Generated bool
 	c4Stacks    int
 	c6Buff      []float64

@@ -42,34 +42,21 @@ func (c *char) c2Init() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.ATKP] = 0.3
 
-	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...interface{}) {
-		prev := args[0].(int)
-		next := args[1].(int)
-
-		buffDur := c.StatusDuration(a1Key)
-		if buffDur == 0 {
-			return
+	for _, char := range c.Core.Player.Chars() {
+		if char.Index() == c.Index() {
+			continue
 		}
-
-		if prev != c.Index() {
-			c.Core.Player.ByIndex(prev).DeleteStatMod(c2Key)
-		}
-
-		if next != c.Index() {
-			// we don't need to worry about granting this buff when iansan gains her A1, because she
-			// will always be the active character (using skill or using burst)
-			c.Core.Player.ByIndex(next).AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag(c2Key, buffDur),
-				AffectedStat: attributes.ATKP,
-				Amount: func() []float64 {
-					if !c.StatModIsActive(a1Key) {
-						return nil
-					}
-					return m
-				},
-			})
-		}
-	}, c2Key)
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase(c2Key, -1),
+			AffectedStat: attributes.ATKP,
+			Amount: func() []float64 {
+				if !c.StatModIsActive(a1Key) {
+					return nil
+				}
+				return m
+			},
+		})
+	}
 }
 
 func (c *char) c2OnBurst() {
