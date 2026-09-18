@@ -83,6 +83,7 @@ const (
 	PaleFlame                                     // paleflame
 	ResolutionOfSojourner                         // resolutionofsojourner
 	RetracingBolide                               // retracingbolide
+	ScarletProof                                  // scarletproof
 	Scholar                                       // scholar
 	ScrollOfTheHeroOfCinderCity                   // scrolloftheheroofcindercity
 	ShimenawasReminiscence                        // shimenawasreminiscence
@@ -142,6 +143,7 @@ var _SetNames = [...]string{
 	"paleflame",
 	"resolutionofsojourner",
 	"retracingbolide",
+	"scarletproof",
 	"scholar",
 	"scrolloftheheroofcindercity",
 	"shimenawasreminiscence",
@@ -201,6 +203,7 @@ var _SetValues = [...]Set{
 	PaleFlame,
 	ResolutionOfSojourner,
 	RetracingBolide,
+	ScarletProof,
 	Scholar,
 	ScrollOfTheHeroOfCinderCity,
 	ShimenawasReminiscence,
