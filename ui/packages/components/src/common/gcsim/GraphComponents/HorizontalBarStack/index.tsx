@@ -3,6 +3,7 @@ import { Group } from "@visx/group";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { BarStackHorizontal, type StackKey } from "@visx/shape";
 import { useTooltip } from "@visx/tooltip";
+import type { JSX } from "react";
 import { useTranslation } from "react-i18next";
 import { GraphAxisBottom, GraphAxisLeft } from "../Axes";
 import { GraphGridColumns } from "../Grids";

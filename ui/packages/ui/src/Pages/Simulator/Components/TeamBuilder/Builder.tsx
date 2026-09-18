@@ -1,5 +1,5 @@
 import type { Character } from "@gcsim/types";
-import React from "react";
+import React, { type JSX } from "react";
 import { useTranslation } from "react-i18next";
 import { LuPlus } from "react-icons/lu";
 import { CharacterCard } from "../../../../Components/Cards";

@@ -1,6 +1,5 @@
 import {
 	Button,
-	buttonVariants,
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
@@ -126,15 +125,10 @@ const MobileMenu = () => {
 	const links = useNavLinks();
 	return (
 		<DropdownMenu>
-			{/* TODO(react18-compat): trigger uses buttonVariants instead of
-			    `asChild` + <Button> because @gcsim/primitives' Button uses React-19
-			    ref-as-prop (no forwardRef), so under React 18 radix's ref to the
-			    trigger child is dropped and the menu never opens. On React 19,
-			    revert to `<DropdownMenuTrigger asChild><Button .../></DropdownMenuTrigger>`. */}
-			<DropdownMenuTrigger
-				className={buttonVariants({ variant: "ghost", size: "icon" })}
-			>
-				<IoIosMenu size="24px" />
+			<DropdownMenuTrigger asChild>
+				<Button variant="ghost" size="icon">
+					<IoIosMenu size="24px" />
+				</Button>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent align="end" className="w-56">
 				{links.map((link) => (

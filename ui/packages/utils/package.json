@@ -3,6 +3,6 @@
 	"main": "src/index.ts",
 	"private": true,
 	"dependencies": {
-		"react": "^18.2.0"
+		"react": "^19.3.0"
 	}
 }

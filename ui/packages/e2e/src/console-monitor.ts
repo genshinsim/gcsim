@@ -8,8 +8,8 @@ const IGNORED: RegExp[] = [
 	// blip during teardown is not an app fault.
 	/\[vite\] failed to connect to websocket/i,
 	// React routes its dev-only warnings through console.error, prefixed
-	// "Warning:". Under StrictMode the app + its third-party libs (react-helmet,
-	// react-transition-group, blueprint) emit a fixed set — legacy lifecycles,
+	// "Warning:". Under StrictMode the app + its third-party libs
+	// (react-transition-group, blueprint) emit a fixed set — legacy lifecycles,
 	// findDOMNode, the language <select>'s `selected` option. These are
 	// pre-existing and dev-only (absent from a production build); a real crash
 	// surfaces as a `pageerror` or a non-"Warning:" console.error, which this

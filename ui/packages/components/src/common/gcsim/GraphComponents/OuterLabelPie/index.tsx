@@ -2,6 +2,7 @@ import { TooltipProvider } from "@gcsim/primitives";
 import { Group } from "@visx/group";
 import { Pie } from "@visx/shape";
 import { useTooltip } from "@visx/tooltip";
+import type { JSX } from "react";
 import { OuterLabels } from "./OuterLabels";
 import { RenderTooltip, type TooltipData, useTooltipHandles } from "./Tooltip";
 

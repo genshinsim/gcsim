@@ -1,4 +1,4 @@
-import { memo, useRef } from "react";
+import { type JSX, memo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { cn } from "../../lib/utils";
 
