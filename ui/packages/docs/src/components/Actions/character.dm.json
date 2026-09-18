@@ -2231,7 +2231,7 @@
     },
     {
       "ability": "burst",
-      "note": "Requires to use the 'movement' argument on action params to generate Nightsoul points.",
+      "note": "Must use the 'movement' argument on action params or `movement` system function to generate Nightsoul points.",
       "invalid": false
     },
     {
