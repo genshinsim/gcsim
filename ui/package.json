@@ -4,8 +4,9 @@
 	"private": true,
 	"scripts": {
 		"clean": "pnpm store prune && rimraf node_modules",
-		"lint": "biome check .",
-		"lint-ci": "biome check --reporter=github --diagnostic-level=error .",
+		"lint": "biome check . && pnpm check:no-shadcn-tokens",
+		"lint-ci": "biome check --reporter=github --diagnostic-level=error . && pnpm check:no-shadcn-tokens",
+		"check:no-shadcn-tokens": "node scripts/check-no-shadcn-tokens.mjs",
 		"format": "biome check --write .",
 		"circular": "madge --circular --extensions ts ./",
 		"orphans": "madge --orphans --extensions ts ./",
