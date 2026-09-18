@@ -1,6 +1,6 @@
 import { cva, type VariantProps } from "class-variance-authority";
 import { Slot as SlotPrimitive } from "radix-ui";
-import * as React from "react";
+import type * as React from "react";
 
 import { cn } from "../../lib/utils";
 
@@ -39,30 +39,20 @@ const buttonVariants = cva(
 	},
 );
 
-// TODO(react18-compat): forwardRef lets radix `asChild` triggers pass their
-// popper-anchor ref down under React 18. On React 19 (ref-as-prop), revert to a
-// plain function component.
-const Button = React.forwardRef<
-	HTMLButtonElement,
-	React.ComponentProps<"button"> &
-		VariantProps<typeof buttonVariants> & {
-			asChild?: boolean;
-		}
->(function Button(
-	{
-		className,
-		variant = "default",
-		size = "default",
-		asChild = false,
-		...props
-	},
-	ref,
-) {
+function Button({
+	className,
+	variant = "default",
+	size = "default",
+	asChild = false,
+	...props
+}: React.ComponentProps<"button"> &
+	VariantProps<typeof buttonVariants> & {
+		asChild?: boolean;
+	}) {
 	const Comp = asChild ? SlotPrimitive.Slot : "button";
 
 	return (
 		<Comp
-			ref={ref}
 			data-slot="button"
 			data-variant={variant}
 			data-size={size}
@@ -70,6 +60,6 @@ const Button = React.forwardRef<
 			{...props}
 		/>
 	);
-});
+}
 
 export { Button, buttonVariants };
