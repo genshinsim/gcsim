@@ -123,7 +123,7 @@ func (c *Traveler) lowPlungeXY(p map[string]int) action.Info {
 func (c *Traveler) HighPlungeAttack(p map[string]int) (action.Info, error) {
 	if c.gender == 0 {
 		// aether not implemented
-		return action.Info{}, fmt.Errorf("%v: action low_plunge not implemented", c.Base.Key)
+		return action.Info{}, fmt.Errorf("%v: action high_plunge not implemented", c.Base.Key)
 	}
 
 	defer c.Core.Player.SetAirborne(player.Grounded)

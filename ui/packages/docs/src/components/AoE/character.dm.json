@@ -243,6 +243,7 @@
       "name": "E",
       "shape": "Circle",
       "center": "Player",
+      "offset_y": -0.3,
       "fan_angle": 60,
       "radius": 8
     },
@@ -8161,6 +8162,7 @@
       "name": "E",
       "shape": "Circle",
       "center": "Player",
+      "offset_y": -0.3,
       "fan_angle": 60,
       "radius": 8
     },

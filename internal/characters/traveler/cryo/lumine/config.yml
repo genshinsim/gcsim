@@ -29,8 +29,8 @@ docs:
       video: https://youtu.be/XKQ9Wn1uA9U
       video_credit: charliex3000
   fields:
-    .luminecryo.frostglow: Number of flowglow stacks the traveler has
-    .luminecryo.icepoint: Number of icepoint stacks the traveler has
+    .luminecryo.frostglow: Number of Flowglow stacks the traveler has
+    .luminecryo.icepoint: Number of Icepoint stacks the traveler has
 
 abilities:
   - name: default
@@ -107,6 +107,7 @@ abilities:
       - name: E
         shape: Circle
         center: Player
+        offset: [0, -0.3]
         fan_angle: 60
         radius: 8
 

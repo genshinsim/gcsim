@@ -2,11 +2,11 @@
   "aethercryo": [
     {
       "field": ".aethercryo.frostglow",
-      "desc": "Number of flowglow stacks the traveler has"
+      "desc": "Number of Flowglow stacks the traveler has"
     },
     {
       "field": ".aethercryo.icepoint",
-      "desc": "Number of icepoint stacks the traveler has"
+      "desc": "Number of Icepoint stacks the traveler has"
     }
   ],
   "albedo": [
@@ -166,11 +166,11 @@
   "luminecryo": [
     {
       "field": ".luminecryo.frostglow",
-      "desc": "Number of flowglow stacks the traveler has"
+      "desc": "Number of Flowglow stacks the traveler has"
     },
     {
       "field": ".luminecryo.icepoint",
-      "desc": "Number of icepoint stacks the traveler has"
+      "desc": "Number of Icepoint stacks the traveler has"
     }
   ],
   "lyney": [

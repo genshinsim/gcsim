@@ -147,6 +147,9 @@ func (c *Traveler) c6OnBurst(stacks int) {
 		return
 	}
 	for _, char := range c.Core.Player.Chars() {
+		if char.Index() == c.Index() {
+			continue
+		}
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBaseWithHitlag(c6Key, 15*60),
 			Amount: func(ai info.AttackInfo) float64 {
