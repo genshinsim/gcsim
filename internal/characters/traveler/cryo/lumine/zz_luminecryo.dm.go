@@ -14,7 +14,10 @@ import (
 
 func init() {
 	core.RegisterCharFunc(keys.LumineCryo, NewChar)
-	paramsFor := map[action.Action][]string{}
+	paramsFor := map[action.Action][]string{
+		action.ActionSkill: {"travel"},
+		action.ActionBurst: {"travel"},
+	}
 	validation.RegisterCharParamValidationFunc(keys.LumineCryo, func(a action.Action, keys []string) error {
 		valid, ok := paramsFor[a]
 		if !ok {

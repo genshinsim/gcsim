@@ -11,22 +11,24 @@ import (
 
 var burstFrames [][]int
 
-var burstTickHitmarks = []int{60, 60 + 15, 60 + 15 + 6, 60 + 15 + 6 + 6, 60 + 15 + 6 + 6 + 6}
+var burstTickHitmarks = []int{0, 0 + 33, 0 + 33 + 2 + 3, 0 + 33 + 2, 0 + 33 + 2 + 3 + 4}
 
-const burstSpawnFrame = 55
+const burstSpawnFrame = 36
 
 func init() {
 	burstFrames = make([][]int, 2)
 
-	// TODO: Placeholder using DMC frames
-
-	// Male
-	burstFrames[0] = frames.InitAbilSlice(58)
-	burstFrames[0][action.ActionSwap] = 57 // Q -> Swap
+	// Male, assuming same as female for now
+	burstFrames[0] = frames.InitAbilSlice(75)
+	burstFrames[0][action.ActionSkill] = 74 // Q -> E
+	burstFrames[0][action.ActionJump] = 74  // Q -> J
+	burstFrames[0][action.ActionSwap] = 73  // Q -> Swap
 
 	// Female
-	burstFrames[1] = frames.InitAbilSlice(58)
-	burstFrames[1][action.ActionSwap] = 57 // Q -> Swap
+	burstFrames[1] = frames.InitAbilSlice(75)
+	burstFrames[1][action.ActionSkill] = 74 // Q -> E
+	burstFrames[1][action.ActionJump] = 74  // Q -> J
+	burstFrames[1][action.ActionSwap] = 73  // Q -> Swap
 }
 
 // Generates an ice javelin with the power of Cryo, then directs it at enemies to deal multiple
@@ -39,6 +41,11 @@ func init() {
 // Radiance: Stellar Glimmer: DMG from the current Elemental Burst is changed to Cryo DMG of the
 // corresponding Stellar Glimmer reaction type.
 func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
+	travel, ok := p["travel"]
+	if !ok {
+		travel = 6
+	}
+
 	attack := func() {
 		ai := info.AttackInfo{
 			ActorIndex: c.Index(),
@@ -77,8 +84,8 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 			c.Core.QueueAttack(
 				ai,
 				combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.3}, 4.5),
-				delay-burstSpawnFrame,
-				delay-burstSpawnFrame,
+				0,
+				travel+delay,
 			)
 		}
 		c.c6OnBurst(c.flostglowStacks)
@@ -88,7 +95,7 @@ func (c *Traveler) Burst(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(attack, burstSpawnFrame)
 
 	c.SetCD(action.ActionBurst, 15*60)
-	c.ConsumeEnergy(0)
+	c.ConsumeEnergy(6)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames[c.gender]),

@@ -11,13 +11,14 @@ import (
 
 var (
 	skillFrames       [][]int
-	skillTickHitmarks = []int{5, 8}
+	skillTickHitmarks = []int{0, 13}
 )
 
 const (
-	skillTapHitmark     = 24
-	skillFirstTickDelay = 60
-	skillInterval       = 3 * 60
+	skillHitmark        = 19
+	skillFirstTickDelay = 178
+	skillInterval       = 163 + 13
+	skillSscDelay       = 3
 	skillSscICD         = 0.2 * 60
 	particleICDKey      = "travelercryo-particle-icd"
 	skillKey            = "travelercryo-e"
@@ -28,19 +29,23 @@ const (
 func init() {
 	skillFrames = make([][]int, 2)
 
-	// TODO: Placeholder using DMC frames
-
-	// Male
-	skillFrames[0] = frames.InitAbilSlice(37) // E -> N1
-	skillFrames[0][action.ActionDash] = 29    // E -> D
-	skillFrames[0][action.ActionJump] = 29    // E -> J
-	skillFrames[0][action.ActionSwap] = 36    // E -> Swap
+	// Male, assuming the same as female for now
+	skillFrames[0] = frames.InitAbilSlice(66) // E -> W
+	skillFrames[0][action.ActionAttack] = 32  // E -> N1
+	skillFrames[0][action.ActionSkill] = 33   // E -> E, assumed the same a E -> Q
+	skillFrames[0][action.ActionBurst] = 33   // E -> Q
+	skillFrames[0][action.ActionDash] = 33    // E -> D
+	skillFrames[0][action.ActionJump] = 33    // E -> J
+	skillFrames[0][action.ActionSwap] = 32    // E -> Swap
 
 	// Female
-	skillFrames[1] = frames.InitAbilSlice(37) // E -> N1/Q
-	skillFrames[1][action.ActionDash] = 28    // E -> D
-	skillFrames[1][action.ActionJump] = 28    // E -> J
-	skillFrames[1][action.ActionSwap] = 35    // E -> Swap
+	skillFrames[1] = frames.InitAbilSlice(66) // E -> W
+	skillFrames[1][action.ActionAttack] = 32  // E -> N1
+	skillFrames[1][action.ActionSkill] = 33   // E -> E, assumed the same a E -> Q
+	skillFrames[1][action.ActionBurst] = 33   // E -> Q
+	skillFrames[1][action.ActionDash] = 33    // E -> D
+	skillFrames[1][action.ActionJump] = 33    // E -> J
+	skillFrames[1][action.ActionSwap] = 32    // E -> Swap
 }
 
 // Stabs at the opponent with the Traveler's weapon, which releases an ice-cold fog. This deals Cryo
@@ -59,7 +64,7 @@ func init() {
 func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {
-		travel = 10
+		travel = 9
 	}
 	c.skillTravel = travel
 
@@ -78,21 +83,21 @@ func (c *Traveler) Skill(p map[string]int) (action.Info, error) {
 	c.Core.QueueAttack(
 		ai,
 		combat.NewCircleHitOnTargetFanAngle(c.Core.Combat.Player(), info.Point{Y: -0.3}, 8.0, 60),
-		skillTapHitmark,
-		skillTapHitmark,
+		skillHitmark,
+		skillHitmark,
 		c.particleCB,
 	)
 
 	src := c.Core.F
 	c.skillSrc = src
 	c.QueueCharTask(func() { c.skillTicker(src) }, skillFirstTickDelay)
-	c.AddStatus(skillKey, 12*60+skillFirstTickDelay+c.c4SkillBonusDur(), false)
-	c.SetCD(action.ActionSkill, 15*60)
+	c.AddStatus(skillKey, skillHitmark+12*60+c.c4SkillBonusDur(), true)
+	c.SetCDWithDelay(action.ActionSkill, 15*60, 17)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames[c.gender]),
 		AnimationLength: skillFrames[c.gender][action.InvalidAction],
-		CanQueueAfter:   skillFrames[c.gender][action.ActionDash], // earliest cancel
+		CanQueueAfter:   skillFrames[c.gender][action.ActionSwap], // earliest cancel
 		State:           action.SkillState,
 	}, nil
 }
@@ -156,7 +161,7 @@ func (c *Traveler) naCaPlungeCB(a info.AttackCB) {
 	}
 
 	c.AddStatus(skillICDKey, skillSscICD, true)
-	c.queueCrystal(3)
+	c.queueCrystal(skillSscDelay)
 }
 
 func (c *Traveler) crystalCB(a info.AttackCB) {

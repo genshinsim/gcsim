@@ -12,6 +12,10 @@ docs:
       count_credit: Kolibri#7675
       video: https://youtu.be/2LnpQIVIszY
       video_credit: Kolibri#7675
+    - count: https://docs.google.com/spreadsheets/d/1AiGd5rDlKE22InFTKiRyqAKXMDg4qfvginvzWf_BwnA/edit?usp=sharing
+      count_credit: charliex3000
+      video: https://youtu.be/XKQ9Wn1uA9U
+      video_credit: charliex3000
   fields:
     .aethercryo.frostglow: Number of flowglow stacks the traveler has
     .aethercryo.icepoint: Number of icepoint stacks the traveler has
@@ -88,7 +92,7 @@ abilities:
 
   - name: skill
     params:
-      travel: Projectile travel time. Default 10 frames.
+      travel: Projectile travel time. Default 9 frames.
     hitbox:
       - name: E
         shape: Circle
@@ -102,6 +106,8 @@ abilities:
         radius: 1.2
 
   - name: burst
+    params:
+      travel: Projectile travel time. Default 6 frames.
     hitbox:
       - name: Q
         shape: Circle
