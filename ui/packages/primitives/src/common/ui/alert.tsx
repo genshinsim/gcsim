@@ -8,13 +8,13 @@ const alertVariants = cva(
 	{
 		variants: {
 			variant: {
-				default: "bg-card text-card-foreground",
+				default: "bg-deprecated-card text-deprecated-card-foreground",
 				destructive:
-					"bg-card text-destructive *:data-[slot=alert-description]:text-destructive/90",
+					"bg-deprecated-card text-deprecated-destructive *:data-[slot=alert-description]:text-deprecated-destructive/90",
 				warning:
-					"bg-card text-warning *:data-[slot=alert-description]:text-warning/90",
+					"bg-deprecated-card text-deprecated-warning *:data-[slot=alert-description]:text-deprecated-warning/90",
 				success:
-					"bg-card text-success *:data-[slot=alert-description]:text-success/90",
+					"bg-deprecated-card text-deprecated-success *:data-[slot=alert-description]:text-deprecated-success/90",
 			},
 		},
 		defaultVariants: {
@@ -60,7 +60,7 @@ function AlertDescription({
 		<div
 			data-slot="alert-description"
 			className={cn(
-				"col-start-2 grid justify-items-start gap-1 text-sm text-muted-foreground [&_p]:leading-relaxed",
+				"col-start-2 grid justify-items-start gap-1 text-sm text-deprecated-muted-foreground [&_p]:leading-relaxed",
 				className,
 			)}
 			{...props}

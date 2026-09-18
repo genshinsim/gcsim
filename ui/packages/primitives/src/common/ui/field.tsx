@@ -55,7 +55,7 @@ function FieldGroup({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 const fieldVariants = cva(
-	"group/field flex w-full gap-3 data-[invalid=true]:text-destructive",
+	"group/field flex w-full gap-3 data-[invalid=true]:text-deprecated-destructive",
 	{
 		variants: {
 			orientation: {
@@ -118,7 +118,7 @@ function FieldLabel({
 			className={cn(
 				"group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50",
 				"has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col has-[>[data-slot=field]]:rounded-md has-[>[data-slot=field]]:border [&>*]:data-[slot=field]:p-4",
-				"has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/5 dark:has-data-[state=checked]:bg-primary/10",
+				"has-data-[state=checked]:border-deprecated-primary has-data-[state=checked]:bg-deprecated-primary/5 dark:has-data-[state=checked]:bg-deprecated-primary/10",
 				className,
 			)}
 			{...props}
@@ -144,9 +144,9 @@ function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
 		<p
 			data-slot="field-description"
 			className={cn(
-				"text-sm leading-normal font-normal text-muted-foreground group-has-[[data-orientation=horizontal]]/field:text-balance",
+				"text-sm leading-normal font-normal text-deprecated-muted-foreground group-has-[[data-orientation=horizontal]]/field:text-balance",
 				"last:mt-0 nth-last-2:-mt-1 [[data-variant=legend]+&]:-mt-1.5",
-				"[&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-primary",
+				"[&>a]:underline [&>a]:underline-offset-4 [&>a:hover]:text-deprecated-primary",
 				className,
 			)}
 			{...props}
@@ -174,7 +174,7 @@ function FieldSeparator({
 			<Separator className="absolute inset-0 top-1/2" />
 			{children && (
 				<span
-					className="relative mx-auto block w-fit bg-background px-2 text-muted-foreground"
+					className="relative mx-auto block w-fit bg-deprecated-background px-2 text-deprecated-muted-foreground"
 					data-slot="field-separator-content"
 				>
 					{children}
@@ -227,7 +227,10 @@ function FieldError({
 		<div
 			role="alert"
 			data-slot="field-error"
-			className={cn("text-sm font-normal text-destructive", className)}
+			className={cn(
+				"text-sm font-normal text-deprecated-destructive",
+				className,
+			)}
 			{...props}
 		>
 			{content}

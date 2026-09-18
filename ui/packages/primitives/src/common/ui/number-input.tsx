@@ -123,7 +123,7 @@ function StepperButton({
 			tabIndex={-1}
 			data-slot="number-input-stepper"
 			className={cn(
-				"h-auto min-w-0 flex-1 rounded-none border border-l-0 border-input px-2 py-0 text-muted-foreground focus-visible:relative focus-visible:z-10",
+				"h-auto min-w-0 flex-1 rounded-none border border-l-0 border-deprecated-input px-2 py-0 text-deprecated-muted-foreground focus-visible:relative focus-visible:z-10",
 				direction === "up" ? "rounded-tr-md border-b-0" : "rounded-br-md",
 				className,
 			)}

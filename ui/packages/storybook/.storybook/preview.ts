@@ -11,8 +11,8 @@ const withTheme: Decorator = (Story, context) => {
 		{
 			className: dark ? "dark" : undefined,
 			style: {
-				backgroundColor: "hsl(var(--background))",
-				color: "hsl(var(--foreground))",
+				backgroundColor: "hsl(var(--deprecated-background))",
+				color: "hsl(var(--deprecated-foreground))",
 				minHeight: "100vh",
 				padding: "1rem",
 			},
