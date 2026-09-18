@@ -6,6 +6,13 @@
       "desc": "Number of stacks to gain at the beginning. Default 0, maximum 10."
     }
   ],
+  "exaiphanesblade": [
+    {
+      "ability": "-",
+      "param": "elements",
+      "desc": "Number of elements the traveler has resonanted with. Default 7, valid values 1-7, inclusive."
+    }
+  ],
   "forestregalia": [
     {
       "ability": "-",
