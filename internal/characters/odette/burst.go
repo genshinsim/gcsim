@@ -91,10 +91,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 	// If the dance double is already on the field, we don't reset the attack order after burst
 	nextAttack := danceDoublePlume
+	refresh := false
 	if c.StatusIsActive(danceDoubleKey) {
 		nextAttack = c.danceDoubleNextAtk
+		refresh = true
 	}
-	c.QueueCharTask(func() { c.summonDanceDouble(nextAttack, burstFirstTickDelay) }, burstSummonFrame)
+	c.QueueCharTask(func() { c.startDanceDouble(nextAttack, burstFirstTickDelay, refresh) }, burstSummonFrame)
 
 	c.AddStatus(skillRecastKey, 6*60+burstSummonFrame, false)
 	c.ConsumeEnergy(7)
