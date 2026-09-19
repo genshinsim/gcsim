@@ -646,6 +646,9 @@ importers:
       '@gcsim/components':
         specifier: workspace:^
         version: link:../components
+      '@gcsim/data':
+        specifier: workspace:^
+        version: link:../data
       '@gcsim/executors':
         specifier: workspace:^
         version: link:../executors
