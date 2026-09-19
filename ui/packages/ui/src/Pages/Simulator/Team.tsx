@@ -139,9 +139,7 @@ export function Team() {
 					<CommandItem value={itemKey(item)} onSelect={state.onSelect}>
 						<span className="flex-1">{item.text}</span>
 						{item.label && (
-							<span className="text-deprecated-muted-foreground text-xs">
-								{item.label}
-							</span>
+							<span className="text-g-ink-mute text-g-xs">{item.label}</span>
 						)}
 					</CommandItem>
 				)}

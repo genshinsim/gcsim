@@ -52,10 +52,10 @@ export const Builder = (props: Props) => {
 		>
 			<button
 				type="button"
-				className="bg-gray-600 shadow rounded-md hover:bg-gray-500 flex items-center justify-center min-h-[226px] h-full w-full"
+				className="bg-g-surface-2 rounded-g-md hover:bg-g-surface-3 flex items-center justify-center min-h-[226px] h-full w-full"
 				onClick={props.handleAdd}
 			>
-				<LuPlus size={30} color="white" />
+				<LuPlus size={30} color="var(--g-text-mute)" />
 			</button>
 		</div>
 	);
