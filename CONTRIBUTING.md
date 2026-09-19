@@ -1,5 +1,11 @@
 # Contributing Guidelines
 
+## Licensing of contributions
+
+gcsim is licensed under the [GNU Affero General Public License v3.0](LICENSE) (AGPLv3) effective 2026-09-19. Released versions up to and including v2.47.2 were under the [MIT License](LICENSE-MIT).
+
+By submitting a contribution (e.g. a pull request), you agree that your contribution is licensed under the AGPLv3, the license of this project.
+
 If you would like to contribute code to this project, please follow these pull request guidelines:
 
 0. (Optional but encouraged) Find at least one maintainer interested in your PR.
