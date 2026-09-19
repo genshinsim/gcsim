@@ -43,7 +43,7 @@ export function LatestVersion() {
 			{isLoaded ? (
 				<>
 					<div className="flex flex-col gap-4">
-						<h1 className="text-center text-xl md:text-2xl lg:text-4xl">
+						<h1 className="text-center text-g-h1">
 							<b>{t("dash.latest_release")}</b>
 							<a
 								href={`https://github.com/genshinsim/gcsim/releases/tag/${tag}`}
@@ -53,7 +53,9 @@ export function LatestVersion() {
 						</h1>
 					</div>
 					<div className="flex flex-col">
-						<h2 className="text-center text-2xl">{t("dash.new_characters")}</h2>
+						<h2 className="text-center text-g-h2">
+							{t("dash.new_characters")}
+						</h2>
 						<div className="flex gap-4">
 							{portraits.map((char) => (
 								<div key={char} className="flex flex-col items-center">
@@ -78,7 +80,7 @@ export function LatestVersion() {
 							target="_blank"
 							rel="noreferrer"
 						>
-							<span className="text-xl md:text-2xl font-semibold">
+							<span className="text-g-lg font-semibold">
 								{t("dash.view_releases")}
 							</span>
 						</a>
