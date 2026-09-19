@@ -5,22 +5,16 @@ import type * as React from "react";
 import { cn } from "../../lib/utils";
 
 const badgeVariants = cva(
-	"inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:border-deprecated-ring focus-visible:ring-[3px] focus-visible:ring-deprecated-ring/50 aria-invalid:border-deprecated-destructive aria-invalid:ring-deprecated-destructive/20 dark:aria-invalid:ring-deprecated-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3",
+	"inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-g-pill border border-transparent px-2 py-0.5 text-g-xs font-semibold whitespace-nowrap transition-[color,box-shadow] focus-visible:border-g-accent focus-visible:ring-[3px] focus-visible:ring-g-accent/50 aria-invalid:border-g-danger aria-invalid:ring-g-danger/20 [&>svg]:pointer-events-none [&>svg]:size-3",
 	{
 		variants: {
 			variant: {
-				default:
-					"bg-deprecated-primary text-deprecated-primary-foreground [a&]:hover:bg-deprecated-primary/90",
-				secondary:
-					"bg-deprecated-secondary text-deprecated-secondary-foreground [a&]:hover:bg-deprecated-secondary/90",
-				destructive:
-					"bg-deprecated-destructive text-white focus-visible:ring-deprecated-destructive/20 dark:bg-deprecated-destructive/60 dark:focus-visible:ring-deprecated-destructive/40 [a&]:hover:bg-deprecated-destructive/90",
-				success:
-					"bg-deprecated-success text-deprecated-success-foreground [a&]:hover:bg-deprecated-success/90",
-				warning:
-					"bg-deprecated-warning text-deprecated-warning-foreground [a&]:hover:bg-deprecated-warning/90",
-				outline:
-					"border-deprecated-border text-deprecated-foreground [a&]:hover:bg-deprecated-accent [a&]:hover:text-deprecated-accent-foreground",
+				default: "bg-g-accent-weak text-g-accent",
+				secondary: "bg-g-surface-2 text-g-ink-dim",
+				destructive: "bg-g-danger/15 text-g-danger",
+				success: "bg-g-success/15 text-g-success",
+				warning: "bg-g-warning/15 text-g-warning",
+				outline: "border-g-line text-g-ink-dim [a&]:hover:bg-g-surface-2",
 			},
 		},
 		defaultVariants: {

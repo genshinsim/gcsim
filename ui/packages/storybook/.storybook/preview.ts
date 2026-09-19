@@ -5,14 +5,18 @@ import "../src/index.css";
 import i18n from "./i18n";
 
 const withTheme: Decorator = (Story, context) => {
-	const dark = context.globals.theme !== "light";
+	// Gauge palettes: Cryo is the bare `:root` default; other palettes live under
+	// `[data-theme]`. Scoping the attribute to the wrapper re-resolves every
+	// `--g-*` var for the story subtree, so `var(--g-bg)`/`var(--g-text)` paint
+	// the canvas in whichever palette is selected.
+	const theme = context.globals.theme === "light" ? "abyss-l" : undefined;
 	return React.createElement(
 		"div",
 		{
-			className: dark ? "dark" : undefined,
+			"data-theme": theme,
 			style: {
-				backgroundColor: "hsl(var(--deprecated-background))",
-				color: "hsl(var(--deprecated-foreground))",
+				backgroundColor: "var(--g-bg)",
+				color: "var(--g-text)",
 				minHeight: "100vh",
 				padding: "1rem",
 			},
@@ -79,13 +83,13 @@ const preview: Preview = {
 	decorators: [withTheme],
 	globalTypes: {
 		theme: {
-			description: "shadcn theme",
+			description: "Gauge palette",
 			toolbar: {
 				title: "Theme",
 				icon: "circlehollow",
 				items: [
-					{ value: "dark", title: "Dark" },
-					{ value: "light", title: "Light" },
+					{ value: "cryo", title: "Cryo" },
+					{ value: "light", title: "Light (Abyss)" },
 				],
 				dynamicTitle: true,
 			},
@@ -93,7 +97,7 @@ const preview: Preview = {
 	},
 	globals: {
 		locale: "en",
-		theme: "dark",
+		theme: "cryo",
 		locales: {
 			en: "English",
 			zh: "中文",

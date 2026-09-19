@@ -5,29 +5,26 @@ import type * as React from "react";
 import { cn } from "../../lib/utils";
 
 const buttonVariants = cva(
-	"inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-all outline-none focus-visible:border-deprecated-ring focus-visible:ring-[3px] focus-visible:ring-deprecated-ring/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-deprecated-destructive aria-invalid:ring-deprecated-destructive/20 dark:aria-invalid:ring-deprecated-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+	"inline-flex shrink-0 items-center justify-center gap-g-base rounded-g-btn font-g-body text-g-body font-semibold whitespace-nowrap transition-all outline-none focus-visible:border-g-accent focus-visible:ring-[3px] focus-visible:ring-g-accent/50 disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-g-danger aria-invalid:ring-g-danger/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
 	{
 		variants: {
 			variant: {
-				default:
-					"bg-deprecated-primary text-deprecated-primary-foreground hover:bg-deprecated-primary/90",
+				default: "bg-g-accent text-g-accent-fg hover:bg-g-accent-hover",
 				destructive:
-					"bg-deprecated-destructive text-white hover:bg-deprecated-destructive/90 focus-visible:ring-deprecated-destructive/20 dark:bg-deprecated-destructive/60 dark:focus-visible:ring-deprecated-destructive/40",
+					"bg-g-danger text-white hover:bg-g-danger/90 focus-visible:ring-g-danger/20",
 				outline:
-					"border bg-deprecated-background shadow-xs hover:bg-deprecated-accent hover:text-deprecated-accent-foreground dark:border-deprecated-input dark:bg-deprecated-input/30 dark:hover:bg-deprecated-input/50",
-				secondary:
-					"bg-deprecated-secondary text-deprecated-secondary-foreground hover:bg-deprecated-secondary/80",
-				ghost:
-					"hover:bg-deprecated-accent hover:text-deprecated-accent-foreground dark:hover:bg-deprecated-accent/50",
-				link: "text-deprecated-primary underline-offset-4 hover:underline",
+					"border border-g-line bg-g-surface-2 text-g-ink hover:border-g-accent",
+				secondary: "bg-g-surface-2 text-g-ink hover:bg-g-surface-3",
+				ghost: "text-g-ink hover:bg-g-surface-2",
+				link: "text-g-accent underline-offset-4 hover:underline",
 			},
 			size: {
-				default: "h-9 px-4 py-2 has-[>svg]:px-3",
-				xs: "h-6 gap-1 rounded-md px-2 text-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
-				sm: "h-8 gap-1.5 rounded-md px-3 has-[>svg]:px-2.5",
-				lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-				icon: "size-9",
-				"icon-xs": "size-6 rounded-md [&_svg:not([class*='size-'])]:size-3",
+				default: "h-g-ctrl px-g-btn-x py-2 has-[>svg]:px-3",
+				xs: "h-6 gap-1 rounded-g-btn px-2 text-g-xs has-[>svg]:px-1.5 [&_svg:not([class*='size-'])]:size-3",
+				sm: "h-8 gap-1.5 rounded-g-btn px-3 text-g-sm has-[>svg]:px-2.5",
+				lg: "h-10 rounded-g-btn px-6 text-g-lg has-[>svg]:px-4",
+				icon: "size-g-ctrl",
+				"icon-xs": "size-6 rounded-g-btn [&_svg:not([class*='size-'])]:size-3",
 				"icon-sm": "size-8",
 				"icon-lg": "size-10",
 			},
