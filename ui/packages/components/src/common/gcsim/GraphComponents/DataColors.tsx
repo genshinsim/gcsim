@@ -1,9 +1,34 @@
 import { scaleOrdinal } from "@visx/scale";
 import i18next from "i18next";
-import { Colors } from "./colors";
 
-function safeGet(colors: string[], i: number) {
-	return colors[i % colors.length];
+// Consume the raw `--g-*` palette layer, not the coined `--color-g-*` tokens:
+// the latter are `@theme inline` values that only exist as CSS vars where a
+// Tailwind utility references them, so they resolve to nothing inside SVG fills.
+function series(i: number) {
+	return `var(--g-s${(i % 6) + 1})`;
+}
+
+function shade(base: string, towards: "text" | "bg", pct: number) {
+	return `color-mix(in srgb, ${base} ${pct}%, var(--g-${towards}))`;
+}
+
+const q1 = (i: number) => shade(series(i), "bg", 55);
+const q2 = (i: number) => shade(series(i), "bg", 78);
+const q3 = (i: number) => series(i);
+const q4 = (i: number) => shade(series(i), "text", 80);
+const q5 = (i: number) => shade(series(i), "text", 60);
+
+function element(token: string) {
+	const base = `var(--g-${token})`;
+	return {
+		value: base,
+		label: shade(base, "text", 80),
+		highlight: shade(base, "text", 60),
+	};
+}
+
+function seriesTriple(i: number) {
+	return { value: q3(i), label: q4(i), highlight: q5(i) };
 }
 
 type ActionColor = {
@@ -18,173 +43,33 @@ type ElementColor = {
 	value: string;
 };
 
-// Qualitative follows a specific order defined by bp4 to maximize distinction
-const qualitative1 = [
-	Colors.CERULEAN1,
-	Colors.FOREST1,
-	Colors.GOLD1,
-	Colors.VERMILION1,
-	Colors.VIOLET1,
-	Colors.TURQUOISE1,
-	Colors.ROSE1,
-	Colors.LIME1,
-	Colors.SEPIA1,
-	Colors.INDIGO1,
-];
-
-const qualitative2 = [
-	Colors.CERULEAN2,
-	Colors.FOREST2,
-	Colors.GOLD2,
-	Colors.VERMILION2,
-	Colors.VIOLET2,
-	Colors.TURQUOISE2,
-	Colors.ROSE2,
-	Colors.LIME2,
-	Colors.SEPIA2,
-	Colors.INDIGO2,
-];
-
-const qualitative3 = [
-	Colors.CERULEAN3,
-	Colors.FOREST3,
-	Colors.GOLD3,
-	Colors.VERMILION3,
-	Colors.VIOLET3,
-	Colors.TURQUOISE3,
-	Colors.ROSE3,
-	Colors.LIME3,
-	Colors.SEPIA3,
-	Colors.INDIGO3,
-];
-
-const qualitative4 = [
-	Colors.CERULEAN4,
-	Colors.FOREST4,
-	Colors.GOLD4,
-	Colors.VERMILION4,
-	Colors.VIOLET4,
-	Colors.TURQUOISE4,
-	Colors.ROSE4,
-	Colors.LIME4,
-	Colors.SEPIA4,
-	Colors.INDIGO4,
-];
-
-const qualitative5 = [
-	Colors.CERULEAN5,
-	Colors.FOREST5,
-	Colors.GOLD5,
-	Colors.VERMILION5,
-	Colors.VIOLET5,
-	Colors.TURQUOISE5,
-	Colors.ROSE5,
-	Colors.LIME5,
-	Colors.SEPIA5,
-	Colors.INDIGO5,
-];
-
 export const DataColorsConst = {
-	gray: "#9ca3af", // same as tailwind gray-400
+	gray: "var(--g-border)",
 
-	qualitative1: (i: number) => safeGet(qualitative1, i),
-	qualitative2: (i: number) => safeGet(qualitative2, i),
-	qualitative3: (i: number) => safeGet(qualitative3, i),
-	qualitative4: (i: number) => safeGet(qualitative4, i),
-	qualitative5: (i: number) => safeGet(qualitative5, i),
+	qualitative1: (i: number) => q1(i),
+	qualitative2: (i: number) => q2(i),
+	qualitative3: (i: number) => q3(i),
+	qualitative4: (i: number) => q4(i),
+	qualitative5: (i: number) => q5(i),
 };
 
 export function useDataColors() {
-	const actions: Map<string, ActionColor> = new Map([
-		[
-			i18next.t("actions.attack"),
-			{
-				highlight: Colors.CERULEAN5,
-				label: Colors.CERULEAN4,
-				value: Colors.CERULEAN3,
-			},
-		],
-		[
-			i18next.t("actions.charge"),
-			{
-				highlight: Colors.FOREST5,
-				label: Colors.FOREST4,
-				value: Colors.FOREST3,
-			},
-		],
-		[
-			i18next.t("actions.aim"),
-			{
-				highlight: Colors.GOLD5,
-				label: Colors.GOLD4,
-				value: Colors.GOLD3,
-			},
-		],
-		[
-			i18next.t("actions.skill"),
-			{
-				highlight: Colors.VERMILION5,
-				label: Colors.VERMILION4,
-				value: Colors.VERMILION3,
-			},
-		],
-		[
-			i18next.t("actions.burst"),
-			{
-				highlight: Colors.VIOLET5,
-				label: Colors.VIOLET4,
-				value: Colors.VIOLET3,
-			},
-		],
-		[
-			i18next.t("actions.low_plunge"),
-			{
-				highlight: Colors.TURQUOISE5,
-				label: Colors.TURQUOISE4,
-				value: Colors.TURQUOISE3,
-			},
-		],
-		[
-			i18next.t("actions.high_plunge"),
-			{
-				highlight: Colors.ROSE5,
-				label: Colors.ROSE4,
-				value: Colors.ROSE3,
-			},
-		],
-		[
-			i18next.t("actions.dash"),
-			{
-				highlight: Colors.LIME5,
-				label: Colors.LIME4,
-				value: Colors.LIME3,
-			},
-		],
-		[
-			i18next.t("actions.jump"),
-			{
-				highlight: Colors.SEPIA5,
-				label: Colors.SEPIA4,
-				value: Colors.SEPIA3,
-			},
-		],
-		[
-			i18next.t("actions.walk"),
-			{
-				highlight: Colors.INDIGO5,
-				label: Colors.INDIGO4,
-				value: Colors.INDIGO3,
-			},
-		],
-		[
-			i18next.t("actions.swap"),
-			{
-				highlight: Colors.ORANGE5,
-				label: Colors.ORANGE4,
-				value: Colors.ORANGE3,
-			},
-		],
-	]);
+	const actionKeys = [
+		"actions.attack",
+		"actions.charge",
+		"actions.aim",
+		"actions.skill",
+		"actions.burst",
+		"actions.low_plunge",
+		"actions.high_plunge",
+		"actions.dash",
+		"actions.jump",
+		"actions.walk",
+		"actions.swap",
+	] as const;
+	const actions: Map<string, ActionColor> = new Map(
+		actionKeys.map((key, i) => [i18next.t(key), seriesTriple(i)]),
+	);
 
 	const actionColor = scaleOrdinal<string, string>({
 		domain: Array.from(actions.keys()),
@@ -202,80 +87,18 @@ export function useDataColors() {
 	});
 
 	const elements: Map<string, ElementColor> = new Map([
-		[
-			i18next.t("elements.electro"),
-			{
-				highlight: Colors.VIOLET5,
-				label: Colors.VIOLET4,
-				value: Colors.VIOLET3,
-			},
-		],
-		[
-			i18next.t("elements.pyro"),
-			{
-				highlight: Colors.VERMILION5,
-				label: Colors.VERMILION4,
-				value: Colors.VERMILION3,
-			},
-		],
-		[
-			i18next.t("elements.cryo"),
-			{
-				highlight: "#FFF",
-				label: "#95CACB",
-				value: "#4B8DAA",
-			},
-		],
-		[
-			i18next.t("elements.hydro"),
-			{
-				highlight: Colors.CERULEAN5,
-				label: Colors.CERULEAN4,
-				value: Colors.CERULEAN3,
-			},
-		],
-		[
-			i18next.t("elements.dendro"),
-			{
-				highlight: Colors.FOREST5,
-				label: Colors.FOREST4,
-				value: Colors.FOREST3,
-			},
-		],
-		[
-			i18next.t("elements.anemo"),
-			{
-				highlight: Colors.TURQUOISE5,
-				label: Colors.TURQUOISE4,
-				value: Colors.TURQUOISE3,
-			},
-		],
-		[
-			i18next.t("elements.geo"),
-			{
-				highlight: Colors.GOLD5,
-				label: Colors.GOLD4,
-				value: Colors.GOLD3,
-			},
-		],
-		[
-			i18next.t("elements.physical"),
-			{
-				highlight: Colors.SEPIA5,
-				label: Colors.SEPIA4,
-				value: Colors.SEPIA3,
-			},
-		],
+		[i18next.t("elements.electro"), element("electro")],
+		[i18next.t("elements.pyro"), element("pyro")],
+		[i18next.t("elements.cryo"), element("cryo")],
+		[i18next.t("elements.hydro"), element("hydro")],
+		[i18next.t("elements.dendro"), element("dendro")],
+		[i18next.t("elements.anemo"), element("anemo")],
+		[i18next.t("elements.geo"), element("geo")],
+		[i18next.t("elements.physical"), element("text-dim")],
 
 		// not possible, but defined in attributes/element.go so here just in case
-		[
-			i18next.t("elements.frozen"),
-			{ highlight: "#000", label: "#000", value: "#000" },
-		],
-		[
-			i18next.t("elements.quicken"),
-			{ highlight: "#FFF", label: "#FFF", value: "#FFF" },
-		],
+		[i18next.t("elements.frozen"), element("cryo")],
+		[i18next.t("elements.quicken"), element("dendro")],
 	]);
 
 	const elementColor = scaleOrdinal<string, string>({
@@ -294,94 +117,17 @@ export function useDataColors() {
 	});
 
 	const reactableModifiers: Map<string, ElementColor> = new Map([
-		[
-			i18next.t("elements.electro"),
-			{
-				highlight: Colors.VIOLET5,
-				label: Colors.VIOLET4,
-				value: Colors.VIOLET3,
-			},
-		],
-		[
-			i18next.t("elements.pyro"),
-			{
-				highlight: Colors.VERMILION5,
-				label: Colors.VERMILION4,
-				value: Colors.VERMILION3,
-			},
-		],
-		[
-			i18next.t("elements.cryo"),
-			{
-				highlight: "#FFF",
-				label: "#95CACB",
-				value: "#4B8DAA",
-			},
-		],
-		[
-			i18next.t("elements.hydro"),
-			{
-				highlight: Colors.CERULEAN5,
-				label: Colors.CERULEAN4,
-				value: Colors.CERULEAN3,
-			},
-		],
-		[
-			i18next.t("elements.dendro"),
-			{
-				highlight: Colors.FOREST5,
-				label: Colors.FOREST4,
-				value: Colors.FOREST3,
-			},
-		],
-		[
-			i18next.t("elements.anemo"),
-			{
-				highlight: Colors.TURQUOISE5,
-				label: Colors.TURQUOISE4,
-				value: Colors.TURQUOISE3,
-			},
-		],
-		[
-			i18next.t("elements.geo"),
-			{
-				highlight: Colors.GOLD5,
-				label: Colors.GOLD4,
-				value: Colors.GOLD3,
-			},
-		],
-		[
-			i18next.t("elements.frozen"),
-			{
-				highlight: Colors.TURQUOISE5,
-				label: Colors.TURQUOISE4,
-				value: Colors.TURQUOISE3,
-			},
-		],
-		[
-			i18next.t("elements.quicken"),
-			{
-				highlight: Colors.GREEN5,
-				label: Colors.GREEN4,
-				value: Colors.GREEN3,
-			},
-		],
-		[
-			i18next.t("elements.dendro-fuel"),
-			{
-				highlight: Colors.LIME5,
-				label: Colors.LIME4,
-				value: Colors.LIME3,
-			},
-		],
-		[
-			i18next.t("elements.burning"),
-			{
-				highlight: Colors.RED5,
-				label: Colors.RED4,
-				value: Colors.RED3,
-			},
-		],
+		[i18next.t("elements.electro"), element("electro")],
+		[i18next.t("elements.pyro"), element("pyro")],
+		[i18next.t("elements.cryo"), element("cryo")],
+		[i18next.t("elements.hydro"), element("hydro")],
+		[i18next.t("elements.dendro"), element("dendro")],
+		[i18next.t("elements.anemo"), element("anemo")],
+		[i18next.t("elements.geo"), element("geo")],
+		[i18next.t("elements.frozen"), element("cryo")],
+		[i18next.t("elements.quicken"), element("dendro")],
+		[i18next.t("elements.dendro-fuel"), element("dendro")],
+		[i18next.t("elements.burning"), element("pyro")],
 	]);
 
 	const reactableModifierColor = scaleOrdinal<string, string>({
@@ -416,11 +162,11 @@ export function useDataColors() {
 			elementHighlight: elementHighlightColor,
 
 			// TODO: better colors for characters?
-			character: (i: number) => qualitative3[i],
-			characterLabel: (i: number) => qualitative4[i],
+			character: (i: number) => q3(i),
+			characterLabel: (i: number) => q4(i),
 
-			target: (k: string) => qualitative3[Number(k) - 1],
-			targetLabel: (k: string) => qualitative4[Number(k) - 1],
+			target: (k: string) => q3(Number(k) - 1),
+			targetLabel: (k: string) => q4(Number(k) - 1),
 		},
 	};
 }

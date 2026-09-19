@@ -1,3 +1,4 @@
+import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { memo, useMemo } from "react";
@@ -27,7 +28,7 @@ export default ({ data, running, names }: Props) => {
 	);
 
 	return (
-		<div className="flex flex-col col-span-2 h-72 min-h-full gap-0">
+		<Card className="flex flex-col col-span-2 h-72 min-h-full gap-0 p-5">
 			<CardTitle
 				title={t("result.dist", {
 					d: t("result.character_dps"),
@@ -35,7 +36,7 @@ export default ({ data, running, names }: Props) => {
 				timer={timer}
 			/>
 			<DPSPie names={names} dps={dps} />
-		</div>
+		</Card>
 	);
 };
 

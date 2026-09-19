@@ -24,7 +24,7 @@ type Props = {
 export const NoData = memo(({ className = "h-24" }: Props): JSX.Element => {
 	const { t } = useTranslation();
 	const cc = cn(
-		"flex flex-row items-center font-bold text-gray-400 gap-5 text-lg",
+		"flex flex-row items-center font-bold text-g-ink-mute gap-5 text-g-lg",
 		className,
 	);
 	return (

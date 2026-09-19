@@ -108,11 +108,11 @@ const Options = ({
 
 	return (
 		<div className="flex flex-row items-center gap-2 mb-2">
-			<span className="text-xs font-mono text-gray-400">
+			<span className="text-g-xs font-g-mono text-g-ink-mute">
 				{t("viewer.target")}
 			</span>
 			<select
-				className="rounded border border-gray-500 bg-transparent px-2 py-1 text-sm"
+				className="rounded-g-md border border-g-line bg-transparent px-2 py-1 text-g-sm"
 				value={target}
 				onChange={(e) => setTarget(e.target.value)}
 			>

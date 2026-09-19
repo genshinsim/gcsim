@@ -78,7 +78,7 @@ export function MultiSelect<T>({
 		>
 			<div
 				className={cn(
-					"flex flex-wrap items-center gap-1 rounded-md border border-deprecated-input px-2 py-1",
+					"flex flex-wrap items-center gap-1 rounded-g-md border border-g-line px-2 py-1",
 					className,
 				)}
 			>

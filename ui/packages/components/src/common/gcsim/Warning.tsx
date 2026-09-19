@@ -71,7 +71,7 @@ export function Warning({
 			</Button>
 			<div className="flex items-center justify-center gap-3 py-2">
 				<img src={tanuki} alt="" className="h-10 w-15" />
-				<AlertTitle className="line-clamp-none text-center text-xl font-semibold">
+				<AlertTitle className="line-clamp-none text-center text-g-h2 font-semibold">
 					{t(dynamicKey(headerKey))}
 				</AlertTitle>
 				<img src={tanuki} alt="" className="h-10 w-15" />

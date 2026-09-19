@@ -92,9 +92,9 @@ export const RenderTooltip = (props: Props) => {
 			}}
 			onMouseLeave={() => props.handles.mouseLeave()}
 		>
-			<div className="flex flex-col px-2 py-1 font-mono text-xs">
+			<div className="flex flex-col px-2 py-1 font-g-mono text-g-xs">
 				<span
-					className="text-gray-400 whitespace-nowrap"
+					className="text-g-ink-mute whitespace-nowrap"
 					style={{ color: titleColor }}
 				>
 					{title}
@@ -134,7 +134,7 @@ const Item = ({ name, value }: { name: string; value: number }) => {
 	const { i18n } = useTranslation();
 	return (
 		<>
-			<span className="text-gray-400 list-item">{name}</span>
+			<span className="text-g-ink-mute list-item">{name}</span>
 			<span>
 				{value.toLocaleString(i18n.language, {
 					minimumFractionDigits: 2,

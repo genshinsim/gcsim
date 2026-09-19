@@ -27,8 +27,8 @@ export const GraphAxisLeft = <Scale extends AxisScale>({
 			stroke={DataColorsConst.gray}
 			tickStroke={DataColorsConst.gray}
 			tickLineProps={{ opacity: 0.5 }}
-			labelClassName="fill-gray-400 text-lg"
-			tickClassName="fill-gray-400 font-mono text-xs"
+			labelClassName="fill-g-ink-mute text-g-lg"
+			tickClassName="fill-g-ink-mute font-g-mono text-g-xs"
 			tickComponent={(props) => (
 				<TickLabel
 					{...props}
@@ -52,8 +52,8 @@ export const GraphAxisBottom = <Scale extends AxisScale>({
 			stroke={DataColorsConst.gray}
 			tickStroke={DataColorsConst.gray}
 			tickLineProps={{ opacity: 0.5 }}
-			labelClassName="fill-gray-400 font-mono text-base"
-			tickClassName="fill-gray-400 font-mono text-xs"
+			labelClassName="fill-g-ink-mute font-g-mono text-g-body"
+			tickClassName="fill-g-ink-mute font-g-mono text-g-xs"
 			tickComponent={(props) => (
 				<TickLabel
 					{...props}
@@ -77,8 +77,8 @@ export const GraphAxisRight = <Scale extends AxisScale>({
 			stroke={DataColorsConst.gray}
 			tickStroke={DataColorsConst.gray}
 			tickLineProps={{ opacity: 0.5 }}
-			labelClassName="fill-gray-400 text-lg"
-			tickClassName="fill-gray-400 font-mono text-xs"
+			labelClassName="fill-g-ink-mute text-g-lg"
+			tickClassName="fill-g-ink-mute font-g-mono text-g-xs"
 			tickComponent={(props) => (
 				<TickLabel
 					{...props}

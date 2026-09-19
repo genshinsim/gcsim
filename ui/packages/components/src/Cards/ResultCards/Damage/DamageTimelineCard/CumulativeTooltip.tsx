@@ -6,7 +6,6 @@ import { TooltipWithBounds } from "@visx/tooltip";
 import type { ScaleLinear } from "d3-scale";
 import { useTranslation } from "react-i18next";
 import {
-	Colors,
 	DataColorsConst,
 	FloatStatTooltipContent,
 	useDataColors,
@@ -100,9 +99,9 @@ export const HoverLine = (props: HoverLineProps) => {
 					cx={x}
 					cy={y + 1}
 					r={4}
-					fill="#000"
+					fill="var(--g-bg)"
 					fillOpacity={0.1}
-					stroke="#000"
+					stroke="var(--g-bg)"
 					strokeOpacity={0.1}
 					strokeWidth={2}
 					pointerEvents="none"
@@ -113,7 +112,7 @@ export const HoverLine = (props: HoverLineProps) => {
 					r={4}
 					fill={DataColorsConst.qualitative4(char)}
 					pointerEvents="none"
-					stroke="#FFF"
+					stroke="var(--g-surface)"
 					strokeWidth={2}
 				/>
 			</g>
@@ -125,7 +124,7 @@ export const HoverLine = (props: HoverLineProps) => {
 			<Line
 				from={{ x: x, y: 0 }}
 				to={{ x: x, y: props.yMax }}
-				stroke="#FFF"
+				stroke="var(--g-text)"
 				opacity={0.5}
 				strokeWidth={2}
 				pointerEvents="none"
@@ -176,8 +175,10 @@ export const RenderTooltip = (props: TooltipProps) => {
 			}}
 			onMouseLeave={() => props.handles.mouseLeave()}
 		>
-			<div className="flex flex-row px-2 py-1 font-mono text-xs gap-2 whitespace-nowrap">
-				<span style={{ color: Colors.SEPIA4 }}>{t("result.time")}: </span>
+			<div className="flex flex-row px-2 py-1 font-g-mono text-g-xs gap-2 whitespace-nowrap">
+				<span style={{ color: "var(--g-text-mute)" }}>
+					{t("result.time")}:{" "}
+				</span>
 				<span>{point.x + t("result.seconds_short")}</span>
 			</div>
 			{point.y

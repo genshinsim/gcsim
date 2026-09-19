@@ -28,14 +28,14 @@ export function NumberInput({
 	}
 
 	return (
-		<div className="rounded-md flex flex-row place-items-center">
+		<div className="rounded-g-md flex flex-row place-items-center">
 			<span className="font-bold flex-grow">{label}</span>
 			<div className="flex flex-row">
 				<input
 					type="number"
 					step="any"
 					placeholder="enter amount"
-					className="p-2 rounded-l-md bg-gray-800 text-right focus:outline-none invalid:text-red-500"
+					className="p-2 rounded-l-g-md bg-g-surface-2 text-right focus:outline-none invalid:text-g-danger"
 					value={value}
 					onChange={(e) => {
 						const val = e.target.value;
@@ -56,10 +56,10 @@ export function NumberInput({
 						onChange(v);
 					}}
 				/>
-				<div className="rounded-r-md flex flex-col">
+				<div className="rounded-r-g-md flex flex-col">
 					<button
 						type="button"
-						className="bg-gray-800 w-12 rounded-tr-md focus:outline-none hover:bg-gray-900"
+						className="bg-g-surface-2 w-12 rounded-tr-g-md focus:outline-none hover:bg-g-surface"
 						disabled={value === max}
 						onClick={() => {
 							const v = value + stepSize;
@@ -88,7 +88,7 @@ export function NumberInput({
 					</button>
 					<button
 						type="button"
-						className="bg-gray-800 w-12 rounded-br-md focus:outline-none hover:bg-gray-900"
+						className="bg-g-surface-2 w-12 rounded-br-g-md focus:outline-none hover:bg-g-surface"
 						disabled={value === min}
 						onClick={() => {
 							const v = value - stepSize;

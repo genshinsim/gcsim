@@ -6,7 +6,7 @@ import { TooltipWithBounds } from "@visx/tooltip";
 import type { ScaleLinear } from "d3-scale";
 import type { MutableRefObject } from "react";
 import { useTranslation } from "react-i18next";
-import { Colors, DataColorsConst } from "../../../../common/gcsim";
+import { DataColorsConst } from "../../../../common/gcsim";
 import type { Point } from "./DamageOverTimeData";
 
 export interface TooltipData {
@@ -96,7 +96,7 @@ export const HoverLine = (props: HoverLineProps) => {
 			<Line
 				from={{ x: x, y: 0 }}
 				to={{ x: x, y: props.yMax }}
-				stroke="#FFF"
+				stroke="var(--g-text)"
 				opacity={0.5}
 				strokeWidth={2}
 				pointerEvents="none"
@@ -144,10 +144,10 @@ export const RenderTooltip = (props: TooltipProps) => {
 			}}
 			onMouseLeave={() => props.handles.mouseLeave()}
 		>
-			<div className="flex flex-col px-2 py-1 font-mono text-xs">
+			<div className="flex flex-col px-2 py-1 font-g-mono text-g-xs">
 				<ul className="grid grid-cols-[repeat(2,_max-content)] gap-x-2 justify-start">
 					<Item
-						color={Colors.SEPIA4}
+						color="var(--g-text-mute)"
 						name={t("result.time")}
 						value={point.x}
 						suffix={t("result.seconds_short")}
@@ -213,7 +213,7 @@ const Item = ({ name, value, color, suffix }: ItemProps) => {
 
 	return (
 		<>
-			<span className="text-gray-400 list-item" style={{ color: color }}>
+			<span className="text-g-ink-mute list-item" style={{ color: color }}>
 				{name}
 			</span>
 			<span>
