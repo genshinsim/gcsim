@@ -17,14 +17,14 @@ export const CardBadge = ({
 	bold,
 	bright,
 	valueCase = "uppercase",
-	valueSize = "text-xs",
+	valueSize = "text-g-xs",
 	className,
 }: CardBadgeProps) => {
 	if (value === null) {
 		return null;
 	}
-	const titleCls = classNames("mr-2 text-xs lowercase text-mono", {
-		"text-gray-400": !bright,
+	const titleCls = classNames("mr-2 text-g-xs lowercase font-g-mono", {
+		"text-g-ink-mute": !bright,
 	});
 	return (
 		<Badge className={className}>
@@ -32,7 +32,7 @@ export const CardBadge = ({
 			<span
 				className={`${
 					bold ? "font-bold" : ""
-				} ${valueSize} ${valueCase} text-mono`}
+				} ${valueSize} ${valueCase} font-g-mono`}
 			>
 				{value}
 			</span>

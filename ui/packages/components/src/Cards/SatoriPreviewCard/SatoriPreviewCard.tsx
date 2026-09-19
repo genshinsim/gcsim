@@ -1,3 +1,8 @@
+// gauge-migration: OUT OF SCOPE — do not migrate to Gauge (-g-) tokens.
+// SatoriPreviewCard is rendered to a PNG by satori (Cloudflare OG worker +
+// a Storybook fixture script), never mounted in the web/db runtime. Satori
+// resolves inline styles only and has no CSS-variable cascade or Tailwind, so
+// the colours here are baked hex on purpose and cannot consume --g-* vars.
 import type { model } from "@gcsim/types";
 import type { ResolveAsset } from "./assetPaths";
 import { HistogramChart } from "./charts/HistogramChart";
