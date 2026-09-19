@@ -26,7 +26,7 @@ type TitleProps = {
 
 const TitleWithTooltip = ({ title }: TitleProps) => {
 	const out = (
-		<div className="flex flex-row text-lg text-gray-400 items-center gap-2 outline-0">
+		<div className="flex flex-row text-g-lg text-g-ink-mute items-center gap-2 outline-0">
 			{title}
 		</div>
 	);
@@ -48,7 +48,7 @@ const RefreshStatus = ({ timer }: { timer: number }) => {
 	}, [timer]);
 
 	return (
-		<div className="text-gray-400 outline-0 text-xs flex gap-1 cursor-default">
+		<div className="text-g-ink-mute outline-0 text-g-xs flex gap-1 cursor-default">
 			<ReloadIcon />
 			<span>{time + t("result.seconds_short")}</span>
 		</div>

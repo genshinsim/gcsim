@@ -45,11 +45,11 @@ export const DBCard = ({
 				key={tag}
 				value={tagData[tag]?.display_name ?? null}
 				valueCase=""
-				className="bg-teal-800"
+				className="bg-g-success/15 text-g-success"
 			/>
 		));
 
-	const cc = cn("m-2 bg-slate-800 min-[1300px]:w-[1225px]", className);
+	const cc = cn("m-2 min-[1300px]:w-[1225px]", className);
 
 	return (
 		<Card className={cc}>
@@ -90,9 +90,9 @@ export const DBCard = ({
 							{tags}
 						</div>
 					</Card>
-					<div className="flex flex-col grow min-w-[40%] text-gray-200 p-2 self-stretch">
+					<div className="flex flex-col grow min-w-[40%] text-g-ink-dim p-2 self-stretch">
 						<div className="block w-0 min-w-full">
-							<span className="font-semibold text-orange-300">
+							<span className="font-semibold text-g-accent">
 								{entry.submitter === "migrated"
 									? "Unknown author: "
 									: `Submitted by ${entry.submitter}: `}

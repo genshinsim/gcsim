@@ -1,3 +1,4 @@
+// TODO(gauge-migration): not ported — still on --deprecated-* (story-only — PreviewCard and its Metadata/Graphs are not reachable from the web/db runtime import graph; only PreviewCard.stories renders them)
 import type { model } from "@gcsim/types";
 import { cn } from "../../lib/utils";
 import { AvatarPortrait } from "../AvatarPortait/AvatarPortrait";

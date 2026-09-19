@@ -18,11 +18,11 @@ type Props = {
 };
 
 const RollupCard = ({ title, color, value, label, auxStats }: Props) => (
-	<div
-		className="flex basis-1/4 flex-auto pl-1 min-w-fit"
-		style={{ background: color }}
-	>
-		<Card className="flex flex-auto flex-row items-stretch justify-between gap-0 p-5">
+	<div className="flex basis-1/4 flex-auto min-w-fit">
+		<Card
+			className="flex flex-auto flex-row items-stretch justify-between gap-0 border-l-4 p-5"
+			style={{ borderLeftColor: color }}
+		>
 			<div className="flex flex-col justify-start">
 				<CardTitle title={title} />
 				<CardValue value={value} label={label} />
@@ -44,14 +44,17 @@ const CardValue = ({
 	const { i18n } = useTranslation();
 
 	const out = value == null ? 1234 : value;
-	const valueClass = classNames("text-5xl font-bold tabular-nums", {
-		"animate-pulse rounded bg-deprecated-muted text-transparent": value == null,
-	});
+	const valueClass = classNames(
+		"text-g-num font-g-mono font-bold tabular-nums",
+		{
+			"animate-pulse rounded bg-g-surface-2 text-transparent": value == null,
+		},
+	);
 
 	let lbl: ReactNode;
 	if (label != null) {
 		lbl = (
-			<div className="flex items-start text-base text-gray-400">{label}</div>
+			<div className="flex items-start text-g-lg text-g-ink-mute">{label}</div>
 		);
 	}
 
@@ -69,7 +72,7 @@ const CardAux = ({ aux }: { aux?: Array<AuxStat> }) => {
 	}
 
 	return (
-		<div className="grid grid-cols-3 gap-x-5 pt-1 justify-start text-sm font-mono min-w-fit">
+		<div className="grid grid-cols-3 gap-x-5 pt-1 justify-start text-g-sm font-g-mono min-w-fit">
 			{aux.map((e) => (
 				<AuxItem key={e.title} stat={e} />
 			))}
@@ -80,15 +83,14 @@ const CardAux = ({ aux }: { aux?: Array<AuxStat> }) => {
 const AuxItem = ({ stat }: { stat: AuxStat }) => {
 	const { i18n } = useTranslation();
 
-	const cls = classNames("font-black text-current text-sm text-gray-100", {
-		"animate-pulse rounded bg-deprecated-muted text-transparent":
-			stat.value == null,
+	const cls = classNames("font-black text-g-sm text-g-ink", {
+		"animate-pulse rounded bg-g-surface-2 text-transparent": stat.value == null,
 	});
 	const val = stat.value == null ? 123.45 : stat.value;
 
 	return (
 		<div className="flex flex-row items-start gap-3">
-			<div className="text-gray-400">{stat.title}</div>
+			<div className="text-g-ink-mute">{stat.title}</div>
 			<div className={cls}>{val.toLocaleString(i18n.language)}</div>
 		</div>
 	);

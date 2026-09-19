@@ -24,8 +24,11 @@ export const EnemyCard = (props: Props) => {
 	const bgColor = DataColorsConst.qualitative3(props.id);
 
 	return (
-		<div className="flex pl-1 min-w-fit" style={{ background: bgColor }}>
-			<Card className="flex flex-auto flex-col gap-1 p-5">
+		<div className="flex min-w-fit">
+			<Card
+				className="flex flex-auto flex-col gap-1 border-l-4 p-5"
+				style={{ borderLeftColor: bgColor }}
+			>
 				<EnemyTitle {...props} />
 				<EnemyInfo {...props} />
 				<EnemyResistances {...props} />
@@ -44,7 +47,7 @@ const EnemyTitle = ({ id, enemy }: Props) => {
 	return (
 		<div className="flex flex-row items-end gap-3">
 			<div
-				className="text-gray-400 text-lg"
+				className="text-g-ink-mute text-g-lg"
 				style={{ color: DataColorsConst.qualitative5(id) }}
 			>
 				{t("viewer.target")} {id + 1} {name}
@@ -57,7 +60,7 @@ const EnemyInfo = ({ enemy }: Props) => {
 	const { t } = useTranslation();
 	const modified = enemy?.modified ?? false;
 	return (
-		<div className="flex flex-row font-mono gap-3 h-full items-center">
+		<div className="flex flex-row font-g-mono gap-3 h-full items-center">
 			<InfoItem name={t("character.lvl")} value={enemy?.level} />
 			<InfoItem name={t("stats.hp")} value={enemy?.hp} />
 			<InfoItem
@@ -85,18 +88,16 @@ const InfoItem = ({
 	}
 
 	return (
-		<div className="flex flex-row gap-1 text-xs items-center">
-			<div className="text-gray-400">{name}</div>
-			<div className="font-black text-current text-sm text-gray-100">
-				{value}
-			</div>
+		<div className="flex flex-row gap-1 text-g-xs items-center">
+			<div className="text-g-ink-mute">{name}</div>
+			<div className="font-black text-g-sm text-g-ink">{value}</div>
 		</div>
 	);
 };
 
 const EnemyResistances = ({ enemy }: Props) => {
 	return (
-		<div className="grid grid-cols-4 gap-y-1 text-sm font-mono">
+		<div className="grid grid-cols-4 gap-y-1 text-g-sm font-g-mono">
 			<Resistance type="anemo" num={enemy?.resist?.["anemo"]} />
 			<Resistance type="geo" num={enemy?.resist?.["geo"]} />
 			<Resistance type="electro" num={enemy?.resist?.["electro"]} />

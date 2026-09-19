@@ -77,7 +77,7 @@ export const AvatarPortrait = ({
 		return (
 			<div
 				className={
-					"flex flex-col bg-gray-400 border border-gray-600 rounded-sm" +
+					"flex flex-col bg-g-surface-2 border border-g-line rounded-g-sm" +
 					(className === "" ? "" : " " + className)
 				}
 			>
@@ -107,7 +107,7 @@ export const AvatarPortrait = ({
 	return (
 		<div
 			className={
-				"flex flex-col bg-gray-400 border border-gray-600 rounded-sm" +
+				"flex flex-col bg-g-surface-2 border border-g-line rounded-g-sm" +
 				(className === "" ? "" : " " + className)
 			}
 		>
@@ -153,8 +153,8 @@ export const AvatarPortrait = ({
 						<div
 							className={
 								"absolute left-[-1px] top-[-1px] flex flex-col gap-0 px-1 py-0 rounded-none " +
-								"font-bold font-mono text-xs rounded-tl-sm rounded-br-lg " +
-								"bg-gray-700 opacity-85"
+								"font-bold font-g-mono text-g-xs rounded-tl-g-sm rounded-br-g-lg " +
+								"bg-g-surface-3 opacity-85"
 							}
 						>
 							<div className="flex flex-row gap-1 min-h-fit">
@@ -169,12 +169,12 @@ export const AvatarPortrait = ({
 						<div
 							className={
 								"absolute right-[-1px] top-[-1px] flex flex-col gap-0 px-1 py-0 rounded-none " +
-								"font-mono text-xs rounded-tr-sm rounded-bl-lg " +
-								"bg-gray-700 opacity-85"
+								"font-g-mono text-g-xs rounded-tr-g-sm rounded-bl-g-lg " +
+								"bg-g-surface-3 opacity-85"
 							}
 						>
 							<div className="flex flex-row gap-1 min-h-fit items-center">
-								<span className="text-xs text-gray-400">lvl</span>
+								<span className="text-g-xs text-g-ink-mute">lvl</span>
 								<span
 									className={`font-bold`}
 									style={{ color: DataColorsConst.qualitative5(i) }}
@@ -189,7 +189,7 @@ export const AvatarPortrait = ({
 				{invalid && (
 					<div className="absolute left-0 top-1/3 w-full">
 						<Badge className="flex flex-row items-center justify-center gap-2">
-							<span className="font-mono select-none text-red-500 font-bold text-xs uppercase">
+							<span className="font-g-mono select-none text-g-danger font-bold text-g-xs uppercase">
 								WIP
 							</span>
 						</Badge>
