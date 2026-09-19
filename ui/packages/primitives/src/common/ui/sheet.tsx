@@ -123,7 +123,7 @@ function SheetDescription({
 	return (
 		<SheetPrimitive.Description
 			data-slot="sheet-description"
-			className={cn("text-g-sm text-g-ink-mute", className)}
+			className={cn("text-g-sm text-g-ink-dim", className)}
 			{...props}
 		/>
 	);
