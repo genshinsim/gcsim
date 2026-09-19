@@ -48,8 +48,10 @@ const COLOR_UTILS = [
 const colorTokenAlt = COLOR_TOKENS.join("|");
 const customPropTokenAlt = CUSTOM_PROP_TOKENS.join("|");
 const colorUtilAlt = COLOR_UTILS.join("|");
+// `(?!-g-)` lets the Gauge `-g-` namespace through (e.g. `--radius-g-btn`, a
+// coined Tailwind token) while still catching every bare shadcn `--radius` etc.
 const BARE_CUSTOM_PROP = new RegExp(
-	`(?<![A-Za-z0-9_])--(?:${customPropTokenAlt})\\b`,
+	`(?<![A-Za-z0-9_])--(?:${customPropTokenAlt})(?!-g-)\\b`,
 	"g",
 );
 const BARE_UTILITY = new RegExp(

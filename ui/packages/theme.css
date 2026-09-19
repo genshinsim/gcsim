@@ -1,0 +1,617 @@
+/*
+ * Gauge design-token foundation. Raw layer: the 15 palettes + the gauge
+ * language as `--g-`-prefixed vars (`--g-` + the data.js name, values verbatim)
+ * in :root / [data-theme]. Coined layer: one @theme inline block mapping those
+ * to the namespaced `--*-g-*` utilities.
+ *
+ * The `--g-` prefix on the raw layer is required, not cosmetic: Tailwind v4
+ * emits its own theme vars into :root (e.g. --font-mono), so an unprefixed
+ * verbatim var would override a stock utility and break adds-only.
+ *
+ * Fonts are self-hosted via @fontsource (no external requests); the family
+ * fallback stacks are the gauge language values below.
+ */
+@import "@fontsource/space-grotesk/500.css";
+@import "@fontsource/space-grotesk/700.css";
+@import "@fontsource/hanken-grotesk/400.css";
+@import "@fontsource/hanken-grotesk/500.css";
+@import "@fontsource/hanken-grotesk/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/500.css";
+
+:root {
+	--g-font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+	--g-font-body: "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
+	--g-font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+	--g-r-sm: 4px;
+	--g-r-md: 5px;
+	--g-r-lg: 7px;
+	--g-r-xl: 9px;
+	--g-r-pill: 5px;
+
+	--g-sp-page: 32px;
+	--g-pad-card: 11px;
+	--g-gap: 8px;
+	--g-gap-sm: 6px;
+	--g-gap-lg: 12px;
+	--g-sec: 30px;
+
+	--g-el-card: none;
+	--g-el-pop: 0 8px 24px -12px rgba(0, 0, 0, 0.7);
+	--g-el-hero: none;
+
+	--g-ctrl-h: 34px;
+	--g-btn-pad-x: 16px;
+	--g-btn-r: 5px;
+	--g-tab-r: 4px;
+	--g-input-r: 5px;
+
+	--g-t-hero: 48px;
+	--g-t-h1: 30px;
+	--g-t-h2: 22px;
+	--g-t-h3: 15px;
+	--g-t-lg: 16px;
+	--g-t-body: 15px;
+	--g-t-sm: 13px;
+	--g-t-xs: 11.5px;
+	--g-t-num: 30px;
+	--g-t-num-sm: 20px;
+
+	--g-lbl-transform: uppercase;
+	--g-lbl-track: 0.09em;
+	--g-lbl-weight: 700;
+	--g-lbl-font: var(--g-font-mono);
+	--g-bw: 1px;
+}
+
+/* Palettes. Default = Cryo on bare :root; the other 14 under [data-theme]. */
+:root {
+	--g-bg: #080c14;
+	--g-surface: #0f1622;
+	--g-surface-2: #172234;
+	--g-surface-3: #212d44;
+	--g-border: #2a3a54;
+	--g-border-soft: #1a2537;
+	--g-text: #edf3fa;
+	--g-text-dim: #97a9c0;
+	--g-text-mute: #617489;
+	--g-accent: #4f9fe0;
+	--g-accent-hover: #6fb6ef;
+	--g-accent-fg: #03121f;
+	--g-accent-weak: #0e2033;
+	--g-success: #3fc49b;
+	--g-warning: #dda857;
+	--g-danger: #e5695c;
+	--g-anemo: #5fd9bd;
+	--g-geo: #f5b944;
+	--g-electro: #b764d6;
+	--g-hydro: #3e9bf0;
+	--g-pyro: #e8563c;
+	--g-cryo: #7fb4ef;
+	--g-dendro: #a8ce3e;
+	--g-s1: #4f9fe0;
+	--g-s2: #3fc7ce;
+	--g-s3: #8a8ce6;
+	--g-s4: #cba968;
+	--g-s5: #3a6fcf;
+	--g-s6: #5fcfa0;
+}
+
+[data-theme="abyss-d"] {
+	--g-bg: #0b0d12;
+	--g-surface: #13161d;
+	--g-surface-2: #1a1e27;
+	--g-surface-3: #20252f;
+	--g-border: #262c39;
+	--g-border-soft: #1d222c;
+	--g-text: #e9ebf1;
+	--g-text-dim: #9aa1b2;
+	--g-text-mute: #626a7d;
+	--g-accent: #6d74f4;
+	--g-accent-hover: #8288ff;
+	--g-accent-fg: #ffffff;
+	--g-accent-weak: #191c33;
+	--g-success: #35c08a;
+	--g-warning: #e3a63a;
+	--g-danger: #f15b4e;
+	--g-anemo: #5fd9bd;
+	--g-geo: #f5b944;
+	--g-electro: #b764d6;
+	--g-hydro: #3e9bf0;
+	--g-pyro: #e8563c;
+	--g-cryo: #7fb4ef;
+	--g-dendro: #a8ce3e;
+	--g-s1: #6d74f4;
+	--g-s2: #37bdf6;
+	--g-s3: #2fd4be;
+	--g-s4: #e3a63a;
+	--g-s5: #f15b4e;
+	--g-s6: #b26ae0;
+}
+
+[data-theme="abyss-l"] {
+	--g-bg: #f6f7fa;
+	--g-surface: #ffffff;
+	--g-surface-2: #f0f2f6;
+	--g-surface-3: #e7eaf1;
+	--g-border: #e2e5ec;
+	--g-border-soft: #eceef3;
+	--g-text: #12151c;
+	--g-text-dim: #565e70;
+	--g-text-mute: #8890a0;
+	--g-accent: #5459e8;
+	--g-accent-hover: #454ad6;
+	--g-accent-fg: #ffffff;
+	--g-accent-weak: #ecedfb;
+	--g-success: #17976a;
+	--g-warning: #b77a18;
+	--g-danger: #d23f32;
+	--g-anemo: #1fa98a;
+	--g-geo: #c88a16;
+	--g-electro: #8e43b0;
+	--g-hydro: #1c6fc9;
+	--g-pyro: #c63a22;
+	--g-cryo: #3b7fc4;
+	--g-dendro: #6e9020;
+	--g-s1: #5459e8;
+	--g-s2: #1d8fd4;
+	--g-s3: #12a08e;
+	--g-s4: #b77a18;
+	--g-s5: #d23f32;
+	--g-s6: #8a52c4;
+}
+
+[data-theme="ember-d"] {
+	--g-bg: #141109;
+	--g-surface: #1d1810;
+	--g-surface-2: #261f15;
+	--g-surface-3: #302719;
+	--g-border: #352c1e;
+	--g-border-soft: #241d13;
+	--g-text: #f3ecdd;
+	--g-text-dim: #b4a88e;
+	--g-text-mute: #7c7157;
+	--g-accent: #e5a73a;
+	--g-accent-hover: #f4bb53;
+	--g-accent-fg: #1a1509;
+	--g-accent-weak: #2b2211;
+	--g-success: #7aae5b;
+	--g-warning: #e5872f;
+	--g-danger: #e5533b;
+	--g-anemo: #5fd9bd;
+	--g-geo: #f5b944;
+	--g-electro: #b764d6;
+	--g-hydro: #3e9bf0;
+	--g-pyro: #e8563c;
+	--g-cryo: #7fb4ef;
+	--g-dendro: #a8ce3e;
+	--g-s1: #e5a73a;
+	--g-s2: #46b39b;
+	--g-s3: #d2652e;
+	--g-s4: #9c5c8a;
+	--g-s5: #94a35a;
+	--g-s6: #5b9bd1;
+}
+
+[data-theme="ember-l"] {
+	--g-bg: #f6f1e6;
+	--g-surface: #fffdf7;
+	--g-surface-2: #f0e9da;
+	--g-surface-3: #e7decb;
+	--g-border: #e4dbc8;
+	--g-border-soft: #ede6d6;
+	--g-text: #1e180d;
+	--g-text-dim: #6c6350;
+	--g-text-mute: #948a73;
+	--g-accent: #b67c1b;
+	--g-accent-hover: #9c6913;
+	--g-accent-fg: #ffffff;
+	--g-accent-weak: #f4ead6;
+	--g-success: #4e7a3e;
+	--g-warning: #b45b14;
+	--g-danger: #b23a24;
+	--g-anemo: #1fa98a;
+	--g-geo: #c88a16;
+	--g-electro: #8e43b0;
+	--g-hydro: #1c6fc9;
+	--g-pyro: #c63a22;
+	--g-cryo: #3b7fc4;
+	--g-dendro: #6e9020;
+	--g-s1: #b67c1b;
+	--g-s2: #3e8c77;
+	--g-s3: #c05b23;
+	--g-s4: #8a4e78;
+	--g-s5: #7c8b45;
+	--g-s6: #4a82b8;
+}
+
+[data-theme="pulse-d"] {
+	--g-bg: #080b11;
+	--g-surface: #0f141d;
+	--g-surface-2: #151c27;
+	--g-surface-3: #1c2532;
+	--g-border: #223040;
+	--g-border-soft: #182130;
+	--g-text: #e8f1f4;
+	--g-text-dim: #8da0ae;
+	--g-text-mute: #5c6e7c;
+	--g-accent: #2ce0c0;
+	--g-accent-hover: #4debcf;
+	--g-accent-fg: #06231e;
+	--g-accent-weak: #0c2a28;
+	--g-success: #2ce0a0;
+	--g-warning: #f5b33c;
+	--g-danger: #ff5c6e;
+	--g-anemo: #5fd9bd;
+	--g-geo: #f5b944;
+	--g-electro: #b764d6;
+	--g-hydro: #3e9bf0;
+	--g-pyro: #e8563c;
+	--g-cryo: #7fb4ef;
+	--g-dendro: #a8ce3e;
+	--g-s1: #2ce0c0;
+	--g-s2: #38bdf8;
+	--g-s3: #f04bc8;
+	--g-s4: #a78bfa;
+	--g-s5: #f5b33c;
+	--g-s6: #a3e635;
+}
+
+[data-theme="pulse-l"] {
+	--g-bg: #edf3f4;
+	--g-surface: #ffffff;
+	--g-surface-2: #e4edef;
+	--g-surface-3: #d8e4e6;
+	--g-border: #cfdce0;
+	--g-border-soft: #dee8ea;
+	--g-text: #071319;
+	--g-text-dim: #4a5c67;
+	--g-text-mute: #7c8d97;
+	--g-accent: #0c9e8c;
+	--g-accent-hover: #0a8578;
+	--g-accent-fg: #ffffff;
+	--g-accent-weak: #d9f0ec;
+	--g-success: #0f9e74;
+	--g-warning: #b4791a;
+	--g-danger: #dc3a4c;
+	--g-anemo: #1fa98a;
+	--g-geo: #c88a16;
+	--g-electro: #8e43b0;
+	--g-hydro: #1c6fc9;
+	--g-pyro: #c63a22;
+	--g-cryo: #3b7fc4;
+	--g-dendro: #6e9020;
+	--g-s1: #0c9e8c;
+	--g-s2: #1c8fd4;
+	--g-s3: #c42a9e;
+	--g-s4: #7c5cd0;
+	--g-s5: #b4791a;
+	--g-s6: #5f9e1a;
+}
+
+[data-theme="twilight"] {
+	--g-bg: #090913;
+	--g-surface: #13122a;
+	--g-surface-2: #1c1b3a;
+	--g-surface-3: #262848;
+	--g-border: #343663;
+	--g-border-soft: #222240;
+	--g-text: #ecebf8;
+	--g-text-dim: #a7a4cc;
+	--g-text-mute: #6f6c97;
+	--g-accent: #8688ea;
+	--g-accent-hover: #a2a2ff;
+	--g-accent-fg: #0a0818;
+	--g-accent-weak: #1a1738;
+	--g-success: #42c39b;
+	--g-warning: #dda857;
+	--g-danger: #ec6580;
+	--g-anemo: #5fd9bd;
+	--g-geo: #f5b944;
+	--g-electro: #b764d6;
+	--g-hydro: #3e9bf0;
+	--g-pyro: #e8563c;
+	--g-cryo: #7fb4ef;
+	--g-dendro: #a8ce3e;
+	--g-s1: #8688ea;
+	--g-s2: #5aa6ee;
+	--g-s3: #b978e4;
+	--g-s4: #3fc7ce;
+	--g-s5: #cba968;
+	--g-s6: #6e97f0;
+}
+
+[data-theme="qilin"] {
+	--g-bg: #0b0e16;
+	--g-surface: #121926;
+	--g-surface-2: #1a2334;
+	--g-surface-3: #232e43;
+	--g-border: #2e3c52;
+	--g-border-soft: #1e2838;
+	--g-text: #eff1f4;
+	--g-text-dim: #9da6b4;
+	--g-text-mute: #657084;
+	--g-accent: #cba968;
+	--g-accent-hover: #dcbb79;
+	--g-accent-fg: #1a1305;
+	--g-accent-weak: #221b0c;
+	--g-success: #46c089;
+	--g-warning: #c9863c;
+	--g-danger: #b8574a;
+	--g-anemo: #5fd9bd;
+	--g-geo: #f5b944;
+	--g-electro: #b764d6;
+	--g-hydro: #3e9bf0;
+	--g-pyro: #e8563c;
+	--g-cryo: #7fb4ef;
+	--g-dendro: #a8ce3e;
+	--g-s1: #cba968;
+	--g-s2: #b8574a;
+	--g-s3: #5a93c8;
+	--g-s4: #8688ea;
+	--g-s5: #5fbf95;
+	--g-s6: #3e6fc8;
+}
+
+[data-theme="glacier"] {
+	--g-bg: #070c15;
+	--g-surface: #0e1724;
+	--g-surface-2: #162537;
+	--g-surface-3: #1e3149;
+	--g-border: #294059;
+	--g-border-soft: #182839;
+	--g-text: #eaf4fc;
+	--g-text-dim: #93aac2;
+	--g-text-mute: #5f7690;
+	--g-accent: #28b7f5;
+	--g-accent-hover: #54c9ff;
+	--g-accent-fg: #03131f;
+	--g-accent-weak: #0a2334;
+	--g-success: #2fcba6;
+	--g-warning: #e6b14a;
+	--g-danger: #f26a5c;
+	--g-anemo: #5fd9bd;
+	--g-geo: #f5b944;
+	--g-electro: #b764d6;
+	--g-hydro: #3e9bf0;
+	--g-pyro: #e8563c;
+	--g-cryo: #7fb4ef;
+	--g-dendro: #a8ce3e;
+	--g-s1: #28b7f5;
+	--g-s2: #22d3d8;
+	--g-s3: #7c8bf0;
+	--g-s4: #e6b14a;
+	--g-s5: #2e7be6;
+	--g-s6: #3fdca0;
+}
+
+[data-theme="azure"] {
+	--g-bg: #080b16;
+	--g-surface: #0f1628;
+	--g-surface-2: #17203a;
+	--g-surface-3: #1f2b4e;
+	--g-border: #2a3a63;
+	--g-border-soft: #18213a;
+	--g-text: #eaeffc;
+	--g-text-dim: #96a2c4;
+	--g-text-mute: #616d93;
+	--g-accent: #3b7bff;
+	--g-accent-hover: #5d93ff;
+	--g-accent-fg: #ffffff;
+	--g-accent-weak: #111c3a;
+	--g-success: #2fcba6;
+	--g-warning: #e6b14a;
+	--g-danger: #f26a6c;
+	--g-anemo: #5fd9bd;
+	--g-geo: #f5b944;
+	--g-electro: #b764d6;
+	--g-hydro: #3e9bf0;
+	--g-pyro: #e8563c;
+	--g-cryo: #7fb4ef;
+	--g-dendro: #a8ce3e;
+	--g-s1: #3b7bff;
+	--g-s2: #22c7e0;
+	--g-s3: #8a7bf5;
+	--g-s4: #e6b14a;
+	--g-s5: #2ee0b0;
+	--g-s6: #5aa0ff;
+}
+
+[data-theme="aqua"] {
+	--g-bg: #061013;
+	--g-surface: #0c1a1e;
+	--g-surface-2: #12262c;
+	--g-surface-3: #193239;
+	--g-border: #244249;
+	--g-border-soft: #152b31;
+	--g-text: #e7f6f5;
+	--g-text-dim: #8fb0af;
+	--g-text-mute: #5c7b7b;
+	--g-accent: #16d6c6;
+	--g-accent-hover: #3fe6d6;
+	--g-accent-fg: #032220;
+	--g-accent-weak: #0a2b29;
+	--g-success: #33d39a;
+	--g-warning: #e6b14a;
+	--g-danger: #f2686a;
+	--g-anemo: #5fd9bd;
+	--g-geo: #f5b944;
+	--g-electro: #b764d6;
+	--g-hydro: #3e9bf0;
+	--g-pyro: #e8563c;
+	--g-cryo: #7fb4ef;
+	--g-dendro: #a8ce3e;
+	--g-s1: #16d6c6;
+	--g-s2: #38a9f5;
+	--g-s3: #8a8cf0;
+	--g-s4: #e6b14a;
+	--g-s5: #2e86e0;
+	--g-s6: #5fe0a0;
+}
+
+[data-theme="frostfall"] {
+	--g-bg: #cddbe9;
+	--g-surface: #e4edf6;
+	--g-surface-2: #c2d4e5;
+	--g-surface-3: #b2c8dd;
+	--g-border: #a3bcd3;
+	--g-border-soft: #bfd1e2;
+	--g-text: #0e1b2b;
+	--g-text-dim: #425a74;
+	--g-text-mute: #6e8397;
+	--g-accent: #2e7fc9;
+	--g-accent-hover: #1f6eb6;
+	--g-accent-fg: #ffffff;
+	--g-accent-weak: #dfebf8;
+	--g-success: #178c6a;
+	--g-warning: #a5761e;
+	--g-danger: #cb4a3d;
+	--g-anemo: #1fa98a;
+	--g-geo: #c88a16;
+	--g-electro: #8e43b0;
+	--g-hydro: #1c6fc9;
+	--g-pyro: #c63a22;
+	--g-cryo: #3b7fc4;
+	--g-dendro: #6e9020;
+	--g-s1: #2e7fc9;
+	--g-s2: #128a97;
+	--g-s3: #5b57c6;
+	--g-s4: #a5761e;
+	--g-s5: #345fb8;
+	--g-s6: #178c6a;
+}
+
+[data-theme="blossom"] {
+	--g-bg: #d5d2e4;
+	--g-surface: #e6e3f1;
+	--g-surface-2: #c7c2dd;
+	--g-surface-3: #b7b1d0;
+	--g-border: #aba4c8;
+	--g-border-soft: #c5bfdc;
+	--g-text: #151130;
+	--g-text-dim: #524d7c;
+	--g-text-mute: #7f7aa1;
+	--g-accent: #5a57d0;
+	--g-accent-hover: #4846be;
+	--g-accent-fg: #ffffff;
+	--g-accent-weak: #e7e5f9;
+	--g-success: #178c6a;
+	--g-warning: #a5761e;
+	--g-danger: #cb466a;
+	--g-anemo: #1fa98a;
+	--g-geo: #c88a16;
+	--g-electro: #8e43b0;
+	--g-hydro: #1c6fc9;
+	--g-pyro: #c63a22;
+	--g-cryo: #3b7fc4;
+	--g-dendro: #6e9020;
+	--g-s1: #5a57d0;
+	--g-s2: #2e7fc9;
+	--g-s3: #9247c6;
+	--g-s4: #128a97;
+	--g-s5: #a5761e;
+	--g-s6: #3d68c8;
+}
+
+[data-theme="lantern"] {
+	--g-bg: #dcd2bf;
+	--g-surface: #ebe4d5;
+	--g-surface-2: #d0c4ac;
+	--g-surface-3: #c1b396;
+	--g-border: #b6a88c;
+	--g-border-soft: #cbc0ab;
+	--g-text: #1a1507;
+	--g-text-dim: #5a4f38;
+	--g-text-mute: #877b6b;
+	--g-accent: #a6791b;
+	--g-accent-hover: #8f660d;
+	--g-accent-fg: #ffffff;
+	--g-accent-weak: #f2e8d0;
+	--g-success: #178c6a;
+	--g-warning: #c0691a;
+	--g-danger: #b04a3c;
+	--g-anemo: #1fa98a;
+	--g-geo: #c88a16;
+	--g-electro: #8e43b0;
+	--g-hydro: #1c6fc9;
+	--g-pyro: #c63a22;
+	--g-cryo: #3b7fc4;
+	--g-dendro: #6e9020;
+	--g-s1: #a6791b;
+	--g-s2: #b04a3c;
+	--g-s3: #2e7fc9;
+	--g-s4: #5a57d0;
+	--g-s5: #178c6a;
+	--g-s6: #345fb8;
+}
+
+@theme inline {
+	--color-g-canvas: var(--g-bg);
+	--color-g-surface: var(--g-surface);
+	--color-g-surface-2: var(--g-surface-2);
+	--color-g-surface-3: var(--g-surface-3);
+	--color-g-line: var(--g-border);
+	--color-g-line-soft: var(--g-border-soft);
+	--color-g-ink: var(--g-text);
+	--color-g-ink-dim: var(--g-text-dim);
+	--color-g-ink-mute: var(--g-text-mute);
+	--color-g-accent: var(--g-accent);
+	--color-g-accent-hover: var(--g-accent-hover);
+	--color-g-accent-fg: var(--g-accent-fg);
+	--color-g-accent-weak: var(--g-accent-weak);
+	--color-g-success: var(--g-success);
+	--color-g-warning: var(--g-warning);
+	--color-g-danger: var(--g-danger);
+	--color-g-anemo: var(--g-anemo);
+	--color-g-geo: var(--g-geo);
+	--color-g-electro: var(--g-electro);
+	--color-g-hydro: var(--g-hydro);
+	--color-g-pyro: var(--g-pyro);
+	--color-g-cryo: var(--g-cryo);
+	--color-g-dendro: var(--g-dendro);
+	--color-g-s1: var(--g-s1);
+	--color-g-s2: var(--g-s2);
+	--color-g-s3: var(--g-s3);
+	--color-g-s4: var(--g-s4);
+	--color-g-s5: var(--g-s5);
+	--color-g-s6: var(--g-s6);
+
+	--font-g-display: var(--g-font-display);
+	--font-g-body: var(--g-font-body);
+	--font-g-mono: var(--g-font-mono);
+
+	--text-g-hero: var(--g-t-hero);
+	--text-g-h1: var(--g-t-h1);
+	--text-g-h2: var(--g-t-h2);
+	--text-g-h3: var(--g-t-h3);
+	--text-g-lg: var(--g-t-lg);
+	--text-g-body: var(--g-t-body);
+	--text-g-sm: var(--g-t-sm);
+	--text-g-xs: var(--g-t-xs);
+	--text-g-num: var(--g-t-num);
+	--text-g-num-sm: var(--g-t-num-sm);
+
+	--radius-g-sm: var(--g-r-sm);
+	--radius-g-md: var(--g-r-md);
+	--radius-g-lg: var(--g-r-lg);
+	--radius-g-xl: var(--g-r-xl);
+	--radius-g-pill: var(--g-r-pill);
+	--radius-g-btn: var(--g-btn-r);
+	--radius-g-tab: var(--g-tab-r);
+	--radius-g-input: var(--g-input-r);
+
+	--shadow-g-card: var(--g-el-card);
+	--shadow-g-pop: var(--g-el-pop);
+	--shadow-g-hero: var(--g-el-hero);
+
+	--spacing-g-page: var(--g-sp-page);
+	--spacing-g-card: var(--g-pad-card);
+	--spacing-g-base: var(--g-gap);
+	--spacing-g-base-sm: var(--g-gap-sm);
+	--spacing-g-base-lg: var(--g-gap-lg);
+	--spacing-g-section: var(--g-sec);
+
+	--spacing-g-ctrl: var(--g-ctrl-h);
+	--spacing-g-btn-x: var(--g-btn-pad-x);
+}
