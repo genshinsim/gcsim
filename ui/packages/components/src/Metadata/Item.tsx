@@ -25,11 +25,11 @@ export const Item = ({
 		return null;
 	}
 
-	const titleCls = classNames("leading-4 align-bottom text-xs lowercase", {
-		"text-gray-400": !bright,
+	const titleCls = classNames("leading-4 align-bottom text-g-xs lowercase", {
+		"text-g-ink-mute": !bright,
 	});
 
-	const cc = cn("font-mono", className);
+	const cc = cn("font-g-mono", className);
 
 	return (
 		<Badge variant={intent} className={cc}>
@@ -38,7 +38,7 @@ export const Item = ({
 				<span
 					className={`${
 						bold ? "font-bold" : ""
-					} leading-4 align-bottom text-sm ${valueCase}`}
+					} leading-4 align-bottom text-g-sm ${valueCase}`}
 				>
 					{value}
 				</span>

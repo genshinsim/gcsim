@@ -1,3 +1,4 @@
+// TODO(gauge-migration): not ported — still on --deprecated-* (story-only — not reachable from the web/db runtime import graph; only referenced by Standard.stories and a commented-out PreviewCard usage)
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
 import { Item } from "./Item";

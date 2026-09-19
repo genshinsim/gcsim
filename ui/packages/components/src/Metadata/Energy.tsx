@@ -31,16 +31,16 @@ export const Energy = memo(({ energy }: Props) => {
 
 	return (
 		<Badge variant="default">
-			<span className="flex flex-row items-center gap-1 font-mono select-none">
+			<span className="flex flex-row items-center gap-1 font-g-mono select-none">
 				<Trans i18nKey="result.metadata_energy">
-					<span className="text-xs text-gray-400 pr-1" />
-					<span className="text-sm">{{ p: amount + "p" } as never}</span>
-					<span className="text-xs text-gray-400" />
-					<span className="text-sm">
+					<span className="text-g-xs text-g-ink-mute pr-1" />
+					<span className="text-g-sm">{{ p: amount + "p" } as never}</span>
+					<span className="text-g-xs text-g-ink-mute" />
+					<span className="text-g-sm">
 						{{ s: startSec + t("result.seconds_short") } as never}
 					</span>
-					<span className="text-xs text-gray-400" />
-					<span className="text-sm">
+					<span className="text-g-xs text-g-ink-mute" />
+					<span className="text-g-sm">
 						{{ e: endSec + t("result.seconds_short") } as never}
 					</span>
 				</Trans>
