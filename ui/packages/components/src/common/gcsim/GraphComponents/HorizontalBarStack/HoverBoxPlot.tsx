@@ -46,7 +46,7 @@ export const HoverBoxPlot = <Datum, Key>({
 				firstQuartile={box.firstQuartile}
 				median={box.median}
 				thirdQuartile={box.thirdQuartile}
-				stroke={"#FFF"}
+				stroke={"var(--g-text)"}
 				fill={color(tooltip.key)}
 			/>
 		</Group>

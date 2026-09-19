@@ -39,7 +39,7 @@ export default <Datum,>({
 	tooltipContent,
 	pieRadius = 0.65,
 	labelRadius = 0.8,
-	outline = "#FFF",
+	outline = "var(--g-surface)",
 	tail = 15,
 	margin = 150,
 	outlineWidth = 1,

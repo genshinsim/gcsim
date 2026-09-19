@@ -12,7 +12,7 @@ type Props = {
 
 export default ({ title, data, color, percent, format }: Props) => {
 	return (
-		<div className="flex flex-col px-2 py-1 font-mono text-xs">
+		<div className="flex flex-col px-2 py-1 font-g-mono text-g-xs">
 			<TooltipTitle title={title} color={color} percent={percent} />
 			<ul className="list-disc pl-4 grid grid-cols-[repeat(2,_max-content)] gap-x-2 justify-start">
 				<Item format={format} color={color} name="mean" value={data.mean} />
@@ -41,7 +41,7 @@ const TooltipTitle = ({ title, color, percent }: TitleProps) => {
 		if (value == null) {
 			return (
 				<span
-					className="text-gray-400 whitespace-nowrap"
+					className="text-g-ink-mute whitespace-nowrap"
 					style={{ color: color }}
 				>
 					{title}
@@ -50,7 +50,7 @@ const TooltipTitle = ({ title, color, percent }: TitleProps) => {
 		}
 
 		return (
-			<div className="flex flex-row flex-nowrap justify-start text-gray-400 gap-2">
+			<div className="flex flex-row flex-nowrap justify-start text-g-ink-mute gap-2">
 				<span className="whitespace-nowrap" style={{ color: color }}>
 					{title}
 				</span>
@@ -82,7 +82,7 @@ const Item = ({ name, value, color, format }: ItemProps) => {
 
 	return (
 		<>
-			<span className="text-gray-400 list-item" style={{ color: color }}>
+			<span className="text-g-ink-mute list-item" style={{ color: color }}>
 				{name}
 			</span>
 			<span>{num}</span>

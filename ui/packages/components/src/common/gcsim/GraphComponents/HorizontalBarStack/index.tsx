@@ -140,7 +140,7 @@ export default <Datum, Key extends StackKey>({
 												width={bar.width}
 												height={bar.height}
 												fill={hover ? hoverColor(bar.key) : bar.color}
-												stroke="#FFF"
+												stroke="var(--g-surface)"
 												strokeWidth={0.25}
 												strokeOpacity={1}
 												onMouseLeave={() => tooltipHandles.mouseLeave()}
