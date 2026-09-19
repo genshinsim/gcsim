@@ -1,0 +1,38 @@
+.g-hero {
+	--art-top: 36px;
+	--art-bottom: 36px;
+	--art-focus-x: 100%;
+	--art-focus-y: 100%;
+	--art-fade-bottom: 8%;
+	position: relative;
+	display: flex;
+	align-items: stretch;
+	height: var(--hero-h, 560px);
+	padding: 72px 0;
+	overflow: hidden;
+}
+.g-hero-art {
+	position: absolute;
+	right: 0;
+	top: var(--art-top);
+	bottom: var(--art-bottom);
+	width: var(--art-width, 90%);
+	z-index: 0;
+}
+.g-hero-art img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: var(--art-focus-x) var(--art-focus-y);
+}
+.g-hero-art::after {
+	content: "";
+	position: absolute;
+	inset: 0;
+	background:
+		linear-gradient(90deg, var(--g-bg) 4%, color-mix(in srgb, var(--g-bg) 74%, transparent) 40%, color-mix(in srgb, var(--g-bg) 22%, transparent) 68%, transparent 94%),
+		linear-gradient(270deg, var(--g-bg), transparent 8%),
+		linear-gradient(0deg, var(--g-bg) 0%, transparent var(--art-fade-bottom)),
+		linear-gradient(180deg, var(--g-bg) 1%, transparent 24%),
+		color-mix(in srgb, var(--g-bg) 26%, transparent);
+}
