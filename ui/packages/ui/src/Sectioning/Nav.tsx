@@ -155,7 +155,7 @@ const MobileMenu = () => {
 export default () => {
 	const links = useNavLinks();
 	return (
-		<nav className="bg-bp-header-color text-deprecated-foreground shadow-md">
+		<nav className="bg-g-canvas text-g-ink border-b border-g-line-soft">
 			<div className="flex w-full 2xl:mx-auto 2xl:container">
 				<div className="flex h-[50px] w-full items-center px-2">
 					<Link to="/" className="mr-2.5 flex h-[50px] items-center">
@@ -164,7 +164,7 @@ export default () => {
 							alt=""
 							className="m-auto mr-2 max-h-[75%] object-scale-down"
 						/>
-						<span className="font-medium font-mono">gcsim</span>
+						<span className="font-medium font-g-mono">gcsim</span>
 					</Link>
 
 					<Separator

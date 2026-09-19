@@ -76,8 +76,7 @@
 }
 
 body {
-  /* background-color: #293742; */
-  background-color: #1C2127;
+  background-color: var(--g-bg);
 }
 
 /*
@@ -107,7 +106,7 @@ input[type="number"] {
 div.sample-header {
   position: sticky;
   top: 0; /* Don't forget this, required for the stickiness */
-  background-color: rgb(75 85 99);
+  background-color: var(--g-surface-2);
   text-align: center;
   z-index: 10;
 }

@@ -61,7 +61,7 @@ export default ({ sample, error, retry }: Props) => {
 	return (
 		<div className="flex flex-col gap-2 w-full 2xl:mx-auto 2xl:container py-6">
 			<div className="flex flex-row justify-between pl-6 pr-4 pb-2">
-				<span className="text-lg font-bold font-mono">
+				<span className="text-g-lg font-bold font-g-mono">
 					{t("db.number_of_targets") + sample.target_details?.length}
 				</span>
 				<ButtonGroup>

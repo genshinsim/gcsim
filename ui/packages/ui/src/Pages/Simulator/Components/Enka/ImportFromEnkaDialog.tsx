@@ -105,7 +105,7 @@ export function ImportFromEnkaDialog(props: Props) {
 						onChange={(e) => {
 							setUid(e.target.value.trim());
 						}}
-						className="w-full p-2 bg-gray-600 rounded-md mt-2"
+						className="w-full p-2 bg-g-surface-2 rounded-g-md mt-2"
 						placeholder={t("simple.tools_paste_uid")}
 					/>
 

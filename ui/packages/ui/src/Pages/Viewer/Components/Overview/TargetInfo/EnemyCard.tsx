@@ -130,22 +130,22 @@ const Icon = ({ type }: { type: string }) => {
 	const size = "w-[16px] h-[16px] min-w-[16px] min-h-[16px]";
 	switch (type) {
 		case "electro":
-			return <IconElectro className={`${size} text-electro`} />;
+			return <IconElectro className={`${size} text-g-electro`} />;
 		case "pyro":
-			return <IconPyro className={`${size} text-pyro`} />;
+			return <IconPyro className={`${size} text-g-pyro`} />;
 		case "cryo":
-			return <IconCryo className={`${size} text-cryo`} />;
+			return <IconCryo className={`${size} text-g-cryo`} />;
 		case "hydro":
-			return <IconHydro className={`${size} text-hydro`} />;
+			return <IconHydro className={`${size} text-g-hydro`} />;
 		case "geo":
-			return <IconGeo className={`${size} text-geo`} />;
+			return <IconGeo className={`${size} text-g-geo`} />;
 		case "anemo":
-			return <IconAnemo className={`${size} text-anemo`} />;
+			return <IconAnemo className={`${size} text-g-anemo`} />;
 		case "physical":
 			return <IconPhysical className={`${size}`} />;
 		case "dendro":
-			return <IconDendro className={`${size} text-dendro`} />;
+			return <IconDendro className={`${size} text-g-dendro`} />;
 		default:
-			return <IconHydro className={`${size} text-hydro`} />;
+			return <IconHydro className={`${size} text-g-hydro`} />;
 	}
 };

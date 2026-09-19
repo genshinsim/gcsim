@@ -52,7 +52,7 @@ const IncompleteCharWarning = ({ data }: WarningProps) => {
 					/>
 				</Trans>
 			</p>
-			<div className="flex flex-col justify-start gap-1 text-xs pt-2 font-mono text-gray-400">
+			<div className="flex flex-col justify-start gap-1 text-g-xs pt-2 font-g-mono text-g-ink-mute">
 				<span className="font-bold">
 					{t("warnings.incomplete_char_data_header")}
 				</span>
@@ -290,7 +290,7 @@ const FailedActionDetails = ({ data, title, stat }: DetailsProps) => {
 	));
 
 	return (
-		<div className="flex flex-col justify-start gap-1 text-xs pt-2 font-mono text-gray-400">
+		<div className="flex flex-col justify-start gap-1 text-g-xs pt-2 font-g-mono text-g-ink-mute">
 			<span className="font-bold">{title}</span>
 			<ul className="list-disc pl-4 grid grid-cols-[auto_minmax(0,_1fr)] gap-x-3 justify-start">
 				{details}

@@ -71,7 +71,7 @@ export function ImportFromGOODDialog(props: Props) {
 					<textarea
 						value={localStorage.getItem(lsKey) ?? ""}
 						onChange={handleChange}
-						className="w-full p-2 bg-gray-600 rounded-md mt-2"
+						className="w-full p-2 bg-g-surface-2 rounded-g-md mt-2"
 						rows={7}
 					/>
 					<p className="font-bold !pt-2">{t("simple.tools_import_after")}</p>

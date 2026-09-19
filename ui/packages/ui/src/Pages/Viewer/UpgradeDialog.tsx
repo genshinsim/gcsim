@@ -185,7 +185,7 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
 
 	const versionClass = classNames(
 		"inline-grid grid-cols-[repeat(6,_max-content)] justify-start gap-y-0 gap-x-3",
-		"text-xs pt-2 font-mono text-gray-400",
+		"text-g-xs pt-2 font-g-mono text-g-ink-mute",
 	);
 
 	const VersionInfo = () => (
@@ -223,7 +223,7 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
 			{dirty && (
 				<>
 					<div className="justify-self-end">dirty?</div>
-					<div className="text-red-500">true</div>
+					<div className="text-g-danger">true</div>
 					<Separator orientation="vertical" />
 				</>
 			)}
