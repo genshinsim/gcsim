@@ -27,7 +27,7 @@ export default ({ data, running }: Props) => {
 	);
 
 	return (
-		<Card className="flex flex-col col-span-2 h-72 min-h-full gap-0">
+		<Card className="flex flex-col col-span-2 h-72 min-h-full gap-0 p-5">
 			<CardTitle
 				title={t("result.dist", { d: t("result.target_dps") })}
 				timer={timer}
