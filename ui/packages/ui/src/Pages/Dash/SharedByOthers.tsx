@@ -1,3 +1,4 @@
+import { cn } from "@gcsim/primitives";
 import type { db } from "@gcsim/types";
 import axios from "axios";
 import { useEffect, useState } from "react";
@@ -46,7 +47,7 @@ export function SharedByOthers({ className }: SharedByOthersProps) {
 
 	return (
 		<div
-			className={`grid grid-cols-1 gap-g-base-lg md:grid-cols-3 ${className ?? ""}`}
+			className={cn("grid grid-cols-1 gap-g-base-lg md:grid-cols-3", className)}
 		>
 			{entries.map((e) => (
 				<TeamCard entry={e} key={e._id} />

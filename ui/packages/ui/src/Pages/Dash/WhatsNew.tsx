@@ -1,5 +1,6 @@
 import { AvatarPortrait } from "@gcsim/components";
 import LatestCharactersData from "@gcsim/data/src/latest_chars.json";
+import { cn } from "@gcsim/primitives";
 import axios from "axios";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -8,6 +9,13 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 const majorVersionRegex = /v\d+\.\d+/;
+
+type GithubRelease = {
+	name: string;
+	body: string;
+	published_at: string;
+	html_url: string;
+};
 
 export function WhatsNew({ className }: { className?: string }) {
 	const { t } = useTranslation();
@@ -24,7 +32,7 @@ export function WhatsNew({ className }: { className?: string }) {
 
 	useEffect(() => {
 		axios("https://api.github.com/repos/genshinsim/gcsim/releases/latest")
-			.then((resp: { data }) => {
+			.then((resp: { data: GithubRelease }) => {
 				const majorVersion = majorVersionRegex.exec(resp.data.name);
 				let portraits: string[] = [];
 				if (majorVersion?.[0]) {
@@ -42,9 +50,10 @@ export function WhatsNew({ className }: { className?: string }) {
 			.catch((err) => console.log(err.message));
 	}, []);
 
-	const cardClass =
-		"border border-g-line bg-g-surface rounded-g-lg p-g-card shadow-g-card" +
-		(className ? ` ${className}` : "");
+	const cardClass = cn(
+		"border border-g-line bg-g-surface rounded-g-lg p-g-card shadow-g-card",
+		className,
+	);
 
 	if (!isLoaded) {
 		return <div className={cardClass}>{t("sim.loading")}</div>;

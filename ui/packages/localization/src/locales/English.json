@@ -93,7 +93,13 @@
 		"shared_title": "Shared by others",
 		"shared_sub": "Community-submitted builds, benchmarked and reproducible.",
 		"view_all": "View all",
-		"show_detail": "Show Detail"
+		"team_fallback": "Team",
+		"author_unknown": "unknown",
+		"by_author": "by {{author}}",
+		"dps_per_target": "DPS / target",
+		"mode_label": "mode {{mode}}",
+		"mode_ttk": "TTK",
+		"mode_duration": "duration"
 	},
 	"db": {
 		"author": "Author: ",

@@ -1,4 +1,4 @@
-import { Button } from "@gcsim/primitives";
+import { Button, cn } from "@gcsim/primitives";
 import { useTranslation } from "react-i18next";
 import { AiFillGithub } from "react-icons/ai";
 import { FaDiscord } from "react-icons/fa";
@@ -8,10 +8,10 @@ export function CommunityCta({ className }: { className?: string }) {
 
 	return (
 		<div
-			className={
-				"flex flex-col justify-center rounded-g-lg border border-g-line p-6 shadow-g-card " +
-				(className ?? "")
-			}
+			className={cn(
+				"flex flex-col justify-center rounded-g-lg border border-g-line p-6 shadow-g-card",
+				className,
+			)}
 			style={{
 				background:
 					"linear-gradient(135deg, var(--g-accent-weak), var(--g-surface))",

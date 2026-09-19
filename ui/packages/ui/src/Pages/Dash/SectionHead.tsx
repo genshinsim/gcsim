@@ -1,3 +1,4 @@
+import { cn } from "@gcsim/primitives";
 import { ArrowRight } from "lucide-react";
 import type { ReactNode } from "react";
 
@@ -10,8 +11,6 @@ type SectionHeadProps = {
 	children?: ReactNode;
 };
 
-// Shared section header used by both Dash layouts: a title + subtitle on the
-// left, an optional "see all" link on the right.
 export function SectionHead({
 	title,
 	subtitle,
@@ -21,9 +20,7 @@ export function SectionHead({
 	children,
 }: SectionHeadProps) {
 	return (
-		<div
-			className={`flex items-baseline justify-between gap-3 ${className}`.trim()}
-		>
+		<div className={cn("flex items-baseline justify-between gap-3", className)}>
 			<div>
 				<h2 className="mb-1 font-g-display text-g-h2 font-semibold text-g-ink">
 					{title}
