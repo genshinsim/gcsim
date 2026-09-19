@@ -48,8 +48,8 @@ const Row = ({
 				key={ci}
 				className={
 					row.active === ci
-						? "border-l-2 border-gray-500 bg-gray-400	"
-						: "border-l-2 border-gray-500"
+						? "border-l-2 border-g-line bg-g-surface-3	"
+						: "border-l-2 border-g-line"
 				}
 			>
 				{events}
@@ -66,14 +66,14 @@ const Row = ({
 			<div
 				className={
 					hl
-						? "text-right text-gray-100 border-b-2 border-gray-500 bg-blue-500"
-						: "text-right text-gray-100 border-b-2 border-gray-500"
+						? "text-right text-g-ink border-b-2 border-g-line bg-g-accent"
+						: "text-right text-g-ink border-b-2 border-g-line"
 				}
 				style={{ minWidth: "100px" }}
 			>
 				<div>{`${row.f} | ${(row.f / 60).toFixed(2)}s`}</div>
 			</div>
-			<div className="grid grid-cols-5 flex-grow border-b-2 border-gray-500">
+			<div className="grid grid-cols-5 flex-grow border-b-2 border-g-line">
 				{cols}
 			</div>
 			<div style={{ width: "20px", minWidth: "20px" }} />
@@ -197,7 +197,7 @@ function SamplerUI({
 		return (
 			<div
 				key={c}
-				className="capitalize text-lg font-medium text-gray-100 border-l-2 border-b-2 border-gray-500"
+				className="capitalize text-g-lg font-medium text-g-ink border-l-2 border-b-2 border-g-line"
 			>
 				{c}
 			</div>
@@ -268,7 +268,7 @@ function SamplerUI({
 				</ButtonGroup>
 			</div>
 			<div className="flex flex-col overflow-x-auto h-[80vh]">
-				<Card className="flex-auto gap-0 p-2 !bg-gray-600 !text-xs min-w-[60rem] ">
+				<Card className="flex-auto gap-0 p-2 !bg-g-surface-2 !text-g-xs min-w-[60rem] ">
 					<AutoSizer disableWidth={true}>
 						{({ height }) => (
 							<div
@@ -284,14 +284,14 @@ function SamplerUI({
 								<div className="flex flex-row sample-header">
 									<div
 										className={
-											"font-medium text-lg text-gray-100 border-b-2 border-gray-500 text-right "
+											"font-medium text-g-lg text-g-ink border-b-2 border-g-line text-right "
 										}
 										style={{ minWidth: "100px" }}
 									>
 										F | Sec
 									</div>
 									<div className="grid grid-cols-5 flex-grow">
-										<div className="font-medium text-lg text-gray-100 border-l-2 border-b-2 border-gray-500">
+										<div className="font-medium text-g-lg text-g-ink border-l-2 border-b-2 border-g-line">
 											Sim
 										</div>
 										{char}

@@ -34,7 +34,7 @@ export function Options(props: OptionsProp) {
 						onChange={() => props.handleToggle(o)}
 					/>
 					<span
-						className="font-medium text-sm pl-1"
+						className="font-medium text-g-sm pl-1"
 						style={{ color: eventColor(o) }}
 					>
 						{o}

@@ -60,7 +60,7 @@ export const UploadSample = () => {
 			<div className="p-8">
 				<div {...getRootProps({ className: dzClass })}>
 					<input {...getInputProps()} />
-					<span className="text-lg">{t("sample.drop_text")}</span>
+					<span className="text-g-lg">{t("sample.drop_text")}</span>
 				</div>
 			</div>
 		);

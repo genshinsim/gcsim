@@ -20,12 +20,12 @@ export function SampleItemView({
 	};
 	return (
 		<div
-			className="flex flex-row gap-2 items-center pl-1 pr-1 pt-px pb-px rounded-md m-1 "
+			className="flex flex-row gap-2 items-center pl-1 pr-1 pt-px pb-px rounded-g-md m-1 "
 			style={{ backgroundColor: item.color }}
 		>
 			<button
 				type="button"
-				className="material-icons text-sm cursor-pointer"
+				className="material-icons text-g-sm cursor-pointer"
 				onClick={() => showBuffDuration(item)}
 			>
 				{item.icon}
