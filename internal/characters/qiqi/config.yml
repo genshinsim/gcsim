@@ -2,6 +2,10 @@ use: pipeline
 kind: character
 name: qiqi
 
+combat:
+  icd_tags:
+    - QiqiElementalArt
+
 talents:
   - attack:
       - attack(1-Hit DMG)
@@ -23,11 +27,13 @@ talents:
   - skillHealContPer: skill(Continuous Regeneration)
   - skillHealContFlat: skill(Continuous Regeneration|1)
   - skillDmgCont: skill(Herald of Frost DMG)
+  - skillCoord: skill(Herald of Frost Coordinated Attack DMG)
   - skillInitialDmg: skill(Skill DMG)
 
   - burstHealPer: burst(Healing)
   - burstHealFlat: burst(Healing|1)
   - burstDmg: burst(Skill DMG)
+  - burstSSC: burst(Stellar-Conduct DMG)
 
 docs:
   frames:
@@ -56,13 +62,13 @@ abilities:
         center: Player
         offset: [0, 0.8]
         radius: 1.2
-        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
 
       - name: N2
         shape: Box
         center: Player
         box: [1.4, 2.2]
-        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
 
       - name: N3-1
         shape: Circle
@@ -70,35 +76,35 @@ abilities:
         offset: [0, 1]
         fan_angle: 30
         radius: 1.6
-        hitlag: {time: 0.03, scale: 0.05, defense_halt: true}
+        hitlag: { time: 0.03, scale: 0.05, defense_halt: true }
 
       - name: N3-2
         shape: Circle
         center: Player
         offset: [0, 0.6]
         radius: 1.6
-        hitlag: {time: 0.03, scale: 0.05, defense_halt: true}
+        hitlag: { time: 0.03, scale: 0.05, defense_halt: true }
 
       - name: N4-1
         shape: Circle
         center: Player
         offset: [0, 0.6]
         radius: 1.6
-        hitlag: {time: 0.03, scale: 0.05, defense_halt: true}
+        hitlag: { time: 0.03, scale: 0.05, defense_halt: true }
 
       - name: N4-2
         shape: Circle
         center: Player
         offset: [0, 0.6]
         radius: 1.6
-        hitlag: {time: 0.03, scale: 0.05, defense_halt: true}
+        hitlag: { time: 0.03, scale: 0.05, defense_halt: true }
 
       - name: N5
         shape: Circle
         center: Player
         offset: [0, 1]
         radius: 2.2
-        hitlag: {time: 0.12, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.12, scale: 0.01, defense_halt: true }
 
   - name: charge
     note: Need to use attack right before charge.
@@ -151,13 +157,14 @@ abilities:
         shape: Circle
         center: Player
         radius: 2.5
-        hitlag: {time: 0.05, scale: 0.05, defense_halt: true}
+        hitlag: { time: 0.05, scale: 0.05, defense_halt: true }
 
       - name: E-HeraldOfFrost
         shape: Circle
         center: Player
         radius: 2.5
-        hitlag: {time: 0.05, scale: 0.05, defense_halt: true, deployable: true}
+        hitlag:
+          { time: 0.05, scale: 0.05, defense_halt: true, deployable: true }
 
   - name: burst
     hitbox:

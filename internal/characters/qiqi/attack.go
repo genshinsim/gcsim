@@ -72,7 +72,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			)
 		}
 		c.QueueCharTask(func() {
-			c.Core.QueueAttack(ai, ap, 0, 0)
+			c.Core.QueueAttack(ai, ap, 0, 0, c.skillHealCB)
 		}, attackHitmarks[c.NormalCounter][i])
 	}
 
