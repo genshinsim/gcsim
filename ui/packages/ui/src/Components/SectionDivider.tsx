@@ -5,7 +5,7 @@ type Props = {
 
 export function SectionDivider({
 	children,
-	fontClass = "font-bold text-xl",
+	fontClass = "font-bold text-g-lg",
 }: Props) {
 	return (
 		<div className="flex flex-row place-items-center mt-2 mb-2">

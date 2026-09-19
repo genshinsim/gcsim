@@ -56,7 +56,7 @@ export function IconER(props: Props) {
 				<path d="M14,6.641A6.642,6.642,0,0,1,.928,8.3h0L0,8.737.961,4.8l.012.012L2.392,6.3l1.37,1.433-1.23.143A4.981,4.981,0,1,0,7.359,1.66V0A6.641,6.641,0,0,1,14,6.641Z"></path>
 			</svg>
 			<svg
-				className=" origin-center absolute top-0 bottom-0 left-0 right-0 fill-gray-400"
+				className=" origin-center absolute top-0 bottom-0 left-0 right-0 fill-g-ink-mute"
 				viewBox="0 0 14 13.282"
 				aria-hidden="true"
 			>
