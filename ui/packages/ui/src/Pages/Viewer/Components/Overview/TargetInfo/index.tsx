@@ -38,7 +38,7 @@ const CardData = ({ enemies, player }: Props) => {
 				))}
 			</div>
 			<div className="flex flex-col grow w-[236px] min-h-[100px] lg:self-auto self-center">
-				<div className="lg:flex flex-row justify-center text-gray-400 font-mono hidden">
+				<div className="lg:flex flex-row justify-center text-g-ink-mute font-g-mono hidden">
 					{t("result.target_pos")}
 				</div>
 				<ParentSize>
