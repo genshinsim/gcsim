@@ -5,7 +5,7 @@ import type * as React from "react";
 import { cn } from "../../lib/utils";
 
 const nonIdealStateVariants = cva(
-	"flex items-center justify-center gap-4 text-center text-deprecated-muted-foreground",
+	"flex items-center justify-center gap-4 text-center text-g-ink-mute",
 	{
 		variants: {
 			layout: {
@@ -54,7 +54,7 @@ function NonIdealState({
 			{media != null && (
 				<div
 					data-slot="non-ideal-state-icon"
-					className="text-deprecated-muted-foreground/70 [&_svg]:size-8"
+					className="text-g-ink-mute/70 [&_svg]:size-8"
 				>
 					{media}
 				</div>
@@ -64,7 +64,7 @@ function NonIdealState({
 					{title != null && (
 						<div
 							data-slot="non-ideal-state-title"
-							className="font-medium text-deprecated-foreground"
+							className="font-medium text-g-ink"
 						>
 							{title}
 						</div>
@@ -72,7 +72,7 @@ function NonIdealState({
 					{description != null && (
 						<div
 							data-slot="non-ideal-state-description"
-							className="text-sm text-deprecated-muted-foreground"
+							className="text-g-sm text-g-ink-mute"
 						>
 							{description}
 						</div>
