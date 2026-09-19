@@ -22,7 +22,7 @@ export function WeaponCard({
 					onError={(e) => ((e.target as HTMLImageElement).src = placeholder)}
 				/>
 			</div>
-			<div className="flex-grow text-sm pl-2 flex flex-col justify-center">
+			<div className="flex-grow text-g-sm pl-2 flex flex-col justify-center">
 				<div className="font-medium text-left">
 					{t(dynamicKey("game:weapon_names." + weapon.name)).replace(
 						/(.{20})..+/,
@@ -31,7 +31,7 @@ export function WeaponCard({
 						" R" +
 						weapon.refine}
 				</div>
-				<div className="justify-center items-center rounded-md">
+				<div className="justify-center items-center rounded-g-md">
 					Lvl {weapon.level}/{weapon.max_level}
 				</div>
 			</div>
@@ -39,7 +39,7 @@ export function WeaponCard({
 	);
 
 	return (
-		<div className="weapon-parent ml-2 mr-2 p-2 bg-[#252A31] border-gray-600 border">
+		<div className="weapon-parent ml-2 mr-2 p-2 bg-g-surface-2 border-g-line border">
 			{isSkeleton ? <div className="h-12"></div> : content}
 		</div>
 	);
