@@ -46,7 +46,7 @@ export function DashMobile() {
 							</Link>
 						</Button>
 						<Button asChild variant="outline">
-							<a href="https://gcsim.app/docs">
+							<a href="https://docs.gcsim.app">
 								<BookOpen /> {t("dash.docs")}
 							</a>
 						</Button>

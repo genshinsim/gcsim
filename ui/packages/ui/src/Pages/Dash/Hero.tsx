@@ -33,7 +33,7 @@ export function Hero() {
 						</Link>
 					</Button>
 					<Button asChild size="lg" variant="outline">
-						<a href="https://gcsim.app/docs">
+						<a href="https://docs.csim.app">
 							<BookOpen /> {t("dash.read_the_docs")}
 						</a>
 					</Button>
