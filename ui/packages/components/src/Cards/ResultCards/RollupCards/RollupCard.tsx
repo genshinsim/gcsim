@@ -18,11 +18,11 @@ type Props = {
 };
 
 const RollupCard = ({ title, color, value, label, auxStats }: Props) => (
-	<div
-		className="flex basis-1/4 flex-auto pl-1 min-w-fit"
-		style={{ background: color }}
-	>
-		<Card className="flex flex-auto flex-row items-stretch justify-between gap-0 p-5">
+	<div className="flex basis-1/4 flex-auto min-w-fit">
+		<Card
+			className="flex flex-auto flex-row items-stretch justify-between gap-0 border-l-4 p-5"
+			style={{ borderLeftColor: color }}
+		>
 			<div className="flex flex-col justify-start">
 				<CardTitle title={title} />
 				<CardValue value={value} label={label} />
