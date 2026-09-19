@@ -146,6 +146,7 @@ ace.define(
         'ineffa',
         'jahoda',
         'jean',
+        'kachina',
         'kaedeharakazuha',
         'kaz',
         'kazuha',
