@@ -9,6 +9,7 @@
  */
 @import "tailwindcss" source(none);
 @import "tw-animate-css";
+@import "./theme.css";
 
 @source "./components/src";
 @source "./primitives/src";
