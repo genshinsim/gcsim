@@ -79,38 +79,3 @@
 	}
 }
 
-@theme inline {
-	--color-deprecated-border: hsl(var(--deprecated-border));
-	--color-deprecated-input: hsl(var(--deprecated-input));
-	--color-deprecated-ring: hsl(var(--deprecated-ring));
-	--color-deprecated-background: hsl(var(--deprecated-background));
-	--color-deprecated-foreground: hsl(var(--deprecated-foreground));
-
-	--color-deprecated-primary: hsl(var(--deprecated-primary));
-	--color-deprecated-primary-foreground: hsl(var(--deprecated-primary-foreground));
-
-	--color-deprecated-secondary: hsl(var(--deprecated-secondary));
-	--color-deprecated-secondary-foreground: hsl(var(--deprecated-secondary-foreground));
-
-	--color-deprecated-destructive: hsl(var(--deprecated-destructive));
-	--color-deprecated-destructive-foreground: hsl(var(--deprecated-destructive-foreground));
-
-	--color-deprecated-success: hsl(var(--deprecated-success));
-	--color-deprecated-success-foreground: hsl(var(--deprecated-success-foreground));
-
-	--color-deprecated-warning: hsl(var(--deprecated-warning));
-	--color-deprecated-warning-foreground: hsl(var(--deprecated-warning-foreground));
-
-	--color-deprecated-muted: hsl(var(--deprecated-muted));
-	--color-deprecated-muted-foreground: hsl(var(--deprecated-muted-foreground));
-
-	--color-deprecated-accent: hsl(var(--deprecated-accent));
-	--color-deprecated-accent-foreground: hsl(var(--deprecated-accent-foreground));
-
-	--color-deprecated-popover: hsl(var(--deprecated-popover));
-	--color-deprecated-popover-foreground: hsl(var(--deprecated-popover-foreground));
-
-	--color-deprecated-card: hsl(var(--deprecated-card));
-	--color-deprecated-card-foreground: hsl(var(--deprecated-card-foreground));
-}
-
