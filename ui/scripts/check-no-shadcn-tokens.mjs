@@ -1,12 +1,4 @@
 #!/usr/bin/env node
-// Gauge-migration done-gate. Two assertions across the workspace source:
-//   1. No bare shadcn tokens/utilities (e.g. `--background`, `bg-accent`) — the
-//      migration replaced them with the `-g-` Gauge namespace.
-//   2. No `--deprecated-`/`deprecated-` reference — the deprecated shadcn layer
-//      is deleted; nothing may name it anymore.
-// A file carrying a `// TODO(gauge-migration):` marker is the explicit
-// known-debt allowlist: it is skipped entirely (not-in-use/WIP components that
-// are not shipped). Wired into `lint` / `lint-ci`.
 import { readdirSync, readFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -25,7 +17,6 @@ const SKIP_DIRS = new Set([
 const SKIP_FILES = new Set(["stats.html"]);
 const EXTS = [".ts", ".tsx", ".css", ".html"];
 
-// Files carrying this marker are known, tracked debt; skip them wholesale.
 const ALLOWLIST_MARKER = "TODO(gauge-migration)";
 
 const COLOR_TOKENS = [
@@ -69,8 +60,6 @@ const BARE_UTILITY = new RegExp(
 	`(?<![A-Za-z0-9_])(?:${colorUtilAlt})-(?:${colorTokenAlt})\\b`,
 	"g",
 );
-// Any reference to the deleted deprecated layer: `--deprecated-*` custom props
-// and `bg-deprecated-*` / `text-deprecated-*` utilities alike.
 const DEPRECATED_REF = /(?<![A-Za-z0-9_])-?-?deprecated-/g;
 
 const CHECKS = [
