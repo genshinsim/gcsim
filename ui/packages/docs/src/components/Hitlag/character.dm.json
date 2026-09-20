@@ -5398,5 +5398,63 @@
       "defense_halt": true,
       "deployable": true
     }
+  ],
+  "zibai": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "time": 0.01,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N2-1",
+      "time": 0.02,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N3-1",
+      "time": 0.02,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N3-2",
+      "time": 0.01,
+      "scale": 0.01,
+      "defense_halt": false,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "E-N3-2",
+      "time": 0.02,
+      "scale": 0.01,
+      "defense_halt": false,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N4",
+      "time": 0.03,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    },
+    {
+      "ability": "charge",
+      "name": "CA-2",
+      "time": 0.06,
+      "scale": 0.01,
+      "defense_halt": true,
+      "deployable": false
+    }
   ]
 }
