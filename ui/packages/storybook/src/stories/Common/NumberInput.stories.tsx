@@ -19,9 +19,7 @@ function Controlled({
 	return (
 		<div className="flex w-48 flex-col gap-2">
 			<NumberInput value={value} onValueChange={setValue} {...props} />
-			<span className="text-sm text-deprecated-muted-foreground">
-				value: {value}
-			</span>
+			<span className="text-sm text-g-ink-mute">value: {value}</span>
 		</div>
 	);
 }

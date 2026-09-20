@@ -17,6 +17,8 @@ const SKIP_DIRS = new Set([
 const SKIP_FILES = new Set(["stats.html"]);
 const EXTS = [".ts", ".tsx", ".css", ".html"];
 
+const ALLOWLIST_MARKER = "TODO(gauge-migration)";
+
 const COLOR_TOKENS = [
 	"background",
 	"foreground",
@@ -58,6 +60,13 @@ const BARE_UTILITY = new RegExp(
 	`(?<![A-Za-z0-9_])(?:${colorUtilAlt})-(?:${colorTokenAlt})\\b`,
 	"g",
 );
+const DEPRECATED_REF = /(?<![A-Za-z0-9_])-?-?deprecated-/g;
+
+const CHECKS = [
+	{ re: BARE_CUSTOM_PROP, kind: "bare shadcn token" },
+	{ re: BARE_UTILITY, kind: "bare shadcn utility" },
+	{ re: DEPRECATED_REF, kind: "deprecated- reference" },
+];
 
 function* walk(dir) {
 	for (const entry of readdirSync(dir, { withFileTypes: true })) {
@@ -74,9 +83,11 @@ function* walk(dir) {
 
 const violations = [];
 for (const file of walk(PACKAGES)) {
-	const lines = readFileSync(file, "utf8").split("\n");
+	const src = readFileSync(file, "utf8");
+	if (src.includes(ALLOWLIST_MARKER)) continue;
+	const lines = src.split("\n");
 	lines.forEach((line, i) => {
-		for (const re of [BARE_CUSTOM_PROP, BARE_UTILITY]) {
+		for (const { re, kind } of CHECKS) {
 			re.lastIndex = 0;
 			let m = re.exec(line);
 			while (m !== null) {
@@ -84,6 +95,7 @@ for (const file of walk(PACKAGES)) {
 					file: relative(ROOT, file),
 					line: i + 1,
 					match: m[0],
+					kind,
 				});
 				m = re.exec(line);
 			}
@@ -93,11 +105,11 @@ for (const file of walk(PACKAGES)) {
 
 if (violations.length > 0) {
 	console.error(
-		`Found ${violations.length} bare shadcn token(s)/utilities — they must use the --deprecated- form:`,
+		`Found ${violations.length} non-Gauge token reference(s) — use the -g- Gauge namespace (or tag a not-shipped file with // ${ALLOWLIST_MARKER}: to allowlist known debt):`,
 	);
 	for (const v of violations)
-		console.error(`  ${v.file}:${v.line}  ${v.match}`);
+		console.error(`  ${v.file}:${v.line}  ${v.match}  (${v.kind})`);
 	process.exit(1);
 }
 
-console.log("OK: no bare shadcn tokens or utilities found.");
+console.log("OK: only Gauge (-g-) tokens in use; no deprecated layer remains.");

@@ -1,87 +1,11 @@
 @import "../../tailwind.css";
 
 @layer base {
-  :root {
-    --deprecated-background: 0 0% 100%;
-    --deprecated-foreground: 222.2 84% 4.9%;
-
-    --deprecated-card: 0 0% 100%;
-    --deprecated-card-foreground: 222.2 84% 4.9%;
-
-    --deprecated-popover: 0 0% 100%;
-    --deprecated-popover-foreground: 222.2 84% 4.9%;
-
-    --deprecated-primary: 222.2 47.4% 11.2%;
-    --deprecated-primary-foreground: 210 40% 98%;
-
-    --deprecated-secondary: 210 40% 96.1%;
-    --deprecated-secondary-foreground: 222.2 47.4% 11.2%;
-
-    --deprecated-muted: 210 40% 96.1%;
-    --deprecated-muted-foreground: 215.4 16.3% 46.9%;
-
-    --deprecated-accent: 210 40% 96.1%;
-    --deprecated-accent-foreground: 222.2 47.4% 11.2%;
-
-    --deprecated-destructive: 0 84.2% 60.2%;
-    --deprecated-destructive-foreground: 210 40% 98%;
-
-    --deprecated-success: 163 88% 20%;
-    --deprecated-success-foreground: 142 69% 58%;
-
-    --deprecated-warning: 26 90% 37%;
-    --deprecated-warning-foreground: 0 0% 100%;
-
-    --deprecated-border: 214.3 31.8% 91.4%;
-    --deprecated-input: 214.3 31.8% 91.4%;
-    --deprecated-ring: 222.2 84% 4.9%;
-
-    --deprecated-radius: 0.5rem;
-  }
-
-  .dark {
-    --deprecated-background: 222.2 84% 4.9%;
-    --deprecated-foreground: 210 40% 98%;
-
-    --deprecated-card: 222.2 84% 4.9%;
-    --deprecated-card-foreground: 210 40% 98%;
-
-    --deprecated-popover: 222.2 84% 4.9%;
-    --deprecated-popover-foreground: 210 40% 98%;
-
-    --deprecated-primary: 210 40% 98%;
-    --deprecated-primary-foreground: 222.2 47.4% 11.2%;
-
-    --deprecated-secondary: 217.2 32.6% 17.5%;
-    --deprecated-secondary-foreground: 210 40% 98%;
-
-    --deprecated-muted: 217.2 32.6% 17.5%;
-    --deprecated-muted-foreground: 215 20.2% 65.1%;
-
-    --deprecated-accent: 217.2 32.6% 17.5%;
-    --deprecated-accent-foreground: 210 40% 98%;
-
-    --deprecated-destructive: 0 62.8% 30.6%;
-    --deprecated-destructive-foreground: 210 40% 98%;
-
-    --deprecated-success: 163 88% 20%;
-    --deprecated-success-foreground: 142 69% 58%;
-
-    --deprecated-warning: 26 90% 37%;
-    --deprecated-warning-foreground: 0 0% 100%;
-
-    --deprecated-border: 217.2 32.6% 17.5%;
-    --deprecated-input: 217.2 32.6% 17.5%;
-    --deprecated-ring: 212.7 26.8% 83.9%;
-  }
-}
-
-@layer base {
   * {
-    @apply border-deprecated-border;
+    @apply border-g-line;
   }
   body {
-    @apply bg-deprecated-background text-deprecated-foreground;
+    @apply bg-g-canvas text-g-ink;
   }
 }
 

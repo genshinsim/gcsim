@@ -53,7 +53,7 @@ const ServerMode = ({ children }: { children: ReactNode }) => {
 				<Field>
 					<FieldLabel htmlFor="server-mode-url">
 						{t("simple.server_mode_url")}
-						<span className="text-deprecated-muted-foreground">
+						<span className="text-g-ink-mute">
 							{t("simple.server_mode_required")}
 						</span>
 					</FieldLabel>

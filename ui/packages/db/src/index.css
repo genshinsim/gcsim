@@ -76,8 +76,7 @@
 }
 
 body {
-  /* background-color: #293742; */
-  background-color: #1C2127;
+  background-color: var(--g-bg);
 }
 
 /* Chrome, Safari, Edge, Opera */
