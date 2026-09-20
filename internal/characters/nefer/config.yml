@@ -36,10 +36,10 @@ docs:
     .nefer.veilStacks: Current number of Veil of Falsehood stacks.
     .nefer.phantasmCharges: Current number of Phantasm charges.
   frames:
-    - count: https://docs.google.com/spreadsheets/d/... # ваша ссылка
-      count_credit: ...
-      video: https://youtu.be/...
-      video_credit: ...
+    - count: https://docs.google.com/spreadsheets/d/1VpqRMv7FHPayKm9PBbazJs6gL2pr4Ka2F-EI0VgkpDQ/edit?gid=0#gid=0
+      count_credit: caramielle
+      video: https://youtu.be/QeYtpxgiZeo
+      video_credit: caramielle
 
 abilities:
   - name: attack
