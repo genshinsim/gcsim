@@ -1,8 +1,6 @@
 package emberwell
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -32,7 +30,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("emberwell-em", 12*60),
+			Base:         modifier.NewBaseWithHitlag("emberwell-atk", 12*60),
 			AffectedStat: attributes.ATKP,
 			Amount: func() []float64 {
 				return atkBuff
@@ -60,11 +58,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 
 	for evt := event.ReactionEventStartDelim + 1; evt < event.ReactionEventEndDelim; evt++ {
-		c.Events.Subscribe(evt, onReaction, fmt.Sprintf("emberwell-on-reaction-%v", char.Base.Key.String()))
+		c.Events.Subscribe(evt, onReaction, "emberwell-on-reaction-"+char.Base.Key.String())
 	}
 
-	c.Events.Subscribe(event.OnStellarConduct, onStellar, fmt.Sprintf("emberwell-stellar-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnStellarSwirl, onStellar, fmt.Sprintf("emberwell-stellar-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnStellarConduct, onStellar, "emberwell-stellar-"+char.Base.Key.String())
+	c.Events.Subscribe(event.OnStellarSwirl, onStellar, "emberwell-stellar-"+char.Base.Key.String())
 
 	return w, nil
 }
