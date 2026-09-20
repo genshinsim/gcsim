@@ -1,6 +1,8 @@
 package forgedbythegoldenmelody
 
 import (
+	"fmt"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -20,7 +22,7 @@ const (
 
 type Weapon struct {
 	Index       int
-	curBuff     int
+	curBuff     BuffType
 	char        *character.CharWrapper
 	atkBuff     []float64
 	emBuff      []float64
@@ -36,7 +38,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 	r := p.Refine
 
-	w.curBuff = p.Params["buff_type"] % 3
+	w.curBuff = BuffType(p.Params["buff_type"] % 3)
 
 	w.atkBuff = make([]float64, attributes.EndStatType)
 	w.atkBuff[attributes.ATKP] = 0.135 + float64(r)*0.045
@@ -71,7 +73,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 }
 
 func (w *Weapon) switchBuff() {
-	w.curBuff = (w.curBuff + 1) % 3
+	w.curBuff = w.curBuff.Next()
 	w.applyBuff(false, 10*60)
 	w.char.QueueCharTask(w.switchBuff, 10*60)
 }
@@ -83,7 +85,7 @@ func (w *Weapon) applyBuff(contrapuntal bool, dur int) {
 	}
 
 	switch w.curBuff {
-	case 1:
+	case EmBuff:
 		w.char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(weaponKey+middle+emBuffSuffix, dur),
 			AffectedStat: attributes.EM,
@@ -91,7 +93,7 @@ func (w *Weapon) applyBuff(contrapuntal bool, dur int) {
 				return w.emBuff
 			},
 		})
-	case 2:
+	case StellarBuff:
 		w.char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBaseWithHitlag(weaponKey+middle+stellarSuffix, dur),
 			Amount: func(ai info.AttackInfo) float64 {
@@ -101,7 +103,7 @@ func (w *Weapon) applyBuff(contrapuntal bool, dur int) {
 				return 0
 			},
 		})
-	default:
+	case AtkBuff:
 		w.char.AddStatMod(character.StatMod{
 			Base:         modifier.NewBaseWithHitlag(weaponKey+middle+atkBuffSuffix, dur),
 			AffectedStat: attributes.ATKP,
@@ -109,5 +111,19 @@ func (w *Weapon) applyBuff(contrapuntal bool, dur int) {
 				return w.atkBuff
 			},
 		})
+	default:
+		panic(fmt.Sprintf("golden melody: unknown buff type: %v", w.curBuff))
 	}
+}
+
+type BuffType int
+
+const (
+	AtkBuff BuffType = iota
+	EmBuff
+	StellarBuff
+)
+
+func (t BuffType) Next() BuffType {
+	return (t + 1) % 3
 }
