@@ -1,0 +1,106 @@
+use: pipeline
+kind: character
+name: nefer
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision: attack(Plunge DMG)
+  - low: attack(Low/High Plunge DMG)
+  - high: attack(Low/High Plunge DMG|1)
+
+  - skill:
+      - skill(Skill DMG)
+      - skill(Skill DMG|1)
+  - phantasm:
+      - skill(Phantasm Performance 1-Hit DMG (Nefer))
+      - skill(Phantasm Performance 1-Hit DMG (Nefer)|1)
+      - skill(Phantasm Performance 2-Hit DMG (Nefer))
+      - skill(Phantasm Performance 2-Hit DMG (Nefer)|1)
+      - skill(Phantasm Performance 1-Hit DMG (Shades))
+      - skill(Phantasm Performance 2-Hit DMG (Shades))
+      - skill(Phantasm Performance 3-Hit DMG (Shades))
+  - burst:
+      - burst(1-Hit DMG)
+      - burst(1-Hit DMG|1)
+      - burst(2-Hit DMG)
+      - burst(2-Hit DMG|1)
+      - burst(DMG Bonus)
+
+docs:
+  fields:
+    .nefer.veilStacks: Current number of Veil of Falsehood stacks.
+    .nefer.phantasmCharges: Current number of Phantasm charges.
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/... # ваша ссылка
+      count_credit: ...
+      video: https://youtu.be/...
+      video_credit: ...
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        radius: 2
+      - name: N2
+        shape: Circle
+        center: Player
+        radius: 2
+      - name: N3-1
+        shape: Circle
+        center: Player
+        radius: 2
+      - name: N3-2
+        shape: Circle
+        center: Player
+        radius: 2
+      - name: N4
+        shape: Circle
+        center: Player
+        radius: 2
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: PrimaryTarget
+        radius: 2
+
+  - name: skill
+    hitbox:
+      - name: E-Skill
+        shape: Circle
+        center: Player
+        radius: 4
+      - name: E-Phantasm-Nefer
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
+      - name: E-Phantasm-Shade
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
+
+  - name: burst
+    hitbox:
+      - name: Q-Hit1
+        shape: Circle
+        center: Player
+        radius: 5
+      - name: Q-Hit2
+        shape: Circle
+        center: Player
+        radius: 5
+
+  - name: cons
+    hitbox:
+      - name: C2
+        shape: Circle
+        center: PrimaryTarget
+        radius: 3
