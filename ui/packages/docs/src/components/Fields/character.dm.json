@@ -302,5 +302,11 @@
       "field": ".zhongli.shielded",
       "desc": "Evaluates to 1 if player is currently shielded"
     }
+  ],
+  "zibai": [
+    {
+      "field": ".zibai.radiance",
+      "desc": "Number of current Phase Shift Radiance points"
+    }
   ]
 }

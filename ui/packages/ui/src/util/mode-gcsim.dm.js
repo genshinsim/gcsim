@@ -265,6 +265,7 @@ ace.define(
         'zhongli',
         'zhong',
         'zl',
+        'zibai',
       ];
 
       var gcsimKeywords =
