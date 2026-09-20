@@ -91,7 +91,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	)
 
 	c.QueueCharTask(func() {
-		c.summonDanceDouble(0, skillFirstTickDelay)
+		c.startDanceDouble(0, skillFirstTickDelay, false)
 	}, 23)
 
 	c.AddStatus(skillRecastKey, 394, true)
@@ -171,13 +171,15 @@ func (c *char) skillRecast(_ map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) summonDanceDouble(firstTickAttack danceDoubleAttackType, firstTickDelay int) {
+func (c *char) startDanceDouble(firstTickAttack danceDoubleAttackType, firstTickDelay int, refresh bool) {
 	src := c.Core.F
 	c.danceDoubleSrc = src
 	c.AddStatus(danceDoubleKey, 1262, false)
 	c.Core.Tasks.Add(func() { c.danceDoubleTicker(src, firstTickAttack) }, firstTickDelay)
 
-	c.a1OnDanceSummon()
+	if !refresh {
+		c.a1OnDanceSummon()
+	}
 	c.c2OnDanceSummon()
 }
 
