@@ -163,6 +163,7 @@ func (c *char) skillRecast(_ map[string]int) (action.Info, error) {
 	}, skillRecastFinalHitmark+skillRecastFirstTickDelay)
 
 	c.SetCD(action.ActionSpecialSkill, 15*60)
+	c.DeleteStatus(skillRecastKey)
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillRecastFrames),
 		AnimationLength: skillRecastFrames[action.InvalidAction],
