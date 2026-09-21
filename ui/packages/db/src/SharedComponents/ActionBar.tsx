@@ -1,3 +1,4 @@
+import tagData from "@gcsim/data/src/tags.json";
 import { dynamicKey } from "@gcsim/localization";
 import { Button, Input } from "@gcsim/primitives";
 import { useContext, useEffect, useState } from "react";
@@ -9,6 +10,7 @@ import {
 	FilterContext,
 	FilterDispatchContext,
 	ItemFilterState,
+	tagBaseState,
 } from "./FilterComponents/Filter.utils";
 
 export function ActionBar({ simCount }: { simCount: number | null }) {
@@ -23,7 +25,7 @@ export function ActionBar({ simCount }: { simCount: number | null }) {
 					{t("db.showing_simulations", { i: simCount ?? 0 })}
 				</span>
 			</div>
-			<SelectedCharChips />
+			<ActiveFilterChips />
 		</div>
 	);
 }
@@ -56,25 +58,33 @@ function CustomFilterSearch() {
 	);
 }
 
-function SelectedCharChips() {
+function ActiveFilterChips() {
 	const { t: translation } = useTranslation();
 	const t = (s: string) => translation(dynamicKey(s)) as string;
 	const filter = useContext(FilterContext);
 	const dispatch = useContext(FilterDispatchContext);
 
-	const selected = Object.values(filter.charFilter).filter(
+	const chars = Object.values(filter.charFilter).filter(
 		(c) => c.state !== ItemFilterState.none,
 	);
-	if (selected.length === 0) return null;
+	const tags = Object.values(filter.tagFilter).filter(
+		(tg) => tg.state !== tagBaseState(tg.tag),
+	);
+	if (chars.length === 0 && tags.length === 0) return null;
+
+	const clearAll = () => {
+		for (const c of chars) dispatch({ type: "removeChar", char: c.charName });
+		for (const tg of tags) dispatch({ type: "resetTag", tag: tg.tag });
+	};
 
 	return (
 		<div className="flex flex-wrap items-center gap-g-base-sm">
-			{selected.map((c) => {
+			{chars.map((c) => {
 				const excluded = c.state === ItemFilterState.exclude;
 				return (
 					<button
 						type="button"
-						key={c.charName}
+						key={`char-${c.charName}`}
 						onClick={() => dispatch({ type: "removeChar", char: c.charName })}
 						className={`inline-flex items-center gap-1.5 rounded-g-pill py-1 pl-1.5 pr-2 text-g-xs ${
 							excluded
@@ -93,15 +103,26 @@ function SelectedCharChips() {
 					</button>
 				);
 			})}
-			<Button
-				variant="ghost"
-				size="xs"
-				onClick={() => {
-					for (const c of selected) {
-						dispatch({ type: "removeChar", char: c.charName });
-					}
-				}}
-			>
+			{tags.map((tg) => {
+				const excluded = tg.state === ItemFilterState.exclude;
+				return (
+					<button
+						type="button"
+						key={`tag-${tg.tag}`}
+						onClick={() => dispatch({ type: "resetTag", tag: tg.tag })}
+						className={`inline-flex items-center gap-1.5 rounded-g-pill px-2 py-1 text-g-xs ${
+							excluded
+								? "bg-g-danger/20 text-g-danger line-through"
+								: "bg-g-success/20 text-g-success"
+						}`}
+					>
+						{excluded && <FaBan size={9} className="no-underline" />}
+						{tagData[tg.tag]?.display_name}
+						<FaTimes size={9} />
+					</button>
+				);
+			})}
+			<Button variant="ghost" size="xs" onClick={clearAll}>
 				{t("db.clear")}
 			</Button>
 		</div>

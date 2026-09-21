@@ -31,6 +31,7 @@ import {
 	ItemFilterState,
 	SortByDirection,
 	sortByParams,
+	tagBaseState,
 } from "./FilterComponents/Filter.utils";
 
 function activeCount(filter: FilterState): number {
@@ -39,11 +40,7 @@ function activeCount(filter: FilterState): number {
 		if (c.state !== ItemFilterState.none) n++;
 	}
 	for (const key of Object.keys(filter.tagFilter)) {
-		const state = filter.tagFilter[key].state;
-		const base = tagData[key]?.default_exclude
-			? ItemFilterState.exclude
-			: ItemFilterState.none;
-		if (state !== base) n++;
+		if (filter.tagFilter[key].state !== tagBaseState(key)) n++;
 	}
 	return n;
 }
