@@ -31,7 +31,7 @@ const CardData = ({ enemies, player }: Props) => {
 
 	return (
 		<div className="flex flex-col-reverse lg:flex-row gap-2 pt-2 h-64">
-			<div className="flex flex-col gap-2 grow basis-2/3 overflow-y-scroll h-full min-w-[250px]">
+			<div className="flex flex-col gap-2 grow basis-2/3 overflow-y-scroll scrollbar-surface h-full min-w-[250px]">
 				{enemies.map((enemy, i) => (
 					// biome-ignore lint/suspicious/noArrayIndexKey: name may be absent/duplicated so index completes the composite; enemy order is stable (built once in Go, never reordered)
 					<EnemyCard key={`enemy-${enemy.name}-${i}`} id={i} enemy={enemy} />
