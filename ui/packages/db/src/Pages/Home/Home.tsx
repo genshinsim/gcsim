@@ -1,6 +1,6 @@
 import tagData from "@gcsim/data/src/tags.json";
 import { dynamicKey } from "@gcsim/localization";
-import { Button } from "@gcsim/primitives";
+import { Alert, AlertDescription, AlertTitle, Button } from "@gcsim/primitives";
 import { WhatsNew } from "@gcsim/ui/src/Pages/Dash/WhatsNew";
 import { Trans, useTranslation } from "react-i18next";
 import { FaCalculator, FaDatabase } from "react-icons/fa";
@@ -42,17 +42,19 @@ export const Home = () => {
 						{tagList}
 					</ul>
 				</div>
-				<blockquote className="border-l-2 border-g-accent/60 pl-g-base text-g-sm leading-5 text-g-ink-dim [&>p]:mb-g-base-sm [&>p:last-child]:mb-0">
-					<span className="mb-g-base-sm block font-semibold text-g-ink">
+				<Alert variant="warning">
+					<AlertTitle className="text-g-base">
 						{t("db.readme_header")}
-					</span>
-					<Trans i18nKey={"db.readme_body" as never}>
-						<p />
-						<p>{{ rerun: t("viewer.rerun") } as never}</p>
-						<p />
-					</Trans>
-				</blockquote>
-				<div className="flex flex-wrap gap-g-base">
+					</AlertTitle>
+					<AlertDescription>
+						<Trans i18nKey={"db.readme_body" as never}>
+							<p />
+							<p>{{ rerun: t("viewer.rerun") } as never}</p>
+							<p />
+						</Trans>
+					</AlertDescription>
+				</Alert>
+				<div className="flex gap-g-base [&>*]:flex-1 sm:[&>*]:flex-none">
 					<Button size="lg" onClick={() => to("/database")}>
 						<FaDatabase size={14} /> {t("db.home.browse_database")}
 					</Button>
