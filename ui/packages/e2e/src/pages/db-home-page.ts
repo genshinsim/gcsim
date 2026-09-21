@@ -1,26 +1,26 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
 /**
- * Drives the db app's home route (`/`): the welcome copy and the "Get started"
- * call to action that routes into `/database`.
+ * Drives the db app's home route (`/`): the Gauge hero with its "Browse
+ * database" CTA (routes into `/database`) and the shared "What's new" feed.
  *
  * The app ships no data-testids, so locators ride accessible names and visible
  * copy (the English localization strings).
  */
 export class DbHomePage {
 	readonly page: Page;
-	/** Blueprint button, accessible name "Get started" — routes to /database. */
-	readonly getStarted: Locator;
-	/** The welcome card heading ("Welcome to Simpact"). */
+	/** Primary CTA, accessible name "Browse database" — routes to /database. */
+	readonly browse: Locator;
+	/** The hero heading ("Welcome to Simpact"). */
 	readonly welcome: Locator;
-	/** The tag-list header that introduces the tag descriptions. */
-	readonly tagsCopy: Locator;
+	/** The "What's new" section heading over the shared release feed. */
+	readonly whatsNew: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
-		this.getStarted = page.getByRole("button", { name: "Get started" });
-		this.welcome = page.getByText("Welcome to Simpact");
-		this.tagsCopy = page.getByText("Below are the current available tags:");
+		this.browse = page.getByRole("button", { name: "Browse database" });
+		this.welcome = page.getByRole("heading", { name: "Welcome to Simpact" });
+		this.whatsNew = page.getByRole("heading", { name: "What's new" });
 	}
 
 	/** Navigate to the home page and wait for React to mount into `#root`. */
@@ -30,12 +30,12 @@ export class DbHomePage {
 	}
 
 	/**
-	 * Assert the home page rendered: welcome copy, the tag-list copy, and the
-	 * "Get started" CTA.
+	 * Assert the home page rendered: the hero heading, the "Browse database" CTA,
+	 * and the "What's new" section.
 	 */
 	async waitForLoaded(): Promise<void> {
 		await expect(this.welcome).toBeVisible();
-		await expect(this.tagsCopy).toBeVisible();
-		await expect(this.getStarted).toBeVisible();
+		await expect(this.browse).toBeVisible();
+		await expect(this.whatsNew).toBeVisible();
 	}
 }

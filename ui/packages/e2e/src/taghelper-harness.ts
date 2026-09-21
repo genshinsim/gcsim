@@ -11,11 +11,12 @@ export class TaghelperHarness {
 	constructor(page: Page) {
 		this.page = page;
 		this.console = new ConsoleMonitor(page);
-		this.heading = page.getByText(/Showing entries with the same team for id:/);
-		this.mainCard = this.heading.locator("..");
-		this.existingSection = page
-			.getByText("Existing sims with same characters")
-			.locator("..");
+		// The "Under review" section holds the submission card and its actions.
+		this.heading = page.getByText("Under review");
+		this.mainCard = page.locator("section", { has: this.heading });
+		this.existingSection = page.locator("section", {
+			has: page.getByText("Existing sims with the same team"),
+		});
 	}
 
 	async goto(id: string): Promise<void> {
@@ -24,50 +25,42 @@ export class TaghelperHarness {
 		await expect(this.heading).toBeVisible();
 	}
 
-	async waitForEntry(
-		chars: readonly string[],
-		sourceTag: string,
-	): Promise<void> {
+	async waitForEntry(chars: readonly string[]): Promise<void> {
 		for (const name of chars) {
-			await expect(this.mainCard.locator(`img[alt="${name}"]`)).toBeVisible();
-		}
-		for (const chip of [
-			"mode",
-			"target count",
-			"dps/target",
-			"avg sim time",
-			"created",
-			sourceTag,
-		]) {
 			await expect(
-				this.mainCard.getByText(chip, { exact: false }),
+				this.mainCard.locator(`img[alt="${name}"]`).first(),
 			).toBeVisible();
 		}
+		// Summary meta chips: sim mode and mean sim duration.
+		await expect(this.mainCard.getByText("mode TTK")).toBeVisible();
+		await expect(this.mainCard.getByText("90.0s")).toBeVisible();
 	}
 
 	async waitForControls(): Promise<void> {
 		await expect(
-			this.mainCard.getByRole("button", { name: "Copy Reject" }),
+			this.mainCard.getByRole("button", { name: "Copy reject" }),
 		).toBeVisible();
 		await expect(
-			this.mainCard.getByRole("button", { name: "Copy Approve" }),
+			this.mainCard.getByRole("button", { name: "Copy approve" }),
 		).toBeVisible();
 		await expect(
-			this.mainCard.getByRole("button", { name: "Result Viewer" }),
+			this.mainCard.getByRole("link", { name: "Result viewer" }),
 		).toBeVisible();
 	}
 
 	async waitForExistingSims(): Promise<void> {
 		await expect(this.existingSection).toBeVisible();
 		const replace = this.existingSection.getByRole("button", {
-			name: "Replace This",
+			name: "Replace",
 		});
-		const empty = this.existingSection.getByText("Nothing found");
+		const empty = this.existingSection.getByText(
+			"No existing sims share this team.",
+		);
 		await expect(replace.first().or(empty)).toBeVisible();
 	}
 
 	/** Click a moderation copy button and return the resulting clipboard text. */
-	async copyCommand(name: "Copy Reject" | "Copy Approve"): Promise<string> {
+	async copyCommand(name: "Copy reject" | "Copy approve"): Promise<string> {
 		await this.mainCard.getByRole("button", { name }).click();
 		return this.page.evaluate(() => navigator.clipboard.readText());
 	}
