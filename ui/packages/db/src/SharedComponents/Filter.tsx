@@ -68,7 +68,7 @@ export function Filter() {
 					)}
 				</Button>
 			</SheetTrigger>
-			<SheetContent side="left" className="w-[min(92vw,360px)] overflow-y-auto">
+			<SheetContent side="left" className="w-[min(92vw,360px)]">
 				<SheetHeader>
 					<div className="flex flex-row items-center justify-between pr-6">
 						<SheetTitle className="text-g-h3">{t("db.filter")}</SheetTitle>
@@ -79,14 +79,14 @@ export function Filter() {
 					</SheetDescription>
 				</SheetHeader>
 				<Separator />
-				<div className="flex flex-col gap-g-section p-2">
+				<div className="flex min-h-0 flex-1 flex-col gap-g-section p-2">
 					<Section title={t("db.sort_by")}>
 						<SortControl />
 					</Section>
 					<Section title={t("db.tags")}>
 						<TagPicker />
 					</Section>
-					<Section title={t("db.characters")}>
+					<Section title={t("db.characters")} className="min-h-0 flex-1">
 						<CharacterPicker />
 					</Section>
 				</div>
@@ -113,12 +113,14 @@ function ClearFilterButton() {
 function Section({
 	title,
 	children,
+	className,
 }: {
 	title: string;
 	children: React.ReactNode;
+	className?: string;
 }) {
 	return (
-		<div className="flex flex-col gap-g-base-sm">
+		<div className={`flex flex-col gap-g-base-sm ${className ?? ""}`}>
 			<div className="text-g-xs font-semibold uppercase tracking-wide text-g-ink-mute">
 				{title}
 			</div>
@@ -225,8 +227,8 @@ function CharacterPicker() {
 	);
 
 	return (
-		<div className="flex flex-col gap-g-base">
-			<div className="relative">
+		<div className="flex min-h-0 flex-1 flex-col gap-g-base">
+			<div className="relative shrink-0">
 				<FaSearch
 					className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-g-ink-mute"
 					size={13}
@@ -240,7 +242,7 @@ function CharacterPicker() {
 					onChange={(e) => setCharSearch(e.target.value)}
 				/>
 			</div>
-			<div className="grid max-h-[46vh] grid-cols-4 gap-g-base-sm overflow-y-auto overflow-x-hidden no-scrollbar">
+			<div className="grid min-h-0 flex-1 grid-cols-4 gap-g-base-sm overflow-y-auto overflow-x-hidden no-scrollbar">
 				{visible.map((charName) => (
 					<CharCard
 						key={charName}
