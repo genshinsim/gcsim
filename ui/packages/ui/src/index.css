@@ -73,6 +73,21 @@
       scrollbar-width: none; /* Firefox */
 }
 
+    .scrollbar-surface {
+      scrollbar-color: var(--g-surface-3) var(--g-surface);
+    }
+    .scrollbar-surface::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    .scrollbar-surface::-webkit-scrollbar-track {
+      background: var(--g-surface);
+    }
+    .scrollbar-surface::-webkit-scrollbar-thumb {
+      background: var(--g-surface-3);
+      border-radius: 4px;
+    }
+
 }
 
 body {
