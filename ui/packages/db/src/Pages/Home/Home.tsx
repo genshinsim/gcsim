@@ -12,7 +12,7 @@ export const Home = () => {
 		<div className="mx-auto flex max-w-[1160px] flex-col gap-g-section p-g-page">
 			<section className="flex flex-col gap-g-base-lg rounded-g-xl border border-g-line-soft bg-g-surface p-8">
 				<span className="text-g-xs font-semibold uppercase tracking-wide text-g-accent">
-					gcsim · community database
+					{t("db.home.eyebrow")}
 				</span>
 				<h1 className="font-g-display text-g-h1 font-bold text-g-ink md:text-g-hero">
 					{t("db.home.welcome")}
@@ -22,7 +22,7 @@ export const Home = () => {
 				</p>
 				<div className="flex flex-wrap gap-g-base">
 					<Button size="lg" onClick={() => to("/database")}>
-						<FaDatabase size={14} /> Browse database
+						<FaDatabase size={14} /> {t("db.home.browse_database")}
 					</Button>
 					<Button size="lg" variant="ghost" asChild>
 						<a
@@ -30,7 +30,7 @@ export const Home = () => {
 							target="_blank"
 							rel="noreferrer"
 						>
-							<FaCalculator size={14} /> Run simulations
+							<FaCalculator size={14} /> {t("db.home.run_simulations")}
 						</a>
 					</Button>
 				</div>
@@ -38,7 +38,7 @@ export const Home = () => {
 
 			<section className="flex flex-col gap-g-base">
 				<h2 className="font-g-display text-g-h2 font-semibold text-g-ink">
-					What's new
+					{t("dash.whats_new")}
 				</h2>
 				<WhatsNew />
 			</section>

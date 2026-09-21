@@ -148,6 +148,9 @@
 		"readme_show": "Show README",
 		"home": {
 			"get_started": "Get started",
+			"eyebrow": "gcsim · community database",
+			"browse_database": "Browse database",
+			"run_simulations": "Run simulations",
 			"welcome": "Welcome to Simpact",
 			"simpact_desc": "Simpact is a database of gcsim simulations submitted and maintained by gcsim users.",
 			"simpact_tag_desc": "The database consists of various tags, each tag representing a collection of sims. These collections are maintained by volunteers and each collection follows their own rules.",
