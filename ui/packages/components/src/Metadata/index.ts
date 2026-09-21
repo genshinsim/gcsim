@@ -6,7 +6,6 @@ import { Energy } from "./Energy";
 import { Item } from "./Item";
 import { Iterations } from "./Iterations";
 import { Mode } from "./Mode";
-import { Standard } from "./Standard";
 import { Swap } from "./Swap";
 import { WarningItem } from "./Warning";
 
@@ -19,7 +18,6 @@ export {
 	Item,
 	Iterations,
 	Mode,
-	Standard,
 	Swap,
 	WarningItem,
 };
