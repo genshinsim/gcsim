@@ -135,6 +135,7 @@
 		"openInViewer": "뷰어로 열기",
 		"filter": "필터",
 		"customFilter": "커스텀 필터",
+		"search": "캐릭터, 작성자, 메모 검색…",
 		"characters": "캐릭터",
 		"tags": "태그",
 		"clear": "제거",
@@ -148,6 +149,9 @@
 		"readme_show": "README 표시",
 		"home": {
 			"get_started": "시작하기",
+			"eyebrow": "gcsim · 커뮤니티 데이터베이스",
+			"browse_database": "데이터베이스 둘러보기",
+			"run_simulations": "시뮬레이션 실행",
 			"welcome": "Simpact에 오신 것을 환영합니다",
 			"simpact_desc": "Simpact는 gcsim 유저들이 제출하고 관리하는 gcsim 시뮬레이션의 데이터베이스입니다.",
 			"simpact_tag_desc": "데이터베이스는 다양한 태그들로 구성되고, 각 태그는 심들의 컬렉션을 나타냅니다. 이러한 컬렉션들은 자발적 지원자들에 관리되고, 각 컬렉션은 고유한 규칙을 따릅니다.",
