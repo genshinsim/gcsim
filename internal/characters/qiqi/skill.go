@@ -120,9 +120,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-// Handles skill damage swipe instances
-// Also handles C1:
-// When the Herald of Frost hits an opponent marked by a Fortune-Preserving Talisman, Qiqi regenerates 2 Energy.
 func (c *char) skillDmgTickTask(src int, ai *info.AttackInfo, snap *info.Snapshot, lastTickDuration int) func() {
 	return func() {
 		if !c.StatusIsActive(skillBuffKey) {
@@ -177,19 +174,26 @@ func (c *char) skillInit() {
 		return
 	}
 
-	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		e, ok := args[0].(*enemy.Enemy)
 		if !ok {
 			return
 		}
 
 		atk := args[1].(*info.AttackEvent)
-		if !c.StatusIsActive(skillBuffKey) {
+		// only be triggered by on field
+		if c.Core.Player.Active() != atk.Info.ActorIndex {
 			return
 		}
 
-		// only be triggered by on field
-		if c.Core.Player.Active() != atk.Info.ActorIndex {
+		// ignore EC, hydro swirl, and burning damage
+		// this clause is here since these damage types are sourced to the target rather than character
+		switch atk.Info.AttackTag {
+		case attacks.AttackTagECDamage, attacks.AttackTagBurningDamage, attacks.AttackTagSwirlHydro:
+			return
+		}
+
+		if !c.StatusIsActive(skillBuffKey) {
 			return
 		}
 
