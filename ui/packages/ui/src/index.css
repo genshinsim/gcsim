@@ -248,3 +248,18 @@ div.sticky-header {
 		}
 	
 	}
+/* Sonner absolutely-positions each toast at its container's left edge and
+   centers only the container, whose width is fixed. So the wide progress toast
+   (which sets its own width) and the narrow loading toast both land off-center.
+   Only the running-state indicator uses top-center: give its container a real
+   width and center each toast within it (left/right + auto margins leave
+   sonner's transform-based enter/stack animation untouched). */
+[data-sonner-toaster][data-x-position="center"][data-y-position="top"] {
+	width: min(90vw, 42rem);
+}
+[data-sonner-toaster][data-x-position="center"][data-y-position="top"]
+	[data-sonner-toast] {
+	left: 0;
+	right: 0;
+	margin-inline: auto;
+}

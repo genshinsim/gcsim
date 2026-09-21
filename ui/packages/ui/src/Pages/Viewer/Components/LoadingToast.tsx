@@ -34,6 +34,7 @@ export default ({ running, src, error, current, total, cancel }: Props) => {
 			toastId.current = toast.loading(t("sim.loading"), {
 				id: toastId.current,
 				duration: Number.POSITIVE_INFINITY,
+				position: "top-center",
 			});
 			return;
 		}
@@ -70,6 +71,7 @@ export default ({ running, src, error, current, total, cancel }: Props) => {
 				closeButton: current >= total,
 				className: "w-full",
 				style: { width: "min(90vw, 42rem)" },
+				position: "top-center",
 			},
 		);
 	}, [current, total, src, error, running, cancel, t]);
