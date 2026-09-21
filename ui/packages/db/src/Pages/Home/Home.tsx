@@ -4,11 +4,6 @@ import { useTranslation } from "react-i18next";
 import { FaCalculator, FaDatabase } from "react-icons/fa";
 import { useLocation } from "wouter";
 
-/**
- * DB home: a compact hero with the primary "Browse database" CTA and a "Run
- * simulations" link into the main simulator, followed by the shared "What's new"
- * release feed.
- */
 export const Home = () => {
 	const { t } = useTranslation();
 	const [_, to] = useLocation();

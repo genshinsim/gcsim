@@ -33,7 +33,6 @@ export function ActionBar({ simCount }: { simCount: number | null }) {
 	);
 }
 
-/** Debounced free-text query, dispatched as the server-side custom filter. */
 function CustomFilterSearch() {
 	const { t } = useTranslation();
 	const dispatch = useContext(FilterDispatchContext);
@@ -106,7 +105,6 @@ function SelectedCharChips() {
 	);
 }
 
-/** Compact sort selector with a direction toggle, backed by the filter reducer. */
 function SortControl() {
 	const { t: translation } = useTranslation();
 	const t = (s: string) => translation(dynamicKey(s)) as string;

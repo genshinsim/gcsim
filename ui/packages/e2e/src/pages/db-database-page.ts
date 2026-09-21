@@ -1,28 +1,14 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
-/**
- * Drives the db app's browse route (`/database`): the sticky command bar (custom
- * filter search, filter sheet trigger, sort control, live result count), the
- * full entry cards, and the filter sheet.
- *
- * Locators ride observable contracts — accessible names, visible copy, and ARIA
- * roles — since the app ships no data-testids.
- */
 export class DbDatabasePage {
 	readonly page: Page;
-	/** The command-bar custom-filter search input (placeholder "Custom Filter"). */
 	readonly searchBox: Locator;
-	/** The command-bar button that opens the filter sheet (accessible name "Filter"). */
 	readonly filterButton: Locator;
-	/** "Copy config" button in each entry card — one per entry. */
 	readonly copyConfigButtons: Locator;
-	/** The "Open in viewer" link in each entry card — links cross-app. */
 	readonly openInViewerLinks: Locator;
-	/** Filter sheet collapsible section headers. */
 	readonly charactersSection: Locator;
 	readonly tagsSection: Locator;
 	readonly sortBySection: Locator;
-	/** The character search input inside the expanded Characters section. */
 	readonly charSearch: Locator;
 	/** Character portrait images in the expanded Characters section / cards. */
 	readonly characterPortraits: Locator;
@@ -51,11 +37,6 @@ export class DbDatabasePage {
 		await expect(this.page.locator("#root")).not.toBeEmpty();
 	}
 
-	/**
-	 * Assert the browse view rendered: the result count, the search box, the
-	 * filter trigger, and at least one entry card (its Copy config / Open in
-	 * viewer controls). Structural only.
-	 */
 	async waitForBrowse(): Promise<void> {
 		await this.expectShowing(2);
 		await expect(this.searchBox).toBeVisible();
@@ -69,7 +50,6 @@ export class DbDatabasePage {
 		await expect(this.page.getByText(`Showing ${n} simulations`)).toBeVisible();
 	}
 
-	/** Open the filter sheet and wait for its Characters section to appear. */
 	async openFilterPanel(): Promise<void> {
 		await this.filterButton.click();
 		await expect(this.charactersSection).toBeVisible();
@@ -81,12 +61,6 @@ export class DbDatabasePage {
 		await expect(this.characterPortraits.first()).toBeVisible();
 	}
 
-	/**
-	 * Filter to a single character: open the sheet, expand Characters, type the
-	 * name into the picker's search, pick the match, then close the sheet.
-	 * Dispatches an include filter, which refetches `/api/db` with the narrowed
-	 * query.
-	 */
 	async filterByCharacter(name: string): Promise<void> {
 		await this.openFilterPanel();
 		await this.expandCharacters();

@@ -44,7 +44,6 @@ export function ViewerLink({ entry }: { entry: db.Entry }) {
 	);
 }
 
-/** The three moderator decisions for the submission under review. */
 export function DecisionButtons({ entry }: { entry: db.Entry }) {
 	const id = entry._id ?? "";
 	return (
@@ -78,7 +77,6 @@ export function MetaChips({ entry }: { entry: db.Entry }) {
 	);
 }
 
-/** Small non-interactive portrait strip for compact duplicate rows. */
 export function MiniTeam({ entry }: { entry: db.Entry }) {
 	return (
 		<div className="flex -space-x-1">
@@ -98,7 +96,6 @@ export function MiniTeam({ entry }: { entry: db.Entry }) {
 	);
 }
 
-/** An existing sim sharing the team, with a Replace action. */
 export function DuplicateRow({
 	entry,
 	main,

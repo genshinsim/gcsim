@@ -23,7 +23,6 @@ export function copyConfig(entry: db.Entry) {
 	);
 }
 
-/** mono label/value chip for the compact summary stats. */
 export function StatChip({ label, value }: { label: string; value: string }) {
 	return (
 		<Badge className="gap-1.5 bg-g-surface-2 font-g-mono">
@@ -62,11 +61,6 @@ export function CardActions({ entry }: { entry: db.Entry }) {
 	);
 }
 
-/**
- * Team portraits via the shared AvatarCard (cons/refine/set badges), pinned to
- * 420px so its built-in grid stays 4-across on desktop and 2-across below its
- * own 420px container breakpoint.
- */
 export function Team({ entry }: { entry: db.Entry }) {
 	return (
 		<div className="w-full max-w-[420px]">
@@ -75,7 +69,6 @@ export function Team({ entry }: { entry: db.Entry }) {
 	);
 }
 
-/** DPS hero number with unit. */
 export function DpsStat({
 	entry,
 	size = "num",
@@ -97,10 +90,6 @@ export function DpsStat({
 	);
 }
 
-/**
- * Full detail card for the one-column browse list. Team + summary stats on the
- * left, description + tags + DPS + actions on the right; stacks below `md`.
- */
 export function FullCard({ entry }: { entry: db.Entry }) {
 	return (
 		<div className="flex flex-col gap-g-base rounded-g-lg border border-g-line-soft bg-g-surface p-g-card md:flex-row md:items-stretch">

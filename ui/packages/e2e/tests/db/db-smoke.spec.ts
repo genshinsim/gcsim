@@ -4,7 +4,6 @@ test.describe("db smoke", () => {
 	test("home page renders", async ({ db }) => {
 		await db.home.goto();
 
-		// The hero, "Browse database" CTA, and "What's new" section render.
 		await db.home.waitForLoaded();
 
 		// Nothing threw or logged an error.
@@ -14,18 +13,13 @@ test.describe("db smoke", () => {
 	test("browse, filter sheet, and character filter", async ({ db }) => {
 		await db.database.goto();
 
-		// The browse view renders: result count, search box, filter trigger, and
-		// at least one entry card with its Copy config / Open in viewer controls.
 		await db.database.waitForBrowse();
 
-		// Open in viewer targets the web app's cross-app /db/:id route. Assert the
-		// target only — following it is a separate concern.
 		await expect(db.database.openInViewerLinks.first()).toHaveAttribute(
 			"href",
 			/\/db\/[a-z0-9]+$/,
 		);
 
-		// The filter sheet exposes the Characters, Tags, and Sort by sections.
 		await db.database.openFilterPanel();
 		await expect(db.database.charactersSection).toBeVisible();
 		await expect(db.database.tagsSection).toBeVisible();

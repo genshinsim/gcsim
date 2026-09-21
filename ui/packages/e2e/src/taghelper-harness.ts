@@ -11,7 +11,6 @@ export class TaghelperHarness {
 	constructor(page: Page) {
 		this.page = page;
 		this.console = new ConsoleMonitor(page);
-		// The "Under review" section holds the submission card and its actions.
 		this.heading = page.getByText("Under review");
 		this.mainCard = page.locator("section", { has: this.heading });
 		this.existingSection = page.locator("section", {
@@ -31,7 +30,6 @@ export class TaghelperHarness {
 				this.mainCard.locator(`img[alt="${name}"]`).first(),
 			).toBeVisible();
 		}
-		// Summary meta chips: sim mode and mean sim duration.
 		await expect(this.mainCard.getByText("mode TTK")).toBeVisible();
 		await expect(this.mainCard.getByText("90.0s")).toBeVisible();
 	}

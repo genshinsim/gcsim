@@ -25,7 +25,6 @@ import {
 	sortByParams,
 } from "./FilterComponents/Filter.utils";
 
-/** Highlight for an active (included) filter option, on the Gauge accent. */
 const activeFilterClasses = "bg-g-accent text-g-accent-fg hover:bg-g-accent/90";
 
 export function Filter() {
@@ -78,7 +77,6 @@ function ClearFilterButton() {
 	);
 }
 
-/** Collapsible section shell shared by the character/tag/sort pickers. */
 function FilterSection({
 	label,
 	children,

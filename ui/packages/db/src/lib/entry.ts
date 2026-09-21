@@ -3,7 +3,9 @@ import type { db, model } from "@gcsim/types";
 
 const TAGS = tagData as Record<string, { display_name: string }>;
 
-/** Team padded to 4 slots (nulls fill missing), for consistent portrait grids. */
+/** The implicit "gcsim" tag carried by every entry; never surfaced as a chip. */
+const GCSIM_TAG_ID = 1;
+
 export function team(entry: db.Entry): (model.Character | null)[] {
 	const t: (model.Character | null)[] = [...(entry.summary?.team ?? [])];
 	while (t.length < 4) t.push(null);
@@ -44,10 +46,9 @@ export function author(entry: db.Entry): string {
 		: (entry.submitter ?? "unknown");
 }
 
-/** Accepted tag names, excluding the implicit gcsim tag (id 1). */
 export function tagNames(entry: db.Entry): string[] {
 	return (entry.accepted_tags ?? [])
-		.filter((t) => t !== 1)
+		.filter((t) => t !== GCSIM_TAG_ID)
 		.map((t) => TAGS[String(t)]?.display_name)
 		.filter(Boolean) as string[];
 }

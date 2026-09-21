@@ -10,14 +10,12 @@ test.describe("taghelper smoke", () => {
 		// The `/id/:id` view boots and renders the main entry.
 		await taghelper.goto(MAIN_ID);
 
-		// Main card: team portraits and the summary meta chips.
 		await taghelper.waitForEntry(chars);
 
 		// Moderation controls and the "existing sims" section render.
 		await taghelper.waitForControls();
 		await taghelper.waitForExistingSims();
 
-		// Copy approve writes the expected slash command to the clipboard.
 		expect(await taghelper.copyCommand("Copy approve")).toBe(
 			`/approve id:${MAIN_ID}`,
 		);
