@@ -10,12 +10,14 @@ export class DbDatabasePage {
 	readonly tagsSection: Locator;
 	readonly sortBySection: Locator;
 	readonly charSearch: Locator;
-	/** Character portrait images in the expanded Characters section / cards. */
+	/** Character portrait images in the filter picker / entry cards. */
 	readonly characterPortraits: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
-		this.searchBox = page.getByPlaceholder("Custom Filter");
+		this.searchBox = page.getByPlaceholder(
+			"Search characters, authors, notes…",
+		);
 		this.filterButton = page.getByRole("button", {
 			name: "Filter",
 			exact: true,
@@ -24,9 +26,9 @@ export class DbDatabasePage {
 		this.openInViewerLinks = page.getByRole("link", {
 			name: "Open in viewer",
 		});
-		this.charactersSection = page.getByRole("button", { name: /Characters/ });
-		this.tagsSection = page.getByRole("button", { name: /Tags/ });
-		this.sortBySection = page.getByRole("button", { name: /Sort by/ });
+		this.charactersSection = page.getByText("Characters", { exact: true });
+		this.tagsSection = page.getByText("Tags", { exact: true });
+		this.sortBySection = page.getByText("Sort by", { exact: true });
 		this.charSearch = page.getByPlaceholder("Type to search...");
 		this.characterPortraits = page.locator('img[src^="/api/assets/avatar/"]');
 	}
@@ -52,18 +54,16 @@ export class DbDatabasePage {
 
 	async openFilterPanel(): Promise<void> {
 		await this.filterButton.click();
-		await expect(this.charactersSection).toBeVisible();
+		await expect(this.charSearch).toBeVisible();
 	}
 
-	/** Expand the Characters section and wait for its portrait picker to render. */
-	async expandCharacters(): Promise<void> {
-		await this.charactersSection.click();
+	/** The filter sheet shows all sections flat; wait for the portrait picker. */
+	async expectCharacterPicker(): Promise<void> {
 		await expect(this.characterPortraits.first()).toBeVisible();
 	}
 
 	async filterByCharacter(name: string): Promise<void> {
 		await this.openFilterPanel();
-		await this.expandCharacters();
 		await this.charSearch.fill(name);
 		await this.page.getByRole("button", { name, exact: true }).first().click();
 		await this.page.keyboard.press("Escape");

@@ -21,12 +21,12 @@ test.describe("db smoke", () => {
 		);
 
 		await db.database.openFilterPanel();
-		await expect(db.database.charactersSection).toBeVisible();
-		await expect(db.database.tagsSection).toBeVisible();
 		await expect(db.database.sortBySection).toBeVisible();
+		await expect(db.database.tagsSection).toBeVisible();
+		await expect(db.database.charactersSection).toBeVisible();
 
-		// The Characters section expands to its portrait picker.
-		await db.database.expandCharacters();
+		// The Characters section shows its portrait picker inline (no expand).
+		await db.database.expectCharacterPicker();
 		await db.page.keyboard.press("Escape");
 
 		// Exercising a character filter narrows the list (2 -> 1 simulations).
