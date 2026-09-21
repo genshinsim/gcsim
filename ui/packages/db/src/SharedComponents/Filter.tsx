@@ -294,7 +294,7 @@ function TriRing({ state }: { state: ItemFilterState }) {
 		: "bg-g-danger text-g-accent-fg";
 	return (
 		<span
-			className={`absolute -right-1 -top-1 flex size-4 items-center justify-center rounded-full ${cls}`}
+			className={`absolute right-1 top-1 flex size-4 items-center justify-center rounded-full ${cls}`}
 		>
 			{include ? <FaCheck size={8} /> : <FaBan size={8} />}
 		</span>
