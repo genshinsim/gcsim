@@ -4,8 +4,9 @@ import i18next from "i18next";
 // Consume the raw `--g-*` palette layer, not the coined `--color-g-*` tokens:
 // the latter are `@theme inline` values that only exist as CSS vars where a
 // Tailwind utility references them, so they resolve to nothing inside SVG fills.
+const SERIES_COUNT = 7; // must equal the number of --g-sN defined in theme.css
 function series(i: number) {
-	return `var(--g-s${(i % 6) + 1})`;
+	return `var(--g-s${(i % SERIES_COUNT) + 1})`;
 }
 
 function shade(base: string, towards: "text" | "bg", pct: number) {
@@ -161,7 +162,6 @@ export function useDataColors() {
 			elementLabel: elementLabelColor,
 			elementHighlight: elementHighlightColor,
 
-			// TODO: better colors for characters?
 			character: (i: number) => q3(i),
 			characterLabel: (i: number) => q4(i),
 

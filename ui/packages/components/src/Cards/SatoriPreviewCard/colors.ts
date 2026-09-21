@@ -2,32 +2,28 @@
 // blueprint-derived colors used by the live PreviewCard (see common/gcsim), but
 // are inlined here so this component pulls in no @visx/* or i18next code.
 
-// Character slice colors, matching DataColors.character (qualitative3).
+// Satori can't read the --g-sN CSS vars, so the series palette is inlined here
+// and must be kept in sync with theme.css by hand.
 const qualitative3 = [
-	"#147EB3", // CERULEAN3
-	"#29A634", // FOREST3
-	"#D1980B", // GOLD3
-	"#D33D17", // VERMILION3
-	"#9D3F9D", // VIOLET3
-	"#00A396", // TURQUOISE3
-	"#DB2C6F", // ROSE3
-	"#8EB125", // LIME3
-	"#946638", // SEPIA3
-	"#7961DB", // INDIGO3
+	"#cc79a7",
+	"#f0e442",
+	"#d55e00",
+	"#56b4e9",
+	"#e69f00",
+	"#009e73",
+	"#0072b2",
 ];
 
-// Level-label colors, matching DataColorsConst.qualitative5.
+// Label tint of each qualitative3 entry: 0.6*base + 0.4*white (this card's
+// fixed dark background makes --g-text light, so q5 mixes toward white).
 const qualitative5 = [
-	"#68C1EE", // CERULEAN5
-	"#62D96B", // FOREST5
-	"#FBD065", // GOLD5
-	"#FF9980", // VERMILION5
-	"#D69FD6", // VIOLET5
-	"#7AE1D8", // TURQUOISE5
-	"#FF66A1", // ROSE5
-	"#D4F17E", // LIME5
-	"#D0B090", // SEPIA5
-	"#BDADFF", // INDIGO5
+	"#e0afca",
+	"#f6ef8e",
+	"#e69e66",
+	"#9ad2f2",
+	"#f0c566",
+	"#66c5ab",
+	"#66aad1",
 ];
 
 export function characterColor(i: number): string {
