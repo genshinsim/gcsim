@@ -1,9 +1,12 @@
 import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
-import { ParentSize } from "@visx/responsive";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CardTitle, useRefreshWithTimer } from "../../../../common/gcsim";
+import {
+	CardTitle,
+	ParentWidth,
+	useRefreshWithTimer,
+} from "../../../../common/gcsim";
 import { BarChart, BarChartLegend } from "./BarChart";
 
 type Props = {
@@ -42,7 +45,7 @@ export default ({ data, running, names }: Props) => {
 	const chart_data = graph === "dps" ? stats.dps : stats.damage_instances;
 
 	return (
-		<Card className="flex flex-col col-span-full min-h-96 p-5">
+		<Card className="flex flex-col col-span-full h-auto p-5">
 			<div className="flex flex-col sm:flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
 					<CardTitle
@@ -58,8 +61,8 @@ export default ({ data, running, names }: Props) => {
 					<BarChartLegend names={names} />
 				</div>
 			</div>
-			<ParentSize className="overflow-x-auto">
-				{({ width }) => (
+			<ParentWidth>
+				{(width) => (
 					<BarChart
 						width={width}
 						dps={chart_data}
@@ -68,7 +71,7 @@ export default ({ data, running, names }: Props) => {
 						filter={filter}
 					/>
 				)}
-			</ParentSize>
+			</ParentWidth>
 		</Card>
 	);
 };
