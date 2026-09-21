@@ -70,11 +70,11 @@ export function Warning({
 				<Cross2Icon />
 			</Button>
 			<div className="flex items-center justify-center gap-3 py-2">
-				<img src={tanuki} alt="" className="h-10 w-15" />
+				<img src={tanuki} alt="" className="size-10" />
 				<AlertTitle className="line-clamp-none text-center text-g-h2 font-semibold">
 					{t(dynamicKey(headerKey))}
 				</AlertTitle>
-				<img src={tanuki} alt="" className="h-10 w-15" />
+				<img src={tanuki} alt="" className="size-10" />
 			</div>
 			<AlertDescription className="pb-3 leading-5">
 				<Trans i18nKey={bodyKey as never} components={bodyComponents}>
