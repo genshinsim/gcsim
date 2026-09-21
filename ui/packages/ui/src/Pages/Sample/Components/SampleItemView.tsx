@@ -39,7 +39,7 @@ export function SampleItemView({
 			</button>
 			<div>{item.target}</div>
 			<Dialog open={open} onOpenChange={setOpen}>
-				<DialogContent>
+				<DialogContent className="max-h-[90vh] overflow-y-auto">
 					<DialogHeader>
 						<DialogTitle>{item.msg}</DialogTitle>
 					</DialogHeader>
