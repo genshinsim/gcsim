@@ -43,53 +43,40 @@ const Graph = ({ width, dps, names, all_filter, filter }: Props) => {
 	const { DataColors } = useDataColors();
 	const { data, sources, xMax } = useData(all_filter, filter, dps, names);
 
-	let maxChars = 0;
-	const sourceNames = sources.map((s) => {
-		maxChars = Math.max(maxChars, s.name.length);
-		return s.name;
-	});
+	const sourceNames = sources.map((s) => s.name);
 
 	if (dps == null || names == null || sources.length === 0) {
 		return <NoData />;
 	}
 
-	const minwidth = Math.max(width, 900);
-
 	return (
-		<div style={{ width: minwidth }}>
-			<HorizontalBarStack<Row, number>
-				width={minwidth}
-				height={data.length * 40}
-				xDomain={[0, xMax]}
-				yDomain={sourceNames}
-				y={(d) => d.source}
-				data={data}
-				keys={range(names.length)}
-				value={(d, k) => {
-					if (names[k] in d.data) {
-						return d.data[names[k]].data.mean ?? 0;
-					}
-					return 0;
-				}}
-				stat={(d, k) => d.data[names[k]].data}
-				barColor={(k) => DataColors.character(k)}
-				hoverColor={(k) => DataColors.characterLabel(k)}
-				margin={{
-					top: 0,
-					left: maxChars * 8,
-					right: 10,
-					bottom: 20,
-				}}
-				tooltipContent={(d, k) => (
-					<FloatStatTooltipContent
-						title={names[k] + ": " + d.source}
-						data={d.data[names[k]].data}
-						color={DataColors.characterLabel(k)}
-						percent={d.data[names[k]].pct}
-					/>
-				)}
-			/>
-		</div>
+		<HorizontalBarStack<Row, number>
+			width={width}
+			height={data.length * 40}
+			xDomain={[0, xMax]}
+			yDomain={sourceNames}
+			y={(d) => d.source}
+			data={data}
+			keys={range(names.length)}
+			value={(d, k) => {
+				if (names[k] in d.data) {
+					return d.data[names[k]].data.mean ?? 0;
+				}
+				return 0;
+			}}
+			stat={(d, k) => d.data[names[k]].data}
+			barColor={(k) => DataColors.character(k)}
+			hoverColor={(k) => DataColors.characterLabel(k)}
+			margin={{ top: 0, left: width * 0.15, right: width * 0.02, bottom: 20 }}
+			tooltipContent={(d, k) => (
+				<FloatStatTooltipContent
+					title={names[k] + ": " + d.source}
+					data={d.data[names[k]].data}
+					color={DataColors.characterLabel(k)}
+					percent={d.data[names[k]].pct}
+				/>
+			)}
+		/>
 	);
 };
 
