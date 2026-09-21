@@ -135,6 +135,7 @@
 		"openInViewer": "シミュレーターで開く",
 		"filter": "フィルター",
 		"customFilter": "カスタムフィルター",
+		"search": "キャラクター・作者・メモを検索…",
 		"characters": "キャラクター",
 		"tags": "タグ",
 		"clear": "クリア",
@@ -148,6 +149,9 @@
 		"readme_show": "READMEを表示する",
 		"home": {
 			"get_started": "始める",
+			"eyebrow": "gcsim · コミュニティデータベース",
+			"browse_database": "データベースを見る",
+			"run_simulations": "シミュレーションを実行",
 			"welcome": "Simpact へようこそ",
 			"simpact_desc": "Simpact は、gcsim ユーザーによって投稿・管理されている gcsim シミュレーションのデータベースです。",
 			"simpact_tag_desc": "このデータベースはさまざまなタグで構成されており、各タグはシミュレーションのコレクションを表します。これらのコレクションはボランティアによって管理され、各コレクションは独自のルールに従います。",

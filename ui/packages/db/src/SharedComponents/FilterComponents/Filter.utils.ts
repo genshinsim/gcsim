@@ -25,21 +25,30 @@ export const initialCharFilter = charNames.reduce((acc, charName) => {
 	return acc;
 }, {} as CharFilter);
 
+/** The resting state of a tag: default-excluded tags start excluded. */
+export function tagBaseState(tag: string): ItemFilterState {
+	return tagData[tag]?.default_exclude
+		? ItemFilterState.exclude
+		: ItemFilterState.none;
+}
+
 export const initialTagFilter = Object.keys(tagData).reduce((acc, tag) => {
-	acc[tag] = tagData[tag].default_exclude
-		? { state: ItemFilterState.exclude, tag }
-		: { state: ItemFilterState.none, tag };
+	acc[tag] = { state: tagBaseState(tag), tag };
 	return acc;
 }, {} as TagFilter);
 
 export const sortByParams = [
 	{
+		translationKey: "db.createDate",
+		sortKey: "create_date",
+	},
+	{
 		translationKey: "db.dpsPerTarget",
 		sortKey: "summary.mean_dps_per_target",
 	},
 	{
-		translationKey: "db.createDate",
-		sortKey: "create_date",
+		translationKey: "db.avgSimTime",
+		sortKey: "summary.sim_duration.mean",
 	},
 ];
 export enum SortByDirection {
@@ -144,7 +153,7 @@ interface CharFilterReducerAction {
 }
 
 interface TagFilterReducerAction {
-	type: "handleTag";
+	type: "handleTag" | "resetTag";
 	tag: string;
 }
 
@@ -312,6 +321,19 @@ export function filterReducer(
 					...filter.tagFilter,
 					[action.tag]: {
 						state: newFilterState,
+						tag: action.tag,
+					},
+				},
+			};
+		}
+
+		case "resetTag": {
+			return {
+				...filter,
+				tagFilter: {
+					...filter.tagFilter,
+					[action.tag]: {
+						state: tagBaseState(action.tag),
 						tag: action.tag,
 					},
 				},

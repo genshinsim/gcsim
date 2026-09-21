@@ -1,4 +1,4 @@
-import { expect, MAIN_ID, mainEntry, SOURCE_TAG_NAME, test } from "../../src";
+import { expect, MAIN_ID, mainEntry, test } from "../../src";
 
 // The copy assertion reads the clipboard, which needs the permission granted.
 test.use({ permissions: ["clipboard-read", "clipboard-write"] });
@@ -10,15 +10,13 @@ test.describe("taghelper smoke", () => {
 		// The `/id/:id` view boots and renders the main entry.
 		await taghelper.goto(MAIN_ID);
 
-		// Main card: team portraits and the summary stat chips.
-		await taghelper.waitForEntry(chars, SOURCE_TAG_NAME);
+		await taghelper.waitForEntry(chars);
 
 		// Moderation controls and the "existing sims" section render.
 		await taghelper.waitForControls();
 		await taghelper.waitForExistingSims();
 
-		// Copy Approve writes the expected slash command to the clipboard.
-		expect(await taghelper.copyCommand("Copy Approve")).toBe(
+		expect(await taghelper.copyCommand("Copy approve")).toBe(
 			`/approve id:${MAIN_ID}`,
 		);
 

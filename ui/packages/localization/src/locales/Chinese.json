@@ -135,6 +135,7 @@
 		"openInViewer": "在视图中打开",
 		"filter": "过滤",
 		"customFilter": "自定义过滤器",
+		"search": "搜索角色、作者、备注…",
 		"characters": "角色",
 		"tags": "标签",
 		"clear": "清除",
@@ -148,6 +149,9 @@
 		"readme_show": "显示 README",
 		"home": {
 			"get_started": "开始使用",
+			"eyebrow": "gcsim · 社区数据库",
+			"browse_database": "浏览数据库",
+			"run_simulations": "运行模拟",
 			"welcome": "欢迎使用 Simpact",
 			"simpact_desc": "Simpact 是一个由 gcsim 用户提交和维护的 gcsim 模拟数据库。",
 			"simpact_tag_desc": "该数据库由各种标签组成，每个标签代表一组模拟。这些集合由志愿者维护，每个集合都遵循各自的规则。",

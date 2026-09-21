@@ -1,21 +1,5 @@
 @reference "../../tailwind.css";
 
-@layer components {
-  .main-page-button-container {
-    @apply h-28 basis-full p-2 sm:basis-1/2;
-  }
-  .main-page-button {
-    @apply bg-gray-700 hover:bg-gray-600 hover:cursor-pointer rounded-md h-full w-full flex justify-center items-center;
-  }
-  .main-page-card { 
-    @apply rounded-md h-full w-full flex justify-center items-center;
-  }
-
-  .main-page-row {
-    @apply grid sm:grid-cols-1 md:grid-cols-2 sm:gap-1 md:gap-4;
-  }
-}
-
 @layer utilities {
 
   .artifact-top-left {
@@ -179,12 +163,6 @@ div.sticky-header {
   text-align: right;
   width: 40px;
   font-weight: 100;
-}
-
-div.main-page-button-container a,
-div.main-page-button-container a:hover {
-  color: inherit;
-  text-decoration: inherit;
 }
 
 /* for hiding table columns */

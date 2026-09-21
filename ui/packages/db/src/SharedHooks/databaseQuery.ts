@@ -35,19 +35,15 @@ export function craftQuery(
 			break;
 	}
 
-	if (filter.customFilter) {
-		// biome-ignore lint/suspicious/noExplicitAny: JSON.parse result flows
-		// into DbQuery["query"] and may be unassigned on a parse error; an
-		// explicit type would trip strictNullChecks at the return site.
-		let parsedFilter: any;
-		try {
-			parsedFilter = JSON.parse(`${filter.customFilter}`);
-		} catch (e) {
-			console.log("invalid custom filter", e, filter.customFilter);
-		}
-
+	// A valid JSON object in the search box is treated as a raw advanced query
+	// (the power-user escape hatch that has always existed); anything else is a
+	// plain-text search, handled after the character/tag clauses below.
+	const rawQuery = filter.customFilter
+		? tryParseObject(filter.customFilter)
+		: null;
+	if (rawQuery) {
 		return {
-			query: parsedFilter,
+			query: rawQuery,
 			limit,
 			skip,
 			sort,
@@ -158,12 +154,42 @@ export function craftQuery(
 		}
 	}
 
+	// plain-text search across the human-readable fields, merged with the
+	// character/tag clauses above
+	const text = filter.customFilter?.trim();
+	if (text) {
+		const rx = escapeRegex(text);
+		if (query["$and"] === undefined) {
+			query["$and"] = [];
+		}
+		query["$and"].push({
+			$or: [
+				{ description: { $regex: rx, $options: "i" } },
+				{ submitter: { $regex: rx, $options: "i" } },
+				{ "summary.char_names": { $regex: rx, $options: "i" } },
+			],
+		});
+	}
+
 	return {
 		query,
 		limit,
 		skip,
 		sort,
 	};
+}
+
+function tryParseObject(s: string): Record<string, unknown> | null {
+	try {
+		const v = JSON.parse(s);
+		return v && typeof v === "object" && !Array.isArray(v) ? v : null;
+	} catch {
+		return null;
+	}
+}
+
+function escapeRegex(s: string): string {
+	return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 export interface accepted_tags {

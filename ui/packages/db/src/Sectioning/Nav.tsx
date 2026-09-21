@@ -30,7 +30,7 @@ export default function Nav() {
 
 	return (
 		<Navbar className="h-[50px]">
-			<div className="flex w-full 2xl:mx-auto 2xl:container">
+			<div className="mx-auto flex w-full max-w-[1160px] px-8">
 				<NavbarHeading className="!mr-[10px]">
 					<Link href="/" className="flex h-[50px] items-center">
 						<img

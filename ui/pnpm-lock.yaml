@@ -566,6 +566,9 @@ importers:
       '@gcsim/components':
         specifier: workspace:^
         version: link:../components
+      '@gcsim/data':
+        specifier: workspace:^
+        version: link:../data
       '@gcsim/localization':
         specifier: workspace:^
         version: link:../localization
@@ -593,6 +596,9 @@ importers:
       react-i18next:
         specifier: ^17.0.14
         version: 17.0.14(i18next@26.4.2(typescript@7.0.2))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@7.0.2)
+      react-icons:
+        specifier: ^4.6.0
+        version: 4.12.0(react@19.3.0)
       react-router:
         specifier: ^6.22.3
         version: 6.30.6(react@19.3.0)

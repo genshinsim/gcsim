@@ -1,84 +1,97 @@
 import tagData from "@gcsim/data/src/tags.json";
 import { dynamicKey } from "@gcsim/localization";
 import {
+	Badge,
 	Button,
-	Collapsible,
-	CollapsibleContent,
 	Input,
+	Separator,
 	Sheet,
 	SheetContent,
 	SheetDescription,
 	SheetHeader,
 	SheetTitle,
+	SheetTrigger,
 } from "@gcsim/primitives";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FaArrowDown, FaArrowUp, FaFilter, FaSearch } from "react-icons/fa";
-import useDebounce from "../SharedHooks/debounce";
+import {
+	FaArrowDown,
+	FaArrowUp,
+	FaBan,
+	FaCheck,
+	FaFilter,
+	FaSearch,
+} from "react-icons/fa";
 
 import {
 	charNames,
 	FilterContext,
 	FilterDispatchContext,
+	type FilterState,
 	ItemFilterState,
 	SortByDirection,
 	sortByParams,
+	tagBaseState,
 } from "./FilterComponents/Filter.utils";
 
-const activeFilterClasses = "bg-emerald-600 text-white hover:bg-emerald-600/90";
+function activeCount(filter: FilterState): number {
+	let n = 0;
+	for (const c of Object.values(filter.charFilter)) {
+		if (c.state !== ItemFilterState.none) n++;
+	}
+	for (const key of Object.keys(filter.tagFilter)) {
+		if (filter.tagFilter[key].state !== tagBaseState(key)) n++;
+	}
+	return n;
+}
 
 export function Filter() {
 	// https://github.com/i18next/next-i18next/issues/1795
 	const { t: translation } = useTranslation();
 	const t = (s: string) => translation(dynamicKey(s)) as string;
-
-	const dispatch = useContext(FilterDispatchContext);
+	const filter = useContext(FilterContext);
 	const [isOpen, setIsOpen] = useState(false);
-
-	const [value, setValue] = useState<string>("");
-	const debouncedValue = useDebounce<string>(value, 500);
-
-	useEffect(() => {
-		dispatch({ type: "setCustomFilter", customFilter: debouncedValue });
-	}, [debouncedValue, dispatch]);
+	const n = activeCount(filter);
 
 	return (
-		<div>
-			<Button
-				className="h-12 w-12 p-3"
-				onClick={() => setIsOpen(true)}
-				aria-label={t("db.filter")}
-			>
-				<FaFilter size={24} className="opacity-80" />
-			</Button>
-
-			<Sheet open={isOpen} onOpenChange={setIsOpen}>
-				<SheetContent side="left" className="overflow-y-auto">
-					<SheetHeader>
-						<div className="flex flex-row justify-between pr-6">
-							<SheetTitle className="text-xl">{t("db.filter")}</SheetTitle>
-							<ClearFilterButton />
-						</div>
-						<SheetDescription className="sr-only">
-							{t("db.filter")}
-						</SheetDescription>
-					</SheetHeader>
-					<div className="flex flex-col gap-2 overflow-y-auto overflow-x-hidden p-2">
-						<Input
-							placeholder={t("db.customFilter")}
-							type="text"
-							dir="auto"
-							onChange={(e) => {
-								setValue(e.target.value);
-							}}
-						/>
-						<CharacterFilter />
-						<TagFilter />
-						<SortBy />
+		<Sheet open={isOpen} onOpenChange={setIsOpen}>
+			<SheetTrigger asChild>
+				<Button
+					variant="outline"
+					className="gap-g-base-sm"
+					aria-label={t("db.filter")}
+				>
+					<FaFilter size={13} className="text-g-accent" />
+					{t("db.filter")}
+					{n > 0 && (
+						<Badge className="bg-g-accent-weak text-g-accent">{n}</Badge>
+					)}
+				</Button>
+			</SheetTrigger>
+			<SheetContent side="left" className="w-[min(92vw,360px)]">
+				<SheetHeader>
+					<div className="flex flex-row items-center justify-between pr-6">
+						<SheetTitle className="text-g-h3">{t("db.filter")}</SheetTitle>
+						<ClearFilterButton />
 					</div>
-				</SheetContent>
-			</Sheet>
-		</div>
+					<SheetDescription className="sr-only">
+						{t("db.filter")}
+					</SheetDescription>
+				</SheetHeader>
+				<Separator />
+				<div className="flex min-h-0 flex-1 flex-col gap-g-section p-2">
+					<Section title={t("db.sort_by")}>
+						<SortControl />
+					</Section>
+					<Section title={t("db.tags")}>
+						<TagPicker />
+					</Section>
+					<Section title={t("db.characters")} className="min-h-0 flex-1">
+						<CharacterPicker />
+					</Section>
+				</div>
+			</SheetContent>
+		</Sheet>
 	);
 }
 
@@ -88,7 +101,7 @@ function ClearFilterButton() {
 	const dispatch = useContext(FilterDispatchContext);
 	return (
 		<Button
-			variant="destructive"
+			variant="ghost"
 			size="sm"
 			onClick={() => dispatch({ type: "clearFilter" })}
 		>
@@ -97,222 +110,38 @@ function ClearFilterButton() {
 	);
 }
 
-function TagFilter() {
-	const [tagIsOpen, setTagIsOpen] = useState(false);
-	const { t: translation } = useTranslation();
-	const t = (s: string) => translation(dynamicKey(s)) as string;
-	const sortedTagnames = Object.keys(tagData)
-		.filter((key) => {
-			return key !== "0" && key !== "1" && key !== "2";
-		})
-		.map((key) => {
-			return {
-				key: key,
-				name: tagData[key]["display_name"],
-			};
-		});
-
+function Section({
+	title,
+	children,
+	className,
+}: {
+	title: string;
+	children: React.ReactNode;
+	className?: string;
+}) {
 	return (
-		<div className="w-full  overflow-x-hidden no-scrollbar">
-			<Button
-				className="w-full justify-between"
-				onClick={() => setTagIsOpen(!tagIsOpen)}
-			>
-				<div className=" grow">{t("db.tags")}</div>
-
-				<div className="">{tagIsOpen ? "-" : "+"}</div>
-			</Button>
-			<Collapsible open={tagIsOpen}>
-				<CollapsibleContent>
-					<div className="grid grid-cols-3 gap-2 mt-2 bg-gray-800 p-1">
-						{sortedTagnames.map((t) => (
-							<TagFilterButton key={t.key} name={t.name} tag={t.key} />
-						))}
-					</div>
-				</CollapsibleContent>
-			</Collapsible>
+		<div className={`flex flex-col gap-g-base-sm ${className ?? ""}`}>
+			<div className="text-g-xs font-semibold uppercase tracking-wide text-g-ink-mute">
+				{title}
+			</div>
+			{children}
 		</div>
 	);
 }
 
-function TagFilterButton({ tag, name }: { tag; name: string }) {
-	const filter = useContext(FilterContext);
-	const dispatch = useContext(FilterDispatchContext);
-
-	const handleClick = () => {
-		dispatch({
-			type: "handleTag",
-			tag: tag,
-		});
-	};
-
-	const state = filter.tagFilter[tag].state;
-	return (
-		<Button
-			variant={state === ItemFilterState.exclude ? "destructive" : "secondary"}
-			className={
-				state === ItemFilterState.include ? activeFilterClasses : undefined
-			}
-			onClick={handleClick}
-		>
-			<div className="text-center">{name}</div>
-		</Button>
-	);
-}
-
-function CharacterFilter() {
-	const [charIsOpen, setCharIsOpen] = useState(false);
-	const { t: translation } = useTranslation();
-	const t = (s: string) => translation(dynamicKey(s)) as string;
-	const sortedCharNames = charNames.sort((a, b) => {
-		if (t(a) < t(b)) {
-			return -1;
-		}
-		if (t(a) > t(b)) {
-			return 1;
-		}
-		return 0;
-	});
-	const [charSearch, setCharSearch] = useState<string>("");
-
-	const translateCharName = (charName: string) =>
-		t("game:character_names." + charName);
-
-	return (
-		<div className="w-full  overflow-x-hidden no-scrollbar">
-			<Button
-				className="w-full justify-between"
-				onClick={() => setCharIsOpen(!charIsOpen)}
-			>
-				<div className=" grow">{t("db.characters")}</div>
-
-				<div className="">{charIsOpen ? "-" : "+"}</div>
-			</Button>
-			<Collapsible open={charIsOpen}>
-				<CollapsibleContent>
-					<div className="flex flex-col mt-2 bg-gray-800 p-1">
-						<label
-							htmlFor="email"
-							className="relative text-gray-400 focus-within:text-gray-600 flex flex-row"
-						>
-							<FaSearch className="pointer-events-none w-4 h-4 absolute top-2 transform   right-2 " />
-
-							<Input
-								className="grow"
-								type="text"
-								dir="auto"
-								onChange={(e) => {
-									setCharSearch(e.target.value);
-								}}
-							/>
-						</label>
-
-						<div className="grid grid-cols-4 gap-1 mt-1 overflow-y-auto overflow-x-hidden">
-							{sortedCharNames
-								.filter((charName) =>
-									translateCharName(charName)
-										.toLocaleLowerCase()
-										.includes(charSearch.toLocaleLowerCase()),
-								)
-								.map((charName) => (
-									<CharFilterButton key={charName} charName={charName} />
-								))}
-						</div>
-					</div>
-				</CollapsibleContent>
-			</Collapsible>
-		</div>
-	);
-}
-
-function CharFilterButton({ charName }: { charName: string }) {
-	const filter = useContext(FilterContext);
-	const dispatch = useContext(FilterDispatchContext);
-
-	const handleClick = () => {
-		dispatch({
-			type: "handleChar",
-			char: charName,
-		});
-	};
-
-	const state = filter.charFilter[charName].state;
-	return (
-		<Button
-			variant={
-				state === ItemFilterState.exclude
-					? "destructive"
-					: state === ItemFilterState.include
-						? "default"
-						: "secondary"
-			}
-			className={`block h-auto ${
-				state === ItemFilterState.include ? activeFilterClasses : ""
-			}`}
-			onClick={handleClick}
-		>
-			<CharFilterButtonChild charName={charName} />
-		</Button>
-	);
-}
-
-function CharFilterButtonChild({ charName }: { charName: string }) {
-	const { t: translation } = useTranslation();
-	const t = (s: string) => translation(dynamicKey(s)) as string;
-	const displayCharName = t("game:character_names." + charName);
-
-	const travelerName = (
-		charName.includes("lumine") || charName.includes("aether")
-			? displayCharName
-			: ""
-	).replace(/.*?\((\S+)\).*?/, "$1");
-
-	return (
-		<div className="flex flex-col truncate gap-1">
-			<img
-				alt={displayCharName}
-				src={`/api/assets/avatar/${charName}.png`}
-				className="truncate h-16 object-contain"
-			/>
-			{travelerName !== "" ? (
-				<div className="text-center">{travelerName}</div>
-			) : (
-				<></>
-			)}
-		</div>
-	);
-}
-
-function SortBy() {
-	const [sortIsOpen, setSortIsOpen] = useState(false);
+function SortControl() {
 	const { t: translation } = useTranslation();
 	const t = (s: string) => translation(dynamicKey(s)) as string;
 
 	return (
-		<div className="w-full  overflow-x-hidden no-scrollbar">
-			<Button
-				className="w-full justify-between"
-				onClick={() => setSortIsOpen(!sortIsOpen)}
-			>
-				<div className=" grow">{t("db.sort_by")}</div>
-
-				<div className="">{sortIsOpen ? "-" : "+"}</div>
-			</Button>
-			<Collapsible open={sortIsOpen}>
-				<CollapsibleContent>
-					<div className="flex flex-col mt-2 bg-gray-800 p-1">
-						<div className="flex flex-row gap-4">
-							{sortByParams.map((param) => (
-								<SortByParamButton
-									key={param.sortKey}
-									sortKey={param.sortKey}
-									translation={t(param.translationKey)}
-								/>
-							))}
-						</div>
-					</div>
-				</CollapsibleContent>
-			</Collapsible>
+		<div className="flex flex-wrap gap-g-base-sm">
+			{sortByParams.map((param) => (
+				<SortByParamButton
+					key={param.sortKey}
+					sortKey={param.sortKey}
+					translation={t(param.translationKey)}
+				/>
+			))}
 		</div>
 	);
 }
@@ -327,29 +156,146 @@ function SortByParamButton({
 	const filter = useContext(FilterContext);
 	const dispatch = useContext(FilterDispatchContext);
 
-	const handleClick = () => {
-		dispatch({
-			type: "handleSortBy",
-			sortByKey: sortKey,
-		});
-	};
-
 	const active = filter.sortBy.sortKey === sortKey;
 	const direction = active ? filter.sortBy.sortByDirection : null;
 
 	return (
 		<Button
-			onClick={handleClick}
-			variant={direction === SortByDirection.dsc ? "destructive" : "secondary"}
-			className={
-				direction === SortByDirection.asc ? activeFilterClasses : undefined
-			}
+			size="sm"
+			variant={active ? "default" : "secondary"}
+			onClick={() => dispatch({ type: "handleSortBy", sortByKey: sortKey })}
 		>
-			<div className="flex flex-row gap-1 justify-center items-center">
-				{direction === SortByDirection.asc && <FaArrowUp />}
-				{direction === SortByDirection.dsc && <FaArrowDown />}
-				{translation}
-			</div>
+			{translation}
+			{direction === SortByDirection.asc && <FaArrowUp size={10} />}
+			{direction === SortByDirection.dsc && <FaArrowDown size={10} />}
 		</Button>
+	);
+}
+
+function TagPicker() {
+	const tags = Object.keys(tagData)
+		.filter((key) => key !== "0" && key !== "1" && key !== "2")
+		.map((key) => ({ key, name: tagData[key].display_name }));
+
+	return (
+		<div className="flex flex-wrap gap-g-base-sm">
+			{tags.map((tag) => (
+				<TagPill key={tag.key} name={tag.name} tag={tag.key} />
+			))}
+		</div>
+	);
+}
+
+function TagPill({ tag, name }: { tag: string; name: string }) {
+	const filter = useContext(FilterContext);
+	const dispatch = useContext(FilterDispatchContext);
+
+	const state = filter.tagFilter[tag].state;
+	const cls =
+		state === ItemFilterState.include
+			? "border-transparent bg-g-success/20 text-g-success"
+			: state === ItemFilterState.exclude
+				? "border-transparent bg-g-danger/20 text-g-danger"
+				: "border-g-line-soft bg-g-surface-2 text-g-ink-dim hover:border-g-line";
+	return (
+		<button
+			type="button"
+			onClick={() => dispatch({ type: "handleTag", tag })}
+			className={`inline-flex items-center gap-1 rounded-g-pill border px-2.5 py-1 text-g-xs font-medium transition-colors ${cls}`}
+		>
+			{state === ItemFilterState.include && <FaCheck size={9} />}
+			{state === ItemFilterState.exclude && <FaBan size={9} />}
+			{name}
+		</button>
+	);
+}
+
+function CharacterPicker() {
+	const { t: translation } = useTranslation();
+	const t = (s: string) => translation(dynamicKey(s)) as string;
+	const translateCharName = (charName: string) =>
+		t(`game:character_names.${charName}`);
+
+	const [charSearch, setCharSearch] = useState<string>("");
+	const sorted = [...charNames].sort((a, b) =>
+		translateCharName(a).localeCompare(translateCharName(b)),
+	);
+	const visible = sorted.filter((charName) =>
+		translateCharName(charName)
+			.toLocaleLowerCase()
+			.includes(charSearch.toLocaleLowerCase()),
+	);
+
+	return (
+		<div className="flex min-h-0 flex-1 flex-col gap-g-base">
+			<div className="relative shrink-0">
+				<FaSearch
+					className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-g-ink-mute"
+					size={13}
+				/>
+				<Input
+					className="pl-8"
+					type="text"
+					dir="auto"
+					placeholder={t("db.type_to_search")}
+					value={charSearch}
+					onChange={(e) => setCharSearch(e.target.value)}
+				/>
+			</div>
+			<div className="grid min-h-0 flex-1 grid-cols-4 gap-g-base-sm overflow-y-auto overflow-x-hidden no-scrollbar">
+				{visible.map((charName) => (
+					<CharCard
+						key={charName}
+						charName={charName}
+						label={translateCharName(charName)}
+					/>
+				))}
+			</div>
+		</div>
+	);
+}
+
+function CharCard({ charName, label }: { charName: string; label: string }) {
+	const filter = useContext(FilterContext);
+	const dispatch = useContext(FilterDispatchContext);
+
+	const state = filter.charFilter[charName].state;
+	const set = state !== ItemFilterState.none;
+	return (
+		<button
+			type="button"
+			title={label}
+			onClick={() => dispatch({ type: "handleChar", char: charName })}
+			className={`relative flex flex-col items-center rounded-g-md border p-1 transition-colors ${
+				set
+					? "border-g-accent bg-g-accent-weak"
+					: "border-g-line-soft bg-g-surface-2 hover:border-g-line"
+			}`}
+		>
+			<img
+				src={`/api/assets/avatar/${charName}.png`}
+				alt=""
+				className="h-12 w-12 object-contain"
+			/>
+			<span className="w-full truncate text-center text-g-xs text-g-ink-dim">
+				{label}
+			</span>
+			<TriRing state={state} />
+		</button>
+	);
+}
+
+function TriRing({ state }: { state: ItemFilterState }) {
+	if (state === ItemFilterState.none) return null;
+	const include = state === ItemFilterState.include;
+	const cls = include
+		? "bg-g-success text-g-accent-fg"
+		: "bg-g-danger text-g-accent-fg";
+	return (
+		<span
+			className={`absolute right-1 top-1 flex size-4 items-center justify-center rounded-full ${cls}`}
+		>
+			{include ? <FaCheck size={8} /> : <FaBan size={8} />}
+		</span>
 	);
 }

@@ -135,6 +135,7 @@
 		"openInViewer": "Im Betrachter öffnen",
 		"filter": "Filter",
 		"customFilter": "Benutzerdefinierter Filter",
+		"search": "Charaktere, Autoren, Notizen suchen…",
 		"characters": "Figuren",
 		"tags": "Tags",
 		"clear": "Zurücksetzen",
@@ -148,6 +149,9 @@
 		"readme_show": "README anzeigen",
 		"home": {
 			"get_started": "Loslegen",
+			"eyebrow": "gcsim · Community-Datenbank",
+			"browse_database": "Datenbank durchsuchen",
+			"run_simulations": "Simulationen ausführen",
 			"welcome": "Willkommen bei Simpact",
 			"simpact_desc": "Simpact ist eine Teamdatenbank an gcsim-Simulationen („Sims“), die von gcsim-Benutzern eingereicht und gepflegt werden.",
 			"simpact_tag_desc": "Die Datenbank besteht aus diversen Tags, die aus einer Sammlung von Sims bestehen. Diese Sammlungen werden von Freiwilligen verwaltet und aktualisiert. Jede Sammlung folgt ihren eigenen Regeln.",

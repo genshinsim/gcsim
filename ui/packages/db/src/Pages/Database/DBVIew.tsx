@@ -15,7 +15,7 @@ type Props = {
 export const DBView = (props: Props) => {
 	const { t } = useTranslation();
 	return (
-		<div className="flex flex-col gap-4 m-8 my-4 items-center">
+		<div className="mx-auto flex max-w-[1160px] flex-col gap-g-base-lg px-8 py-4">
 			<ActionBar simCount={props.data.length} />
 			<RiskWarning />
 			<Warning
@@ -24,11 +24,11 @@ export const DBView = (props: Props) => {
 				bodyKey="db.readme_body"
 			/>
 			{props.data.length === 0 ? (
-				<div className="6 flex flex-col justify-center items-center h-screen">
+				<div className="flex h-screen flex-col items-center justify-center">
 					<img
 						src={eula}
 						alt=""
-						className=" object-contain opacity-50 w-32 h-32"
+						className="size-32 object-contain opacity-50"
 					/>
 				</div>
 			) : (
@@ -39,7 +39,7 @@ export const DBView = (props: Props) => {
 					loader={<h4>{t("sim.loading")}</h4>}
 					endMessage={
 						<>
-							<p className="text-center mt-4">
+							<p className="mt-4 text-center">
 								<b>{t("db.seen_it_all")}</b>
 							</p>
 							<p className="text-center">{t("db.not_find")}</p>
