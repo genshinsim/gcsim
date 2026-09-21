@@ -2,21 +2,13 @@ import { dynamicKey } from "@gcsim/localization";
 import { Button, Input } from "@gcsim/primitives";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-	FaArrowDown,
-	FaArrowUp,
-	FaBan,
-	FaSearch,
-	FaTimes,
-} from "react-icons/fa";
+import { FaBan, FaSearch, FaTimes } from "react-icons/fa";
 import useDebounce from "../SharedHooks/debounce";
 import { Filter } from "./Filter";
 import {
 	FilterContext,
 	FilterDispatchContext,
 	ItemFilterState,
-	SortByDirection,
-	sortByParams,
 } from "./FilterComponents/Filter.utils";
 
 export function ActionBar({ simCount }: { simCount: number | null }) {
@@ -27,9 +19,6 @@ export function ActionBar({ simCount }: { simCount: number | null }) {
 			<div className="flex flex-wrap items-center gap-g-base">
 				<Filter />
 				<CustomFilterSearch />
-				<div className="hidden sm:block">
-					<SortControl />
-				</div>
 				<span className="ml-auto whitespace-nowrap font-g-mono text-g-sm text-g-ink-dim">
 					{t("db.showing_simulations", { i: simCount ?? 0 })}
 				</span>
@@ -115,36 +104,6 @@ function SelectedCharChips() {
 			>
 				{t("db.clear")}
 			</Button>
-		</div>
-	);
-}
-
-function SortControl() {
-	const { t: translation } = useTranslation();
-	const t = (s: string) => translation(dynamicKey(s)) as string;
-	const filter = useContext(FilterContext);
-	const dispatch = useContext(FilterDispatchContext);
-
-	return (
-		<div className="flex gap-g-base-sm">
-			{sortByParams.map((param) => {
-				const active = filter.sortBy.sortKey === param.sortKey;
-				const dir = active ? filter.sortBy.sortByDirection : null;
-				return (
-					<Button
-						key={param.sortKey}
-						size="sm"
-						variant={active ? "default" : "secondary"}
-						onClick={() =>
-							dispatch({ type: "handleSortBy", sortByKey: param.sortKey })
-						}
-					>
-						{t(param.translationKey)}
-						{dir === SortByDirection.asc && <FaArrowUp size={10} />}
-						{dir === SortByDirection.dsc && <FaArrowDown size={10} />}
-					</Button>
-				);
-			})}
 		</div>
 	);
 }
