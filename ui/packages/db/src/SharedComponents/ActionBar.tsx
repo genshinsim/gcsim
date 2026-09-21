@@ -2,7 +2,13 @@ import { dynamicKey } from "@gcsim/localization";
 import { Button, Input } from "@gcsim/primitives";
 import { useContext, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { FaArrowDown, FaArrowUp, FaSearch, FaTimes } from "react-icons/fa";
+import {
+	FaArrowDown,
+	FaArrowUp,
+	FaBan,
+	FaSearch,
+	FaTimes,
+} from "react-icons/fa";
 import useDebounce from "../SharedHooks/debounce";
 import { Filter } from "./Filter";
 import {
@@ -53,7 +59,7 @@ function CustomFilterSearch() {
 				className="pl-8"
 				type="text"
 				dir="auto"
-				placeholder={t("db.customFilter")}
+				placeholder={t("db.search")}
 				value={value}
 				onChange={(e) => setValue(e.target.value)}
 			/>
@@ -68,28 +74,36 @@ function SelectedCharChips() {
 	const dispatch = useContext(FilterDispatchContext);
 
 	const selected = Object.values(filter.charFilter).filter(
-		(c) => c.state === ItemFilterState.include,
+		(c) => c.state !== ItemFilterState.none,
 	);
 	if (selected.length === 0) return null;
 
 	return (
 		<div className="flex flex-wrap items-center gap-g-base-sm">
-			{selected.map((c) => (
-				<button
-					type="button"
-					key={c.charName}
-					onClick={() => dispatch({ type: "removeChar", char: c.charName })}
-					className="inline-flex items-center gap-1.5 rounded-g-pill bg-g-accent-weak py-1 pl-1.5 pr-2 text-g-xs text-g-accent"
-				>
-					<img
-						src={`/api/assets/avatar/${c.charName}.png`}
-						alt=""
-						className="size-4"
-					/>
-					{t("game:character_names." + c.charName)}
-					<FaTimes size={9} />
-				</button>
-			))}
+			{selected.map((c) => {
+				const excluded = c.state === ItemFilterState.exclude;
+				return (
+					<button
+						type="button"
+						key={c.charName}
+						onClick={() => dispatch({ type: "removeChar", char: c.charName })}
+						className={`inline-flex items-center gap-1.5 rounded-g-pill py-1 pl-1.5 pr-2 text-g-xs ${
+							excluded
+								? "bg-g-danger/20 text-g-danger line-through"
+								: "bg-g-accent-weak text-g-accent"
+						}`}
+					>
+						{excluded && <FaBan size={9} className="no-underline" />}
+						<img
+							src={`/api/assets/avatar/${c.charName}.png`}
+							alt=""
+							className="size-4"
+						/>
+						{t("game:character_names." + c.charName)}
+						<FaTimes size={9} />
+					</button>
+				);
+			})}
 			<Button
 				variant="ghost"
 				size="xs"
