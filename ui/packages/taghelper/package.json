@@ -11,6 +11,7 @@
 	},
 	"dependencies": {
 		"@gcsim/components": "workspace:^",
+		"@gcsim/data": "workspace:^",
 		"@gcsim/localization": "workspace:^",
 		"@gcsim/primitives": "workspace:^",
 		"@gcsim/types": "workspace:^",
@@ -20,6 +21,7 @@
 		"react": "^19.3.0",
 		"react-dom": "^19.3.0",
 		"react-i18next": "^17.0.14",
+		"react-icons": "^4.6.0",
 		"react-router": "^6.22.3",
 		"react-router-dom": "^6.22.3",
 		"wouter": "^2.9.0"
