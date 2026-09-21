@@ -1,0 +1,131 @@
+import { AvatarCard } from "@gcsim/components";
+import { Badge, Button, toast } from "@gcsim/primitives";
+import type { db } from "@gcsim/types";
+import { FaCopy, FaExternalLinkAlt } from "react-icons/fa";
+import {
+	author,
+	created,
+	dps,
+	mode,
+	simTime,
+	tagNames,
+	targetCount,
+	team,
+	viewerLink,
+} from "../lib/entry";
+
+export function copyConfig(entry: db.Entry) {
+	const cfg = entry.config ?? "";
+	navigator.clipboard.writeText(cfg).then(() =>
+		toast("Copied config", {
+			description: `${cfg.length} characters copied to clipboard`,
+		}),
+	);
+}
+
+/** mono label/value chip for the compact summary stats. */
+export function StatChip({ label, value }: { label: string; value: string }) {
+	return (
+		<Badge className="gap-1.5 bg-g-surface-2 font-g-mono">
+			<span className="text-g-xs lowercase text-g-ink-mute">{label}</span>
+			<span className="text-g-xs text-g-ink">{value}</span>
+		</Badge>
+	);
+}
+
+export function TagBadges({ entry }: { entry: db.Entry }) {
+	const tags = tagNames(entry);
+	if (!tags.length) return null;
+	return (
+		<div className="flex flex-wrap gap-g-base-sm">
+			{tags.map((t) => (
+				<Badge key={t} className="bg-g-success/15 text-g-success">
+					{t}
+				</Badge>
+			))}
+		</div>
+	);
+}
+
+export function CardActions({ entry }: { entry: db.Entry }) {
+	return (
+		<div className="flex flex-wrap gap-g-base-sm">
+			<Button size="sm" variant="secondary" onClick={() => copyConfig(entry)}>
+				<FaCopy size={12} /> Copy config
+			</Button>
+			<Button size="sm" asChild>
+				<a href={viewerLink(entry)} target="_blank" rel="noreferrer">
+					<FaExternalLinkAlt size={11} /> Open in viewer
+				</a>
+			</Button>
+		</div>
+	);
+}
+
+/**
+ * Team portraits via the shared AvatarCard (cons/refine/set badges), pinned to
+ * 420px so its built-in grid stays 4-across on desktop and 2-across below its
+ * own 420px container breakpoint.
+ */
+export function Team({ entry }: { entry: db.Entry }) {
+	return (
+		<div className="w-full max-w-[420px]">
+			<AvatarCard chars={team(entry)} className="w-full" />
+		</div>
+	);
+}
+
+/** DPS hero number with unit. */
+export function DpsStat({
+	entry,
+	size = "num",
+}: {
+	entry: db.Entry;
+	size?: "num" | "num-sm";
+}) {
+	return (
+		<div className="leading-none">
+			<div
+				className={`font-g-mono font-semibold text-g-ink ${
+					size === "num" ? "text-g-num" : "text-g-num-sm"
+				}`}
+			>
+				{dps(entry)}
+			</div>
+			<div className="mt-1 text-g-xs text-g-ink-mute">DPS / target</div>
+		</div>
+	);
+}
+
+/**
+ * Full detail card for the one-column browse list. Team + summary stats on the
+ * left, description + tags + DPS + actions on the right; stacks below `md`.
+ */
+export function FullCard({ entry }: { entry: db.Entry }) {
+	return (
+		<div className="flex flex-col gap-g-base rounded-g-lg border border-g-line-soft bg-g-surface p-g-card md:flex-row md:items-stretch">
+			<div className="w-full shrink-0 md:w-[420px]">
+				<Team entry={entry} />
+				<div className="mt-g-base flex flex-wrap gap-g-base-sm">
+					<StatChip label="mode" value={mode(entry)} />
+					<StatChip label="targets" value={String(targetCount(entry))} />
+					<StatChip label="sim" value={simTime(entry)} />
+					<StatChip label="date" value={created(entry)} />
+				</div>
+			</div>
+			<div className="flex min-w-0 flex-1 flex-col gap-g-base">
+				<div className="flex items-start justify-between gap-g-base">
+					<TagBadges entry={entry} />
+					<DpsStat entry={entry} size="num-sm" />
+				</div>
+				<p className="text-g-sm text-g-ink-dim">
+					<span className="font-semibold text-g-accent">{author(entry)}: </span>
+					{entry.description}
+				</p>
+				<div className="mt-auto flex justify-end pt-g-base-sm">
+					<CardActions entry={entry} />
+				</div>
+			</div>
+		</div>
+	);
+}
