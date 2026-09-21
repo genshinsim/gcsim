@@ -38,8 +38,8 @@ export function TagBadges({ entry }: { entry: db.Entry }) {
 	return (
 		<div className="flex flex-wrap gap-g-base-sm">
 			{tags.map((t) => (
-				<Badge key={t} className="bg-g-success/15 text-g-success">
-					{t}
+				<Badge key={t} className="bg-g-success/15 font-g-mono">
+					<span className="text-g-xs text-g-success">{t}</span>
 				</Badge>
 			))}
 		</div>
