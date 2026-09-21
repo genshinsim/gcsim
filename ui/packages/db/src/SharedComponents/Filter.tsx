@@ -10,11 +10,11 @@ import {
 	SheetDescription,
 	SheetHeader,
 	SheetTitle,
+	SheetTrigger,
 } from "@gcsim/primitives";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { FaArrowDown, FaArrowUp, FaFilter, FaSearch } from "react-icons/fa";
-import useDebounce from "../SharedHooks/debounce";
 
 import {
 	charNames,
@@ -25,60 +25,41 @@ import {
 	sortByParams,
 } from "./FilterComponents/Filter.utils";
 
-const activeFilterClasses = "bg-emerald-600 text-white hover:bg-emerald-600/90";
+/** Highlight for an active (included) filter option, on the Gauge accent. */
+const activeFilterClasses = "bg-g-accent text-g-accent-fg hover:bg-g-accent/90";
 
 export function Filter() {
 	// https://github.com/i18next/next-i18next/issues/1795
 	const { t: translation } = useTranslation();
 	const t = (s: string) => translation(dynamicKey(s)) as string;
 
-	const dispatch = useContext(FilterDispatchContext);
 	const [isOpen, setIsOpen] = useState(false);
 
-	const [value, setValue] = useState<string>("");
-	const debouncedValue = useDebounce<string>(value, 500);
-
-	useEffect(() => {
-		dispatch({ type: "setCustomFilter", customFilter: debouncedValue });
-	}, [debouncedValue, dispatch]);
-
 	return (
-		<div>
-			<Button
-				className="h-12 w-12 p-3"
-				onClick={() => setIsOpen(true)}
-				aria-label={t("db.filter")}
-			>
-				<FaFilter size={24} className="opacity-80" />
-			</Button>
-
-			<Sheet open={isOpen} onOpenChange={setIsOpen}>
-				<SheetContent side="left" className="overflow-y-auto">
-					<SheetHeader>
-						<div className="flex flex-row justify-between pr-6">
-							<SheetTitle className="text-xl">{t("db.filter")}</SheetTitle>
-							<ClearFilterButton />
-						</div>
-						<SheetDescription className="sr-only">
-							{t("db.filter")}
-						</SheetDescription>
-					</SheetHeader>
-					<div className="flex flex-col gap-2 overflow-y-auto overflow-x-hidden p-2">
-						<Input
-							placeholder={t("db.customFilter")}
-							type="text"
-							dir="auto"
-							onChange={(e) => {
-								setValue(e.target.value);
-							}}
-						/>
-						<CharacterFilter />
-						<TagFilter />
-						<SortBy />
+		<Sheet open={isOpen} onOpenChange={setIsOpen}>
+			<SheetTrigger asChild>
+				<Button variant="outline" aria-label={t("db.filter")}>
+					<FaFilter size={13} className="opacity-80" />
+					{t("db.filter")}
+				</Button>
+			</SheetTrigger>
+			<SheetContent side="left" className="overflow-y-auto">
+				<SheetHeader>
+					<div className="flex flex-row justify-between pr-6">
+						<SheetTitle className="text-g-h3">{t("db.filter")}</SheetTitle>
+						<ClearFilterButton />
 					</div>
-				</SheetContent>
-			</Sheet>
-		</div>
+					<SheetDescription className="sr-only">
+						{t("db.filter")}
+					</SheetDescription>
+				</SheetHeader>
+				<div className="flex flex-col gap-g-base-sm overflow-y-auto overflow-x-hidden p-2">
+					<CharacterFilter />
+					<TagFilter />
+					<SortBy />
+				</div>
+			</SheetContent>
+		</Sheet>
 	);
 }
 
@@ -97,54 +78,55 @@ function ClearFilterButton() {
 	);
 }
 
-function TagFilter() {
-	const [tagIsOpen, setTagIsOpen] = useState(false);
-	const { t: translation } = useTranslation();
-	const t = (s: string) => translation(dynamicKey(s)) as string;
-	const sortedTagnames = Object.keys(tagData)
-		.filter((key) => {
-			return key !== "0" && key !== "1" && key !== "2";
-		})
-		.map((key) => {
-			return {
-				key: key,
-				name: tagData[key]["display_name"],
-			};
-		});
-
+/** Collapsible section shell shared by the character/tag/sort pickers. */
+function FilterSection({
+	label,
+	children,
+}: {
+	label: string;
+	children: React.ReactNode;
+}) {
+	const [isOpen, setIsOpen] = useState(false);
 	return (
-		<div className="w-full  overflow-x-hidden no-scrollbar">
+		<div className="w-full overflow-x-hidden no-scrollbar">
 			<Button
+				variant="secondary"
 				className="w-full justify-between"
-				onClick={() => setTagIsOpen(!tagIsOpen)}
+				onClick={() => setIsOpen(!isOpen)}
 			>
-				<div className=" grow">{t("db.tags")}</div>
-
-				<div className="">{tagIsOpen ? "-" : "+"}</div>
+				<span className="grow text-left">{label}</span>
+				<span>{isOpen ? "-" : "+"}</span>
 			</Button>
-			<Collapsible open={tagIsOpen}>
+			<Collapsible open={isOpen}>
 				<CollapsibleContent>
-					<div className="grid grid-cols-3 gap-2 mt-2 bg-gray-800 p-1">
-						{sortedTagnames.map((t) => (
-							<TagFilterButton key={t.key} name={t.name} tag={t.key} />
-						))}
-					</div>
+					<div className="mt-2 rounded-g-md bg-g-surface-2 p-1">{children}</div>
 				</CollapsibleContent>
 			</Collapsible>
 		</div>
 	);
 }
 
-function TagFilterButton({ tag, name }: { tag; name: string }) {
+function TagFilter() {
+	const { t: translation } = useTranslation();
+	const t = (s: string) => translation(dynamicKey(s)) as string;
+	const sortedTagnames = Object.keys(tagData)
+		.filter((key) => key !== "0" && key !== "1" && key !== "2")
+		.map((key) => ({ key, name: tagData[key]["display_name"] }));
+
+	return (
+		<FilterSection label={t("db.tags")}>
+			<div className="grid grid-cols-3 gap-2">
+				{sortedTagnames.map((tag) => (
+					<TagFilterButton key={tag.key} name={tag.name} tag={tag.key} />
+				))}
+			</div>
+		</FilterSection>
+	);
+}
+
+function TagFilterButton({ tag, name }: { tag: string; name: string }) {
 	const filter = useContext(FilterContext);
 	const dispatch = useContext(FilterDispatchContext);
-
-	const handleClick = () => {
-		dispatch({
-			type: "handleTag",
-			tag: tag,
-		});
-	};
 
 	const state = filter.tagFilter[tag].state;
 	return (
@@ -153,7 +135,7 @@ function TagFilterButton({ tag, name }: { tag; name: string }) {
 			className={
 				state === ItemFilterState.include ? activeFilterClasses : undefined
 			}
-			onClick={handleClick}
+			onClick={() => dispatch({ type: "handleTag", tag })}
 		>
 			<div className="text-center">{name}</div>
 		</Button>
@@ -161,16 +143,11 @@ function TagFilterButton({ tag, name }: { tag; name: string }) {
 }
 
 function CharacterFilter() {
-	const [charIsOpen, setCharIsOpen] = useState(false);
 	const { t: translation } = useTranslation();
 	const t = (s: string) => translation(dynamicKey(s)) as string;
 	const sortedCharNames = charNames.sort((a, b) => {
-		if (t(a) < t(b)) {
-			return -1;
-		}
-		if (t(a) > t(b)) {
-			return 1;
-		}
+		if (t(a) < t(b)) return -1;
+		if (t(a) > t(b)) return 1;
 		return 0;
 	});
 	const [charSearch, setCharSearch] = useState<string>("");
@@ -179,62 +156,38 @@ function CharacterFilter() {
 		t("game:character_names." + charName);
 
 	return (
-		<div className="w-full  overflow-x-hidden no-scrollbar">
-			<Button
-				className="w-full justify-between"
-				onClick={() => setCharIsOpen(!charIsOpen)}
-			>
-				<div className=" grow">{t("db.characters")}</div>
+		<FilterSection label={t("db.characters")}>
+			<div className="flex flex-col">
+				<div className="relative flex flex-row text-g-ink-mute">
+					<FaSearch className="pointer-events-none absolute right-2 top-3 size-4" />
+					<Input
+						className="grow"
+						type="text"
+						dir="auto"
+						placeholder={t("db.type_to_search")}
+						onChange={(e) => setCharSearch(e.target.value)}
+					/>
+				</div>
 
-				<div className="">{charIsOpen ? "-" : "+"}</div>
-			</Button>
-			<Collapsible open={charIsOpen}>
-				<CollapsibleContent>
-					<div className="flex flex-col mt-2 bg-gray-800 p-1">
-						<label
-							htmlFor="email"
-							className="relative text-gray-400 focus-within:text-gray-600 flex flex-row"
-						>
-							<FaSearch className="pointer-events-none w-4 h-4 absolute top-2 transform   right-2 " />
-
-							<Input
-								className="grow"
-								type="text"
-								dir="auto"
-								onChange={(e) => {
-									setCharSearch(e.target.value);
-								}}
-							/>
-						</label>
-
-						<div className="grid grid-cols-4 gap-1 mt-1 overflow-y-auto overflow-x-hidden">
-							{sortedCharNames
-								.filter((charName) =>
-									translateCharName(charName)
-										.toLocaleLowerCase()
-										.includes(charSearch.toLocaleLowerCase()),
-								)
-								.map((charName) => (
-									<CharFilterButton key={charName} charName={charName} />
-								))}
-						</div>
-					</div>
-				</CollapsibleContent>
-			</Collapsible>
-		</div>
+				<div className="mt-1 grid grid-cols-4 gap-1 overflow-y-auto overflow-x-hidden">
+					{sortedCharNames
+						.filter((charName) =>
+							translateCharName(charName)
+								.toLocaleLowerCase()
+								.includes(charSearch.toLocaleLowerCase()),
+						)
+						.map((charName) => (
+							<CharFilterButton key={charName} charName={charName} />
+						))}
+				</div>
+			</div>
+		</FilterSection>
 	);
 }
 
 function CharFilterButton({ charName }: { charName: string }) {
 	const filter = useContext(FilterContext);
 	const dispatch = useContext(FilterDispatchContext);
-
-	const handleClick = () => {
-		dispatch({
-			type: "handleChar",
-			char: charName,
-		});
-	};
 
 	const state = filter.charFilter[charName].state;
 	return (
@@ -249,7 +202,7 @@ function CharFilterButton({ charName }: { charName: string }) {
 			className={`block h-auto ${
 				state === ItemFilterState.include ? activeFilterClasses : ""
 			}`}
-			onClick={handleClick}
+			onClick={() => dispatch({ type: "handleChar", char: charName })}
 		>
 			<CharFilterButtonChild charName={charName} />
 		</Button>
@@ -272,48 +225,31 @@ function CharFilterButtonChild({ charName }: { charName: string }) {
 			<img
 				alt={displayCharName}
 				src={`/api/assets/avatar/${charName}.png`}
-				className="truncate h-16 object-contain"
+				className="h-16 truncate object-contain"
 			/>
 			{travelerName !== "" ? (
 				<div className="text-center">{travelerName}</div>
-			) : (
-				<></>
-			)}
+			) : null}
 		</div>
 	);
 }
 
 function SortBy() {
-	const [sortIsOpen, setSortIsOpen] = useState(false);
 	const { t: translation } = useTranslation();
 	const t = (s: string) => translation(dynamicKey(s)) as string;
 
 	return (
-		<div className="w-full  overflow-x-hidden no-scrollbar">
-			<Button
-				className="w-full justify-between"
-				onClick={() => setSortIsOpen(!sortIsOpen)}
-			>
-				<div className=" grow">{t("db.sort_by")}</div>
-
-				<div className="">{sortIsOpen ? "-" : "+"}</div>
-			</Button>
-			<Collapsible open={sortIsOpen}>
-				<CollapsibleContent>
-					<div className="flex flex-col mt-2 bg-gray-800 p-1">
-						<div className="flex flex-row gap-4">
-							{sortByParams.map((param) => (
-								<SortByParamButton
-									key={param.sortKey}
-									sortKey={param.sortKey}
-									translation={t(param.translationKey)}
-								/>
-							))}
-						</div>
-					</div>
-				</CollapsibleContent>
-			</Collapsible>
-		</div>
+		<FilterSection label={t("db.sort_by")}>
+			<div className="flex flex-row flex-wrap gap-g-base">
+				{sortByParams.map((param) => (
+					<SortByParamButton
+						key={param.sortKey}
+						sortKey={param.sortKey}
+						translation={t(param.translationKey)}
+					/>
+				))}
+			</div>
+		</FilterSection>
 	);
 }
 
@@ -327,25 +263,18 @@ function SortByParamButton({
 	const filter = useContext(FilterContext);
 	const dispatch = useContext(FilterDispatchContext);
 
-	const handleClick = () => {
-		dispatch({
-			type: "handleSortBy",
-			sortByKey: sortKey,
-		});
-	};
-
 	const active = filter.sortBy.sortKey === sortKey;
 	const direction = active ? filter.sortBy.sortByDirection : null;
 
 	return (
 		<Button
-			onClick={handleClick}
+			onClick={() => dispatch({ type: "handleSortBy", sortByKey: sortKey })}
 			variant={direction === SortByDirection.dsc ? "destructive" : "secondary"}
 			className={
 				direction === SortByDirection.asc ? activeFilterClasses : undefined
 			}
 		>
-			<div className="flex flex-row gap-1 justify-center items-center">
+			<div className="flex flex-row items-center justify-center gap-1">
 				{direction === SortByDirection.asc && <FaArrowUp />}
 				{direction === SortByDirection.dsc && <FaArrowDown />}
 				{translation}

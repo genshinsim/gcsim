@@ -34,12 +34,16 @@ export const initialTagFilter = Object.keys(tagData).reduce((acc, tag) => {
 
 export const sortByParams = [
 	{
+		translationKey: "db.createDate",
+		sortKey: "create_date",
+	},
+	{
 		translationKey: "db.dpsPerTarget",
 		sortKey: "summary.mean_dps_per_target",
 	},
 	{
-		translationKey: "db.createDate",
-		sortKey: "create_date",
+		translationKey: "db.avgSimTime",
+		sortKey: "summary.sim_duration.mean",
 	},
 ];
 export enum SortByDirection {

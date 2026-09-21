@@ -1,6 +1,6 @@
-import { DBCard } from "@gcsim/components";
-import { Button, Spinner, toast } from "@gcsim/primitives";
+import { Spinner } from "@gcsim/primitives";
 import type { db } from "@gcsim/types";
+import { FullCard } from "./EntryCard";
 
 export function ListView({ data }: { data: db.Entry[] }) {
 	if (!data) {
@@ -11,57 +11,11 @@ export function ListView({ data }: { data: db.Entry[] }) {
 		);
 	}
 
-	const copyConfig = (cfg: string) => {
-		if (cfg === "") {
-			toast("Failed", {
-				description: "Copied failed unexpected, no config found.",
-			});
-		}
-		navigator.clipboard.writeText(cfg).then(() => {
-			console.log("copy ok");
-			toast("Copied to clipboard", {
-				description: `Copied config to clipboard`,
-			});
-		});
-	};
-
 	return (
-		<>
-			<div className="flex flex-col gap-2 justify-center align-middle items-center ">
-				{data.map((entry) => {
-					return (
-						<DBCard
-							entry={entry}
-							key={entry._id}
-							className="min-[1300px]:w-[1100px] border-0"
-							footer={
-								<div className="flex flex-row flex-wrap place-content-end mr-2 gap-4">
-									<Button
-										className="bg-emerald-600"
-										onClick={() => {
-											copyConfig(entry.config ?? "");
-										}}
-									>
-										Copy Config
-									</Button>
-									<a
-										href={"https://gcsim.app/db/" + entry._id}
-										target="_blank"
-										rel="noopener noreferrer"
-									>
-										<Button className="bg-blue-600">Open in Viewer</Button>
-									</a>
-								</div>
-							}
-						/>
-					);
-				})}
-			</div>
-			{/* <div className="flex flex-col gap-2">
-        {data.map((entry, index) => {
-          return <DBEntryView dbEntry={entry} key={index} />;
-        })}
-      </div> */}
-		</>
+		<div className="flex flex-col gap-g-base-lg">
+			{data.map((entry) => (
+				<FullCard key={entry._id} entry={entry} />
+			))}
+		</div>
 	);
 }
