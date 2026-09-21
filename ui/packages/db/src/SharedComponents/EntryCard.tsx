@@ -69,44 +69,21 @@ export function Team({ entry }: { entry: db.Entry }) {
 	);
 }
 
-export function DpsStat({
-	entry,
-	size = "num",
-}: {
-	entry: db.Entry;
-	size?: "num" | "num-sm";
-}) {
-	return (
-		<div className="leading-none">
-			<div
-				className={`font-g-mono font-semibold text-g-ink ${
-					size === "num" ? "text-g-num" : "text-g-num-sm"
-				}`}
-			>
-				{dps(entry)}
-			</div>
-			<div className="mt-1 text-g-xs text-g-ink-mute">DPS / target</div>
-		</div>
-	);
-}
-
 export function FullCard({ entry }: { entry: db.Entry }) {
 	return (
 		<div className="flex flex-col gap-g-base rounded-g-lg border border-g-line-soft bg-g-surface p-g-card md:flex-row md:items-stretch">
 			<div className="w-full shrink-0 md:w-[420px]">
 				<Team entry={entry} />
-				<div className="mt-g-base flex flex-wrap gap-g-base-sm">
-					<StatChip label="mode" value={mode(entry)} />
-					<StatChip label="targets" value={String(targetCount(entry))} />
-					<StatChip label="sim" value={simTime(entry)} />
-					<StatChip label="date" value={created(entry)} />
-				</div>
 			</div>
 			<div className="flex min-w-0 flex-1 flex-col gap-g-base">
-				<div className="flex items-start justify-between gap-g-base">
-					<TagBadges entry={entry} />
-					<DpsStat entry={entry} size="num-sm" />
+				<div className="flex flex-wrap items-center gap-g-base-sm">
+					<StatChip label="mode" value={mode(entry)} />
+					<StatChip label="targets" value={String(targetCount(entry))} />
+					<StatChip label="dps/target" value={dps(entry)} />
+					<StatChip label="avg time" value={simTime(entry)} />
+					<StatChip label="date" value={created(entry)} />
 				</div>
+				<TagBadges entry={entry} />
 				<p className="text-g-sm text-g-ink-dim">
 					<span className="font-semibold text-g-accent">{author(entry)}: </span>
 					{entry.description}
