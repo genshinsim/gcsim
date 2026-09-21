@@ -36,13 +36,13 @@ export function TagBadges({ entry }: { entry: db.Entry }) {
 	const tags = tagNames(entry);
 	if (!tags.length) return null;
 	return (
-		<div className="flex flex-wrap gap-g-base-sm">
+		<>
 			{tags.map((t) => (
 				<Badge key={t} className="bg-g-success/15 font-g-mono">
 					<span className="text-g-xs text-g-success">{t}</span>
 				</Badge>
 			))}
-		</div>
+		</>
 	);
 }
 
@@ -74,16 +74,16 @@ export function FullCard({ entry }: { entry: db.Entry }) {
 		<div className="flex flex-col gap-g-base rounded-g-lg border border-g-line-soft bg-g-surface p-g-card md:flex-row md:items-stretch">
 			<div className="w-full shrink-0 md:w-[420px]">
 				<Team entry={entry} />
+				<div className="mt-g-base flex flex-wrap items-center gap-g-base-sm">
+					<StatChip label="mode" value={mode(entry)} />
+					<StatChip label="target count" value={String(targetCount(entry))} />
+					<StatChip label="dps/target" value={dps(entry)} />
+					<StatChip label="avg sim time" value={simTime(entry)} />
+					<StatChip label="created" value={created(entry)} />
+					<TagBadges entry={entry} />
+				</div>
 			</div>
 			<div className="flex min-w-0 flex-1 flex-col gap-g-base">
-				<div className="flex flex-wrap items-center gap-g-base-sm">
-					<StatChip label="mode" value={mode(entry)} />
-					<StatChip label="targets" value={String(targetCount(entry))} />
-					<StatChip label="dps/target" value={dps(entry)} />
-					<StatChip label="avg time" value={simTime(entry)} />
-					<StatChip label="date" value={created(entry)} />
-				</div>
-				<TagBadges entry={entry} />
 				<p className="text-g-sm text-g-ink-dim">
 					<span className="font-semibold text-g-accent">{author(entry)}: </span>
 					{entry.description}

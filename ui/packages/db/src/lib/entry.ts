@@ -43,7 +43,7 @@ export function targetCount(entry: db.Entry): number {
 export function author(entry: db.Entry): string {
 	return entry.submitter === "migrated"
 		? "Unknown author"
-		: (entry.submitter ?? "unknown");
+		: `Submitted by ${entry.submitter ?? "unknown"}`;
 }
 
 export function tagNames(entry: db.Entry): string[] {
