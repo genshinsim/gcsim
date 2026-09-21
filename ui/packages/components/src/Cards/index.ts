@@ -3,7 +3,6 @@ export { AvatarPortrait } from "./AvatarPortait/AvatarPortrait";
 export { CardBadge } from "./CardBadge/CardBadge";
 export { DBCard } from "./DBCard/DBCard";
 export { HistogramGraph } from "./DistributionCard/HistogramGraph";
-export { PreviewCard } from "./PreviewCard";
 export { default as CharacterDPSBarChart } from "./ResultCards/Damage/CharacterDPSBarChart";
 export { default as CharacterDPSCard } from "./ResultCards/Damage/CharacterDPSCard";
 export { default as CumulativeDamageCard } from "./ResultCards/Damage/CumulativeDamageCard";
