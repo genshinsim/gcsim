@@ -28,15 +28,18 @@ function element(token: string) {
 	};
 }
 
-function seriesTriple(i: number) {
-	return { value: q3(i), label: q4(i), highlight: q5(i) };
+function rankScale(present: string[], tier: (i: number) => string) {
+	return scaleOrdinal<string, string>({
+		domain: present,
+		range: present.map((_, i) => tier(i)),
+	});
 }
 
-type ActionColor = {
-	highlight: string;
-	label: string;
-	value: string;
-};
+export const actionColorScale = (present: string[]) => rankScale(present, q3);
+const actionLabelScale = (present: string[]) => rankScale(present, q4);
+const actionHighlightScale = (present: string[]) => rankScale(present, q5);
+
+const rosterIndexOf = (targetKey: string) => Number(targetKey) - 1;
 
 type ElementColor = {
 	label: string;
@@ -52,6 +55,8 @@ export const DataColorsConst = {
 	qualitative3: (i: number) => q3(i),
 	qualitative4: (i: number) => q4(i),
 	qualitative5: (i: number) => q5(i),
+
+	enemy: (rosterIndex: number) => q3(rosterIndex),
 };
 
 export function useDataColors() {
@@ -68,24 +73,7 @@ export function useDataColors() {
 		"actions.walk",
 		"actions.swap",
 	] as const;
-	const actions: Map<string, ActionColor> = new Map(
-		actionKeys.map((key, i) => [i18next.t(key), seriesTriple(i)]),
-	);
-
-	const actionColor = scaleOrdinal<string, string>({
-		domain: Array.from(actions.keys()),
-		range: Array.from(actions.values()).map((e) => e.value),
-	});
-
-	const actionLabelColor = scaleOrdinal<string, string>({
-		domain: Array.from(actions.keys()),
-		range: Array.from(actions.values()).map((e) => e.label),
-	});
-
-	const actionHighlightColor = scaleOrdinal<string, string>({
-		domain: Array.from(actions.keys()),
-		range: Array.from(actions.values()).map((e) => e.highlight),
-	});
+	const actionLabels = actionKeys.map((key) => i18next.t(key));
 
 	const elements: Map<string, ElementColor> = new Map([
 		[i18next.t("elements.electro"), element("electro")],
@@ -153,10 +141,10 @@ export function useDataColors() {
 			reactableModifierLabel: reactableModifierLabelColor,
 			reactableModifierHighlight: reactableModifierHighlightColor,
 
-			actionKeys: [...actions.keys()],
-			action: actionColor,
-			actionLabel: actionLabelColor,
-			actionHighlight: actionHighlightColor,
+			actionKeys: actionLabels,
+			action: actionColorScale,
+			actionLabel: actionLabelScale,
+			actionHighlight: actionHighlightScale,
 
 			element: elementColor,
 			elementLabel: elementLabelColor,
@@ -165,8 +153,8 @@ export function useDataColors() {
 			character: (i: number) => q3(i),
 			characterLabel: (i: number) => q4(i),
 
-			target: (k: string) => q3(Number(k) - 1),
-			targetLabel: (k: string) => q4(Number(k) - 1),
+			target: (k: string) => DataColorsConst.enemy(rosterIndexOf(k)),
+			targetLabel: (k: string) => q4(rosterIndexOf(k)),
 		},
 	};
 }

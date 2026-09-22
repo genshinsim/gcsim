@@ -21,7 +21,7 @@ type Props = {
 };
 
 export const EnemyCard = (props: Props) => {
-	const bgColor = DataColorsConst.qualitative3(props.id);
+	const bgColor = DataColorsConst.enemy(props.id);
 
 	return (
 		<div className="flex min-w-fit">

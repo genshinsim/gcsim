@@ -1,6 +1,5 @@
 import type { model } from "@gcsim/types";
 import { LegendOrdinal } from "@visx/legend";
-import { scaleOrdinal } from "@visx/scale";
 import { memo, useMemo } from "react";
 import {
 	FloatStatTooltipContent,
@@ -27,10 +26,7 @@ export const BarChartLegend = ({
 		return null;
 	}
 
-	const scale = scaleOrdinal({
-		domain: actionNames,
-		range: actionNames.map((v) => DataColors.action(v)),
-	});
+	const scale = DataColors.action(actionNames);
 
 	return (
 		<LegendOrdinal
@@ -50,6 +46,9 @@ const Graph = ({ height, width, actions, names, actionNames }: Props) => {
 		return <NoData />;
 	}
 
+	const actionColor = DataColors.action(actionNames);
+	const actionLabelColor = DataColors.actionLabel(actionNames);
+
 	return (
 		<HorizontalBarStack<ActionData, string>
 			width={width}
@@ -61,13 +60,13 @@ const Graph = ({ height, width, actions, names, actionNames }: Props) => {
 			keys={actionNames}
 			value={(d, k) => (k in d.data ? (d.data[k].mean ?? 0) : 0)}
 			stat={(d, k) => d.data[k]}
-			barColor={DataColors.action}
-			hoverColor={DataColors.actionLabel}
+			barColor={actionColor}
+			hoverColor={actionLabelColor}
 			tooltipContent={(d, k) => (
 				<FloatStatTooltipContent
 					title={`${d.name}: ${k}`}
 					data={d.data[k]}
-					color={DataColors.actionLabel(k)}
+					color={actionLabelColor(k)}
 					percent={(d.data[k].mean ?? 0) / d.total}
 				/>
 			)}
