@@ -1,0 +1,26 @@
+{
+	"char_index": 0,
+	"ended": 0,
+	"event": "damage",
+	"frame": 372,
+	"msg": "Ganyu frostflake-arrow-bloom dealt 43120 damage to target-1",
+	"logs": {
+		"abil": "Frostflake Arrow Bloom",
+		"amount": 43120.42,
+		"target": 1,
+		"crit": true,
+		"aura": "cryo",
+		"snapshot": {
+			"element": "cryo",
+			"stats": {
+				"atk": 2148.5,
+				"cr": 0.734,
+				"cd": 2.412,
+				"cryo%": 0.615,
+				"em": 0
+			},
+			"mods": ["ganyu-a4", "blizzard-strayer-4pc", "amos-bow-refine1"]
+		},
+		"reaction": null
+	}
+}

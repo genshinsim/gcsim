@@ -1,3 +1,4 @@
+import { SampleEventDetails } from "@gcsim/components";
 import {
 	Dialog,
 	DialogContent,
@@ -39,11 +40,11 @@ export function SampleItemView({
 			</button>
 			<div>{item.target}</div>
 			<Dialog open={open} onOpenChange={setOpen}>
-				<DialogContent className="max-h-[90vh] overflow-y-auto">
+				<DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-3xl">
 					<DialogHeader>
 						<DialogTitle>{item.msg}</DialogTitle>
 					</DialogHeader>
-					<pre className="m-2 whitespace-pre-wrap">{item.raw}</pre>
+					<SampleEventDetails data={item.data} raw={item.raw} />
 				</DialogContent>
 			</Dialog>
 		</div>

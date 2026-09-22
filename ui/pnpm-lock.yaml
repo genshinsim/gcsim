@@ -170,6 +170,9 @@ importers:
       react-i18next:
         specifier: ^17.0.14
         version: 17.0.14(i18next@26.4.2(typescript@7.0.2))(react-dom@19.3.0(react@19.3.0))(react@19.3.0)(typescript@7.0.2)
+      react-json-view-lite:
+        specifier: ^2.5.0
+        version: 2.5.0(react@19.3.0)
       react-markdown:
         specifier: ^9.0.1
         version: 9.1.0(@types/react@19.3.0)(react@19.3.0)
