@@ -1,6 +1,5 @@
-export { AvatarCard } from "./AvatarCard/AvatarCard";
-export { AvatarPortrait } from "./AvatarPortait/AvatarPortrait";
 export { CardBadge } from "./CardBadge/CardBadge";
+export { CharacterTile } from "./CharacterTile/CharacterTile";
 export { DBCard } from "./DBCard/DBCard";
 export { HistogramGraph } from "./DistributionCard/HistogramGraph";
 export { default as CharacterDPSBarChart } from "./ResultCards/Damage/CharacterDPSBarChart";
@@ -24,3 +23,4 @@ export {
 	SatoriPreviewCard,
 	type SatoriPreviewCardProps,
 } from "./SatoriPreviewCard/SatoriPreviewCard";
+export { TeamTile } from "./TeamTile/TeamTile";

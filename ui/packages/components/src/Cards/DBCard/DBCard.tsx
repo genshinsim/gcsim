@@ -3,8 +3,8 @@ import { Card, CardContent, CardFooter } from "@gcsim/primitives";
 import type { db, model } from "@gcsim/types";
 import type { JSX } from "react";
 import { cn } from "../../lib/utils";
-import { AvatarCard } from "../AvatarCard/AvatarCard";
 import { CardBadge } from "../CardBadge/CardBadge";
+import { TeamTile } from "../TeamTile/TeamTile";
 
 type DBCardProps = {
 	entry: db.Entry;
@@ -56,7 +56,7 @@ export const DBCard = ({
 			<CardContent className="p-3 flex flex-col gap-y-2">
 				<div className="flex flex-row flex-wrap gap-2 place-content-center">
 					<Card className="flex flex-col bg-transparent border-0 pt-1 min-[420px]:basis-0">
-						<AvatarCard chars={team} className="min-[420px]:w-[420px]" />
+						<TeamTile chars={team} className="min-[420px]:w-[420px]" />
 						<div className="flex flex-row flex-wrap gap-1 p-2 max-w-full justify-center">
 							<CardBadge
 								title="mode"

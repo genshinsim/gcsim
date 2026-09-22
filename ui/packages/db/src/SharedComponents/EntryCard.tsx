@@ -1,4 +1,4 @@
-import { AvatarCard } from "@gcsim/components";
+import { TeamTile } from "@gcsim/components";
 import { Badge, Button, toast } from "@gcsim/primitives";
 import type { db } from "@gcsim/types";
 import { FaCopy, FaExternalLinkAlt } from "react-icons/fa";
@@ -64,7 +64,7 @@ export function CardActions({ entry }: { entry: db.Entry }) {
 export function Team({ entry }: { entry: db.Entry }) {
 	return (
 		<div className="w-full max-w-[420px]">
-			<AvatarCard chars={team(entry)} className="w-full" />
+			<TeamTile chars={team(entry)} className="w-full" />
 		</div>
 	);
 }

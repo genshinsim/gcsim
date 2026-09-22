@@ -2,7 +2,7 @@
 // BOTH the layered Portrait render (Portraits.tsx, browser/Storybook) and the
 // Photon compositor (portraitCompositor.ts, edge Worker) — the two must place
 // every layer identically or the composited card drifts from the live preview.
-// Values mirror the live AvatarPortrait.
+// Values mirror the live CharacterTile.
 
 export const PORTRAIT_W = 127;
 export const PORTRAIT_H = 106;

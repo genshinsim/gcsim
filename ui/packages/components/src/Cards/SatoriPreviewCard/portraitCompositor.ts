@@ -1,6 +1,6 @@
 // Photon (WASM) portrait compositor for the Satori OG preview.
 //
-// Satori cannot emit the SVG filters the live AvatarPortrait uses (a hard white
+// Satori cannot emit the SVG filters the live CharacterTile uses (a hard white
 // `feMorphology` dilate outline) nor honour `preserveAspectRatio` slicing, so
 // the small weapon/artifact icons rendered straight through Satori wash out and
 // two-set builds show two identical centre crops. To restore the old look we
@@ -154,7 +154,7 @@ function withWhiteOutline(img: PhotonImage, r: number): PhotonImage {
 }
 
 // Build the artifact gear icon at composited resolution, then outline once over
-// the combined silhouette. Matches AvatarPortrait/ArtifactsIcon:
+// the combined silhouette. Matches CharacterTile/ArtifactsIcon:
 //   - two sets: left half of A joined to the right half of B (one clean outline)
 //   - lone 2pc set: left-half slice
 //   - single non-2pc set: full square flower

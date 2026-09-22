@@ -5,7 +5,7 @@
 // Each image is the live PreviewCard's portrait background flattened: the
 // element's `bg-gradient-to-r from-gray-700 to-<accent>` gradient with the
 // shared starfield overlay (misc/overlay.jpg) composited on top using
-// mix-blend-mode: luminosity — the exact CSS the live AvatarPortrait uses.
+// mix-blend-mode: luminosity — the exact CSS the live CharacterTile uses.
 //
 // Embedded as base64 data URIs (not remote URLs) so the card is self-contained:
 // it renders identically under Storybook, a bare `satori()` call, and an edge
