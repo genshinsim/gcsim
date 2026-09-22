@@ -338,6 +338,24 @@ var (
 		0.81,
 		0.855,
 	}
+	// skill: AdeptusArtHeraldOfFrost - Herald of Frost Coordinated Attack DMG: {8}
+	skillCoord = []float64{
+		0.24,
+		0.258,
+		0.276,
+		0.3,
+		0.318,
+		0.336,
+		0.36,
+		0.384,
+		0.408,
+		0.432,
+		0.456,
+		0.48,
+		0.51,
+		0.54,
+		0.57,
+	}
 	// skill: AdeptusArtHeraldOfFrost - Skill DMG: {7}
 	skillInitialDmg = []float64{
 		0.96,
@@ -409,5 +427,23 @@ var (
 		6.052,
 		6.408,
 		6.764,
+	}
+	// burst: AdeptusArtPreserverOfFortune - Stellar-Conduct DMG: {6}
+	burstSSC = []float64{
+		2.973336,
+		3.196336,
+		3.419336,
+		3.71667,
+		3.93967,
+		4.16267,
+		4.460004,
+		4.757338,
+		5.054671,
+		5.352005,
+		5.649338,
+		5.946672,
+		6.318339,
+		6.690006,
+		7.061673,
 	}
 )

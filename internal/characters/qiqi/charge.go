@@ -42,16 +42,13 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	for i, mult := range charge {
 		ai.Mult = mult[c.TalentLvlAttack()]
 		ai.Abil = fmt.Sprintf("Charge %v", i)
-		c.Core.QueueAttack(
-			ai,
-			combat.NewCircleHitOnTarget(
-				c.Core.Combat.Player(),
-				info.Point{Y: chargeOffsets[i]},
-				chargeRadius[i],
-			),
-			chargeHitmarks[i],
-			chargeHitmarks[i],
+		ap := combat.NewCircleHitOnTarget(
+			c.Core.Combat.Player(),
+			info.Point{Y: chargeOffsets[i]},
+			chargeRadius[i],
 		)
+		delay := chargeHitmarks[i]
+		c.Core.QueueAttack(ai, ap, delay, delay, c.skillHealCB)
 	}
 
 	return action.Info{

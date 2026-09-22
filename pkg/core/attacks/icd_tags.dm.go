@@ -68,6 +68,7 @@ const (
 	ICDTagOdetteDanceDuo
 	ICDTagOroronElmentalBurst
 	ICDTagOverloadDamage
+	ICDTagQiqiElementalArt
 	ICDTagShatter
 	ICDTagSkirkCons
 	ICDTagSuperconductDamage
