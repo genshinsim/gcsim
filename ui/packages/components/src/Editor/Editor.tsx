@@ -17,6 +17,7 @@ export const Editor = ({
 	parsedTeam,
 	run,
 	settings,
+	teamCharacters,
 	showTeam = false,
 	showTools = false,
 	showThemeSelector = false,
@@ -75,7 +76,13 @@ export const Editor = ({
 				fontSize={fontSize}
 			/>
 			{showTeam ? (
-				<TeamView parsedTeam={parsedTeam} isValid={isValid} error={error} />
+				<TeamView
+					parsedTeam={parsedTeam}
+					error={error}
+					config={config}
+					setConfig={setConfig}
+					characters={teamCharacters}
+				/>
 			) : null}
 			{showTools ? <HelperTools /> : null}
 		</div>
