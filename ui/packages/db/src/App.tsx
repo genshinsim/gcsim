@@ -1,9 +1,18 @@
 import { Home } from "Pages/Home";
-import { Route, Switch } from "wouter";
+import { useEffect } from "react";
+import { Route, Switch, useLocation } from "wouter";
 import { Database } from "./Pages/Database";
 import Layout from "./Sectioning/layout";
-// import { Dash } from "@gcsim/ui/src/Pages";
 export default function App() {
+	const [location] = useLocation();
+
+	// wouter's client-side nav preserves window scroll, so the listing can mount at the bottom and
+	// make react-infinite-scroll fetch pages forever. Reset scroll on every route change.
+	// biome-ignore lint/correctness/useExhaustiveDependencies: location is the trigger, not a value used in the effect body
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, [location]);
+
 	return (
 		<Layout>
 			<Switch>
@@ -13,11 +22,6 @@ export default function App() {
 				<Route path="/database">
 					<Database />
 				</Route>
-				{/* <Route path="/tag/:tag">{({ tag }) => <TagDatabase tag={tag} />}</Route> */}
-
-				{/* <Route path="/management">
-          <Management />
-        </Route> */}
 			</Switch>
 		</Layout>
 	);
