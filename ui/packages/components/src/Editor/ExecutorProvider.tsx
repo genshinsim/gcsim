@@ -1,4 +1,8 @@
-import type { Executor, ExecutorSupplier } from "@gcsim/types";
+import type {
+	Executor,
+	ExecutorSupplier,
+	SimResults,
+} from "@gcsim/types";
 import React from "react";
 
 const READY_POLL_MS = 250;
@@ -8,18 +12,33 @@ export interface ExecutorContextValue {
 	exec: ExecutorSupplier<Executor>;
 	isReady: boolean;
 	running: boolean;
+	run: (config: string) => void;
 }
 
 const ExecutorContext = React.createContext<ExecutorContextValue | null>(null);
 
 export interface ExecutorProviderProps {
 	exec: ExecutorSupplier<Executor>;
+	onResult?: (result: SimResults, hash: string) => void;
+	navigateOnRun?: () => void;
 	children: React.ReactNode;
 }
 
-export function ExecutorProvider({ exec, children }: ExecutorProviderProps) {
+const noop = () => {};
+
+export function ExecutorProvider({
+	exec,
+	onResult,
+	navigateOnRun,
+	children,
+}: ExecutorProviderProps) {
 	const [isReady, setReady] = React.useState(false);
 	const [running, setRunning] = React.useState(false);
+
+	const onResultRef = React.useRef(onResult);
+	onResultRef.current = onResult;
+	const navigateOnRunRef = React.useRef(navigateOnRun);
+	navigateOnRunRef.current = navigateOnRun;
 
 	React.useEffect(() => {
 		let active = true;
@@ -47,9 +66,23 @@ export function ExecutorProvider({ exec, children }: ExecutorProviderProps) {
 		};
 	}, [exec]);
 
+	const run = React.useCallback(
+		(config: string) => {
+			const executor = exec();
+			executor.validate(config).then((result) => {
+				if ((result.errors && result.errors.length > 0) || executor.running()) {
+					return;
+				}
+				executor.run(config, onResultRef.current ?? noop);
+				navigateOnRunRef.current?.();
+			}, noop);
+		},
+		[exec],
+	);
+
 	const value = React.useMemo<ExecutorContextValue>(
-		() => ({ exec, isReady, running }),
-		[exec, isReady, running],
+		() => ({ exec, isReady, running, run }),
+		[exec, isReady, running, run],
 	);
 
 	return (
