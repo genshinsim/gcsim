@@ -1,3 +1,5 @@
+import { CharacterCard } from "@gcsim/components";
+import { dynamicKey } from "@gcsim/localization";
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -16,7 +18,6 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { CopyToClipboard, SendToSimulator } from "../../Components/Buttons";
 import { useSendToSimulator } from "../../Components/Buttons/useSendToSimulator";
-import { CharacterCard } from "../../Components/Cards";
 import { characterCardsClassNames } from "../Viewer/Components/Overview/TeamHeader";
 import {
 	DefaultSampleOptions,
@@ -84,6 +85,17 @@ export default ({ sample, error, retry }: Props) => {
 						stats={[]}
 						snapshot={[]}
 						statsRows={0}
+						name={t(dynamicKey(`game:character_names.${c.name}`))}
+						constellationLabel={`${t("character.c_pre")}${c.cons ?? 0}${t("character.c_post")}`}
+						levelLabel={t("character.lvl")}
+						talentsLabel={t("character.talents")}
+						artifactStatsLabel={t("character.artifact_stats")}
+						totalStatsLabel={t("character.total_stats")}
+						weaponName={
+							c.weapon
+								? t(dynamicKey(`game:weapon_names.${c.weapon.name}`))
+								: ""
+						}
 						className={cardClass}
 					/>
 				))}
