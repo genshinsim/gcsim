@@ -1,8 +1,9 @@
+import { CharacterCard } from "@gcsim/components";
+import { dynamicKey } from "@gcsim/localization";
 import type { Character } from "@gcsim/types";
 import classNames from "classnames";
 import React, { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { CharacterCard } from "../../../../Components/Cards";
 import { ConsolidateCharStats } from "../../../Simulator/Components/character";
 
 type Props = {
@@ -71,6 +72,15 @@ const CharacterCards = ({ characters }: Props) => {
 					}
 					statsRows={statBlock.maxRows ? statBlock.maxRows : 0}
 					className={cardClass}
+					name={t(dynamicKey(`game:character_names.${c.name}`))}
+					constellationLabel={
+						t("character.c_pre") + (c.cons ?? 0) + t("character.c_post")
+					}
+					levelLabel={t("character.lvl")}
+					talentsLabel={t("character.talents")}
+					artifactStatsLabel={t("character.artifact_stats")}
+					totalStatsLabel={t("character.total_stats")}
+					weaponName={t(dynamicKey(`game:weapon_names.${c.weapon.name}`))}
 				/>
 			))}
 		</>
@@ -108,5 +118,12 @@ export const FakeCard = ({ className }: { className: string }) => (
 		statsRows={0}
 		isSkeleton={true}
 		className={className}
+		name=""
+		constellationLabel=""
+		levelLabel=""
+		talentsLabel=""
+		artifactStatsLabel=""
+		totalStatsLabel=""
+		weaponName=""
 	/>
 );
