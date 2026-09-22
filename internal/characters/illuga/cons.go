@@ -28,6 +28,10 @@ func (c *char) c1Init() {
 	}
 
 	energyGain := func(args ...any) {
+		if c.Index() != c.Core.Player.Active() {
+			return
+		}
+
 		if c.StatusIsActive(c1ICDKey) {
 			return
 		}

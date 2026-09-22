@@ -53,8 +53,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Durability: 25,
 	}
 	c.Core.Tasks.Add(func() {
-		ai.FlatDmg += skill_tap_em[c.TalentLvlSkill()] * c.Stat(attributes.EM)
-		ai.FlatDmg += skill_tap_def[c.TalentLvlSkill()] * c.TotalDef(false)
+		ai.FlatDmg += skillTapEm[c.TalentLvlSkill()] * c.Stat(attributes.EM)
+		ai.FlatDmg += skillTapDef[c.TalentLvlSkill()] * c.TotalDef(false)
 	}, skillTapHitmark)
 
 	ap := combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.3}, 2, 12) // measured in science lab, miliastra stage
@@ -92,8 +92,8 @@ func (c *char) skillHold() (action.Info, error) {
 		Durability: 25,
 	}
 	c.Core.Tasks.Add(func() {
-		ai.FlatDmg += skill_hold_em[c.TalentLvlSkill()] * c.Stat(attributes.EM)
-		ai.FlatDmg += skill_hold_def[c.TalentLvlSkill()] * c.TotalDef(false)
+		ai.FlatDmg += skillHoldEm[c.TalentLvlSkill()] * c.Stat(attributes.EM)
+		ai.FlatDmg += skillHoldDef[c.TalentLvlSkill()] * c.TotalDef(false)
 	}, skillHoldHitmark)
 
 	ap := combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.3}, 2, 35) // measured in science lab, miliastra stage

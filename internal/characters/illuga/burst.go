@@ -40,8 +40,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Durability: 25,
 	}
 	c.Core.Tasks.Add(func() {
-		ai.FlatDmg += burst_em[c.TalentLvlBurst()] * c.Stat(attributes.EM)
-		ai.FlatDmg += burst_def[c.TalentLvlBurst()] * c.TotalDef(false)
+		ai.FlatDmg += burstEm[c.TalentLvlBurst()] * c.Stat(attributes.EM)
+		ai.FlatDmg += burstDef[c.TalentLvlBurst()] * c.TotalDef(false)
 	}, burstHitmark)
 
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6.5)
@@ -123,9 +123,9 @@ func (c *char) burstBuffInit() {
 			attacks.AttackTagNormal,
 			attacks.AttackTagExtra,
 			attacks.AttackTagPlunge:
-			amt = (burst_buff_geo[c.TalentLvlBurst()] + c.a4GeoBonus()) * c.Stat(attributes.EM)
+			amt = (burstBuffGeo[c.TalentLvlBurst()] + c.a4GeoBonus()) * c.Stat(attributes.EM)
 		case attacks.AttackTagDirectLunarCrystallize:
-			amt = (burst_buff_lcr[c.TalentLvlBurst()] + c.a4LcrBonus()) * c.Stat(attributes.EM)
+			amt = (burstBuffLcr[c.TalentLvlBurst()] + c.a4LcrBonus()) * c.Stat(attributes.EM)
 		default:
 			return
 		}

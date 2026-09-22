@@ -11,18 +11,18 @@ talents:
       - attack(4-Hit DMG)
   - charge: attack(Charged Attack DMG)
   - collision: attack(Plunge DMG)
-  - plunge_low: attack(Low/High Plunge DMG) # {}/{}
-  - plunge_high: attack(Low/High Plunge DMG|1) # {}/{}
+  - plungeLow: attack(Low/High Plunge DMG) # {}/{}
+  - plungeHigh: attack(Low/High Plunge DMG|1) # {}/{}
 
-  - skill_tap_em: skill(Press DMG) # {} Elemental Mastery+{} DEF
-  - skill_tap_def: skill(Press DMG|1) # {} Elemental Mastery+{} DEF
-  - skill_hold_em: skill(Hold DMG) # {} Elemental Mastery+{} DEF
-  - skill_hold_def: skill(Hold DMG|1) # {} Elemental Mastery+{} DEF
+  - skillTapEm: skill(Press DMG) # {} Elemental Mastery+{} DEF
+  - skillTapDef: skill(Press DMG|1) # {} Elemental Mastery+{} DEF
+  - skillHoldEm: skill(Hold DMG) # {} Elemental Mastery+{} DEF
+  - skillHoldDef: skill(Hold DMG|1) # {} Elemental Mastery+{} DEF
 
-  - burst_em: burst(Skill DMG) # {} Elemental Mastery+{} DEF
-  - burst_def: burst(Skill DMG|1) # {} Elemental Mastery+{} DEF
-  - burst_buff_geo: burst(Geo DMG Bonus)
-  - burst_buff_lcr: burst(Lunar-Crystallize Reaction DMG Bonus)
+  - burstEm: burst(Skill DMG) # {} Elemental Mastery+{} DEF
+  - burstDef: burst(Skill DMG|1) # {} Elemental Mastery+{} DEF
+  - burstBuffGeo: burst(Geo DMG Bonus)
+  - burstBuffLcr: burst(Lunar-Crystallize Reaction DMG Bonus)
 
 docs:
   frames:

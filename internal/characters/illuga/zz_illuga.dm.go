@@ -158,7 +158,7 @@ var (
 		1.70982,
 	}
 	// attack: OathkeepersSpear - Low/High Plunge DMG: {8}/{9}
-	plunge_low = []float64{
+	plungeLow = []float64{
 		1.278377,
 		1.382431,
 		1.486485,
@@ -176,7 +176,7 @@ var (
 		3.418915,
 	}
 	// attack: OathkeepersSpear - Low/High Plunge DMG: {8}/{9}
-	plunge_high = []float64{
+	plungeHigh = []float64{
 		1.596762,
 		1.726731,
 		1.8567,
@@ -194,7 +194,7 @@ var (
 		4.27041,
 	}
 	// skill: DawnbearingSongbird - Press DMG: {0} Elemental Mastery+{1} DEF
-	skill_tap_em = []float64{
+	skillTapEm = []float64{
 		4.8256,
 		5.18752,
 		5.54944,
@@ -212,7 +212,7 @@ var (
 		11.4608,
 	}
 	// skill: DawnbearingSongbird - Press DMG: {0} Elemental Mastery+{1} DEF
-	skill_tap_def = []float64{
+	skillTapDef = []float64{
 		2.4128,
 		2.59376,
 		2.77472,
@@ -230,7 +230,7 @@ var (
 		5.7304,
 	}
 	// skill: DawnbearingSongbird - Hold DMG: {2} Elemental Mastery+{3} DEF
-	skill_hold_em = []float64{
+	skillHoldEm = []float64{
 		6.032,
 		6.4844,
 		6.9368,
@@ -248,7 +248,7 @@ var (
 		14.326,
 	}
 	// skill: DawnbearingSongbird - Hold DMG: {2} Elemental Mastery+{3} DEF
-	skill_hold_def = []float64{
+	skillHoldDef = []float64{
 		3.016,
 		3.2422,
 		3.4684,
@@ -266,7 +266,7 @@ var (
 		7.163,
 	}
 	// burst: ShadowlessReflection - Skill DMG: {0} Elemental Mastery+{1} DEF
-	burst_em = []float64{
+	burstEm = []float64{
 		8.272,
 		8.8924,
 		9.5128,
@@ -284,7 +284,7 @@ var (
 		19.646,
 	}
 	// burst: ShadowlessReflection - Skill DMG: {0} Elemental Mastery+{1} DEF
-	burst_def = []float64{
+	burstDef = []float64{
 		4.136,
 		4.4462,
 		4.7564,
@@ -302,7 +302,7 @@ var (
 		9.823,
 	}
 	// burst: ShadowlessReflection - Geo DMG Bonus: {2} Elemental Mastery
-	burst_buff_geo = []float64{
+	burstBuffGeo = []float64{
 		0.336,
 		0.3612,
 		0.3864,
@@ -320,7 +320,7 @@ var (
 		0.798,
 	}
 	// burst: ShadowlessReflection - Lunar-Crystallize Reaction DMG Bonus: {3} Elemental Mastery
-	burst_buff_lcr = []float64{
+	burstBuffLcr = []float64{
 		2.2592,
 		2.42864,
 		2.59808,
