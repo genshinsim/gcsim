@@ -1,8 +1,9 @@
+import { CharacterCard } from "@gcsim/components";
+import { dynamicKey } from "@gcsim/localization";
 import type { Character } from "@gcsim/types";
 import React, { type JSX } from "react";
 import { useTranslation } from "react-i18next";
 import { LuPlus } from "react-icons/lu";
-import { CharacterCard } from "../../../../Components/Cards";
 import { ConsolidateCharStats } from "../character";
 
 type Props = {
@@ -11,14 +12,12 @@ type Props = {
 	handleRemove: (index: number) => () => void;
 };
 
-export const Builder = (props: Props) => {
+export const TeamCard = (props: Props) => {
 	const { t } = useTranslation();
 	const [showDetails, setShowDetails] = React.useState(false);
 	const [showSnapshot, setShowSnapshot] = React.useState(false);
 	const teamStats = ConsolidateCharStats(t, props.team);
 
-	// console.log(team);
-	// console.log(teamStats);
 	const handleToggleDetail = () => {
 		setShowDetails(!showDetails);
 	};
@@ -34,6 +33,13 @@ export const Builder = (props: Props) => {
 				stats={teamStats.stats[c.name]}
 				snapshot={teamStats.snapshot[c.name]}
 				statsRows={teamStats.maxRows}
+				name={t(dynamicKey(`game:character_names.${c.name}`))}
+				constellationLabel={`${t("character.c_pre")}${c.cons ? c.cons : 0}${t("character.c_post")}`}
+				levelLabel={t("character.lvl")}
+				talentsLabel={t("character.talents")}
+				artifactStatsLabel={t("character.artifact_stats")}
+				totalStatsLabel={t("character.total_stats")}
+				weaponName={t(dynamicKey(`game:weapon_names.${c.weapon.name}`))}
 				handleToggleDetail={handleToggleDetail}
 				handleToggleSnapshot={handleToggleSnapshot}
 				showDetails={showDetails}
@@ -64,6 +70,5 @@ export const Builder = (props: Props) => {
 		cards.push(blankCard);
 	}
 
-	//TODO: add a button to toggle showing final stats
 	return <div className="flex flex-row flex-wrap pl-2">{cards}</div>;
 };

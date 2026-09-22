@@ -11,7 +11,7 @@ import {
 	useAppDispatch,
 	useAppSelector,
 } from "../../Stores/store";
-import { Builder } from "./Components/TeamBuilder/Builder";
+import { TeamCard } from "./Components/TeamBuilder/TeamCard";
 
 type CharSource = "user" | "default";
 
@@ -123,7 +123,7 @@ export function Team() {
 
 	return (
 		<div className="flex flex-col">
-			<Builder
+			<TeamCard
 				team={team}
 				handleAdd={() => setOpen(true)}
 				handleRemove={handleRemove}
