@@ -242,7 +242,7 @@ function CharacterPicker() {
 					onChange={(e) => setCharSearch(e.target.value)}
 				/>
 			</div>
-			<div className="grid min-h-0 flex-1 grid-cols-4 gap-g-base-sm overflow-y-auto overflow-x-hidden no-scrollbar">
+			<div className="grid min-h-0 flex-1 grid-cols-4 content-start gap-g-base-sm overflow-y-auto overflow-x-hidden no-scrollbar">
 				{visible.map((charName) => (
 					<CharCard
 						key={charName}
