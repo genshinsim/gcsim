@@ -28,4 +28,9 @@ export {
 	SatoriPreviewCard,
 	type SatoriPreviewCardProps,
 } from "./SatoriPreviewCard/SatoriPreviewCard";
+export {
+	ConsolidateCharStats,
+	StatToIndexMap,
+} from "./TeamCard/charStats";
+export { TeamCard } from "./TeamCard/TeamCard";
 export { TeamTile } from "./TeamTile/TeamTile";

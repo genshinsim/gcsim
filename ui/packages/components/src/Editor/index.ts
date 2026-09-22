@@ -9,7 +9,7 @@ export { toParsedTeam } from "./parsedTeam";
 export type {
 	EditorProps,
 	ImportedCharacterOption,
-	TeamViewCharacterSource,
+	TeamComposerCharacterSource,
 	Theme,
 } from "./types";
 export { useValidation, type Validation } from "./useValidation";

@@ -10,18 +10,30 @@ vi.mock("react-i18next", () => ({
 }));
 
 vi.mock("../Cards", () => ({
-	CharacterCard: ({
-		char,
-		handleDelete,
+	TeamCard: ({
+		team,
+		handleRemove,
+		handleAdd,
 	}: {
-		char: model.Character;
-		handleDelete: () => void;
+		team: model.Character[];
+		handleRemove: (index: number) => () => void;
+		handleAdd?: () => void;
 	}) => (
-		<div data-testid="card">
-			<span>{char.name}</span>
-			<button type="button" onClick={handleDelete}>
-				delete-{char.name}
-			</button>
+		<div data-testid="team-card">
+			{team.map((c, index) => (
+				<button
+					key={c.name ?? index}
+					type="button"
+					onClick={handleRemove(index)}
+				>
+					delete-{c.name}
+				</button>
+			))}
+			{handleAdd ? (
+				<button type="button" onClick={handleAdd}>
+					add
+				</button>
+			) : null}
 		</div>
 	),
 }));
@@ -57,7 +69,7 @@ vi.mock("../common/gcsim", async (orig) => {
 	};
 });
 
-import { TeamView } from "./TeamView";
+import { TeamComposer } from "./TeamComposer";
 
 function char(name: string): model.Character {
 	return {
@@ -83,22 +95,23 @@ beforeEach(() => {
 	vi.clearAllMocks();
 });
 
-describe("TeamView", () => {
-	it("renders a card per parsed team character", () => {
+describe("TeamComposer", () => {
+	it("renders the team through TeamCard", () => {
 		render(
-			<TeamView
+			<TeamComposer
 				parsedTeam={[char("amber"), char("bennett")]}
 				error={null}
 				config=""
 				setConfig={() => {}}
 			/>,
 		);
-		expect(screen.getAllByTestId("card")).toHaveLength(2);
+		expect(screen.getByText("delete-amber")).toBeTruthy();
+		expect(screen.getByText("delete-bennett")).toBeTruthy();
 	});
 
 	it("surfaces the validation error through a destructive alert", () => {
 		render(
-			<TeamView
+			<TeamComposer
 				parsedTeam={[]}
 				error="bad action list"
 				config=""
@@ -111,7 +124,7 @@ describe("TeamView", () => {
 	it("removes a card by rewriting the config", async () => {
 		const setConfig = vi.fn();
 		render(
-			<TeamView
+			<TeamComposer
 				parsedTeam={[char("amber"), char("bennett")]}
 				error={null}
 				config="amber char lvl=1/1 cons=0 talent=1,1,1;\ntarget lvl=100;"
@@ -129,7 +142,7 @@ describe("TeamView", () => {
 	it("adds a character through the picker by rewriting the config", async () => {
 		const setConfig = vi.fn();
 		render(
-			<TeamView
+			<TeamComposer
 				parsedTeam={[char("amber")]}
 				error={null}
 				config=""
@@ -137,9 +150,7 @@ describe("TeamView", () => {
 				characters={source}
 			/>,
 		);
-		await userEvent.click(
-			screen.getByRole("button", { name: "db.characters" }),
-		);
+		await userEvent.click(screen.getByRole("button", { name: "add" }));
 		await userEvent.click(screen.getByText("default:klee"));
 		const written = setConfig.mock.calls[0][0] as string;
 		expect(written).toContain("amber char");
@@ -148,13 +159,13 @@ describe("TeamView", () => {
 
 	it("hides the add affordance when no character source is injected", () => {
 		render(
-			<TeamView
+			<TeamComposer
 				parsedTeam={[char("amber")]}
 				error={null}
 				config=""
 				setConfig={() => {}}
 			/>,
 		);
-		expect(screen.queryByRole("button", { name: "db.characters" })).toBeNull();
+		expect(screen.queryByRole("button", { name: "add" })).toBeNull();
 	});
 });

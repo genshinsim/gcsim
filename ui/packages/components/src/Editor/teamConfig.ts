@@ -1,6 +1,6 @@
 import type { model } from "@gcsim/types";
 
-// TEMPORARY: backs the TeamView add/remove crutch; delete when TeamView is view-only.
+// TEMPORARY: backs the TeamComposer add/remove crutch; delete when the team becomes view-only.
 
 const statKeys = [
 	"n/a",

@@ -1,6 +1,6 @@
 import type { model } from "@gcsim/types";
 import type { TFunction } from "i18next";
-import type { CharStatBlock } from "../Cards";
+import type { CharStatBlock } from "../CharacterCard/CharacterCard";
 
 export const StatToIndexMap: Record<string, number> = {
 	DEFP: 1,

@@ -1,4 +1,3 @@
-import { dynamicKey } from "@gcsim/localization";
 import {
 	Alert,
 	AlertDescription,
@@ -6,21 +5,19 @@ import {
 	CommandItem,
 } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
-import { Plus } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { CharacterCard } from "../Cards";
+import { TeamCard } from "../Cards";
 import { characterLabel, characters, OmniSelect } from "../common/gcsim";
-import { ConsolidateCharStats } from "./charStats";
 import { cfgFromTeam } from "./teamConfig";
-import type { TeamViewCharacterSource } from "./types";
+import type { TeamComposerCharacterSource } from "./types";
 
-export interface TeamViewProps {
+export interface TeamComposerProps {
 	parsedTeam: model.Character[];
 	error: string | null;
 	config: string;
 	setConfig: (v: string) => void;
-	characters?: TeamViewCharacterSource;
+	characters?: TeamComposerCharacterSource;
 }
 
 type PickerItem = {
@@ -42,19 +39,16 @@ const itemPredicate = (item: PickerItem, query: string) => {
 		.includes(normalized);
 };
 
-export function TeamView({
+export function TeamComposer({
 	parsedTeam,
 	error,
 	config,
 	setConfig,
 	characters: source,
-}: TeamViewProps) {
+}: TeamComposerProps) {
 	const { t } = useTranslation();
 	const [pickerOpen, setPickerOpen] = React.useState(false);
-	const [showDetails, setShowDetails] = React.useState(false);
-	const [showSnapshot, setShowSnapshot] = React.useState(false);
 
-	const teamStats = ConsolidateCharStats(t, parsedTeam);
 	const onTeam = new Set(parsedTeam.map((c) => c.name ?? ""));
 
 	const writeTeam = (team: model.Character[]) => {
@@ -106,7 +100,7 @@ export function TeamView({
 	}
 
 	return (
-		<div data-testid="editor-team-view" className="flex flex-col gap-2">
+		<div data-testid="editor-team-composer" className="flex flex-col gap-2">
 			{error ? (
 				<Alert variant="destructive">
 					<AlertTitle>
@@ -118,45 +112,11 @@ export function TeamView({
 				</Alert>
 			) : null}
 
-			<div className="flex flex-row flex-wrap">
-				{parsedTeam.map((c, index) => (
-					<CharacterCard
-						key={c.name ?? index}
-						char={c}
-						stats={teamStats.stats[c.name ?? ""]}
-						snapshot={teamStats.snapshot[c.name ?? ""]}
-						statsRows={teamStats.maxRows}
-						name={t(dynamicKey(`game:character_names.${c.name ?? ""}`))}
-						constellationLabel={`${t("character.c_pre")}${c.cons ?? 0}${t("character.c_post")}`}
-						levelLabel={t("character.lvl")}
-						talentsLabel={t("character.talents")}
-						artifactStatsLabel={t("character.artifact_stats")}
-						totalStatsLabel={t("character.total_stats")}
-						weaponName={t(
-							dynamicKey(`game:weapon_names.${c.weapon?.name ?? ""}`),
-						)}
-						handleToggleDetail={() => setShowDetails((v) => !v)}
-						handleToggleSnapshot={() => setShowSnapshot((v) => !v)}
-						showDetails={showDetails}
-						showSnapshot={showSnapshot}
-						handleDelete={handleRemove(index)}
-						className="basis-full sm:basis-1/2 hd:basis-1/4 pt-2 pr-2 pb-2"
-					/>
-				))}
-
-				{source && parsedTeam.length < 4 ? (
-					<div className="basis-full sm:basis-1/2 hd:basis-1/4 pr-2 pb-2 pt-2">
-						<button
-							type="button"
-							aria-label={t("db.characters")}
-							className="bg-g-surface-2 rounded-g-md hover:bg-g-surface-3 flex items-center justify-center min-h-[226px] h-full w-full"
-							onClick={() => setPickerOpen(true)}
-						>
-							<Plus size={30} color="var(--g-text-mute)" />
-						</button>
-					</div>
-				) : null}
-			</div>
+			<TeamCard
+				team={parsedTeam}
+				handleRemove={handleRemove}
+				handleAdd={source ? () => setPickerOpen(true) : undefined}
+			/>
 
 			{source ? (
 				<OmniSelect<PickerItem>

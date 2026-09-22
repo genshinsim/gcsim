@@ -1,14 +1,14 @@
 import type { model } from "@gcsim/types";
 import type React from "react";
 
-// TEMPORARY: types for the TeamView add/remove crutch.
+// TEMPORARY: types for the TeamComposer add/remove crutch.
 export interface ImportedCharacterOption {
 	key: string;
 	label?: string;
 	character: model.Character;
 }
 
-export interface TeamViewCharacterSource {
+export interface TeamComposerCharacterSource {
 	createCharacter: (key: string) => model.Character;
 	imported?: ImportedCharacterOption[];
 }
@@ -20,7 +20,7 @@ export interface EditorProps {
 	error: string | null;
 	parsedTeam: model.Character[];
 	settings?: React.ReactNode;
-	teamCharacters?: TeamViewCharacterSource;
+	teamCharacters?: TeamComposerCharacterSource;
 	showThemeSelector?: boolean;
 }
 

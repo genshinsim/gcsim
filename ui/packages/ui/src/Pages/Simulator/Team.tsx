@@ -1,4 +1,4 @@
-import { OmniSelect } from "@gcsim/components";
+import { OmniSelect, TeamCard } from "@gcsim/components";
 import { dynamicKey } from "@gcsim/localization";
 import { CommandItem } from "@gcsim/primitives";
 import type { Character } from "@gcsim/types";
@@ -11,7 +11,6 @@ import {
 	useAppDispatch,
 	useAppSelector,
 } from "../../Stores/store";
-import { TeamCard } from "./Components/TeamBuilder/TeamCard";
 
 type CharSource = "user" | "default";
 

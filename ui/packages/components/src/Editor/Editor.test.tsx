@@ -80,7 +80,7 @@ describe("Editor", () => {
 
 	it("hides gated content until its toggle is persisted", () => {
 		renderEditor();
-		expect(screen.queryByTestId("editor-team-view")).toBeNull();
+		expect(screen.queryByTestId("editor-team-composer")).toBeNull();
 	});
 
 	it("shows gated content when the persisted toggle is on", () => {
@@ -89,7 +89,7 @@ describe("Editor", () => {
 			JSON.stringify({ team: true, nameSearch: false, tips: false }),
 		);
 		renderEditor();
-		expect(screen.getByTestId("editor-team-view")).toBeTruthy();
+		expect(screen.getByTestId("editor-team-composer")).toBeTruthy();
 	});
 
 	it("disables Run unless the executor is ready and the config is valid", async () => {

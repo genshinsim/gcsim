@@ -1,6 +1,6 @@
 import type { model } from "@gcsim/types";
 import { describe, expect, it } from "vitest";
-import { StatToIndexMap } from "./charStats";
+import { StatToIndexMap } from "../Cards";
 import { cfgFromTeam, charToCfg } from "./teamConfig";
 
 function amber(): model.Character {

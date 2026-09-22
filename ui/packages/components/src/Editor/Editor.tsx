@@ -6,7 +6,7 @@ import { AceEditorWrapper } from "./AceEditorWrapper";
 import { useExecutor } from "./ExecutorProvider";
 import { type EditorToggles, HelperTools } from "./HelperTools";
 import { NameSearch } from "./NameSearch";
-import { TeamView } from "./TeamView";
+import { TeamComposer } from "./TeamComposer";
 import { Tips } from "./Tips";
 import type { EditorProps } from "./types";
 import { type Theme, themes } from "./types";
@@ -110,7 +110,7 @@ export const Editor = ({
 				<HelperTools toggles={toggles} onToggle={toggle} />
 			</div>
 			{toggles.team ? (
-				<TeamView
+				<TeamComposer
 					parsedTeam={parsedTeam}
 					error={error}
 					config={config}
