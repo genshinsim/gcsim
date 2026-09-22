@@ -153,6 +153,8 @@
 			"browse_database": "데이터베이스 둘러보기",
 			"run_simulations": "시뮬레이션 실행",
 			"welcome": "Simpact에 오신 것을 환영합니다",
+			"archive_banner_title": "이 데이터베이스는 보관 처리 중입니다",
+			"archive_banner_body": "Simpact 데이터베이스는 현재 보관 처리 중입니다. 더 이상 새로운 제출을 받지 않습니다. 기존 항목은 당분간 계속 열람할 수 있습니다. 추가 소식을 기다려 주세요.",
 			"simpact_desc": "Simpact는 gcsim 유저들이 제출하고 관리하는 gcsim 시뮬레이션의 데이터베이스입니다.",
 			"simpact_tag_desc": "데이터베이스는 다양한 태그들로 구성되고, 각 태그는 심들의 컬렉션을 나타냅니다. 이러한 컬렉션들은 자발적 지원자들에 관리되고, 각 컬렉션은 고유한 규칙을 따릅니다.",
 			"simpact_tag_list_header": "아래는 현재 사용가능한 태그들입니다:",

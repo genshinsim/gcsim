@@ -153,6 +153,8 @@
 			"browse_database": "Browse database",
 			"run_simulations": "Run simulations",
 			"welcome": "Welcome to Simpact",
+			"archive_banner_title": "This database is being archived",
+			"archive_banner_body": "The Simpact database is in the process of being archived. We are no longer accepting new submissions. Existing entries remain available to browse for now. Stay tuned for more updates.",
 			"simpact_desc": "Simpact is a database of gcsim simulations submitted and maintained by gcsim users.",
 			"simpact_tag_desc": "The database consists of various tags, each tag representing a collection of sims. These collections are maintained by volunteers and each collection follows their own rules.",
 			"simpact_tag_list_header": "Below are the current available tags:",

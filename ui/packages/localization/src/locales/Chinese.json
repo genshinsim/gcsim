@@ -153,6 +153,8 @@
 			"browse_database": "浏览数据库",
 			"run_simulations": "运行模拟",
 			"welcome": "欢迎使用 Simpact",
+			"archive_banner_title": "该数据库正在归档中",
+			"archive_banner_body": "Simpact 数据库正在归档中。我们不再接受新的提交。现有条目暂时仍可浏览。敬请关注后续更新。",
 			"simpact_desc": "Simpact 是一个由 gcsim 用户提交和维护的 gcsim 模拟数据库。",
 			"simpact_tag_desc": "该数据库由各种标签组成，每个标签代表一组模拟。这些集合由志愿者维护，每个集合都遵循各自的规则。",
 			"simpact_tag_list_header": "以下是当前可用的标签：",
