@@ -105,7 +105,7 @@ const Portrait = ({
 	}
 
 	const sets = char.sets ? Object.keys(char.sets) : [];
-	// A lone 2-piece set renders as a half-width flower (matches AvatarPortrait).
+	// A lone 2-piece set renders as a half-width flower (matches CharacterTile).
 	const isHalfWidthSet = sets.length === 1 && char.sets?.[sets[0]] === 2;
 	const twoSets = sets.length > 1;
 

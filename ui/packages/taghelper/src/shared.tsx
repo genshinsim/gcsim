@@ -1,4 +1,4 @@
-import { AvatarCard } from "@gcsim/components";
+import { TeamTile } from "@gcsim/components";
 import { Badge, Button, toast } from "@gcsim/primitives";
 import type { db } from "@gcsim/types";
 import {
@@ -141,7 +141,7 @@ export function ReviewHeadline({ entry }: { entry: db.Entry }) {
 	return (
 		<div className="flex flex-col gap-g-base-sm">
 			<div className="w-full max-w-[420px]">
-				<AvatarCard chars={team(entry)} className="w-full" />
+				<TeamTile chars={team(entry)} className="w-full" />
 			</div>
 			<MetaChips entry={entry} />
 			<p className="text-g-sm text-g-ink-dim">

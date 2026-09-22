@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { AvatarPortrait } from "../../Cards/AvatarPortait/AvatarPortrait";
+import { CharacterTile } from "../../Cards/CharacterTile/CharacterTile";
 
 const majorVersionRegex = /v\d+\.\d+/gm;
 
@@ -59,7 +59,7 @@ export function LatestVersion() {
 						<div className="flex gap-4">
 							{portraits.map((char) => (
 								<div key={char} className="flex flex-col items-center">
-									<AvatarPortrait
+									<CharacterTile
 										char={{ name: char }}
 										i={0}
 										invalid={false}

@@ -1,4 +1,4 @@
-import { AvatarPortrait } from "@gcsim/components";
+import { CharacterTile } from "@gcsim/components";
 import LatestCharactersData from "@gcsim/data/src/latest_chars.json";
 import { cn } from "@gcsim/primitives";
 import axios from "axios";
@@ -75,7 +75,7 @@ export function WhatsNew({ className }: { className?: string }) {
 			{portraits.length > 0 && (
 				<div className="mb-3 flex flex-wrap gap-g-base">
 					{portraits.map((char) => (
-						<AvatarPortrait
+						<CharacterTile
 							key={char}
 							char={{ name: char }}
 							i={0}

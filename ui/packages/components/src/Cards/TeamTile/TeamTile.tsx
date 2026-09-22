@@ -1,5 +1,5 @@
 import type { model } from "@gcsim/types";
-import { AvatarPortrait } from "../AvatarPortait/AvatarPortrait";
+import { CharacterTile } from "../CharacterTile/CharacterTile";
 
 type Props = {
 	//array of characters to display
@@ -9,7 +9,7 @@ type Props = {
 	onImageLoaded?: () => void;
 };
 
-export const AvatarCard = ({
+export const TeamTile = ({
 	chars,
 	invalid,
 	className = "",
@@ -31,7 +31,7 @@ export const AvatarCard = ({
 					name = c.name ?? "";
 				}
 				return (
-					<AvatarPortrait
+					<CharacterTile
 						key={c?.name ?? "empty-" + i}
 						i={i}
 						char={c}

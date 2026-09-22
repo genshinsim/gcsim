@@ -53,7 +53,7 @@ const WeaponImage = ({ weapon }: { weapon: model.Weapon }) => {
 	);
 };
 
-type AvatarPortraitProps = {
+type CharacterTileProps = {
 	char: model.Character | null;
 	i: number;
 	invalid: boolean;
@@ -64,14 +64,14 @@ type AvatarPortraitProps = {
 	className?: string;
 };
 
-export const AvatarPortrait = ({
+export const CharacterTile = ({
 	char,
 	i,
 	invalid,
 	onImageLoaded,
 	hideDetails = false,
 	className = "",
-}: AvatarPortraitProps) => {
+}: CharacterTileProps) => {
 	//display an empty card here
 	if (char === null) {
 		return (
