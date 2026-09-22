@@ -1,16 +1,16 @@
+import { dynamicKey } from "@gcsim/localization";
 import {
 	Alert,
 	AlertDescription,
 	AlertTitle,
 	CommandItem,
 } from "@gcsim/primitives";
-import { dynamicKey } from "@gcsim/localization";
 import type { model } from "@gcsim/types";
 import { Plus } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { CharacterCard } from "../Cards";
-import { OmniSelect, characterLabel, characters } from "../common/gcsim";
+import { characterLabel, characters, OmniSelect } from "../common/gcsim";
 import { ConsolidateCharStats } from "./charStats";
 import { cfgFromTeam } from "./teamConfig";
 import type { TeamViewCharacterSource } from "./types";
@@ -85,7 +85,12 @@ export function TeamView({
 	if (source) {
 		characters.forEach((k) => {
 			if (!onTeam.has(k)) {
-				items.push({ key: k, source: "default", text: characterLabel(k), label: "" });
+				items.push({
+					key: k,
+					source: "default",
+					text: characterLabel(k),
+					label: "",
+				});
 			}
 		});
 		source.imported?.forEach((option) => {
@@ -127,7 +132,9 @@ export function TeamView({
 						talentsLabel={t("character.talents")}
 						artifactStatsLabel={t("character.artifact_stats")}
 						totalStatsLabel={t("character.total_stats")}
-						weaponName={t(dynamicKey(`game:weapon_names.${c.weapon?.name ?? ""}`))}
+						weaponName={t(
+							dynamicKey(`game:weapon_names.${c.weapon?.name ?? ""}`),
+						)}
 						handleToggleDetail={() => setShowDetails((v) => !v)}
 						handleToggleSnapshot={() => setShowSnapshot((v) => !v)}
 						showDetails={showDetails}

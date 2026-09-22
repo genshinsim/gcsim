@@ -14,9 +14,9 @@ describe("Tips", () => {
 		expect(screen.getByText("Discord").getAttribute("href")).toBe(
 			"https://discord.gg/W36ZwwhEaG",
 		);
-		expect(
-			screen.getByText("simple.documentation").getAttribute("href"),
-		).toBe("https://docs.gcsim.app/guides");
+		expect(screen.getByText("simple.documentation").getAttribute("href")).toBe(
+			"https://docs.gcsim.app/guides",
+		);
 	});
 
 	it("calls onHide from the hide button when provided", async () => {

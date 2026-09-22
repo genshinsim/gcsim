@@ -22,7 +22,11 @@ export function Tips({ onHide }: TipsProps) {
 				</p>
 				<p>
 					<Trans>simple.documentation_pre</Trans>
-					<a href="https://docs.gcsim.app/guides" target="_blank" rel="noreferrer">
+					<a
+						href="https://docs.gcsim.app/guides"
+						target="_blank"
+						rel="noreferrer"
+					>
 						<Trans>simple.documentation</Trans>
 					</a>
 					<Trans>simple.documentation_post</Trans>

@@ -124,7 +124,9 @@ describe("TeamView", () => {
 				characters={source}
 			/>,
 		);
-		await userEvent.click(screen.getByRole("button", { name: "db.characters" }));
+		await userEvent.click(
+			screen.getByRole("button", { name: "db.characters" }),
+		);
 		await userEvent.click(screen.getByText("default:klee"));
 		const written = setConfig.mock.calls[0][0] as string;
 		expect(written).toContain("amber char");
@@ -140,8 +142,6 @@ describe("TeamView", () => {
 				setConfig={() => {}}
 			/>,
 		);
-		expect(
-			screen.queryByRole("button", { name: "db.characters" }),
-		).toBeNull();
+		expect(screen.queryByRole("button", { name: "db.characters" })).toBeNull();
 	});
 });

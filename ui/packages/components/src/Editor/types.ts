@@ -23,11 +23,8 @@ export interface EditorProps {
 	isValid: boolean;
 	error: string | null;
 	parsedTeam: model.Character[];
-	run: () => void;
 	settings?: React.ReactNode;
 	teamCharacters?: TeamViewCharacterSource;
-	showTeam?: boolean;
-	showTools?: boolean;
 	showThemeSelector?: boolean;
 }
 

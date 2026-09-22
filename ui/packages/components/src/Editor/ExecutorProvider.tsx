@@ -1,8 +1,4 @@
-import type {
-	Executor,
-	ExecutorSupplier,
-	SimResults,
-} from "@gcsim/types";
+import type { Executor, ExecutorSupplier, SimResults } from "@gcsim/types";
 import React from "react";
 
 const READY_POLL_MS = 250;

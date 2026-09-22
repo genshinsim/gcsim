@@ -1,6 +1,6 @@
 import type { model } from "@gcsim/types";
 import { describe, expect, it } from "vitest";
-import { charToCfg, cfgFromTeam } from "./teamConfig";
+import { cfgFromTeam, charToCfg } from "./teamConfig";
 
 function amber(): model.Character {
 	return {
@@ -13,7 +13,9 @@ function amber(): model.Character {
 		talents: { attack: 6, skill: 6, burst: 6 },
 		sets: { gladiatorsfinale: 4 },
 		// index 5 = atk, index 9 = cr
-		stats: [0, 0, 0, 0, 0, 311, 0, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		stats: [
+			0, 0, 0, 0, 0, 311, 0, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		],
 		snapshot: [],
 	};
 }
@@ -21,7 +23,7 @@ function amber(): model.Character {
 describe("charToCfg", () => {
 	it("serializes a character's lvl/weapon/sets/nonzero-stats", () => {
 		expect(charToCfg(amber())).toBe(
-			'amber char lvl=80/90 cons=2 talent=6,6,6;\n' +
+			"amber char lvl=80/90 cons=2 talent=6,6,6;\n" +
 				'amber add weapon="dullblade" refine=1 lvl=1/20;\n' +
 				'amber add set="gladiatorsfinale" count=4;\n' +
 				"amber add stats atk=311 cr=0.5;\n",

@@ -6,5 +6,10 @@ export {
 	useExecutor,
 } from "./ExecutorProvider";
 export { toParsedTeam } from "./parsedTeam";
-export type { EditorProps, Theme } from "./types";
+export type {
+	EditorProps,
+	ImportedCharacterOption,
+	TeamViewCharacterSource,
+	Theme,
+} from "./types";
 export { useValidation, type Validation } from "./useValidation";
