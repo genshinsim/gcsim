@@ -268,6 +268,7 @@ func (c *char) skillBikeRefresh() action.Info {
 	)
 	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB)
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 18)
+	c.AddStatus(skillRecastCDKey, skillRecastCD, false)
 
 	return c.getSkillCastActionInfo(skillBikeRefreshFrames, action.ActionSwap)
 }
