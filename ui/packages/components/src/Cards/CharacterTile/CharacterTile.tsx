@@ -1,7 +1,7 @@
 import { Badge } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { DataColorsConst } from "../../common/gcsim";
-import { charBG } from "../../lib/helper";
+import { Avatar } from "../Avatar/Avatar";
 import ArtifactsIcon from "./ArtifactsIcon";
 
 const WeaponImage = ({ weapon }: { weapon: model.Weapon }) => {
@@ -111,26 +111,13 @@ export const CharacterTile = ({
 				(className === "" ? "" : " " + className)
 			}
 		>
-			<div className={`relative w-full pt-2 z-0 ${charBG(char.element ?? "")}`}>
-				<div
-					className="absolute top-0 left-0 right-0 bottom-0 !bg-cover !bg-center mix-blend-luminosity"
-					style={{ background: `url(/api/assets/misc/overlay.jpg)` }}
-				></div>
-
-				<div className="flex justify-center">
-					<img
-						className="relative object-contain h-24"
-						key={char.name}
-						alt={char.name}
-						src={`/api/assets/avatar/${char.name}.png`}
-						onError={(e) => {
-							(e.target as HTMLImageElement).src =
-								"/api/assets/misc/default.png";
-							onImageLoaded();
-						}}
-						onLoad={onImageLoaded}
-					/>
-				</div>
+			<Avatar
+				name={char.name ?? ""}
+				element={char.element ?? ""}
+				overlay
+				onImageLoaded={onImageLoaded}
+				className="w-full pt-2 z-0"
+			>
 				{!hideDetails && char.weapon ? (
 					<WeaponImage weapon={char.weapon} />
 				) : null}
@@ -195,7 +182,7 @@ export const CharacterTile = ({
 						</Badge>
 					</div>
 				)}
-			</div>
+			</Avatar>
 		</div>
 	);
 };
