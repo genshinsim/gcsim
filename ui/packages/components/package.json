@@ -37,6 +37,7 @@
 		"react-dom": "^19.3.0",
 		"react-error-boundary": "^4.0.13",
 		"react-i18next": "^17.0.14",
+		"react-json-view-lite": "^2.5.0",
 		"react-markdown": "^9.0.1",
 		"remark-gfm": "^4.0.0",
 		"tailwind-merge": "^2.2.2",

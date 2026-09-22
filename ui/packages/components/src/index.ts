@@ -4,3 +4,4 @@ export * from "./Cards";
 export * from "./common/gcsim";
 export * from "./Editor";
 export * from "./Metadata";
+export * from "./SampleEventDetails";
