@@ -1,4 +1,9 @@
+export { Avatar } from "./Avatar/Avatar";
 export { CardBadge } from "./CardBadge/CardBadge";
+export {
+	CharacterCard,
+	type CharStatBlock,
+} from "./CharacterCard/CharacterCard";
 export { CharacterTile } from "./CharacterTile/CharacterTile";
 export { DBCard } from "./DBCard/DBCard";
 export { HistogramGraph } from "./DistributionCard/HistogramGraph";
