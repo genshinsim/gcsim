@@ -153,6 +153,8 @@
 			"browse_database": "Explorar base de datos",
 			"run_simulations": "Ejecutar simulaciones",
 			"welcome": "Bienvenido a Simpact",
+			"archive_banner_title": "Esta base de datos se está archivando",
+			"archive_banner_body": "La base de datos de Simpact está en proceso de archivarse. Ya no aceptamos nuevos envíos. Las entradas existentes seguirán disponibles para consultar por ahora. Mantente atento a más novedades.",
 			"simpact_desc": "Simpact es una base de datos de simulaciones de gcsim enviadas y mantenidas por usuarios de gcsim.",
 			"simpact_tag_desc": "La base de datos consta de varias etiquetas, cada etiqueta representa una colección de simulaciones. Estas colecciones son mantenidas por voluntarios y cada colección sigue sus propias reglas.",
 			"simpact_tag_list_header": "A continuación se muestran las etiquetas disponibles actualmente:",

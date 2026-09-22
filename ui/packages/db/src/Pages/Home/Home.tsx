@@ -3,7 +3,11 @@ import { dynamicKey } from "@gcsim/localization";
 import { Alert, AlertDescription, AlertTitle, Button } from "@gcsim/primitives";
 import { WhatsNew } from "@gcsim/ui/src/Pages/Dash/WhatsNew";
 import { Trans, useTranslation } from "react-i18next";
-import { FaCalculator, FaDatabase } from "react-icons/fa";
+import {
+	FaCalculator,
+	FaDatabase,
+	FaExclamationTriangle,
+} from "react-icons/fa";
 import { useLocation } from "wouter";
 
 export const Home = () => {
@@ -34,6 +38,18 @@ export const Home = () => {
 				<h1 className="font-g-display text-g-h1 font-bold text-g-ink md:text-g-hero">
 					{t("db.home.welcome")}
 				</h1>
+				<Alert
+					variant="destructive"
+					className="border-l-4 bg-g-danger/10 px-5 py-4"
+				>
+					<FaExclamationTriangle size={20} />
+					<AlertTitle className="line-clamp-none text-g-lg font-bold">
+						{t("db.home.archive_banner_title")}
+					</AlertTitle>
+					<AlertDescription className="text-g-base text-g-danger/90">
+						<p>{t("db.home.archive_banner_body")}</p>
+					</AlertDescription>
+				</Alert>
 				<div className="flex flex-col gap-g-base text-g-ink-dim">
 					<p className="text-g-lg">{t("db.home.simpact_desc")}</p>
 					<p>{t("db.home.simpact_tag_desc")}</p>
