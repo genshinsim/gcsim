@@ -10,10 +10,11 @@ type endedStatus = {
 	[key: number]: SampleItem[][];
 };
 
-const replacer = (k: string, v: unknown) => {
-	if (k === "ordering") return undefined;
-	return v;
-};
+function withoutOrdering(line: LogDetails): Omit<LogDetails, "ordering"> {
+	const copy = { ...line };
+	delete copy.ordering;
+	return copy;
+}
 
 export function parseLogV2(
 	active?: string,
@@ -85,6 +86,7 @@ export function parseLogV2(
 				frame: line.frame,
 				msg: key + " expired" + strFrameWithSec(line.frame),
 				raw: JSON.stringify(line, null, 2),
+				data: line,
 				event: line.event,
 				char: index,
 				color: eventColor(line.event),
@@ -146,10 +148,12 @@ export function parseLogV2(
 			line.logs[e.key] = e.val;
 		});
 
+		const cleaned = withoutOrdering(line);
 		const e: SampleItem = {
 			frame: line.frame,
 			msg: line.msg,
-			raw: JSON.stringify(line, replacer, 2),
+			raw: JSON.stringify(cleaned, null, 2),
+			data: cleaned,
 			event: line.event,
 			char: index,
 			color: eventColor(line.event),

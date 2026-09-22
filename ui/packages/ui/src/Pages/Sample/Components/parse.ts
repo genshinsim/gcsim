@@ -1,3 +1,5 @@
+import type { LogDetails } from "@gcsim/types";
+
 export interface SampleRow {
 	f: number;
 	key: number;
@@ -11,6 +13,8 @@ export interface SampleItem {
 	char: number;
 	msg: string;
 	raw: string;
+	/** Structured event object behind `raw`; preferred by the details viewer. */
+	data?: LogDetails;
 	color: string;
 	icon: string;
 	amount: number;
