@@ -3,13 +3,20 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+type PickerItem = { key: string; source: string; text: string; label: string };
+
 vi.mock("react-i18next", () => ({
 	useTranslation: () => ({ t: (k: string) => k }),
 }));
 
-// biome-ignore lint/suspicious/noExplicitAny: test doubles
 vi.mock("../Cards", () => ({
-	CharacterCard: ({ char, handleDelete }: any) => (
+	CharacterCard: ({
+		char,
+		handleDelete,
+	}: {
+		char: model.Character;
+		handleDelete: () => void;
+	}) => (
 		<div data-testid="card">
 			<span>{char.name}</span>
 			<button type="button" onClick={handleDelete}>
@@ -25,12 +32,18 @@ vi.mock("../common/gcsim", async (orig) => {
 		...actual,
 		characters: ["klee", "amber", "bennett"],
 		characterLabel: (k: string) => k,
-		// biome-ignore lint/suspicious/noExplicitAny: test double
-		OmniSelect: ({ isOpen, items, onSelect }: any) =>
+		OmniSelect: ({
+			isOpen,
+			items,
+			onSelect,
+		}: {
+			isOpen: boolean;
+			items: PickerItem[];
+			onSelect: (item: PickerItem) => void;
+		}) =>
 			isOpen ? (
 				<div data-testid="picker">
-					{/* biome-ignore lint/suspicious/noExplicitAny: test double */}
-					{items.map((it: any) => (
+					{items.map((it) => (
 						<button
 							type="button"
 							key={`${it.source}-${it.key}`}

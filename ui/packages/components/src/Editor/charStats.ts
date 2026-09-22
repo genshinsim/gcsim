@@ -34,7 +34,6 @@ interface StatRow {
 	t: StatKind;
 }
 
-// er/cr/cd/element%/heal render identically in the total-stats and snapshot views.
 const percentRows: StatRow[] = [
 	{
 		key: "er",

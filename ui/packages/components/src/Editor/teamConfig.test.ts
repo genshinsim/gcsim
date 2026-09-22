@@ -1,8 +1,12 @@
 import type { model } from "@gcsim/types";
 import { describe, expect, it } from "vitest";
+import { StatToIndexMap } from "./charStats";
 import { cfgFromTeam, charToCfg } from "./teamConfig";
 
 function amber(): model.Character {
+	const stats = new Array(22).fill(0);
+	stats[StatToIndexMap.ATK] = 311;
+	stats[StatToIndexMap.CR] = 0.5;
 	return {
 		name: "amber",
 		level: 80,
@@ -12,10 +16,7 @@ function amber(): model.Character {
 		weapon: { name: "dullblade", refine: 1, level: 1, max_level: 20 },
 		talents: { attack: 6, skill: 6, burst: 6 },
 		sets: { gladiatorsfinale: 4 },
-		// index 5 = atk, index 9 = cr
-		stats: [
-			0, 0, 0, 0, 0, 311, 0, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-		],
+		stats,
 		snapshot: [],
 	};
 }
@@ -46,7 +47,6 @@ describe("cfgFromTeam", () => {
 		expect(out).not.toContain("oldchar");
 		expect(out).toContain("options iteration=1000;");
 		expect(out).toContain("target lvl=100 hp=1000;");
-		// regenerated team comes first
 		expect(out.startsWith("amber char")).toBe(true);
 	});
 });

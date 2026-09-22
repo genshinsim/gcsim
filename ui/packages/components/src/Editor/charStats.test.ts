@@ -1,7 +1,7 @@
 import type { model } from "@gcsim/types";
 import type { TFunction } from "i18next";
 import { describe, expect, it } from "vitest";
-import { ConsolidateCharStats } from "./charStats";
+import { ConsolidateCharStats, StatToIndexMap } from "./charStats";
 
 const t = ((key: string) => key) as unknown as TFunction;
 
@@ -22,10 +22,9 @@ function char(stats: number[], snapshot: number[] = []): model.Character {
 
 describe("ConsolidateCharStats", () => {
 	it("keeps only rows with nonzero values, in stat order", () => {
-		// index 5 = atk (flat), index 9 = cr (percent)
 		const stats = new Array(22).fill(0);
-		stats[5] = 100;
-		stats[9] = 0.3;
+		stats[StatToIndexMap.ATK] = 100;
+		stats[StatToIndexMap.CR] = 0.3;
 
 		const { stats: blocks, maxRows } = ConsolidateCharStats(t, [char(stats)]);
 
@@ -46,7 +45,7 @@ describe("ConsolidateCharStats", () => {
 
 	it("reads snapshot values into the snapshot blocks", () => {
 		const snapshot = new Array(22).fill(0);
-		snapshot[3] = 31204; // HP flat
+		snapshot[StatToIndexMap.HP] = 31204;
 
 		const { snapshot: blocks } = ConsolidateCharStats(t, [
 			char(new Array(22).fill(0), snapshot),

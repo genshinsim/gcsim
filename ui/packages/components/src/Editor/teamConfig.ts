@@ -1,8 +1,6 @@
 import type { model } from "@gcsim/types";
 
-// TEMPORARY. These team<->config serializers back the TeamView add/remove crutch
-// that only exists so GOOD/Enka imports have somewhere to land. Once TeamView
-// becomes view-only and imports get a first-class path, delete this file.
+// TEMPORARY: backs the TeamView add/remove crutch; delete when TeamView is view-only.
 
 const statKeys = [
 	"n/a",
