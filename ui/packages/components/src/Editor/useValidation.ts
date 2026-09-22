@@ -1,4 +1,4 @@
-import type { Character, ParsedResult } from "@gcsim/types";
+import type { model, ParsedResult } from "@gcsim/types";
 import { debounce } from "lodash-es";
 import React from "react";
 import { useExecutor } from "./ExecutorProvider";
@@ -9,7 +9,7 @@ const VALIDATE_DEBOUNCE_MS = 200;
 export interface Validation {
 	isValid: boolean;
 	error: string | null;
-	parsedTeam: Character[];
+	parsedTeam: model.Character[];
 }
 
 function asError(err: unknown): string {
@@ -20,7 +20,7 @@ export function useValidation(config: string): Validation {
 	const { exec, isReady } = useExecutor();
 	const [isValid, setValid] = React.useState(false);
 	const [error, setError] = React.useState<string | null>(null);
-	const [parsedTeam, setParsedTeam] = React.useState<Character[]>([]);
+	const [parsedTeam, setParsedTeam] = React.useState<model.Character[]>([]);
 
 	const debouncedRef = React.useRef(
 		debounce((fn: () => void) => fn(), VALIDATE_DEBOUNCE_MS),

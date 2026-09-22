@@ -1,4 +1,4 @@
-import type { Character } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -46,7 +46,7 @@ vi.mock("../common/gcsim", async (orig) => {
 
 import { TeamView } from "./TeamView";
 
-function char(name: string): Character {
+function char(name: string): model.Character {
 	return {
 		name,
 		level: 80,

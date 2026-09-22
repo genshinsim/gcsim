@@ -1,4 +1,4 @@
-import type { Character } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 
 // TEMPORARY. These team<->config serializers back the TeamView add/remove crutch
 // that only exists so GOOD/Enka imports have somewhere to land. Once TeamView
@@ -32,20 +32,25 @@ const statKeys = [
 export const charLinesRegEx =
 	/^(\w+) (?:char|add) (?:lvl|weapon|set|stats).+$(?:\r\n|\r|\n)?/gm;
 
-export function charToCfg(char: Character): string {
-	let str = "";
-	str += `${char.name} char lvl=${char.level}/${char.max_level} cons=${char.cons} talent=${char.talents.attack},${char.talents.skill},${char.talents.burst};\n`;
-	str += `${char.name} add weapon="${char.weapon.name}" refine=${char.weapon.refine} lvl=${char.weapon.level}/${char.weapon.max_level};\n`;
+export function charToCfg(char: model.Character): string {
+	const name = char.name ?? "";
+	const talents = char.talents ?? {};
+	const weapon = char.weapon ?? {};
+	const sets = char.sets ?? {};
 
-	for (const key in char.sets) {
-		if (char.sets[key] > 0) {
-			str += `${char.name} add set="${key}" count=${char.sets[key]};\n`;
+	let str = "";
+	str += `${name} char lvl=${char.level}/${char.max_level} cons=${char.cons} talent=${talents.attack},${talents.skill},${talents.burst};\n`;
+	str += `${name} add weapon="${weapon.name}" refine=${weapon.refine} lvl=${weapon.level}/${weapon.max_level};\n`;
+
+	for (const key in sets) {
+		if (sets[key] > 0) {
+			str += `${name} add set="${key}" count=${sets[key]};\n`;
 		}
 	}
 
 	let count = 0;
-	let statStr = `${char.name} add stats`;
-	char.stats.forEach((v, i) => {
+	let statStr = `${name} add stats`;
+	(char.stats ?? []).forEach((v, i) => {
 		if (v === 0) return;
 		count++;
 		statStr += ` ${statKeys[i]}=${v.toPrecision()}`;
@@ -57,7 +62,7 @@ export function charToCfg(char: Character): string {
 	return str;
 }
 
-export function cfgFromTeam(team: Character[], cfg: string): string {
+export function cfgFromTeam(team: model.Character[], cfg: string): string {
 	let next = "";
 	team.forEach((c) => {
 		next += `${charToCfg(c)}\n`;

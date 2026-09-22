@@ -1,4 +1,4 @@
-import type { Character } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import type React from "react";
 
 // A GOOD/Enka-imported character offered in the TeamView add picker alongside
@@ -6,14 +6,14 @@ import type React from "react";
 export interface ImportedCharacterOption {
 	key: string;
 	label?: string;
-	character: Character;
+	character: model.Character;
 }
 
 // App-injected source for the TeamView add crutch. The base roster ships with
 // @gcsim/components; only default-character construction (needs element data)
 // and imported characters are app-specific, so they arrive through here.
 export interface TeamViewCharacterSource {
-	createCharacter: (key: string) => Character;
+	createCharacter: (key: string) => model.Character;
 	imported?: ImportedCharacterOption[];
 }
 
@@ -22,7 +22,7 @@ export interface EditorProps {
 	setConfig: (v: string) => void;
 	isValid: boolean;
 	error: string | null;
-	parsedTeam: Character[];
+	parsedTeam: model.Character[];
 	run: () => void;
 	settings?: React.ReactNode;
 	teamCharacters?: TeamViewCharacterSource;

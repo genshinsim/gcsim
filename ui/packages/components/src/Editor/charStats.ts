@@ -1,4 +1,4 @@
-import type { Character } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import type { TFunction } from "i18next";
 import type { CharStatBlock } from "../Cards";
 
@@ -68,8 +68,8 @@ const snapshotRows: StatRow[] = [
 
 function buildBlocks(
 	rows: StatRow[],
-	chars: Character[],
-	source: (c: Character) => number[],
+	chars: model.Character[],
+	source: (c: model.Character) => number[],
 	t: TFunction,
 ): { blocks: Record<string, CharStatBlock[]>; maxRows: number } {
 	const values: Record<string, Record<string, { flat: number; per: number }>> =
@@ -83,20 +83,21 @@ function buildBlocks(
 	let maxRows = 0;
 	chars.forEach((char) => {
 		let rowCount = 0;
+		const name = char.name ?? "";
 		const stats = source(char);
 		rows.forEach((row) => {
-			if (!(char.name in values[row.key])) {
-				values[row.key][char.name] = { flat: 0, per: 0 };
+			if (!(name in values[row.key])) {
+				values[row.key][name] = { flat: 0, per: 0 };
 			}
 			if ((stats[row.percentIndex] ?? 0) > 0 || (stats[row.flatIndex] ?? 0) > 0) {
 				counts[row.key]++;
 				rowCount++;
 			}
 			if (row.t === "both" || row.t === "f") {
-				values[row.key][char.name].flat = stats[row.flatIndex];
+				values[row.key][name].flat = stats[row.flatIndex];
 			}
 			if (row.t === "both" || row.t === "%") {
-				values[row.key][char.name].per = stats[row.percentIndex];
+				values[row.key][name].per = stats[row.percentIndex];
 			}
 		});
 		if (rowCount > maxRows) {
@@ -106,7 +107,7 @@ function buildBlocks(
 
 	const blocks: Record<string, CharStatBlock[]> = {};
 	chars.forEach((char) => {
-		blocks[char.name] = [];
+		blocks[char.name ?? ""] = [];
 	});
 	rows.forEach((row) => {
 		if (counts[row.key] === 0) {
@@ -127,14 +128,14 @@ function buildBlocks(
 
 export function ConsolidateCharStats(
 	t: TFunction,
-	chars: Character[],
+	chars: model.Character[],
 ): {
 	stats: Record<string, CharStatBlock[]>;
 	snapshot: Record<string, CharStatBlock[]>;
 	maxRows: number;
 } {
-	const total = buildBlocks(totalRows, chars, (c) => c.stats, t);
-	const snap = buildBlocks(snapshotRows, chars, (c) => c.snapshot, t);
+	const total = buildBlocks(totalRows, chars, (c) => c.stats ?? [], t);
+	const snap = buildBlocks(snapshotRows, chars, (c) => c.snapshot ?? [], t);
 	return {
 		stats: total.blocks,
 		snapshot: snap.blocks,

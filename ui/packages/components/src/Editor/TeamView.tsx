@@ -5,7 +5,7 @@ import {
 	CommandItem,
 } from "@gcsim/primitives";
 import { dynamicKey } from "@gcsim/localization";
-import type { Character } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import { Plus } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
@@ -16,7 +16,7 @@ import { cfgFromTeam } from "./teamConfig";
 import type { TeamViewCharacterSource } from "./types";
 
 export interface TeamViewProps {
-	parsedTeam: Character[];
+	parsedTeam: model.Character[];
 	error: string | null;
 	config: string;
 	setConfig: (v: string) => void;
@@ -55,9 +55,9 @@ export function TeamView({
 	const [showSnapshot, setShowSnapshot] = React.useState(false);
 
 	const teamStats = ConsolidateCharStats(t, parsedTeam);
-	const onTeam = new Set(parsedTeam.map((c) => c.name));
+	const onTeam = new Set(parsedTeam.map((c) => c.name ?? ""));
 
-	const writeTeam = (team: Character[]) => {
+	const writeTeam = (team: model.Character[]) => {
 		setConfig(cfgFromTeam(team, config));
 	};
 
@@ -89,11 +89,11 @@ export function TeamView({
 			}
 		});
 		source.imported?.forEach((option) => {
-			if (!onTeam.has(option.character.name)) {
+			if (!onTeam.has(option.character.name ?? "")) {
 				items.push({
 					key: option.key,
 					source: "user",
-					text: characterLabel(option.character.name),
+					text: characterLabel(option.character.name ?? ""),
 					label: option.label ?? "",
 				});
 			}
@@ -116,18 +116,18 @@ export function TeamView({
 			<div className="flex flex-row flex-wrap">
 				{parsedTeam.map((c, index) => (
 					<CharacterCard
-						key={c.name}
+						key={c.name ?? index}
 						char={c}
-						stats={teamStats.stats[c.name]}
-						snapshot={teamStats.snapshot[c.name]}
+						stats={teamStats.stats[c.name ?? ""]}
+						snapshot={teamStats.snapshot[c.name ?? ""]}
 						statsRows={teamStats.maxRows}
-						name={t(dynamicKey(`game:character_names.${c.name}`))}
+						name={t(dynamicKey(`game:character_names.${c.name ?? ""}`))}
 						constellationLabel={`${t("character.c_pre")}${c.cons ?? 0}${t("character.c_post")}`}
 						levelLabel={t("character.lvl")}
 						talentsLabel={t("character.talents")}
 						artifactStatsLabel={t("character.artifact_stats")}
 						totalStatsLabel={t("character.total_stats")}
-						weaponName={t(dynamicKey(`game:weapon_names.${c.weapon.name}`))}
+						weaponName={t(dynamicKey(`game:weapon_names.${c.weapon?.name ?? ""}`))}
 						handleToggleDetail={() => setShowDetails((v) => !v)}
 						handleToggleSnapshot={() => setShowSnapshot((v) => !v)}
 						showDetails={showDetails}

@@ -1,6 +1,6 @@
-import type { Character, ParsedResult } from "@gcsim/types";
+import type { model, ParsedResult } from "@gcsim/types";
 
-export function toParsedTeam(result: ParsedResult): Character[] {
+export function toParsedTeam(result: ParsedResult): model.Character[] {
 	if (!result.characters) {
 		return [];
 	}

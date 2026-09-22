@@ -1,11 +1,11 @@
-import type { Character } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import type { TFunction } from "i18next";
 import { describe, expect, it } from "vitest";
 import { ConsolidateCharStats } from "./charStats";
 
 const t = ((key: string) => key) as unknown as TFunction;
 
-function char(stats: number[], snapshot: number[] = []): Character {
+function char(stats: number[], snapshot: number[] = []): model.Character {
 	return {
 		name: "amber",
 		level: 90,

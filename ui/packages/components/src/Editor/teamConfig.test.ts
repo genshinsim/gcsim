@@ -1,8 +1,8 @@
-import type { Character } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import { describe, expect, it } from "vitest";
 import { charToCfg, cfgFromTeam } from "./teamConfig";
 
-function amber(): Character {
+function amber(): model.Character {
 	return {
 		name: "amber",
 		level: 80,
