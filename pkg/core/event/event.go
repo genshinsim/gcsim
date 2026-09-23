@@ -4,7 +4,7 @@ type Event int
 
 const (
 	OnEnemyHit     Event = iota // target, AttackEvent
-	OnPlayerHit                 // char, AttackEvent
+	OnPlayerHit                 // char, AttackEvent; emits before the player/shields takes damage
 	OnGadgetHit                 // target, AttackEvent
 	OnEnemyDamage               // target, AttackEvent, amount, crit
 	OnGadgetDamage              // target, AttackEvent
@@ -58,7 +58,6 @@ const (
 	OnEnergyBurst       // character_drained, pre_energy, burst_cost
 	OnTargetDied        // target, AttackEvent
 	OnTargetMoved       // target
-	OnCharacterHit      // nil <- this is for when the character is going to get hit but might be shielded from dmg
 	OnCharacterHurt     // amount
 	OnHPDebt            // target character, amount
 	OnHeal              // src char, target character, amount, overheal, amount_before_debt
