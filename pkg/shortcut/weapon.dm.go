@@ -315,6 +315,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"sharpshootersoath":               keys.SharpshootersOath,
 	"sharpshooter":                    keys.SharpshootersOath,
 	"sharpshooters":                   keys.SharpshootersOath,
+	"silverlight":                     keys.SilverLight,
 	"silvershowerheartstrings":        keys.SilvershowerHeartstrings,
 	"heartstrings":                    keys.SilvershowerHeartstrings,
 	"silvershower":                    keys.SilvershowerHeartstrings,
