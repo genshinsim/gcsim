@@ -1953,6 +1953,20 @@
       "hp_percent": 0
     }
   ],
+  "guardianbladeofdriftingsnow": [
+    {
+      "drop_id": 22010036,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010036,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010026,
+      "hp_percent": 0
+    }
+  ],
   "hexadecatonicbattlehardenedmandragora": [
     {
       "drop_id": 22010013,

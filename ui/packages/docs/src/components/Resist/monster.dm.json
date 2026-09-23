@@ -1440,6 +1440,17 @@
     "physical": 0.1,
     "freeze": 1
   },
+  "everfreezingillusion": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.5,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 1
+  },
   "everlingeringillusion": {
     "pyro": 0.1,
     "dendro": 0.1,
@@ -2033,6 +2044,17 @@
     "geo": 0.1,
     "physical": 0.1,
     "freeze": 0
+  },
+  "guardianbladeofdriftingsnow": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.5,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 1
   },
   "guardianofapepsoasis": {
     "pyro": 0.1,
@@ -4247,6 +4269,17 @@
   },
   "theknave": {
     "pyro": 0.7,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 1
+  },
+  "theunyielding": {
+    "pyro": 0.5,
     "dendro": 0.1,
     "hydro": 0.1,
     "electro": 0.1,
