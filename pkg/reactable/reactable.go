@@ -90,8 +90,15 @@ func (r *Reactable) AuraCount() int {
 	return count
 }
 
+func (r *Reactable) emitEvent(evt event.Event, args ...any) {
+	if r.core == nil {
+		return
+	}
+	r.core.Events.Emit(evt, args...)
+}
+
 func (r *Reactable) React(a *info.AttackEvent) {
-	r.core.Events.Emit(event.OnElementApplied, r.self, a)
+	r.emitEvent(event.OnElementApplied, r.self, a)
 
 	// TODO: double check order of reactions
 	switch a.Info.Element {
@@ -191,7 +198,7 @@ func (r *Reactable) GetAuraDecayRate(mod info.ReactionModKey) info.Durability {
 
 func (r *Reactable) SetAuraDurability(mod info.ReactionModKey, dur info.Durability, src int) {
 	r.Durability[mod][src] = dur
-	r.core.Events.Emit(event.OnAuraDurabilityAdded, r.self, mod, dur)
+	r.emitEvent(event.OnAuraDurabilityAdded, r.self, mod, dur)
 }
 
 func (r *Reactable) SetAuraDecayRate(mod info.ReactionModKey, decay info.Durability) {
@@ -247,7 +254,7 @@ func (r *Reactable) attachBurning(src int) {
 
 func (r *Reactable) addDurability(mod info.ReactionModKey, amt info.Durability, src int) {
 	r.Durability[mod][src] += amt
-	r.core.Events.Emit(event.OnAuraDurabilityAdded, r.self, mod, amt)
+	r.emitEvent(event.OnAuraDurabilityAdded, r.self, mod, amt)
 }
 
 // AuraCountains returns true if any element e is active on the target
@@ -281,7 +288,7 @@ func (r *Reactable) reduceMod(mod info.ReactionModKey, amt info.Durability) {
 		r.Durability[mod][i] -= min(amt, r.Durability[mod][i])
 	}
 	if r.GetAuraDurability(mod) <= info.ZeroDur {
-		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, mod)
+		r.emitEvent(event.OnAuraDurabilityDepleted, r.self, mod)
 	}
 }
 
@@ -290,7 +297,7 @@ func (r *Reactable) removeMod(mod info.ReactionModKey) {
 		r.Durability[mod][i] = 0
 	}
 	r.DecayRate[mod] = 0
-	r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, mod)
+	r.emitEvent(event.OnAuraDurabilityDepleted, r.self, mod)
 }
 
 // reduce the requested element by dur * factor, return the amount of dur consumed
@@ -326,7 +333,7 @@ func (r *Reactable) reduce(e attributes.Element, dur, factor info.Durability) in
 func (r *Reactable) deplete(m info.ReactionModKey) {
 	if r.GetAuraDurability(m) <= info.ZeroDur {
 		r.SetAuraDecayRate(m, 0)
-		r.core.Events.Emit(event.OnAuraDurabilityDepleted, r.self, attributes.Element(m))
+		r.emitEvent(event.OnAuraDurabilityDepleted, r.self, attributes.Element(m))
 	}
 }
 
