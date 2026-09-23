@@ -3628,6 +3628,25 @@ var MonsterMap = map[int]*model.MonsterData{
 			FreezeResist: 1.0,
 		},
 	},
+	25135401: {
+		Id:  25135401,
+		Key: "everfreezingillusion",
+		BaseStats: &model.MonsterStatsData{
+			BaseHp:  109.725,
+			HpCurve: model.GrowCurveType_GROW_CURVE_HP_2,
+			Resist: &model.MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.5,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1.0,
+		},
+	},
 	26310901: {
 		Id:  26310901,
 		Key: "everlingeringillusion",
@@ -5160,6 +5179,38 @@ var MonsterMap = map[int]*model.MonsterData{
 				},
 				{
 					DropId: 22010012,
+				},
+			},
+		},
+	},
+	25135202: {
+		Id:  25135202,
+		Key: "guardianbladeofdriftingsnow",
+		BaseStats: &model.MonsterStatsData{
+			BaseHp:  366.768,
+			HpCurve: model.GrowCurveType_GROW_CURVE_HP_2,
+			Resist: &model.MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.5,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1.0,
+			HpDrop: []*model.MonsterHPDrop{
+				{
+					DropId:    22010036,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010036,
+					HpPercent: 0.33,
+				},
+				{
+					DropId: 22010026,
 				},
 			},
 		},
@@ -10878,6 +10929,25 @@ var MonsterMap = map[int]*model.MonsterData{
 			HpCurve: model.GrowCurveType_GROW_CURVE_HP_2,
 			Resist: &model.MonsterResistData{
 				FireResist:     0.7,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1.0,
+		},
+	},
+	29160101: {
+		Id:  29160101,
+		Key: "theunyielding",
+		BaseStats: &model.MonsterStatsData{
+			BaseHp:  3803.52,
+			HpCurve: model.GrowCurveType_GROW_CURVE_HP_2,
+			Resist: &model.MonsterResistData{
+				FireResist:     0.5,
 				GrassResist:    0.1,
 				WaterResist:    0.1,
 				ElectricResist: 0.1,

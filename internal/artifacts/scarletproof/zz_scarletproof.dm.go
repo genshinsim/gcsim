@@ -7,7 +7,7 @@
 // set4: Scarlet Proof # Relic_7.0_StarWind
 //
 //	Increases the equipping character's CRIT Rate by 16%, and their Stellar Swirl reaction
-//	dealt by 40%, for 10s after they trigger a Stellar Swirl reaction.
+//	DMG dealt by 40%, for 10s after they trigger a Stellar Swirl reaction.
 package scarletproof
 
 import (
