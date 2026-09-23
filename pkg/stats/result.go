@@ -29,7 +29,7 @@ type Result struct {
 	DamageBuckets []float64 `json:"damage_buckets" msg:"damage_buckets"`
 
 	ActiveCharacters []ActiveCharacterInterval `json:"active_characters" msg:"active_characters"`
-	DamageMitigation []float64                 `json:"damage_mitigation" msg:"damage_mitigation"`
+	DamageMitigation []float64                 `json:"damage_mitigation" msg:"damage_mitigation"` // Not used
 	ShieldResults    ShieldResult              `json:"shield_results"    msg:"shield_results"`
 
 	Characters    []CharacterResult `json:"characters"     msg:"characters"`
@@ -52,8 +52,8 @@ type CharacterResult struct {
 	// TODO: Move to Result since only active character can perform actions?
 	FailedActions []ActionFailInterval `json:"failed_actions" msg:"failed_actions"`
 
-	EnergyStatus []float64 `json:"energy_status" msg:"energy_status"` // can be completely replaced by EnergyEvents?
-	HealthStatus []float64 `json:"health_status" msg:"health_status"`
+	EnergyStatus []float64 `json:"energy_status" msg:"energy_status"` // Deprecated: use EnergyEvents instead.
+	HealthStatus []float64 `json:"health_status" msg:"health_status"` // Not used
 
 	DamageCumulativeContrib []float64 `json:"damage_cumulative_contrib" msg:"damage_cumulative_contrib"`
 
