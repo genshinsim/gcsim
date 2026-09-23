@@ -16,7 +16,6 @@ func init() {
 type buffer struct {
 	activeChar      int
 	activeCharStart int
-	activeTime      []int
 	activeIntervals []stats.ActiveCharacterInterval
 }
 
