@@ -29,6 +29,8 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"ashgraven":                       keys.AshGravenDrinkingHorn,
 	"astralvulturescrimsonplumage":    keys.AstralVulturesCrimsonPlumage,
 	"avcp":                            keys.AstralVulturesCrimsonPlumage,
+	"ateaspoonoftranscendence":        keys.ATeaspoonOfTranscendence,
+	"teaspoon":                        keys.ATeaspoonOfTranscendence,
 	"athameartis":                     keys.AthameArtis,
 	"athame":                          keys.AthameArtis,
 	"athousandblazingsuns":            keys.AThousandBlazingSuns,

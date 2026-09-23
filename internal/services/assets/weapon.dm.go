@@ -14,6 +14,7 @@ var weaponMap = map[string]string{
 	"aquilafavonia":                   "UI_EquipIcon_Sword_Falcon_Awaken",
 	"ashgravendrinkinghorn":           "UI_EquipIcon_Catalyst_ConchSprayer_Awaken",
 	"astralvulturescrimsonplumage":    "UI_EquipIcon_Bow_Qoyllorsnova_Awaken",
+	"ateaspoonoftranscendence":        "UI_EquipIcon_Claymore_CrystallineSword_Awaken",
 	"athameartis":                     "UI_EquipIcon_Sword_Motsognir_Awaken",
 	"athousandblazingsuns":            "UI_EquipIcon_Claymore_RadianceSword_Awaken",
 	"athousandfloatingdreams":         "UI_EquipIcon_Catalyst_Ayus_Awaken",
