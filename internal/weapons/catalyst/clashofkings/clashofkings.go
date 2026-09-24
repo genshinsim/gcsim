@@ -1,8 +1,6 @@
 package clashofkings
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -29,6 +27,30 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	w := &Weapon{}
 	r := p.Refine
 
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.ATKP] = 0.15 + float64(r)*0.05
+	m[attributes.EM] = 75 + float64(r)*25
+	onSkill := func(args ...any) {
+		if char.Index() == c.Player.Active() {
+			return
+		}
+
+		if char.StatusIsActive(buffICDKey) {
+			return
+		}
+
+		char.AddStatus(buffICDKey, 12*60, true)
+		char.AddStatus(chargeExtensionKey, 12*60, true)
+		char.AddStatMod(character.StatMod{
+			Base: modifier.NewBaseWithHitlag(buffKey, 6*60),
+			Amount: func() []float64 {
+				return m
+			},
+		})
+	}
+
+	c.Events.Subscribe(event.OnSkill, onSkill, "clash-of-kings-on-skill-"+char.Base.Key.String())
+
 	onHit := func(args ...any) {
 		atk, ok := args[1].(*info.AttackEvent)
 
@@ -37,6 +59,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		if atk.Info.ActorIndex != char.Index() {
+			return
+		}
+
+		if char.Index() != c.Player.Active() {
 			return
 		}
 
@@ -52,38 +78,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 
-		if char.Index() == c.Player.Active() {
-			return
-		}
-
 		char.DeleteStatus(chargeExtensionKey)
 		char.ExtendStatus(buffKey, 6*60)
 	}
 
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.ATKP] = 0.15 + float64(r)*0.05
-	m[attributes.EM] = 75 + float64(r)*25
-	onSkill := func(args ...any) {
-		if char.StatusIsActive(buffICDKey) {
-			return
-		}
-
-		if char.Index() == c.Player.Active() {
-			return
-		}
-
-		char.AddStatus(buffICDKey, 12*60, true)
-		char.AddStatus(chargeExtensionKey, -1, true)
-		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag(buffKey, 6*60),
-			Amount: func() []float64 {
-				return m
-			},
-		})
-	}
-
-	c.Events.Subscribe(event.OnEnemyHit, onHit, fmt.Sprintf("clash-of-kings-on-charge-hit-%v", char.Base.Key.String()))
-	c.Events.Subscribe(event.OnSkill, onSkill, fmt.Sprintf("clash-of-kings-on-skill-%v", char.Base.Key.String()))
+	c.Events.Subscribe(event.OnEnemyHit, onHit, "clash-of-kings-on-charge-hit-"+char.Base.Key.String())
 
 	return w, nil
 }
