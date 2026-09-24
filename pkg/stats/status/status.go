@@ -72,8 +72,12 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 	}, "stats-status-added")
 
 	core.Events.Subscribe(event.OnAuraDurabilityDepleted, func(args ...any) {
-		target := args[0]
-		idx := enemyIndex(core, target.(*enemy.Enemy))
+		e, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return
+		}
+
+		idx := enemyIndex(core, e)
 		if idx < 0 {
 			return
 		}
@@ -97,9 +101,6 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 func (b buffer) Flush(core *core.Core, result *stats.Result) {
 	for e := 0; e < len(core.Combat.Enemies()); e++ {
 		for k, start := range b.activeReactions[e] {
-			if core.F-start <= 5 {
-				continue
-			}
 			interval := stats.ReactionStatusInterval{
 				Start: start,
 				End:   core.F,

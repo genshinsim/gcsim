@@ -99,41 +99,8 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		}
 	}, "stats-shield-break-log")
 
-	// // TODO: Should be replaced with targeted events (IE on shield stats changes + char swap)
-	// core.Events.Subscribe(event.OnTick, func(args ...any) {
-	// 	bonus := core.Player.Shields.ShieldBonus()
-
-	// 	for _, shield := range core.Player.Shields.List() {
-	// 		interval := stats.ShieldInterval{
-	// 			Start: core.F,
-	// 			End:   shield.Expiry(),
-	// 			HP:    make(map[string]float64),
-	// 		}
-
-	// 		var normalizedHP float64
-	// 		for _, e := range elements {
-	// 			hp := shield.ShieldStrength(e, bonus)
-	// 			interval.HP[e.String()] = hp
-	// 			normalizedHP += hp
-	// 		}
-	// 		interval.HP[normalized] = normalizedHP / float64(len(elements))
-
-	// 		prevIndex := len(out.shields[shield.Desc()]) - 1
-	// 		prevInterval := out.shields[shield.Desc()][prevIndex]
-	// 		if !same(prevInterval.HP, interval.HP) {
-	// 			if prevInterval.Start == interval.Start {
-	// 				// special case where shield gets recomputed on first frame
-	// 				out.shields[shield.Desc()][prevIndex] = interval
-	// 			} else {
-	// 				prevInterval.End = interval.Start
-	// 				out.shields[shield.Desc()][prevIndex] = prevInterval
-	// 				out.shields[shield.Desc()] = append(out.shields[shield.Desc()], interval)
-	// 			}
-	// 		}
-	// 	}
-	// }, "stats-shield-tick-log")
-
 	track := func() {
+		// TODO: update when shieldbonus changes
 		bonus := core.Player.Shields.ShieldBonus()
 		for _, shield := range core.Player.Shields.List() {
 			name := shield.Desc()
