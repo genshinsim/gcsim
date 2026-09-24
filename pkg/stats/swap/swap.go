@@ -49,4 +49,8 @@ func (b buffer) Flush(core *core.Core, result *stats.Result) {
 	}
 	result.ActiveCharacters = b.activeIntervals
 	result.ActiveCharacters = append(result.ActiveCharacters, interval)
+
+	for _, inter := range result.ActiveCharacters {
+		result.Characters[inter.Character].ActiveTime += inter.End - inter.Start
+	}
 }

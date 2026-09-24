@@ -84,11 +84,26 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		out.shields[name] = append(out.shields[name], interval)
 	}, "stats-shield-log")
 
-	// TODO: Should be replaced with targeted events (IE on shield stats changes + char swap)
-	core.Events.Subscribe(event.OnTick, func(args ...any) {
-		bonus := core.Player.Shields.ShieldBonus()
+	core.Events.Subscribe(event.OnShieldBreak, func(args ...any) {
+		shd := args[0].(shield.Shield)
+		name := shd.Desc()
+		if _, ok := out.shields[name]; !ok || len(out.shields[name]) == 0 {
+			return
+		}
 
+		prevIndex := len(out.shields[name]) - 1
+		prevInterval := out.shields[name][prevIndex]
+		if prevInterval.End > core.F {
+			prevInterval.End = core.F
+			out.shields[name][prevIndex] = prevInterval
+		}
+	}, "stats-shield-break-log")
+
+	track := func() {
+		// TODO: update when shieldbonus changes
+		bonus := core.Player.Shields.ShieldBonus()
 		for _, shield := range core.Player.Shields.List() {
+			name := shield.Desc()
 			interval := stats.ShieldInterval{
 				Start: core.F,
 				End:   shield.Expiry(),
@@ -103,20 +118,33 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 			}
 			interval.HP[normalized] = normalizedHP / float64(len(elements))
 
-			prevIndex := len(out.shields[shield.Desc()]) - 1
-			prevInterval := out.shields[shield.Desc()][prevIndex]
+			if _, ok := out.shields[name]; !ok {
+				out.shields[name] = make([]stats.ShieldInterval, 0)
+				out.shields[name] = append(out.shields[name], interval)
+				continue
+			}
+
+			prevIndex := len(out.shields[name]) - 1
+			prevInterval := out.shields[name][prevIndex]
 			if !same(prevInterval.HP, interval.HP) {
 				if prevInterval.Start == interval.Start {
-					// special case where shield gets recomputed on first frame
-					out.shields[shield.Desc()][prevIndex] = interval
+					out.shields[name][prevIndex] = interval
 				} else {
 					prevInterval.End = interval.Start
-					out.shields[shield.Desc()][prevIndex] = prevInterval
-					out.shields[shield.Desc()] = append(out.shields[shield.Desc()], interval)
+					out.shields[name][prevIndex] = prevInterval
+					out.shields[name] = append(out.shields[name], interval)
 				}
 			}
 		}
-	}, "stats-shield-tick-log")
+	}
+
+	core.Events.Subscribe(event.OnPlayerHit, func(args ...any) {
+		core.Tasks.Add(track, 0) // queue this to check at the end of the frame, after the shield has been updated
+	}, "stats-shield-hit-log")
+
+	core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
+		track()
+	}, "stats-shield-swap-log")
 
 	return &out, nil
 }
