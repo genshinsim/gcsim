@@ -282,6 +282,7 @@ const (
 	WaveridingWhirl                               // waveridingwhirl
 	Whiteblind                                    // whiteblind
 	WhiteIronGreatsword                           // whiteirongreatsword
+	WhitelakeFrostfeather                         // whitelakefrostfeather
 	WhiteTassel                                   // whitetassel
 	WindblumeOde                                  // windblumeode
 	WineAndSong                                   // wineandsong
@@ -532,6 +533,7 @@ var _WeaponNames = [...]string{
 	"waveridingwhirl",
 	"whiteblind",
 	"whiteirongreatsword",
+	"whitelakefrostfeather",
 	"whitetassel",
 	"windblumeode",
 	"wineandsong",
@@ -782,6 +784,7 @@ var _WeaponValues = [...]Weapon{
 	WaveridingWhirl,
 	Whiteblind,
 	WhiteIronGreatsword,
+	WhitelakeFrostfeather,
 	WhiteTassel,
 	WindblumeOde,
 	WineAndSong,

@@ -242,6 +242,7 @@ var weaponMap = map[string]string{
 	"waveridingwhirl":                 "UI_EquipIcon_Catalyst_Umpakati_Awaken",
 	"whiteblind":                      "UI_EquipIcon_Claymore_Exotic_Awaken",
 	"whiteirongreatsword":             "UI_EquipIcon_Claymore_Tin_Awaken",
+	"whitelakefrostfeather":           "UI_EquipIcon_Sword_Swanlake_Awaken",
 	"whitetassel":                     "UI_EquipIcon_Pole_Ruby_Awaken",
 	"windblumeode":                    "UI_EquipIcon_Bow_Fleurfair_Awaken",
 	"wineandsong":                     "UI_EquipIcon_Catalyst_Outlaw_Awaken",
