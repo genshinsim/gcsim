@@ -31,7 +31,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	m[attributes.ATKP] = 0.15 + float64(r)*0.05
 	m[attributes.EM] = 75 + float64(r)*25
 	onSkill := func(args ...any) {
-		if char.Index() == c.Player.Active() {
+		if char.Index() != c.Player.Active() {
 			return
 		}
 
