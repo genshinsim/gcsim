@@ -234,6 +234,7 @@ const (
 	SolarPearl                                    // solarpearl
 	SongOfBrokenPines                             // songofbrokenpines
 	SongOfStillness                               // songofstillness
+	SongOfTheVigil                                // songofthevigil
 	SplendorOfTranquilWaters                      // splendoroftranquilwaters
 	StaffOfHoma                                   // staffofhoma
 	StaffOfTheScarletSands                        // staffofthescarletsands
@@ -480,6 +481,7 @@ var _WeaponNames = [...]string{
 	"solarpearl",
 	"songofbrokenpines",
 	"songofstillness",
+	"songofthevigil",
 	"splendoroftranquilwaters",
 	"staffofhoma",
 	"staffofthescarletsands",
@@ -726,6 +728,7 @@ var _WeaponValues = [...]Weapon{
 	SolarPearl,
 	SongOfBrokenPines,
 	SongOfStillness,
+	SongOfTheVigil,
 	SplendorOfTranquilWaters,
 	StaffOfHoma,
 	StaffOfTheScarletSands,
