@@ -59,6 +59,7 @@ func main() {
 			bufio.NewReader(os.Stdin).ReadBytes('\n')
 			os.Exit(1)
 		}
+		return
 	}
 
 	if opt.shareKey != "" {
@@ -85,7 +86,7 @@ func update(version string) error {
 	}
 	updater, err := selfupdate.NewUpdater(selfupdate.Config{
 		Source:  src,
-		Filters: []string{"server_.+"},
+		Filters: []string{fmt.Sprintf("server_%s_%s", runtime.GOOS, runtime.GOARCH)},
 	})
 	if err != nil {
 		return fmt.Errorf("error creating updater: %w", err)
