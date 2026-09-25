@@ -2,6 +2,7 @@ package gorou
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -120,4 +121,29 @@ func (c *char) c6() {
 			},
 		})
 	}
+}
+
+func (c *char) c6Init() {
+	if c.Base.Cons < 6 {
+		return
+	}
+
+	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
+		atk, ok := args[1].(*info.AttackEvent)
+		if !ok {
+			return
+		}
+
+		if atk.Info.AttackTag != attacks.AttackTagDirectLunarCrystallize {
+			return
+		}
+
+		char := c.Core.Player.Chars()[atk.Info.ActorIndex]
+
+		if !char.StatModIsActive(c6key) {
+			return
+		}
+
+		atk.Snapshot.Stats[attributes.CD] += c.c6Buff[attributes.CD]
+	}, "gorou-c6-on-lunar-crystallize")
 }
