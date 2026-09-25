@@ -25,6 +25,9 @@ func (c *char) a1Init() {
 		return
 	}
 
+	c.a1Buff = make([]float64, attributes.EndStatType)
+	c.a1BuffGleam = make([]float64, attributes.EndStatType)
+
 	c.a1Buff[attributes.CR] = a1CR + c.c6CR()
 	c.a1Buff[attributes.CD] = a1CD + c.c6CD()
 
