@@ -20,46 +20,17 @@ const (
 	a1EM = 50
 )
 
-func (c *char) a1() {
+func (c *char) a1Init() {
 	if c.Base.Ascension < 1 {
 		return
 	}
 
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.CR] = a1CR + c.c6CR()
-	m[attributes.CD] = a1CD + c.c6CD()
-
-	n := make([]float64, attributes.EndStatType)
+	c.a1Buff[attributes.CR] = a1CR + c.c6CR()
+	c.a1Buff[attributes.CD] = a1CD + c.c6CD()
 
 	if c.Core.Player.GetMoonsignLevel() >= 2 {
-		n[attributes.EM] = a1EM + c.c6EM()
+		c.a1BuffGleam[attributes.EM] = a1EM + c.c6EM()
 	}
-
-	for _, char := range c.Core.Player.Chars() {
-		if char.Index() == c.Index() {
-			continue
-		}
-		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag("illuga-a1-crit", 20*60),
-			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
-				if atk.Info.Element != attributes.Geo {
-					return nil
-				}
-
-				return m
-			},
-		})
-
-		if c.Core.Player.GetMoonsignLevel() >= 2 {
-			char.AddStatMod(character.StatMod{
-				Base: modifier.NewBaseWithHitlag("illuga-a1-em", 20*60),
-				Amount: func() []float64 {
-					return n
-				},
-			})
-		}
-	}
-
 	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.AttackTag != attacks.AttackTagReactionLunarCrystallize {
@@ -73,6 +44,37 @@ func (c *char) a1() {
 		atk.Snapshot.Stats[attributes.CR] += a1CR + c.c6CR()
 		atk.Snapshot.Stats[attributes.CD] += a1CD + c.c6CD()
 	}, "illuga-a1-lunarcrystallize")
+}
+
+func (c *char) a1() {
+	if c.Base.Ascension < 1 {
+		return
+	}
+
+	for _, char := range c.Core.Player.Chars() {
+		if char.Index() == c.Index() {
+			continue
+		}
+		char.AddAttackMod(character.AttackMod{
+			Base: modifier.NewBaseWithHitlag("illuga-a1-crit", 20*60),
+			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+				if atk.Info.Element != attributes.Geo {
+					return nil
+				}
+
+				return c.a1Buff
+			},
+		})
+
+		if c.Core.Player.GetMoonsignLevel() >= 2 {
+			char.AddStatMod(character.StatMod{
+				Base: modifier.NewBaseWithHitlag("illuga-a1-em", 20*60),
+				Amount: func() []float64 {
+					return c.a1BuffGleam
+				},
+			})
+		}
+	}
 }
 
 func (c *char) a4Count() int {

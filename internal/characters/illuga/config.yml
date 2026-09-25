@@ -14,12 +14,12 @@ talents:
   - plungeLow: attack(Low/High Plunge DMG) # {}/{}
   - plungeHigh: attack(Low/High Plunge DMG|1) # {}/{}
 
-  - skillTapEm: skill(Press DMG) # {} Elemental Mastery+{} DEF
+  - skillTapEM: skill(Press DMG) # {} Elemental Mastery+{} DEF
   - skillTapDef: skill(Press DMG|1) # {} Elemental Mastery+{} DEF
-  - skillHoldEm: skill(Hold DMG) # {} Elemental Mastery+{} DEF
+  - skillHoldEM: skill(Hold DMG) # {} Elemental Mastery+{} DEF
   - skillHoldDef: skill(Hold DMG|1) # {} Elemental Mastery+{} DEF
 
-  - burstEm: burst(Skill DMG) # {} Elemental Mastery+{} DEF
+  - burstEM: burst(Skill DMG) # {} Elemental Mastery+{} DEF
   - burstDef: burst(Skill DMG|1) # {} Elemental Mastery+{} DEF
   - burstBuffGeo: burst(Geo DMG Bonus)
   - burstBuffLcr: burst(Lunar-Crystallize Reaction DMG Bonus)

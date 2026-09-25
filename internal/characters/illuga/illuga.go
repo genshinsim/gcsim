@@ -12,6 +12,8 @@ type char struct {
 
 	nightingalesSong               int
 	nightingalesSongExtraConstruct int
+	a1Buff                         []float64
+	a1BuffGleam                    []float64
 	c2QuillCounter                 int
 	c4Src                          int
 }
@@ -33,6 +35,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.burstBuffInit()
+	c.a1Init()
 	c.c1Init()
 	return nil
 }

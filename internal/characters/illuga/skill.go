@@ -43,7 +43,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Dawnbearing Songbird Tap",
+		Abil:       "Dawnbearing Songbird (Tap)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,
@@ -67,7 +67,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.particleCB,
 	)
 
-	c.a1()
+	c.Core.Tasks.Add(c.a1, 24)
 
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 24)
 
@@ -82,7 +82,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 func (c *char) skillHold() (action.Info, error) {
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
-		Abil:       "Dawnbearing Songbird Hold",
+		Abil:       "Dawnbearing Songbird (Hold)",
 		AttackTag:  attacks.AttackTagElementalArt,
 		ICDTag:     attacks.ICDTagNone,
 		ICDGroup:   attacks.ICDGroupDefault,

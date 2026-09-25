@@ -39,53 +39,53 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		Element:    attributes.Geo,
 		Durability: 25,
 	}
-	c.Core.Tasks.Add(func() {
-		ai.FlatDmg += burstEm[c.TalentLvlBurst()] * c.Stat(attributes.EM)
-		ai.FlatDmg += burstDef[c.TalentLvlBurst()] * c.TotalDef(false)
-	}, burstHitmark)
 
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6.5)
 
-	c.AddStatus(burstKey, 20*60, true)
+	c.Core.Tasks.Add(func() {
+		ai.FlatDmg += burstEm[c.TalentLvlBurst()] * c.Stat(attributes.EM)
+		ai.FlatDmg += burstDef[c.TalentLvlBurst()] * c.TotalDef(false)
 
-	c.c2Reset()
+		c.AddStatus(burstKey, 20*60, true)
 
-	c.nightingalesSong = 21
+		c.c2Reset()
+		c.c4(c.Core.F)()
 
-	c.nightingalesSongExtraConstruct = 15
+		c.nightingalesSong = 21
 
-	_, constructs := c.Core.Constructs.ConstructsByType(construct.GeoConstructInvalid)
+		c.nightingalesSongExtraConstruct = 15
 
-	playerPos := c.Core.Combat.Player().Pos()
+		_, constructs := c.Core.Constructs.ConstructsByType(construct.GeoConstructInvalid)
 
-	for _, construct := range constructs {
-		if c.nightingalesSongExtraConstruct < 1 {
-			break
+		playerPos := c.Core.Combat.Player().Pos()
+
+		for _, construct := range constructs {
+			if c.nightingalesSongExtraConstruct <= 0 {
+				break
+			}
+
+			if playerPos.Distance(construct.Pos()) > 30 {
+				continue
+			}
+
+			c.nightingalesSongExtraConstruct -= 5
+
+			c.nightingalesSong += 5
 		}
 
-		if playerPos.Distance(construct.Pos()) > 30 {
-			continue
-		}
-
-		c.nightingalesSongExtraConstruct -= 5
-
-		c.nightingalesSong += 5
-	}
+		c.Core.QueueAttack(
+			ai,
+			ap,
+			0,
+			0,
+		)
+	}, burstHitmark)
 
 	c.a1()
-
-	c.c4(c.Core.F)()
 
 	c.SetCD(action.ActionBurst, 15*60)
 
 	c.ConsumeEnergy(6)
-
-	c.Core.QueueAttack(
-		ai,
-		ap,
-		burstHitmark,
-		burstHitmark,
-	)
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
@@ -110,7 +110,7 @@ func (c *char) burstBuffInit() {
 			return
 		}
 
-		if c.nightingalesSong < 1 {
+		if c.nightingalesSong <= 0 {
 			return
 		}
 
@@ -136,25 +136,25 @@ func (c *char) burstBuffInit() {
 
 		c.c2Increment()
 
-		if c.nightingalesSong < 1 {
+		if c.nightingalesSong <= 0 {
 			c.DeleteStatus(burstKey)
 		}
 
 		if c.Core.Flags.LogDebug {
-			c.Core.Log.NewEvent("Illuga Quill proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
+			c.Core.Log.NewEvent("Illuga Song proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
 				Write("before", atk.Info.FlatDmg).
 				Write("addition", amt).
 				Write("effect_ends_at", c.StatusExpiry(burstKey)).
-				Write("quill_left", c.nightingalesSong)
+				Write("songs_left", c.nightingalesSong)
 		}
-	}, "illuga-burst-quill")
+	}, "illuga-burst-song")
 
 	c.Core.Events.Subscribe(event.OnConstructSpawned, func(args ...any) {
-		if c.nightingalesSongExtraConstruct < 1 {
+		if c.nightingalesSongExtraConstruct <= 0 {
 			return
 		}
 
-		if c.StatusIsActive(burstKey) {
+		if !c.StatusIsActive(burstKey) {
 			return
 		}
 

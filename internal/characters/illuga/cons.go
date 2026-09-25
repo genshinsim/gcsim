@@ -125,17 +125,13 @@ func (c *char) c4(src int) func() {
 			return
 		}
 
-		for _, char := range c.Core.Player.Chars() {
-			if char.Index() == c.Index() {
-				continue
-			}
-			char.AddStatMod(character.StatMod{
-				Base: modifier.NewBaseWithHitlag("illuga-c4", 1.1*60),
-				Amount: func() []float64 {
-					return m
-				},
-			})
-		}
+		char := c.Core.Player.ActiveChar()
+		char.AddStatMod(character.StatMod{
+			Base: modifier.NewBaseWithHitlag("illuga-c4", 1.1*60),
+			Amount: func() []float64 {
+				return m
+			},
+		})
 
 		c.QueueCharTask(c.c4(src), 1*60)
 	}
