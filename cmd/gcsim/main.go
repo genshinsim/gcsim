@@ -97,6 +97,7 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 			bufio.NewReader(os.Stdin).ReadBytes('\n')
 			os.Exit(1)
 		}
+		return nil
 	}
 
 	_, err := os.Stat(opt.config)
@@ -351,7 +352,7 @@ func update(version string) error {
 	}
 	updater, err := selfupdate.NewUpdater(selfupdate.Config{
 		Source:  src,
-		Filters: []string{"gcsim_.+"},
+		Filters: []string{fmt.Sprintf("gcsim_%s_%s", runtime.GOOS, runtime.GOARCH)},
 	})
 	if err != nil {
 		return fmt.Errorf("error creating updater: %w", err)
