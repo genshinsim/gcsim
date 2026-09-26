@@ -2,17 +2,21 @@ package shenhe
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
-const c4BuffKey = "shenhe-c4"
+const (
+	c2BuffKey = "shenhe-c2"
+	c4BuffKey = "shenhe-c4"
+)
 
 func (c *char) c2(active *character.CharWrapper, dur int) {
 	active.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("shenhe-c2", dur),
+		Base: modifier.NewBaseWithHitlag(c2BuffKey, dur),
 		Amount: func(ae *info.AttackEvent, _ info.Target) []float64 {
 			if ae.Info.Element != attributes.Cryo {
 				return nil
@@ -20,6 +24,34 @@ func (c *char) c2(active *character.CharWrapper, dur int) {
 			return c.c2buff
 		},
 	})
+}
+
+func (c *char) c2Init() {
+	if c.Base.Cons < 2 {
+		return
+	}
+
+	c.c2buff = make([]float64, attributes.EndStatType)
+	c.c2buff[attributes.CD] = 0.15
+
+	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
+		atk, ok := args[1].(*info.AttackEvent)
+		if !ok {
+			return
+		}
+
+		if !atk.Info.AttackTag.IsStellarReact() {
+			return
+		}
+
+		char := c.Core.Player.Chars()[atk.Info.ActorIndex]
+
+		if !char.StatModIsActive(c2BuffKey) {
+			return
+		}
+
+		atk.Snapshot.Stats[attributes.CD] += c.c2buff[attributes.CD]
+	}, "shenhe-c2-on-stellar")
 }
 
 // When characters under the effect of Icy Quill applied by Shenhe trigger its DMG Bonus effects, Shenhe will gain a Skyfrost Mantra stack:
