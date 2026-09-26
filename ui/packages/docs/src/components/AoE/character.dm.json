@@ -15070,7 +15070,7 @@
       "name": "N3-1",
       "shape": "Box",
       "center": "Player",
-      "offset_y": -0.2,
+      "offset_y": 0.2,
       "box_x": 3.6,
       "box_y": 2.5
     },

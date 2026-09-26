@@ -27,9 +27,7 @@ func (c *char) a1Init() {
 		return
 	}
 	c.Core.Events.Subscribe(event.OnMoondriftHarmony, func(args ...any) {
-		if c.Core.Player.GetMoonsignLevel() >= 2 {
-			c.AddStatus(a1Key, 4*60, true)
-		}
+		c.AddStatus(a1Key, 4*60, true)
 	}, "zibai-a1")
 }
 
