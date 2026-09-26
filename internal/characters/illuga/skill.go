@@ -106,7 +106,7 @@ func (c *char) skillHold() (action.Info, error) {
 		c.particleCB,
 	)
 
-	c.a1()
+	c.Core.Tasks.Add(c.a1, 33)
 
 	c.SetCDWithDelay(action.ActionSkill, 15*60, 33)
 
