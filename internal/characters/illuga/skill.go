@@ -53,7 +53,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Durability: 25,
 	}
 	c.Core.Tasks.Add(func() {
-		ai.FlatDmg += skillTapEm[c.TalentLvlSkill()] * c.Stat(attributes.EM)
+		ai.FlatDmg += skillTapEM[c.TalentLvlSkill()] * c.Stat(attributes.EM)
 		ai.FlatDmg += skillTapDef[c.TalentLvlSkill()] * c.TotalDef(false)
 	}, skillTapHitmark)
 
@@ -92,7 +92,7 @@ func (c *char) skillHold() (action.Info, error) {
 		Durability: 25,
 	}
 	c.Core.Tasks.Add(func() {
-		ai.FlatDmg += skillHoldEm[c.TalentLvlSkill()] * c.Stat(attributes.EM)
+		ai.FlatDmg += skillHoldEM[c.TalentLvlSkill()] * c.Stat(attributes.EM)
 		ai.FlatDmg += skillHoldDef[c.TalentLvlSkill()] * c.TotalDef(false)
 	}, skillHoldHitmark)
 

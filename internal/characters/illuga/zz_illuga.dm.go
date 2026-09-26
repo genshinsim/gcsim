@@ -194,7 +194,7 @@ var (
 		4.27041,
 	}
 	// skill: DawnbearingSongbird - Press DMG: {0} Elemental Mastery+{1} DEF
-	skillTapEm = []float64{
+	skillTapEM = []float64{
 		4.8256,
 		5.18752,
 		5.54944,
@@ -230,7 +230,7 @@ var (
 		5.7304,
 	}
 	// skill: DawnbearingSongbird - Hold DMG: {2} Elemental Mastery+{3} DEF
-	skillHoldEm = []float64{
+	skillHoldEM = []float64{
 		6.032,
 		6.4844,
 		6.9368,
@@ -266,7 +266,7 @@ var (
 		7.163,
 	}
 	// burst: ShadowlessReflection - Skill DMG: {0} Elemental Mastery+{1} DEF
-	burstEm = []float64{
+	burstEM = []float64{
 		8.272,
 		8.8924,
 		9.5128,
