@@ -1,8 +1,4 @@
-import {
-	collapseAllNested,
-	defaultStyles,
-	JsonView,
-} from "react-json-view-lite";
+import { allExpanded, defaultStyles, JsonView } from "react-json-view-lite";
 import "react-json-view-lite/dist/index.css";
 import { cn } from "../lib/utils";
 
@@ -28,8 +24,10 @@ const tintedStructuralClasses = {
 	// dialog's themed `bg-g-surface` shows through in both light and dark mode.
 	container: cn(defaultStyles.container, "bg-transparent!"),
 	clickableLabel: cn(defaultStyles.clickableLabel, "text-g-accent"),
-	collapseIcon: cn(defaultStyles.collapseIcon, "text-g-ink-mute"),
-	expandIcon: cn(defaultStyles.expandIcon, "text-g-ink-mute"),
+	// The icon classes bundle a hardcoded `#000`; like the container, the token
+	// only wins with `!` since both are equal-specificity single-class selectors.
+	collapseIcon: cn(defaultStyles.collapseIcon, "text-g-ink-mute!"),
+	expandIcon: cn(defaultStyles.expandIcon, "text-g-ink-mute!"),
 	collapsedContent: cn(defaultStyles.collapsedContent, "text-g-ink-mute"),
 };
 
@@ -68,7 +66,7 @@ export function SampleEventDetails({
 				<JsonView
 					data={data as object}
 					style={themedStyles}
-					shouldExpandNode={collapseAllNested}
+					shouldExpandNode={allExpanded}
 				/>
 			) : raw ? (
 				<pre className="whitespace-pre-wrap break-words">{raw}</pre>
