@@ -235,7 +235,7 @@ export function CharacterCard({
 						charCardBG(char.element ?? "")
 					}
 				>
-					<div className="flex flex-row gap-1 absolute top-1 right-1">
+					<div className="flex flex-row gap-1 absolute top-1 right-1 z-20">
 						<div className="flex flex-col gap-1">
 							<Button
 								variant="secondary"
