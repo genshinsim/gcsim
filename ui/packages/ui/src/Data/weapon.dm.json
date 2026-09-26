@@ -77,6 +77,13 @@
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Qoyllorsnova_Awaken"
     },
+    "ateaspoonoftranscendence": {
+      "id": 12516,
+      "key": "ateaspoonoftranscendence",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CLAYMORE",
+      "image_name": "UI_EquipIcon_Claymore_CrystallineSword_Awaken"
+    },
     "athameartis": {
       "id": 11518,
       "key": "athameartis",

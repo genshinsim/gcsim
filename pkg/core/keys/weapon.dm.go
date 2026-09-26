@@ -54,6 +54,7 @@ const (
 	AquilaFavonia                                 // aquilafavonia
 	AshGravenDrinkingHorn                         // ashgravendrinkinghorn
 	AstralVulturesCrimsonPlumage                  // astralvulturescrimsonplumage
+	ATeaspoonOfTranscendence                      // ateaspoonoftranscendence
 	AthameArtis                                   // athameartis
 	AThousandBlazingSuns                          // athousandblazingsuns
 	AThousandFloatingDreams                       // athousandfloatingdreams
@@ -302,6 +303,7 @@ var _WeaponNames = [...]string{
 	"aquilafavonia",
 	"ashgravendrinkinghorn",
 	"astralvulturescrimsonplumage",
+	"ateaspoonoftranscendence",
 	"athameartis",
 	"athousandblazingsuns",
 	"athousandfloatingdreams",
@@ -550,6 +552,7 @@ var _WeaponValues = [...]Weapon{
 	AquilaFavonia,
 	AshGravenDrinkingHorn,
 	AstralVulturesCrimsonPlumage,
+	ATeaspoonOfTranscendence,
 	AthameArtis,
 	AThousandBlazingSuns,
 	AThousandFloatingDreams,
