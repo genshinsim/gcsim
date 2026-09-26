@@ -8,7 +8,6 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
-	"path/filepath"
 	"reflect"
 	"regexp"
 	"runtime"
@@ -17,7 +16,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/adrg/xdg"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/shizukayuki/excel-hk4e"
 	"github.com/urfave/cli/v3"
@@ -60,9 +58,6 @@ var app = &cli.Command{
 			HideDefault: true,
 			Value: []string{
 				"github:iam-akuzihs/excel/live",
-				filepath.Join(xdg.Home, "git", "GenshinData"),
-				"github:DimbreathBot/AnimeGameData/main",
-				"gitlab:Dimbreath/AnimeGameData2/main",
 			},
 			Sources: cli.NewValueSourceChain(
 				cli.EnvVar("DM_REPO"),
@@ -301,6 +296,12 @@ func (c *Compiled) build(config *Config) error {
 		c.ICDGroup[name] = att
 	}
 
+	for _, attr := range config.Attributes {
+		if !slices.Contains(abilities, attr.Type) && !strings.HasPrefix(attr.Type, "effect") {
+			return fmt.Errorf("unknown ability type: %v", attr.Type)
+		}
+	}
+
 	for _, abil := range config.Abilities {
 		if !slices.Contains(abilities, abil.Name) {
 			return fmt.Errorf("unknown ability name: %v", abil.Name)
@@ -495,10 +496,6 @@ func run(ctx context.Context, cmd *cli.Command) error {
 }
 
 func configTemplate(ctx context.Context, cmd *cli.Command) error {
-	if err := fetch(ctx, cmd); err != nil {
-		return err
-	}
-
 	cfg := &Config{
 		Name: excel.SlugLower(cmd.String("name")),
 		Override: Override{
@@ -506,6 +503,15 @@ func configTemplate(ctx context.Context, cmd *cli.Command) error {
 			Depot: uint32(cmd.Int("depot")),
 		},
 	}
+	if cfg.Name == "" && cfg.Override.Id == 0 && cfg.Override.Depot == 0 {
+		cli.ShowSubcommandHelp(cmd)
+		return nil
+	}
+
+	if err := fetch(ctx, cmd); err != nil {
+		return err
+	}
+
 	var err error
 	if cfg.Artifact, err = buildArtifactSpec(cfg); err != nil {
 		Log(slog.LevelError, "%v: %v", KindArtifact, err)

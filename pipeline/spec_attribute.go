@@ -12,6 +12,7 @@ type AttributeSpec struct {
 	Type      string      `yaml:"type,omitempty"`
 	Name      string      `yaml:"name,omitempty"`
 	Desc      string      `yaml:"desc,omitempty"`
+	AltDesc   string      `yaml:"alt_desc,omitempty"`
 	ParamDesc string      `yaml:"param_desc,omitempty"`
 	Config    string      `yaml:"config,omitempty"`
 	Index     []int       `yaml:"index,flow,omitempty"`
@@ -61,6 +62,7 @@ func IndexFromParams(s string) ([]int, string) {
 
 func (s *AttributeSpec) SetValues(count int, level func(i int) []float64) {
 	s.Desc = cleanText(s.Desc)
+	s.AltDesc = cleanText(s.AltDesc)
 	s.Const = make([]float64, len(s.Index))
 	s.Values = make([][]float64, len(s.Index))
 	for ind, param := range s.Index {
@@ -102,15 +104,19 @@ func ExtractLinks(s string) []uint32 {
 	return links
 }
 
-func (s *AttributeSpec) EmitDesc(prefix string) string {
+func (s *AttributeSpec) EmitDesc(prefix, desc, suffix string) string {
 	b := bytes.NewBuffer(nil)
 	fmt.Fprintf(b, "%s: %s", s.Type, s.Name)
 	if s.Config != "" {
 		fmt.Fprintf(b, " # %s", s.Config)
 	}
+	if suffix != "" {
+		b.WriteString(" (")
+		b.WriteString(suffix)
+		b.WriteString(")")
+	}
 	b.WriteString("\n\n")
 
-	desc := s.Desc
 	desc = wrapText(desc, 80)
 	for line := range strings.Lines(desc) {
 		line = strings.TrimSpace(line)
