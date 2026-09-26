@@ -53,7 +53,6 @@ if (localStorage.getItem(userAppDataKey)) {
 	persistedState.app = Object.assign(persistedState.app, {
 		sampleOnLoad: s.sampleOnLoad ?? false,
 		cfg: s.cfg ?? "",
-		team: s.team ?? [],
 	});
 }
 
@@ -86,7 +85,6 @@ store.subscribe(() => {
 		JSON.stringify({
 			sampleOnLoad: store.getState().app.sampleOnLoad,
 			cfg: store.getState().app.cfg,
-			team: store.getState().app.team,
 		}),
 	);
 
