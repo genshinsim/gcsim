@@ -1,16 +1,26 @@
-import type { Character } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import type React from "react";
+
+// TEMPORARY: types for the TeamComposer add/remove crutch.
+export interface ImportedCharacterOption {
+	key: string;
+	label?: string;
+	character: model.Character;
+}
+
+export interface TeamComposerCharacterSource {
+	createCharacter: (key: string) => model.Character;
+	imported?: ImportedCharacterOption[];
+}
 
 export interface EditorProps {
 	config: string;
 	setConfig: (v: string) => void;
 	isValid: boolean;
 	error: string | null;
-	parsedTeam: Character[];
-	run: () => void;
+	parsedTeam: model.Character[];
 	settings?: React.ReactNode;
-	showTeam?: boolean;
-	showTools?: boolean;
+	teamCharacters?: TeamComposerCharacterSource;
 	showThemeSelector?: boolean;
 }
 

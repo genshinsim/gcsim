@@ -246,6 +246,7 @@
 		"tools_import_post_enka": "数据检索成功。已导入以下角色： <0></0>",
 		"tools_import_warning": "导入将替换 {{src}} 的任何现有导入。此操作无法逆转。",
 		"team": "配队",
+		"tips": "提示",
 		"video": "视频",
 		"video_post": "来了解更多。",
 		"video_pre": "开始添加角色到你的队伍中吧。查看这个",

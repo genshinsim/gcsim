@@ -246,6 +246,7 @@
 		"tools_import_post_enka": "Die Daten wurden erfolgreich abgerufen. Die folgenden Figuren wurden importiert: <0></0>",
 		"tools_import_warning": "Das Importieren wird alle bestehenden Importe von {{ src }} überschreiben. Dieser Vorgang kann nicht rückgängig gemacht werden.",
 		"team": "Team",
+		"tips": "Tipps",
 		"video": "Video",
 		"video_post": " an um anzufangen.",
 		"video_pre": "Fügen Sie Figuren zu ihrem Team hinzu um zu beginnen. Schauen Sie sich dieses ",
