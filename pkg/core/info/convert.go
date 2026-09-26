@@ -60,7 +60,7 @@ func ConvertRegion(in model.AssocType) ZoneType {
 		model.AssocType_ASSOC_TYPE_NATLAN:         ZoneNatlan,
 		model.AssocType_ASSOC_TYPE_SNEZHNAYA:      ZoneSnezhnaya,
 		model.AssocType_ASSOC_TYPE_NODKRAI:        ZoneNodKrai,
-		model.AssocType_ASSOC_TYPE_NODKRAI_ZIBAI:  ZoneNodKrai, // TODO: is zibai not liyue?
+		model.AssocType_ASSOC_TYPE_NODKRAI_ZIBAI:  ZoneNodKraiZibai, // Zibai is both Liyue and NodKrai
 		model.AssocType_ASSOC_TYPE_SNEZHNAYA_STAR: ZoneSnezhnaya,
 	}[in]; ok {
 		return out
