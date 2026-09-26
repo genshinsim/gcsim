@@ -11,7 +11,7 @@ import {
 	useAppSelector,
 } from "../../Stores/store";
 import { viewerActions } from "../../Stores/viewerSlice";
-import { runSim } from "../Simulator/Toolbox";
+import { runSim } from "../Simulator/runSim";
 import UpgradeDialog from "./UpgradeDialog";
 import Viewer, { type ViewerActions } from "./Viewer";
 

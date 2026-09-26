@@ -55,9 +55,9 @@ const meta: Meta<typeof Editor> = {
 	decorators: [
 		(Story, context) => {
 			const toggles = context.parameters.editorToggles ?? {
-				team: false,
-				nameSearch: false,
-				tips: false,
+				team: true,
+				nameSearch: true,
+				tips: true,
 			};
 			localStorage.setItem(TOGGLES_KEY, JSON.stringify(toggles));
 			return (
@@ -72,7 +72,9 @@ const meta: Meta<typeof Editor> = {
 		setConfig: () => {},
 		isValid: true,
 		error: null,
-		parsedTeam: [],
+		parsedTeam: sampleTeam,
+		teamCharacters,
+		showThemeSelector: true,
 	},
 };
 

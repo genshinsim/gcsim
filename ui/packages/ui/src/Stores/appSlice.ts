@@ -1,20 +1,16 @@
-import type { Character } from "@gcsim/types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { charToCfg } from "../Pages/Simulator/helper";
 
 export interface AppState {
 	isSettingsOpen: boolean;
 	sampleOnLoad: boolean;
 
 	cfg: string;
-	team: Character[];
 }
 
 export const initialState: AppState = {
 	isSettingsOpen: false,
 	sampleOnLoad: false,
 	cfg: "",
-	team: [],
 };
 
 export const defaultStats = [
@@ -24,22 +20,6 @@ export const maxStatLength = defaultStats.length;
 
 export const charLinesRegEx =
 	/^(\w+) (?:char|add) (?:lvl|weapon|set|stats).+$(?:\r\n|\r|\n)?/gm;
-
-function cfgFromTeam(team: Character[], cfg: string): string {
-	let next = "";
-	//generate new
-	team.forEach((c) => {
-		next += charToCfg(c) + "\n";
-	});
-
-	//purge existing characters:
-	cfg = cfg.replace(charLinesRegEx, "");
-	cfg = next + cfg;
-	//stirp extra new lines
-	cfg = cfg.replace(/(\r\n|\r|\n){2,}/g, "$1\n");
-
-	return cfg;
-}
 
 export const appSlice = createSlice({
 	name: "app",
@@ -81,45 +61,6 @@ export const appSlice = createSlice({
 
 			//strip extra new lines
 			state.cfg = next.replace(/(\r\n|\r|\n){2,}/g, "$1\n");
-			return state;
-		},
-		addCharacter: (state, action: PayloadAction<{ character: Character }>) => {
-			if (state.team.length >= 4) return state;
-			state.team.push(action.payload.character);
-
-			const cfg = cfgFromTeam(state.team, state.cfg);
-			state.cfg = cfg;
-			return state;
-		},
-		deleteCharacter: (state, action: PayloadAction<{ index: number }>) => {
-			if (
-				action.payload.index < 0 ||
-				action.payload.index >= state.team.length
-			) {
-				return state;
-			}
-			state.team.splice(action.payload.index, 1);
-			const cfg = cfgFromTeam(state.team, state.cfg);
-			state.cfg = cfg;
-			return state;
-		},
-		editCharacter: (
-			state,
-			action: PayloadAction<{ char: Character; index: number }>,
-		) => {
-			if (
-				action.payload.index < 0 ||
-				action.payload.index >= state.team.length
-			) {
-				return state;
-			}
-			state.team[action.payload.index] = action.payload.char;
-			const cfg = cfgFromTeam(state.team, state.cfg);
-			state.cfg = cfg;
-			return state;
-		},
-		setTeam: (state, action: PayloadAction<Character[]>) => {
-			state.team = action.payload;
 			return state;
 		},
 	},

@@ -1,178 +1,108 @@
+import { Editor, ExecutorProvider, useValidation } from "@gcsim/components";
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
-import { Alert, AlertDescription, AlertTitle } from "@gcsim/primitives";
-import type { Character } from "@gcsim/types";
-import { debounce } from "lodash-es";
-import { useEffect, useRef, useState } from "react";
-import { Trans, useTranslation } from "react-i18next";
-import { ConfigEditor, SectionDivider, Viewport } from "../../Components";
+import type { model, SimResults } from "@gcsim/types";
+import { throttle } from "lodash-es";
+import React from "react";
+import { useNavigate } from "react-router";
+import { Viewport } from "../../Components";
+import { CharMap } from "../../Data";
 import { appActions, defaultStats } from "../../Stores/appSlice";
 import {
 	type RootState,
 	useAppDispatch,
 	useAppSelector,
 } from "../../Stores/store";
-import { OmnibarBlock } from "./Components/OmnibarBlock";
-import { Team } from "./Team";
-import { Toolbox } from "./Toolbox";
-import { ActionListTooltip, TeamBuilderTooltip } from "./Tooltips";
+import { viewerActions } from "../../Stores/viewerSlice";
+import { VIEWER_THROTTLE } from "../Viewer";
+import { EditorSettings } from "./EditorSettings";
+import {
+	ImportedCharactersProvider,
+	useImportedCharacters,
+} from "./ImportedCharacters";
 
-export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
-	const { t } = useTranslation();
+function newCharFromKey(key: string): model.Character {
+	return {
+		name: key,
+		level: 80,
+		max_level: 90,
+		element: CharMap[key].element,
+		cons: 0,
+		weapon: { name: "dullblade", refine: 1, level: 1, max_level: 20 },
+		talents: { attack: 6, skill: 6, burst: 6 },
+		stats: [...defaultStats],
+		snapshot: [...defaultStats],
+		sets: {},
+	};
+}
+
+function SimulatorEditor({ cfg }: { cfg: string }) {
 	const dispatch = useAppDispatch();
-	const { settings, cfg } = useAppSelector((state: RootState) => {
-		return {
-			cfg: state.app.cfg,
-			settings: state.user.data.settings,
-		};
-	});
+	const { imported } = useImportedCharacters();
+	const { isValid, error, parsedTeam } = useValidation(cfg);
 
-	const onChange = (newCfg: string) => {
+	const setConfig = (newCfg: string) => {
 		dispatch(appActions.setCfg({ cfg: newCfg, keepTeam: false }));
 	};
 
-	// check worker ready state every 250ms so run button becomes available when workers do
-	const [isReady, setReady] = useState<boolean | null>(null);
-	useEffect(() => {
-		const interval = setInterval(() => {
-			exec()
-				.ready()
-				.then((res) => setReady(res));
-		}, 250);
-		return () => clearInterval(interval);
-	}, [exec]);
-
-	const [err, setErr] = useState("");
-
-	// will detect changes in the redux config and validate with the executor
-	// validated == true means we had a successful validation check run, not that it is valid
-	const validated = useConfigValidateListener(exec, cfg, isReady, setErr);
+	const teamCharacters = React.useMemo(
+		() => ({
+			createCharacter: newCharFromKey,
+			imported: Object.entries(imported).map(([key, character]) => ({
+				key,
+				label: character.name,
+				character: character as model.Character,
+			})),
+		}),
+		[imported],
+	);
 
 	return (
-		<Viewport className="flex flex-col gap-2">
-			<div className="flex flex-col gap-2">
-				<div className="flex flex-col">
-					{settings.showBuilder ? (
-						<>
-							<SectionDivider>
-								<Trans>simple.team</Trans>
-							</SectionDivider>
-							<TeamBuilderTooltip />
-							<Team />
-						</>
-					) : null}
-
-					{settings.showNameSearch ? (
-						<>
-							<SectionDivider>
-								<Trans>simple.name_search</Trans>
-							</SectionDivider>
-							<OmnibarBlock />
-						</>
-					) : null}
-
-					<SectionDivider>
-						<Trans>simple.action_list</Trans>
-					</SectionDivider>
-
-					<ActionListTooltip />
-
-					<ConfigEditor
-						cfg={cfg}
-						onChange={onChange}
-						hideThemeSelector={false}
-					/>
-
-					<div className="sticky bottom-0 bg-g-canvas flex flex-col gap-y-1 z-10">
-						{err !== "" && cfg !== "" ? (
-							<div className="pl-2 pr-2 pt-2 mt-1">
-								<Alert variant="destructive">
-									<AlertTitle>
-										{t("viewer.error_encountered") + t("viewer.config_invalid")}
-									</AlertTitle>
-									<AlertDescription>
-										<pre className="whitespace-pre-wrap pl-5">{err}</pre>
-									</AlertDescription>
-								</Alert>
-							</div>
-						) : null}
-						<Toolbox
-							exec={exec}
-							cfg={cfg}
-							isReady={isReady === true}
-							isValid={err === "" && validated}
-						/>
-					</div>
-				</div>
-			</div>
-		</Viewport>
+		<Editor
+			config={cfg}
+			setConfig={setConfig}
+			isValid={isValid}
+			error={error}
+			parsedTeam={parsedTeam}
+			teamCharacters={teamCharacters}
+			settings={<EditorSettings />}
+			showThemeSelector
+		/>
 	);
 }
 
-export function useConfigValidateListener(
-	exec: ExecutorSupplier<Executor>,
-	cfg: string,
-	isReady: boolean | null,
-	setErr: (str: string) => void,
-): boolean {
+export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
 	const dispatch = useAppDispatch();
-	const [validated, setValidated] = useState(false);
-	const debounced = useRef(debounce((x: () => void) => x(), 200));
+	const navigate = useNavigate();
+	const cfg = useAppSelector((state: RootState) => state.app.cfg);
 
-	useEffect(() => {
-		if (!isReady) {
-			return;
-		}
+	const onResult = React.useMemo(
+		() =>
+			throttle(
+				(res: SimResults, hash: string) => {
+					dispatch(viewerActions.setResult({ data: res, hash }));
+				},
+				VIEWER_THROTTLE,
+				{ leading: true, trailing: true },
+			),
+		[dispatch],
+	);
 
-		if (cfg === "") {
-			dispatch(appActions.setTeam([]));
-			return;
-		}
+	const navigateOnRun = () => {
+		dispatch(viewerActions.start());
+		navigate("/web");
+	};
 
-		setValidated(false);
-		debounced.current(() => {
-			exec()
-				.validate(cfg)
-				.then(
-					(res) => {
-						console.log("all is good");
-						setErr("");
-						//if successful then we're going to update the team based on the parsed results
-						let team: Character[] = [];
-						if (res.characters) {
-							team = res.characters.map((c) => {
-								return {
-									name: c.base.key,
-									level: c.base.level,
-									element: c.base.element,
-									max_level: c.base.max_level,
-									cons: c.base.cons,
-									weapon: c.weapon,
-									talents: c.talents,
-									stats: c.stats,
-									snapshot: defaultStats,
-									sets: c.sets,
-								};
-							});
-						}
-						//check if there are any warning msgs
-						if (res.errors) {
-							let msg = "";
-							res.errors.forEach((err) => {
-								msg += err + "\n";
-							});
-							setErr(msg);
-						}
-						dispatch(appActions.setTeam(team));
-						setValidated(true);
-					},
-					(err) => {
-						//set error state
-						setErr(err);
-						setValidated(false);
-					},
-				);
-		});
-	}, [exec, cfg, dispatch, setErr, isReady]);
-
-	return validated;
+	return (
+		<Viewport className="flex flex-col gap-2">
+			<ExecutorProvider
+				exec={exec}
+				onResult={onResult}
+				navigateOnRun={navigateOnRun}
+			>
+				<ImportedCharactersProvider>
+					<SimulatorEditor cfg={cfg} />
+				</ImportedCharactersProvider>
+			</ExecutorProvider>
+		</Viewport>
+	);
 }

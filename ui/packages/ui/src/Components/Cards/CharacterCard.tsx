@@ -1,3 +1,4 @@
+import type { CharStatBlock } from "@gcsim/components";
 import { dynamicKey } from "@gcsim/localization";
 import {
 	Button,
@@ -16,7 +17,6 @@ import {
 	LuX,
 	LuZoomIn,
 } from "react-icons/lu";
-import type { CharStatBlock } from "../../Pages/Simulator/Components/character";
 import {
 	IconAnemo,
 	IconAtk,
