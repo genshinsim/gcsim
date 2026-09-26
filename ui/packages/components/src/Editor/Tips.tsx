@@ -1,11 +1,41 @@
 import { Alert, AlertDescription, Button } from "@gcsim/primitives";
 import { Trans } from "react-i18next";
 
-export interface TipsProps {
+export interface TipProps {
 	onHide?: () => void;
 }
 
-export function Tips({ onHide }: TipsProps) {
+function HideButton({ onHide }: TipProps) {
+	if (!onHide) {
+		return null;
+	}
+	return (
+		<div className="ml-auto">
+			<Button variant="secondary" size="sm" onClick={onHide}>
+				<Trans>simple.hide_all_tips</Trans>
+			</Button>
+		</div>
+	);
+}
+
+export function TeamTip({ onHide }: TipProps) {
+	return (
+		<Alert>
+			<AlertDescription className="flex flex-col gap-2 text-current">
+				<span>
+					<Trans>simple.video_pre</Trans>
+					<button type="button">
+						<Trans>simple.video</Trans>
+					</button>
+					<Trans>simple.video_post</Trans>
+				</span>
+				<HideButton onHide={onHide} />
+			</AlertDescription>
+		</Alert>
+	);
+}
+
+export function ActionListTip({ onHide }: TipProps) {
 	return (
 		<Alert>
 			<AlertDescription className="flex flex-col gap-2 text-current">
@@ -31,13 +61,7 @@ export function Tips({ onHide }: TipsProps) {
 					</a>
 					<Trans>simple.documentation_post</Trans>
 				</p>
-				{onHide ? (
-					<div className="ml-auto">
-						<Button variant="secondary" size="sm" onClick={onHide}>
-							<Trans>simple.hide_all_tips</Trans>
-						</Button>
-					</div>
-				) : null}
+				<HideButton onHide={onHide} />
 			</AlertDescription>
 		</Alert>
 	);

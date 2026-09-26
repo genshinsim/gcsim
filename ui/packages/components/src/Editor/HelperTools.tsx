@@ -17,14 +17,23 @@ export interface EditorToggles {
 export interface HelperToolsProps {
 	toggles: EditorToggles;
 	onToggle: (key: keyof EditorToggles) => void;
+	className?: string;
 }
 
-export function HelperTools({ toggles, onToggle }: HelperToolsProps) {
+export function HelperTools({
+	toggles,
+	onToggle,
+	className,
+}: HelperToolsProps) {
 	const { t } = useTranslation();
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="secondary" data-testid="editor-helper-tools">
+				<Button
+					variant="secondary"
+					className={className}
+					data-testid="editor-helper-tools"
+				>
 					<Wrench />
 					{t("simple.tools")}
 				</Button>

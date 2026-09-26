@@ -6,11 +6,11 @@ vi.mock("react-i18next", () => ({
 	Trans: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
-import { Tips } from "./Tips";
+import { ActionListTip, TeamTip } from "./Tips";
 
-describe("Tips", () => {
+describe("ActionListTip", () => {
 	it("links to Discord and the docs", () => {
-		render(<Tips />);
+		render(<ActionListTip />);
 		expect(screen.getByText("Discord").getAttribute("href")).toBe(
 			"https://discord.gg/W36ZwwhEaG",
 		);
@@ -21,13 +21,27 @@ describe("Tips", () => {
 
 	it("calls onHide from the hide button when provided", async () => {
 		const onHide = vi.fn();
-		render(<Tips onHide={onHide} />);
+		render(<ActionListTip onHide={onHide} />);
 		await userEvent.click(screen.getByText("simple.hide_all_tips"));
 		expect(onHide).toHaveBeenCalledTimes(1);
 	});
 
 	it("omits the hide button without an onHide handler", () => {
-		render(<Tips />);
+		render(<ActionListTip />);
 		expect(screen.queryByText("simple.hide_all_tips")).toBeNull();
+	});
+});
+
+describe("TeamTip", () => {
+	it("shows the team builder blurb", () => {
+		render(<TeamTip />);
+		expect(screen.getByText("simple.video")).toBeTruthy();
+	});
+
+	it("calls onHide from the hide button when provided", async () => {
+		const onHide = vi.fn();
+		render(<TeamTip onHide={onHide} />);
+		await userEvent.click(screen.getByText("simple.hide_all_tips"));
+		expect(onHide).toHaveBeenCalledTimes(1);
 	});
 });

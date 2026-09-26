@@ -6,8 +6,9 @@ import { AceEditorWrapper } from "./AceEditorWrapper";
 import { useExecutor } from "./ExecutorProvider";
 import { type EditorToggles, HelperTools } from "./HelperTools";
 import { NameSearch } from "./NameSearch";
+import { SectionDivider } from "./SectionDivider";
 import { TeamComposer } from "./TeamComposer";
-import { Tips } from "./Tips";
+import { ActionListTip, TeamTip } from "./Tips";
 import type { EditorProps } from "./types";
 import { type Theme, themes } from "./types";
 
@@ -16,9 +17,9 @@ const LOCALSTORAGE_FONT_SIZE_KEY = "gcsim-config-editor-font-size";
 const LOCALSTORAGE_TOGGLES_KEY = "gcsim-config-editor-tools";
 
 const defaultToggles: EditorToggles = {
-	team: false,
-	nameSearch: false,
-	tips: false,
+	team: true,
+	nameSearch: true,
+	tips: true,
 };
 
 function loadToggles(): EditorToggles {
@@ -64,37 +65,57 @@ export const Editor = ({
 		setToggles((prev) => ({ ...prev, [key]: !prev[key] }));
 
 	return (
-		<div className="flex flex-col gap-2">
-			{showThemeSelector || settings ? (
-				<div className="flex flex-wrap items-center gap-4">
-					{showThemeSelector ? (
-						<>
-							<label className="flex items-center gap-2">
-								{t("simple.editor_theme")}
-								<select
-									value={theme}
-									onChange={(e) => setTheme(e.currentTarget.value)}
-								>
-									{themes.map((th) => (
-										<option key={th} value={th}>
-											{th}
-										</option>
-									))}
-								</select>
-							</label>
-							<label className="flex items-center gap-2">
-								{t("simple.font_size")}
-								<input
-									type="number"
-									value={fontSize}
-									onChange={(e) => setFontSize(Number(e.currentTarget.value))}
-								/>
-							</label>
-						</>
-					) : null}
-					{settings}
+		<div className="flex flex-col">
+			{toggles.team ? (
+				<>
+					<SectionDivider>{t("simple.team")}</SectionDivider>
+					{toggles.tips ? <TeamTip onHide={() => toggle("tips")} /> : null}
+					<TeamComposer
+						parsedTeam={parsedTeam}
+						error={error}
+						config={config}
+						setConfig={setConfig}
+						characters={teamCharacters}
+					/>
+				</>
+			) : null}
+
+			{toggles.nameSearch ? (
+				<>
+					<SectionDivider>{t("simple.name_search")}</SectionDivider>
+					<NameSearch />
+				</>
+			) : null}
+
+			<SectionDivider>{t("simple.action_list")}</SectionDivider>
+			{toggles.tips ? <ActionListTip onHide={() => toggle("tips")} /> : null}
+
+			{showThemeSelector ? (
+				<div className="flex flex-wrap items-center justify-end gap-4">
+					<label className="flex items-center gap-2">
+						{t("simple.font_size")}
+						<input
+							type="number"
+							value={fontSize}
+							onChange={(e) => setFontSize(Number(e.currentTarget.value))}
+						/>
+					</label>
+					<label className="flex items-center gap-2">
+						{t("simple.editor_theme")}
+						<select
+							value={theme}
+							onChange={(e) => setTheme(e.currentTarget.value)}
+						>
+							{themes.map((th) => (
+								<option key={th} value={th}>
+									{th}
+								</option>
+							))}
+						</select>
+					</label>
 				</div>
 			) : null}
+
 			<AceEditorWrapper
 				cfg={config}
 				onChange={setConfig}
@@ -102,24 +123,23 @@ export const Editor = ({
 				theme={theme}
 				fontSize={fontSize}
 			/>
-			<div className="flex flex-row flex-wrap items-center gap-2">
-				<Button onClick={() => run(config)} disabled={!isReady || !isValid}>
-					{isReady ? <Play /> : <Spinner />}
-					{t("simple.run")}
-				</Button>
-				<HelperTools toggles={toggles} onToggle={toggle} />
+
+			<div className="sticky bottom-0 z-10 mt-1 flex flex-row flex-wrap place-items-center gap-1 bg-g-canvas p-2">
+				<div className="flex flex-grow basis-full items-center p-1 sm:basis-0">
+					{settings}
+				</div>
+				<div className="flex basis-full flex-row flex-wrap gap-1 p-1 sm:basis-2/3">
+					<HelperTools toggles={toggles} onToggle={toggle} className="flex-1" />
+					<Button
+						className="flex-1"
+						onClick={() => run(config)}
+						disabled={!isReady || !isValid}
+					>
+						{isReady ? <Play /> : <Spinner />}
+						{t("simple.run")}
+					</Button>
+				</div>
 			</div>
-			{toggles.team ? (
-				<TeamComposer
-					parsedTeam={parsedTeam}
-					error={error}
-					config={config}
-					setConfig={setConfig}
-					characters={teamCharacters}
-				/>
-			) : null}
-			{toggles.nameSearch ? <NameSearch /> : null}
-			{toggles.tips ? <Tips onHide={() => toggle("tips")} /> : null}
 		</div>
 	);
 };

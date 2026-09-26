@@ -78,18 +78,18 @@ describe("Editor", () => {
 		expect(screen.getByTestId<HTMLTextAreaElement>("ace").value).toBe("two");
 	});
 
-	it("hides gated content until its toggle is persisted", () => {
-		renderEditor();
-		expect(screen.queryByTestId("editor-team-composer")).toBeNull();
-	});
-
-	it("shows gated content when the persisted toggle is on", () => {
-		localStorage.setItem(
-			"gcsim-config-editor-tools",
-			JSON.stringify({ team: true, nameSearch: false, tips: false }),
-		);
+	it("reveals the team by default to match the live route", () => {
 		renderEditor();
 		expect(screen.getByTestId("editor-team-composer")).toBeTruthy();
+	});
+
+	it("hides gated content when its persisted toggle is off", () => {
+		localStorage.setItem(
+			"gcsim-config-editor-tools",
+			JSON.stringify({ team: false, nameSearch: false, tips: false }),
+		);
+		renderEditor();
+		expect(screen.queryByTestId("editor-team-composer")).toBeNull();
 	});
 
 	it("disables Run unless the executor is ready and the config is valid", async () => {
