@@ -13,14 +13,12 @@ import {
 	useSelector,
 } from "react-redux";
 import { appSlice } from "./appSlice";
-import { userDataSlice } from "./userDataSlice";
 import { userSlice } from "./userSlice";
 import { viewerSlice } from "./viewerSlice";
 
 const listenerMiddleware = createListenerMiddleware();
 
 const rootReducer = combineReducers({
-	[userDataSlice.name]: userDataSlice.reducer,
 	[userSlice.name]: userSlice.reducer,
 	[viewerSlice.name]: viewerSlice.reducer,
 	[appSlice.name]: appSlice.reducer,
@@ -28,7 +26,6 @@ const rootReducer = combineReducers({
 
 export type RootState = ReturnType<typeof rootReducer>;
 
-const userDataKey = "redux-user-data-v0.0.1";
 const userLocalSettings = "redux-user-local-settings";
 const userAppDataKey = "redux-app-data";
 const userLocalResults = "redux-local-results";
@@ -36,17 +33,11 @@ const userLocalResultsHash = "redux-local-results-hash";
 
 const persistedState: RootState = JSON.parse(
 	JSON.stringify({
-		[userDataSlice.name]: userDataSlice.getInitialState(),
 		[userSlice.name]: userSlice.getInitialState(),
 		[viewerSlice.name]: viewerSlice.getInitialState(),
 		[appSlice.name]: appSlice.getInitialState(),
 	}),
 );
-
-if (localStorage.getItem(userDataKey)) {
-	const s = JSON.parse(localStorage.getItem(userDataKey) ?? "{}");
-	persistedState.user_data = Object.assign(persistedState.user_data, s);
-}
 
 if (localStorage.getItem(userAppDataKey)) {
 	const s = JSON.parse(localStorage.getItem(userAppDataKey) ?? "{}");
@@ -79,7 +70,6 @@ export const store = configureStore({
 });
 
 store.subscribe(() => {
-	localStorage.setItem(userDataKey, JSON.stringify(store.getState().user_data));
 	localStorage.setItem(
 		userAppDataKey,
 		JSON.stringify({

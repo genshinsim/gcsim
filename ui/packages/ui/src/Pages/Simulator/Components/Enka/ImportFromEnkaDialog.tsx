@@ -13,8 +13,7 @@ import {
 import type { Character } from "@gcsim/types";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { useAppDispatch } from "../../../../Stores/store";
-import { userDataActions } from "../../../../Stores/userDataSlice";
+import { useImportedCharacters } from "../../ImportedCharacters";
 import FetchCharsFromEnka from "./FetchCharsFromEnka";
 
 type Props = {
@@ -42,7 +41,7 @@ export function ImportFromEnkaDialog(props: Props) {
 	const [errors, setErrors] = React.useState<string[]>([]);
 	const [characters, setCharacters] = React.useState<Character[]>([]);
 	const [uid, setUid] = React.useState<string>("");
-	const dispatch = useAppDispatch();
+	const { loadImported } = useImportedCharacters();
 
 	async function handleClick() {
 		localStorage.setItem(lsKey, uid);
@@ -52,12 +51,7 @@ export function ImportFromEnkaDialog(props: Props) {
 				const result = await FetchCharsFromEnka(uid);
 				setErrors(result.errors ? result.errors : []);
 				console.log(result);
-				dispatch(
-					userDataActions.loadFromGOOD({
-						data: result.characters,
-						source: "enka",
-					}),
-				);
+				loadImported(result.characters, "enka");
 				setMessage("success");
 				setCharacters(result.characters);
 			} catch (e) {

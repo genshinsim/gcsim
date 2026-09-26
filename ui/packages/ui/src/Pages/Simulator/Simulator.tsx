@@ -15,6 +15,10 @@ import {
 import { viewerActions } from "../../Stores/viewerSlice";
 import { VIEWER_THROTTLE } from "../Viewer";
 import { EditorSettings } from "./EditorSettings";
+import {
+	ImportedCharactersProvider,
+	useImportedCharacters,
+} from "./ImportedCharacters";
 
 function newCharFromKey(key: string): model.Character {
 	return {
@@ -33,9 +37,7 @@ function newCharFromKey(key: string): model.Character {
 
 function SimulatorEditor({ cfg }: { cfg: string }) {
 	const dispatch = useAppDispatch();
-	const imported = useAppSelector(
-		(state: RootState) => state.user_data.GOODImport,
-	);
+	const { imported } = useImportedCharacters();
 	const { isValid, error, parsedTeam } = useValidation(cfg);
 
 	const setConfig = (newCfg: string) => {
@@ -97,7 +99,9 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
 				onResult={onResult}
 				navigateOnRun={navigateOnRun}
 			>
-				<SimulatorEditor cfg={cfg} />
+				<ImportedCharactersProvider>
+					<SimulatorEditor cfg={cfg} />
+				</ImportedCharactersProvider>
 			</ExecutorProvider>
 		</Viewport>
 	);

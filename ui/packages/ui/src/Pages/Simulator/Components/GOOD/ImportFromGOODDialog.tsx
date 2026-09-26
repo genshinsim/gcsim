@@ -12,8 +12,7 @@ import {
 } from "@gcsim/primitives";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { useAppDispatch } from "../../../../Stores/store";
-import { userDataActions } from "../../../../Stores/userDataSlice";
+import { useImportedCharacters } from "../../ImportedCharacters";
 import { type IGOODImport, parseFromGOOD } from "./parseFromGOOD";
 
 type Props = {
@@ -25,14 +24,12 @@ const lsKey = "GOOD-import";
 
 export function ImportFromGOODDialog(props: Props) {
 	const [data, setData] = React.useState<IGOODImport>();
-	const dispatch = useAppDispatch();
+	const { loadImported } = useImportedCharacters();
 	const { t } = useTranslation();
 
 	const handleLoad = () => {
 		if (data !== undefined) {
-			dispatch(
-				userDataActions.loadFromGOOD({ data: data.characters, source: "good" }),
-			);
+			loadImported(data.characters, "good");
 			props.onClose();
 			toast.success(t("importer.import_success"));
 		}
