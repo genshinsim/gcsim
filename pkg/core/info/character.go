@@ -134,4 +134,5 @@ const (
 	ZoneNatlan
 	ZoneNodKrai
 	ZoneSnezhnaya
+	ZoneNodKraiZibai
 )

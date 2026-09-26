@@ -30,7 +30,9 @@ func (l *Lithic) NewWeapon(c *core.Core, char *character.CharWrapper, p info.Wea
 
 	c.Events.Subscribe(event.OnInitialize, func(args ...any) {
 		for _, char := range c.Player.Chars() {
-			if char.CharZone == info.ZoneLiyue {
+			switch char.CharZone {
+			case info.ZoneLiyue,
+				info.ZoneNodKraiZibai:
 				stacks++
 			}
 		}

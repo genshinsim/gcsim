@@ -182,7 +182,8 @@
       "yoimiya": "宵宫",
       "yumemizukimizuki": "梦见月瑞希",
       "yunjin": "云堇",
-      "zhongli": "钟离"
+      "zhongli": "钟离",
+      "zibai": "兹白"
     },
     "monster_names": {
       "abyssheraldfrostfall": "深渊使徒·霜落",
@@ -1070,7 +1071,8 @@
       "yoimiya": "Yoimiya",
       "yumemizukimizuki": "Yumemizuki Mizuki",
       "yunjin": "Yun Jin",
-      "zhongli": "Zhongli"
+      "zhongli": "Zhongli",
+      "zibai": "Zibai"
     },
     "monster_names": {
       "abyssheraldfrostfall": "Abyss Herald: Frost Fall",
@@ -1958,7 +1960,8 @@
       "yoimiya": "Yoimiya",
       "yumemizukimizuki": "Yumemizuki Mizuki",
       "yunjin": "Yun Jin",
-      "zhongli": "Zhongli"
+      "zhongli": "Zhongli",
+      "zibai": "Zibai"
     },
     "monster_names": {
       "abyssheraldfrostfall": "Abgrundbote – Frostfall",
@@ -2846,7 +2849,8 @@
       "yoimiya": "宵宮",
       "yumemizukimizuki": "夢見月瑞希",
       "yunjin": "雲菫",
-      "zhongli": "鍾離"
+      "zhongli": "鍾離",
+      "zibai": "兹白"
     },
     "monster_names": {
       "abyssheraldfrostfall": "アビスの使徒·落霜",
@@ -3734,7 +3738,8 @@
       "yoimiya": "요이미야",
       "yumemizukimizuki": "유메미즈키 미즈키",
       "yunjin": "운근",
-      "zhongli": "종려"
+      "zhongli": "종려",
+      "zibai": "자백"
     },
     "monster_names": {
       "abyssheraldfrostfall": "심연 사도·서리 내림",
@@ -4622,7 +4627,8 @@
       "yoimiya": "Ёимия",
       "yumemizukimizuki": "Мидзуки",
       "yunjin": "Юнь Цзинь",
-      "zhongli": "Чжун Ли"
+      "zhongli": "Чжун Ли",
+      "zibai": "Цзы Бай"
     },
     "monster_names": {
       "abyssheraldfrostfall": "Вестник Бездны: Наступление хлада",
@@ -5510,7 +5516,8 @@
       "yoimiya": "Yoimiya",
       "yumemizukimizuki": "Yumemizuki Mizuki",
       "yunjin": "Yun Jin",
-      "zhongli": "Zhongli"
+      "zhongli": "Zhongli",
+      "zibai": "Zibai"
     },
     "monster_names": {
       "abyssheraldfrostfall": "Emisario del Abismo - Helada sombría",

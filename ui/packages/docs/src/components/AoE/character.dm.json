@@ -15046,5 +15046,113 @@
       "offset_y": 5,
       "radius": 6
     }
+  ],
+  "zibai": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.65,
+      "radius": 2
+    },
+    {
+      "ability": "attack",
+      "name": "N2-1",
+      "shape": "Box",
+      "center": "Player",
+      "offset_y": -0.1,
+      "box_x": 2,
+      "box_y": 3.3
+    },
+    {
+      "ability": "attack",
+      "name": "N3-1",
+      "shape": "Box",
+      "center": "Player",
+      "offset_y": 0.2,
+      "box_x": 3.6,
+      "box_y": 2.5
+    },
+    {
+      "ability": "attack",
+      "name": "N3-2",
+      "shape": "Box",
+      "center": "Player",
+      "offset_y": -0.2,
+      "box_x": 3.6,
+      "box_y": 2.5
+    },
+    {
+      "ability": "attack",
+      "name": "E-N3-2",
+      "shape": "Box",
+      "center": "Player",
+      "offset_y": -0.2,
+      "box_x": 3.6,
+      "box_y": 2.5
+    },
+    {
+      "ability": "attack",
+      "name": "N4",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.9,
+      "radius": 2.8
+    },
+    {
+      "ability": "charge",
+      "name": "CA-1",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1.4,
+      "radius": 2.3
+    },
+    {
+      "ability": "charge",
+      "name": "CA-2",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1.6,
+      "radius": 2.4
+    },
+    {
+      "ability": "skill",
+      "name": "E-Start",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1.3,
+      "radius": 3.1
+    },
+    {
+      "ability": "skill",
+      "name": "E-Stride-1",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 2.5,
+      "radius": 3.5
+    },
+    {
+      "ability": "skill",
+      "name": "E-Stride-2",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 2.5,
+      "radius": 3.5
+    },
+    {
+      "ability": "burst",
+      "name": "Q-1",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 6.7
+    },
+    {
+      "ability": "burst",
+      "name": "Q-2",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 6.7
+    }
   ]
 }
