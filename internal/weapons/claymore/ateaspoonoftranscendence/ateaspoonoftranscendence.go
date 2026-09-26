@@ -50,6 +50,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 
+		if atk.Info.ActorIndex != char.Index() {
+			return
+		}
+
 		if atk.Info.AttackTag != attacks.AttackTagExtra {
 			return
 		}
@@ -69,7 +73,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddReactBonusMod(character.ReactBonusMod{
 			Base: modifier.NewBaseWithHitlag(stellarBuffKey, 5*60),
 			Amount: func(ai info.AttackInfo) float64 {
-				if !ai.AttackTag.IsStellarDirect() {
+				if !ai.AttackTag.IsStellar() {
 					return 0
 				}
 
