@@ -48,7 +48,7 @@ const Row = ({
 				key={ci}
 				className={
 					row.active === ci
-						? "border-l-2 border-g-line bg-g-surface-3	"
+						? "border-l-2 border-g-accent bg-g-accent/25"
 						: "border-l-2 border-g-line"
 				}
 			>
