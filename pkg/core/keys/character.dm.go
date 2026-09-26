@@ -92,6 +92,7 @@ const (
 	HuTao                         // hutao
 	Iansan                        // iansan
 	Ifa                           // ifa
+	Illuga                        // illuga
 	Ineffa                        // ineffa
 	Jahoda                        // jahoda
 	Jean                          // jean
@@ -221,6 +222,7 @@ var _CharNames = [...]string{
 	"hutao",
 	"iansan",
 	"ifa",
+	"illuga",
 	"ineffa",
 	"jahoda",
 	"jean",
@@ -350,6 +352,7 @@ var _CharValues = [...]Char{
 	HuTao,
 	Iansan,
 	Ifa,
+	Illuga,
 	Ineffa,
 	Jahoda,
 	Jean,

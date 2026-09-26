@@ -143,6 +143,7 @@ ace.define(
         'tao',
         'iansan',
         'ifa',
+        'illuga',
         'ineffa',
         'jahoda',
         'jean',
