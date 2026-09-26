@@ -2,7 +2,6 @@ package gorou
 
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -134,7 +133,7 @@ func (c *char) c6Init() {
 			return
 		}
 
-		if atk.Info.AttackTag != attacks.AttackTagDirectLunarCrystallize {
+		if atk.Info.Element != attributes.Geo {
 			return
 		}
 

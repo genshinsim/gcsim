@@ -91,10 +91,6 @@ func (c *char) c6Init() {
 			return
 		}
 
-		if !atk.Info.AttackTag.IsStellarReact() {
-			return
-		}
-
 		char := c.Core.Player.Chars()[atk.Info.ActorIndex]
 
 		if !char.StatModIsActive(c6Key) {
