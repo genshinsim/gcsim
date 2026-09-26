@@ -137,7 +137,7 @@ func (c *char) skillAttack() (action.Info, error) {
 				)
 			}
 
-			c.Core.QueueAttack(ai, ap, 0, 0)
+			c.Core.QueueAttack(ai, ap, 0, 0, c.radianceCB)
 
 			if counter == 3 && c.Core.Player.GetMoonsignLevel() >= 2 {
 				c.skillLastAttack()
@@ -167,7 +167,7 @@ func (c *char) skillLastAttack() {
 			Element:          attributes.Geo,
 			IgnoreInfusion:   true,
 			Durability:       25,
-			Mult:             skillLastAttackBonus[c.TalentLvlAttack()] * c.c4N4Bonus(),
+			Mult:             skillLastAttackBonus[c.TalentLvlAttack()] * (1 + c.c4N4Bonus()),
 			UseDef:           true,
 			IgnoreDefPercent: 1,
 		}

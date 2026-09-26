@@ -68,7 +68,7 @@ abilities:
       - name: N3-1
         shape: Box
         center: Player
-        offset: [0, -0.2]
+        offset: [0, 0.2]
         box: [3.6, 2.5]
         hitlag: { time: 0.02, scale: 0.01, defense_halt: true }
 

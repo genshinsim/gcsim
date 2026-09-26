@@ -145,6 +145,7 @@ func (c *char) c4N4Bonus() float64 {
 	if !c.StatusIsActive(c4Key) {
 		return 0
 	}
+	c.DeleteStatus(c4Key)
 	return 2.5 - 1.0
 }
 
