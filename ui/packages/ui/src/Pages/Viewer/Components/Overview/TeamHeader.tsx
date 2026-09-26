@@ -1,10 +1,9 @@
-import { CharacterCard } from "@gcsim/components";
+import { CharacterCard, ConsolidateCharStats } from "@gcsim/components";
 import { dynamicKey } from "@gcsim/localization";
 import type { Character } from "@gcsim/types";
 import classNames from "classnames";
 import React, { memo } from "react";
 import { useTranslation } from "react-i18next";
-import { ConsolidateCharStats } from "../../../Simulator/Components/character";
 
 type Props = {
 	characters?: Character[];
