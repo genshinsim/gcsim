@@ -67,7 +67,8 @@ type Handler struct {
 
 	verdantDewExpiryFrame int
 	verdantDew            int
-	partialDewCount       int
+	partialDewCount       float64
+	verdantDewRateMods    []verdantDewRateMod
 
 	moonridgeDew int
 }
@@ -84,12 +85,13 @@ type Opt struct {
 
 func New(opt Opt) *Handler {
 	h := &Handler{
-		chars:           make([]*character.CharWrapper, 0, 4),
-		charPos:         make(map[keys.Char]int),
-		stamPercentMods: make([]stamPercentMod, 0, 5),
-		Opt:             opt,
-		Stam:            MaxStam,
-		SwapICD:         SwapCDFrames,
+		chars:              make([]*character.CharWrapper, 0, 4),
+		charPos:            make(map[keys.Char]int),
+		stamPercentMods:    make([]stamPercentMod, 0, 5),
+		verdantDewRateMods: make([]verdantDewRateMod, 0, 2),
+		Opt:                opt,
+		Stam:               MaxStam,
+		SwapICD:            SwapCDFrames,
 	}
 	h.Shields = shield.New(opt.F, opt.Log, opt.Events)
 	h.Handler = infusion.New(opt.F, opt.Log, opt.Debug)

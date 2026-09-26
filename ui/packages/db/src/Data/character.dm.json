@@ -1410,6 +1410,23 @@
         "burst_energy_cost": 60
       }
     },
+    "nefer": {
+      "id": 10000122,
+      "sub_id": 12201,
+      "key": "nefer",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_NODKRAI",
+      "element": "Grass",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Nefer",
+      "skill_details": {
+        "skill": 11222,
+        "burst": 11225,
+        "attack": 11221,
+        "burst_energy_cost": 60
+      }
+    },
     "neuvillette": {
       "id": 10000087,
       "sub_id": 8701,
