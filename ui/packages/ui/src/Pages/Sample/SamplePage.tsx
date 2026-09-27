@@ -1,4 +1,4 @@
-import { CharacterCard } from "@gcsim/components";
+import { CharacterCard, characterCardsClassNames } from "@gcsim/components";
 import { dynamicKey } from "@gcsim/localization";
 import {
 	AlertDialog,
@@ -18,7 +18,6 @@ import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { CopyToClipboard, SendToSimulator } from "../../Components/Buttons";
 import { useSendToSimulator } from "../../Components/Buttons/useSendToSimulator";
-import { characterCardsClassNames } from "../Viewer/Components/Overview/TeamHeader";
 import {
 	DefaultSampleOptions,
 	parseLogV2,

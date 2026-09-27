@@ -1,3 +1,5 @@
+import { Card } from "@gcsim/primitives";
+import type { model } from "@gcsim/types";
 import {
 	Commit,
 	DateItem,
@@ -8,9 +10,7 @@ import {
 	Mode,
 	Swap,
 	WarningItem,
-} from "@gcsim/components";
-import { Card } from "@gcsim/primitives";
-import type { model } from "@gcsim/types";
+} from "../Metadata";
 
 type Props = {
 	data: model.SimulationResult | null;

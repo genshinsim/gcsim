@@ -1,9 +1,9 @@
-import { CardTitle, NoData, PositionGraph } from "@gcsim/components";
 import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { memo } from "react";
 import { useTranslation } from "react-i18next";
+import { CardTitle, NoData, PositionGraph } from "../../common/gcsim";
 import { EnemyCard } from "./EnemyCard";
 
 type Props = {

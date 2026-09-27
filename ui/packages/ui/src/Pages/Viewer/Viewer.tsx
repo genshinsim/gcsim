@@ -99,7 +99,7 @@ export default ({
 	);
 
 	const tabs: { [k: string]: React.ReactNode } = {
-		results: <Results data={data} names={names} />,
+		results: <Results model={data} names={names} />,
 		config: (
 			<ConfigUI
 				config={config}

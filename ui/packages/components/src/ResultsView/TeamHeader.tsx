@@ -1,9 +1,10 @@
-import { CharacterCard, ConsolidateCharStats } from "@gcsim/components";
 import { dynamicKey } from "@gcsim/localization";
 import type { model } from "@gcsim/types";
 import classNames from "classnames";
 import React, { memo } from "react";
 import { useTranslation } from "react-i18next";
+import { CharacterCard } from "../Cards/CharacterCard/CharacterCard";
+import { ConsolidateCharStats } from "../Cards/TeamCard/charStats";
 
 type Props = {
 	characters?: model.Character[];
