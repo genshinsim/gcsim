@@ -1,23 +1,18 @@
 import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
-import { useEffect, useState } from "react";
+import { useDeferredValue, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-	CardTitle,
-	ParentWidth,
-	useRefreshWithTimer,
-} from "../../../../common/gcsim";
+import { CardTitle, ParentWidth } from "../../../../common/gcsim";
 import { BarChart, BarChartLegend } from "./BarChart";
 
 type Props = {
 	data: model.SimulationResult | null;
-	running: boolean;
 	names?: string[];
 };
 
 type Graphs = Map<string, string>;
 
-export default ({ data, running, names }: Props) => {
+export default ({ data, names }: Props) => {
 	const { t } = useTranslation();
 	const graphs: Graphs = new Map([
 		["dps", "DPS"],
@@ -30,19 +25,11 @@ export default ({ data, running, names }: Props) => {
 	const [filter, setFilter] = useState(all_filter);
 	useResetFilterToAllOnLanguageChange(setFilter, all_filter);
 
-	const [stats, timer] = useRefreshWithTimer(
-		(d) => {
-			return {
-				dps: d?.statistics?.source_dps,
-				damage_instances: d?.statistics?.source_damage_instances,
-			};
-		},
-		5000,
-		data,
-		running,
-	);
-
-	const chart_data = graph === "dps" ? stats.dps : stats.damage_instances;
+	const deferred = useDeferredValue(data);
+	const chart_data =
+		graph === "dps"
+			? deferred?.statistics?.source_dps
+			: deferred?.statistics?.source_damage_instances;
 
 	return (
 		<Card className="flex flex-col col-span-full h-auto p-5">
@@ -50,7 +37,7 @@ export default ({ data, running, names }: Props) => {
 				<div className="flex flex-col gap-2">
 					<CardTitle
 						title={t("result.source", { s: graphs.get(graph) })}
-						timer={timer}
+						stale={deferred !== data}
 					/>
 					<div className="flex flex-row gap-4">
 						<Options graph={graph} setGraph={setGraph} graphs={graphs} />

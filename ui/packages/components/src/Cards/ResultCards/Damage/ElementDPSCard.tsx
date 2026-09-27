@@ -2,7 +2,7 @@ import { dynamicKey } from "@gcsim/localization";
 import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
-import { memo, useMemo } from "react";
+import { memo, useDeferredValue, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
 	CardTitle,
@@ -10,36 +10,34 @@ import {
 	NoData,
 	OuterLabelPie,
 	useDataColors,
-	useRefreshWithTimer,
 } from "../../../common/gcsim";
 
 type Props = {
 	data: model.SimulationResult | null;
-	running: boolean;
 };
 
-export default ({ data, running }: Props) => {
+export default ({ data }: Props) => {
 	const { t } = useTranslation();
-	const [dps, timer] = useRefreshWithTimer(
-		(d) =>
-			d?.statistics?.element_dps
+	const deferred = useDeferredValue(data);
+	const elementDPS = deferred?.statistics?.element_dps;
+	const dps = useMemo(
+		() =>
+			elementDPS
 				? Object.fromEntries(
-						Object.entries(d?.statistics?.element_dps).map(([k, v]) => [
+						Object.entries(elementDPS).map(([k, v]) => [
 							t(dynamicKey("elements." + k)),
 							v,
 						]),
 					)
 				: undefined,
-		10000,
-		data,
-		running,
+		[elementDPS, t],
 	);
 
 	return (
 		<Card className="flex flex-col col-span-2 h-72 min-h-full gap-0 p-5">
 			<CardTitle
 				title={t("result.dist", { d: t("result.element_dps") })}
-				timer={timer}
+				stale={deferred !== data}
 			/>
 			<DPSPie dps={dps} />
 		</Card>

@@ -1,31 +1,19 @@
 import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
+import { useDeferredValue } from "react";
 import { useTranslation } from "react-i18next";
-import {
-	CardTitle,
-	ParentWidth,
-	useRefreshWithTimer,
-} from "../../../../common/gcsim";
+import { CardTitle, ParentWidth } from "../../../../common/gcsim";
 import { BarChart, BarChartLegend } from "./BarChart";
 
 type Props = {
 	data: model.SimulationResult | null;
-	running: boolean;
 	names?: string[];
 };
 
-export default ({ data, running, names }: Props) => {
+export default ({ data, names }: Props) => {
 	const { t } = useTranslation();
-	const [stats, timer] = useRefreshWithTimer(
-		(d) => {
-			return {
-				data: d?.statistics?.total_source_energy,
-			};
-		},
-		5000,
-		data,
-		running,
-	);
+	const deferred = useDeferredValue(data);
+	const energy = deferred?.statistics?.total_source_energy;
 
 	return (
 		<Card className="flex flex-col col-span-full h-auto p-5">
@@ -35,7 +23,7 @@ export default ({ data, running, names }: Props) => {
 						title={t("result.per_source", {
 							s: t("result.total_energy"),
 						})}
-						timer={timer}
+						stale={deferred !== data}
 					/>
 				</div>
 				<div className="flex flex-grow justify-start sm:justify-center pb-5 sm:pb-0 items-center">
@@ -43,9 +31,7 @@ export default ({ data, running, names }: Props) => {
 				</div>
 			</div>
 			<ParentWidth>
-				{(width) => (
-					<BarChart width={width} energy={stats.data} names={names} />
-				)}
+				{(width) => <BarChart width={width} energy={energy} names={names} />}
 			</ParentWidth>
 		</Card>
 	);

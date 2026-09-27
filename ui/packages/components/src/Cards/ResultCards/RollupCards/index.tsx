@@ -1,7 +1,7 @@
 import type { model } from "@gcsim/types";
-import { useCallback, useMemo } from "react";
+import { useCallback, useDeferredValue, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Colors, useRefresh } from "../../../common/gcsim";
+import { Colors } from "../../../common/gcsim";
 import RollupCard from "./RollupCard";
 
 const ROLLUPS = [
@@ -80,7 +80,7 @@ const StatRollupCard = ({
 		[i18n, config.fractionDigits],
 	);
 
-	const stat = useRefresh((d) => d?.statistics?.[config.statKey], 200, data);
+	const stat = useDeferredValue(data)?.statistics?.[config.statKey];
 	const auxStats = useMemo(
 		() => [
 			{ title: "min", value: fmt(stat?.min) },

@@ -26,6 +26,13 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
 	args: {
 		title: "Some Title",
-		timer: 100,
+		stale: false,
+	},
+};
+
+export const Stale: Story = {
+	args: {
+		title: "Some Title",
+		stale: true,
 	},
 };

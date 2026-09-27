@@ -1,7 +1,7 @@
 import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
-import { memo, useMemo } from "react";
+import { memo, useDeferredValue, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
 	CardTitle,
@@ -9,29 +9,23 @@ import {
 	NoData,
 	OuterLabelPie,
 	useDataColors,
-	useRefreshWithTimer,
 } from "../../../common/gcsim";
 
 type Props = {
 	data: model.SimulationResult | null;
-	running: boolean;
 	names?: string[];
 };
 
-export default ({ data, running, names }: Props) => {
+export default ({ data, names }: Props) => {
 	const { t } = useTranslation();
-	const [field_time, timer] = useRefreshWithTimer(
-		(d) => d?.statistics?.field_time,
-		10000,
-		data,
-		running,
-	);
+	const deferred = useDeferredValue(data);
+	const field_time = deferred?.statistics?.field_time;
 
 	return (
 		<Card className="flex flex-col col-span-3 h-72 min-h-full gap-0 p-4">
 			<CardTitle
 				title={t("result.dist", { d: t("result.field_time") })}
-				timer={timer}
+				stale={deferred !== data}
 			/>
 			<FieldTimePie names={names} field_time={field_time} />
 		</Card>

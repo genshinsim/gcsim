@@ -2,40 +2,35 @@ import { dynamicKey } from "@gcsim/localization";
 import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
+import { useDeferredValue, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { CardTitle, useRefreshWithTimer } from "../../../../common/gcsim";
+import { CardTitle } from "../../../../common/gcsim";
 import { BarChart, BarChartLegend } from "./BarChart";
 
 type Props = {
 	data: model.SimulationResult | null;
-	running: boolean;
 	names?: string[];
 };
 
-export default ({ data, running, names }: Props) => {
+export default ({ data, names }: Props) => {
 	const { t } = useTranslation();
-	const [stats, timer] = useRefreshWithTimer(
-		(d) => {
-			return {
-				data: d?.statistics?.source_reactions
-					? d?.statistics?.source_reactions.map((s) =>
-							s.sources
-								? {
-										sources: Object.fromEntries(
-											Object.entries(s.sources).map(([k, v]) => [
-												t(dynamicKey("reactions." + k)),
-												v,
-											]),
-										),
-									}
-								: {},
-						)
-					: undefined,
-			};
-		},
-		5000,
-		data,
-		running,
+	const deferred = useDeferredValue(data);
+	const sourceReactions = deferred?.statistics?.source_reactions;
+	const reactions = useMemo(
+		() =>
+			sourceReactions?.map((s) =>
+				s.sources
+					? {
+							sources: Object.fromEntries(
+								Object.entries(s.sources).map(([k, v]) => [
+									t(dynamicKey("reactions." + k)),
+									v,
+								]),
+							),
+						}
+					: {},
+			),
+		[sourceReactions, t],
 	);
 
 	return (
@@ -46,7 +41,7 @@ export default ({ data, running, names }: Props) => {
 						title={t("result.per_source", {
 							s: t("result.reactions"),
 						})}
-						timer={timer}
+						stale={deferred !== data}
 					/>
 				</div>
 				<div className="flex flex-grow justify-start sm:justify-center pb-5 sm:pb-0 items-center">
@@ -58,7 +53,7 @@ export default ({ data, running, names }: Props) => {
 					<BarChart
 						width={width}
 						height={height}
-						reactions={stats.data}
+						reactions={reactions}
 						names={names}
 					/>
 				)}

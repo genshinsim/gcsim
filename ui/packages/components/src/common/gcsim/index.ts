@@ -14,7 +14,6 @@ export * from "./GraphComponents/ParentWidth";
 export * from "./LatestVersion";
 export * from "./Navbar";
 export * from "./NoData";
-export * from "./Refresh";
 export * from "./Select";
 export * from "./Warning";
 export {
