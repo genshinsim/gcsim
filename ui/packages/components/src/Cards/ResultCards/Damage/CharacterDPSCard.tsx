@@ -27,7 +27,6 @@ export default ({ data, names }: Props) => {
 				title={t("result.dist", {
 					d: t("result.character_dps"),
 				})}
-				stale={deferred !== data}
 			/>
 			<DPSPie names={names} dps={dps} />
 		</Card>

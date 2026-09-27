@@ -42,7 +42,7 @@ export default ({ data }: Props) => {
 		<Card className="flex flex-col col-span-full h-[450px] p-4 gap-2">
 			<div className="flex flex-col sm:flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
-					<CardTitle title={t("result.cumu_dmg")} stale={deferred !== data} />
+					<CardTitle title={t("result.cumu_dmg")} />
 					<Options
 						graph={graph}
 						setGraph={setGraph}

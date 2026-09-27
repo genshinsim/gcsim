@@ -42,10 +42,7 @@ export default ({ data, names }: Props) => {
 		<Card className="flex flex-col col-span-full h-[450px] p-5">
 			<div className="flex flex-col sm:flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
-					<CardTitle
-						title={t("result.dmg_timeline")}
-						stale={deferred !== data}
-					/>
+					<CardTitle title={t("result.dmg_timeline")} />
 					<Options graph={graph} setGraph={setGraph} />
 				</div>
 				<div className="flex flex-grow justify-start sm:justify-center pb-5 sm:pb-0 items-center">

@@ -23,7 +23,6 @@ export default ({ data, names }: Props) => {
 						title={t("result.per_source", {
 							s: t("result.total_energy"),
 						})}
-						stale={deferred !== data}
 					/>
 				</div>
 				<div className="flex flex-grow justify-start sm:justify-center pb-5 sm:pb-0 items-center">

@@ -23,10 +23,7 @@ export default ({ data, names }: Props) => {
 
 	return (
 		<Card className="flex flex-col col-span-3 h-72 min-h-full gap-0 p-4">
-			<CardTitle
-				title={t("result.dist", { d: t("result.field_time") })}
-				stale={deferred !== data}
-			/>
+			<CardTitle title={t("result.dist", { d: t("result.field_time") })} />
 			<FieldTimePie names={names} field_time={field_time} />
 		</Card>
 	);

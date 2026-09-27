@@ -35,10 +35,7 @@ export default ({ data, names }: Props) => {
 		<Card className="flex flex-col col-span-full h-auto p-5">
 			<div className="flex flex-col sm:flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
-					<CardTitle
-						title={t("result.source", { s: graphs.get(graph) })}
-						stale={deferred !== data}
-					/>
+					<CardTitle title={t("result.source", { s: graphs.get(graph) })} />
 					<div className="flex flex-row gap-4">
 						<Options graph={graph} setGraph={setGraph} graphs={graphs} />
 						<Filters filter={filter} setFilter={setFilter} filters={filters} />
