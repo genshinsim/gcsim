@@ -49,26 +49,15 @@ func (e *Enemy) QueueEnemyTask(f func(), delay int) {
 }
 
 func (e *Enemy) Tick() {
-	// dead enemy don't tick
-	if !e.Alive {
-		return
-	}
-	// decrement frozen time first
-	e.frozenFrames -= 1
-	left := 0
-	if e.frozenFrames < 0 {
-		left = -e.frozenFrames
-		e.frozenFrames = 0
-	}
-	// if any left then increase time passed
-	if left <= 0 {
+	if e.frozenFrames > 0 {
+		// frozen for this frame, do nothing
+		e.frozenFrames--
 		e.Core.Log.NewEvent("enemy skipping tick", glog.LogHitlagEvent, -1).
 			Write("target", e.Key()).
 			Write("frozen_for", e.frozenFrames)
-		// do nothing this tick
 		return
 	}
-	e.timePassed += left
+	e.timePassed++
 
 	e.queue.Run()
 	e.Reactable.Tick()
