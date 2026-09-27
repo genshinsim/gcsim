@@ -34,11 +34,12 @@ func (c *CharWrapper) FramePausedOnHitlag() bool {
 // ApplyHitlag adds hitlag to the character for specified duration
 func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
 	// number of frames frozen is total duration * (1 - factor)
-	ext := int(math.Ceil(dur * (1 - factor)))
-	c.frozenFrames += ext
+	newHitlag := int(math.Ceil(dur * (1 - factor)))
 
-	// // TODO: this is inaccurate for overlapping hitlags of different hitlag factors
-	// c.frozenFrames = max(c.frozenFrames, ext)
+	// TODO: this is inaccurate for overlapping hitlags of different hitlag factors
+	oldFrozen := c.frozenFrames
+	c.frozenFrames = max(newHitlag, c.frozenFrames)
+	ext := c.frozenFrames - oldFrozen
 
 	var logs []string
 	var evt glog.Event

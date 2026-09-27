@@ -9,8 +9,12 @@ import (
 
 func (e *Enemy) ApplyHitlag(factor, dur float64) {
 	// TODO: extend all hitlag affected buff expiry by dur * (1 - factor) i think
-	ext := int(math.Ceil(dur * (1 - factor)))
-	e.frozenFrames += ext
+	newHitlag := int(math.Ceil(dur * (1 - factor)))
+
+	// TODO: this is inaccurate for overlapping hitlags of different hitlag factors
+	oldFrozen := e.frozenFrames
+	e.frozenFrames = max(newHitlag, e.frozenFrames)
+	ext := e.frozenFrames - oldFrozen
 
 	var logs []string
 	var evt glog.Event
