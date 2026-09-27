@@ -8,7 +8,7 @@ vi.mock("react-i18next", () => ({
 	Trans: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
-let lastRun: (() => void) | undefined;
+let mountedRun: (() => void) | undefined;
 vi.mock("./AceEditorWrapper", () => ({
 	AceEditorWrapper: ({
 		cfg,
@@ -19,7 +19,7 @@ vi.mock("./AceEditorWrapper", () => ({
 		onChange: (v: string) => void;
 		onRun?: () => void;
 	}) => {
-		lastRun ??= onRun;
+		mountedRun ??= onRun;
 		return (
 			<textarea
 				data-testid="ace"
@@ -53,7 +53,7 @@ function renderEditor(
 const runButton = () => screen.getByRole("button", { name: "simple.run" });
 
 beforeEach(() => {
-	lastRun = undefined;
+	mountedRun = undefined;
 });
 
 describe("Editor", () => {
@@ -125,11 +125,11 @@ describe("Editor", () => {
 		const first = vi.fn();
 		const latest = vi.fn();
 		const { rerender } = renderEditor({ onRun: first, canRun: false });
-		lastRun?.();
+		mountedRun?.();
 		expect(first).not.toHaveBeenCalled();
 
 		rerender(<Editor {...baseProps} onRun={latest} canRun={true} />);
-		lastRun?.();
+		mountedRun?.();
 		expect(first).not.toHaveBeenCalled();
 		expect(latest).toHaveBeenCalledTimes(1);
 	});

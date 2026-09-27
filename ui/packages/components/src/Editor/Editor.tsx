@@ -3,13 +3,17 @@ import { Play } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { AceEditorWrapper } from "./AceEditorWrapper";
-import { type EditorToggles, HelperTools } from "./HelperTools";
+import { HelperTools } from "./HelperTools";
 import { NameSearch } from "./NameSearch";
 import { SectionDivider } from "./SectionDivider";
 import { TeamComposer } from "./TeamComposer";
 import { ActionListTip, TeamTip } from "./Tips";
-import type { EditorProps } from "./types";
-import { themes } from "./types";
+import {
+	type EditorPrefs,
+	type EditorProps,
+	type EditorToggles,
+	themes,
+} from "./types";
 
 export const Editor = ({
 	config,
@@ -37,8 +41,10 @@ export const Editor = ({
 		}
 	}, []);
 
+	const updatePrefs = (patch: Partial<EditorPrefs>) =>
+		onPrefsChange({ ...prefs, ...patch });
 	const toggle = (key: keyof EditorToggles) =>
-		onPrefsChange({ ...prefs, toggles: { ...toggles, [key]: !toggles[key] } });
+		updatePrefs({ toggles: { ...toggles, [key]: !toggles[key] } });
 
 	return (
 		<div className="flex flex-col">
@@ -74,10 +80,7 @@ export const Editor = ({
 							type="number"
 							value={fontSize}
 							onChange={(e) =>
-								onPrefsChange({
-									...prefs,
-									fontSize: Number(e.currentTarget.value),
-								})
+								updatePrefs({ fontSize: Number(e.currentTarget.value) })
 							}
 						/>
 					</label>
@@ -85,9 +88,7 @@ export const Editor = ({
 						{t("simple.editor_theme")}
 						<select
 							value={theme}
-							onChange={(e) =>
-								onPrefsChange({ ...prefs, theme: e.currentTarget.value })
-							}
+							onChange={(e) => updatePrefs({ theme: e.currentTarget.value })}
 						>
 							{themes.map((th) => (
 								<option key={th} value={th}>

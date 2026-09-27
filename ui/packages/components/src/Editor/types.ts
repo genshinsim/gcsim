@@ -1,6 +1,5 @@
 import type { model } from "@gcsim/types";
 import type React from "react";
-import type { EditorToggles } from "./HelperTools";
 
 // TEMPORARY: types for the TeamComposer add/remove crutch.
 export interface ImportedCharacterOption {
@@ -27,6 +26,12 @@ export interface EditorProps {
 	busy?: boolean;
 	prefs: EditorPrefs;
 	onPrefsChange: (next: EditorPrefs) => void;
+}
+
+export interface EditorToggles {
+	team: boolean;
+	nameSearch: boolean;
+	tips: boolean;
 }
 
 export interface EditorPrefs {
