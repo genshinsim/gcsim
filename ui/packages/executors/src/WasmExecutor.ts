@@ -1,4 +1,4 @@
-import type { ParsedResult, Sample, SimResults } from "@gcsim/types";
+import type { model, ParsedResult, Sample } from "@gcsim/types";
 import { throttle } from "lodash-es";
 import type { Executor } from "./Executor";
 import { Aggregator, Helper, SimWorker } from "./Workers/common";
@@ -106,7 +106,7 @@ export class WasmExecutor implements Executor {
 
 	public run(
 		cfg: string,
-		updateResult: (result: SimResults, hash: string) => void,
+		updateResult: (result: model.SimulationResult, hash: string) => void,
 	): Promise<boolean | void> {
 		this.isRunning = true;
 		this.runStarted = performance.now();
@@ -117,7 +117,7 @@ export class WasmExecutor implements Executor {
 			this.createWorkers(),
 		]);
 
-		let result: SimResults | null = null;
+		let result: model.SimulationResult | null = null;
 		let maxIterations = 0;
 
 		// 2. Initialize Aggregator & Workers

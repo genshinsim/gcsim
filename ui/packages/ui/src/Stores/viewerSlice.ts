@@ -1,8 +1,8 @@
-import type { SimResults } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 export interface Viewer {
-	data: SimResults | null;
+	data: model.SimulationResult | null;
 	hash: string | null;
 	recoveryConfig: string | null;
 	error: string | null;
@@ -21,7 +21,10 @@ export const viewerSlice = createSlice({
 	reducers: {
 		setResult: (
 			state,
-			action: PayloadAction<{ data: SimResults; hash: string | null }>,
+			action: PayloadAction<{
+				data: model.SimulationResult;
+				hash: string | null;
+			}>,
 		) => {
 			state.data = action.payload.data;
 			state.hash = action.payload.hash;

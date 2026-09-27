@@ -1,5 +1,5 @@
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
-import type { SimResults } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import axios from "axios";
 import { throttle } from "lodash-es";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -91,7 +91,7 @@ type FromUrlProps = {
 };
 
 const FromUrl = ({ exec, url, redirect, mode, gitCommit }: FromUrlProps) => {
-	const [data, setData] = useState<SimResults | null>(null);
+	const [data, setData] = useState<model.SimulationResult | null>(null);
 	const [hash, setHash] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [src, setSrc] = useState<ResultSource>(ResultSource.Loaded);
@@ -114,7 +114,7 @@ const FromUrl = ({ exec, url, redirect, mode, gitCommit }: FromUrlProps) => {
 
 	const updateResult = useRef(
 		throttle(
-			(res: SimResults | null) => {
+			(res: model.SimulationResult | null) => {
 				setData(res);
 				setSrc(ResultSource.Generated);
 			},
@@ -171,7 +171,7 @@ const FromState = ({ exec, redirect, mode, gitCommit }: FromStateProps) => {
 
 	const setResult = useRef(
 		throttle(
-			(result: SimResults | null, hash: string | null) => {
+			(result: model.SimulationResult | null, hash: string | null) => {
 				if (result == null) {
 					return;
 				}
@@ -208,7 +208,7 @@ const FromState = ({ exec, redirect, mode, gitCommit }: FromStateProps) => {
 };
 
 type UpgradableViewerProps = {
-	data: SimResults | null;
+	data: model.SimulationResult | null;
 	hash: string | null;
 	recoveryConfig: string | null;
 	error: string | null;
@@ -219,7 +219,7 @@ type UpgradableViewerProps = {
 	gitCommit: string;
 	exec: ExecutorSupplier<Executor>;
 	retry?: () => void;
-	setResult: (r: SimResults | null, hash: string | null) => void;
+	setResult: (r: model.SimulationResult | null, hash: string | null) => void;
 	setError: (recoveryConfig: string | null, err: string | null) => void;
 };
 
@@ -265,7 +265,7 @@ function useViewerActions(exec: ExecutorSupplier<Executor>): ViewerActions {
 				dispatch(runSim(exec(), cfg));
 				navigate("/web");
 			},
-			onShare: (data: SimResults, hash: string | null) =>
+			onShare: (data: model.SimulationResult, hash: string | null) =>
 				axios
 					.post("/api/share", data, {
 						headers: { "X-GCSIM-SHARE-AUTH": hash ?? "" },

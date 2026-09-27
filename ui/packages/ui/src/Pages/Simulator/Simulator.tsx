@@ -1,6 +1,6 @@
 import { Editor, ExecutorProvider, useValidation } from "@gcsim/components";
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
-import type { model, SimResults } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import { throttle } from "lodash-es";
 import React from "react";
 import { useNavigate } from "react-router";
@@ -78,7 +78,7 @@ export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
 	const onResult = React.useMemo(
 		() =>
 			throttle(
-				(res: SimResults, hash: string) => {
+				(res: model.SimulationResult, hash: string) => {
 					dispatch(viewerActions.setResult({ data: res, hash }));
 				},
 				VIEWER_THROTTLE,

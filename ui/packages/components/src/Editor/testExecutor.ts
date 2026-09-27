@@ -1,9 +1,9 @@
 import type {
 	Executor,
+	model,
 	ParsedCharacterProfile,
 	ParsedResult,
 	Sample,
-	SimResults,
 } from "@gcsim/types";
 import { vi } from "vitest";
 
@@ -52,7 +52,10 @@ export function makeExecutor(opts: FakeExecutorOptions = {}) {
 			((_cfg: string) => Promise.resolve(parsedResult(["amber"]))),
 	);
 	const run = vi.fn(
-		(_cfg: string, _sink: (r: SimResults, hash: string) => void) => {
+		(
+			_cfg: string,
+			_sink: (r: model.SimulationResult, hash: string) => void,
+		) => {
 			isRunning = true;
 			return Promise.resolve(true);
 		},

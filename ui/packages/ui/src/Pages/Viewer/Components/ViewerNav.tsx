@@ -1,5 +1,5 @@
 import { ButtonGroup, Tabs, TabsList, TabsTrigger } from "@gcsim/primitives";
-import type { SimResults } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import classNames from "classnames";
 import { type MouseEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -13,7 +13,7 @@ import type { ViewerActions } from "../Viewer";
 const btnClass = classNames("hidden ml-[7px] sm:flex");
 
 type NavProps = {
-	data: SimResults | null;
+	data: model.SimulationResult | null;
 	hash: string | null;
 	tabState: [string, (tab: string) => void];
 	running: boolean;

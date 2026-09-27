@@ -1,10 +1,10 @@
 import { Badge } from "@gcsim/primitives";
-import type { EnergySettings } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import { memo } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
 type Props = {
-	energy?: EnergySettings;
+	energy?: model.EnergySettings;
 };
 
 export const Energy = memo(({ energy }: Props) => {

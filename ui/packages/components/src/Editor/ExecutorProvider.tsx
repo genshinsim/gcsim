@@ -1,4 +1,4 @@
-import type { Executor, ExecutorSupplier, SimResults } from "@gcsim/types";
+import type { Executor, ExecutorSupplier, model } from "@gcsim/types";
 import React from "react";
 
 const READY_POLL_MS = 250;
@@ -15,7 +15,7 @@ const ExecutorContext = React.createContext<ExecutorContextValue | null>(null);
 
 export interface ExecutorProviderProps {
 	exec: ExecutorSupplier<Executor>;
-	onResult?: (result: SimResults, hash: string) => void;
+	onResult?: (result: model.SimulationResult, hash: string) => void;
 	navigateOnRun?: () => void;
 	children: React.ReactNode;
 }

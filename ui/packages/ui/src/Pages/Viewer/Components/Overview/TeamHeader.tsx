@@ -1,12 +1,12 @@
 import { CharacterCard, ConsolidateCharStats } from "@gcsim/components";
 import { dynamicKey } from "@gcsim/localization";
-import type { Character } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import classNames from "classnames";
 import React, { memo } from "react";
 import { useTranslation } from "react-i18next";
 
 type Props = {
-	characters?: Character[];
+	characters?: model.Character[];
 };
 
 const TeamHeader = ({ characters }: Props) => {
@@ -65,10 +65,8 @@ const CharacterCards = ({ characters }: Props) => {
 					handleToggleDetail={handleToggleDetail}
 					handleToggleSnapshot={handleToggleSnapshot}
 					viewerMode
-					stats={statBlock.stats[c.name] ? statBlock.stats[c.name] : []}
-					snapshot={
-						statBlock.snapshot[c.name] ? statBlock.snapshot[c.name] : []
-					}
+					stats={statBlock.stats[c.name ?? ""] ?? []}
+					snapshot={statBlock.snapshot[c.name ?? ""] ?? []}
 					statsRows={statBlock.maxRows ? statBlock.maxRows : 0}
 					className={cardClass}
 					name={t(dynamicKey(`game:character_names.${c.name}`))}
@@ -79,7 +77,7 @@ const CharacterCards = ({ characters }: Props) => {
 					talentsLabel={t("character.talents")}
 					artifactStatsLabel={t("character.artifact_stats")}
 					totalStatsLabel={t("character.total_stats")}
-					weaponName={t(dynamicKey(`game:weapon_names.${c.weapon.name}`))}
+					weaponName={t(dynamicKey(`game:weapon_names.${c.weapon?.name}`))}
 				/>
 			))}
 		</>
