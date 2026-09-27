@@ -30,14 +30,13 @@ type Enemy struct {
 	mods []modifier.Mod
 
 	// hitlag stuff
-	timePassed   int
 	frozenFrames int
 	queue        *task.Handler
 }
 
 func New(core *core.Core, p info.EnemyProfile) *Enemy {
 	e := &Enemy{}
-	e.queue = task.New(&e.timePassed)
+	e.queue = task.New(&core.F)
 	e.Level = p.Level
 	// TODO: do we need to clone this map isntead?
 	e.resists = p.Resist

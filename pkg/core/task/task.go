@@ -50,6 +50,12 @@ func (s *Handler) Add(f func(), delay int) {
 	s.counter += 1
 }
 
+func (s *Handler) Extend(delay int) {
+	for i := range *s.tasks {
+		(*s.tasks)[i].extend(delay)
+	}
+}
+
 // min heap functions
 
 func (h minHeap) Len() int {
@@ -78,4 +84,8 @@ func (h *minHeap) Pop() any {
 
 func (h minHeap) Peek() task {
 	return h[0]
+}
+
+func (t *task) extend(delay int) {
+	t.executeBy += delay
 }

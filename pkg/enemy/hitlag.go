@@ -9,8 +9,12 @@ import (
 
 func (e *Enemy) ApplyHitlag(factor, dur float64) {
 	// TODO: extend all hitlag affected buff expiry by dur * (1 - factor) i think
-	ext := int(math.Ceil(dur * (1 - factor)))
-	e.frozenFrames += ext
+	newHitlag := int(math.Ceil(dur * (1 - factor)))
+
+	// TODO: this is inaccurate for overlapping hitlags of different hitlag factors
+	oldFrozen := e.frozenFrames
+	e.frozenFrames = max(newHitlag, e.frozenFrames)
+	ext := e.frozenFrames - oldFrozen
 
 	var logs []string
 	var evt glog.Event
@@ -35,6 +39,8 @@ func (e *Enemy) ApplyHitlag(factor, dur float64) {
 		}
 	}
 
+	e.queue.Extend(ext)
+
 	if e.Core.Flags.LogDebug {
 		evt.Write("mods affected", logs)
 	}
@@ -49,26 +55,15 @@ func (e *Enemy) QueueEnemyTask(f func(), delay int) {
 }
 
 func (e *Enemy) Tick() {
-	// dead enemy don't tick
-	if !e.Alive {
-		return
-	}
-	// decrement frozen time first
-	e.frozenFrames -= 1
-	left := 0
-	if e.frozenFrames < 0 {
-		left = -e.frozenFrames
-		e.frozenFrames = 0
-	}
-	// if any left then increase time passed
-	if left <= 0 {
+	if e.frozenFrames > 0 {
+		// frozen for this frame
+		e.frozenFrames--
 		e.Core.Log.NewEvent("enemy skipping tick", glog.LogHitlagEvent, -1).
 			Write("target", e.Key()).
 			Write("frozen_for", e.frozenFrames)
-		// do nothing this tick
+		e.queue.Run()
 		return
 	}
-	e.timePassed += left
 
 	e.queue.Run()
 	e.Reactable.Tick()

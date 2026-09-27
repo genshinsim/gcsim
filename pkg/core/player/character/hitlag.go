@@ -16,21 +16,13 @@ func (c *CharWrapper) QueueCharTask(f func(), delay int) {
 }
 
 func (c *CharWrapper) Tick() {
-	// decrement frozen time first
-	c.frozenFrames -= 1
-	left := 0
-	if c.frozenFrames < 0 {
-		left = -c.frozenFrames
-		c.frozenFrames = 0
-	}
-	// if any left then increase time passed
-	if left <= 0 {
-		// do nothing this tick
+	if c.frozenFrames > 0 {
+		// frozen for this frame
+		c.frozenFrames--
+		c.queue.Run()
 		return
 	}
-	c.TimePassed += left
-
-	// check char queue for any executable actions
+	c.TimePassed++
 	c.queue.Run()
 }
 
@@ -41,8 +33,13 @@ func (c *CharWrapper) FramePausedOnHitlag() bool {
 // ApplyHitlag adds hitlag to the character for specified duration
 func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
 	// number of frames frozen is total duration * (1 - factor)
-	ext := int(math.Ceil(dur * (1 - factor)))
-	c.frozenFrames += ext
+	newHitlag := int(math.Ceil(dur * (1 - factor)))
+
+	// TODO: this is inaccurate for overlapping hitlags of different hitlag factors
+	oldFrozen := c.frozenFrames
+	c.frozenFrames = max(newHitlag, c.frozenFrames)
+	ext := c.frozenFrames - oldFrozen
+
 	var logs []string
 	var evt glog.Event
 	if c.debug {
@@ -66,6 +63,8 @@ func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
 			}
 		}
 	}
+
+	c.queue.Extend(ext)
 
 	if c.debug {
 		evt.Write("mods affected", logs)

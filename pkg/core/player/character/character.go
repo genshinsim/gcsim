@@ -150,7 +150,7 @@ func New(
 		f:             f,
 		debug:         debug,
 	}
-	c.queue = task.New(&c.TimePassed)
+	c.queue = task.New(c.f)
 	s := (*[attributes.EndStatType]float64)(p.Stats)
 	c.BaseStats = *s
 	c.Equip.Sets = make(map[keys.Set]info.Set)
