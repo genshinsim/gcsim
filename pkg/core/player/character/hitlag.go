@@ -8,11 +8,13 @@ import (
 )
 
 func (c *CharWrapper) QueueCharTask(f func(), delay int) {
-	if delay == 0 {
+	if delay <= c.frozenFrames {
 		f()
 		return
 	}
-	c.queue.Add(f, delay)
+	// align char tasks with mods. Mods tick down if added during hitlag, so
+	// char tasks should also tick down during hitlag
+	c.queue.Add(f, delay-c.frozenFrames)
 }
 
 func (c *CharWrapper) Tick() {

@@ -45,11 +45,13 @@ func (e *Enemy) ApplyHitlag(factor, dur float64) {
 }
 
 func (e *Enemy) QueueEnemyTask(f func(), delay int) {
-	if delay == 0 {
+	if delay <= e.frozenFrames {
 		f()
 		return
 	}
-	e.queue.Add(f, delay)
+	// align char tasks with mods. Mods tick down if added during hitlag, so
+	// char tasks should also tick down during hitlag
+	e.queue.Add(f, delay-e.frozenFrames)
 }
 
 func (e *Enemy) Tick() {
