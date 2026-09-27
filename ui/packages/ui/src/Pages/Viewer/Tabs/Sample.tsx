@@ -1,32 +1,21 @@
 import {
-	Button,
-	Input,
-	NonIdealState,
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@gcsim/primitives";
+	DefaultSampleOptions,
+	namedSeeds,
+	SampleLog,
+	SeedPicker,
+} from "@gcsim/components";
+import { NonIdealState } from "@gcsim/primitives";
 import type { model, Sample } from "@gcsim/types";
-import { FlaskConical, RefreshCw } from "lucide-react";
+import { FlaskConical } from "lucide-react";
 import queryString from "query-string";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useTranslation } from "react-i18next";
-import {
-	DefaultSampleOptions,
-	parseLogV2,
-	type SampleRow,
-	Sampler,
-} from "../../Sample/Components";
+import { downloadSample } from "../../Sample/downloadSample";
 
 const SAVED_SAMPLE_KEY = "gcsim-sample-settings";
 
 type UseSampleData = {
 	sample?: Sample;
-	parsed: SampleRow[] | null;
 	seed: string | null;
-	searchable: { [key: number]: string[] };
 	settings: string[];
 	generating: boolean;
 	setGenerating: (val: boolean) => void;
@@ -42,142 +31,17 @@ type Props = {
 	running: boolean;
 };
 
-// TODO: translation
 // TODO: The sampler should be refactored. This is a mess of passing around info
 export default ({ sampler, data, sample, running }: Props) => {
-	const names = useMemo(() => {
-		return data?.character_details?.map((c) => c.name ?? "");
-	}, [data?.character_details]);
-
-	if (names == null || data?.config_file == null || sample.generating) {
+	if (
+		data?.character_details == null ||
+		data.config_file == null ||
+		sample.generating
+	) {
 		return <NonIdealState loading />;
 	}
 
-	if (sample.sample == null || sample.parsed == null) {
-		return (
-			<NonIdealState
-				icon={<FlaskConical />}
-				action={
-					<Generate
-						sampler={sampler}
-						data={data}
-						sample={sample}
-						running={running}
-					/>
-				}
-				className="!px-2"
-			/>
-		);
-	}
-
-	return (
-		<div className="w-full 2xl:mx-auto 2xl:container flex flex-grow flex-col gap-[15px] px-2">
-			<Generate
-				sampler={sampler}
-				data={data}
-				sample={sample}
-				running={running}
-			/>
-			<Sampler
-				sample={sample.sample}
-				data={sample.parsed}
-				team={names}
-				searchable={sample.searchable}
-				settings={sample.settings}
-				setSettings={sample.setSettings}
-			/>
-		</div>
-	);
-};
-
-type GenerateProps = {
-	sampler: (cfg: string, seed: string) => Promise<Sample>;
-	data: model.SimulationResult;
-	sample: UseSampleData;
-	running: boolean;
-};
-
-const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
-	const { t } = useTranslation();
-	let startValue = "sample";
-	switch (sample.seed) {
-		case null:
-			startValue = "sample";
-			break;
-		case data.sample_seed:
-			startValue = "sample";
-			break;
-		case data.statistics?.min_seed:
-			startValue = "min";
-			break;
-		case data.statistics?.max_seed:
-			startValue = "max";
-			break;
-		case data.statistics?.p25_seed:
-			startValue = "q1";
-			break;
-		case data.statistics?.p50_seed:
-			startValue = "q2";
-			break;
-		case data.statistics?.p75_seed:
-			startValue = "q3";
-			break;
-		default:
-			startValue = "custom";
-			break;
-	}
-	const [value, setValue] = useState(startValue);
-	const options = [
-		{ label: t("viewer.seed_sample"), value: "sample" },
-		// { label: "Random", value: "rand" },
-		{ label: t("viewer.seed_min"), value: "min" },
-		{ label: t("viewer.seed_max"), value: "max" },
-		{ label: t("viewer.seed_p", { p: 25 }), value: "q1" },
-		{ label: t("viewer.seed_p", { p: 50 }), value: "q2" },
-		{ label: t("viewer.seed_p", { p: 75 }), value: "q3" },
-		{ label: t("viewer.seed_custom"), value: "custom" },
-	];
-
-	// Seeds are uint64 (serialized as strings) and routinely exceed 2^53, so the
-	// custom seed is kept as a string; Number() would silently truncate it.
-	const parsed = queryString.parse(location.hash);
-	const [customSeed, setCustomSeed] = useState<string>(
-		(parsed.sample as string) ??
-			String(Math.floor(Number.MAX_SAFE_INTEGER * Math.random())),
-	);
-
-	const disabled = () => {
-		return running && ["min", "max", "q1", "q2", "q3"].includes(value);
-	};
-
-	const click = () => {
-		let seed = "0";
-		switch (value) {
-			case "sample":
-				seed = data.sample_seed ?? seed;
-				break;
-			case "rand":
-				seed = "" + Math.floor(Number.MAX_SAFE_INTEGER * Math.random());
-				break;
-			case "min":
-				seed = data.statistics?.min_seed ?? seed;
-				break;
-			case "max":
-				seed = data.statistics?.max_seed ?? seed;
-				break;
-			case "q1":
-				seed = data.statistics?.p25_seed ?? seed;
-				break;
-			case "q2":
-				seed = data.statistics?.p50_seed ?? seed;
-				break;
-			case "q3":
-				seed = data.statistics?.p75_seed ?? seed;
-				break;
-			case "custom":
-				seed = customSeed;
-		}
-
+	const generate = (seed: string) => {
 		const parsed = queryString.parse(location.hash);
 		parsed.sample = seed;
 		location.hash = queryString.stringify(parsed);
@@ -190,37 +54,35 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
 		});
 	};
 
+	const picker = (
+		<SeedPicker
+			seeds={namedSeeds(data)}
+			value={sample.seed}
+			onPick={generate}
+			running={running}
+		/>
+	);
+
+	if (sample.sample == null) {
+		return (
+			<NonIdealState
+				icon={<FlaskConical />}
+				action={picker}
+				className="!px-2"
+			/>
+		);
+	}
+
+	const current = sample.sample;
 	return (
-		<div className="flex flex-col gap-2 w-full mx-auto">
-			<Select value={value} onValueChange={setValue}>
-				<SelectTrigger className="w-full">
-					<SelectValue />
-				</SelectTrigger>
-				<SelectContent>
-					{options.map((o) => (
-						<SelectItem key={o.value} value={o.value}>
-							{o.label}
-						</SelectItem>
-					))}
-				</SelectContent>
-			</Select>
-			{value === "custom" ? (
-				<Input
-					value={customSeed}
-					onChange={(e) => setCustomSeed(e.target.value)}
-					inputMode="numeric"
-					className="w-full"
-				/>
-			) : null}
-			<Button
-				size="lg"
-				className="w-full"
-				disabled={disabled()}
-				onClick={click}
-			>
-				<RefreshCw />
-				{t("viewer.generate")}
-			</Button>
+		<div className="w-full 2xl:mx-auto 2xl:container flex flex-grow flex-col gap-[15px] px-2">
+			{picker}
+			<SampleLog
+				sample={current}
+				settings={sample.settings}
+				onSettingsChange={sample.setSettings}
+				onDownload={() => downloadSample(current)}
+			/>
 		</div>
 	);
 };
@@ -288,47 +150,10 @@ export function useSample(
 		sampler,
 	]);
 
-	const parsed = useMemo(() => {
-		if (data?.initial_character == null || data.character_details == null) {
-			return null;
-		}
-
-		if (sample == null) {
-			return null;
-		}
-
-		return parseLogV2(
-			data.initial_character,
-			data?.character_details?.map((c) => c.name ?? ""),
-			sample.logs,
-			selected,
-		);
-	}, [sample, data?.initial_character, data?.character_details, selected]);
-
-	const searchable = useMemo(() => {
-		const out: { [key: number]: string[] } = {};
-		if (parsed == null) {
-			return out;
-		}
-
-		parsed.forEach((row, i) => {
-			const results: string[] = [];
-			row.slots.forEach((slot) => {
-				slot.forEach((e) => {
-					results.push(e.msg);
-				});
-			});
-			out[i] = results;
-		});
-		return out;
-	}, [parsed]);
-
 	return useMemo(() => {
 		return {
 			sample: sample,
-			parsed: parsed,
 			seed: seed,
-			searchable: searchable,
 			settings: selected,
 			generating: generating,
 			setGenerating: setGenerating,
@@ -336,5 +161,5 @@ export function useSample(
 			setSettings: setAndStore,
 			setSeed: setSeed,
 		};
-	}, [generating, parsed, sample, searchable, seed, selected, setAndStore]);
+	}, [generating, sample, seed, selected, setAndStore]);
 }

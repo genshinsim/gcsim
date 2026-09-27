@@ -1,4 +1,9 @@
-import { CharacterCard, characterCardsClassNames } from "@gcsim/components";
+import {
+	CharacterCard,
+	characterCardsClassNames,
+	DefaultSampleOptions,
+	SampleLog,
+} from "@gcsim/components";
 import { dynamicKey } from "@gcsim/localization";
 import {
 	AlertDialog,
@@ -13,27 +18,14 @@ import {
 	NonIdealState,
 } from "@gcsim/primitives";
 import type { Sample } from "@gcsim/types";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { CopyToClipboard, SendToSimulator } from "../../Components/Buttons";
 import { useSendToSimulator } from "../../Components/Buttons/useSendToSimulator";
-import {
-	DefaultSampleOptions,
-	parseLogV2,
-	type SampleRow,
-	Sampler,
-} from "./Components";
+import { downloadSample } from "./downloadSample";
 
 const SAVED_SAMPLE_KEY = "gcsim-sample-settings";
-
-type UseSampleData = {
-	parsed: SampleRow[] | null;
-	team?: string[];
-	searchable: { [key: number]: string[] };
-	settings: string[];
-	setSettings: (val: string[]) => void;
-};
 
 type Props = {
 	sample: Sample | null;
@@ -43,10 +35,10 @@ type Props = {
 
 export default ({ sample, error, retry }: Props) => {
 	const { t } = useTranslation();
-	const data = useSample(sample);
+	const [settings, setSettings] = useSampleSettings();
 	const onSendToSimulator = useSendToSimulator();
 
-	if (sample == null || data.team == null || data.parsed == null) {
+	if (sample?.initial_character == null || sample.character_details == null) {
 		return (
 			<>
 				<NonIdealState loading />
@@ -100,13 +92,11 @@ export default ({ sample, error, retry }: Props) => {
 				))}
 			</div>
 			<div className="flex flex-grow flex-col gap-[15px] px-4">
-				<Sampler
+				<SampleLog
 					sample={sample}
-					data={data.parsed}
-					team={data.team}
-					searchable={data.searchable}
-					settings={data.settings}
-					setSettings={data.setSettings}
+					settings={settings}
+					onSettingsChange={setSettings}
+					onDownload={() => downloadSample(sample)}
 				/>
 				<ErrorAlert msg={error} retry={retry} />
 			</div>
@@ -148,7 +138,7 @@ const ErrorAlert = ({ msg, retry }: ErrorProps) => {
 	);
 };
 
-function useSample(sample: Sample | null): UseSampleData {
+function useSampleSettings(): [string[], (val: string[]) => void] {
 	const [selected, setSelected] = useState<string[]>(() => {
 		const saved = localStorage.getItem(SAVED_SAMPLE_KEY);
 		if (saved) {
@@ -163,50 +153,5 @@ function useSample(sample: Sample | null): UseSampleData {
 		localStorage.setItem(SAVED_SAMPLE_KEY, JSON.stringify(val));
 	};
 
-	const parsed = useMemo(() => {
-		if (
-			sample?.initial_character == null ||
-			sample?.character_details == null
-		) {
-			return null;
-		}
-
-		return parseLogV2(
-			sample.initial_character,
-			sample.character_details.map((c) => c.name),
-			sample.logs,
-			selected,
-		);
-	}, [
-		sample?.character_details,
-		sample?.initial_character,
-		sample?.logs,
-		selected,
-	]);
-
-	const searchable = useMemo(() => {
-		const out: { [key: number]: string[] } = {};
-		if (parsed == null) {
-			return out;
-		}
-
-		parsed.forEach((row, i) => {
-			const results: string[] = [];
-			row.slots.forEach((slot) => {
-				slot.forEach((e) => {
-					results.push(e.msg);
-				});
-			});
-			out[i] = results;
-		});
-		return out;
-	}, [parsed]);
-
-	return {
-		parsed: parsed,
-		team: sample?.character_details?.map((c) => c.name),
-		searchable: searchable,
-		settings: selected,
-		setSettings: setAndStore,
-	};
+	return [selected, setAndStore];
 }
