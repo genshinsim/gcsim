@@ -124,10 +124,10 @@ export class ServerExecutor implements Executor {
 							reject("unexpected response from server: blank result");
 							return;
 						}
-						let simres: model.SimulationResult;
+						let result: model.SimulationResult;
 						try {
-							simres = JSON.parse(resp.data.result);
-							updateResult(simres, resp.data.hash);
+							result = JSON.parse(resp.data.result);
+							updateResult(result, resp.data.hash);
 						} catch (e) {
 							this.is_running = false;
 							console.log("error decoding sim result");

@@ -44,10 +44,10 @@ export default (props: Props) => {
 const SingleGroup = ({ data, running, names }: Props) => (
 	<Group>
 		<TeamHeader characters={data?.character_details} />
-		<Metadata modelData={data} />
+		<Metadata data={data} />
 		<RollupCards data={data} />
 		<TargetInfo enemies={data?.target_details} player={data?.player_position} />
-		<DistributionCard modelData={data} />
+		<DistributionCard data={data} />
 
 		<DamageTimelineCard data={data} running={running} names={names} />
 		<CumulativeDamageCard data={data} running={running} />
