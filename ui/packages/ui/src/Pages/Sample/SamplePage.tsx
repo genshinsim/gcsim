@@ -96,7 +96,7 @@ export default ({ sample, error, retry }: Props) => {
 					sample={sample}
 					settings={settings}
 					onSettingsChange={setSettings}
-					onDownload={() => downloadSample(sample)}
+					onDownload={downloadSample}
 				/>
 				<ErrorAlert msg={error} retry={retry} />
 			</div>

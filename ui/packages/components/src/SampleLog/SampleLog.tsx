@@ -141,7 +141,7 @@ export type SampleLogProps = {
 	sample: Sample;
 	settings: string[];
 	onSettingsChange: (val: string[]) => void;
-	onDownload?: () => void;
+	onDownload?: (sample: Sample) => void;
 };
 
 function SampleLogUI({
@@ -268,7 +268,7 @@ function SampleLogUI({
 				<ButtonGroup className="mb-[15px]">
 					<SampleOptions settings={settings} setSettings={onSettingsChange} />
 					{onDownload != null && (
-						<Button variant="secondary" onClick={onDownload}>
+						<Button variant="secondary" onClick={() => onDownload(sample)}>
 							<Download />
 							{t("viewer.download")}
 						</Button>

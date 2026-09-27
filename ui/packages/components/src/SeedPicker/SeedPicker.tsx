@@ -17,7 +17,7 @@ export type NamedSeeds = Partial<Record<SeedName, string>>;
 
 type Choice = SeedName | "custom";
 
-const statisticSeeds: Choice[] = ["min", "max", "p25", "p50", "p75"];
+const statisticSeeds: SeedName[] = ["min", "max", "p25", "p50", "p75"];
 
 export function namedSeeds(result: model.SimulationResult): NamedSeeds {
 	const stats = result.statistics;
@@ -35,7 +35,7 @@ function initialChoice(seeds: NamedSeeds, value: string | null): Choice {
 	if (value == null || value === seeds.sample) {
 		return "sample";
 	}
-	const named = statisticSeeds.find((c) => seeds[c as SeedName] === value);
+	const named = statisticSeeds.find((c) => seeds[c] === value);
 	return named ?? "custom";
 }
 
@@ -101,7 +101,9 @@ export const SeedPicker = ({
 			<Button
 				size="lg"
 				className="w-full"
-				disabled={running && statisticSeeds.includes(choice)}
+				disabled={
+					running && choice !== "custom" && statisticSeeds.includes(choice)
+				}
 				onClick={pick}
 			>
 				<RefreshCw />

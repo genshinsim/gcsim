@@ -31,7 +31,6 @@ type Props = {
 	running: boolean;
 };
 
-// TODO: The sampler should be refactored. This is a mess of passing around info
 export default ({ sampler, data, sample, running }: Props) => {
 	if (
 		data?.character_details == null ||
@@ -73,15 +72,14 @@ export default ({ sampler, data, sample, running }: Props) => {
 		);
 	}
 
-	const current = sample.sample;
 	return (
 		<div className="w-full 2xl:mx-auto 2xl:container flex flex-grow flex-col gap-[15px] px-2">
 			{picker}
 			<SampleLog
-				sample={current}
+				sample={sample.sample}
 				settings={sample.settings}
 				onSettingsChange={sample.setSettings}
-				onDownload={() => downloadSample(current)}
+				onDownload={downloadSample}
 			/>
 		</div>
 	);

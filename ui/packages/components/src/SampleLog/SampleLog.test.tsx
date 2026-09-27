@@ -97,7 +97,7 @@ describe("SampleLog", () => {
 
 		renderLog({ onDownload });
 		await userEvent.click(screen.getByText("viewer.download"));
-		expect(onDownload).toHaveBeenCalledOnce();
+		expect(onDownload).toHaveBeenCalledExactlyOnceWith(sample);
 	});
 
 	it("reports preset changes through onSettingsChange", async () => {
