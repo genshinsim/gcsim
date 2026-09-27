@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -19,7 +19,7 @@ vi.mock("./AceEditorWrapper", () => ({
 		onChange: (v: string) => void;
 		onRun?: () => void;
 	}) => {
-		lastRun = onRun;
+		lastRun ??= onRun;
 		return (
 			<textarea
 				data-testid="ace"
@@ -31,32 +31,29 @@ vi.mock("./AceEditorWrapper", () => ({
 }));
 
 import { Editor } from "./Editor";
-import { ExecutorProvider } from "./ExecutorProvider";
-import { makeExecutor } from "./testExecutor";
+import { defaultEditorPrefs } from "./types";
 
-const baseProps = {
+const baseProps: React.ComponentProps<typeof Editor> = {
 	config: "cfg text",
 	setConfig: () => {},
-	isValid: true,
 	error: null,
 	parsedTeam: [],
+	onRun: () => {},
+	canRun: true,
+	prefs: defaultEditorPrefs,
+	onPrefsChange: () => {},
 };
 
 function renderEditor(
 	props: Partial<React.ComponentProps<typeof Editor>> = {},
-	fake = makeExecutor(),
 ) {
-	const utils = render(
-		<ExecutorProvider exec={fake.supplier}>
-			<Editor {...baseProps} {...props} />
-		</ExecutorProvider>,
-	);
-	return { ...utils, fake };
+	return render(<Editor {...baseProps} {...props} />);
 }
+
+const runButton = () => screen.getByRole("button", { name: "simple.run" });
 
 beforeEach(() => {
 	lastRun = undefined;
-	localStorage.clear();
 });
 
 describe("Editor", () => {
@@ -69,12 +66,7 @@ describe("Editor", () => {
 		await userEvent.type(ace, "!");
 		expect(setConfig).toHaveBeenCalled();
 
-		const fake = makeExecutor();
-		rerender(
-			<ExecutorProvider exec={fake.supplier}>
-				<Editor {...baseProps} config="two" setConfig={setConfig} />
-			</ExecutorProvider>,
-		);
+		rerender(<Editor {...baseProps} config="two" setConfig={setConfig} />);
 		expect(screen.getByTestId<HTMLTextAreaElement>("ace").value).toBe("two");
 	});
 
@@ -83,62 +75,75 @@ describe("Editor", () => {
 		expect(screen.getByTestId("editor-team-composer")).toBeTruthy();
 	});
 
-	it("hides gated content when its persisted toggle is off", () => {
-		localStorage.setItem(
-			"gcsim-config-editor-tools",
-			JSON.stringify({ team: false, nameSearch: false, tips: false }),
-		);
-		renderEditor();
+	it("hides gated content when its toggle pref is off", () => {
+		renderEditor({
+			prefs: {
+				...defaultEditorPrefs,
+				toggles: { team: false, nameSearch: false, tips: false },
+			},
+		});
 		expect(screen.queryByTestId("editor-team-composer")).toBeNull();
 	});
 
-	it("disables Run unless the executor is ready and the config is valid", async () => {
-		const { rerender } = renderEditor({ isValid: false });
-		const run = () => screen.getByRole("button", { name: "simple.run" });
-		await waitFor(() => expect(run()).toBeTruthy());
-		expect(run()).toBeDisabled();
-
-		const fake = makeExecutor();
-		rerender(
-			<ExecutorProvider exec={fake.supplier}>
-				<Editor {...baseProps} isValid={true} />
-			</ExecutorProvider>,
+	it("reports a toggled tool through onPrefsChange", async () => {
+		const onPrefsChange = vi.fn();
+		renderEditor({ onPrefsChange });
+		await userEvent.click(
+			screen.getAllByRole("button", { name: "simple.hide_all_tips" })[0],
 		);
-		await waitFor(() => expect(run()).toBeEnabled());
+		expect(onPrefsChange).toHaveBeenCalledWith({
+			...defaultEditorPrefs,
+			toggles: { ...defaultEditorPrefs.toggles, tips: false },
+		});
 	});
 
-	it("invokes the provider run with the current config from the Run button", async () => {
-		const { fake } = renderEditor({ config: "run me" });
-		const run = await screen.findByRole("button", { name: "simple.run" });
-		await waitFor(() => expect(run).toBeEnabled());
-		await userEvent.click(run);
-		await waitFor(() =>
-			expect(fake.run).toHaveBeenCalledWith("run me", expect.any(Function)),
-		);
+	it("reports theme and font size changes through onPrefsChange", async () => {
+		const onPrefsChange = vi.fn();
+		renderEditor({ onPrefsChange, showThemeSelector: true });
+		await userEvent.selectOptions(screen.getByRole("combobox"), "github");
+		expect(onPrefsChange).toHaveBeenLastCalledWith({
+			...defaultEditorPrefs,
+			theme: "github",
+		});
 	});
 
-	it("binds the provider run into the editor surface", async () => {
-		const { fake } = renderEditor({ config: "hotkey run" });
-		expect(lastRun).toBeTypeOf("function");
+	it("disables Run while canRun is false", () => {
+		const { rerender } = renderEditor({ canRun: false });
+		expect(runButton()).toBeDisabled();
+		rerender(<Editor {...baseProps} canRun={true} />);
+		expect(runButton()).toBeEnabled();
+	});
+
+	it("calls onRun from the Run button", async () => {
+		const onRun = vi.fn();
+		renderEditor({ onRun });
+		await userEvent.click(runButton());
+		expect(onRun).toHaveBeenCalledTimes(1);
+	});
+
+	it("routes the hotkey to the latest onRun, only while canRun", () => {
+		const first = vi.fn();
+		const latest = vi.fn();
+		const { rerender } = renderEditor({ onRun: first, canRun: false });
 		lastRun?.();
-		await waitFor(() =>
-			expect(fake.run).toHaveBeenCalledWith("hotkey run", expect.any(Function)),
-		);
+		expect(first).not.toHaveBeenCalled();
+
+		rerender(<Editor {...baseProps} onRun={latest} canRun={true} />);
+		lastRun?.();
+		expect(first).not.toHaveBeenCalled();
+		expect(latest).toHaveBeenCalledTimes(1);
 	});
 
 	it("renders the theme selector and settings slot only when asked", () => {
 		const { rerender } = renderEditor();
 		expect(screen.queryByRole("combobox")).toBeNull();
 
-		const fake = makeExecutor();
 		rerender(
-			<ExecutorProvider exec={fake.supplier}>
-				<Editor
-					{...baseProps}
-					showThemeSelector
-					settings={<div data-testid="host-settings" />}
-				/>
-			</ExecutorProvider>,
+			<Editor
+				{...baseProps}
+				showThemeSelector
+				settings={<div data-testid="host-settings" />}
+			/>,
 		);
 		expect(screen.getByRole("combobox")).toBeTruthy();
 		expect(screen.getByTestId("host-settings")).toBeTruthy();

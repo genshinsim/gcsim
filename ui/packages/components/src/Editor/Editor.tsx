@@ -3,66 +3,42 @@ import { Play } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { AceEditorWrapper } from "./AceEditorWrapper";
-import { useExecutor } from "./ExecutorProvider";
 import { type EditorToggles, HelperTools } from "./HelperTools";
 import { NameSearch } from "./NameSearch";
 import { SectionDivider } from "./SectionDivider";
 import { TeamComposer } from "./TeamComposer";
 import { ActionListTip, TeamTip } from "./Tips";
 import type { EditorProps } from "./types";
-import { type Theme, themes } from "./types";
-
-const LOCALSTORAGE_THEME_KEY = "gcsim-config-editor-theme";
-const LOCALSTORAGE_FONT_SIZE_KEY = "gcsim-config-editor-font-size";
-const LOCALSTORAGE_TOGGLES_KEY = "gcsim-config-editor-tools";
-
-const defaultToggles: EditorToggles = {
-	team: true,
-	nameSearch: true,
-	tips: true,
-};
-
-function loadToggles(): EditorToggles {
-	try {
-		const raw = localStorage.getItem(LOCALSTORAGE_TOGGLES_KEY);
-		return raw ? { ...defaultToggles, ...JSON.parse(raw) } : defaultToggles;
-	} catch {
-		return defaultToggles;
-	}
-}
+import { themes } from "./types";
 
 export const Editor = ({
 	config,
 	setConfig,
-	isValid,
 	error,
 	parsedTeam,
 	settings,
 	teamCharacters,
 	showThemeSelector = false,
+	onRun,
+	canRun,
+	busy = false,
+	prefs,
+	onPrefsChange,
 }: EditorProps) => {
 	const { t } = useTranslation();
-	const { run, isReady } = useExecutor();
-	const [theme, setTheme] = React.useState<Theme>(() => {
-		return localStorage.getItem(LOCALSTORAGE_THEME_KEY) ?? "tomorrow_night";
-	});
-	const [fontSize, setFontSize] = React.useState(() => {
-		return localStorage.getItem(LOCALSTORAGE_FONT_SIZE_KEY)
-			? Number(localStorage.getItem(LOCALSTORAGE_FONT_SIZE_KEY))
-			: 14;
-	});
-	const [toggles, setToggles] = React.useState<EditorToggles>(loadToggles);
+	const { toggles, theme, fontSize } = prefs;
 
-	React.useEffect(() => {
-		localStorage.setItem(LOCALSTORAGE_THEME_KEY, theme);
-		localStorage.setItem(LOCALSTORAGE_FONT_SIZE_KEY, fontSize.toString());
-	}, [theme, fontSize]);
-	React.useEffect(() => {
-		localStorage.setItem(LOCALSTORAGE_TOGGLES_KEY, JSON.stringify(toggles));
-	}, [toggles]);
+	// Ace binds commands once on mount, so the hotkey reads the latest props via a ref.
+	const runRef = React.useRef({ onRun, canRun });
+	runRef.current = { onRun, canRun };
+	const runFromHotkey = React.useCallback(() => {
+		if (runRef.current.canRun) {
+			runRef.current.onRun();
+		}
+	}, []);
 
 	const toggle = (key: keyof EditorToggles) =>
-		setToggles((prev) => ({ ...prev, [key]: !prev[key] }));
+		onPrefsChange({ ...prefs, toggles: { ...toggles, [key]: !toggles[key] } });
 
 	return (
 		<div className="flex flex-col">
@@ -97,14 +73,21 @@ export const Editor = ({
 						<input
 							type="number"
 							value={fontSize}
-							onChange={(e) => setFontSize(Number(e.currentTarget.value))}
+							onChange={(e) =>
+								onPrefsChange({
+									...prefs,
+									fontSize: Number(e.currentTarget.value),
+								})
+							}
 						/>
 					</label>
 					<label className="flex items-center gap-2">
 						{t("simple.editor_theme")}
 						<select
 							value={theme}
-							onChange={(e) => setTheme(e.currentTarget.value)}
+							onChange={(e) =>
+								onPrefsChange({ ...prefs, theme: e.currentTarget.value })
+							}
 						>
 							{themes.map((th) => (
 								<option key={th} value={th}>
@@ -119,7 +102,7 @@ export const Editor = ({
 			<AceEditorWrapper
 				cfg={config}
 				onChange={setConfig}
-				onRun={() => run(config)}
+				onRun={runFromHotkey}
 				theme={theme}
 				fontSize={fontSize}
 			/>
@@ -130,12 +113,8 @@ export const Editor = ({
 				</div>
 				<div className="flex basis-full flex-row flex-wrap gap-1 p-1 sm:basis-2/3">
 					<HelperTools toggles={toggles} onToggle={toggle} className="flex-1" />
-					<Button
-						className="flex-1"
-						onClick={() => run(config)}
-						disabled={!isReady || !isValid}
-					>
-						{isReady ? <Play /> : <Spinner />}
+					<Button className="flex-1" onClick={onRun} disabled={!canRun}>
+						{busy ? <Spinner /> : <Play />}
 						{t("simple.run")}
 					</Button>
 				</div>
