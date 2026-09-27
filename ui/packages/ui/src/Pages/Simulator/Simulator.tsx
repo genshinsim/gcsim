@@ -1,4 +1,9 @@
-import { Editor, ExecutorProvider, useValidation } from "@gcsim/components";
+import {
+	Editor,
+	ExecutorProvider,
+	useExecutor,
+	useValidation,
+} from "@gcsim/components";
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
 import type { model } from "@gcsim/types";
 import { throttle } from "lodash-es";
@@ -15,6 +20,7 @@ import {
 import { viewerActions } from "../../Stores/viewerSlice";
 import { VIEWER_THROTTLE } from "../Viewer";
 import { EditorSettings } from "./EditorSettings";
+import { useEditorPrefs } from "./editorPrefs";
 import {
 	ImportedCharactersProvider,
 	useImportedCharacters,
@@ -39,6 +45,8 @@ function SimulatorEditor({ cfg }: { cfg: string }) {
 	const dispatch = useAppDispatch();
 	const { imported } = useImportedCharacters();
 	const { isValid, error, parsedTeam } = useValidation(cfg);
+	const { run, isReady } = useExecutor();
+	const [prefs, setPrefs] = useEditorPrefs();
 
 	const setConfig = (newCfg: string) => {
 		dispatch(appActions.setCfg({ cfg: newCfg, keepTeam: false }));
@@ -60,12 +68,16 @@ function SimulatorEditor({ cfg }: { cfg: string }) {
 		<Editor
 			config={cfg}
 			setConfig={setConfig}
-			isValid={isValid}
 			error={error}
 			parsedTeam={parsedTeam}
 			teamCharacters={teamCharacters}
 			settings={<EditorSettings />}
 			showThemeSelector
+			onRun={() => run(cfg)}
+			canRun={isReady && isValid}
+			busy={!isReady}
+			prefs={prefs}
+			onPrefsChange={setPrefs}
 		/>
 	);
 }

@@ -16,13 +16,35 @@ export interface TeamComposerCharacterSource {
 export interface EditorProps {
 	config: string;
 	setConfig: (v: string) => void;
-	isValid: boolean;
 	error: string | null;
 	parsedTeam: model.Character[];
 	settings?: React.ReactNode;
 	teamCharacters?: TeamComposerCharacterSource;
 	showThemeSelector?: boolean;
+	onRun: () => void;
+	canRun: boolean;
+	busy?: boolean;
+	prefs: EditorPrefs;
+	onPrefsChange: (next: EditorPrefs) => void;
 }
+
+export interface EditorToggles {
+	team: boolean;
+	nameSearch: boolean;
+	tips: boolean;
+}
+
+export interface EditorPrefs {
+	toggles: EditorToggles;
+	theme: Theme;
+	fontSize: number;
+}
+
+export const defaultEditorPrefs: EditorPrefs = {
+	toggles: { team: true, nameSearch: true, tips: true },
+	theme: "tomorrow_night",
+	fontSize: 14,
+};
 
 export interface AceEditorWrapperProps {
 	cfg: string;

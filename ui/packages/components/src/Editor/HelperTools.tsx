@@ -7,12 +7,7 @@ import {
 } from "@gcsim/primitives";
 import { HelpCircle, Search, Users, Wrench } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
-export interface EditorToggles {
-	team: boolean;
-	nameSearch: boolean;
-	tips: boolean;
-}
+import type { EditorToggles } from "./types";
 
 export interface HelperToolsProps {
 	toggles: EditorToggles;

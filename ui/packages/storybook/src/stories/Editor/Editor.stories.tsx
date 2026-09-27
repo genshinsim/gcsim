@@ -1,33 +1,10 @@
-import { Editor, ExecutorProvider } from "@gcsim/components";
-import type {
-	Executor,
-	ExecutorSupplier,
-	model,
-	ParsedResult,
-	Sample,
-} from "@gcsim/types";
+import { defaultEditorPrefs, Editor } from "@gcsim/components";
+import type { model } from "@gcsim/types";
 import type { Meta, StoryObj } from "@storybook/react-vite";
+import { useArgs } from "storybook/preview-api";
+import { fn } from "storybook/test";
 import { sampleTeam } from "../samples";
 import { sampleConfig } from "./sampleConfig";
-
-const emptyResult: ParsedResult = {
-	characters: [],
-	errors: [],
-	player_initial_pos: { x: 0, y: 0, r: 0 },
-};
-
-const fakeExecutor: Executor = {
-	ready: () => Promise.resolve(true),
-	running: () => false,
-	validate: () => Promise.resolve(emptyResult),
-	sample: () => Promise.resolve({} as Sample),
-	run: () => Promise.resolve(true),
-	cancel: () => {},
-	buildInfo: () => ({ hash: "", date: "" }),
-};
-const supplier: ExecutorSupplier<Executor> = () => fakeExecutor;
-
-const TOGGLES_KEY = "gcsim-config-editor-tools";
 
 const teamCharacters = {
 	createCharacter: (key: string): model.Character => ({
@@ -52,29 +29,29 @@ const meta: Meta<typeof Editor> = {
 		layout: "padded",
 	},
 	tags: ["autodocs"],
-	decorators: [
-		(Story, context) => {
-			const toggles = context.parameters.editorToggles ?? {
-				team: true,
-				nameSearch: true,
-				tips: true,
-			};
-			localStorage.setItem(TOGGLES_KEY, JSON.stringify(toggles));
-			return (
-				<ExecutorProvider exec={supplier}>
-					<Story />
-				</ExecutorProvider>
-			);
-		},
-	],
+	render: function Render(args) {
+		const [, updateArgs] = useArgs();
+		return (
+			<Editor
+				{...args}
+				onPrefsChange={(prefs) => {
+					args.onPrefsChange(prefs);
+					updateArgs({ prefs });
+				}}
+			/>
+		);
+	},
 	args: {
 		config: sampleConfig,
 		setConfig: () => {},
-		isValid: true,
 		error: null,
 		parsedTeam: sampleTeam,
 		teamCharacters,
 		showThemeSelector: true,
+		onRun: fn(),
+		canRun: true,
+		prefs: defaultEditorPrefs,
+		onPrefsChange: fn(),
 	},
 };
 
@@ -90,17 +67,23 @@ export const WithThemeSelector: Story = {
 };
 
 export const WithTeam: Story = {
-	parameters: { editorToggles: { team: true, nameSearch: false, tips: false } },
 	args: {
+		prefs: {
+			...defaultEditorPrefs,
+			toggles: { team: true, nameSearch: false, tips: false },
+		},
 		parsedTeam: sampleTeam,
 		teamCharacters,
 	},
 };
 
 export const WithTeamError: Story = {
-	parameters: { editorToggles: { team: true, nameSearch: false, tips: false } },
 	args: {
-		isValid: false,
+		prefs: {
+			...defaultEditorPrefs,
+			toggles: { team: true, nameSearch: false, tips: false },
+		},
+		canRun: false,
 		error: "invalid action: unknown key 'foo'",
 		parsedTeam: sampleTeam,
 		teamCharacters,
@@ -108,10 +91,16 @@ export const WithTeamError: Story = {
 };
 
 export const AllTools: Story = {
-	parameters: { editorToggles: { team: true, nameSearch: true, tips: true } },
 	args: {
 		parsedTeam: sampleTeam,
 		teamCharacters,
+	},
+};
+
+export const Busy: Story = {
+	args: {
+		canRun: false,
+		busy: true,
 	},
 };
 
