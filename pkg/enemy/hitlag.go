@@ -39,31 +39,31 @@ func (e *Enemy) ApplyHitlag(factor, dur float64) {
 		}
 	}
 
+	e.queue.Extend(ext)
+
 	if e.Core.Flags.LogDebug {
 		evt.Write("mods affected", logs)
 	}
 }
 
 func (e *Enemy) QueueEnemyTask(f func(), delay int) {
-	if delay <= e.frozenFrames {
+	if delay == 0 {
 		f()
 		return
 	}
-	// align char tasks with mods. Mods tick down if added during hitlag, so
-	// char tasks should also tick down during hitlag
-	e.queue.Add(f, delay-e.frozenFrames)
+	e.queue.Add(f, delay)
 }
 
 func (e *Enemy) Tick() {
 	if e.frozenFrames > 0 {
-		// frozen for this frame, do nothing
+		// frozen for this frame
 		e.frozenFrames--
 		e.Core.Log.NewEvent("enemy skipping tick", glog.LogHitlagEvent, -1).
 			Write("target", e.Key()).
 			Write("frozen_for", e.frozenFrames)
+		e.queue.Run()
 		return
 	}
-	e.timePassed++
 
 	e.queue.Run()
 	e.Reactable.Tick()

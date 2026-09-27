@@ -8,24 +8,21 @@ import (
 )
 
 func (c *CharWrapper) QueueCharTask(f func(), delay int) {
-	if delay <= c.frozenFrames {
+	if delay == 0 {
 		f()
 		return
 	}
-	// align char tasks with mods. Mods tick down if added during hitlag, so
-	// char tasks should also tick down during hitlag
-	c.queue.Add(f, delay-c.frozenFrames)
+	c.queue.Add(f, delay)
 }
 
 func (c *CharWrapper) Tick() {
 	if c.frozenFrames > 0 {
-		// frozen for this frame, do nothing
+		// frozen for this frame
 		c.frozenFrames--
+		c.queue.Run()
 		return
 	}
 	c.TimePassed++
-
-	// check char queue for any executable actions
 	c.queue.Run()
 }
 
@@ -66,6 +63,8 @@ func (c *CharWrapper) ApplyHitlag(factor, dur float64) {
 			}
 		}
 	}
+
+	c.queue.Extend(ext)
 
 	if c.debug {
 		evt.Write("mods affected", logs)
