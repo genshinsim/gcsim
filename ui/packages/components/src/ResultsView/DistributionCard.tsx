@@ -1,4 +1,3 @@
-import { CardTitle, Colors, HistogramGraph } from "@gcsim/components";
 import {
 	Card,
 	Select,
@@ -11,6 +10,8 @@ import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { HistogramGraph } from "../Cards/DistributionCard/HistogramGraph";
+import { CardTitle, Colors } from "../common/gcsim";
 
 type Props = {
 	data: model.SimulationResult | null;
