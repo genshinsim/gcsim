@@ -5,7 +5,7 @@ import { LegendItem, LegendLabel, LegendOrdinal } from "@visx/legend";
 import { scaleLinear, scaleOrdinal } from "@visx/scale";
 import { Bar, LinePath } from "@visx/shape";
 import { useTooltip } from "@visx/tooltip";
-import { useRef } from "react";
+import { memo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
 	DataColorsConst,
@@ -84,7 +84,7 @@ type GraphProps = {
 	margin?: { left: number; right: number; top: number; bottom: number };
 };
 
-export const CumulativeGraph = ({
+const Graph = ({
 	width,
 	height,
 	graph,
@@ -266,3 +266,5 @@ export const CumulativeGraph = ({
 		</div>
 	);
 };
+
+export const CumulativeGraph = memo(Graph);

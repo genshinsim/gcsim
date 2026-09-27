@@ -1,5 +1,5 @@
 import type { model } from "@gcsim/types";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
 	FloatStatTooltipContent,
@@ -16,13 +16,7 @@ type Props = {
 	target: string;
 };
 
-export const BarChart = ({
-	width,
-	height,
-	auras,
-	auraUptime,
-	target,
-}: Props) => {
+const Graph = ({ width, height, auras, auraUptime, target }: Props) => {
 	const { DataColors } = useDataColors();
 	const { t } = useTranslation();
 	const { data, sources, xMax } = useData(target, auraUptime);
@@ -63,6 +57,8 @@ export const BarChart = ({
 		/>
 	);
 };
+
+export const BarChart = memo(Graph);
 
 type SourceData = {
 	name: string;
