@@ -13,7 +13,7 @@ import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 type Props = {
-	modelData: model.SimulationResult | null;
+	data: model.SimulationResult | null;
 };
 
 type GraphConfig = {
@@ -69,11 +69,11 @@ const GRAPHS: Record<string, GraphConfig> = {
 	},
 };
 
-export default ({ modelData }: Props) => {
+export default ({ data }: Props) => {
 	const { t } = useTranslation();
 	const [graph, setGraph] = useState("dps");
 	const cfg = GRAPHS[graph];
-	const stats = modelData?.statistics;
+	const stats = data?.statistics;
 
 	return (
 		<Card className="col-span-3 min-h-full h-72 min-w-[280px] flex flex-col justify-start gap-2 p-5">

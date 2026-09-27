@@ -1,5 +1,5 @@
 import type { Executor } from "@gcsim/executors";
-import type { SimResults } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import { throttle } from "lodash-es";
 import type { AppThunk } from "../../Stores/store";
 import { viewerActions } from "../../Stores/viewerSlice";
@@ -10,7 +10,7 @@ export function runSim(pool: Executor, cfg: string): AppThunk {
 		dispatch(viewerActions.start());
 
 		const updateResult = throttle(
-			(res: SimResults, hash: string) => {
+			(res: model.SimulationResult, hash: string) => {
 				dispatch(viewerActions.setResult({ data: res, hash: hash }));
 			},
 			VIEWER_THROTTLE,

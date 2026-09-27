@@ -11,7 +11,7 @@ import {
 	Separator,
 	Spinner,
 } from "@gcsim/primitives";
-import type { SimResults, Version } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import classNames from "classnames";
 import { History } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -32,11 +32,14 @@ enum MismatchType {
 
 type Props = {
 	exec: ExecutorSupplier<Executor>;
-	data: SimResults | null;
+	data: model.SimulationResult | null;
 	redirect: string;
 	mode: string;
 	commit: string;
-	setResult: (result: SimResults | null, hash: string | null) => void;
+	setResult: (
+		result: model.SimulationResult | null,
+		hash: string | null,
+	) => void;
 	setError: (recoveryConfig: string | null, err: string | null) => void;
 };
 
@@ -135,7 +138,7 @@ export default ({
 function useMismatch(
 	resultCommit?: string,
 	latestCommit?: string,
-	schema_version?: Version,
+	schema_version?: model.Version,
 ): MismatchType | null {
 	const [mismatch, setMismatch] = useState<MismatchType | null>(null);
 
@@ -158,13 +161,13 @@ function useMismatch(
 
 type BodyProps = {
 	mismatch: MismatchType | null;
-	data: SimResults | null;
+	data: model.SimulationResult | null;
 	latestCommit?: string;
 };
 
 const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
 	const { t } = useTranslation();
-	const simCommit = data?.sim_version ?? data?.version;
+	const simCommit = data?.sim_version;
 
 	const shortResultCommit = simCommit?.substring(0, 7);
 	const shortLatestCommit = latestCommit?.substring(0, 7);
@@ -272,7 +275,10 @@ const UpgradeButton = ({
 }: {
 	exec: ExecutorSupplier<Executor>;
 	cfg?: string;
-	setResult: (result: SimResults | null, hash: string | null) => void;
+	setResult: (
+		result: model.SimulationResult | null,
+		hash: string | null,
+	) => void;
 	setError: (recoveryConfig: string | null, err: string | null) => void;
 }) => {
 	const { t } = useTranslation();

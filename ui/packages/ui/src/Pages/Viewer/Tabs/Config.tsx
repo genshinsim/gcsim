@@ -7,7 +7,7 @@ import {
 	NonIdealState,
 	Spinner,
 } from "@gcsim/primitives";
-import type { SimResults } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import { ConfigEditor } from "@ui/Components";
 import { RefreshCw } from "lucide-react";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
@@ -91,7 +91,7 @@ const ConfigError = ({ error, cfg }: { error: string; cfg: string }) => {
 };
 
 export function useConfig(
-	data: SimResults | null,
+	data: model.SimulationResult | null,
 	exec: ExecutorSupplier<Executor>,
 ): UseConfigData {
 	const [cfg, setCfg] = useState(data?.config_file);

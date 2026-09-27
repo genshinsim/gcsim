@@ -14,7 +14,7 @@ import {
 	TargetDPSCard,
 	TotalSourceEnergyBarChart,
 } from "@gcsim/components";
-import type { model, SimResults } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import classNames from "classnames";
 import { type ReactNode, useEffect, useRef } from "react";
 import { useLocation } from "react-router";
@@ -26,8 +26,7 @@ import {
 import Metadata from "../Components/Overview/Metadata";
 
 type Props = {
-	data: SimResults | null;
-	modelData: model.SimulationResult | null;
+	data: model.SimulationResult | null;
 	running: boolean;
 	names?: string[];
 };
@@ -42,47 +41,36 @@ export default (props: Props) => {
 	);
 };
 
-const SingleGroup = ({ data, modelData, running, names }: Props) => (
+const SingleGroup = ({ data, running, names }: Props) => (
 	<Group>
 		<TeamHeader characters={data?.character_details} />
-		<Metadata modelData={modelData} />
-		<RollupCards data={modelData} />
-		<TargetInfo
-			enemies={modelData?.target_details}
-			player={modelData?.player_position}
-		/>
-		<DistributionCard modelData={modelData} />
+		<Metadata data={data} />
+		<RollupCards data={data} />
+		<TargetInfo enemies={data?.target_details} player={data?.player_position} />
+		<DistributionCard data={data} />
 
-		<DamageTimelineCard data={modelData} running={running} names={names} />
-		<CumulativeDamageCard data={modelData} running={running} />
+		<DamageTimelineCard data={data} running={running} names={names} />
+		<CumulativeDamageCard data={data} running={running} />
 
-		<CharacterDPSCard data={modelData} running={running} names={names} />
-		<ElementDPSCard data={modelData} running={running} />
-		<TargetDPSCard data={modelData} running={running} />
+		<CharacterDPSCard data={data} running={running} names={names} />
+		<ElementDPSCard data={data} running={running} />
+		<TargetDPSCard data={data} running={running} />
 
-		<CharacterDPSBarChart data={modelData} running={running} names={names} />
+		<CharacterDPSBarChart data={data} running={running} names={names} />
 
-		<SourceDPSBarChart data={modelData} running={running} names={names} />
+		<SourceDPSBarChart data={data} running={running} names={names} />
 
-		<CharacterActionsBarChart
-			data={modelData}
-			running={running}
-			names={names}
-		/>
+		<CharacterActionsBarChart data={data} running={running} names={names} />
 
-		<FieldTimeCard data={modelData} running={running} names={names} />
+		<FieldTimeCard data={data} running={running} names={names} />
 
-		<TotalSourceEnergyBarChart
-			data={modelData}
-			running={running}
-			names={names}
-		/>
+		<TotalSourceEnergyBarChart data={data} running={running} names={names} />
 
-		<EndingEnergyBarChart data={modelData} running={running} names={names} />
+		<EndingEnergyBarChart data={data} running={running} names={names} />
 
-		<SourceReactionsBarChart data={modelData} running={running} names={names} />
+		<SourceReactionsBarChart data={data} running={running} names={names} />
 
-		<TargetAuraUptimeBarChart data={modelData} running={running} />
+		<TargetAuraUptimeBarChart data={data} running={running} />
 	</Group>
 );
 

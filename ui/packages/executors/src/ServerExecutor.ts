@@ -1,4 +1,4 @@
-import type { ParsedResult, Sample, SimResults } from "@gcsim/types";
+import type { model, ParsedResult, Sample } from "@gcsim/types";
 import axios from "axios";
 import type { Executor } from "./Executor";
 
@@ -104,7 +104,7 @@ export class ServerExecutor implements Executor {
 
 	public run(
 		cfg: string,
-		updateResult: (result: SimResults, hash: string) => void,
+		updateResult: (result: model.SimulationResult, hash: string) => void,
 	): Promise<boolean | void> {
 		return new Promise((resolve, reject) => {
 			const update = () => {
@@ -124,10 +124,10 @@ export class ServerExecutor implements Executor {
 							reject("unexpected response from server: blank result");
 							return;
 						}
-						let simres: SimResults;
+						let result: model.SimulationResult;
 						try {
-							simres = JSON.parse(resp.data.result);
-							updateResult(simres, resp.data.hash);
+							result = JSON.parse(resp.data.result);
+							updateResult(result, resp.data.hash);
 						} catch (e) {
 							this.is_running = false;
 							console.log("error decoding sim result");

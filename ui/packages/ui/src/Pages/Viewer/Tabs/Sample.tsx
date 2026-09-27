@@ -8,7 +8,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@gcsim/primitives";
-import type { Sample, SimResults } from "@gcsim/types";
+import type { model, Sample } from "@gcsim/types";
 import { FlaskConical, RefreshCw } from "lucide-react";
 import queryString from "query-string";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -37,7 +37,7 @@ type UseSampleData = {
 
 type Props = {
 	sampler: (cfg: string, seed: string) => Promise<Sample>;
-	data: SimResults | null;
+	data: model.SimulationResult | null;
 	sample: UseSampleData;
 	running: boolean;
 };
@@ -46,7 +46,7 @@ type Props = {
 // TODO: The sampler should be refactored. This is a mess of passing around info
 export default ({ sampler, data, sample, running }: Props) => {
 	const names = useMemo(() => {
-		return data?.character_details?.map((c) => c.name);
+		return data?.character_details?.map((c) => c.name ?? "");
 	}, [data?.character_details]);
 
 	if (names == null || data?.config_file == null || sample.generating) {
@@ -92,7 +92,7 @@ export default ({ sampler, data, sample, running }: Props) => {
 
 type GenerateProps = {
 	sampler: (cfg: string, seed: string) => Promise<Sample>;
-	data: SimResults;
+	data: model.SimulationResult;
 	sample: UseSampleData;
 	running: boolean;
 };
@@ -227,7 +227,7 @@ const Generate = ({ sampler, data, sample, running }: GenerateProps) => {
 
 export function useSample(
 	running: boolean,
-	data: SimResults | null,
+	data: model.SimulationResult | null,
 	sampleOnLoad: boolean,
 	sampler: (cfg: string, seed: string) => Promise<Sample>,
 ): UseSampleData {
@@ -299,7 +299,7 @@ export function useSample(
 
 		return parseLogV2(
 			data.initial_character,
-			data?.character_details?.map((c) => c.name),
+			data?.character_details?.map((c) => c.name ?? ""),
 			sample.logs,
 			selected,
 		);

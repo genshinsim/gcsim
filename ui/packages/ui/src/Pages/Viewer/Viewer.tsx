@@ -12,7 +12,7 @@ import {
 	AlertDialogHeader,
 	AlertDialogTitle,
 } from "@gcsim/primitives";
-import type { SimResults } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import CopyToClipboard from "@ui/Components/Buttons/CopyToClipboard";
 import SendToSimulator from "@ui/Components/Buttons/SendToSimulator";
 import { type RootState, useAppSelector } from "@ui/Stores/store";
@@ -24,7 +24,6 @@ import type { ResultSource } from ".";
 import LoadingToast from "./Components/LoadingToast";
 import ViewerNav from "./Components/ViewerNav";
 import Warnings from "./Components/Warnings";
-import { simResultsToModel } from "./simResultsToModel";
 import ConfigUI, { useConfig } from "./Tabs/Config";
 import Results from "./Tabs/Results";
 import SampleUI, { useSample } from "./Tabs/Sample";
@@ -35,12 +34,15 @@ import SampleUI, { useSample } from "./Tabs/Sample";
 export type ViewerActions = {
 	onSendToSimulator?: (cfg: string, opts: { keepTeam: boolean }) => void;
 	onRerun?: (cfg: string) => void;
-	onShare?: (data: SimResults, hash: string | null) => Promise<string>;
+	onShare?: (
+		data: model.SimulationResult,
+		hash: string | null,
+	) => Promise<string>;
 };
 
 type ViewerProps = {
 	running: boolean;
-	data: SimResults | null;
+	data: model.SimulationResult | null;
 	hash: string | null;
 	recoveryConfig: string | null;
 	error: string | null;
@@ -88,10 +90,6 @@ export default ({
 
 	const sample = useSample(running, data, sampleOnLoad, sampler);
 	const config = useConfig(data, exec);
-	const modelData = useMemo(
-		() => (data != null ? simResultsToModel(data) : null),
-		[data],
-	);
 	const names = useMemo(
 		() =>
 			data?.character_details?.map((c) =>
@@ -101,14 +99,7 @@ export default ({
 	);
 
 	const tabs: { [k: string]: React.ReactNode } = {
-		results: (
-			<Results
-				data={data}
-				modelData={modelData}
-				running={running}
-				names={names}
-			/>
-		),
+		results: <Results data={data} running={running} names={names} />,
 		config: (
 			<ConfigUI
 				config={config}

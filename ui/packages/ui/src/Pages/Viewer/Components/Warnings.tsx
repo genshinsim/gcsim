@@ -1,11 +1,11 @@
 import { dynamicKey } from "@gcsim/localization";
-import type { FailedActions, FloatStat, SimResults } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
 import DismissibleCallout from "../../../Components/DismissibleCallout";
 
 type WarningProps = {
-	data: SimResults | null;
+	data: model.SimulationResult | null;
 };
 
 // TODO: translation
@@ -238,9 +238,9 @@ const IgnoreBurstEnergyMode = ({ data }: WarningProps) => {
 };
 
 type DetailsProps = {
-	data: SimResults | null;
+	data: model.SimulationResult | null;
 	title: string;
-	stat: (x: FailedActions) => FloatStat | undefined;
+	stat: (x: model.FailedActions) => model.DescriptiveStats | undefined;
 };
 
 const FailedActionDetails = ({ data, title, stat }: DetailsProps) => {
@@ -257,7 +257,13 @@ const FailedActionDetails = ({ data, title, stat }: DetailsProps) => {
 		);
 	}
 
-	const Item = ({ f, i }: { f: FloatStat | undefined; i: number }) => {
+	const Item = ({
+		f,
+		i,
+	}: {
+		f: model.DescriptiveStats | undefined;
+		i: number;
+	}) => {
 		if (f?.max === 0) {
 			return null;
 		}

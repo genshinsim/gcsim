@@ -1,4 +1,5 @@
-import type { ParsedResult, Sample, SimResults } from "./sim";
+import type { model } from "./generated";
+import type { ParsedResult, Sample } from "./sim";
 
 export interface Executor {
 	ready(): Promise<boolean>;
@@ -7,7 +8,7 @@ export interface Executor {
 	sample(cfg: string, seed: string): Promise<Sample>;
 	run(
 		cfg: string,
-		updateResult: (result: SimResults, hash: string) => void,
+		updateResult: (result: model.SimulationResult, hash: string) => void,
 	): Promise<boolean | void>;
 	cancel(): void;
 	buildInfo(): { hash: string; date: string };

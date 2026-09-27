@@ -9,17 +9,20 @@ import {
 	NonIdealState,
 	toast,
 } from "@gcsim/primitives";
-import type { SimResults } from "@gcsim/types";
+import type { model } from "@gcsim/types";
 import { Copy, Link } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
 type ShareProps = {
 	running: boolean;
-	data: SimResults | null;
+	data: model.SimulationResult | null;
 	hash: string | null;
 	shareState: [string | null, (link: string | null) => void];
-	onShare?: (data: SimResults, hash: string | null) => Promise<string>;
+	onShare?: (
+		data: model.SimulationResult,
+		hash: string | null,
+	) => Promise<string>;
 	className?: string;
 };
 
