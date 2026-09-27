@@ -27,7 +27,6 @@ import Metadata from "../Components/Overview/Metadata";
 
 type Props = {
 	data: model.SimulationResult | null;
-	running: boolean;
 	names?: string[];
 };
 
@@ -41,7 +40,7 @@ export default (props: Props) => {
 	);
 };
 
-const SingleGroup = ({ data, running, names }: Props) => (
+const SingleGroup = ({ data, names }: Props) => (
 	<Group>
 		<TeamHeader characters={data?.character_details} />
 		<Metadata data={data} />
@@ -49,28 +48,28 @@ const SingleGroup = ({ data, running, names }: Props) => (
 		<TargetInfo enemies={data?.target_details} player={data?.player_position} />
 		<DistributionCard data={data} />
 
-		<DamageTimelineCard data={data} running={running} names={names} />
-		<CumulativeDamageCard data={data} running={running} />
+		<DamageTimelineCard data={data} names={names} />
+		<CumulativeDamageCard data={data} />
 
-		<CharacterDPSCard data={data} running={running} names={names} />
-		<ElementDPSCard data={data} running={running} />
-		<TargetDPSCard data={data} running={running} />
+		<CharacterDPSCard data={data} names={names} />
+		<ElementDPSCard data={data} />
+		<TargetDPSCard data={data} />
 
-		<CharacterDPSBarChart data={data} running={running} names={names} />
+		<CharacterDPSBarChart data={data} names={names} />
 
-		<SourceDPSBarChart data={data} running={running} names={names} />
+		<SourceDPSBarChart data={data} names={names} />
 
-		<CharacterActionsBarChart data={data} running={running} names={names} />
+		<CharacterActionsBarChart data={data} names={names} />
 
-		<FieldTimeCard data={data} running={running} names={names} />
+		<FieldTimeCard data={data} names={names} />
 
-		<TotalSourceEnergyBarChart data={data} running={running} names={names} />
+		<TotalSourceEnergyBarChart data={data} names={names} />
 
-		<EndingEnergyBarChart data={data} running={running} names={names} />
+		<EndingEnergyBarChart data={data} names={names} />
 
-		<SourceReactionsBarChart data={data} running={running} names={names} />
+		<SourceReactionsBarChart data={data} names={names} />
 
-		<TargetAuraUptimeBarChart data={data} running={running} />
+		<TargetAuraUptimeBarChart data={data} />
 	</Group>
 );
 

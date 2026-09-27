@@ -23,7 +23,6 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
 	args: {
 		data: sampleResult,
-		running: false,
 		names,
 	},
 };
@@ -31,7 +30,6 @@ export const Primary: Story = {
 export const NoData: Story = {
 	args: {
 		data: null,
-		running: false,
 		names,
 	},
 };

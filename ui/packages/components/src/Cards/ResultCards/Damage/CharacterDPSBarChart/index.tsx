@@ -2,13 +2,9 @@ import { dynamicKey } from "@gcsim/localization";
 import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
-import { memo, useState } from "react";
+import { memo, useDeferredValue, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-	CardTitle,
-	NoData,
-	useRefreshWithTimer,
-} from "../../../../common/gcsim";
+import { CardTitle, NoData } from "../../../../common/gcsim";
 import { ByCharacterChart, ByCharacterLegend } from "./ByCharacter";
 import { ByElementChart, ByElementLegend } from "./ByElement";
 import { ByTargetChart, ByTargetLegend } from "./ByTarget";
@@ -22,43 +18,37 @@ type GraphData = {
 
 type Props = {
 	data: model.SimulationResult | null;
-	running: boolean;
 	names?: string[];
 };
 
-export default ({ data, running, names }: Props) => {
+export default ({ data, names }: Props) => {
 	const { t } = useTranslation();
 	const [graph, setGraph] = useState("element");
 
-	const [stats, timer] = useRefreshWithTimer(
-		(d) => {
-			return {
-				byElement: d?.statistics?.dps_by_element
-					? d.statistics.dps_by_element.map((s) =>
-							s.elements
-								? Object.fromEntries(
-										Object.entries(s.elements).map(([k, v]) => [
-											t(dynamicKey(`elements.${k}`)),
-											v,
-										]),
-									)
-								: {},
+	const deferred = useDeferredValue(data);
+	const stats = useMemo(
+		(): GraphData => ({
+			byElement: deferred?.statistics?.dps_by_element?.map((s) =>
+				s.elements
+					? Object.fromEntries(
+							Object.entries(s.elements).map(([k, v]) => [
+								t(dynamicKey(`elements.${k}`)),
+								v,
+							]),
 						)
-					: undefined,
-				byCharacter: d?.statistics?.character_dps,
-				byTarget: d?.statistics?.dps_by_target,
-			};
-		},
-		5000,
-		data,
-		running,
+					: {},
+			),
+			byCharacter: deferred?.statistics?.character_dps,
+			byTarget: deferred?.statistics?.dps_by_target,
+		}),
+		[deferred, t],
 	);
 
 	return (
 		<Card className="flex flex-col col-span-full min-h-[384px] p-5">
 			<div className="flex flex-col sm:flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
-					<CardTitle title={t("result.character_dps")} timer={timer} />
+					<CardTitle title={t("result.character_dps")} />
 					<Options graph={graph} setGraph={setGraph} />
 				</div>
 				<div className="flex flex-grow justify-start sm:justify-center pb-5 sm:pb-0 items-center">

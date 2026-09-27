@@ -1,13 +1,9 @@
 import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
-import { memo, useState } from "react";
+import { memo, useDeferredValue, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-	CardTitle,
-	DataColorsConst,
-	useRefreshWithTimer,
-} from "../../../../common/gcsim";
+import { CardTitle, DataColorsConst } from "../../../../common/gcsim";
 import { CumulativeGraph, CumulativeLegend } from "./CumulativeContribution";
 import { DamageOverTimeGraph, DamageOverTimeLegend } from "./DamageOverTime";
 
@@ -27,63 +23,26 @@ type GraphData = {
 
 type Props = {
 	data: model.SimulationResult | null;
-	running: boolean;
 	names?: string[];
 };
 
-export default ({ data, running, names }: Props) => {
+export default ({ data, names }: Props) => {
 	const { t } = useTranslation();
 	const [graph, setGraph] = useState("total");
-	const [stats, timer] = useRefreshWithTimer(
-		(d) => {
-			return {
-				cumu: d?.statistics?.cumu_damage_contrib,
-				dps: d?.statistics?.damage_buckets,
-			};
-		},
-		250,
-		data,
-		running,
+	const deferred = useDeferredValue(data);
+	const stats = useMemo(
+		(): GraphData => ({
+			cumu: deferred?.statistics?.cumu_damage_contrib,
+			dps: deferred?.statistics?.damage_buckets,
+		}),
+		[deferred],
 	);
-
-	const glyphs: LegendGlyph[] = [
-		{
-			label: "min",
-			fill: DataColorsConst.qualitative2(3),
-			fillOpacity: 0.5,
-			stroke: DataColorsConst.qualitative2(3),
-			strokeOpacity: 0,
-		},
-		{
-			label: "mean",
-			fill: DataColorsConst.qualitative3(8),
-			fillOpacity: 1.0,
-			stroke: DataColorsConst.qualitative3(8),
-			strokeOpacity: 0,
-		},
-		{
-			label: "std",
-			fill: DataColorsConst.qualitative1(0),
-			fillOpacity: 0.2,
-			stroke: DataColorsConst.qualitative3(0),
-			strokeOpacity: 0.5,
-			strokeDashArray: "0 5 0",
-		},
-		{
-			label: "max",
-			fill: DataColorsConst.qualitative2(1),
-			fillOpacity: 0.35,
-			stroke: DataColorsConst.qualitative2(1),
-			strokeOpacity: 0,
-		},
-	];
-	const glyphNames = glyphs.map((g) => g.label);
 
 	return (
 		<Card className="flex flex-col col-span-full h-[450px] p-5">
 			<div className="flex flex-col sm:flex-row justify-start gap-5">
 				<div className="flex flex-col gap-2">
-					<CardTitle title={t("result.dmg_timeline")} timer={timer} />
+					<CardTitle title={t("result.dmg_timeline")} />
 					<Options graph={graph} setGraph={setGraph} />
 				</div>
 				<div className="flex flex-grow justify-start sm:justify-center pb-5 sm:pb-0 items-center">
@@ -99,6 +58,39 @@ export default ({ data, running, names }: Props) => {
 		</Card>
 	);
 };
+
+const glyphs: LegendGlyph[] = [
+	{
+		label: "min",
+		fill: DataColorsConst.qualitative2(3),
+		fillOpacity: 0.5,
+		stroke: DataColorsConst.qualitative2(3),
+		strokeOpacity: 0,
+	},
+	{
+		label: "mean",
+		fill: DataColorsConst.qualitative3(8),
+		fillOpacity: 1.0,
+		stroke: DataColorsConst.qualitative3(8),
+		strokeOpacity: 0,
+	},
+	{
+		label: "std",
+		fill: DataColorsConst.qualitative1(0),
+		fillOpacity: 0.2,
+		stroke: DataColorsConst.qualitative3(0),
+		strokeOpacity: 0.5,
+		strokeDashArray: "0 5 0",
+	},
+	{
+		label: "max",
+		fill: DataColorsConst.qualitative2(1),
+		fillOpacity: 0.35,
+		stroke: DataColorsConst.qualitative2(1),
+		strokeOpacity: 0,
+	},
+];
+const glyphNames = glyphs.map((g) => g.label);
 
 const Options = ({
 	graph,

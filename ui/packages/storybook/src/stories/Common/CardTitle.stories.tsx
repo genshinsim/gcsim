@@ -26,6 +26,5 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
 	args: {
 		title: "Some Title",
-		timer: 100,
 	},
 };

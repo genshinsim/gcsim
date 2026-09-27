@@ -1,13 +1,9 @@
 import { Card } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { ParentSize } from "@visx/responsive";
-import { useMemo, useState } from "react";
+import { useDeferredValue, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-	CardTitle,
-	DataColorsConst,
-	useRefreshWithTimer,
-} from "../../../../common/gcsim";
+import { CardTitle, DataColorsConst } from "../../../../common/gcsim";
 import { CumulativeGraph, CumulativeLegend } from "./CumulativeDamage";
 
 export type LegendGlyph = {
@@ -21,18 +17,13 @@ export type LegendGlyph = {
 
 type Props = {
 	data: model.SimulationResult | null;
-	running: boolean;
 };
 
-export default ({ data, running }: Props) => {
+export default ({ data }: Props) => {
 	const { t } = useTranslation();
 	const [graph, setGraph] = useState("overall");
-	const [cumu] = useRefreshWithTimer(
-		(d) => d?.statistics?.cumu_damage,
-		250,
-		data,
-		running,
-	);
+	const deferred = useDeferredValue(data);
+	const cumu = deferred?.statistics?.cumu_damage;
 
 	const targets = useMemo(() => {
 		if (cumu?.targets == null) {
@@ -46,47 +37,6 @@ export default ({ data, running }: Props) => {
 		return Array.from(targets);
 	}, [cumu]);
 	const [target, setTarget] = useState("1");
-
-	const glyphs: LegendGlyph[] = [
-		{
-			label: "min",
-			fill: DataColorsConst.qualitative2(3),
-			fillOpacity: 0.75,
-			stroke: DataColorsConst.qualitative2(3),
-			strokeOpacity: 0.75,
-			strokeDashArray: "0 5 0",
-		},
-		{
-			label: "max",
-			fill: DataColorsConst.qualitative2(1),
-			fillOpacity: 0.75,
-			stroke: DataColorsConst.qualitative2(1),
-			strokeOpacity: 0.75,
-			strokeDashArray: "0 5 0",
-		},
-		{
-			label: "p25",
-			fill: DataColorsConst.qualitative2(4),
-			fillOpacity: 1.0,
-			stroke: DataColorsConst.qualitative2(4),
-			strokeOpacity: 0,
-		},
-		{
-			label: "p50",
-			fill: DataColorsConst.qualitative3(8),
-			fillOpacity: 1.0,
-			stroke: DataColorsConst.qualitative3(8),
-			strokeOpacity: 0,
-		},
-		{
-			label: "p75",
-			fill: DataColorsConst.qualitative2(5),
-			fillOpacity: 1.0,
-			stroke: DataColorsConst.qualitative2(5),
-			strokeOpacity: 0,
-		},
-	];
-	const names = glyphs.map((g) => g.label);
 
 	return (
 		<Card className="flex flex-col col-span-full h-[450px] p-4 gap-2">
@@ -120,6 +70,47 @@ export default ({ data, running }: Props) => {
 		</Card>
 	);
 };
+
+const glyphs: LegendGlyph[] = [
+	{
+		label: "min",
+		fill: DataColorsConst.qualitative2(3),
+		fillOpacity: 0.75,
+		stroke: DataColorsConst.qualitative2(3),
+		strokeOpacity: 0.75,
+		strokeDashArray: "0 5 0",
+	},
+	{
+		label: "max",
+		fill: DataColorsConst.qualitative2(1),
+		fillOpacity: 0.75,
+		stroke: DataColorsConst.qualitative2(1),
+		strokeOpacity: 0.75,
+		strokeDashArray: "0 5 0",
+	},
+	{
+		label: "p25",
+		fill: DataColorsConst.qualitative2(4),
+		fillOpacity: 1.0,
+		stroke: DataColorsConst.qualitative2(4),
+		strokeOpacity: 0,
+	},
+	{
+		label: "p50",
+		fill: DataColorsConst.qualitative3(8),
+		fillOpacity: 1.0,
+		stroke: DataColorsConst.qualitative3(8),
+		strokeOpacity: 0,
+	},
+	{
+		label: "p75",
+		fill: DataColorsConst.qualitative2(5),
+		fillOpacity: 1.0,
+		stroke: DataColorsConst.qualitative2(5),
+		strokeOpacity: 0,
+	},
+];
+const names = glyphs.map((g) => g.label);
 
 const selectClassName =
 	"rounded-g-md border border-g-line bg-transparent px-2 py-1 text-g-sm";

@@ -25,7 +25,6 @@ const names = sampleResult.character_details?.map((c) => c.name ?? "");
 export const DPS: Story = {
 	args: {
 		data: sampleResult,
-		running: false,
 		names: names,
 	},
 };
@@ -33,7 +32,6 @@ export const DPS: Story = {
 export const DamageInstances: Story = {
 	args: {
 		data: sampleResult,
-		running: false,
 		names: names,
 	},
 	play: async ({ canvasElement }) => {
@@ -47,7 +45,6 @@ export const DamageInstances: Story = {
 export const FilteredByCharacter: Story = {
 	args: {
 		data: sampleResult,
-		running: false,
 		names: names,
 	},
 	play: async ({ canvasElement }) => {
@@ -61,6 +58,5 @@ export const FilteredByCharacter: Story = {
 export const NoData: Story = {
 	args: {
 		data: null,
-		running: false,
 	},
 };

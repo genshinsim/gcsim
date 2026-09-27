@@ -32,7 +32,6 @@ const selectGrouping = async (canvasElement: HTMLElement, value: string) => {
 export const ByElement: Story = {
 	args: {
 		data: sampleResult,
-		running: false,
 		names: names,
 	},
 };
@@ -40,7 +39,6 @@ export const ByElement: Story = {
 export const ByCharacter: Story = {
 	args: {
 		data: sampleResult,
-		running: false,
 		names: names,
 	},
 	play: async ({ canvasElement }) => {
@@ -51,7 +49,6 @@ export const ByCharacter: Story = {
 export const ByTarget: Story = {
 	args: {
 		data: sampleResult,
-		running: false,
 		names: names,
 	},
 	play: async ({ canvasElement }) => {
@@ -62,6 +59,5 @@ export const ByTarget: Story = {
 export const NoData: Story = {
 	args: {
 		data: null,
-		running: false,
 	},
 };

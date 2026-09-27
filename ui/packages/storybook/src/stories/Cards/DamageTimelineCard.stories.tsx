@@ -19,7 +19,6 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
 	args: {
 		data: sampleResult,
-		running: false,
 		names,
 	},
 };
@@ -27,7 +26,6 @@ export const Primary: Story = {
 export const Running: Story = {
 	args: {
 		data: null,
-		running: true,
 		names,
 	},
 };
