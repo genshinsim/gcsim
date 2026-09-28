@@ -13,8 +13,6 @@ export class SimulatorPage {
 	readonly runButton: Locator;
 	/** Ace editor container (`#config_editor`) holding the config text. */
 	readonly editor: Locator;
-	/** Editor-settings "Import" button opening the import dropdown. Exact match:
-	 * the import dialogs also carry an "Import" button. */
 	readonly importButton: Locator;
 
 	constructor(page: Page) {
@@ -91,9 +89,8 @@ export class SimulatorPage {
 
 	/**
 	 * Open the editor-settings "Import" dropdown and click one of its import
-	 * entries, returning the resulting dialog. The menu items are named "Import
-	 * from GO" / "Import from Enka" (the dialogs themselves carry longer titles).
-	 * Wasm need not be ready — the dropdown renders on mount.
+	 * entries, returning the resulting dialog. Wasm need not be ready — the
+	 * dropdown renders on mount.
 	 */
 	async openImportDialog(source: "GO" | "Enka"): Promise<Locator> {
 		await this.importButton.click();
