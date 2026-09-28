@@ -130,9 +130,10 @@ console monitor.
 - `waitForConfigValid()` — wait for Run to become enabled with no "Invalid
   Config" callout (console: `all is good`).
 - `run()` — click Run and wait for the app to navigate to `/web`.
-- `openImportDialog("GO" | "Enka")` — open the Toolbox "Tools" popover, click the
-  matching import entry, and return the resulting dialog (`role="dialog"`). Wasm
-  need not be ready — the toolbox renders on mount.
+- `openImportDialog("GO" | "Enka")` — open the editor-settings **Import**
+  dropdown (exact name match: the dialogs also carry an "Import" button), click
+  the matching import entry, and return the resulting dialog (`role="dialog"`).
+  Wasm need not be ready — the dropdown renders on mount.
 
 ### `ViewerPage` (`src/pages/viewer-page.ts`) — the `/web` route
 

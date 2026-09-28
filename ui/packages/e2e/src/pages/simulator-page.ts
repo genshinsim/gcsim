@@ -13,14 +13,18 @@ export class SimulatorPage {
 	readonly runButton: Locator;
 	/** Ace editor container (`#config_editor`) holding the config text. */
 	readonly editor: Locator;
-	/** Toolbox "Tools" button opening the wrench popover menu. */
-	readonly toolsButton: Locator;
+	/** Editor-settings "Import" button opening the import dropdown. Exact match:
+	 * the import dialogs also carry an "Import" button. */
+	readonly importButton: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
 		this.runButton = page.getByRole("button", { name: "Run" });
 		this.editor = page.locator("#config_editor");
-		this.toolsButton = page.getByRole("button", { name: "Tools" });
+		this.importButton = page.getByRole("button", {
+			name: "Import",
+			exact: true,
+		});
 	}
 
 	/** Navigate to the simulator and wait for React to mount into `#root`. */
@@ -86,13 +90,13 @@ export class SimulatorPage {
 	}
 
 	/**
-	 * Open the Toolbox "Tools" popover and click one of its import entries,
-	 * returning the resulting dialog. The menu items are named "Import from GO" /
-	 * "Import from Enka" (the dialogs themselves carry longer titles). Wasm need
-	 * not be ready — the toolbox renders on mount.
+	 * Open the editor-settings "Import" dropdown and click one of its import
+	 * entries, returning the resulting dialog. The menu items are named "Import
+	 * from GO" / "Import from Enka" (the dialogs themselves carry longer titles).
+	 * Wasm need not be ready — the dropdown renders on mount.
 	 */
 	async openImportDialog(source: "GO" | "Enka"): Promise<Locator> {
-		await this.toolsButton.click();
+		await this.importButton.click();
 		await this.page
 			.getByRole("menuitem", { name: `Import from ${source}` })
 			.click();
