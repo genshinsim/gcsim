@@ -1,14 +1,6 @@
-import {
-	Editor,
-	ExecutorProvider,
-	useExecutor,
-	useValidation,
-} from "@gcsim/components";
-import type { Executor, ExecutorSupplier } from "@gcsim/executors";
+import { Editor, useExecutor, useValidation } from "@gcsim/components";
 import type { model } from "@gcsim/types";
-import { throttle } from "lodash-es";
 import React from "react";
-import { useNavigate } from "react-router";
 import { Viewport } from "../../Components";
 import { CharMap } from "../../Data";
 import { appActions, defaultStats } from "../../Stores/appSlice";
@@ -17,8 +9,6 @@ import {
 	useAppDispatch,
 	useAppSelector,
 } from "../../Stores/store";
-import { viewerActions } from "../../Stores/viewerSlice";
-import { VIEWER_THROTTLE } from "../Viewer";
 import { EditorSettings } from "./EditorSettings";
 import { useEditorPrefs } from "./editorPrefs";
 import {
@@ -82,39 +72,14 @@ function SimulatorEditor({ cfg }: { cfg: string }) {
 	);
 }
 
-export function Simulator({ exec }: { exec: ExecutorSupplier<Executor> }) {
-	const dispatch = useAppDispatch();
-	const navigate = useNavigate();
+export function Simulator() {
 	const cfg = useAppSelector((state: RootState) => state.app.cfg);
-
-	const onResult = React.useMemo(
-		() =>
-			throttle(
-				(res: model.SimulationResult, hash: string) => {
-					dispatch(viewerActions.setResult({ data: res, hash }));
-				},
-				VIEWER_THROTTLE,
-				{ leading: true, trailing: true },
-			),
-		[dispatch],
-	);
-
-	const navigateOnRun = () => {
-		dispatch(viewerActions.start());
-		navigate("/web");
-	};
 
 	return (
 		<Viewport className="flex flex-col gap-2">
-			<ExecutorProvider
-				exec={exec}
-				onResult={onResult}
-				navigateOnRun={navigateOnRun}
-			>
-				<ImportedCharactersProvider>
-					<SimulatorEditor cfg={cfg} />
-				</ImportedCharactersProvider>
-			</ExecutorProvider>
+			<ImportedCharactersProvider>
+				<SimulatorEditor cfg={cfg} />
+			</ImportedCharactersProvider>
 		</Viewport>
 	);
 }

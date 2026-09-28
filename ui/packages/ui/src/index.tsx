@@ -1,3 +1,4 @@
+import { ExecutorProvider } from "@gcsim/components";
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
 import {
 	Dialog,
@@ -8,7 +9,8 @@ import {
 	Switch as SwitchInput,
 	Toaster,
 } from "@gcsim/primitives";
-import { type ReactNode, useEffect, useRef } from "react";
+import type { model } from "@gcsim/types";
+import { type ReactNode, useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Provider } from "react-redux";
 import {
@@ -17,6 +19,7 @@ import {
 	Route,
 	Routes,
 	useLocation,
+	useNavigate,
 	useParams,
 } from "react-router-dom";
 import {
@@ -39,6 +42,7 @@ import {
 	useAppDispatch,
 	useAppSelector,
 } from "./Stores/store";
+import { viewerActions } from "./Stores/viewerSlice";
 
 import "@gcsim/components/src/index.css";
 import "./index.css";
@@ -66,11 +70,44 @@ export const UI = (props: UIProps) => {
 	return (
 		<BrowserRouter>
 			<Provider store={store}>
-				<Main {...props} />
+				<RootExecutorProvider exec={props.exec}>
+					<Main {...props} />
+				</RootExecutorProvider>
 			</Provider>
 		</BrowserRouter>
 	);
 };
+
+// Bridges provider results into the redux viewer slice until the viewer reads
+// useRunResult() directly (#3100).
+function RootExecutorProvider({
+	exec,
+	children,
+}: {
+	exec: ExecutorSupplier<Executor>;
+	children: ReactNode;
+}) {
+	const dispatch = useAppDispatch();
+	const navigate = useNavigate();
+	const onResult = useCallback(
+		(data: model.SimulationResult, hash: string) =>
+			dispatch(viewerActions.setResult({ data, hash })),
+		[dispatch],
+	);
+	const navigateOnRun = useCallback(() => {
+		dispatch(viewerActions.start());
+		navigate("/web");
+	}, [dispatch, navigate]);
+	return (
+		<ExecutorProvider
+			exec={exec}
+			onResult={onResult}
+			navigateOnRun={navigateOnRun}
+		>
+			{children}
+		</ExecutorProvider>
+	);
+}
 
 function RedirectDB() {
 	window.location.replace("https://db.gcsim.app");
@@ -213,7 +250,7 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 						element={
 							<>
 								<title>gcsim - simulator</title>
-								<Simulator exec={exec} />
+								<Simulator />
 							</>
 						}
 					/>
