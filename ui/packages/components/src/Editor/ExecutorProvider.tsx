@@ -1,17 +1,34 @@
 import type { Executor, ExecutorSupplier, model } from "@gcsim/types";
+import { throttle } from "lodash-es";
 import React from "react";
 
 const READY_POLL_MS = 250;
-const RUNNING_POLL_MS = 50;
+const BUSY_POLL_MS = 50;
+const RESULT_THROTTLE_MS = 100;
 
 export interface ExecutorContextValue {
 	exec: ExecutorSupplier<Executor>;
 	isReady: boolean;
-	running: boolean;
+	busy: boolean;
 	run: (config: string) => void;
 }
 
+export interface RunResult {
+	result: model.SimulationResult | null;
+	hash: string | null;
+	config: string | null;
+	error: string | null;
+}
+
+const emptyRunResult: RunResult = {
+	result: null,
+	hash: null,
+	config: null,
+	error: null,
+};
+
 const ExecutorContext = React.createContext<ExecutorContextValue | null>(null);
+const RunResultContext = React.createContext<RunResult | null>(null);
 
 export interface ExecutorProviderProps {
 	exec: ExecutorSupplier<Executor>;
@@ -22,6 +39,10 @@ export interface ExecutorProviderProps {
 
 const noop = () => {};
 
+function asError(err: unknown): string {
+	return typeof err === "string" ? err : String(err);
+}
+
 export function ExecutorProvider({
 	exec,
 	onResult,
@@ -29,12 +50,14 @@ export function ExecutorProvider({
 	children,
 }: ExecutorProviderProps) {
 	const [isReady, setReady] = React.useState(false);
-	const [running, setRunning] = React.useState(false);
+	const [busy, setBusy] = React.useState(false);
+	const [runResult, setRunResult] = React.useState<RunResult>(emptyRunResult);
 
 	const onResultRef = React.useRef(onResult);
 	onResultRef.current = onResult;
 	const navigateOnRunRef = React.useRef(navigateOnRun);
 	navigateOnRunRef.current = navigateOnRun;
+	const cancelSinkRef = React.useRef(noop);
 
 	React.useEffect(() => {
 		let active = true;
@@ -46,30 +69,50 @@ export function ExecutorProvider({
 						setReady(res);
 					}
 				});
-		const pollRunning = () => {
+		const pollBusy = () => {
 			if (active) {
-				setRunning(exec().running());
+				setBusy(exec().running());
 			}
 		};
 		pollReady();
-		pollRunning();
+		pollBusy();
 		const readyInterval = setInterval(pollReady, READY_POLL_MS);
-		const runningInterval = setInterval(pollRunning, RUNNING_POLL_MS);
+		const busyInterval = setInterval(pollBusy, BUSY_POLL_MS);
 		return () => {
 			active = false;
 			clearInterval(readyInterval);
-			clearInterval(runningInterval);
+			clearInterval(busyInterval);
+			cancelSinkRef.current();
 		};
 	}, [exec]);
 
 	const run = React.useCallback(
 		(config: string) => {
+			cancelSinkRef.current();
+			setRunResult(emptyRunResult);
 			const executor = exec();
-			executor.validate(config).then((result) => {
-				if ((result.errors && result.errors.length > 0) || executor.running()) {
+			executor.validate(config).then((validated) => {
+				if (
+					(validated.errors && validated.errors.length > 0) ||
+					executor.running()
+				) {
 					return;
 				}
-				executor.run(config, onResultRef.current ?? noop);
+				const sink = throttle(
+					(result: model.SimulationResult, hash: string) => {
+						onResultRef.current?.(result, hash);
+						React.startTransition(() =>
+							setRunResult((prev) => ({ ...prev, result, hash })),
+						);
+					},
+					RESULT_THROTTLE_MS,
+					{ leading: true, trailing: true },
+				);
+				cancelSinkRef.current = () => sink.cancel();
+				setRunResult({ ...emptyRunResult, config });
+				executor.run(config, sink).catch((err: unknown) => {
+					setRunResult((prev) => ({ ...prev, error: asError(err) }));
+				});
 				navigateOnRunRef.current?.();
 			}, noop);
 		},
@@ -77,13 +120,15 @@ export function ExecutorProvider({
 	);
 
 	const value = React.useMemo<ExecutorContextValue>(
-		() => ({ exec, isReady, running, run }),
-		[exec, isReady, running, run],
+		() => ({ exec, isReady, busy, run }),
+		[exec, isReady, busy, run],
 	);
 
 	return (
 		<ExecutorContext.Provider value={value}>
-			{children}
+			<RunResultContext.Provider value={runResult}>
+				{children}
+			</RunResultContext.Provider>
 		</ExecutorContext.Provider>
 	);
 }
@@ -92,6 +137,14 @@ export function useExecutor(): ExecutorContextValue {
 	const ctx = React.useContext(ExecutorContext);
 	if (ctx == null) {
 		throw new Error("useExecutor must be used within an ExecutorProvider");
+	}
+	return ctx;
+}
+
+export function useRunResult(): RunResult {
+	const ctx = React.useContext(RunResultContext);
+	if (ctx == null) {
+		throw new Error("useRunResult must be used within an ExecutorProvider");
 	}
 	return ctx;
 }
