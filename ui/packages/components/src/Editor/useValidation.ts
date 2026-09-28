@@ -1,6 +1,7 @@
 import type { model, ParsedResult } from "@gcsim/types";
 import { debounce } from "lodash-es";
 import React from "react";
+import { asError } from "./asError";
 import { useExecutor } from "./ExecutorProvider";
 import { toParsedTeam } from "./parsedTeam";
 
@@ -10,10 +11,6 @@ export interface Validation {
 	isValid: boolean;
 	error: string | null;
 	parsedTeam: model.Character[];
-}
-
-function asError(err: unknown): string {
-	return typeof err === "string" ? err : String(err);
 }
 
 export function useValidation(config: string): Validation {

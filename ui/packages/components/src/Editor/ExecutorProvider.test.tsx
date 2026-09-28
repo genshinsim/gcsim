@@ -81,7 +81,8 @@ describe("ExecutorProvider run()", () => {
 
 		act(() => result.current.run("config"));
 
-		await waitFor(() => expect(fake.validate).toHaveBeenCalledWith("config"));
+		await act(() => Promise.resolve());
+		expect(fake.validate).not.toHaveBeenCalled();
 		expect(fake.run).not.toHaveBeenCalled();
 		expect(navigateOnRun).not.toHaveBeenCalled();
 	});
@@ -206,6 +207,18 @@ describe("useRunResult", () => {
 		act(() => hook.result.current.executor.run("config 3"));
 		await waitFor(() => expect(hook.result.current.run.error).toBeNull());
 		expect(hook.result.current.run.config).toBe("config 3");
+	});
+
+	it("keeps the live result when run is called while busy", async () => {
+		const { fake, hook, sink } = await startRun();
+		act(() => sink(simResult(1), "hash-1"));
+		await waitFor(() => expect(hook.result.current.run.result).not.toBeNull());
+
+		act(() => hook.result.current.executor.run("config 2"));
+
+		expect(hook.result.current.run.result).toEqual(simResult(1));
+		expect(hook.result.current.run.config).toBe("config");
+		expect(fake.validate).toHaveBeenCalledTimes(1);
 	});
 
 	it("does not re-render executor-only consumers when the result changes", async () => {

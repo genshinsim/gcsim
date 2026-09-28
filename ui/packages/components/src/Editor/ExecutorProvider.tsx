@@ -1,6 +1,7 @@
 import type { Executor, ExecutorSupplier, model } from "@gcsim/types";
 import { throttle } from "lodash-es";
 import React from "react";
+import { asError } from "./asError";
 
 const READY_POLL_MS = 250;
 const BUSY_POLL_MS = 50;
@@ -38,10 +39,6 @@ export interface ExecutorProviderProps {
 }
 
 const noop = () => {};
-
-function asError(err: unknown): string {
-	return typeof err === "string" ? err : String(err);
-}
 
 export function ExecutorProvider({
 	exec,
@@ -88,9 +85,12 @@ export function ExecutorProvider({
 
 	const run = React.useCallback(
 		(config: string) => {
+			const executor = exec();
+			if (executor.running()) {
+				return;
+			}
 			cancelSinkRef.current();
 			setRunResult(emptyRunResult);
-			const executor = exec();
 			executor.validate(config).then((validated) => {
 				if (
 					(validated.errors && validated.errors.length > 0) ||
