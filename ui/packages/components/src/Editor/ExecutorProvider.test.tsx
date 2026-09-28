@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
 	ExecutorProvider,
 	type ExecutorProviderProps,
+	type SavedRun,
 	useExecutor,
 	useRunResult,
 } from "./ExecutorProvider";
@@ -162,9 +163,8 @@ describe("useRunResult", () => {
 		expect(hook.result.current.run.hash).toBe("hash-1");
 	});
 
-	it("coalesces bursts and always applies the final callback", async () => {
-		const onResult = vi.fn();
-		const { hook, sink } = await startRun({ onResult });
+	it("always applies the final callback of a burst", async () => {
+		const { hook, sink } = await startRun();
 
 		act(() => {
 			for (let i = 1; i <= 20; i++) {
@@ -176,8 +176,6 @@ describe("useRunResult", () => {
 			expect(hook.result.current.run.result).toEqual(simResult(20)),
 		);
 		expect(hook.result.current.run.hash).toBe("hash-20");
-		expect(onResult.mock.calls.length).toBeLessThan(20);
-		expect(onResult).toHaveBeenLastCalledWith(simResult(20), "hash-20");
 	});
 
 	it("sets error when the run rejects", async () => {
@@ -205,8 +203,10 @@ describe("useRunResult", () => {
 		expect(hook.result.current.run.hash).toBeNull();
 
 		act(() => hook.result.current.executor.run("config 3"));
-		await waitFor(() => expect(hook.result.current.run.error).toBeNull());
-		expect(hook.result.current.run.config).toBe("config 3");
+		await waitFor(() =>
+			expect(hook.result.current.run.config).toBe("config 3"),
+		);
+		expect(hook.result.current.run.error).toBeNull();
 	});
 
 	it("keeps the live result when run is called while busy", async () => {
@@ -265,5 +265,141 @@ describe("useRunResult", () => {
 
 		expect(runResult.current?.result).toEqual(simResult(3));
 		expect(executorRenders).toBe(before);
+	});
+});
+
+function memoryStore(saved: SavedRun | null = null) {
+	return {
+		load: vi.fn(() => saved),
+		save: vi.fn((_run: SavedRun) => {}),
+	};
+}
+
+describe("ExecutorProvider store", () => {
+	it("restores the saved run on mount, reading it once", () => {
+		const store = memoryStore({ result: simResult(7), hash: "hash-7" });
+		const { result, rerender } = renderHook(() => useRunResult(), {
+			wrapper: wrapper({ exec: makeExecutor().supplier, store }),
+		});
+		rerender();
+
+		expect(result.current.result).toEqual(simResult(7));
+		expect(result.current.hash).toBe("hash-7");
+		expect(store.load).toHaveBeenCalledTimes(1);
+	});
+
+	it("saves the final result when the run completes", async () => {
+		const store = memoryStore();
+		const fake = makeExecutor();
+		let finish: (v: boolean) => void = () => {};
+		fake.run.mockImplementation((_cfg, sink) => {
+			sink(simResult(1), "hash-1");
+			sink(simResult(2), "hash-2");
+			return new Promise((r) => {
+				finish = r;
+			});
+		});
+		const { result } = renderHook(() => useBoth(), {
+			wrapper: wrapper({ exec: fake.supplier, store }),
+		});
+
+		act(() => result.current.executor.run("config"));
+		await waitFor(() => expect(fake.run).toHaveBeenCalled());
+		expect(store.save).not.toHaveBeenCalled();
+
+		await act(async () => finish(true));
+		expect(store.save).toHaveBeenCalledTimes(1);
+		expect(store.save).toHaveBeenCalledWith({
+			result: simResult(2),
+			hash: "hash-2",
+		});
+	});
+
+	it("saves the partial result when the run rejects", async () => {
+		const store = memoryStore();
+		const fake = makeExecutor();
+		fake.run.mockImplementation((_cfg, sink) => {
+			sink(simResult(1), "hash-1");
+			return Promise.reject("boom");
+		});
+		const { result } = renderHook(() => useBoth(), {
+			wrapper: wrapper({ exec: fake.supplier, store }),
+		});
+
+		act(() => result.current.executor.run("config"));
+		await waitFor(() => expect(result.current.run.error).toBe("boom"));
+		expect(store.save).toHaveBeenCalledTimes(1);
+		expect(store.save).toHaveBeenCalledWith({
+			result: simResult(1),
+			hash: "hash-1",
+		});
+	});
+
+	it("saves the latest result on pagehide mid-run", async () => {
+		const store = memoryStore();
+		const { hook, sink } = await startRun({ store });
+		act(() => sink(simResult(1), "hash-1"));
+		act(() => sink(simResult(2), "hash-2"));
+		expect(store.save).not.toHaveBeenCalled();
+
+		window.dispatchEvent(new Event("pagehide"));
+
+		expect(store.save).toHaveBeenCalledTimes(1);
+		expect(store.save).toHaveBeenCalledWith({
+			result: simResult(2),
+			hash: "hash-2",
+		});
+		hook.unmount();
+	});
+
+	it("does not rewrite on pagehide when nothing new arrived", async () => {
+		const store = memoryStore({ result: simResult(7), hash: "hash-7" });
+		const { unmount } = renderHook(() => useRunResult(), {
+			wrapper: wrapper({ exec: makeExecutor().supplier, store }),
+		});
+
+		window.dispatchEvent(new Event("pagehide"));
+
+		expect(store.save).not.toHaveBeenCalled();
+		unmount();
+	});
+});
+
+describe("ExecutorProvider cancel()", () => {
+	it("saves the partial result, cancels, and ignores later results", async () => {
+		const store = memoryStore();
+		const fake = makeExecutor();
+		const cancel = vi.spyOn(fake.executor, "cancel");
+		let sink: (r: model.SimulationResult, hash: string) => void = () => {};
+		let finish: (v: boolean) => void = () => {};
+		fake.run.mockImplementation((_cfg, s) => {
+			sink = s;
+			fake.setRunning(true);
+			return new Promise((r) => {
+				finish = r;
+			});
+		});
+		const { result } = renderHook(() => useBoth(), {
+			wrapper: wrapper({ exec: fake.supplier, store }),
+		});
+		act(() => result.current.executor.run("config"));
+		await waitFor(() => expect(fake.run).toHaveBeenCalled());
+		act(() => sink(simResult(1), "hash-1"));
+		await waitFor(() =>
+			expect(result.current.run.result).toEqual(simResult(1)),
+		);
+
+		act(() => result.current.executor.cancel());
+		act(() => sink(simResult(2), "hash-2"));
+		await act(async () => finish(true));
+		await act(() => new Promise((r) => setTimeout(r, 150)));
+
+		expect(cancel).toHaveBeenCalledTimes(1);
+		expect(result.current.run.result).toEqual(simResult(1));
+		expect(store.save).toHaveBeenCalledTimes(1);
+		expect(store.save).toHaveBeenCalledWith({
+			result: simResult(1),
+			hash: "hash-1",
+		});
 	});
 });
