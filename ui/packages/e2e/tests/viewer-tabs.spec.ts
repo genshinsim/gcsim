@@ -12,4 +12,22 @@ test.describe("viewer tabs", () => {
 
 		app.console.assertNoErrors();
 	});
+
+	test("Config tab reruns and Sample tab generates a sample", async ({
+		app,
+	}) => {
+		await app.boot();
+		await app.run(sucroseConfig);
+		await app.viewer.waitForViewer();
+		await app.viewer.waitForResults();
+
+		await app.viewer.openConfig();
+		await app.viewer.rerun();
+		await app.viewer.waitForResults();
+
+		await app.viewer.openSample();
+		await app.viewer.generateSample();
+
+		app.console.assertNoErrors();
+	});
 });
