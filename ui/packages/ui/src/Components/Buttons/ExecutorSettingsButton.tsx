@@ -1,18 +1,16 @@
 import { Button } from "@gcsim/primitives";
 import { Settings } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { appActions } from "../../Stores/appSlice";
-import { useAppDispatch } from "../../Stores/store";
+import { prefs } from "../../Stores";
 
 // TODO: translation
 export default () => {
 	const { t } = useTranslation();
-	const dispatch = useAppDispatch();
 
 	return (
 		<Button
 			variant="secondary"
-			onClick={() => dispatch(appActions.setSettingsOpen(true))}
+			onClick={() => prefs.set((p) => ({ ...p, settingsOpen: true }))}
 		>
 			<Settings />
 			{t("simple.settings")}

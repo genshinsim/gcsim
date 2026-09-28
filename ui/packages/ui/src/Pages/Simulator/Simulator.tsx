@@ -3,18 +3,17 @@ import type { model } from "@gcsim/types";
 import React from "react";
 import { Viewport } from "../../Components";
 import { CharMap } from "../../Data";
-import { appActions, defaultStats } from "../../Stores/appSlice";
-import {
-	type RootState,
-	useAppDispatch,
-	useAppSelector,
-} from "../../Stores/store";
+import { draft, useStore } from "../../Stores";
 import { EditorSettings } from "./EditorSettings";
 import { useEditorPrefs } from "./editorPrefs";
 import {
 	ImportedCharactersProvider,
 	useImportedCharacters,
 } from "./ImportedCharacters";
+
+const defaultStats = [
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+];
 
 function newCharFromKey(key: string): model.Character {
 	return {
@@ -32,15 +31,10 @@ function newCharFromKey(key: string): model.Character {
 }
 
 function SimulatorEditor({ cfg }: { cfg: string }) {
-	const dispatch = useAppDispatch();
 	const { imported } = useImportedCharacters();
 	const { isValid, error, parsedTeam } = useValidation(cfg);
 	const { run, isReady } = useExecutor();
 	const [prefs, setPrefs] = useEditorPrefs();
-
-	const setConfig = (newCfg: string) => {
-		dispatch(appActions.setCfg({ cfg: newCfg, keepTeam: false }));
-	};
 
 	const teamCharacters = React.useMemo(
 		() => ({
@@ -57,7 +51,7 @@ function SimulatorEditor({ cfg }: { cfg: string }) {
 	return (
 		<Editor
 			config={cfg}
-			setConfig={setConfig}
+			setConfig={draft.set}
 			error={error}
 			parsedTeam={parsedTeam}
 			teamCharacters={teamCharacters}
@@ -73,7 +67,7 @@ function SimulatorEditor({ cfg }: { cfg: string }) {
 }
 
 export function Simulator() {
-	const cfg = useAppSelector((state: RootState) => state.app.cfg);
+	const cfg = useStore(draft);
 
 	return (
 		<Viewport className="flex flex-col gap-2">

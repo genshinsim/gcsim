@@ -11,7 +11,6 @@ import {
 } from "@gcsim/primitives";
 import { type ReactNode, useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Provider } from "react-redux";
 import {
 	BrowserRouter,
 	Navigate,
@@ -34,14 +33,8 @@ import {
 	WebViewer,
 } from "./Pages";
 import { Footer, Nav } from "./Sectioning";
-import { appActions } from "./Stores/appSlice";
+import { prefs, useStore } from "./Stores";
 import { lastRunStore } from "./Stores/lastRun";
-import {
-	type RootState,
-	store,
-	useAppDispatch,
-	useAppSelector,
-} from "./Stores/store";
 
 import "@gcsim/components/src/index.css";
 import "./index.css";
@@ -68,11 +61,9 @@ type UIProps = {
 export const UI = (props: UIProps) => {
 	return (
 		<BrowserRouter>
-			<Provider store={store}>
-				<AppExecutorProvider exec={props.exec}>
-					<Main {...props} />
-				</AppExecutorProvider>
-			</Provider>
+			<AppExecutorProvider exec={props.exec}>
+				<Main {...props} />
+			</AppExecutorProvider>
 		</BrowserRouter>
 	);
 };
@@ -113,19 +104,13 @@ function RedirectDB() {
 // TODO: Add tabs for better settings management + extensibility?
 const ExecutorSettings = ({ children }: { children: ReactNode }) => {
 	const { t } = useTranslation();
-	const dispatch = useAppDispatch();
-	const { isOpen, sampleOnLoad } = useAppSelector((state: RootState) => {
-		return {
-			isOpen: state.app.isSettingsOpen,
-			sampleOnLoad: state.app.sampleOnLoad,
-		};
-	});
+	const { settingsOpen, sampleOnLoad } = useStore(prefs);
 
 	return (
 		<Dialog
-			open={isOpen}
+			open={settingsOpen}
 			onOpenChange={(open) =>
-				!open && dispatch(appActions.setSettingsOpen(false))
+				!open && prefs.set((p) => ({ ...p, settingsOpen: false }))
 			}
 		>
 			<DialogContent>
@@ -138,7 +123,7 @@ const ExecutorSettings = ({ children }: { children: ReactNode }) => {
 						id="sample-on-load"
 						checked={sampleOnLoad}
 						onCheckedChange={() =>
-							dispatch(appActions.setSampleOnLoad(!sampleOnLoad))
+							prefs.set((p) => ({ ...p, sampleOnLoad: !sampleOnLoad }))
 						}
 					/>
 					<Label htmlFor="sample-on-load">{t("simple.generate_sample")}</Label>

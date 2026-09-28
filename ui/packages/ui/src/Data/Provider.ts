@@ -1,6 +1,6 @@
 import type { UserInfo } from "@gcsim/types";
 import axios from "axios";
-import { initialState } from "../Stores/userSlice";
+import { defaultUser } from "../Stores/user";
 
 export interface AuthProvider {
 	login(): void;
@@ -24,7 +24,7 @@ export class MockProvider implements AuthProvider {
 			role: 0,
 			permalinks: [],
 			data: {
-				settings: initialState.data.settings,
+				settings: defaultUser.data.settings,
 			},
 		};
 	}
