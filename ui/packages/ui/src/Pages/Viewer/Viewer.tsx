@@ -1,5 +1,4 @@
-import { RiskWarning, useExecutor } from "@gcsim/components";
-import type { Executor, ExecutorSupplier } from "@gcsim/executors";
+import { type EditorProps, ResultsView, RiskWarning } from "@gcsim/components";
 import { dynamicKey } from "@gcsim/localization";
 import {
 	Alert,
@@ -15,25 +14,18 @@ import {
 import type { model } from "@gcsim/types";
 import CopyToClipboard from "@ui/Components/Buttons/CopyToClipboard";
 import SendToSimulator from "@ui/Components/Buttons/SendToSimulator";
-import { type RootState, useAppSelector } from "@ui/Stores/store";
-import queryString from "query-string";
-import { useCallback, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router";
-import type { ResultSource } from ".";
-import LoadingToast from "./Components/LoadingToast";
+import type { SampleState } from "../Sample/useSample";
+import LoadingToast, { type ResultSource } from "./Components/LoadingToast";
 import ViewerNav from "./Components/ViewerNav";
 import Warnings from "./Components/Warnings";
-import ConfigUI, { useConfig } from "./Tabs/Config";
-import Results from "./Tabs/Results";
-import SampleUI, { useSample } from "./Tabs/Sample";
+import ConfigUI from "./Tabs/Config";
+import SampleUI from "./Tabs/Sample";
 
-// The viewer only announces intent through these callbacks; the host supplies the effect
-// (redux, routing, share API). A button is rendered only when its callback is provided, so a
-// read-only host can pass `{}` (or nothing) to get a viewer with no send/rerun/share buttons.
 export type ViewerActions = {
+	onRun?: (cfg: string) => void;
 	onSendToSimulator?: (cfg: string, opts: { keepTeam: boolean }) => void;
-	onRerun?: (cfg: string) => void;
 	onShare?: (
 		data: model.SimulationResult,
 		hash: string | null,
@@ -41,17 +33,21 @@ export type ViewerActions = {
 };
 
 type ViewerProps = {
-	running: boolean;
-	data: model.SimulationResult | null;
+	result: model.SimulationResult | null;
 	hash: string | null;
-	recoveryConfig: string | null;
-	error: string | null;
+	running: boolean;
 	src: ResultSource;
-	redirect: string;
-	exec: ExecutorSupplier<Executor>;
-	retry?: () => void;
+	error: string | null;
+	recoveryConfig: string | null;
+	tab: string;
+	onTabChange: (tab: string) => void;
+	editor: Omit<EditorProps, "onRun">;
+	sample: SampleState;
+	shareLink?: string | null;
 	actions?: ViewerActions;
-	existingShareLink?: string | null;
+	onCancel: () => void;
+	onRetry?: () => void;
+	onClose: () => void;
 };
 
 // The viewer is read-only against the data. Any mutations to the data (resim) must be performed
@@ -59,64 +55,47 @@ type ViewerProps = {
 // wants (linreg, stat optimizations, etc) but these computations are *never* stored in the data and
 // only exist as long as the page is loaded.
 export default ({
+	result,
+	hash,
 	running,
-	data,
-	hash = "",
-	recoveryConfig,
-	error,
 	src,
-	redirect,
-	exec,
-	retry,
+	error,
+	recoveryConfig,
+	tab,
+	onTabChange,
+	editor,
+	sample,
+	shareLink,
 	actions,
-	existingShareLink,
+	onCancel,
+	onRetry,
+	onClose,
 }: ViewerProps) => {
 	const { t } = useTranslation();
-	const parsed = queryString.parse(location.hash);
-	const [tabId, setTabId] = useState((parsed.tab as string) ?? "results");
-
-	const { cancel } = useExecutor();
-	const sampler = useCallback(
-		(cfg: string, seed: string) => exec().sample(cfg, seed),
-		[exec],
-	);
-	const resetTab = useCallback(() => setTabId("results"), []);
-
-	const { sampleOnLoad } = useAppSelector((state: RootState) => {
-		return {
-			sampleOnLoad: state.app.sampleOnLoad,
-		};
-	});
-
-	const sample = useSample(running, data, sampleOnLoad, sampler);
-	const config = useConfig(data, exec);
 	const names = useMemo(
 		() =>
-			data?.character_details?.map((c) =>
+			result?.character_details?.map((c) =>
 				t(dynamicKey("game:character_names." + c.name)),
 			),
-		[data?.character_details, t],
+		[result?.character_details, t],
 	);
 
+	const onRun = actions?.onRun;
 	const tabs: { [k: string]: React.ReactNode } = {
-		results: <Results model={data} names={names} />,
+		results: <ResultsView model={result} names={names} />,
 		config: (
 			<ConfigUI
-				config={config}
-				running={running}
-				resetTab={resetTab}
-				onRerun={actions?.onRerun}
+				{...editor}
+				loading={result?.config_file == null}
+				canRun={editor.canRun && onRun != null}
+				onRun={() => {
+					onTabChange("results");
+					onRun?.(editor.config);
+				}}
 			/>
 		),
 		analyze: <div></div>,
-		sample: (
-			<SampleUI
-				sampler={sampler}
-				data={data}
-				sample={sample}
-				running={running}
-			/>
-		),
+		sample: <SampleUI data={result} sample={sample} running={running} />,
 	};
 
 	return (
@@ -124,31 +103,31 @@ export default ({
 			<div className="flex flex-col px-2 pt-4 empty:pt-0 2xl:mx-auto items-center justify-center">
 				<RiskWarning />
 			</div>
-			<Warnings data={data} />
+			<Warnings data={result} />
 			<div className="px-2 py-4 w-full 2xl:mx-auto 2xl:container">
 				<ViewerNav
 					hash={hash}
-					tabState={[tabId, setTabId]}
-					data={data}
+					tabState={[tab, onTabChange]}
+					data={result}
 					running={running}
 					actions={actions}
-					existingShareLink={existingShareLink}
+					existingShareLink={shareLink}
 				/>
 			</div>
-			<div className="basis-full pt-0 mt-0">{tabs[tabId]}</div>
+			<div className="basis-full pt-0 mt-0">{tabs[tab]}</div>
 			<LoadingToast
-				cancel={cancel}
+				cancel={onCancel}
 				running={running}
 				src={src}
 				error={error}
-				current={data?.statistics?.iterations}
-				total={data?.simulator_settings?.iterations}
+				current={result?.statistics?.iterations}
+				total={result?.simulator_settings?.iterations}
 			/>
 			<ErrorAlert
 				msg={error}
 				recoveryConfig={recoveryConfig}
-				redirect={redirect}
-				retry={retry}
+				onRetry={onRetry}
+				onClose={onClose}
 				onSendToSimulator={actions?.onSendToSimulator}
 			/>
 		</div>
@@ -158,18 +137,17 @@ export default ({
 const ErrorAlert = ({
 	msg,
 	recoveryConfig,
-	redirect,
-	retry,
+	onRetry,
+	onClose,
 	onSendToSimulator,
 }: {
 	msg: string | null;
 	recoveryConfig: string | null;
-	redirect: string;
-	retry?: () => void;
+	onRetry?: () => void;
+	onClose: () => void;
 	onSendToSimulator?: ViewerActions["onSendToSimulator"];
 }) => {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 
 	return (
 		<AlertDialog open={msg != null}>
@@ -197,15 +175,12 @@ const ErrorAlert = ({
 					) : null}
 				</div>
 				<AlertDialogFooter>
-					{retry != null ? (
-						<AlertDialogCancel onClick={() => retry()}>
+					{onRetry != null ? (
+						<AlertDialogCancel onClick={() => onRetry()}>
 							{t("viewer.retry")}
 						</AlertDialogCancel>
 					) : null}
-					<AlertDialogAction
-						variant="destructive"
-						onClick={() => navigate(redirect)}
-					>
+					<AlertDialogAction variant="destructive" onClick={onClose}>
 						{t("viewer.return_to_sim")}
 					</AlertDialogAction>
 				</AlertDialogFooter>

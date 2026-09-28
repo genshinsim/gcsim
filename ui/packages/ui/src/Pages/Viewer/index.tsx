@@ -1,20 +1,24 @@
-import { useExecutor, useRunResult } from "@gcsim/components";
-import type { Executor, ExecutorSupplier } from "@gcsim/executors";
+import {
+	type EditorProps,
+	useExecutor,
+	useRunResult,
+	useValidation,
+} from "@gcsim/components";
 import type { model } from "@gcsim/types";
+import { type RootState, useAppSelector } from "@ui/Stores/store";
 import axios from "axios";
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { useLocation } from "react-router";
+import queryString from "query-string";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
+import ExecutorSettingsButton from "../../Components/Buttons/ExecutorSettingsButton";
 import { useSendToSimulator } from "../../Components/Buttons/useSendToSimulator";
+import { autoSampleSeed, useSample } from "../Sample/useSample";
+import { useEditorPrefs } from "../Simulator/editorPrefs";
+import { ResultSource } from "./Components/LoadingToast";
 import UpgradeDialog from "./UpgradeDialog";
 import Viewer, { type ViewerActions } from "./Viewer";
 
-export enum ResultSource {
-	Loaded,
-	Generated,
-}
-
 type ViewerProps = {
-	exec: ExecutorSupplier<Executor>;
 	gitCommit: string;
 	mode: string;
 	id?: string; // only used in share
@@ -22,7 +26,6 @@ type ViewerProps = {
 
 export const ShareViewer = (props: ViewerProps) => (
 	<FromUrl
-		exec={props.exec}
 		url={"/api/share/" + props.id}
 		redirect="/"
 		mode={props.mode}
@@ -32,7 +35,6 @@ export const ShareViewer = (props: ViewerProps) => (
 
 export const DBViewer = (props: ViewerProps) => (
 	<FromUrl
-		exec={props.exec}
 		url={"/api/share/db/" + props.id}
 		redirect="/"
 		mode={props.mode}
@@ -42,7 +44,6 @@ export const DBViewer = (props: ViewerProps) => (
 
 export const LocalViewer = (props: ViewerProps) => (
 	<FromUrl
-		exec={props.exec}
 		url="http://127.0.0.1:8381/data"
 		redirect="/"
 		mode={props.mode}
@@ -50,7 +51,7 @@ export const LocalViewer = (props: ViewerProps) => (
 	/>
 );
 
-export const WebViewer = ({ exec, mode, gitCommit }: ViewerProps) => {
+export const WebViewer = ({ mode, gitCommit }: ViewerProps) => {
 	const { busy } = useExecutor();
 	const { result, hash, config, error } = useRunResult();
 	return (
@@ -60,7 +61,6 @@ export const WebViewer = ({ exec, mode, gitCommit }: ViewerProps) => {
 			recoveryConfig={config}
 			error={error}
 			src={ResultSource.Generated}
-			exec={exec}
 			running={busy}
 			redirect="/simulator"
 			mode={mode}
@@ -70,14 +70,13 @@ export const WebViewer = ({ exec, mode, gitCommit }: ViewerProps) => {
 };
 
 type FromUrlProps = {
-	exec: ExecutorSupplier<Executor>;
 	redirect: string;
 	url: string;
 	mode: string;
 	gitCommit: string;
 };
 
-const FromUrl = ({ exec, url, redirect, mode, gitCommit }: FromUrlProps) => {
+const FromUrl = ({ url, redirect, mode, gitCommit }: FromUrlProps) => {
 	const [data, setData] = useState<model.SimulationResult | null>(null);
 	const [hash, setHash] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
@@ -104,7 +103,6 @@ const FromUrl = ({ exec, url, redirect, mode, gitCommit }: FromUrlProps) => {
 			recoveryConfig={null}
 			error={error}
 			src={ResultSource.Loaded}
-			exec={exec}
 			retry={request}
 			running={false}
 			redirect={redirect}
@@ -124,45 +122,34 @@ type UpgradableViewerProps = {
 	redirect: string;
 	mode: string;
 	gitCommit: string;
-	exec: ExecutorSupplier<Executor>;
 	retry?: () => void;
 };
 
 const UpgradableViewer = (props: UpgradableViewerProps) => {
-	const actions = useViewerActions();
+	const { data, running } = props;
 	const location = useLocation();
-	return (
-		<>
-			<Viewer
-				running={props.running}
-				data={props.data}
-				hash={props.hash}
-				src={props.src}
-				recoveryConfig={props.recoveryConfig}
-				error={props.error}
-				redirect={props.redirect}
-				exec={props.exec}
-				retry={props.retry}
-				actions={actions}
-				existingShareLink={extractFromLocation(location.pathname)}
-			/>
-			<UpgradeDialog
-				data={props.data}
-				redirect={props.redirect}
-				mode={props.mode}
-				commit={props.gitCommit}
-			/>
-		</>
-	);
-};
-
-function useViewerActions(): ViewerActions {
-	const { run } = useExecutor();
+	const navigate = useNavigate();
+	const { run, cancel } = useExecutor();
 	const onSendToSimulator = useSendToSimulator();
-	return useMemo(
+	const [tab, setTab] = useState(
+		() => hashParam(location.hash, "tab") ?? "results",
+	);
+	const [linkSeed] = useState(() => hashParam(location.hash, "sample"));
+	const sampleOnLoad = useAppSelector(
+		(state: RootState) => state.app.sampleOnLoad,
+	);
+	const sample = useSample({
+		config: data?.config_file,
+		autoSeed: autoSampleSeed(linkSeed, sampleOnLoad, data?.sample_seed),
+		running,
+	});
+	const editor = useViewerEditor(data?.config_file, running);
+	useScrollToLocation();
+
+	const actions = useMemo<ViewerActions>(
 		() => ({
+			onRun: run,
 			onSendToSimulator,
-			onRerun: run,
 			onShare: (data: model.SimulationResult, hash: string | null) =>
 				axios
 					.post("/api/share", data, {
@@ -172,6 +159,102 @@ function useViewerActions(): ViewerActions {
 		}),
 		[run, onSendToSimulator],
 	);
+
+	const generate = (seed: string) => {
+		const parsed = queryString.parse(window.location.hash);
+		parsed.sample = seed;
+		window.location.hash = queryString.stringify(parsed);
+		sample.generate(seed);
+	};
+
+	return (
+		<>
+			<Viewer
+				result={data}
+				hash={props.hash}
+				running={running}
+				src={props.src}
+				error={props.error}
+				recoveryConfig={props.recoveryConfig}
+				tab={tab}
+				onTabChange={setTab}
+				editor={editor}
+				sample={{ ...sample, generate }}
+				shareLink={extractFromLocation(location.pathname)}
+				actions={actions}
+				onCancel={cancel}
+				onRetry={props.retry}
+				onClose={() => navigate(props.redirect)}
+			/>
+			<UpgradeDialog
+				data={data}
+				redirect={props.redirect}
+				mode={props.mode}
+				commit={props.gitCommit}
+			/>
+		</>
+	);
+};
+
+function useViewerEditor(
+	resultConfig: string | undefined,
+	running: boolean,
+): Omit<EditorProps, "onRun"> {
+	const { isReady } = useExecutor();
+	const [config, setConfig] = useState(resultConfig ?? "");
+	const [prefs, setPrefs] = useEditorPrefs();
+	const { isValid, error, parsedTeam } = useValidation(config);
+
+	useEffect(() => {
+		setConfig(resultConfig ?? "");
+	}, [resultConfig]);
+
+	return {
+		config,
+		setConfig,
+		error,
+		parsedTeam,
+		settings: <ExecutorSettingsButton />,
+		canRun: isReady && isValid && !running,
+		busy: !isReady || running,
+		prefs,
+		onPrefsChange: setPrefs,
+	};
+}
+
+function useScrollToLocation() {
+	const scrolled = useRef(false);
+	const { key, hash } = useLocation();
+	const prevKey = useRef(key);
+
+	useEffect(() => {
+		if (hash == null) {
+			return;
+		}
+
+		if (prevKey.current !== key) {
+			prevKey.current = key;
+			scrolled.current = false;
+		}
+
+		if (scrolled.current) {
+			return;
+		}
+		const id = hash.replace("#", "");
+		if (!id) {
+			return;
+		}
+		const element = document.getElementById(id);
+		if (element) {
+			element.scrollIntoView({ behavior: "smooth" });
+			scrolled.current = true;
+		}
+	});
+}
+
+function hashParam(hash: string, key: string): string | null {
+	const value = queryString.parse(hash)[key];
+	return typeof value === "string" ? value : null;
 }
 
 function link(route: string, id: string): string {

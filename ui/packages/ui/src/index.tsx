@@ -149,25 +149,24 @@ const ExecutorSettings = ({ children }: { children: ReactNode }) => {
 };
 
 type ShareRouteProps = {
-	exec: ExecutorSupplier<Executor>;
 	gitCommit: string;
 	mode: string;
 };
 
-function ShareViewerRoute({ exec, gitCommit, mode }: ShareRouteProps) {
+function ShareViewerRoute({ gitCommit, mode }: ShareRouteProps) {
 	const { id } = useParams();
 	useEffect(() => {
 		document.title = "gcsim sh - " + id;
 	}, [id]);
-	return <ShareViewer exec={exec} id={id} gitCommit={gitCommit} mode={mode} />;
+	return <ShareViewer id={id} gitCommit={gitCommit} mode={mode} />;
 }
 
-function DBViewerRoute({ exec, gitCommit, mode }: ShareRouteProps) {
+function DBViewerRoute({ gitCommit, mode }: ShareRouteProps) {
 	const { id } = useParams();
 	useEffect(() => {
 		document.title = "gcsim db - " + id;
 	}, [id]);
-	return <DBViewer exec={exec} id={id} gitCommit={gitCommit} mode={mode} />;
+	return <DBViewer id={id} gitCommit={gitCommit} mode={mode} />;
 }
 
 function RedirectToShare() {
@@ -179,7 +178,7 @@ function isWeb(pathname: string): boolean {
 	return pathname === "/web" || pathname.startsWith("/web/");
 }
 
-const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
+const Main = ({ children, gitCommit, mode }: UIProps) => {
 	const { t } = useTranslation();
 	const content = useRef<HTMLDivElement>(null);
 	const location = useLocation();
@@ -237,7 +236,7 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 						element={
 							<>
 								<title>gcsim - viewer</title>
-								<WebViewer exec={exec} gitCommit={gitCommit} mode={mode} />
+								<WebViewer gitCommit={gitCommit} mode={mode} />
 							</>
 						}
 					/>
@@ -246,21 +245,17 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 						element={
 							<>
 								<title>gcsim - local viewer</title>
-								<LocalViewer exec={exec} gitCommit={gitCommit} mode={mode} />
+								<LocalViewer gitCommit={gitCommit} mode={mode} />
 							</>
 						}
 					/>
 					<Route
 						path="/sh/:id"
-						element={
-							<ShareViewerRoute exec={exec} gitCommit={gitCommit} mode={mode} />
-						}
+						element={<ShareViewerRoute gitCommit={gitCommit} mode={mode} />}
 					/>
 					<Route
 						path="/db/:id"
-						element={
-							<DBViewerRoute exec={exec} gitCommit={gitCommit} mode={mode} />
-						}
+						element={<DBViewerRoute gitCommit={gitCommit} mode={mode} />}
 					/>
 
 					{/* Sample Routes */}

@@ -20,6 +20,7 @@ export class ViewerPage {
 	readonly configEditor: Locator;
 	/** The Sample tab's "Generate" button (shown before a sample is generated). */
 	readonly generateButton: Locator;
+	readonly rerunButton: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
@@ -30,6 +31,7 @@ export class ViewerPage {
 		this.charts = page.locator('svg[role="img"]');
 		this.configEditor = page.locator("#config_editor");
 		this.generateButton = page.getByRole("button", { name: "Generate" });
+		this.rerunButton = page.getByRole("button", { name: "Run" });
 	}
 
 	/** Assert the viewer chrome rendered: title and the three-tab strip. */
@@ -57,6 +59,8 @@ export class ViewerPage {
 		await this.configTab.click();
 		await expect(this.configEditor).toBeVisible();
 		await expect(this.configEditor).not.toBeEmpty();
+		await expect(this.page.getByTestId("editor-team-composer")).toHaveCount(0);
+		await expect(this.page.getByTestId("editor-helper-tools")).toHaveCount(0);
 	}
 
 	/**
@@ -67,5 +71,20 @@ export class ViewerPage {
 	async openSample(): Promise<void> {
 		await this.sampleTab.click();
 		await expect(this.generateButton).toBeVisible();
+	}
+
+	async rerunToResultsTab(): Promise<void> {
+		await expect(this.rerunButton).toBeEnabled({ timeout: 30_000 });
+		await this.rerunButton.click();
+		await expect(this.resultsTab).toHaveAttribute("aria-selected", "true");
+	}
+
+	async generateSample(): Promise<void> {
+		await this.generateButton.click();
+		await expect(this.page).toHaveURL(/#.*sample=\d+/);
+		await expect(this.generateButton).toBeVisible({ timeout: 30_000 });
+		await expect(
+			this.page.getByRole("button", { name: "Download" }),
+		).toBeVisible();
 	}
 }

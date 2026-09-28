@@ -1,7 +1,11 @@
 import { Button, Progress, toast } from "@gcsim/primitives";
 import { useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { ResultSource } from "..";
+
+export enum ResultSource {
+	Loaded,
+	Generated,
+}
 
 type Props = {
 	running: boolean;

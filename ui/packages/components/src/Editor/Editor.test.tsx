@@ -85,6 +85,27 @@ describe("Editor", () => {
 		expect(screen.queryByTestId("editor-team-composer")).toBeNull();
 	});
 
+	it("hides the team, name search, tips and tools menu without helpers", () => {
+		renderEditor({ showHelpers: false });
+		expect(screen.queryByTestId("editor-team-composer")).toBeNull();
+		expect(screen.queryByText("simple.name_search")).toBeNull();
+		expect(
+			screen.queryByRole("button", { name: "simple.hide_all_tips" }),
+		).toBeNull();
+		expect(screen.queryByTestId("editor-helper-tools")).toBeNull();
+		expect(runButton()).toBeTruthy();
+	});
+
+	it("shows the config error without helpers", () => {
+		renderEditor({ showHelpers: false, error: "bad line 3" });
+		expect(screen.getByText("bad line 3")).toBeTruthy();
+	});
+
+	it("shows the config error once when the team is visible", () => {
+		renderEditor({ error: "bad line 3" });
+		expect(screen.getAllByText("bad line 3")).toHaveLength(1);
+	});
+
 	it("reports a toggled tool through onPrefsChange", async () => {
 		const onPrefsChange = vi.fn();
 		renderEditor({ onPrefsChange });
