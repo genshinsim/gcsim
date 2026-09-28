@@ -4,6 +4,8 @@ export {
 	ExecutorProvider,
 	type ExecutorProviderProps,
 	type RunResult,
+	type RunResultStore,
+	type SavedRun,
 	useExecutor,
 	useRunResult,
 } from "./ExecutorProvider";

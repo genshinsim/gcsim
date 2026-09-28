@@ -28,13 +28,28 @@ const emptyRunResult: RunResult = {
 	error: null,
 };
 
+export interface SavedRun {
+	result: model.SimulationResult;
+	hash: string | null;
+}
+
+export interface RunResultStore {
+	load: () => SavedRun | null;
+	save: (run: SavedRun) => void;
+}
+
+function restore(store?: RunResultStore): RunResult {
+	const saved = store?.load();
+	return saved == null ? emptyRunResult : { ...emptyRunResult, ...saved };
+}
+
 const ExecutorContext = React.createContext<ExecutorContextValue | null>(null);
 const RunResultContext = React.createContext<RunResult | null>(null);
 
 export interface ExecutorProviderProps {
 	exec: ExecutorSupplier<Executor>;
-	onResult?: (result: model.SimulationResult, hash: string) => void;
 	navigateOnRun?: () => void;
+	store?: RunResultStore;
 	children: React.ReactNode;
 }
 
@@ -42,16 +57,16 @@ const noop = () => {};
 
 export function ExecutorProvider({
 	exec,
-	onResult,
 	navigateOnRun,
+	store,
 	children,
 }: ExecutorProviderProps) {
 	const [isReady, setReady] = React.useState(false);
 	const [busy, setBusy] = React.useState(false);
-	const [runResult, setRunResult] = React.useState<RunResult>(emptyRunResult);
+	const [runResult, setRunResult] = React.useState(() => restore(store));
 
-	const onResultRef = React.useRef(onResult);
-	onResultRef.current = onResult;
+	const storeRef = React.useRef(store);
+	storeRef.current = store;
 	const navigateOnRunRef = React.useRef(navigateOnRun);
 	navigateOnRunRef.current = navigateOnRun;
 	const cancelSinkRef = React.useRef(noop);
@@ -98,9 +113,9 @@ export function ExecutorProvider({
 				) {
 					return;
 				}
-				const sink = throttle(
+				let last: SavedRun | null = null;
+				const apply = throttle(
 					(result: model.SimulationResult, hash: string) => {
-						onResultRef.current?.(result, hash);
 						React.startTransition(() =>
 							setRunResult((prev) => ({ ...prev, result, hash })),
 						);
@@ -108,11 +123,22 @@ export function ExecutorProvider({
 					RESULT_THROTTLE_MS,
 					{ leading: true, trailing: true },
 				);
-				cancelSinkRef.current = () => sink.cancel();
+				const sink = (result: model.SimulationResult, hash: string) => {
+					last = { result, hash };
+					apply(result, hash);
+				};
+				cancelSinkRef.current = () => apply.cancel();
 				setRunResult({ ...emptyRunResult, config });
-				executor.run(config, sink).catch((err: unknown) => {
-					setRunResult((prev) => ({ ...prev, error: asError(err) }));
-				});
+				executor.run(config, sink).then(
+					() => {
+						if (last != null) {
+							storeRef.current?.save(last);
+						}
+					},
+					(err: unknown) => {
+						setRunResult((prev) => ({ ...prev, error: asError(err) }));
+					},
+				);
 				navigateOnRunRef.current?.();
 			}, noop);
 		},
