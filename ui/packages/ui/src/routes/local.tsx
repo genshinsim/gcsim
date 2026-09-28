@@ -10,6 +10,7 @@ export const Route = createFileRoute("/local")({
 			throw redirect({ to: "/local", search, replace: true });
 		}
 	},
+	shouldReload: ({ cause }) => cause === "enter",
 	loader: () => loadResult("http://127.0.0.1:8381/data"),
 	component: () => <Page result={Route.useLoaderData()} />,
 	pendingComponent: () => <Page />,

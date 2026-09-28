@@ -13,6 +13,7 @@ export const Route = createFileRoute("/db/$id")({
 			throw redirect({ to: "/db/$id", params, search, replace: true });
 		}
 	},
+	shouldReload: ({ cause }) => cause === "enter",
 	loader: ({ params }) => loadResult(`/api/share/db/${params.id}`),
 	component: () => <Page result={Route.useLoaderData()} />,
 	pendingComponent: () => <Page />,

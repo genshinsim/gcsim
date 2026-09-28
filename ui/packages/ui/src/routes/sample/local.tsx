@@ -4,6 +4,7 @@ import axios from "axios";
 import { SamplePage } from "../../Pages";
 
 export const Route = createFileRoute("/sample/local")({
+	shouldReload: ({ cause }) => cause === "enter",
 	loader: async () =>
 		(
 			await axios.get<Sample>("http://127.0.0.1:8381/sample", {

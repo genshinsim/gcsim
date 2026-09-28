@@ -13,6 +13,7 @@ export const Route = createFileRoute("/sh/$id")({
 			throw redirect({ to: "/sh/$id", params, search, replace: true });
 		}
 	},
+	shouldReload: ({ cause }) => cause === "enter",
 	loader: ({ params }) => loadResult(`/api/share/${params.id}`),
 	component: () => <Page result={Route.useLoaderData()} />,
 	pendingComponent: () => <Page />,
