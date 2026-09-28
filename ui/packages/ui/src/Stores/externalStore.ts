@@ -10,7 +10,7 @@ export interface Store<T> {
 
 export function createStore<T>(
 	initial: T,
-	onChange?: (value: T) => void,
+	onChange: (value: T) => void,
 ): Store<T> {
 	let value = initial;
 	const listeners = new Set<() => void>();
@@ -18,7 +18,7 @@ export function createStore<T>(
 		get: () => value,
 		set: (next) => {
 			value = next instanceof Function ? next(value) : next;
-			onChange?.(value);
+			onChange(value);
 			for (const l of listeners) {
 				l();
 			}
@@ -43,4 +43,4 @@ export function readJSON(storage: KeyStorage, key: string) {
 	}
 }
 
-export const legacyAppDataKey = "redux-app-data";
+export const LEGACY_APP_DATA_KEY = "redux-app-data";

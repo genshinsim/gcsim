@@ -1,7 +1,7 @@
 import {
 	createStore,
 	type KeyStorage,
-	legacyAppDataKey,
+	LEGACY_APP_DATA_KEY,
 	readJSON,
 	type Store,
 } from "./externalStore";
@@ -31,7 +31,7 @@ export interface DraftStore extends Store<string> {
 
 function loadDraft(storage: KeyStorage): string {
 	return (
-		storage.getItem(DRAFT_KEY) ?? readJSON(storage, legacyAppDataKey)?.cfg ?? ""
+		storage.getItem(DRAFT_KEY) ?? readJSON(storage, LEGACY_APP_DATA_KEY)?.cfg ?? ""
 	);
 }
 

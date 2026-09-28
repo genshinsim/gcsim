@@ -1,11 +1,10 @@
 import type { SavedRunStore } from "@gcsim/components";
+import type { KeyStorage } from "./externalStore";
 
 const RESULT_KEY = "redux-local-results";
 const HASH_KEY = "redux-local-results-hash";
 
-type RunStorage = Pick<Storage, "getItem" | "setItem">;
-
-export function lastRunStore(storage: RunStorage): SavedRunStore {
+export function lastRunStore(storage: KeyStorage): SavedRunStore {
 	return {
 		load: () => {
 			const raw = storage.getItem(RESULT_KEY);

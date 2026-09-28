@@ -1,7 +1,7 @@
 import {
 	createStore,
 	type KeyStorage,
-	legacyAppDataKey,
+	LEGACY_APP_DATA_KEY,
 	readJSON,
 } from "./externalStore";
 
@@ -14,7 +14,7 @@ export interface Prefs {
 
 export function prefsStore(storage: KeyStorage) {
 	const saved =
-		readJSON(storage, PREFS_KEY) ?? readJSON(storage, legacyAppDataKey);
+		readJSON(storage, PREFS_KEY) ?? readJSON(storage, LEGACY_APP_DATA_KEY);
 	return createStore<Prefs>(
 		{ sampleOnLoad: saved?.sampleOnLoad ?? false, settingsOpen: false },
 		({ sampleOnLoad }) =>
