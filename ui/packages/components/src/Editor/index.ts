@@ -3,7 +3,9 @@ export {
 	type ExecutorContextValue,
 	ExecutorProvider,
 	type ExecutorProviderProps,
+	type RunResult,
 	useExecutor,
+	useRunResult,
 } from "./ExecutorProvider";
 export { toParsedTeam } from "./parsedTeam";
 export {
