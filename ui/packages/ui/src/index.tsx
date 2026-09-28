@@ -33,7 +33,7 @@ import {
 	WebViewer,
 } from "./Pages";
 import { Footer, Nav } from "./Sectioning";
-import { prefs, useStore } from "./Stores";
+import { AppStateProvider, usePrefs } from "./Stores/AppState";
 import { lastRunStore } from "./Stores/lastRun";
 
 import "@gcsim/components/src/index.css";
@@ -61,9 +61,11 @@ type UIProps = {
 export const UI = (props: UIProps) => {
 	return (
 		<BrowserRouter>
-			<AppExecutorProvider exec={props.exec}>
-				<Main {...props} />
-			</AppExecutorProvider>
+			<AppStateProvider>
+				<AppExecutorProvider exec={props.exec}>
+					<Main {...props} />
+				</AppExecutorProvider>
+			</AppStateProvider>
 		</BrowserRouter>
 	);
 };
@@ -104,14 +106,13 @@ function RedirectDB() {
 // TODO: Add tabs for better settings management + extensibility?
 const ExecutorSettings = ({ children }: { children: ReactNode }) => {
 	const { t } = useTranslation();
-	const { settingsOpen, sampleOnLoad } = useStore(prefs);
+	const { settingsOpen, setSettingsOpen, sampleOnLoad, setSampleOnLoad } =
+		usePrefs();
 
 	return (
 		<Dialog
 			open={settingsOpen}
-			onOpenChange={(open) =>
-				!open && prefs.set((p) => ({ ...p, settingsOpen: false }))
-			}
+			onOpenChange={(open) => !open && setSettingsOpen(false)}
 		>
 			<DialogContent>
 				<DialogHeader>
@@ -122,9 +123,7 @@ const ExecutorSettings = ({ children }: { children: ReactNode }) => {
 					<SwitchInput
 						id="sample-on-load"
 						checked={sampleOnLoad}
-						onCheckedChange={() =>
-							prefs.set((p) => ({ ...p, sampleOnLoad: !sampleOnLoad }))
-						}
+						onCheckedChange={() => setSampleOnLoad(!sampleOnLoad)}
 					/>
 					<Label htmlFor="sample-on-load">{t("simple.generate_sample")}</Label>
 				</div>

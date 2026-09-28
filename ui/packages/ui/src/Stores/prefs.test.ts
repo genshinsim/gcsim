@@ -1,28 +1,22 @@
 import { describe, expect, it } from "vitest";
 import { fakeStorage } from "./fakeStorage";
-import { prefsStore } from "./prefs";
+import { loadSampleOnLoad, saveSampleOnLoad } from "./prefs";
 
-describe("prefsStore", () => {
-	it("defaults to no sample on load and settings closed", () => {
-		expect(prefsStore(fakeStorage()).get()).toEqual({
-			sampleOnLoad: false,
-			settingsOpen: false,
-		});
+describe("sampleOnLoad", () => {
+	it("defaults to false", () => {
+		expect(loadSampleOnLoad(fakeStorage())).toBe(false);
 	});
 
-	it("persists sampleOnLoad but not settingsOpen", () => {
+	it("round-trips a saved value", () => {
 		const storage = fakeStorage();
-		prefsStore(storage).set({ sampleOnLoad: true, settingsOpen: true });
-		expect(prefsStore(storage).get()).toEqual({
-			sampleOnLoad: true,
-			settingsOpen: false,
-		});
+		saveSampleOnLoad(storage, true);
+		expect(loadSampleOnLoad(storage)).toBe(true);
 	});
 
-	it("loads sampleOnLoad saved by the redux store", () => {
+	it("loads a value saved by the redux store", () => {
 		const storage = fakeStorage({
 			"redux-app-data": JSON.stringify({ sampleOnLoad: true, cfg: "" }),
 		});
-		expect(prefsStore(storage).get().sampleOnLoad).toBe(true);
+		expect(loadSampleOnLoad(storage)).toBe(true);
 	});
 });

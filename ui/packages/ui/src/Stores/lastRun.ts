@@ -1,5 +1,5 @@
 import type { SavedRunStore } from "@gcsim/components";
-import type { KeyStorage } from "./externalStore";
+import type { KeyStorage } from "./storage";
 
 const RESULT_KEY = "redux-local-results";
 const HASH_KEY = "redux-local-results-hash";

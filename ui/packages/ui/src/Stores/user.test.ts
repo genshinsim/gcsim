@@ -1,7 +1,7 @@
 import type { UserInfo } from "@gcsim/types";
 import { describe, expect, it } from "vitest";
 import { fakeStorage } from "./fakeStorage";
-import { defaultUser, userStore } from "./user";
+import { defaultUser, loadUser, mergeUser, saveUserSettings } from "./user";
 
 const loggedIn: UserInfo = {
 	uid: "123",
@@ -13,25 +13,22 @@ const loggedIn: UserInfo = {
 	},
 };
 
-describe("userStore", () => {
-	it("starts logged out with default settings", () => {
-		expect(userStore(fakeStorage()).get()).toEqual(defaultUser);
-	});
-
-	it("merges a logged in user", () => {
-		const user = userStore(fakeStorage());
-		user.merge(loggedIn);
-		expect(user.get()).toEqual(loggedIn);
+describe("mergeUser", () => {
+	it("merges a logged in user without touching the previous one", () => {
+		expect(mergeUser(defaultUser, loggedIn)).toEqual(loggedIn);
 		expect(defaultUser.uid).toBe("");
 	});
+});
 
-	it("persists settings but not the login", () => {
+describe("loadUser", () => {
+	it("starts logged out with default settings", () => {
+		expect(loadUser(fakeStorage())).toEqual(defaultUser);
+	});
+
+	it("restores saved settings but not the login", () => {
 		const storage = fakeStorage();
-		userStore(storage).merge(loggedIn);
-		expect(userStore(storage).get()).toEqual({
-			...defaultUser,
-			data: loggedIn.data,
-		});
+		saveUserSettings(storage, loggedIn);
+		expect(loadUser(storage)).toEqual({ ...defaultUser, data: loggedIn.data });
 	});
 
 	it("loads settings saved by the redux store", () => {
@@ -43,13 +40,6 @@ describe("userStore", () => {
 		const storage = fakeStorage({
 			"redux-user-local-settings": JSON.stringify(settings),
 		});
-		expect(userStore(storage).get().data.settings).toEqual(settings);
-	});
-
-	it("resets to logged out", () => {
-		const user = userStore(fakeStorage());
-		user.merge(loggedIn);
-		user.reset();
-		expect(user.get()).toEqual(defaultUser);
+		expect(loadUser(storage).data.settings).toEqual(settings);
 	});
 });

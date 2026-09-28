@@ -3,7 +3,7 @@ import type { model } from "@gcsim/types";
 import React from "react";
 import { Viewport } from "../../Components";
 import { CharMap } from "../../Data";
-import { draft, useStore } from "../../Stores";
+import { useDraft } from "../../Stores/AppState";
 import { EditorSettings } from "./EditorSettings";
 import { useEditorPrefs } from "./editorPrefs";
 import {
@@ -30,7 +30,8 @@ function newCharFromKey(key: string): model.Character {
 	};
 }
 
-function SimulatorEditor({ cfg }: { cfg: string }) {
+function SimulatorEditor() {
+	const { cfg, setCfg } = useDraft();
 	const { imported } = useImportedCharacters();
 	const { isValid, error, parsedTeam } = useValidation(cfg);
 	const { run, isReady } = useExecutor();
@@ -51,7 +52,7 @@ function SimulatorEditor({ cfg }: { cfg: string }) {
 	return (
 		<Editor
 			config={cfg}
-			setConfig={draft.set}
+			setConfig={setCfg}
 			error={error}
 			parsedTeam={parsedTeam}
 			teamCharacters={teamCharacters}
@@ -67,12 +68,10 @@ function SimulatorEditor({ cfg }: { cfg: string }) {
 }
 
 export function Simulator() {
-	const cfg = useStore(draft);
-
 	return (
 		<Viewport className="flex flex-col gap-2">
 			<ImportedCharactersProvider>
-				<SimulatorEditor cfg={cfg} />
+				<SimulatorEditor />
 			</ImportedCharactersProvider>
 		</Viewport>
 	);

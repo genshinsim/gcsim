@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { draftStore, mergeTeam } from "./draft";
+import { loadDraft, mergeTeam, saveDraft, sendDraft } from "./draft";
 import { fakeStorage } from "./fakeStorage";
 
 const current = `bennett char lvl=90/90 cons=6 talent=9,9,9;
@@ -48,35 +48,33 @@ raiden burst;
 	});
 });
 
-describe("draftStore", () => {
+describe("sendDraft", () => {
 	it("replaces the draft when keepTeam is false", () => {
-		const draft = draftStore(fakeStorage());
-		draft.set(current);
-		draft.send(incoming, { keepTeam: false });
-		expect(draft.get()).toBe(incoming);
+		expect(sendDraft(current, incoming, { keepTeam: false })).toBe(incoming);
 	});
 
 	it("merges the team when keepTeam is true", () => {
-		const draft = draftStore(fakeStorage());
-		draft.set(current);
-		draft.send(incoming, { keepTeam: true });
-		expect(draft.get()).toBe(mergeTeam(current, incoming));
+		expect(sendDraft(current, incoming, { keepTeam: true })).toBe(
+			mergeTeam(current, incoming),
+		);
 	});
+});
 
-	it("persists the draft", () => {
+describe("loadDraft", () => {
+	it("round-trips a saved draft", () => {
 		const storage = fakeStorage();
-		draftStore(storage).set("options iteration=5;");
-		expect(draftStore(storage).get()).toBe("options iteration=5;");
+		saveDraft(storage, "options iteration=5;");
+		expect(loadDraft(storage)).toBe("options iteration=5;");
 	});
 
 	it("loads a draft saved by the redux store", () => {
 		const storage = fakeStorage({
 			"redux-app-data": JSON.stringify({ sampleOnLoad: true, cfg: current }),
 		});
-		expect(draftStore(storage).get()).toBe(current);
+		expect(loadDraft(storage)).toBe(current);
 	});
 
 	it("starts empty when nothing is stored", () => {
-		expect(draftStore(fakeStorage()).get()).toBe("");
+		expect(loadDraft(fakeStorage())).toBe("");
 	});
 });

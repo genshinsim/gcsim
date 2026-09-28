@@ -1,26 +1,27 @@
 import { Button, ButtonGroup, Checkbox, Label } from "@gcsim/primitives";
+import type { UserInfo } from "@gcsim/types";
 import axios from "axios";
 import { LogOut, Save } from "lucide-react";
 import { Viewport } from "../../Components";
-import { user as userStore, useStore } from "../../Stores";
+import { useUser } from "../../Stores/AppState";
 import { authProvider, Login } from "./Login";
 
-function saveSettings() {
+function saveSettings(user: UserInfo) {
 	axios
-		.post("/api/user/save", userStore.get().data)
+		.post("/api/user/save", user.data)
 		.then(() => console.log("save ok"))
 		.catch(() => console.log("save failed"));
 }
 
-function logout() {
+function logout(reset: () => void) {
 	authProvider
 		.logout()
 		.catch((err) => console.warn("Error occured logging out: ", err))
-		.finally(userStore.reset);
+		.finally(reset);
 }
 
 export function PageUserAccount() {
-	const user = useStore(userStore);
+	const { user, setSettings, reset } = useUser();
 
 	if (user.uid === "") {
 		return <Login />;
@@ -35,7 +36,7 @@ export function PageUserAccount() {
 							id="show-tips"
 							checked={user.data.settings.showTips}
 							onCheckedChange={() => {
-								userStore.setSettings({
+								setSettings({
 									...user.data.settings,
 									showTips: !user.data.settings.showTips,
 								});
@@ -48,7 +49,7 @@ export function PageUserAccount() {
 							id="show-builder"
 							checked={user.data.settings.showBuilder}
 							onCheckedChange={() => {
-								userStore.setSettings({
+								setSettings({
 									...user.data.settings,
 									showBuilder: !user.data.settings.showBuilder,
 								});
@@ -59,11 +60,19 @@ export function PageUserAccount() {
 				</div>
 				<div className="flex flex-row place-content-center mt-2">
 					<ButtonGroup>
-						<Button variant="secondary" size="lg" onClick={saveSettings}>
+						<Button
+							variant="secondary"
+							size="lg"
+							onClick={() => saveSettings(user)}
+						>
 							<Save />
 							Save Settings
 						</Button>
-						<Button variant="destructive" size="lg" onClick={logout}>
+						<Button
+							variant="destructive"
+							size="lg"
+							onClick={() => logout(reset)}
+						>
 							<LogOut />
 							Logout
 						</Button>

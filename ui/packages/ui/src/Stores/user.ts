@@ -1,6 +1,6 @@
 import type { UserInfo, UserSettings } from "@gcsim/types";
 import { merge } from "lodash-es";
-import { createStore, type KeyStorage, readJSON } from "./externalStore";
+import { type KeyStorage, readJSON } from "./storage";
 
 const SETTINGS_KEY = "gcsim-user-settings";
 const LEGACY_SETTINGS_KEY = "redux-user-local-settings";
@@ -15,19 +15,16 @@ export const defaultUser: UserInfo = {
 	},
 };
 
-export function userStore(storage: KeyStorage) {
+export function mergeUser(prev: UserInfo, incoming: UserInfo): UserInfo {
+	return merge(structuredClone(prev), incoming);
+}
+
+export function loadUser(storage: KeyStorage): UserInfo {
 	const settings: UserSettings | null =
 		readJSON(storage, SETTINGS_KEY) ?? readJSON(storage, LEGACY_SETTINGS_KEY);
-	const store = createStore<UserInfo>(
-		settings ? { ...defaultUser, data: { settings } } : defaultUser,
-		(user) => storage.setItem(SETTINGS_KEY, JSON.stringify(user.data.settings)),
-	);
-	return {
-		...store,
-		merge: (user: UserInfo) =>
-			store.set((prev) => merge(structuredClone(prev), user)),
-		setSettings: (settings: UserSettings) =>
-			store.set((prev) => ({ ...prev, data: { ...prev.data, settings } })),
-		reset: () => store.set(defaultUser),
-	};
+	return settings ? { ...defaultUser, data: { settings } } : defaultUser;
+}
+
+export function saveUserSettings(storage: KeyStorage, user: UserInfo) {
+	storage.setItem(SETTINGS_KEY, JSON.stringify(user.data.settings));
 }

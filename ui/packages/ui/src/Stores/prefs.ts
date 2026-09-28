@@ -1,23 +1,13 @@
-import {
-	createStore,
-	type KeyStorage,
-	LEGACY_APP_DATA_KEY,
-	readJSON,
-} from "./externalStore";
+import { type KeyStorage, LEGACY_APP_DATA_KEY, readJSON } from "./storage";
 
 const PREFS_KEY = "gcsim-prefs";
 
-export interface Prefs {
-	sampleOnLoad: boolean;
-	settingsOpen: boolean;
-}
-
-export function prefsStore(storage: KeyStorage) {
+export function loadSampleOnLoad(storage: KeyStorage): boolean {
 	const saved =
 		readJSON(storage, PREFS_KEY) ?? readJSON(storage, LEGACY_APP_DATA_KEY);
-	return createStore<Prefs>(
-		{ sampleOnLoad: saved?.sampleOnLoad ?? false, settingsOpen: false },
-		({ sampleOnLoad }) =>
-			storage.setItem(PREFS_KEY, JSON.stringify({ sampleOnLoad })),
-	);
+	return saved?.sampleOnLoad ?? false;
+}
+
+export function saveSampleOnLoad(storage: KeyStorage, sampleOnLoad: boolean) {
+	storage.setItem(PREFS_KEY, JSON.stringify({ sampleOnLoad }));
 }
