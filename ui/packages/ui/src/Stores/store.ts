@@ -14,13 +14,11 @@ import {
 } from "react-redux";
 import { appSlice } from "./appSlice";
 import { userSlice } from "./userSlice";
-import { viewerSlice } from "./viewerSlice";
 
 const listenerMiddleware = createListenerMiddleware();
 
 const rootReducer = combineReducers({
 	[userSlice.name]: userSlice.reducer,
-	[viewerSlice.name]: viewerSlice.reducer,
 	[appSlice.name]: appSlice.reducer,
 });
 
@@ -28,13 +26,10 @@ export type RootState = ReturnType<typeof rootReducer>;
 
 const userLocalSettings = "redux-user-local-settings";
 const userAppDataKey = "redux-app-data";
-const userLocalResults = "redux-local-results";
-const userLocalResultsHash = "redux-local-results-hash";
 
 const persistedState: RootState = JSON.parse(
 	JSON.stringify({
 		[userSlice.name]: userSlice.getInitialState(),
-		[viewerSlice.name]: viewerSlice.getInitialState(),
 		[appSlice.name]: appSlice.getInitialState(),
 	}),
 );
@@ -52,12 +47,6 @@ if (localStorage.getItem(userLocalSettings)) {
 	persistedState.user.data = Object.assign(persistedState.user.data, {
 		settings: s,
 	});
-}
-
-const item = localStorage.getItem(userLocalResults);
-if (item) {
-	persistedState.viewer.data = JSON.parse(item);
-	persistedState.viewer.hash = localStorage.getItem(userLocalResultsHash);
 }
 
 export const store = configureStore({
@@ -82,17 +71,6 @@ store.subscribe(() => {
 		localStorage.setItem(
 			userLocalSettings,
 			JSON.stringify(store.getState().user.data.settings),
-		);
-	}
-
-	if (store.getState().viewer.data) {
-		localStorage.setItem(
-			userLocalResults,
-			JSON.stringify(store.getState().viewer.data),
-		);
-		localStorage.setItem(
-			userLocalResultsHash,
-			store.getState().viewer.hash ?? "",
 		);
 	}
 });

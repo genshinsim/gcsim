@@ -1,4 +1,4 @@
-import type { Executor, ExecutorSupplier } from "@gcsim/executors";
+import { useExecutor } from "@gcsim/components";
 import {
 	Alert,
 	AlertDescription,
@@ -31,28 +31,14 @@ enum MismatchType {
 }
 
 type Props = {
-	exec: ExecutorSupplier<Executor>;
 	data: model.SimulationResult | null;
 	redirect: string;
 	mode: string;
 	commit: string;
-	setResult: (
-		result: model.SimulationResult | null,
-		hash: string | null,
-	) => void;
-	setError: (recoveryConfig: string | null, err: string | null) => void;
 };
 
 // TODO: translations
-export default ({
-	exec,
-	data,
-	redirect,
-	mode,
-	commit,
-	setResult,
-	setError,
-}: Props) => {
+export default ({ data, redirect, mode, commit }: Props) => {
 	const { t } = useTranslation();
 	const mismatch = useMismatch(data?.sim_version, commit, data?.schema_version);
 	const [isOpen, setOpen] = useState(true);
@@ -117,12 +103,7 @@ export default ({
 						<ExecutorSettingsButton />
 					</div>
 					<div className="flex justify-end gap-[10px]">
-						<UpgradeButton
-							exec={exec}
-							cfg={data.config_file}
-							setResult={setResult}
-							setError={setError}
-						/>
+						<UpgradeButton cfg={data.config_file} />
 						<CancelButton
 							mismatch={mismatch}
 							setOpen={setOpen}
@@ -267,47 +248,12 @@ const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
 	);
 };
 
-const UpgradeButton = ({
-	exec,
-	cfg,
-	setResult,
-	setError,
-}: {
-	exec: ExecutorSupplier<Executor>;
-	cfg?: string;
-	setResult: (
-		result: model.SimulationResult | null,
-		hash: string | null,
-	) => void;
-	setError: (recoveryConfig: string | null, err: string | null) => void;
-}) => {
+const UpgradeButton = ({ cfg }: { cfg?: string }) => {
 	const { t } = useTranslation();
-	const [isReady, setReady] = useState(false);
-	useEffect(() => {
-		const interval = setInterval(() => {
-			exec()
-				.ready()
-				.then((res) => setReady(res));
-		}, 250);
-		return () => clearInterval(interval);
-	}, [exec]);
-
-	const run = () => {
-		if (cfg == null) {
-			return;
-		}
-
-		setResult(null, null);
-		setError(null, null);
-		exec()
-			.run(cfg, setResult)
-			.catch((err) => {
-				setError(cfg, err);
-			});
-	};
+	const { isReady, run } = useExecutor();
 
 	return (
-		<Button disabled={!isReady} onClick={run}>
+		<Button disabled={!isReady} onClick={() => cfg != null && run(cfg)}>
 			{!isReady ? <Spinner /> : null}
 			{t("viewer.upgrade")}
 		</Button>

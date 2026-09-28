@@ -9,7 +9,6 @@ import {
 	Switch as SwitchInput,
 	Toaster,
 } from "@gcsim/primitives";
-import type { model } from "@gcsim/types";
 import { type ReactNode, useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Provider } from "react-redux";
@@ -36,13 +35,13 @@ import {
 } from "./Pages";
 import { Footer, Nav } from "./Sectioning";
 import { appActions } from "./Stores/appSlice";
+import { lastRunStore } from "./Stores/lastRun";
 import {
 	type RootState,
 	store,
 	useAppDispatch,
 	useAppSelector,
 } from "./Stores/store";
-import { viewerActions } from "./Stores/viewerSlice";
 
 import "@gcsim/components/src/index.css";
 import "./index.css";
@@ -70,37 +69,30 @@ export const UI = (props: UIProps) => {
 	return (
 		<BrowserRouter>
 			<Provider store={store}>
-				<ReduxBridgedExecutorProvider exec={props.exec}>
+				<AppExecutorProvider exec={props.exec}>
 					<Main {...props} />
-				</ReduxBridgedExecutorProvider>
+				</AppExecutorProvider>
 			</Provider>
 		</BrowserRouter>
 	);
 };
 
-function ReduxBridgedExecutorProvider({
+const runStore = lastRunStore(localStorage);
+
+function AppExecutorProvider({
 	exec,
 	children,
 }: {
 	exec: ExecutorSupplier<Executor>;
 	children: ReactNode;
 }) {
-	const dispatch = useAppDispatch();
 	const navigate = useNavigate();
-	const onResult = useCallback(
-		(data: model.SimulationResult, hash: string) =>
-			dispatch(viewerActions.setResult({ data, hash })),
-		[dispatch],
-	);
-	const navigateOnRun = useCallback(() => {
-		dispatch(viewerActions.start());
-		navigate("/web");
-	}, [dispatch, navigate]);
+	const navigateOnRun = useCallback(() => navigate("/web"), [navigate]);
 	return (
 		<ExecutorProvider
 			exec={exec}
-			onResult={onResult}
 			navigateOnRun={navigateOnRun}
+			store={runStore}
 		>
 			{children}
 		</ExecutorProvider>
@@ -156,8 +148,6 @@ const ExecutorSettings = ({ children }: { children: ReactNode }) => {
 	);
 };
 
-const viewerPaths = ["/web", "/local", "/sh/", "/db/"];
-
 type ShareRouteProps = {
 	exec: ExecutorSupplier<Executor>;
 	gitCommit: string;
@@ -185,16 +175,8 @@ function RedirectToShare() {
 	return <Navigate to={"/sh/" + id} replace />;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function movedOffViewer(location: any, prevLocation: any): boolean {
-	let prevWasViewer = false;
-	let destIsViewer = false;
-	for (let i = 0; i < viewerPaths.length; i++) {
-		prevWasViewer =
-			prevWasViewer || prevLocation.current.pathname.startsWith(viewerPaths[i]);
-		destIsViewer = destIsViewer || location.pathname.startsWith(viewerPaths[i]);
-	}
-	return prevWasViewer && !destIsViewer;
+function isWeb(pathname: string): boolean {
+	return pathname === "/web" || pathname.startsWith("/web/");
 }
 
 const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
@@ -210,18 +192,17 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 		content.current?.scrollTo(0, 0);
 	}, [location]);
 
-	// cancel the run every time we navigate away from the web viewer page
-	const prevLocation = useRef(location);
+	const prevPathname = useRef(location.pathname);
 	useEffect(() => {
 		if (
-			prevLocation.current !== location &&
-			movedOffViewer(location, prevLocation) &&
+			isWeb(prevPathname.current) &&
+			!isWeb(location.pathname) &&
 			exec().running()
 		) {
 			exec().cancel();
 		}
-		prevLocation.current = location;
-	}, [location, exec]);
+		prevPathname.current = location.pathname;
+	}, [location.pathname, exec]);
 
 	return (
 		<div className="h-screen flex flex-col">
