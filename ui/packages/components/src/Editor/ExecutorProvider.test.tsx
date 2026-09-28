@@ -329,3 +329,38 @@ describe("ExecutorProvider store", () => {
 		expect(store.save).not.toHaveBeenCalled();
 	});
 });
+
+describe("ExecutorProvider cancel()", () => {
+	it("cancels the executor and ignores the run's later results", async () => {
+		const store = memoryStore();
+		const fake = makeExecutor();
+		const cancel = vi.spyOn(fake.executor, "cancel");
+		let sink: (r: model.SimulationResult, hash: string) => void = () => {};
+		let finish: (v: boolean) => void = () => {};
+		fake.run.mockImplementation((_cfg, s) => {
+			sink = s;
+			fake.setRunning(true);
+			return new Promise((r) => {
+				finish = r;
+			});
+		});
+		const { result } = renderHook(() => useBoth(), {
+			wrapper: wrapper({ exec: fake.supplier, store }),
+		});
+		act(() => result.current.executor.run("config"));
+		await waitFor(() => expect(fake.run).toHaveBeenCalled());
+		act(() => sink(simResult(1), "hash-1"));
+		await waitFor(() =>
+			expect(result.current.run.result).toEqual(simResult(1)),
+		);
+
+		act(() => result.current.executor.cancel());
+		act(() => sink(simResult(2), "hash-2"));
+		await act(async () => finish(true));
+		await act(() => new Promise((r) => setTimeout(r, 150)));
+
+		expect(cancel).toHaveBeenCalledTimes(1);
+		expect(result.current.run.result).toEqual(simResult(1));
+		expect(store.save).not.toHaveBeenCalled();
+	});
+});

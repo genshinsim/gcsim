@@ -253,7 +253,14 @@ const UpgradeButton = ({ cfg }: { cfg?: string }) => {
 	const { isReady, run } = useExecutor();
 
 	return (
-		<Button disabled={!isReady} onClick={() => cfg != null && run(cfg)}>
+		<Button
+			disabled={!isReady}
+			onClick={() => {
+				if (cfg != null) {
+					run(cfg);
+				}
+			}}
+		>
 			{!isReady ? <Spinner /> : null}
 			{t("viewer.upgrade")}
 		</Button>

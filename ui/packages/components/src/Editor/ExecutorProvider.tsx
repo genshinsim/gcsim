@@ -12,6 +12,7 @@ export interface ExecutorContextValue {
 	isReady: boolean;
 	busy: boolean;
 	run: (config: string) => void;
+	cancel: () => void;
 }
 
 export interface RunResult {
@@ -33,12 +34,12 @@ export interface SavedRun {
 	hash: string | null;
 }
 
-export interface RunResultStore {
+export interface SavedRunStore {
 	load: () => SavedRun | null;
 	save: (run: SavedRun) => void;
 }
 
-function restore(store?: RunResultStore): RunResult {
+function initialRunResult(store?: SavedRunStore): RunResult {
 	const saved = store?.load();
 	return saved == null ? emptyRunResult : { ...emptyRunResult, ...saved };
 }
@@ -49,7 +50,7 @@ const RunResultContext = React.createContext<RunResult | null>(null);
 export interface ExecutorProviderProps {
 	exec: ExecutorSupplier<Executor>;
 	navigateOnRun?: () => void;
-	store?: RunResultStore;
+	store?: SavedRunStore;
 	children: React.ReactNode;
 }
 
@@ -63,13 +64,15 @@ export function ExecutorProvider({
 }: ExecutorProviderProps) {
 	const [isReady, setReady] = React.useState(false);
 	const [busy, setBusy] = React.useState(false);
-	const [runResult, setRunResult] = React.useState(() => restore(store));
+	const [runResult, setRunResult] = React.useState(() =>
+		initialRunResult(store),
+	);
 
 	const storeRef = React.useRef(store);
 	storeRef.current = store;
 	const navigateOnRunRef = React.useRef(navigateOnRun);
 	navigateOnRunRef.current = navigateOnRun;
-	const cancelSinkRef = React.useRef(noop);
+	const disarmRef = React.useRef(noop);
 
 	React.useEffect(() => {
 		let active = true;
@@ -94,7 +97,7 @@ export function ExecutorProvider({
 			active = false;
 			clearInterval(readyInterval);
 			clearInterval(busyInterval);
-			cancelSinkRef.current();
+			disarmRef.current();
 		};
 	}, [exec]);
 
@@ -104,7 +107,7 @@ export function ExecutorProvider({
 			if (executor.running()) {
 				return;
 			}
-			cancelSinkRef.current();
+			disarmRef.current();
 			setRunResult(emptyRunResult);
 			executor.validate(config).then((validated) => {
 				if (
@@ -113,6 +116,7 @@ export function ExecutorProvider({
 				) {
 					return;
 				}
+				let armed = true;
 				let last: SavedRun | null = null;
 				const apply = throttle(
 					(result: model.SimulationResult, hash: string) => {
@@ -124,19 +128,26 @@ export function ExecutorProvider({
 					{ leading: true, trailing: true },
 				);
 				const sink = (result: model.SimulationResult, hash: string) => {
-					last = { result, hash };
-					apply(result, hash);
+					if (armed) {
+						last = { result, hash };
+						apply(result, hash);
+					}
 				};
-				cancelSinkRef.current = () => apply.cancel();
+				disarmRef.current = () => {
+					armed = false;
+					apply.cancel();
+				};
 				setRunResult({ ...emptyRunResult, config });
 				executor.run(config, sink).then(
 					() => {
-						if (last != null) {
+						if (armed && last != null) {
 							storeRef.current?.save(last);
 						}
 					},
 					(err: unknown) => {
-						setRunResult((prev) => ({ ...prev, error: asError(err) }));
+						if (armed) {
+							setRunResult((prev) => ({ ...prev, error: asError(err) }));
+						}
 					},
 				);
 				navigateOnRunRef.current?.();
@@ -145,9 +156,17 @@ export function ExecutorProvider({
 		[exec],
 	);
 
+	const cancel = React.useCallback(() => {
+		disarmRef.current();
+		const executor = exec();
+		if (executor.running()) {
+			executor.cancel();
+		}
+	}, [exec]);
+
 	const value = React.useMemo<ExecutorContextValue>(
-		() => ({ exec, isReady, busy, run }),
-		[exec, isReady, busy, run],
+		() => ({ exec, isReady, busy, run, cancel }),
+		[exec, isReady, busy, run, cancel],
 	);
 
 	return (

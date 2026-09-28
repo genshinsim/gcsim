@@ -1,4 +1,4 @@
-import { RiskWarning } from "@gcsim/components";
+import { RiskWarning, useExecutor } from "@gcsim/components";
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { dynamicKey } from "@gcsim/localization";
 import {
@@ -75,7 +75,7 @@ export default ({
 	const parsed = queryString.parse(location.hash);
 	const [tabId, setTabId] = useState((parsed.tab as string) ?? "results");
 
-	const cancel = useCallback(() => exec().cancel(), [exec]);
+	const { cancel } = useExecutor();
 	const sampler = useCallback(
 		(cfg: string, seed: string) => exec().sample(cfg, seed),
 		[exec],

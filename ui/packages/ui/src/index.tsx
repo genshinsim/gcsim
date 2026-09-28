@@ -1,4 +1,4 @@
-import { ExecutorProvider } from "@gcsim/components";
+import { ExecutorProvider, useExecutor } from "@gcsim/components";
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
 import {
 	Dialog,
@@ -192,17 +192,14 @@ const Main = ({ exec, children, gitCommit, mode }: UIProps) => {
 		content.current?.scrollTo(0, 0);
 	}, [location]);
 
+	const { cancel } = useExecutor();
 	const prevPathname = useRef(location.pathname);
 	useEffect(() => {
-		if (
-			isWeb(prevPathname.current) &&
-			!isWeb(location.pathname) &&
-			exec().running()
-		) {
-			exec().cancel();
+		if (isWeb(prevPathname.current) && !isWeb(location.pathname)) {
+			cancel();
 		}
 		prevPathname.current = location.pathname;
-	}, [location.pathname, exec]);
+	}, [location.pathname, cancel]);
 
 	return (
 		<div className="h-screen flex flex-col">
