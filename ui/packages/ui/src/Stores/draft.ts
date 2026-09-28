@@ -31,7 +31,9 @@ export interface DraftStore extends Store<string> {
 
 function loadDraft(storage: KeyStorage): string {
 	return (
-		storage.getItem(DRAFT_KEY) ?? readJSON(storage, LEGACY_APP_DATA_KEY)?.cfg ?? ""
+		storage.getItem(DRAFT_KEY) ??
+		readJSON(storage, LEGACY_APP_DATA_KEY)?.cfg ??
+		""
 	);
 }
 
