@@ -7,7 +7,12 @@ import {
 	Label,
 	Switch as SwitchInput,
 } from "@gcsim/primitives";
-import { createRouter, RouterProvider } from "@tanstack/react-router";
+import {
+	createRouter,
+	parseSearchWith,
+	RouterProvider,
+	stringifySearchWith,
+} from "@tanstack/react-router";
 import { type ReactNode, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import type { AppContext } from "./routes/__root";
@@ -39,6 +44,9 @@ type UIProps = {
 const router = createRouter({
 	routeTree,
 	context: {} as AppContext,
+	// flat values, so ?seed=123 stays unquoted and a 64-bit seed keeps every digit
+	parseSearch: parseSearchWith((value) => value),
+	stringifySearch: stringifySearchWith(JSON.stringify),
 });
 
 declare module "@tanstack/react-router" {
