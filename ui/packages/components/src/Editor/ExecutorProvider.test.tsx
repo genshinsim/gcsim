@@ -315,7 +315,7 @@ describe("ExecutorProvider store", () => {
 		});
 	});
 
-	it("does not save when the run rejects", async () => {
+	it("saves the partial result when the run rejects", async () => {
 		const store = memoryStore();
 		const fake = makeExecutor();
 		fake.run.mockImplementation((_cfg, sink) => {
@@ -328,12 +328,45 @@ describe("ExecutorProvider store", () => {
 
 		act(() => result.current.executor.run("config"));
 		await waitFor(() => expect(result.current.run.error).toBe("boom"));
+		expect(store.save).toHaveBeenCalledTimes(1);
+		expect(store.save).toHaveBeenCalledWith({
+			result: simResult(1),
+			hash: "hash-1",
+		});
+	});
+
+	it("saves the latest result on pagehide mid-run", async () => {
+		const store = memoryStore();
+		const { hook, sink } = await startRun({ store });
+		act(() => sink(simResult(1), "hash-1"));
+		act(() => sink(simResult(2), "hash-2"));
 		expect(store.save).not.toHaveBeenCalled();
+
+		window.dispatchEvent(new Event("pagehide"));
+
+		expect(store.save).toHaveBeenCalledTimes(1);
+		expect(store.save).toHaveBeenCalledWith({
+			result: simResult(2),
+			hash: "hash-2",
+		});
+		hook.unmount();
+	});
+
+	it("does not rewrite on pagehide when nothing new arrived", async () => {
+		const store = memoryStore({ result: simResult(7), hash: "hash-7" });
+		const { unmount } = renderHook(() => useRunResult(), {
+			wrapper: wrapper({ exec: makeExecutor().supplier, store }),
+		});
+
+		window.dispatchEvent(new Event("pagehide"));
+
+		expect(store.save).not.toHaveBeenCalled();
+		unmount();
 	});
 });
 
 describe("ExecutorProvider cancel()", () => {
-	it("cancels the executor and ignores the run's later results", async () => {
+	it("saves the partial result, cancels, and ignores later results", async () => {
 		const store = memoryStore();
 		const fake = makeExecutor();
 		const cancel = vi.spyOn(fake.executor, "cancel");
@@ -363,6 +396,10 @@ describe("ExecutorProvider cancel()", () => {
 
 		expect(cancel).toHaveBeenCalledTimes(1);
 		expect(result.current.run.result).toEqual(simResult(1));
-		expect(store.save).not.toHaveBeenCalled();
+		expect(store.save).toHaveBeenCalledTimes(1);
+		expect(store.save).toHaveBeenCalledWith({
+			result: simResult(1),
+			hash: "hash-1",
+		});
 	});
 });

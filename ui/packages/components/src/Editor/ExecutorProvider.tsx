@@ -73,6 +73,19 @@ export function ExecutorProvider({
 	const navigateOnRunRef = React.useRef(navigateOnRun);
 	navigateOnRunRef.current = navigateOnRun;
 	const disarmRef = React.useRef(noop);
+	const unsavedRef = React.useRef<SavedRun | null>(null);
+
+	const saveLatest = React.useCallback(() => {
+		if (unsavedRef.current != null) {
+			storeRef.current?.save(unsavedRef.current);
+			unsavedRef.current = null;
+		}
+	}, []);
+
+	React.useEffect(() => {
+		window.addEventListener("pagehide", saveLatest);
+		return () => window.removeEventListener("pagehide", saveLatest);
+	}, [saveLatest]);
 
 	React.useEffect(() => {
 		let active = true;
@@ -117,7 +130,6 @@ export function ExecutorProvider({
 					return;
 				}
 				let armed = true;
-				let last: SavedRun | null = null;
 				const apply = throttle(
 					(result: model.SimulationResult, hash: string) => {
 						React.startTransition(() =>
@@ -129,7 +141,7 @@ export function ExecutorProvider({
 				);
 				const sink = (result: model.SimulationResult, hash: string) => {
 					if (armed) {
-						last = { result, hash };
+						unsavedRef.current = { result, hash };
 						apply(result, hash);
 					}
 				};
@@ -140,12 +152,13 @@ export function ExecutorProvider({
 				setRunResult({ ...emptyRunResult, config });
 				executor.run(config, sink).then(
 					() => {
-						if (armed && last != null) {
-							storeRef.current?.save(last);
+						if (armed) {
+							saveLatest();
 						}
 					},
 					(err: unknown) => {
 						if (armed) {
+							saveLatest();
 							setRunResult((prev) => ({ ...prev, error: asError(err) }));
 						}
 					},
@@ -153,16 +166,17 @@ export function ExecutorProvider({
 				navigateOnRunRef.current?.();
 			}, noop);
 		},
-		[exec],
+		[exec, saveLatest],
 	);
 
 	const cancel = React.useCallback(() => {
+		saveLatest();
 		disarmRef.current();
 		const executor = exec();
 		if (executor.running()) {
 			executor.cancel();
 		}
-	}, [exec]);
+	}, [exec, saveLatest]);
 
 	const value = React.useMemo<ExecutorContextValue>(
 		() => ({ exec, isReady, busy, run, cancel }),
