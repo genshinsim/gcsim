@@ -9,51 +9,35 @@ import {
 	type LinkProps,
 	useLocation,
 	useNavigate,
+	useRouter,
+	useSearch,
 } from "@tanstack/react-router";
 import { usePrefs } from "@ui/Stores/AppState";
 import axios from "axios";
-import queryString from "query-string";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ExecutorSettingsButton from "../../Components/Buttons/ExecutorSettingsButton";
 import { useSendToSimulator } from "../../Components/Buttons/useSendToSimulator";
 import { autoSampleSeed, useSample } from "../Sample/useSample";
 import { useEditorPrefs } from "../Simulator/editorPrefs";
 import { ResultSource } from "./Components/LoadingToast";
+import type { ViewerTab } from "./search";
 import UpgradeDialog from "./UpgradeDialog";
 import Viewer, { type ViewerActions } from "./Viewer";
 
 type ViewerProps = {
 	gitCommit: string;
 	mode: string;
-	id?: string; // only used in share
 };
 
-export const ShareViewer = (props: ViewerProps) => (
-	<FromUrl
-		url={"/api/share/" + props.id}
-		redirect="/"
-		mode={props.mode}
-		gitCommit={props.gitCommit}
-	/>
-);
+export type LoadedResult = {
+	data: model.SimulationResult;
+	hash: string | null;
+};
 
-export const DBViewer = (props: ViewerProps) => (
-	<FromUrl
-		url={"/api/share/db/" + props.id}
-		redirect="/"
-		mode={props.mode}
-		gitCommit={props.gitCommit}
-	/>
-);
-
-export const LocalViewer = (props: ViewerProps) => (
-	<FromUrl
-		url="http://127.0.0.1:8381/data"
-		redirect="/"
-		mode={props.mode}
-		gitCommit={props.gitCommit}
-	/>
-);
+export async function loadResult(url: string): Promise<LoadedResult> {
+	const resp = await axios.get(url, { timeout: 30000 });
+	return { data: resp.data, hash: resp.headers["x-gcsim-share-auth"] ?? null };
+}
 
 export const WebViewer = ({ mode, gitCommit }: ViewerProps) => {
 	const { busy } = useExecutor();
@@ -73,43 +57,28 @@ export const WebViewer = ({ mode, gitCommit }: ViewerProps) => {
 	);
 };
 
-type FromUrlProps = {
-	redirect: LinkProps["to"];
-	url: string;
-	mode: string;
-	gitCommit: string;
+export type LoadedViewerProps = ViewerProps & {
+	result?: LoadedResult;
+	error?: string;
 };
 
-const FromUrl = ({ url, redirect, mode, gitCommit }: FromUrlProps) => {
-	const [data, setData] = useState<model.SimulationResult | null>(null);
-	const [hash, setHash] = useState<string | null>(null);
-	const [error, setError] = useState<string | null>(null);
-
-	const request = useCallback(() => {
-		setError(null);
-		axios
-			.get(url, { timeout: 30000 })
-			.then((resp) => {
-				setData(resp.data);
-				console.log(resp.data);
-				setHash(resp.headers["x-gcsim-share-auth"] ?? null);
-			})
-			.catch((e) => {
-				setError(e.message);
-			});
-	}, [url]);
-	useEffect(() => request(), [request]);
-
+export const LoadedViewer = ({
+	result,
+	error,
+	mode,
+	gitCommit,
+}: LoadedViewerProps) => {
+	const router = useRouter();
 	return (
 		<UpgradableViewer
-			data={data}
-			hash={hash}
+			data={result?.data ?? null}
+			hash={result?.hash ?? null}
 			recoveryConfig={null}
-			error={error}
+			error={error ?? null}
 			src={ResultSource.Loaded}
-			retry={request}
+			retry={() => router.invalidate()}
 			running={false}
-			redirect={redirect}
+			redirect="/"
 			mode={mode}
 			gitCommit={gitCommit}
 		/>
@@ -133,12 +102,11 @@ const UpgradableViewer = (props: UpgradableViewerProps) => {
 	const { data, running } = props;
 	const location = useLocation();
 	const navigate = useNavigate();
+	const search = useSearch({ strict: false });
 	const { run, cancel } = useExecutor();
 	const onSendToSimulator = useSendToSimulator();
-	const [tab, setTab] = useState(
-		() => hashParam(location.hash, "tab") ?? "results",
-	);
-	const [linkSeed] = useState(() => hashParam(location.hash, "sample"));
+	const tab = search.tab ?? "results";
+	const [linkSeed] = useState(search.seed ?? null);
 	const { sampleOnLoad } = usePrefs();
 	const sample = useSample({
 		config: data?.config_file,
@@ -162,10 +130,15 @@ const UpgradableViewer = (props: UpgradableViewerProps) => {
 		[run, onSendToSimulator],
 	);
 
+	const setTab = (next: ViewerTab) =>
+		navigate({ to: ".", search: (prev) => ({ ...prev, tab: next }) });
+
 	const generate = (seed: string) => {
-		const parsed = queryString.parse(window.location.hash);
-		parsed.sample = seed;
-		window.location.hash = queryString.stringify(parsed);
+		navigate({
+			to: ".",
+			search: (prev) => ({ ...prev, seed }),
+			replace: true,
+		});
 		sample.generate(seed);
 	};
 
@@ -253,11 +226,6 @@ function useScrollToLocation() {
 			scrolled.current = true;
 		}
 	});
-}
-
-function hashParam(hash: string, key: string): string | null {
-	const value = queryString.parse(hash)[key];
-	return typeof value === "string" ? value : null;
 }
 
 function link(route: string, id: string): string {

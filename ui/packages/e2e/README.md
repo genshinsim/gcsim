@@ -7,8 +7,9 @@ Playwright config:
 - **web** (`playwright.config.ts`, default) — boots the web app, waits for
   wasm + workers, validates and runs a config, and asserts the viewer renders.
   Beyond that smoke path it also covers the dash home, the viewer's Config and
-  Sample tabs, and the GOOD / Enka toolbox imports (each stubbing the network it
-  needs so it stays offline).
+  Sample tabs, the share and local viewer routes (`?tab=`, legacy `#tab=`
+  redirects, load errors and retry), `/sample/local`, and the GOOD / Enka
+  toolbox imports (each stubbing the network it needs so it stays offline).
 - **docs** (`playwright.docs.config.ts`) — builds and serves the Docusaurus docs
   site, then asserts one page per top-level sidebar section renders (route,
   title, `<h1>`, non-empty body) with its content images loaded, failing only on
@@ -146,6 +147,7 @@ console monitor.
   (`#config_editor`) rendered and is non-empty.
 - `openSample()` — click the Sample tab and assert its "Generate" control
   rendered. Does not generate a sample.
+- `generateSample()` — click "Generate" and assert the URL gained `?seed=`.
 
 ### `DocsHarness` (`src/docs-harness.ts`) — docs site
 
@@ -252,7 +254,7 @@ default; these routes keep the spec deterministic and offline.
 ## Out of scope
 
 CI integration, the production/preview (R2 wasm) path, server mode, the
-`/db/:id` viewer render, local/share viewer routes and the share flow,
+`/db/:id` viewer render, creating a new share from `/web`,
 engine-correctness or numeric assertions, and non-Chromium browsers. See issues
 #2805, #2869 and #2871. For docs: the search backend, i18n/translations, and
 visual regression (issue #2868).

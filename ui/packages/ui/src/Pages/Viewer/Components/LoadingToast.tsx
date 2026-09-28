@@ -21,6 +21,15 @@ export default ({ running, src, error, current, total, cancel }: Props) => {
 	const { t } = useTranslation();
 	const toastId = useRef<string | number | undefined>(undefined);
 
+	useEffect(
+		() => () => {
+			if (toastId.current !== undefined) {
+				toast.dismiss(toastId.current);
+			}
+		},
+		[],
+	);
+
 	useEffect(() => {
 		const dismiss = () => {
 			if (toastId.current !== undefined) {

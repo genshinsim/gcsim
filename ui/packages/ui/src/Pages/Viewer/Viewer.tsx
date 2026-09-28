@@ -20,6 +20,7 @@ import type { SampleState } from "../Sample/useSample";
 import LoadingToast, { type ResultSource } from "./Components/LoadingToast";
 import ViewerNav from "./Components/ViewerNav";
 import Warnings from "./Components/Warnings";
+import type { ViewerTab } from "./search";
 import ConfigUI from "./Tabs/Config";
 import SampleUI from "./Tabs/Sample";
 
@@ -39,8 +40,8 @@ type ViewerProps = {
 	src: ResultSource;
 	error: string | null;
 	recoveryConfig: string | null;
-	tab: string;
-	onTabChange: (tab: string) => void;
+	tab: ViewerTab;
+	onTabChange: (tab: ViewerTab) => void;
 	editor: Omit<EditorProps, "onRun">;
 	sample: SampleState;
 	shareLink?: string | null;
@@ -81,7 +82,7 @@ export default ({
 	);
 
 	const onRun = actions?.onRun;
-	const tabs: { [k: string]: React.ReactNode } = {
+	const tabs: Record<ViewerTab, React.ReactNode> = {
 		results: <ResultsView model={result} names={names} />,
 		config: (
 			<ConfigUI
@@ -94,7 +95,6 @@ export default ({
 				}}
 			/>
 		),
-		analyze: <div></div>,
 		sample: <SampleUI data={result} sample={sample} running={running} />,
 	};
 

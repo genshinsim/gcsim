@@ -76,12 +76,13 @@ export class ViewerPage {
 	async rerunToResultsTab(): Promise<void> {
 		await expect(this.rerunButton).toBeEnabled({ timeout: 30_000 });
 		await this.rerunButton.click();
+		await expect(this.page).toHaveURL(/\/web$/);
 		await expect(this.resultsTab).toHaveAttribute("aria-selected", "true");
 	}
 
 	async generateSample(): Promise<void> {
 		await this.generateButton.click();
-		await expect(this.page).toHaveURL(/#.*sample=\d+/);
+		await expect(this.page).toHaveURL(/[?&]seed=\d+/);
 		await expect(this.generateButton).toBeVisible({ timeout: 30_000 });
 		await expect(
 			this.page.getByRole("button", { name: "Download" }),
