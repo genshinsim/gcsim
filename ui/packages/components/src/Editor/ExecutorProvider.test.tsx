@@ -203,8 +203,10 @@ describe("useRunResult", () => {
 		expect(hook.result.current.run.hash).toBeNull();
 
 		act(() => hook.result.current.executor.run("config 3"));
-		await waitFor(() => expect(hook.result.current.run.error).toBeNull());
-		expect(hook.result.current.run.config).toBe("config 3");
+		await waitFor(() =>
+			expect(hook.result.current.run.config).toBe("config 3"),
+		);
+		expect(hook.result.current.run.error).toBeNull();
 	});
 
 	it("keeps the live result when run is called while busy", async () => {
