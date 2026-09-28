@@ -139,6 +139,5 @@ func (c *Compiled) GenerateEditorJS() error {
 	}
 	data := useTemplate("ui_editor.js.templ", input)
 	writeFile("ui/packages/components/src/Editor/mode-gcsim.dm.js", data)
-	writeFile("ui/packages/ui/src/util/mode-gcsim.dm.js", data)
 	return nil
 }
