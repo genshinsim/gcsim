@@ -1,7 +1,6 @@
 import {
 	CharacterCard,
 	characterCardsClassNames,
-	DefaultSampleOptions,
 	SampleLog,
 } from "@gcsim/components";
 import { dynamicKey } from "@gcsim/localization";
@@ -18,14 +17,12 @@ import {
 	NonIdealState,
 } from "@gcsim/primitives";
 import type { Sample } from "@gcsim/types";
-import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import { CopyToClipboard, SendToSimulator } from "../../Components/Buttons";
 import { useSendToSimulator } from "../../Components/Buttons/useSendToSimulator";
 import { downloadSample } from "./downloadSample";
-
-const SAVED_SAMPLE_KEY = "gcsim-sample-settings";
+import { useSample } from "./useSample";
 
 type Props = {
 	sample: Sample | null;
@@ -35,7 +32,7 @@ type Props = {
 
 export default ({ sample, error, retry }: Props) => {
 	const { t } = useTranslation();
-	const [settings, setSettings] = useSampleSettings();
+	const { settings, setSettings } = useSample();
 	const onSendToSimulator = useSendToSimulator();
 
 	if (sample?.initial_character == null || sample.character_details == null) {
@@ -137,21 +134,3 @@ const ErrorAlert = ({ msg, retry }: ErrorProps) => {
 		</AlertDialog>
 	);
 };
-
-function useSampleSettings(): [string[], (val: string[]) => void] {
-	const [selected, setSelected] = useState<string[]>(() => {
-		const saved = localStorage.getItem(SAVED_SAMPLE_KEY);
-		if (saved) {
-			const initialValue = JSON.parse(saved);
-			return initialValue || DefaultSampleOptions;
-		}
-		return DefaultSampleOptions;
-	});
-
-	const setAndStore = (val: string[]) => {
-		setSelected(val);
-		localStorage.setItem(SAVED_SAMPLE_KEY, JSON.stringify(val));
-	};
-
-	return [selected, setAndStore];
-}
