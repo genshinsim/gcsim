@@ -1,14 +1,10 @@
-import {
-	Alert,
-	AlertDescription,
-	AlertTitle,
-	CommandItem,
-} from "@gcsim/primitives";
+import { CommandItem } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { TeamCard } from "../Cards";
 import { characterLabel, characters, OmniSelect } from "../common/gcsim";
+import { ConfigError } from "./ConfigError";
 import { cfgFromTeam } from "./teamConfig";
 import type { TeamComposerCharacterSource } from "./types";
 
@@ -101,16 +97,7 @@ export function TeamComposer({
 
 	return (
 		<div data-testid="editor-team-composer" className="flex flex-col gap-2">
-			{error ? (
-				<Alert variant="destructive">
-					<AlertTitle>
-						{t("viewer.error_encountered") + t("viewer.config_invalid")}
-					</AlertTitle>
-					<AlertDescription>
-						<pre className="whitespace-pre-wrap">{error}</pre>
-					</AlertDescription>
-				</Alert>
-			) : null}
+			<ConfigError error={error} />
 
 			<TeamCard
 				team={parsedTeam}

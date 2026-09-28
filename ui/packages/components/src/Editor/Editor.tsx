@@ -3,6 +3,7 @@ import { Play } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { AceEditorWrapper } from "./AceEditorWrapper";
+import { ConfigError } from "./ConfigError";
 import { HelperTools } from "./HelperTools";
 import { NameSearch } from "./NameSearch";
 import { SectionDivider } from "./SectionDivider";
@@ -23,6 +24,7 @@ export const Editor = ({
 	settings,
 	teamCharacters,
 	showThemeSelector = false,
+	showHelpers = true,
 	onRun,
 	canRun,
 	busy = false,
@@ -31,6 +33,8 @@ export const Editor = ({
 }: EditorProps) => {
 	const { t } = useTranslation();
 	const { toggles, theme, fontSize } = prefs;
+	const showTeam = showHelpers && toggles.team;
+	const showTips = showHelpers && toggles.tips;
 
 	// Ace binds commands once on mount, so the hotkey reads the latest props via a ref.
 	const runRef = React.useRef({ onRun, canRun });
@@ -48,10 +52,10 @@ export const Editor = ({
 
 	return (
 		<div className="flex flex-col">
-			{toggles.team ? (
+			{showTeam ? (
 				<>
 					<SectionDivider>{t("simple.team")}</SectionDivider>
-					{toggles.tips ? <TeamTip onHide={() => toggle("tips")} /> : null}
+					{showTips ? <TeamTip onHide={() => toggle("tips")} /> : null}
 					<TeamComposer
 						parsedTeam={parsedTeam}
 						error={error}
@@ -60,9 +64,11 @@ export const Editor = ({
 						characters={teamCharacters}
 					/>
 				</>
-			) : null}
+			) : (
+				<ConfigError error={error} />
+			)}
 
-			{toggles.nameSearch ? (
+			{showHelpers && toggles.nameSearch ? (
 				<>
 					<SectionDivider>{t("simple.name_search")}</SectionDivider>
 					<NameSearch />
@@ -70,7 +76,7 @@ export const Editor = ({
 			) : null}
 
 			<SectionDivider>{t("simple.action_list")}</SectionDivider>
-			{toggles.tips ? <ActionListTip onHide={() => toggle("tips")} /> : null}
+			{showTips ? <ActionListTip onHide={() => toggle("tips")} /> : null}
 
 			{showThemeSelector ? (
 				<div className="flex flex-wrap items-center justify-end gap-4">
@@ -113,7 +119,13 @@ export const Editor = ({
 					{settings}
 				</div>
 				<div className="flex basis-full flex-row flex-wrap gap-1 p-1 sm:basis-2/3">
-					<HelperTools toggles={toggles} onToggle={toggle} className="flex-1" />
+					{showHelpers ? (
+						<HelperTools
+							toggles={toggles}
+							onToggle={toggle}
+							className="flex-1"
+						/>
+					) : null}
 					<Button className="flex-1" onClick={onRun} disabled={!canRun}>
 						{busy ? <Spinner /> : <Play />}
 						{t("simple.run")}

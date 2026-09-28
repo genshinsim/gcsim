@@ -21,6 +21,7 @@ export interface EditorProps {
 	settings?: React.ReactNode;
 	teamCharacters?: TeamComposerCharacterSource;
 	showThemeSelector?: boolean;
+	showHelpers?: boolean;
 	onRun: () => void;
 	canRun: boolean;
 	busy?: boolean;

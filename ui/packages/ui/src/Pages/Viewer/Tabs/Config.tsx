@@ -7,7 +7,7 @@ export default (props: EditorProps & { loading: boolean }) => {
 	}
 	return (
 		<div className="w-full 2xl:mx-auto 2xl:container px-2">
-			<Editor {...props} />
+			<Editor {...props} showHelpers={false} />
 		</div>
 	);
 };
