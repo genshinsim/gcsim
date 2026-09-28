@@ -1,31 +1,12 @@
 import type { Sample } from "@gcsim/types";
-import axios from "axios";
 import classNames from "classnames";
 import Pako from "pako";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
 import SamplePage from "./SamplePage";
 
-export const LocalSample = () => {
-	const [sample, setSample] = useState<Sample | null>(null);
-	const [error, setError] = useState<string | null>(null);
-
-	const request = useCallback(() => {
-		setError(null);
-		axios
-			.get("http://127.0.0.1:8381/sample", { timeout: 30000 })
-			.then((resp) => {
-				setSample(resp.data);
-			})
-			.catch((e) => {
-				setError(e.message);
-			});
-	}, []);
-	useEffect(() => request(), [request]);
-
-	return <SamplePage sample={sample} error={error} retry={request} />;
-};
+export { SamplePage };
 
 export const UploadSample = () => {
 	const { t } = useTranslation();

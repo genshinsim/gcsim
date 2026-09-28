@@ -1,5 +1,6 @@
 import { ButtonGroup, Tabs, TabsList, TabsTrigger } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
+import { Link } from "@tanstack/react-router";
 import classNames from "classnames";
 import { type MouseEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -8,14 +9,24 @@ import {
 	SendToSimulator,
 	Share,
 } from "../../../Components/Buttons";
+import type { ViewerTab } from "../search";
 import type { ViewerActions } from "../Viewer";
 
 const btnClass = classNames("hidden ml-[7px] sm:flex");
 
+const TABS: [
+	ViewerTab,
+	"viewer.results" | "viewer.config" | "viewer.sample",
+][] = [
+	["results", "viewer.results"],
+	["config", "viewer.config"],
+	["sample", "viewer.sample"],
+];
+
 type NavProps = {
 	data: model.SimulationResult | null;
 	hash: string | null;
-	tabState: [string, (tab: string) => void];
+	tabState: [ViewerTab, (tab: ViewerTab) => void];
 	running: boolean;
 	actions?: ViewerActions;
 	existingShareLink?: string | null;
@@ -40,27 +51,20 @@ export default ({
 	}, [existingShareLink, setShareLink, data?.config_file]);
 
 	return (
-		<Tabs value={tabId} onValueChange={setTabId}>
+		<Tabs value={tabId} onValueChange={(v) => setTabId(v as ViewerTab)}>
 			<div className="flex flex-row items-center justify-between gap-2">
 				<TabsList variant="line">
-					<TabsTrigger value="results" asChild>
-						{/* biome-ignore lint/a11y/useValidAnchor: intentional nav anchor — href drives URL-hash tab deep-linking (reload/bookmark/share to a tab) and native ctrl/cmd-click open-in-new-tab; a <button> would lose both */}
-						<a href="#" onMouseDown={keepModifierClickInNewTab}>
-							{t("viewer.results")}
-						</a>
-					</TabsTrigger>
-					<TabsTrigger value="config" asChild>
-						{/* biome-ignore lint/a11y/useValidAnchor: intentional nav anchor — href drives URL-hash tab deep-linking (reload/bookmark/share to a tab) and native ctrl/cmd-click open-in-new-tab; a <button> would lose both */}
-						<a href="#tab=config" onMouseDown={keepModifierClickInNewTab}>
-							{t("viewer.config")}
-						</a>
-					</TabsTrigger>
-					<TabsTrigger value="sample" asChild>
-						{/* biome-ignore lint/a11y/useValidAnchor: intentional nav anchor — href drives URL-hash tab deep-linking (reload/bookmark/share to a tab) and native ctrl/cmd-click open-in-new-tab; a <button> would lose both */}
-						<a href="#tab=sample" onMouseDown={keepModifierClickInNewTab}>
-							{t("viewer.sample")}
-						</a>
-					</TabsTrigger>
+					{TABS.map(([tab, label]) => (
+						<TabsTrigger key={tab} value={tab} asChild>
+							<Link
+								to="."
+								search={(prev) => ({ ...prev, tab })}
+								onMouseDown={keepModifierClickInNewTab}
+							>
+								{t(label)}
+							</Link>
+						</TabsTrigger>
+					))}
 				</TabsList>
 				<ButtonGroup>
 					<CopyToClipboard config={data?.config_file} className={btnClass} />
