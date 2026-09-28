@@ -1,9 +1,18 @@
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	Label,
+	Switch as SwitchInput,
+} from "@gcsim/primitives";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
-import type { ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import type { AppContext } from "./routes/__root";
 import { routeTree } from "./routeTree.gen";
-import { AppStateProvider } from "./Stores/AppState";
+import { AppStateProvider, usePrefs } from "./Stores/AppState";
 
 import "@gcsim/components/src/index.css";
 import "./index.css";
@@ -39,12 +48,44 @@ declare module "@tanstack/react-router" {
 }
 
 export const UI = ({ exec, children, mode, gitCommit }: UIProps) => {
+	// biome-ignore lint/correctness/useExhaustiveDependencies: route context is only recomputed on load, so these props trigger a reload
+	useEffect(() => {
+		router.invalidate();
+	}, [exec, mode, gitCommit]);
+
 	return (
 		<AppStateProvider>
-			<RouterProvider
-				router={router}
-				context={{ exec, settings: children, mode, gitCommit }}
-			/>
+			<RouterProvider router={router} context={{ exec, mode, gitCommit }} />
+			<ExecutorSettings>{children}</ExecutorSettings>
 		</AppStateProvider>
+	);
+};
+
+// TODO: Add tabs for better settings management + extensibility?
+const ExecutorSettings = ({ children }: { children: ReactNode }) => {
+	const { t } = useTranslation();
+	const { settingsOpen, setSettingsOpen, sampleOnLoad, setSampleOnLoad } =
+		usePrefs();
+
+	return (
+		<Dialog
+			open={settingsOpen}
+			onOpenChange={(open) => !open && setSettingsOpen(false)}
+		>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>{t("simple.settings")}</DialogTitle>
+				</DialogHeader>
+				{children}
+				<div className="flex items-center gap-2 pt-5">
+					<SwitchInput
+						id="sample-on-load"
+						checked={sampleOnLoad}
+						onCheckedChange={() => setSampleOnLoad(!sampleOnLoad)}
+					/>
+					<Label htmlFor="sample-on-load">{t("simple.generate_sample")}</Label>
+				</div>
+			</DialogContent>
+		</Dialog>
 	);
 };

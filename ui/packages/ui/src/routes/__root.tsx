@@ -1,29 +1,19 @@
 import { ExecutorProvider, useExecutor } from "@gcsim/components";
 import type { Executor, ExecutorSupplier } from "@gcsim/executors";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	Label,
-	Switch as SwitchInput,
-	Toaster,
-} from "@gcsim/primitives";
+import { Toaster } from "@gcsim/primitives";
 import {
 	createRootRouteWithContext,
 	Outlet,
 	useLocation,
 	useNavigate,
 } from "@tanstack/react-router";
-import { type ReactNode, useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Footer, Nav } from "../Sectioning";
-import { usePrefs } from "../Stores/AppState";
 import { lastRunStore } from "../Stores/lastRun";
 
 export type AppContext = {
 	exec: ExecutorSupplier<Executor>;
-	settings: ReactNode;
 	mode: string;
 	gitCommit: string;
 };
@@ -51,7 +41,6 @@ function Root() {
 }
 
 function Layout() {
-	const { settings } = Route.useRouteContext();
 	const content = useRef<HTMLDivElement>(null);
 	const href = useLocation({ select: (l) => l.href });
 	const pathname = useLocation({ select: (l) => l.pathname });
@@ -83,7 +72,6 @@ function Layout() {
 			>
 				<Outlet />
 				<Footer />
-				<ExecutorSettings>{settings}</ExecutorSettings>
 			</div>
 		</div>
 	);
@@ -98,32 +86,3 @@ function NotFound() {
 		</>
 	);
 }
-
-// TODO: Add tabs for better settings management + extensibility?
-const ExecutorSettings = ({ children }: { children: ReactNode }) => {
-	const { t } = useTranslation();
-	const { settingsOpen, setSettingsOpen, sampleOnLoad, setSampleOnLoad } =
-		usePrefs();
-
-	return (
-		<Dialog
-			open={settingsOpen}
-			onOpenChange={(open) => !open && setSettingsOpen(false)}
-		>
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>{t("simple.settings")}</DialogTitle>
-				</DialogHeader>
-				{children}
-				<div className="flex items-center gap-2 pt-5">
-					<SwitchInput
-						id="sample-on-load"
-						checked={sampleOnLoad}
-						onCheckedChange={() => setSampleOnLoad(!sampleOnLoad)}
-					/>
-					<Label htmlFor="sample-on-load">{t("simple.generate_sample")}</Label>
-				</div>
-			</DialogContent>
-		</Dialog>
-	);
-};
