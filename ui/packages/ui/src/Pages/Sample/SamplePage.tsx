@@ -17,8 +17,8 @@ import {
 	NonIdealState,
 } from "@gcsim/primitives";
 import type { Sample } from "@gcsim/types";
+import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router";
 import { CopyToClipboard, SendToSimulator } from "../../Components/Buttons";
 import { useSendToSimulator } from "../../Components/Buttons/useSendToSimulator";
 import { downloadSample } from "./downloadSample";
@@ -125,7 +125,7 @@ const ErrorAlert = ({ msg, retry }: ErrorProps) => {
 					)}
 					<AlertDialogAction
 						variant="destructive"
-						onClick={() => navigate("/")}
+						onClick={() => navigate({ to: "/" })}
 					>
 						{t("viewer.close")}
 					</AlertDialogAction>

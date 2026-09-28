@@ -12,11 +12,15 @@ import {
 	Spinner,
 } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
+import {
+	type LinkProps,
+	useLocation,
+	useNavigate,
+} from "@tanstack/react-router";
 import classNames from "classnames";
 import { History } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useLocation, useNavigate } from "react-router";
 import ExecutorSettingsButton from "../../Components/Buttons/ExecutorSettingsButton";
 
 // THIS MUST ALWAYS BE IN SYNC WITH THE GCSIM BINARY
@@ -32,7 +36,7 @@ enum MismatchType {
 
 type Props = {
 	data: model.SimulationResult | null;
-	redirect: string;
+	redirect: LinkProps["to"];
 	mode: string;
 	commit: string;
 };
@@ -274,14 +278,14 @@ const CancelButton = ({
 }: {
 	mismatch: MismatchType | null;
 	setOpen: (open: boolean) => void;
-	redirect: string;
+	redirect: LinkProps["to"];
 }) => {
 	const { t } = useTranslation();
 	const navigate = useNavigate();
 
 	if (mismatch === MismatchType.MajorVersionMismatch) {
 		return (
-			<Button variant="destructive" onClick={() => navigate(redirect)}>
+			<Button variant="destructive" onClick={() => navigate({ to: redirect })}>
 				{t("db.cancel")}
 			</Button>
 		);

@@ -1,4 +1,5 @@
 import tailwindcss from "@tailwindcss/vite";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import * as git from "git-rev-sync";
 import { visualizer } from "rollup-plugin-visualizer";
@@ -9,7 +10,16 @@ export default (_env: ConfigEnv) => {
 	process.env.VITE_GIT_BRANCH = git.branch(import.meta.dirname);
 
 	return defineConfig({
-		plugins: [tailwindcss(), react(), visualizer()],
+		plugins: [
+			tanstackRouter({
+				target: "react",
+				routesDirectory: "../ui/src/routes",
+				generatedRouteTree: "../ui/src/routeTree.gen.ts",
+			}),
+			tailwindcss(),
+			react(),
+			visualizer(),
+		],
 		resolve: { tsconfigPaths: true },
 		build: {
 			rollupOptions: {

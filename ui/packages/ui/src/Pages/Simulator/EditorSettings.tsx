@@ -6,10 +6,10 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@gcsim/primitives";
+import { useNavigate } from "@tanstack/react-router";
 import { Download, Upload } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router";
 import ExecutorSettingsButton from "../../Components/Buttons/ExecutorSettingsButton";
 import { ImportFromEnkaDialog, ImportFromGOODDialog } from "./Components";
 
@@ -30,7 +30,7 @@ export function EditorSettings() {
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent side="top">
-					<DropdownMenuItem onClick={() => navigate("/sample/upload")}>
+					<DropdownMenuItem onClick={() => navigate({ to: "/sample/upload" })}>
 						<Upload />
 						{t("simple.tools_sample_upload")}
 					</DropdownMenuItem>

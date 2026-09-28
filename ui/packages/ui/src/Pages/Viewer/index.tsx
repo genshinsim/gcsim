@@ -5,11 +5,15 @@ import {
 	useValidation,
 } from "@gcsim/components";
 import type { model } from "@gcsim/types";
+import {
+	type LinkProps,
+	useLocation,
+	useNavigate,
+} from "@tanstack/react-router";
 import { usePrefs } from "@ui/Stores/AppState";
 import axios from "axios";
 import queryString from "query-string";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useLocation, useNavigate } from "react-router";
 import ExecutorSettingsButton from "../../Components/Buttons/ExecutorSettingsButton";
 import { useSendToSimulator } from "../../Components/Buttons/useSendToSimulator";
 import { autoSampleSeed, useSample } from "../Sample/useSample";
@@ -70,7 +74,7 @@ export const WebViewer = ({ mode, gitCommit }: ViewerProps) => {
 };
 
 type FromUrlProps = {
-	redirect: string;
+	redirect: LinkProps["to"];
 	url: string;
 	mode: string;
 	gitCommit: string;
@@ -119,7 +123,7 @@ type UpgradableViewerProps = {
 	error: string | null;
 	src: ResultSource;
 	running: boolean;
-	redirect: string;
+	redirect: LinkProps["to"];
 	mode: string;
 	gitCommit: string;
 	retry?: () => void;
@@ -182,7 +186,7 @@ const UpgradableViewer = (props: UpgradableViewerProps) => {
 				actions={actions}
 				onCancel={cancel}
 				onRetry={props.retry}
-				onClose={() => navigate(props.redirect)}
+				onClose={() => navigate({ to: props.redirect })}
 			/>
 			<UpgradeDialog
 				data={data}
@@ -222,7 +226,8 @@ function useViewerEditor(
 
 function useScrollToLocation() {
 	const scrolled = useRef(false);
-	const { key, hash } = useLocation();
+	const { state, hash } = useLocation();
+	const key = state.__TSR_key;
 	const prevKey = useRef(key);
 
 	useEffect(() => {

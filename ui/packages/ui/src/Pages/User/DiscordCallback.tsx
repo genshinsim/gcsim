@@ -1,5 +1,5 @@
+import { useNavigate } from "@tanstack/react-router";
 import React from "react";
-import { useNavigate } from "react-router";
 import { useUser } from "../../Stores/AppState";
 import { authProvider } from "./Login";
 
@@ -19,11 +19,11 @@ export function DiscordCallback() {
 			.auth(code)
 			.then((info) => {
 				merge(info);
-				navigate("/account");
+				navigate({ to: "/account" });
 			})
 			.catch((error) => {
 				setError(JSON.stringify(error));
-				navigate("/account");
+				navigate({ to: "/account" });
 			});
 	}, [merge, navigate]);
 

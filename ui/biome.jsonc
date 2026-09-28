@@ -19,7 +19,8 @@
 			"!**/blob-report",
 			"!packages/types/src/generated",
 			"!**/wasm_exec.js",
-			"!**/*.dm.*"
+			"!**/*.dm.*",
+			"!**/routeTree.gen.ts"
 		]
 	},
 	"formatter": {
