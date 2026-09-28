@@ -1,4 +1,3 @@
-import { SampleEventDetails } from "@gcsim/components";
 import {
 	Dialog,
 	DialogContent,
@@ -6,6 +5,7 @@ import {
 	DialogTitle,
 } from "@gcsim/primitives";
 import React from "react";
+import { SampleEventDetails } from "../SampleEventDetails";
 import type { SampleItem } from "./parse";
 
 export function SampleItemView({

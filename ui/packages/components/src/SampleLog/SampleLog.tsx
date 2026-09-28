@@ -1,14 +1,13 @@
 import { Button, ButtonGroup, Card, Input, Label } from "@gcsim/primitives";
 import type { Sample } from "@gcsim/types";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { saveAs } from "file-saver";
 import { ArrowDown, Download, RotateCcw, Settings } from "lucide-react";
-import Pako from "pako";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { Options } from "./Options";
 import type { SampleItem, SampleRow } from "./parse";
+import { parseLogV2 } from "./parsev2";
 import { SampleItemView } from "./SampleItemView";
 import {
 	AdvancedPreset,
@@ -138,26 +137,42 @@ const SampleOptions = ({ settings, setSettings }: SampleOptionsProps) => {
 	);
 };
 
-let lastSearchIndex = 0;
-
-type SamplerProps = {
+export type SampleLogProps = {
 	sample: Sample;
-	data: SampleRow[];
-	team: string[];
-	searchable: { [key: number]: string[] };
 	settings: string[];
-	setSettings: (val: string[]) => void;
+	onSettingsChange: (val: string[]) => void;
+	onDownload?: (sample: Sample) => void;
 };
 
-function SamplerUI({
+function SampleLogUI({
 	sample,
-	data,
-	team,
-	searchable,
 	settings,
-	setSettings,
-}: SamplerProps) {
+	onSettingsChange,
+	onDownload,
+}: SampleLogProps) {
 	const { t } = useTranslation();
+	const team = useMemo(
+		() => sample.character_details?.map((c) => c.name) ?? [],
+		[sample.character_details],
+	);
+	const data = useMemo(() => {
+		if (sample.initial_character == null || sample.character_details == null) {
+			return [];
+		}
+		return parseLogV2(sample.initial_character, team, sample.logs, settings);
+	}, [
+		sample.initial_character,
+		sample.character_details,
+		sample.logs,
+		team,
+		settings,
+	]);
+	const searchable = useMemo(
+		() =>
+			data.map((row) => row.slots.flatMap((slot) => slot.map((e) => e.msg))),
+		[data],
+	);
+	const [searchFrom, setSearchFrom] = useState(0);
 	// State-backed ref (not useRef) so the virtualizer re-measures once AutoSizer
 	// mounts the scroll element — AutoSizer defers rendering its child until it has
 	// a non-zero size, so a plain ref is still null on the virtualizer's first pass.
@@ -205,16 +220,12 @@ function SamplerUI({
 	});
 
 	const searchAndScroll = (val: string) => {
-		const total = Object.keys(searchable).length;
-		for (let index = lastSearchIndex; index < total; index++) {
-			for (const msg of searchable[index]) {
-				const lowerMsg = msg.toLowerCase();
-				if (lowerMsg.indexOf(val.toLowerCase()) > -1) {
-					console.log(index, lastSearchIndex);
-					lastSearchIndex = index + 1;
-					rowVirtualizer.scrollToIndex(index, { align: "start" });
-					return;
-				}
+		const needle = val.toLowerCase();
+		for (let index = searchFrom; index < searchable.length; index++) {
+			if (searchable[index].some((msg) => msg.toLowerCase().includes(needle))) {
+				setSearchFrom(index + 1);
+				rowVirtualizer.scrollToIndex(index, { align: "start" });
+				return;
 			}
 		}
 	};
@@ -229,6 +240,7 @@ function SamplerUI({
 						<Button
 							variant="secondary"
 							size="icon"
+							aria-label="search next"
 							onClick={() => {
 								if (searchRef.current != null) {
 									searchAndScroll(searchRef.current.value);
@@ -240,11 +252,12 @@ function SamplerUI({
 						<Button
 							variant="secondary"
 							size="icon"
+							aria-label="reset search"
 							onClick={() => {
 								if (searchRef.current != null) {
 									searchRef.current.value = "";
 								}
-								lastSearchIndex = 0;
+								setSearchFrom(0);
 								rowVirtualizer.scrollToIndex(0);
 							}}
 						>
@@ -253,18 +266,13 @@ function SamplerUI({
 					</div>
 				</div>
 				<ButtonGroup className="mb-[15px]">
-					<SampleOptions settings={settings} setSettings={setSettings} />
-					<Button
-						variant="secondary"
-						onClick={() => {
-							const out = Pako.deflate(JSON.stringify(sample));
-							const blob = new Blob([out], { type: "application/base64" });
-							saveAs(blob, "sample.gz");
-						}}
-					>
-						<Download />
-						{t("viewer.download")}
-					</Button>
+					<SampleOptions settings={settings} setSettings={onSettingsChange} />
+					{onDownload != null && (
+						<Button variant="secondary" onClick={() => onDownload(sample)}>
+							<Download />
+							{t("viewer.download")}
+						</Button>
+					)}
 				</ButtonGroup>
 			</div>
 			<div className="flex flex-col overflow-x-auto h-[80vh]">
@@ -339,4 +347,4 @@ function SamplerUI({
 	);
 }
 
-export const Sampler = React.memo(SamplerUI);
+export const SampleLog = React.memo(SampleLogUI);
