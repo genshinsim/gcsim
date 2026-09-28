@@ -1,17 +1,7 @@
 import type { model } from "@gcsim/types";
 import { describe, expect, it } from "vitest";
+import { fakeStorage } from "./fakeStorage";
 import { lastRunStore } from "./lastRun";
-
-function fakeStorage(init: Record<string, string> = {}) {
-	const data = new Map(Object.entries(init));
-	return {
-		data,
-		getItem: (k: string) => data.get(k) ?? null,
-		setItem: (k: string, v: string) => {
-			data.set(k, v);
-		},
-	};
-}
 
 const result = { sim_version: "abc" } as model.SimulationResult;
 
