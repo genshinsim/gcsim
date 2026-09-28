@@ -6,6 +6,7 @@ import {
 	Outlet,
 	useLocation,
 	useNavigate,
+	useRouter,
 } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
@@ -42,16 +43,16 @@ function Root() {
 
 function Layout() {
 	const content = useRef<HTMLDivElement>(null);
-	const href = useLocation({ select: (l) => l.href });
+	const router = useRouter();
 	const pathname = useLocation({ select: (l) => l.pathname });
 
 	// every time you change location, scroll to top of page. This is necessary since the outer
 	// content div will never rerender through the entire lifespan of the app and will always retain
 	// its scroll position.
-	// biome-ignore lint/correctness/useExhaustiveDependencies: href is the trigger, not a value used in the effect body
-	useEffect(() => {
-		content.current?.scrollTo(0, 0);
-	}, [href]);
+	useEffect(
+		() => router.subscribe("onResolved", () => content.current?.scrollTo(0, 0)),
+		[router],
+	);
 
 	const { cancel } = useExecutor();
 	const prevPathname = useRef(pathname);

@@ -5,7 +5,6 @@ test.describe("settings dialog", () => {
 		await app.simulator.goto();
 		const settings = page.getByRole("button", { name: "Settings" });
 		await settings.click();
-		// switching modes remounts the app, which closes the dialog
 		await page.locator("#server-mode-switch").click();
 		await settings.click();
 

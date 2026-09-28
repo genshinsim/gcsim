@@ -8,7 +8,7 @@ import {
 	Switch as SwitchInput,
 } from "@gcsim/primitives";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
-import { type ReactNode, useEffect } from "react";
+import { type ReactNode, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import type { AppContext } from "./routes/__root";
 import { routeTree } from "./routeTree.gen";
@@ -48,14 +48,18 @@ declare module "@tanstack/react-router" {
 }
 
 export const UI = ({ exec, children, mode, gitCommit }: UIProps) => {
-	// biome-ignore lint/correctness/useExhaustiveDependencies: route context is only recomputed on load, so these props trigger a reload
+	const context = useMemo(
+		() => ({ exec, mode, gitCommit }),
+		[exec, mode, gitCommit],
+	);
 	useEffect(() => {
+		router.update({ ...router.options, context });
 		router.invalidate();
-	}, [exec, mode, gitCommit]);
+	}, [context]);
 
 	return (
 		<AppStateProvider>
-			<RouterProvider router={router} context={{ exec, mode, gitCommit }} />
+			<RouterProvider router={router} context={context} />
 			<ExecutorSettings>{children}</ExecutorSettings>
 		</AppStateProvider>
 	);
