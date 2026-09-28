@@ -70,17 +70,15 @@ export const UI = (props: UIProps) => {
 	return (
 		<BrowserRouter>
 			<Provider store={store}>
-				<RootExecutorProvider exec={props.exec}>
+				<ReduxBridgedExecutorProvider exec={props.exec}>
 					<Main {...props} />
-				</RootExecutorProvider>
+				</ReduxBridgedExecutorProvider>
 			</Provider>
 		</BrowserRouter>
 	);
 };
 
-// Bridges provider results into the redux viewer slice until the viewer reads
-// useRunResult() directly (#3100).
-function RootExecutorProvider({
+function ReduxBridgedExecutorProvider({
 	exec,
 	children,
 }: {
