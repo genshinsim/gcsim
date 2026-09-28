@@ -10,15 +10,15 @@ async function simResult(app: AppHarness, page: Page): Promise<string> {
 	if (cachedResult == null) {
 		await app.boot();
 		await app.run(sucroseConfig);
-		// the provider persists the last run on pagehide
-		await page.goto("/account");
-		cachedResult =
-			(await page.evaluate(() =>
-				localStorage.getItem("redux-local-results"),
-			)) ?? undefined;
+		cachedResult = (await leaveToSaveLastRun(page)) ?? undefined;
 	}
 	expect(cachedResult).toBeTruthy();
 	return cachedResult as string;
+}
+
+async function leaveToSaveLastRun(page: Page): Promise<string | null> {
+	await page.goto("/account");
+	return page.evaluate(() => localStorage.getItem("redux-local-results"));
 }
 
 function fulfillShare(body: string) {
@@ -63,16 +63,27 @@ test.describe("share viewer", () => {
 		await expect(page).toHaveURL(/\/sh\/abc\?tab=config$/);
 	});
 
-	test("tab clicks move the tab search param", async ({ app, page }) => {
-		await page.route(SHARE_URL, fulfillShare(await simResult(app, page)));
+	test("tab clicks move the tab search param without refetching", async ({
+		app,
+		page,
+	}) => {
+		const fulfill = fulfillShare(await simResult(app, page));
+		let fetches = 0;
+		await page.route(SHARE_URL, (route) => {
+			fetches++;
+			return fulfill(route);
+		});
 		await page.goto("/sh/abc");
 		await app.viewer.openConfig();
 		await expect(page).toHaveURL(/\/sh\/abc\?tab=config$/);
+		await app.viewer.openSample();
+		await page.goBack();
 		await page.goBack();
 		await expect(app.viewer.resultsTab).toHaveAttribute(
 			"aria-selected",
 			"true",
 		);
+		expect(fetches).toBe(1);
 	});
 
 	test("a failing load shows the error dialog and retry reloads", async ({

@@ -76,6 +76,7 @@ export class ViewerPage {
 	async rerunToResultsTab(): Promise<void> {
 		await expect(this.rerunButton).toBeEnabled({ timeout: 30_000 });
 		await this.rerunButton.click();
+		await expect(this.page).toHaveURL(/\/web$/);
 		await expect(this.resultsTab).toHaveAttribute("aria-selected", "true");
 	}
 
