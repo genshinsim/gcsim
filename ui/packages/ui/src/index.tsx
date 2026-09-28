@@ -11,7 +11,6 @@ import {
 } from "@gcsim/primitives";
 import { type ReactNode, useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Provider } from "react-redux";
 import {
 	BrowserRouter,
 	Navigate,
@@ -34,14 +33,8 @@ import {
 	WebViewer,
 } from "./Pages";
 import { Footer, Nav } from "./Sectioning";
-import { appActions } from "./Stores/appSlice";
+import { AppStateProvider, usePrefs } from "./Stores/AppState";
 import { lastRunStore } from "./Stores/lastRun";
-import {
-	type RootState,
-	store,
-	useAppDispatch,
-	useAppSelector,
-} from "./Stores/store";
 
 import "@gcsim/components/src/index.css";
 import "./index.css";
@@ -68,11 +61,11 @@ type UIProps = {
 export const UI = (props: UIProps) => {
 	return (
 		<BrowserRouter>
-			<Provider store={store}>
+			<AppStateProvider>
 				<AppExecutorProvider exec={props.exec}>
 					<Main {...props} />
 				</AppExecutorProvider>
-			</Provider>
+			</AppStateProvider>
 		</BrowserRouter>
 	);
 };
@@ -113,20 +106,13 @@ function RedirectDB() {
 // TODO: Add tabs for better settings management + extensibility?
 const ExecutorSettings = ({ children }: { children: ReactNode }) => {
 	const { t } = useTranslation();
-	const dispatch = useAppDispatch();
-	const { isOpen, sampleOnLoad } = useAppSelector((state: RootState) => {
-		return {
-			isOpen: state.app.isSettingsOpen,
-			sampleOnLoad: state.app.sampleOnLoad,
-		};
-	});
+	const { settingsOpen, setSettingsOpen, sampleOnLoad, setSampleOnLoad } =
+		usePrefs();
 
 	return (
 		<Dialog
-			open={isOpen}
-			onOpenChange={(open) =>
-				!open && dispatch(appActions.setSettingsOpen(false))
-			}
+			open={settingsOpen}
+			onOpenChange={(open) => !open && setSettingsOpen(false)}
 		>
 			<DialogContent>
 				<DialogHeader>
@@ -137,9 +123,7 @@ const ExecutorSettings = ({ children }: { children: ReactNode }) => {
 					<SwitchInput
 						id="sample-on-load"
 						checked={sampleOnLoad}
-						onCheckedChange={() =>
-							dispatch(appActions.setSampleOnLoad(!sampleOnLoad))
-						}
+						onCheckedChange={() => setSampleOnLoad(!sampleOnLoad)}
 					/>
 					<Label htmlFor="sample-on-load">{t("simple.generate_sample")}</Label>
 				</div>

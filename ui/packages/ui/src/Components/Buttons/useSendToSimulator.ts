@@ -1,16 +1,16 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router";
-import { appActions } from "../../Stores/appSlice";
-import { useAppDispatch } from "../../Stores/store";
+import { useDraft } from "../../Stores/AppState";
+import type { SendOptions } from "../../Stores/draft";
 
 export function useSendToSimulator() {
-	const dispatch = useAppDispatch();
+	const { send } = useDraft();
 	const navigate = useNavigate();
 	return useCallback(
-		(cfg: string, { keepTeam }: { keepTeam: boolean }) => {
-			dispatch(appActions.setCfg({ cfg, keepTeam }));
+		(cfg: string, opts: SendOptions) => {
+			send(cfg, opts);
 			navigate("/simulator");
 		},
-		[dispatch, navigate],
+		[send, navigate],
 	);
 }

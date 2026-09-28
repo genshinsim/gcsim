@@ -1,12 +1,11 @@
 import React from "react";
 import { useNavigate } from "react-router";
-import { useAppDispatch } from "../../Stores/store";
-import { userActions } from "../../Stores/userSlice";
+import { useUser } from "../../Stores/AppState";
 import { authProvider } from "./Login";
 
 export function DiscordCallback() {
 	const [error, setError] = React.useState("");
-	const dispatch = useAppDispatch();
+	const { merge } = useUser();
 	const navigate = useNavigate();
 
 	React.useEffect(() => {
@@ -18,15 +17,15 @@ export function DiscordCallback() {
 		}
 		authProvider
 			.auth(code)
-			.then((user) => {
-				dispatch(userActions.mergeUser(user));
+			.then((info) => {
+				merge(info);
 				navigate("/account");
 			})
 			.catch((error) => {
 				setError(JSON.stringify(error));
 				navigate("/account");
 			});
-	}, [dispatch, navigate]);
+	}, [merge, navigate]);
 
 	if (error === "") {
 		return (

@@ -5,7 +5,7 @@ import {
 	useValidation,
 } from "@gcsim/components";
 import type { model } from "@gcsim/types";
-import { type RootState, useAppSelector } from "@ui/Stores/store";
+import { usePrefs } from "@ui/Stores/AppState";
 import axios from "axios";
 import queryString from "query-string";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -135,9 +135,7 @@ const UpgradableViewer = (props: UpgradableViewerProps) => {
 		() => hashParam(location.hash, "tab") ?? "results",
 	);
 	const [linkSeed] = useState(() => hashParam(location.hash, "sample"));
-	const sampleOnLoad = useAppSelector(
-		(state: RootState) => state.app.sampleOnLoad,
-	);
+	const { sampleOnLoad } = usePrefs();
 	const sample = useSample({
 		config: data?.config_file,
 		autoSeed: autoSampleSeed(linkSeed, sampleOnLoad, data?.sample_seed),

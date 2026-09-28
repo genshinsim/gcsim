@@ -1,35 +1,27 @@
 import { Button, ButtonGroup, Checkbox, Label } from "@gcsim/primitives";
+import type { UserInfo } from "@gcsim/types";
+import axios from "axios";
 import { LogOut, Save } from "lucide-react";
 import { Viewport } from "../../Components";
-import {
-	type AppThunk,
-	useAppDispatch,
-	useAppSelector,
-} from "../../Stores/store";
-import {
-	initialState,
-	saveUserSettings,
-	userActions,
-} from "../../Stores/userSlice";
+import { useUser } from "../../Stores/AppState";
 import { authProvider, Login } from "./Login";
 
-//thunks
-function logout(): AppThunk {
-	return (dispatch) => {
-		authProvider
-			.logout()
-			.then(() => dispatch(userActions.setUser(initialState)))
-			.catch((err) => {
-				//log out the user
-				console.warn("Error occured logging out: ", err);
-				dispatch(userActions.setUser(initialState));
-			});
-	};
+function saveSettings(user: UserInfo) {
+	axios
+		.post("/api/user/save", user.data)
+		.then(() => console.log("save ok"))
+		.catch(() => console.log("save failed"));
+}
+
+function logout(reset: () => void) {
+	authProvider
+		.logout()
+		.catch((err) => console.warn("Error occured logging out: ", err))
+		.finally(reset);
 }
 
 export function PageUserAccount() {
-	const user = useAppSelector((state) => state.user);
-	const dispatch = useAppDispatch();
+	const { user, setSettings, reset } = useUser();
 
 	if (user.uid === "") {
 		return <Login />;
@@ -44,13 +36,10 @@ export function PageUserAccount() {
 							id="show-tips"
 							checked={user.data.settings.showTips}
 							onCheckedChange={() => {
-								dispatch(
-									userActions.setUserSettings({
-										showTips: !user.data.settings.showTips,
-										showBuilder: user.data.settings.showBuilder,
-										showNameSearch: user.data.settings.showNameSearch,
-									}),
-								);
+								setSettings({
+									...user.data.settings,
+									showTips: !user.data.settings.showTips,
+								});
 							}}
 						/>
 						<Label htmlFor="show-tips">Show tips</Label>
@@ -60,13 +49,10 @@ export function PageUserAccount() {
 							id="show-builder"
 							checked={user.data.settings.showBuilder}
 							onCheckedChange={() => {
-								dispatch(
-									userActions.setUserSettings({
-										showTips: user.data.settings.showTips,
-										showBuilder: !user.data.settings.showBuilder,
-										showNameSearch: user.data.settings.showNameSearch,
-									}),
-								);
+								setSettings({
+									...user.data.settings,
+									showBuilder: !user.data.settings.showBuilder,
+								});
 							}}
 						/>
 						<Label htmlFor="show-builder">Show builder</Label>
@@ -77,7 +63,7 @@ export function PageUserAccount() {
 						<Button
 							variant="secondary"
 							size="lg"
-							onClick={() => dispatch(saveUserSettings())}
+							onClick={() => saveSettings(user)}
 						>
 							<Save />
 							Save Settings
@@ -85,7 +71,7 @@ export function PageUserAccount() {
 						<Button
 							variant="destructive"
 							size="lg"
-							onClick={() => dispatch(logout())}
+							onClick={() => logout(reset)}
 						>
 							<LogOut />
 							Logout
