@@ -1,6 +1,6 @@
-const TABS = ["results", "config", "sample"] as const;
+export const VIEWER_TABS = ["results", "config", "sample"] as const;
 
-export type ViewerTab = (typeof TABS)[number];
+export type ViewerTab = (typeof VIEWER_TABS)[number];
 
 export type ViewerSearch = {
 	tab?: ViewerTab;
@@ -11,7 +11,7 @@ export function validateViewerSearch(
 	raw: Record<string, unknown>,
 ): ViewerSearch {
 	const search: ViewerSearch = {};
-	if (TABS.includes(raw.tab as ViewerTab)) {
+	if (VIEWER_TABS.includes(raw.tab as ViewerTab)) {
 		search.tab = raw.tab as ViewerTab;
 	}
 	const seed = typeof raw.seed === "number" ? String(raw.seed) : raw.seed;

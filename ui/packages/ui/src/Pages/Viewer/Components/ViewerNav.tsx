@@ -9,19 +9,10 @@ import {
 	SendToSimulator,
 	Share,
 } from "../../../Components/Buttons";
-import type { ViewerTab } from "../search";
+import { VIEWER_TABS, type ViewerTab } from "../search";
 import type { ViewerActions } from "../Viewer";
 
 const btnClass = classNames("hidden ml-[7px] sm:flex");
-
-const TABS: [
-	ViewerTab,
-	"viewer.results" | "viewer.config" | "viewer.sample",
-][] = [
-	["results", "viewer.results"],
-	["config", "viewer.config"],
-	["sample", "viewer.sample"],
-];
 
 type NavProps = {
 	data: model.SimulationResult | null;
@@ -54,14 +45,14 @@ export default ({
 		<Tabs value={tabId} onValueChange={(v) => setTabId(v as ViewerTab)}>
 			<div className="flex flex-row items-center justify-between gap-2">
 				<TabsList variant="line">
-					{TABS.map(([tab, label]) => (
+					{VIEWER_TABS.map((tab) => (
 						<TabsTrigger key={tab} value={tab} asChild>
 							<Link
 								to="."
 								search={(prev) => ({ ...prev, tab })}
 								onMouseDown={keepModifierClickInNewTab}
 							>
-								{t(label)}
+								{t(`viewer.${tab}`)}
 							</Link>
 						</TabsTrigger>
 					))}
