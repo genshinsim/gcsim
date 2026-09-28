@@ -1,7 +1,7 @@
 import { Button } from "@gcsim/primitives";
+import { Link } from "@tanstack/react-router";
 import { BookOpen, Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom";
 import { CommunityCta } from "./CommunityCta";
 import "./dashMobile.css";
 import { HeroArt } from "./HeroArt";

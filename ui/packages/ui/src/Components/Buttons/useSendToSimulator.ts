@@ -1,5 +1,5 @@
+import { useNavigate } from "@tanstack/react-router";
 import { useCallback } from "react";
-import { useNavigate } from "react-router";
 import { useDraft } from "../../Stores/AppState";
 import type { SendOptions } from "../../Stores/draft";
 
@@ -9,7 +9,7 @@ export function useSendToSimulator() {
 	return useCallback(
 		(cfg: string, opts: SendOptions) => {
 			send(cfg, opts);
-			navigate("/simulator");
+			navigate({ to: "/simulator" });
 		},
 		[send, navigate],
 	);

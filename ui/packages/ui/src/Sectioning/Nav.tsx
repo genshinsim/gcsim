@@ -14,19 +14,19 @@ import {
 	SelectValue,
 	Separator,
 } from "@gcsim/primitives";
+import { Link, type LinkProps } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { FaCalculator, FaDatabase, FaDiscord } from "react-icons/fa";
 import { IoIosDocument, IoIosMenu } from "react-icons/io";
 import { MdOutlineUpdate } from "react-icons/md";
-import { Link } from "react-router-dom";
 import logo from "./logo.png";
 
 type NavLink = {
 	key: string;
 	icon: ReactNode;
 	text: string;
-} & ({ to: string } | { href: string });
+} & ({ to: LinkProps["to"] } | { href: string });
 
 function useNavLinks(): NavLink[] {
 	const { t } = useTranslation();
