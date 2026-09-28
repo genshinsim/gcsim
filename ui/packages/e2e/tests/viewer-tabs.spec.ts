@@ -22,7 +22,7 @@ test.describe("viewer tabs", () => {
 		await app.viewer.waitForResults();
 
 		await app.viewer.openConfig();
-		await app.viewer.rerun();
+		await app.viewer.rerunToResultsTab();
 		await app.viewer.waitForResults();
 
 		await app.viewer.openSample();

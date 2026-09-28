@@ -45,7 +45,6 @@ type SampleSource = {
 	running?: boolean;
 };
 
-// Without a source (the standalone sample pages) only the persisted settings are used.
 export function useSample({
 	config,
 	autoSeed = null,

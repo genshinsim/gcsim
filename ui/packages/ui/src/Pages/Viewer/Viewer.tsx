@@ -23,8 +23,6 @@ import Warnings from "./Components/Warnings";
 import ConfigUI from "./Tabs/Config";
 import SampleUI from "./Tabs/Sample";
 
-// The viewer only announces intent through these callbacks; the route supplies the effect
-// (executor, routing, share API). A button is rendered only when its callback is provided.
 export type ViewerActions = {
 	onRun?: (cfg: string) => void;
 	onSendToSimulator?: (cfg: string, opts: { keepTeam: boolean }) => void;

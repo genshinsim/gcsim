@@ -20,7 +20,6 @@ export class ViewerPage {
 	readonly configEditor: Locator;
 	/** The Sample tab's "Generate" button (shown before a sample is generated). */
 	readonly generateButton: Locator;
-	/** The Config tab editor's Run button, which reruns the edited config. */
 	readonly rerunButton: Locator;
 
 	constructor(page: Page) {
@@ -72,17 +71,12 @@ export class ViewerPage {
 		await expect(this.generateButton).toBeVisible();
 	}
 
-	/**
-	 * Rerun from the Config tab and assert the viewer switched back to the
-	 * Results tab. Callers wait for the run to finish separately.
-	 */
-	async rerun(): Promise<void> {
+	async rerunToResultsTab(): Promise<void> {
 		await expect(this.rerunButton).toBeEnabled({ timeout: 30_000 });
 		await this.rerunButton.click();
 		await expect(this.resultsTab).toHaveAttribute("aria-selected", "true");
 	}
 
-	/** Generate a sample and assert the sample log rendered. */
 	async generateSample(): Promise<void> {
 		await this.generateButton.click();
 		await expect(this.page).toHaveURL(/#.*sample=\d+/);

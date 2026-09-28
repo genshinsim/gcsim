@@ -37,6 +37,9 @@ describe("sample settings", () => {
 	it("round-trips saved settings", () => {
 		const storage = fakeStorage();
 		saveSampleSettings(storage, ["energy", "hitlag"]);
+		expect(storage.data.get("gcsim-sample-settings")).toBe(
+			JSON.stringify(["energy", "hitlag"]),
+		);
 		expect(loadSampleSettings(storage)).toEqual(["energy", "hitlag"]);
 	});
 });
