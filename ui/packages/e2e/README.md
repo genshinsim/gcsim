@@ -111,11 +111,12 @@ console monitor.
 ### `DashPage` (`src/pages/dash-page.ts`) — the dash home (`/`)
 
 - `goto()` — navigate and wait for React to mount into `#root`.
-- `waitForLoaded()` — assert the title, the nav bar's Simulator entry, and the
-  "Get started" CTA. **Structural only.**
-- `waitForFeatured()` — assert the featured-submission card's "Show Detail" link
-  and the "Visit the Teams DB" CTA. The card fetches `/api/db`, so a spec stubs
-  that route (reusing `installDbRoutes`) before navigating.
+- `waitForLoaded()` — assert the title, the nav bar's Simulator link, and the
+  "Open Simulator" CTA link. **Structural only.**
+- `waitForSharedByOthers()` — assert the "Shared by others" heading and at least
+  one team-card link (matched by its fixed "DPS / target" label). The cards fetch
+  `/api/db`, so a spec stubs that route (reusing `installDbRoutes`) before
+  navigating.
 
 ### `SimulatorPage` (`src/pages/simulator-page.ts`) — the `/simulator` route
 

@@ -1,35 +1,38 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
 /**
- * Drives the dash home route (`/`): the top nav bar, the "Get started" CTA, and
- * the featured-submission card.
+ * Drives the dash home route (`/`): the top nav bar, the "Open Simulator" CTA,
+ * and the "Shared by others" section.
  *
- * Locators ride observable contracts (accessible names, hardcoded button text)
- * since the app ships no data-testids. The featured card only renders once
+ * Locators ride observable contracts (ARIA roles and accessible names) since
+ * the app ships no data-testids. The shared-by-others cards only render once
  * `/api/db` resolves, so a spec must stub that route (see `installDbRoutes`)
  * before navigating.
  */
 export class DashPage {
 	readonly page: Page;
-	/** "Get started" CTA linking to `/simulator`. */
-	readonly getStarted: Locator;
-	/** Nav-bar entry to the simulator. */
+	/** "Open Simulator" hero CTA linking to `/simulator`. */
+	readonly openSimulator: Locator;
+	/** Nav-bar link to the simulator. */
 	readonly navSimulator: Locator;
-	/** "Show Detail" button rendered on each featured submission card. */
-	readonly showDetail: Locator;
-	/** "Visit the Teams DB" CTA below the featured card (a Blueprint
-	 * AnchorButton, which carries role="button"). */
-	readonly visitTeamsDb: Locator;
+	/** "Shared by others" section heading. */
+	readonly sharedHeading: Locator;
+	/** Team cards in the "Shared by others" section. Each card is a link whose
+	 * accessible name ends with its fixed "DPS / target" label. */
+	readonly teamCards: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
-		this.getStarted = page.getByRole("button", { name: "Get started" });
+		this.openSimulator = page.getByRole("link", { name: "Open Simulator" });
 		// The nav renders a desktop and a (collapsed) mobile copy; take the first.
-		this.navSimulator = page.getByRole("button", { name: "Simulator" }).first();
-		this.showDetail = page.getByRole("link", { name: "Show Detail" });
-		this.visitTeamsDb = page.getByRole("button", {
-			name: "Visit the Teams DB",
+		this.navSimulator = page
+			.getByRole("link", { name: "Simulator", exact: true })
+			.first();
+		this.sharedHeading = page.getByRole("heading", {
+			level: 2,
+			name: "Shared by others",
 		});
+		this.teamCards = page.getByRole("link", { name: /DPS \/ target/ });
 	}
 
 	/** Navigate to the home route and wait for React to mount into `#root`. */
@@ -39,22 +42,21 @@ export class DashPage {
 	}
 
 	/**
-	 * Assert the dash chrome rendered: title, the nav bar's Simulator entry, and
-	 * the "Get started" CTA. Structural only.
+	 * Assert the dash chrome rendered: title, the nav bar's Simulator link, and
+	 * the "Open Simulator" CTA. Structural only.
 	 */
 	async waitForLoaded(): Promise<void> {
 		await expect(this.page).toHaveTitle("gcsim - simulation impact");
 		await expect(this.navSimulator).toBeVisible();
-		await expect(this.getStarted).toBeVisible();
+		await expect(this.openSimulator).toBeVisible();
 	}
 
 	/**
-	 * Assert the featured-submission section rendered: at least one card with its
-	 * "Show Detail" link, and the "Visit the Teams DB" CTA. Depends on a stubbed
-	 * `/api/db`.
+	 * Assert the "Shared by others" section rendered: its heading and at least
+	 * one team card. Depends on a stubbed `/api/db`.
 	 */
-	async waitForFeatured(): Promise<void> {
-		await expect(this.showDetail.first()).toBeVisible();
-		await expect(this.visitTeamsDb).toBeVisible();
+	async waitForSharedByOthers(): Promise<void> {
+		await expect(this.sharedHeading).toBeVisible();
+		await expect(this.teamCards.first()).toBeVisible();
 	}
 }
