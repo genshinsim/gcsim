@@ -25,6 +25,20 @@ const PIPELINE_DEPTH = 2;
 // (100-200 KB each) and the leftover work a cancelled run leaves in its queue.
 const MAX_OUTSTANDING_PER_WORKER = 4;
 
+// Default number of sim workers: one per logical core, minus one for the aggregator and one
+// for the page, clamped to [3, 8]. 3 was the fixed default before, so no machine gets fewer
+// workers than it used to. The cap bounds memory: every worker holds its own wasm instance
+// (~40-60 MB of linear memory on top of the shared compiled module). Devices that report under
+// 4 GB of memory (navigator.deviceMemory, Chromium only) keep 3. Users can still set 1-30.
+export function defaultWorkerCount(): number {
+	const cores = navigator.hardwareConcurrency;
+	const memory = (navigator as { deviceMemory?: number }).deviceMemory;
+	if (!cores || (memory != null && memory < 4)) {
+		return 3;
+	}
+	return Math.min(Math.max(cores - 2, 3), 8);
+}
+
 export class WasmExecutor implements Executor {
 	private helper: HelperExecutor;
 	private aggregator: Worker | null;
@@ -39,7 +53,7 @@ export class WasmExecutor implements Executor {
 
 		this.aggregator = null;
 		this.workers = [];
-		this.workerCount = 3;
+		this.workerCount = defaultWorkerCount();
 		this.isRunning = false;
 		this.runId = 0;
 		this.runStarted = 0;
