@@ -2,6 +2,7 @@ package reactable
 
 import (
 	"math"
+	"math/rand/v2"
 	"runtime"
 	"slices"
 	"testing"
@@ -66,6 +67,37 @@ func TestAuraHelpersMatchMax(t *testing.T) {
 		}
 		if i == len(d) {
 			return
+		}
+	}
+}
+
+// TestLiveTracksDurability checks the invariant Tick relies on to skip mods: after any sequence
+// of durability writes and ticks, a mod whose live bit is clear has every source below ZeroDur.
+func TestLiveTracksDurability(t *testing.T) {
+	c := testCore()
+	r := addTargetToCore(c).Reactable
+	rng := rand.New(rand.NewPCG(1, 2))
+	for i := range 200000 {
+		mod := info.ReactionModKey(rng.IntN(int(info.ReactionModKeyEnd)))
+		dur := durSpecials[rng.IntN(len(durSpecials))]
+		switch rng.IntN(6) {
+		case 0:
+			r.SetAuraDurability(mod, dur, rng.IntN(info.MaxChars))
+		case 1:
+			r.addDurability(mod, dur, rng.IntN(info.MaxChars))
+		case 2:
+			r.reduceMod(mod, dur)
+		case 3:
+			r.removeMod(mod)
+		case 4:
+			r.SetAuraDecayRate(mod, dur)
+		default:
+			r.Tick()
+		}
+		for m := range info.ReactionModKeyEnd {
+			if r.live&(1<<m) == 0 && !r.auraBelow(m, info.ZeroDur) {
+				t.Fatalf("step %v: live bit of %v is clear but durability is %v", i, m, r.Durability[m])
+			}
 		}
 	}
 }
