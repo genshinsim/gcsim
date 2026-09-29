@@ -78,7 +78,7 @@ type CharWrapper struct {
 	f     *int // current frame
 	debug bool // debug mode?
 	Character
-	events event.Eventter
+	events *event.Handler
 	log    glog.Logger
 	tasks  task.Tasker
 
@@ -134,7 +134,7 @@ func New(
 	f *int, // current frame
 	debug bool, // are we running in debug mode
 	log glog.Logger, // logging, can be nil
-	events event.Eventter, // event emitter
+	events *event.Handler, // event emitter
 	tasker task.Tasker,
 ) (*CharWrapper, error) {
 	c := &CharWrapper{

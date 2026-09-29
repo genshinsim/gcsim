@@ -13,13 +13,13 @@ import (
 type Handler struct {
 	shields []Shield
 	log     glog.Logger
-	events  event.Eventter
+	events  *event.Handler
 	f       *int
 
 	shieldBonusMods []shieldBonusMod
 }
 
-func New(f *int, log glog.Logger, events event.Eventter) *Handler {
+func New(f *int, log glog.Logger, events *event.Handler) *Handler {
 	h := &Handler{
 		shields:         make([]Shield, 0, EndType),
 		log:             log,

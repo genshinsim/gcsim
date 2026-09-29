@@ -91,6 +91,11 @@ const (
 
 type Handler struct {
 	events [][]ehook
+	// argBufs[d] holds the args handed to hooks by an Emit nested d deep. Reusing them
+	// means Emit doesn't let args escape, so callers keep the variadic slice on the stack
+	// instead of allocating one per emit. Hooks must not keep args after returning.
+	argBufs [][]any
+	depth   int
 }
 
 type Hook func(args ...any)
@@ -166,9 +171,22 @@ func (h *Handler) Unsubscribe(e Event, key string) {
 }
 
 func (h *Handler) Emit(e Event, args ...any) {
-	for _, v := range h.events[e] {
+	hooks := h.events[e]
+	if len(hooks) == 0 {
+		return
+	}
+	// a hook may emit again, so each nesting depth gets its own buffer
+	if h.depth == len(h.argBufs) {
+		h.argBufs = append(h.argBufs, make([]any, 0, 7))
+	}
+	buf := append(h.argBufs[h.depth][:0], args...)
+	h.argBufs[h.depth] = buf
+	h.depth++
+	for _, v := range hooks {
 		if v.f != nil {
-			v.f(args...)
+			v.f(buf...)
 		}
 	}
+	h.depth--
+	clear(buf)
 }

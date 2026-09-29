@@ -34,7 +34,7 @@ type Handler struct {
 }
 
 type Opt struct {
-	Events        event.Eventter
+	Events        *event.Handler
 	Tasks         task.Tasker
 	Team          CharHandler
 	Rand          *rand.Rand

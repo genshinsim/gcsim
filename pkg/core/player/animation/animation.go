@@ -14,7 +14,7 @@ import (
 
 type AnimationHandler struct { //nolint:revive // cannot just name this Handler because then there is a conflict with Handler in player package
 	f      *int
-	events event.Eventter
+	events *event.Handler
 	log    glog.Logger
 	tasks  task.Tasker
 
@@ -30,7 +30,7 @@ type AnimationHandler struct { //nolint:revive // cannot just name this Handler 
 	event glog.Event
 }
 
-func New(f *int, debug bool, log glog.Logger, events event.Eventter, tasks task.Tasker) *AnimationHandler {
+func New(f *int, debug bool, log glog.Logger, events *event.Handler, tasks task.Tasker) *AnimationHandler {
 	h := &AnimationHandler{
 		f:      f,
 		log:    log,
