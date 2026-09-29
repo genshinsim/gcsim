@@ -3,6 +3,8 @@ package agg
 //go:generate go tool github.com/tinylib/msgp -io=false
 
 import (
+	"iter"
+
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/stats"
@@ -16,7 +18,7 @@ import (
 // Every value is computed with the same float operations, in the same order, as the aggregators
 // used to compute it from the Result, so aggregated statistics stay bit-identical.
 //
-//msgp:tuple Summary CharacterSummary EnemySummary FailureTimes TargetDamage
+//msgp:tuple Summary CharacterSummary EnemySummary FailureTimes TargetDamage Sums
 type Summary struct {
 	Seed          uint64
 	Duration      int
@@ -41,16 +43,16 @@ type CharacterSummary struct {
 	ActiveTime int
 	Failures   FailureTimes
 
-	Actions   map[string]float64 // times each action was used
-	Reactions map[string]float64 // reactions triggered, by reaction
-	Energy    map[string]float64 // energy received (including wasted), by source
+	Actions   Sums // times each action was used
+	Reactions Sums // reactions triggered, by reaction
+	Energy    Sums // energy received (including wasted), by source
 
-	Damage          float64            // total damage
-	DamageByElement map[string]float64 // every element, 0 if it did no damage
+	Damage          float64 // total damage
+	DamageByElement Sums    // every element, 0 if it did no damage
 	DamageByTarget  []TargetDamage
 	// damage by source, with the reaction modifier appended to the key, e.g. "Skill (vaporize)"
-	DamageBySource          map[string]float64
-	DamageInstances         map[string]float64 // hits that did damage, same keys as DamageBySource
+	DamageBySource          Sums
+	DamageInstances         Sums // hits that did damage, same keys as DamageBySource
 	DamageCumulativeContrib []float64
 }
 
@@ -72,6 +74,80 @@ type FailureTimes struct {
 type TargetDamage struct {
 	Target int
 	Damage float64
+}
+
+// Sums holds a float64 per string key, like a map[string]float64, as keys and values in the
+// order the keys were first seen. An iteration has few keys per sum, so a linear search is
+// cheaper than hashing (wasm has no fast string hash), and Sums encode and decode without
+// building maps.
+type Sums struct {
+	Keys   []string
+	Values []float64
+}
+
+// All iterates over the keys and their values.
+func (s *Sums) All() iter.Seq2[string, float64] {
+	return func(yield func(string, float64) bool) {
+		for i, k := range s.Keys {
+			if !yield(k, s.Values[i]) {
+				return
+			}
+		}
+	}
+}
+
+// add adds v to key's value, which starts from 0 like a map's zero value.
+func (s *Sums) add(key string, v float64) {
+	i := 0
+	for i < len(s.Keys) && s.Keys[i] != key {
+		i++
+	}
+	if i == len(s.Keys) {
+		s.appendKey(key)
+	}
+	s.Values[i] += v
+}
+
+// sumsCap is the initial capacity of a Sums, made when it gets its first key
+const sumsCap = 13
+
+// appendKey adds key with value 0.
+func (s *Sums) appendKey(key string) {
+	if s.Keys == nil {
+		s.Keys = make([]string, 0, sumsCap)
+		s.Values = make([]float64, 0, sumsCap)
+	}
+	s.Keys = append(s.Keys, key)
+	s.Values = append(s.Values, 0)
+}
+
+// sourceIndex returns the index of the damage aggregator's key for a source and reaction
+// modifier: the source, followed by the modifier in parentheses if there is one. The key is
+// built only when it's new, with value 0.
+func (s *Sums) sourceIndex(source string, modifier stats.ReactionModifier) int {
+	m := string(modifier)
+	for i, k := range s.Keys {
+		if isSourceKey(k, source, m) {
+			return i
+		}
+	}
+	key := source
+	if m != "" {
+		key += " (" + m + ")"
+	}
+	s.appendKey(key)
+	return len(s.Keys) - 1
+}
+
+// isSourceKey reports whether key is source + " (" + modifier + ")", or source if there is no
+// modifier, without building that string.
+func isSourceKey(key, source, modifier string) bool {
+	if modifier == "" {
+		return key == source
+	}
+	n := len(source)
+	return len(key) == n+len(modifier)+3 && key[:n] == source && key[n:n+2] == " (" &&
+		key[n+2:len(key)-1] == modifier && key[len(key)-1] == ')'
 }
 
 // Summarize reduces result to a Summary. The Summary shares slices and maps with result.
@@ -99,44 +175,44 @@ func Summarize(result *stats.Result) Summary {
 			s.Failures.add(fail)
 		}
 
-		c.Actions = make(map[string]float64)
 		for _, ev := range char.ActionEvents {
-			c.Actions[ev.Action] += 1
+			c.Actions.add(ev.Action, 1)
 		}
 
 		s.Reactions += len(char.ReactionEvents)
-		c.Reactions = make(map[string]float64)
 		for _, ev := range char.ReactionEvents {
-			c.Reactions[ev.Reaction] += 1
+			c.Reactions.add(ev.Reaction, 1)
 		}
 
 		for _, h := range char.HealEvents {
 			s.Heal += h.Heal
 		}
 
-		c.Energy = make(map[string]float64)
 		for _, ev := range char.EnergyEvents {
 			s.Energy += ev.Gained + ev.Wasted
-			c.Energy[ev.Source] += ev.Gained + ev.Wasted
+			c.Energy.add(ev.Source, ev.Gained+ev.Wasted)
 		}
 
-		c.DamageByElement = make(map[string]float64)
-		for _, ele := range attributes.ElementStrings() {
-			c.DamageByElement[ele] = 0
-		}
-		c.DamageBySource = make(map[string]float64)
-		c.DamageInstances = make(map[string]float64)
+		elements := attributes.ElementStrings()
+		c.DamageByElement = Sums{Keys: elements, Values: make([]float64, len(elements))}
+		var instances []float64 // by DamageBySource index
 		for _, ev := range char.DamageEvents {
 			c.DamageByTarget = addTargetDamage(c.DamageByTarget, ev.Target, ev.Damage)
-			c.DamageByElement[ev.Element] += ev.Damage
+			c.DamageByElement.add(ev.Element, ev.Damage)
 			c.Damage += ev.Damage
-			key := ev.Source
-			if ev.ReactionModifier != "" {
-				key += " (" + string(ev.ReactionModifier) + ")"
+			j := c.DamageBySource.sourceIndex(ev.Source, ev.ReactionModifier)
+			c.DamageBySource.Values[j] += ev.Damage
+			if j == len(instances) {
+				instances = append(instances, 0)
 			}
-			c.DamageBySource[key] += ev.Damage
 			if ev.Damage > 0 {
-				c.DamageInstances[key] += 1
+				instances[j] += 1
+			}
+		}
+		for j, n := range instances {
+			if n > 0 {
+				c.DamageInstances.Keys = append(c.DamageInstances.Keys, c.DamageBySource.Keys[j])
+				c.DamageInstances.Values = append(c.DamageInstances.Values, n)
 			}
 		}
 		c.DamageCumulativeContrib = char.DamageCumulativeContrib

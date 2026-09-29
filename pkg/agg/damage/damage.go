@@ -130,7 +130,7 @@ func (b *buffer) Add(result *agg.Summary) {
 		}
 
 		b.characterDPS[i].Add(result.Characters[i].Damage * time)
-		for k, v := range result.Characters[i].DamageByElement {
+		for k, v := range result.Characters[i].DamageByElement.All() {
 			if _, ok := elementDPS[k]; !ok {
 				elementDPS[k] = 0
 			}
@@ -155,14 +155,14 @@ func (b *buffer) Add(result *agg.Summary) {
 			b.dpsByTarget[i][k].Add(v * time)
 		}
 
-		for k, v := range result.Characters[i].DamageBySource {
+		for k, v := range result.Characters[i].DamageBySource.All() {
 			if _, ok := b.sourceDPS[i][k]; !ok {
 				b.sourceDPS[i][k] = &calc.StreamStats{}
 			}
 			b.sourceDPS[i][k].Add(v * time)
 		}
 
-		for k, v := range result.Characters[i].DamageInstances {
+		for k, v := range result.Characters[i].DamageInstances.All() {
 			if _, ok := b.sourceDamageInstances[i][k]; !ok {
 				b.sourceDamageInstances[i][k] = &calc.StreamStats{}
 			}

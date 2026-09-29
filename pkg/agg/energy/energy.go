@@ -33,7 +33,7 @@ func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 
 func (b *buffer) Add(result *agg.Summary) {
 	for i := range result.Characters {
-		for k, v := range result.Characters[i].Energy {
+		for k, v := range result.Characters[i].Energy.All() {
 			if _, ok := b.sourceEnergy[i][k]; !ok {
 				b.sourceEnergy[i][k] = &calc.StreamStats{}
 			}

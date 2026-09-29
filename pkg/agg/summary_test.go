@@ -20,6 +20,10 @@ func TestSummarize(t *testing.T) {
 					{Source: "Skill", Target: 2, Element: "pyro", Damage: 50},
 					{Source: "Skill", Target: 1, Element: "pyro", ReactionModifier: stats.Vaporize, Damage: 0},
 					{Source: "Normal 0", Target: 1, Element: "physical", Damage: 25},
+					// a source whose name looks like source plus modifier shares its key, as with a map
+					{Source: "Burst (melt)", Target: 1, Element: "pyro", Damage: 10},
+					{Source: "Burst", Target: 1, Element: "pyro", ReactionModifier: stats.Melt, Damage: 5},
+					{Source: "Burst", Target: 1, Element: "pyro", Damage: 1},
 				},
 				ActionEvents:   []stats.ActionEvent{{Action: "skill"}, {Action: "attack"}, {Action: "skill"}},
 				ReactionEvents: []stats.ReactionEvent{{Reaction: "vaporize"}},
@@ -55,25 +59,29 @@ func TestSummarize(t *testing.T) {
 	}
 
 	c := s.Characters[0]
-	if c.ActiveTime != 300 || c.Damage != 175 {
-		t.Errorf("active time/damage = %v/%v, want 300/175", c.ActiveTime, c.Damage)
+	if c.ActiveTime != 300 || c.Damage != 191 {
+		t.Errorf("active time/damage = %v/%v, want 300/191", c.ActiveTime, c.Damage)
 	}
 	if c.Failures.Skill != 0.5 || c.Failures.Energy != 1 {
 		t.Errorf("failures %+v, want skill 0.5 and energy 1", c.Failures)
 	}
-	wantMap(t, "actions", c.Actions, map[string]float64{"skill": 2, "attack": 1})
-	wantMap(t, "reactions", c.Reactions, map[string]float64{"vaporize": 1})
-	wantMap(t, "energy", c.Energy, map[string]float64{"a": 6, "b": 1})
-	wantMap(t, "damage by source", c.DamageBySource, map[string]float64{"Skill (vaporize)": 100, "Skill": 50, "Normal 0": 25})
-	wantMap(t, "damage instances", c.DamageInstances, map[string]float64{"Skill (vaporize)": 1, "Skill": 1, "Normal 0": 1})
+	wantSums(t, "actions", c.Actions, map[string]float64{"skill": 2, "attack": 1})
+	wantSums(t, "reactions", c.Reactions, map[string]float64{"vaporize": 1})
+	wantSums(t, "energy", c.Energy, map[string]float64{"a": 6, "b": 1})
+	wantSums(t, "damage by source", c.DamageBySource, map[string]float64{
+		"Skill (vaporize)": 100, "Skill": 50, "Normal 0": 25, "Burst (melt)": 15, "Burst": 1,
+	})
+	wantSums(t, "damage instances", c.DamageInstances, map[string]float64{
+		"Skill (vaporize)": 1, "Skill": 1, "Normal 0": 1, "Burst (melt)": 2, "Burst": 1,
+	})
 
 	byElement := map[string]float64{}
 	for _, ele := range attributes.ElementStrings() {
 		byElement[ele] = 0
 	}
-	byElement["pyro"] = 150
+	byElement["pyro"] = 166
 	byElement["physical"] = 25
-	wantMap(t, "damage by element", c.DamageByElement, byElement)
+	wantSums(t, "damage by element", c.DamageByElement, byElement)
 
 	targets := map[int]float64{}
 	for _, td := range c.DamageByTarget {
@@ -82,22 +90,29 @@ func TestSummarize(t *testing.T) {
 		}
 		targets[td.Target] = td.Damage
 	}
-	if len(targets) != 2 || targets[1] != 125 || targets[2] != 50 {
-		t.Errorf("damage by target %v, want 1: 125, 2: 50", c.DamageByTarget)
+	if len(targets) != 2 || targets[1] != 141 || targets[2] != 50 {
+		t.Errorf("damage by target %v, want 1: 141, 2: 50", c.DamageByTarget)
 	}
 
-	wantMap(t, "second character reactions", s.Characters[1].Reactions, map[string]float64{"melt": 2})
+	wantSums(t, "second character reactions", s.Characters[1].Reactions, map[string]float64{"melt": 2})
 }
 
-func wantMap[K comparable](t *testing.T, name string, got, want map[K]float64) {
+func wantSums(t *testing.T, name string, got Sums, want map[string]float64) {
 	t.Helper()
-	if len(got) != len(want) {
+	m := map[string]float64{}
+	for k, v := range got.All() {
+		if _, ok := m[k]; ok {
+			t.Errorf("%v: key %q listed twice", name, k)
+		}
+		m[k] = v
+	}
+	if len(m) != len(want) || len(got.Values) != len(got.Keys) {
 		t.Errorf("%v: got %v, want %v", name, got, want)
 		return
 	}
 	for k, v := range want {
-		if g, ok := got[k]; !ok || g != v {
-			t.Errorf("%v: got %v, want %v", name, got, want)
+		if g, ok := m[k]; !ok || g != v {
+			t.Errorf("%v: got %v, want %v", name, m, want)
 			return
 		}
 	}
