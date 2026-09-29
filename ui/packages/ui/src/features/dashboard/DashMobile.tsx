@@ -30,7 +30,7 @@ export function DashMobile() {
 						/>
 						<WhatsNew className="g-m-fade-card mb-[14px]" />
 						<CommunityCta className="mb-g-section" />
-						{/* Shared by others is unmounted since the db moved off gcsim; it may come back pointing at db.kqm.gg.
+						{/* Shared by others is unmounted since the db moved off gcsim; it may come back.
 						<SectionHead
 							className="mb-4"
 							title={t("dash.shared_title")}

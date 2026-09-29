@@ -25,7 +25,7 @@ export function DashDesktop() {
 					<CommunityCta />
 				</div>
 
-				{/* Shared by others is unmounted since the db moved off gcsim; it may come back pointing at db.kqm.gg.
+				{/* Shared by others is unmounted since the db moved off gcsim; it may come back.
 				<SectionHead
 					className="mb-[18px]"
 					title={t("dash.shared_title")}

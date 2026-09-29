@@ -9,7 +9,7 @@ function Removed() {
 	const { t } = useTranslation();
 	return (
 		<>
-			<title>gcsim - simulation impact</title>
+			<title>gcsim - db entry unavailable</title>
 			<div className="m-2 text-center">{t("src.db_entry_unavailable")}</div>
 		</>
 	);

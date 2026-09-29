@@ -8,8 +8,9 @@ Playwright config:
   wasm + workers, validates and runs a config, and asserts the viewer renders.
   Beyond that smoke path it also covers the dash home, the viewer's Config and
   Sample tabs, the share and local viewer routes (`?tab=`, legacy `#tab=`
-  redirects, load errors and retry), `/sample/local`, and the GOOD / Enka
-  toolbox imports (each stubbing the network it needs so it stays offline).
+  redirects, load errors and retry), the retired `/db` and `/db/:id` routes,
+  `/sample/local`, and the GOOD / Enka toolbox imports (each stubbing the
+  network it needs so it stays offline).
 - **docs** (`playwright.docs.config.ts`) — builds and serves the Docusaurus docs
   site, then asserts one page per top-level sidebar section renders (route,
   title, `<h1>`, non-empty body) with its content images loaded, failing only on
@@ -176,8 +177,8 @@ The toolbox-import specs' fixtures, both re-exported from `src/`:
 
 ### Offline fixtures (`src/offline-fixtures.ts`)
 
-`installOfflineRoutes(page)` stubs the web app's network so the dash specs stay
-offline:
+`installOfflineRoutes(page)` stubs the web app's network so the dash and nav
+specs stay offline:
 
 - `/api/assets/**` returns a 1x1 PNG (avatars, art);
 - `api.github.com` (latest-release lookup) returns a fixed payload;
