@@ -51,8 +51,15 @@ function handleRequest(req: any) {
 			return ready(req);
 		case WorkerRequest.Initialize:
 			return respond(req, initialize(req));
-		case WorkerRequest.Run:
-			return respond(req, run(req));
+		case WorkerRequest.Run: {
+			const resp = run(req);
+			// transfer the result's buffer instead of copying it
+			return respond(
+				req,
+				resp,
+				resp.result instanceof Uint8Array ? [resp.result.buffer] : [],
+			);
+		}
 		default:
 			console.error("aggregator - unknown request: ", req);
 			throw new Error("aggregator unknown request");
@@ -62,8 +69,12 @@ self.onmessage = (ev) => handleRequest(ev.data);
 
 // Echoes the request's run id so the executor can drop responses from a cancelled run.
 // @ts-ignore
-function respond(req: { run: number }, resp: object) {
-	postMessage({ ...resp, run: req.run });
+function respond(
+	req: { run: number },
+	resp: object,
+	transfer: Transferable[] = [],
+) {
+	postMessage({ ...resp, run: req.run }, transfer);
 }
 
 // TODO: I hate this
