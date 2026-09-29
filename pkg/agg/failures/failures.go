@@ -3,10 +3,8 @@ package failures
 import (
 	calc "github.com/aclements/go-moremath/stats"
 	"github.com/genshinsim/gcsim/pkg/agg"
-	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/model"
-	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
 func init() {
@@ -48,33 +46,15 @@ func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 	return &out, nil
 }
 
-func (b *buffer) Add(result stats.Result) {
+func (b *buffer) Add(result *agg.Summary) {
 	for i := range result.Characters {
-		var energy, stamina, swap, skill, dash, burstcd float64
-
-		for _, fail := range result.Characters[i].FailedActions {
-			switch fail.Reason {
-			case action.InsufficientEnergy.String():
-				energy += float64(fail.End-fail.Start) / 60
-			case action.InsufficientStamina.String():
-				stamina += float64(fail.End-fail.Start) / 60
-			case action.SwapCD.String():
-				swap += float64(fail.End-fail.Start) / 60
-			case action.SkillCD.String():
-				skill += float64(fail.End-fail.Start) / 60
-			case action.DashCD.String():
-				dash += float64(fail.End-fail.Start) / 60
-			case action.BurstCD.String():
-				burstcd += float64(fail.End-fail.Start) / 60
-			}
-		}
-
-		b.failures[i].energy.Add(energy)
-		b.failures[i].stamina.Add(stamina)
-		b.failures[i].swap.Add(swap)
-		b.failures[i].skill.Add(skill)
-		b.failures[i].dash.Add(dash)
-		b.failures[i].burstcd.Add(burstcd)
+		fail := &result.Characters[i].Failures
+		b.failures[i].energy.Add(fail.Energy)
+		b.failures[i].stamina.Add(fail.Stamina)
+		b.failures[i].swap.Add(fail.Swap)
+		b.failures[i].skill.Add(fail.Skill)
+		b.failures[i].dash.Add(fail.Dash)
+		b.failures[i].burstcd.Add(fail.BurstCD)
 	}
 }
 

@@ -50,7 +50,7 @@ func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 	return &out, nil
 }
 
-func (b *buffer) Add(result stats.Result) {
+func (b *buffer) Add(result *agg.Summary) {
 	for _, shield := range result.ShieldResults.Shields {
 		// create empty state if new shield
 		if _, ok := b.shieldHP[shield.Name]; !ok {

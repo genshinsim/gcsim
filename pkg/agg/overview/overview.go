@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/model"
-	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
 func init() {
@@ -47,7 +46,7 @@ func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 }
 
 // TODO: push looping/summation to StatsCollector for peformance boost
-func (b *buffer) Add(result stats.Result) {
+func (b *buffer) Add(result *agg.Summary) {
 	b.totalDamage.Add(result.TotalDamage)
 
 	b.duration.Xs = append(b.duration.Xs, float64(result.Duration)/60)
@@ -64,15 +63,9 @@ func (b *buffer) Add(result stats.Result) {
 	}
 	b.shp.Xs[iX] /= float64(result.Duration)
 
-	for i := range result.Characters {
-		b.rps.Xs[iX] += float64(len(result.Characters[i].ReactionEvents))
-		for _, h := range result.Characters[i].HealEvents {
-			b.hps.Xs[iX] += h.Heal
-		}
-		for _, e := range result.Characters[i].EnergyEvents {
-			b.eps.Xs[iX] += e.Gained + e.Wasted
-		}
-	}
+	b.rps.Xs[iX] += float64(result.Reactions)
+	b.hps.Xs[iX] += result.Heal
+	b.eps.Xs[iX] += result.Energy
 
 	b.rps.Xs[iX] /= b.duration.Xs[iX]
 	b.hps.Xs[iX] /= b.duration.Xs[iX]

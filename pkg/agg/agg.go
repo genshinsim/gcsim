@@ -5,7 +5,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/model"
-	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
 type Config struct {
@@ -14,7 +13,7 @@ type Config struct {
 }
 
 type Aggregator interface {
-	Add(result stats.Result)
+	Add(result *Summary)
 	// TODO: Merge(other Aggregator) Aggregator for multi-threaded aggregations (optional optimization)
 	Flush(result *model.SimulationStatistics)
 }

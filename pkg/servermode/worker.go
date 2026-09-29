@@ -3,6 +3,7 @@ package servermode
 import (
 	"log/slog"
 
+	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/gcs/eval"
@@ -112,8 +113,9 @@ iters:
 		select {
 		case result := <-respCh:
 			// w.log.Info("got 1 result", "id", w.id, "count", count)
+			summary := agg.Summarize(&result)
 			for _, a := range aggregators {
-				a.Add(result)
+				a.Add(&summary)
 			}
 			count += 1
 		case err := <-errCh:
