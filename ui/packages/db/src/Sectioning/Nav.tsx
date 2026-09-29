@@ -12,7 +12,6 @@ import {
 	SelectValue,
 } from "@gcsim/primitives";
 import { useTranslation } from "react-i18next";
-import { Link } from "wouter";
 import logo from "./logo.png";
 
 const LANGUAGES = [
@@ -32,14 +31,14 @@ export default function Nav() {
 		<Navbar className="h-[50px]">
 			<div className="mx-auto flex w-full max-w-[1160px] px-8">
 				<NavbarHeading className="!mr-[10px]">
-					<Link href="/" className="flex h-[50px] items-center">
+					<a href="/" className="flex h-[50px] items-center">
 						<img
 							src={logo}
 							alt=""
 							className="object-scale-down max-h-[75%] m-auto mr-2"
 						/>
 						<span className="font-medium font-mono">simpact</span>
-					</Link>
+					</a>
 				</NavbarHeading>
 				<NavbarGroup className="min-[550px]:flex items-stretch">
 					<NavbarDivider />

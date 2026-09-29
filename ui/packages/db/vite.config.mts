@@ -24,12 +24,4 @@ export default defineConfig({
 			},
 		},
 	},
-	server: {
-		proxy: {
-			"/api": {
-				target: "https://gcsim.app",
-				changeOrigin: true,
-			},
-		},
-	},
 });
