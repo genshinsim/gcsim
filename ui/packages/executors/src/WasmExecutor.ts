@@ -294,7 +294,7 @@ export class WasmExecutor implements Executor {
 class HelperExecutor {
 	private wasmPath: string;
 	private helper: Worker | undefined;
-	private responses = new Map<number, MessageEvent>();
+	private pending = new Map<number, (event: MessageEvent) => void>();
 	private id = 0;
 
 	constructor(wasm: string) {
@@ -309,22 +309,18 @@ class HelperExecutor {
 		this.helper = new Worker(new URL("./Workers/helper.ts", import.meta.url));
 		this.helper.postMessage(Helper.ReadyRequest(this.wasmPath));
 		this.helper.onmessage = (ev) => {
-			this.responses.set(ev.data.id, ev);
+			const handleResponse = this.pending.get(ev.data.id);
+			if (handleResponse == null) {
+				console.error("helper - response without a pending request: ", ev.data);
+				return;
+			}
+			this.pending.delete(ev.data.id);
+			handleResponse(ev);
 		};
 	}
 
 	private requestId() {
 		return this.id++;
-	}
-
-	private waitForResponse(id: number, cb: (event: MessageEvent) => void) {
-		const event = this.responses.get(id);
-		if (event != null) {
-			cb(event);
-			this.responses.delete(id);
-			return;
-		}
-		setTimeout(() => this.waitForResponse(id, cb), 100);
 	}
 
 	public validate(cfg: string): Promise<ParsedResult> {
@@ -344,7 +340,7 @@ class HelperExecutor {
 						reject("unknown validate response: " + event.data.type);
 				}
 			}
-			this.waitForResponse(id, handleResponse);
+			this.pending.set(id, handleResponse);
 			this.helper?.postMessage(Helper.ValidateRequest(id, cfg));
 		});
 	}
@@ -367,7 +363,7 @@ class HelperExecutor {
 						reject("unknown sample response: " + event.data.type);
 				}
 			}
-			this.waitForResponse(id, handleResponse);
+			this.pending.set(id, handleResponse);
 			this.helper?.postMessage(Helper.SampleRequest(id, cfg, seed));
 		});
 	}
