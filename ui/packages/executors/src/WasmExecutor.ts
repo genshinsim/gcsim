@@ -1,9 +1,19 @@
 import type { model, ParsedResult, Sample } from "@gcsim/types";
-import { throttle } from "lodash-es";
 import type { Executor } from "./Executor";
 import { Aggregator, Helper, SimWorker } from "./Workers/common";
 
-const VIEWER_THROTTLE = 100;
+// Every flush re-serializes and re-signs the whole result on the aggregator, the thread
+// that also has to aggregate every iteration; one costs 10-35 ms for a typical team. While
+// a run is in progress, flush no more often than FLUSH_COST_RATIO times the last flush's
+// cost, clamped to [MIN_FLUSH_INTERVAL, MAX_FLUSH_INTERVAL] ms, so flushing takes at most
+// about a tenth of the aggregator. The final flush is sent as soon as the last iteration is
+// aggregated.
+//
+// Intermediate results stay signed: a cancelled, failed or interrupted (pagehide) run keeps
+// the last one it received, and that result must still be shareable.
+const MIN_FLUSH_INTERVAL = 100;
+const MAX_FLUSH_INTERVAL = 1000;
+const FLUSH_COST_RATIO = 10;
 
 // Run requests queued per worker. With more than one, a worker starts its next iteration
 // right away instead of waiting a round trip through the main thread, which may be busy
@@ -210,16 +220,6 @@ export class WasmExecutor implements Executor {
 			return Promise.all(promises);
 		});
 
-		const throttledFlush = throttle(
-			() => {
-				if (this.runId === run) {
-					this.aggregator?.postMessage(Aggregator.FlushRequest(run));
-				}
-			},
-			VIEWER_THROTTLE,
-			{ leading: true, trailing: true },
-		);
-
 		// 3. start execution
 		const executed = initialized.then(() => {
 			return new Promise<boolean>((resolve, reject) => {
@@ -227,21 +227,24 @@ export class WasmExecutor implements Executor {
 					reject("Aggregator is null!");
 					return;
 				}
+				const aggregator = this.aggregator;
 				let completed = 0;
-				this.aggregator.onmessage = (ev) => {
+				let flushing = false; // an intermediate flush is outstanding
+				let nextFlush = 0;
+				aggregator.onmessage = (ev) => {
 					if (!isCurrent(ev)) {
 						return;
 					}
 					switch (ev.data.type as Aggregator.Response) {
 						case Aggregator.Response.Result: {
-							const { hash, stats } = (ev.data as Aggregator.ResultResponse)
-								.result;
+							const resp = ev.data as Aggregator.ResultResponse;
+							const { hash, stats } = resp.result;
 
 							const out = Object.assign({}, result);
 							out.statistics = stats;
 							updateResult(out, hash);
 
-							if (completed >= maxIterations) {
+							if (resp.final) {
 								stop();
 								resolve(true);
 								if (this.runStarted > 0) {
@@ -249,12 +252,25 @@ export class WasmExecutor implements Executor {
 									console.log(`run time: ${end - this.runStarted} ms`);
 									this.runStarted = 0;
 								}
+								return;
 							}
+							flushing = false;
+							nextFlush =
+								performance.now() +
+								Math.min(
+									Math.max(FLUSH_COST_RATIO * resp.ms, MIN_FLUSH_INTERVAL),
+									MAX_FLUSH_INTERVAL,
+								);
 							return;
 						}
 						case Aggregator.Response.Done:
 							completed += 1;
-							throttledFlush();
+							if (completed === maxIterations) {
+								aggregator.postMessage(Aggregator.FlushRequest(run, true));
+							} else if (!flushing && performance.now() >= nextFlush) {
+								flushing = true;
+								aggregator.postMessage(Aggregator.FlushRequest(run, false));
+							}
 							dispatch();
 							return;
 						case Aggregator.Response.Failed:

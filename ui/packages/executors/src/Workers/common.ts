@@ -93,23 +93,39 @@ export namespace Aggregator {
 	export interface FlushRequest {
 		type: Request.Flush;
 		run: number;
+		// the last flush of the run; echoed in the response
+		final: boolean;
 	}
 
-	export function FlushRequest(run: number): FlushRequest {
-		return { type: Request.Flush, run: run };
+	export function FlushRequest(run: number, final: boolean): FlushRequest {
+		return { type: Request.Flush, run: run, final: final };
 	}
 
 	export interface ResultResponse {
 		type: Response.Result;
 		run: number;
+		final: boolean;
+		// time the aggregator spent on the flush, in ms
+		ms: number;
 		result: {
 			hash: string;
 			stats: any;
 		};
 	}
 
-	export function ResultResponse(run: number, result: any): ResultResponse {
-		return { type: Response.Result, run: run, result: result };
+	export function ResultResponse(
+		run: number,
+		final: boolean,
+		ms: number,
+		result: any,
+	): ResultResponse {
+		return {
+			type: Response.Result,
+			run: run,
+			final: final,
+			ms: ms,
+			result: result,
+		};
 	}
 }
 
