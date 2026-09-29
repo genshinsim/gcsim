@@ -1,12 +1,8 @@
 import { Button } from "@gcsim/primitives";
 import { Viewport } from "../../components";
 //@ts-ignore
-import DiscordLogo from "../../components/icons/discord-icon.svg";
-import {
-	type AuthProvider,
-	DiscordProvider,
-	MockProvider,
-} from "../../data/Provider";
+import DiscordLogo from "./discord-icon.svg";
+import { type AuthProvider, DiscordProvider, MockProvider } from "./Provider";
 
 export const authProvider: AuthProvider = new DiscordProvider();
 // export const authProvider: AuthProvider = new MockProvider();
