@@ -32,32 +32,36 @@ func (e *Enemy) HandleAttack(atk *info.AttackEvent) float64 {
 		e.Core.Combat.Events.Emit(event.OnEnemyHit, e, atk)
 	}
 
-	var amp string
-	var cata string
-	var dmg float64
-	var crit bool
+	// the damage log keeps pointers to values that are only known further down; allocate
+	// them only when logging so the hit path does not heap allocate them
+	var logged *damageLogValues
 
-	evt := e.Core.Combat.Log.NewEvent(atk.Info.Abil, glog.LogDamageEvent, atk.Info.ActorIndex).
-		Write("target", e.Key()).
-		Write("attack-tag", atk.Info.AttackTag).
-		Write("ele", atk.Info.Element.String()).
-		Write("damage", &dmg).
-		Write("crit", &crit).
-		Write("amp", &amp).
-		Write("cata", &cata).
-		Write("abil", atk.Info.Abil).
-		Write("source_frame", atk.SourceFrame)
-	evt.WriteBuildMsg(atk.Snapshot.Logs...)
+	evt := e.Core.Combat.Log.NewEvent(atk.Info.Abil, glog.LogDamageEvent, atk.Info.ActorIndex)
+	if e.Core.Flags.LogDebug {
+		logged = &damageLogValues{}
+		evt.Write("target", e.Key()).
+			Write("attack-tag", atk.Info.AttackTag).
+			Write("ele", atk.Info.Element.String()).
+			Write("damage", &logged.dmg).
+			Write("crit", &logged.crit).
+			Write("amp", &logged.amp).
+			Write("cata", &logged.cata).
+			Write("abil", atk.Info.Abil).
+			Write("source_frame", atk.SourceFrame)
+		evt.WriteBuildMsg(atk.Snapshot.Logs...)
+	}
 
 	if !atk.Info.SourceIsSim {
 		if atk.Info.ActorIndex < 0 {
 			log.Println(atk)
 		}
 		preDmgModDebug := e.Core.Combat.Team.CombatByIndex(atk.Info.ActorIndex).ApplyAttackMods(atk, e)
-		evt.Write("pre_damage_mods", preDmgModDebug)
+		if e.Core.Flags.LogDebug {
+			evt.Write("pre_damage_mods", preDmgModDebug)
+		}
 	}
 
-	dmg, crit = e.attack(atk, evt, grpMult)
+	dmg, crit := e.attack(atk, evt, grpMult)
 
 	// delay damage event to end of the frame
 	e.Core.Combat.Tasks.Add(func() {
@@ -77,16 +81,35 @@ func (e *Enemy) HandleAttack(atk *info.AttackEvent) float64 {
 		}
 	}, 0)
 
-	// this works because string in golang is a slice underneath, so the &amp points to the slice info
-	// that's why when the underlying string in amp changes (has to be reallocated) the pointer doesn't
-	// change since it's just pointing to the slice "header"
-	if atk.Info.Amped {
-		amp = string(atk.Info.AmpType)
-	}
-	if atk.Info.Catalyzed {
-		cata = string(atk.Info.CatalyzedType)
+	// the log event points at these fields, so setting them here updates the log
+	if logged != nil {
+		logged.dmg = dmg
+		logged.crit = crit
+		if atk.Info.Amped {
+			logged.amp = string(atk.Info.AmpType)
+		}
+		if atk.Info.Catalyzed {
+			logged.cata = string(atk.Info.CatalyzedType)
+		}
 	}
 	return dmg
+}
+
+// damageLogValues holds the damage log values that are set after the log event is written
+type damageLogValues struct {
+	dmg  float64
+	crit bool
+	amp  string
+	cata string
+}
+
+// loggedAuras returns the active auras for the application logs, or nil when logging is
+// disabled, so hits don't format aura names that nothing reads
+func (e *Enemy) loggedAuras() []string {
+	if !e.Core.Flags.LogDebug {
+		return nil
+	}
+	return e.ActiveAuraString()
 }
 
 func (e *Enemy) attack(atk *info.AttackEvent, evt glog.Event, grpMult float64) (float64, bool) {
@@ -120,7 +143,7 @@ func (e *Enemy) attack(atk *info.AttackEvent, evt glog.Event, grpMult float64) (
 		atk.Info.Durability *= info.Durability(e.WillApplyEle(atk.Info.ICDTag, atk.Info.ICDGroup, atk.Info.ActorIndex))
 		checkBurningICD()
 		if atk.Info.Durability > 0 && atk.Info.Element != attributes.Physical {
-			existing := e.ActiveAuraString()
+			existing := e.loggedAuras()
 			applied := atk.Info.Durability
 			e.React(atk)
 			if e.Core.Flags.LogDebug && atk.Reacted {
@@ -234,7 +257,7 @@ func (e *Enemy) applyDamage(atk *info.AttackEvent, damage float64) float64 {
 	// apply auras
 	if atk.Info.Durability > 0 && !atk.Reacted && atk.Info.Element != attributes.Physical {
 		// check for ICD first
-		existing := e.ActiveAuraString()
+		existing := e.loggedAuras()
 		applied := atk.Info.Durability
 		e.AttachOrRefill(atk)
 		if e.Core.Flags.LogDebug {
