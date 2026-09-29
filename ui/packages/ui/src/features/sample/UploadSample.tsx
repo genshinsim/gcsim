@@ -6,8 +6,6 @@ import { useDropzone } from "react-dropzone";
 import { useTranslation } from "react-i18next";
 import SamplePage from "./SamplePage";
 
-export { SamplePage };
-
 export const UploadSample = () => {
 	const { t } = useTranslation();
 	const [sample, setSample] = useState<Sample | null>(null);

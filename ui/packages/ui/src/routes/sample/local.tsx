@@ -1,7 +1,7 @@
 import type { Sample } from "@gcsim/types";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import axios from "axios";
-import { SamplePage } from "../../Pages";
+import SamplePage from "../../features/sample/SamplePage";
 
 export const Route = createFileRoute("/sample/local")({
 	shouldReload: ({ cause }) => cause === "enter",

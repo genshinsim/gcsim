@@ -16,7 +16,7 @@ import CopyToClipboard from "@ui/Components/Buttons/CopyToClipboard";
 import SendToSimulator from "@ui/Components/Buttons/SendToSimulator";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import type { SampleState } from "../../Pages/Sample/useSample";
+import type { SampleState } from "../sample/useSample";
 import LoadingToast, { type ResultSource } from "./components/LoadingToast";
 import ViewerNav from "./components/ViewerNav";
 import Warnings from "./components/Warnings";
