@@ -1,4 +1,8 @@
-import { type ExecutorSupplier, WasmExecutor } from "@gcsim/executors";
+import {
+	defaultWorkerCount,
+	type ExecutorSupplier,
+	WasmExecutor,
+} from "@gcsim/executors";
 import { Field, FieldTitle, NumberInput } from "@gcsim/primitives";
 import { UI } from "@gcsim/ui";
 import { useLocalStorage } from "@gcsim/utils";
@@ -26,7 +30,10 @@ function wasmLocation() {
 
 const WasmMode = ({ children }: { children: ReactNode }) => {
 	const { t } = useTranslation();
-	const [workers, setWorkers] = useLocalStorage<number>("wasm-num-workers", 3);
+	const [workers, setWorkers] = useLocalStorage<number>(
+		"wasm-num-workers",
+		defaultWorkerCount(),
+	);
 
 	const supplier = useRef<ExecutorSupplier<WasmExecutor>>(() => {
 		if (exec == null) {
