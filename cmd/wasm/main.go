@@ -246,8 +246,9 @@ func aggregate(this js.Value, args []js.Value) (out interface{}) {
 		return marshal(err)
 	}
 
+	summary := agg.Summarize(&result)
 	for _, a := range aggregators {
-		a.Add(result)
+		a.Add(&summary)
 	}
 	return nil
 }

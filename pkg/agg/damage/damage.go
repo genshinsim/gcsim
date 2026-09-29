@@ -9,7 +9,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/model"
-	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
 // 30 = .5s
@@ -97,7 +96,7 @@ func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 	return &out, nil
 }
 
-func (b *buffer) Add(result stats.Result) {
+func (b *buffer) Add(result *agg.Summary) {
 	time := 60 / float64(result.Duration)
 	targetDPS := make(map[int]float64)
 	elementDPS := makeElementMap()
@@ -115,12 +114,6 @@ func (b *buffer) Add(result stats.Result) {
 	}
 
 	for i := range result.Characters {
-		var charDPS float64
-		charElementDPS := makeElementMap()
-		charTargetDPS := make(map[int]float64)
-		sourceDPS := make(map[string]float64)
-		sourceDamageInstances := make(map[string]float64)
-
 		b.cumulativeContrib[i] = expandCumu(
 			b.cumulativeContrib[i],
 			max(len(b.cumulativeContrib[i]), len(result.Characters[i].DamageCumulativeContrib)))
@@ -136,26 +129,8 @@ func (b *buffer) Add(result stats.Result) {
 			stat.Add(val)
 		}
 
-		for _, ev := range result.Characters[i].DamageEvents {
-			if _, ok := charTargetDPS[ev.Target]; !ok {
-				charTargetDPS[ev.Target] = 0
-			}
-			charTargetDPS[ev.Target] += ev.Damage
-			charElementDPS[ev.Element] += ev.Damage
-			charDPS += ev.Damage
-			sourceDPSKey := ev.Source
-			reactModifier := string(ev.ReactionModifier)
-			if reactModifier != "" {
-				sourceDPSKey += " (" + reactModifier + ")"
-			}
-			sourceDPS[sourceDPSKey] += ev.Damage
-			if ev.Damage > 0 {
-				sourceDamageInstances[sourceDPSKey] += 1
-			}
-		}
-
-		b.characterDPS[i].Add(charDPS * time)
-		for k, v := range charElementDPS {
+		b.characterDPS[i].Add(result.Characters[i].Damage * time)
+		for k, v := range result.Characters[i].DamageByElement {
 			if _, ok := elementDPS[k]; !ok {
 				elementDPS[k] = 0
 			}
@@ -167,7 +142,8 @@ func (b *buffer) Add(result stats.Result) {
 			b.dpsByElement[i][k].Add(v * time)
 		}
 
-		for k, v := range charTargetDPS {
+		for _, t := range result.Characters[i].DamageByTarget {
+			k, v := t.Target, t.Damage
 			if _, ok := targetDPS[k]; !ok {
 				targetDPS[k] = 0
 			}
@@ -179,14 +155,14 @@ func (b *buffer) Add(result stats.Result) {
 			b.dpsByTarget[i][k].Add(v * time)
 		}
 
-		for k, v := range sourceDPS {
+		for k, v := range result.Characters[i].DamageBySource {
 			if _, ok := b.sourceDPS[i][k]; !ok {
 				b.sourceDPS[i][k] = &calc.StreamStats{}
 			}
 			b.sourceDPS[i][k].Add(v * time)
 		}
 
-		for k, v := range sourceDamageInstances {
+		for k, v := range result.Characters[i].DamageInstances {
 			if _, ok := b.sourceDamageInstances[i][k]; !ok {
 				b.sourceDamageInstances[i][k] = &calc.StreamStats{}
 			}

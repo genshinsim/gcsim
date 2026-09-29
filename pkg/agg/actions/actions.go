@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/model"
-	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
 func init() {
@@ -32,13 +31,9 @@ func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 	return &out, nil
 }
 
-func (b *buffer) Add(result stats.Result) {
+func (b *buffer) Add(result *agg.Summary) {
 	for i := range result.Characters {
-		characterActions := make(map[string]float64)
-		for _, ev := range result.Characters[i].ActionEvents {
-			characterActions[ev.Action] += 1
-		}
-		for k, v := range characterActions {
+		for k, v := range result.Characters[i].Actions {
 			if _, ok := b.characterActions[i][k]; !ok {
 				b.characterActions[i][k] = &calc.StreamStats{}
 			}
