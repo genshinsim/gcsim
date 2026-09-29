@@ -32,6 +32,7 @@ node scripts/wasmbench/bench.mjs run --wasm $B/cand.wasm \
 | `compare.sh a.wasm b.wasm [c.wasm…]` | Fixed seeds, fixed iteration counts, binaries interleaved. Prints per config: median ms/iter, IQR/median, ratio vs the first binary with a bootstrap 95% CI, and the geomean ratio. Env: `CONFIGS`, `PROCS` (3), `ROUNDS` (20 paired / 4 pool), `BLOCK`, `WARMUP`, `WORKERS` (0), `ITERS` (pool, 1000), `SEED`, `METRIC`, `OUT`, `NODE_FLAGS`. |
 | `check.sh cand.wasm` / `check.sh --regen base.wasm` | Correctness oracle against goldens in `$WASMBENCH_HOME/wasmbench-golden` (`GOLDEN_DIR`). Env: `CHECK_ITERS` (100), `FLUSH_EVERY` (0), `SEED`, `CONFIGS`, `RTOL`. |
 | `bench.mjs` | The runner: `run`, `ab`, `dump`, `diff`, `report` subcommands (see its header). |
+| `pgo.sh [out]` | Regenerates `cmd/wasm/default.pgo`, the PGO profile every build of `cmd/wasm` picks up: a native CPU profile of `simulate()` + `aggregate()`'s work (`pgo/main.go`) at `GOMAXPROCS=1` over the configs. Env: `SECS` (8 per config), `CONFIGS`. |
 | `configs/` | Team configs plus `manifest.tsv` (per-config block size, warmup, source). |
 
 `compare.sh` and `check.sh` take a mkdir lock at `$WASMBENCH_LOCK` (default
