@@ -20,10 +20,7 @@ type Target struct {
 	Alive bool
 
 	// icd related
-	icdTagOnTimer       map[IcdKey]bool
-	icdTagCounter       map[IcdKey]int
-	icdDamageTagOnTimer map[IcdKey]bool
-	icdDamageTagCounter map[IcdKey]int
+	icd map[IcdKey]*icdState
 
 	direction info.Point
 }
@@ -37,10 +34,7 @@ func New(core *core.Core, p info.Point, r float64) *Target {
 	t.Tags = make(map[string]int)
 	t.Alive = true
 
-	t.icdTagOnTimer = make(map[IcdKey]bool)
-	t.icdTagCounter = make(map[IcdKey]int)
-	t.icdDamageTagOnTimer = make(map[IcdKey]bool)
-	t.icdDamageTagCounter = make(map[IcdKey]int)
+	t.icd = make(map[IcdKey]*icdState)
 	return t
 }
 
@@ -161,12 +155,10 @@ func (t *Target) CalcTempDirection(trg info.Point) info.Point {
 	return direction
 }
 
-type IcdKey struct {
-	Char     int
-	IcdTag   attacks.ICDTag
-	IcdGroup attacks.ICDGroup
-}
+// IcdKey packs (char, tag, group) into one word so ICD lookups hash a single integer. Distinct
+// inputs give distinct keys as long as char fits in 32 bits and tag and group in 16.
+type IcdKey uint64
 
 func NewIcdKey(char int, icdTag attacks.ICDTag, icdGroup attacks.ICDGroup) IcdKey {
-	return IcdKey{Char: char, IcdTag: icdTag, IcdGroup: icdGroup}
+	return IcdKey(uint64(uint32(char)) | uint64(uint16(icdTag))<<32 | uint64(uint16(icdGroup))<<48)
 }
