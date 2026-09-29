@@ -33,13 +33,14 @@ export namespace Aggregator {
 		return { type: Response.Failed, run: run, reason: reason };
 	}
 
+	// the port to ask the helper for the compiled module on
 	export interface ReadyRequest {
 		type: Request.Ready;
-		module: WebAssembly.Module;
+		port: MessagePort;
 	}
 
-	export function ReadyRequest(module: WebAssembly.Module): ReadyRequest {
-		return { type: Request.Ready, module: module };
+	export function ReadyRequest(port: MessagePort): ReadyRequest {
+		return { type: Request.Ready, port: port };
 	}
 
 	export interface ReadyResponse {
@@ -139,6 +140,7 @@ export namespace Helper {
 		Ready = "ready",
 		Validate = "validate",
 		Sample = "sample",
+		Share = "share",
 	}
 
 	export enum Response {
@@ -146,6 +148,7 @@ export namespace Helper {
 		Ready = "ready",
 		Validate = "validated",
 		Sample = "sample",
+		Shared = "shared",
 	}
 
 	// id is missing when loading the wasm failed
@@ -169,10 +172,26 @@ export namespace Helper {
 		return { type: Request.Ready, wasm: wasm };
 	}
 
-	// the compiled module, for the executor to share with the other workers
+	// the wasm is compiled and can be shared with the other workers
 	export interface ReadyResponse {
 		type: Response.Ready;
-		module: WebAssembly.Module;
+	}
+
+	// Has the helper send the compiled module over port to the aggregator or a sim worker
+	// holding the other end, once that worker asks for it.
+	export interface ShareRequest {
+		id: number;
+		type: Request.Share;
+		port: MessagePort;
+	}
+
+	export function ShareRequest(id: number, port: MessagePort): ShareRequest {
+		return { id: id, type: Request.Share, port: port };
+	}
+
+	export interface SharedResponse {
+		id: number;
+		type: Response.Shared;
 	}
 
 	export interface ValidateRequest {
@@ -242,13 +261,14 @@ export namespace SimWorker {
 		return { type: Response.Failed, run: run, reason: reason };
 	}
 
+	// the port to ask the helper for the compiled module on
 	export interface ReadyRequest {
 		type: Request.Ready;
-		module: WebAssembly.Module;
+		port: MessagePort;
 	}
 
-	export function ReadyRequest(module: WebAssembly.Module): ReadyRequest {
-		return { type: Request.Ready, module: module };
+	export function ReadyRequest(port: MessagePort): ReadyRequest {
+		return { type: Request.Ready, port: port };
 	}
 
 	export interface ReadyResponse {

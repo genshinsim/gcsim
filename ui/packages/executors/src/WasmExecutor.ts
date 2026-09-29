@@ -77,16 +77,16 @@ export class WasmExecutor implements Executor {
 
 	// The aggregator and the sim workers for a run: those kept from earlier runs, minus any that
 	// died, plus new ones up to the worker count. Some may still be loading.
-	private pool(module: WebAssembly.Module) {
+	private pool() {
 		if (this.aggregator == null || this.aggregator.dead) {
-			this.aggregator = newAggregator(module);
+			this.aggregator = newAggregator(this.helper);
 		}
 		this.workers = this.workers.filter((w) => !w.dead);
 		for (const worker of this.workers.splice(this.workerCount)) {
 			worker.terminate();
 		}
 		while (this.workers.length < this.workerCount) {
-			this.workers.push(newSimWorker(module));
+			this.workers.push(newSimWorker(this.helper));
 		}
 		return { aggregator: this.aggregator, workers: [...this.workers] };
 	}
@@ -127,11 +127,11 @@ export class WasmExecutor implements Executor {
 				}
 			};
 
-			this.helper.load().then((module) => {
+			this.helper.load().then(() => {
 				if (!current()) {
 					return;
 				}
-				let { aggregator, workers } = this.pool(module);
+				let { aggregator, workers } = this.pool();
 
 				let result: model.SimulationResult | null = null;
 				let maxIterations = 0;
@@ -254,7 +254,7 @@ export class WasmExecutor implements Executor {
 								return;
 							case Aggregator.Response.Failed:
 								if (diedOnLeftover(ev)) {
-									aggregator = this.aggregator = newAggregator(module);
+									aggregator = this.aggregator = newAggregator(this.helper);
 									setUpAggregator();
 									return;
 								}
@@ -287,7 +287,7 @@ export class WasmExecutor implements Executor {
 							}
 							case SimWorker.Response.Failed:
 								if (diedOnLeftover(ev)) {
-									workers[i] = newSimWorker(module);
+									workers[i] = newSimWorker(this.helper);
 									this.workers = this.workers.map((w) =>
 										w === worker ? workers[i] : w,
 									);
@@ -351,6 +351,7 @@ class PoolWorker {
 	dead = false;
 	private worker: Worker;
 	private handler: (ev: MessageEvent) => void = () => {};
+	private die: (ev: MessageEvent) => void;
 
 	constructor(
 		worker: Worker,
@@ -376,6 +377,7 @@ class PoolWorker {
 			failed(ev.data.reason);
 			this.handler(ev);
 		};
+		this.die = die;
 		worker.onmessage = (ev) => {
 			// the aggregator's and the sim workers' Ready and Failed responses are the same
 			if (ev.data.type === SimWorker.Response.Ready) {
@@ -395,7 +397,16 @@ class PoolWorker {
 				}),
 			);
 		};
-		worker.postMessage(readyRequest);
+		worker.postMessage(readyRequest, [readyRequest.port]);
+	}
+
+	// The instance can't load, e.g. because the helper died before sending it the module.
+	public fail(reason: string) {
+		this.die(
+			new MessageEvent("message", {
+				data: { type: SimWorker.Response.Failed, reason, fatal: true },
+			}),
+		);
 	}
 
 	// Sends the instance's responses to handler, in place of the previous run's.
@@ -412,24 +423,32 @@ class PoolWorker {
 	}
 }
 
-function newAggregator(module: WebAssembly.Module) {
-	return new PoolWorker(
+// The aggregator and the sim workers get the compiled module from the helper, over a
+// MessageChannel between the two (see HelperExecutor.load for why not through the page).
+function newAggregator(helper: HelperExecutor) {
+	const channel = new MessageChannel();
+	const aggregator = new PoolWorker(
 		new Worker(new URL("./Workers/aggregator.ts", import.meta.url)),
-		Aggregator.ReadyRequest(module),
+		Aggregator.ReadyRequest(channel.port2),
 	);
+	helper.share(channel.port1).catch((reason) => aggregator.fail(reason));
+	return aggregator;
 }
 
-function newSimWorker(module: WebAssembly.Module) {
-	return new PoolWorker(
+function newSimWorker(helper: HelperExecutor) {
+	const channel = new MessageChannel();
+	const worker = new PoolWorker(
 		new Worker(new URL("./Workers/worker.ts", import.meta.url)),
-		SimWorker.ReadyRequest(module),
+		SimWorker.ReadyRequest(channel.port2),
 	);
+	helper.share(channel.port1).catch((reason) => worker.fail(reason));
+	return worker;
 }
 
 class HelperExecutor {
 	private wasmPath: string;
 	private helper: Worker | undefined;
-	private module: Promise<WebAssembly.Module> | undefined;
+	private compiled: Promise<void> | undefined;
 	private pending = new Map<number, (event: MessageEvent) => void>();
 	private id = 0;
 
@@ -437,27 +456,29 @@ class HelperExecutor {
 		this.wasmPath = wasm;
 	}
 
-	// Starts the helper if needed and resolves to the compiled module. The helper fetches and
-	// compiles the wasm and sends the module back, so the aggregator and the sim workers
-	// instantiate it instead of each compiling their own copy. It is compiled in a worker
-	// because the page's CSP (script-src without 'wasm-unsafe-eval') does not allow compiling
-	// wasm on the main thread.
-	public load(): Promise<WebAssembly.Module> {
-		if (this.module != null) {
-			return this.module;
+	// Starts the helper if needed and resolves once it has compiled the wasm. The helper fetches
+	// and compiles it once and sends the module to the aggregator and the sim workers (share),
+	// which instantiate it instead of each compiling their own copy.
+	//
+	// The page never holds the module. Its CSP (script-src without 'wasm-unsafe-eval') forbids
+	// compiling wasm on the page, and Firefox also refuses to deserialize a module the page
+	// receives in a message. Workers loaded from their own URL don't inherit the page's CSP.
+	public load(): Promise<void> {
+		if (this.compiled != null) {
+			return this.compiled;
 		}
 
 		const helper = new Worker(new URL("./Workers/helper.ts", import.meta.url));
 		this.helper = helper;
-		let resolveModule: (module: WebAssembly.Module) => void = () => {};
-		let rejectModule: (reason: string) => void = () => {};
-		const module = new Promise<WebAssembly.Module>((resolve, reject) => {
-			resolveModule = resolve;
-			rejectModule = reject;
+		let resolveCompiled: () => void = () => {};
+		let rejectCompiled: (reason: string) => void = () => {};
+		const compiled = new Promise<void>((resolve, reject) => {
+			resolveCompiled = resolve;
+			rejectCompiled = reject;
 		});
 		// callers that only validate or sample get the failure through their own request
-		module.catch(() => {});
-		this.module = module;
+		compiled.catch(() => {});
+		this.compiled = compiled;
 
 		// The helper failed to load or crashed. Fail whatever is still waiting on it and start
 		// over with a new one on the next call.
@@ -465,10 +486,10 @@ class HelperExecutor {
 			if (this.helper !== helper) {
 				return;
 			}
-			rejectModule(reason);
+			rejectCompiled(reason);
 			helper.terminate();
 			this.helper = undefined;
-			this.module = undefined;
+			this.compiled = undefined;
 			for (const [id, handleResponse] of this.pending) {
 				handleResponse(
 					new MessageEvent("message", {
@@ -482,7 +503,7 @@ class HelperExecutor {
 		helper.postMessage(Helper.ReadyRequest(this.wasmPath));
 		helper.onmessage = (ev) => {
 			if (ev.data.type === Helper.Response.Ready) {
-				resolveModule((ev.data as Helper.ReadyResponse).module);
+				resolveCompiled();
 				return;
 			}
 			if (ev.data.type === Helper.Response.Failed && ev.data.fatal) {
@@ -503,7 +524,34 @@ class HelperExecutor {
 				`The helper stopped with an error${ev.message ? `: ${ev.message}` : ""}`,
 			);
 		};
-		return module;
+		helper.onmessageerror = () => {
+			die("The page couldn't receive a message from the helper");
+		};
+		return compiled;
+	}
+
+	// Has the helper send the compiled module over port, once the aggregator or sim worker
+	// holding the other end asks for it. Rejects if the helper fails to load or dies before.
+	public share(port: MessagePort): Promise<void> {
+		this.load();
+		const id = this.requestId();
+
+		return new Promise((resolve, reject) => {
+			function handleResponse(event: MessageEvent) {
+				switch (event.data.type as Helper.Response) {
+					case Helper.Response.Shared:
+						resolve();
+						return;
+					case Helper.Response.Failed:
+						reject((event.data as Helper.FailedResponse).reason);
+						return;
+					default:
+						reject(`unknown share response: ${event.data.type}`);
+				}
+			}
+			this.pending.set(id, handleResponse);
+			this.helper?.postMessage(Helper.ShareRequest(id, port), [port]);
+		});
 	}
 
 	private requestId() {

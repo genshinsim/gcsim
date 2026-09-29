@@ -5,10 +5,29 @@ self.importScripts("/wasm_exec.js");
 // @ts-ignore
 let go: Go;
 
+// Asks the helper for the compiled module over req.port, worker to worker (see share in
+// helper.ts).
 // @ts-ignore
-function ready(req: { module: WebAssembly.Module }) {
+function ready(req: { port: MessagePort }) {
+	req.port.onmessage = (ev) => {
+		req.port.close();
+		load(ev.data);
+	};
+	req.port.onmessageerror = () => {
+		req.port.close();
+		postMessage({
+			type: AggResponse.Failed,
+			reason: "The aggregator couldn't receive the compiled wasm module",
+			fatal: true,
+		});
+	};
+	req.port.postMessage(null);
+}
+
+// @ts-ignore
+function load(module: WebAssembly.Module) {
 	go = new Go();
-	WebAssembly.instantiate(req.module, go.importObject)
+	WebAssembly.instantiate(module, go.importObject)
 		.then((instance) => {
 			go.run(instance);
 			console.log("aggregator loaded okay");

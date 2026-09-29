@@ -6,14 +6,16 @@ let readyState = false;
 let loadError: string | null = null;
 // @ts-ignore
 let go: Go;
+let compiled: Promise<WebAssembly.Module> | null = null;
 
 // @ts-ignore
 function ready(req: { wasm: string }) {
 	go = new Go();
-	compileWasm(req.wasm)
+	compiled = compileWasm(req.wasm);
+	compiled
 		.then((module) => {
-			// the executor shares the compiled module with the aggregator and the sim workers
-			postMessage({ type: HelpResponse.Ready, module: module });
+			// the executor can now have the module shared with the aggregator and the sim workers
+			postMessage({ type: HelpResponse.Ready });
 			return WebAssembly.instantiate(module, go.importObject);
 		})
 		.then((instance) => {
@@ -57,6 +59,26 @@ function callGo(req: { id: number }, handle: () => any): any {
 		reason: `The helper crashed: ${reason}`,
 		fatal: true,
 		id: req.id,
+	};
+}
+
+// Sends the compiled module to an aggregator or a sim worker, over a MessageChannel the executor
+// set up between the two, once that worker asks for it.
+// - The module must not go through the page. Under the page's CSP (script-src without
+//   'wasm-unsafe-eval'), Firefox refuses to deserialize a WebAssembly.Module there and the page
+//   only gets a messageerror. Workers loaded from their own URL don't inherit the page's CSP.
+// - Firefox also can't deliver a module to a port that is still being transferred: the
+//   receiver gets a messageerror. The worker's request shows its end has arrived.
+function share(req: { id: number; port: MessagePort }) {
+	req.port.onmessage = () => {
+		compiled?.then(
+			(module) => {
+				req.port.postMessage(module);
+				postMessage({ type: HelpResponse.Shared, id: req.id });
+			},
+			// the failed load is fatal, and the executor fails this request with it
+			() => {},
+		);
 	};
 }
 
@@ -105,6 +127,11 @@ self.onmessage = (ev) => {
 		ready(ev.data);
 		return;
 	}
+	// needs the compiled module only, not the Go program
+	if (ev.data.type === HelpRequest.Share) {
+		share(ev.data);
+		return;
+	}
 
 	queue.push(ev);
 	processQueue();
@@ -138,6 +165,7 @@ enum HelpRequest {
 	Ready = "ready",
 	Validate = "validate",
 	Sample = "sample",
+	Share = "share",
 }
 
 enum HelpResponse {
@@ -145,4 +173,5 @@ enum HelpResponse {
 	Ready = "ready",
 	Validate = "validated",
 	Sample = "sample",
+	Shared = "shared",
 }
