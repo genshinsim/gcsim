@@ -1,9 +1,9 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { LoadedViewer, type LoadedViewerProps, loadResult } from "../../Pages";
 import {
 	legacyHashSearch,
 	validateViewerSearch,
-} from "../../Pages/Viewer/search";
+} from "../../features/viewer/search";
+import { LoadedViewer, type LoadedViewerProps, loadResult } from "../../Pages";
 
 export const Route = createFileRoute("/db/$id")({
 	validateSearch: validateViewerSearch,

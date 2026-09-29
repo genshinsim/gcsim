@@ -2,7 +2,7 @@ import { dynamicKey } from "@gcsim/localization";
 import type { model } from "@gcsim/types";
 import { useState } from "react";
 import { Trans, useTranslation } from "react-i18next";
-import DismissibleCallout from "../../../Components/DismissibleCallout";
+import DismissibleCallout from "./DismissibleCallout";
 
 type WarningProps = {
 	data: model.SimulationResult | null;

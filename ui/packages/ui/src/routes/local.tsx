@@ -1,6 +1,9 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import {
+	legacyHashSearch,
+	validateViewerSearch,
+} from "../features/viewer/search";
 import { LoadedViewer, type LoadedViewerProps, loadResult } from "../Pages";
-import { legacyHashSearch, validateViewerSearch } from "../Pages/Viewer/search";
 
 export const Route = createFileRoute("/local")({
 	validateSearch: validateViewerSearch,

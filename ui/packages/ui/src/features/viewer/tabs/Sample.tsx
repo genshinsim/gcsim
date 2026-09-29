@@ -2,8 +2,8 @@ import { namedSeeds, SampleLog, SeedPicker } from "@gcsim/components";
 import { NonIdealState } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { FlaskConical } from "lucide-react";
-import { downloadSample } from "../../Sample/downloadSample";
-import type { SampleState } from "../../Sample/useSample";
+import { downloadSample } from "../../../Pages/Sample/downloadSample";
+import type { SampleState } from "../../../Pages/Sample/useSample";
 
 type Props = {
 	data: model.SimulationResult | null;

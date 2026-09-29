@@ -4,13 +4,10 @@ import { Link } from "@tanstack/react-router";
 import classNames from "classnames";
 import { type MouseEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import {
-	CopyToClipboard,
-	SendToSimulator,
-	Share,
-} from "../../../Components/Buttons";
+import { CopyToClipboard, SendToSimulator } from "../../../Components/Buttons";
 import { VIEWER_TABS, type ViewerTab } from "../search";
 import type { ViewerActions } from "../Viewer";
+import Share from "./Share";
 
 const btnClass = classNames("hidden ml-[7px] sm:flex");
 

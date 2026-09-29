@@ -16,13 +16,13 @@ import CopyToClipboard from "@ui/Components/Buttons/CopyToClipboard";
 import SendToSimulator from "@ui/Components/Buttons/SendToSimulator";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import type { SampleState } from "../Sample/useSample";
-import LoadingToast, { type ResultSource } from "./Components/LoadingToast";
-import ViewerNav from "./Components/ViewerNav";
-import Warnings from "./Components/Warnings";
+import type { SampleState } from "../../Pages/Sample/useSample";
+import LoadingToast, { type ResultSource } from "./components/LoadingToast";
+import ViewerNav from "./components/ViewerNav";
+import Warnings from "./components/Warnings";
 import type { ViewerTab } from "./search";
-import ConfigUI from "./Tabs/Config";
-import SampleUI from "./Tabs/Sample";
+import ConfigUI from "./tabs/Config";
+import SampleUI from "./tabs/Sample";
 
 export type ViewerActions = {
 	onRun?: (cfg: string) => void;
