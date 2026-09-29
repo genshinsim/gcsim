@@ -183,7 +183,9 @@ func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
 		// repeat this phase until action is ready
 		switch {
 		case errors.Is(err, player.ErrActionNotReady):
-			s.C.Log.NewEvent(fmt.Sprintf("could not execute %v; action not ready", q.Action), glog.LogSimEvent, s.C.Player.Active())
+			if s.C.Flags.LogDebug {
+				s.C.Log.NewEvent(fmt.Sprintf("could not execute %v; action not ready", q.Action), glog.LogSimEvent, s.C.Player.Active())
+			}
 			return s.advanceFrames(1, actionReadyCheckPhase)
 		case errors.Is(err, player.ErrPlayerNotReady):
 			return s.advanceFrames(1, actionReadyCheckPhase)
