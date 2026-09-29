@@ -27,8 +27,9 @@ type Eval struct {
 	isTerminated bool
 
 	// set by RunSync: actions are passed to exec instead of over work/next
-	exec   func(*action.Eval) bool
-	inExec bool
+	exec func(*action.Eval) bool
+	// true while a set_on_tick callback runs, which is in the middle of a sim frame
+	inOnTick bool
 }
 
 type Env struct {
@@ -187,22 +188,19 @@ func (e *Eval) sendWork(w *action.Eval) {
 	e.work <- w
 }
 
-// sendAction hands w to the sim and blocks until the sim wants the next action
-func (e *Eval) sendAction(w *action.Eval) error {
+// sendAction hands w, the action of the call at pos, to the sim and blocks until the sim wants the
+// next action
+func (e *Eval) sendAction(pos ast.Pos, w *action.Eval) error {
+	if e.inOnTick {
+		// the callback runs in the middle of a sim frame, where the sim can't take an action
+		return ast.NewError(e.file.Position(pos), "actions can't be used in set_on_tick")
+	}
 	// once Exit has run, sendWork panics on the closed channel, with or without RunSync
 	if e.exec == nil || e.isTerminated {
 		e.sendWork(w)
 		return e.waitForNext()
 	}
-	if e.inExec {
-		// only a set_on_tick callback can get here, while the sim runs an action; without
-		// RunSync this deadlocks, since the sim goroutine would wait on itself
-		panic("actions can't be used in set_on_tick")
-	}
-	e.inExec = true
-	ok := e.exec(w)
-	e.inExec = false
-	if !ok {
+	if !e.exec(w) {
 		return ErrTerminated
 	}
 	return nil

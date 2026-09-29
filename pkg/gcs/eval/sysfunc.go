@@ -113,7 +113,7 @@ func (e *Eval) wait(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	// block until sim is done with the action; unless we're done
-	err = e.sendAction(&action.Eval{
+	err = e.sendAction(c.Pos, &action.Eval{
 		Action: action.ActionWait,
 		Param:  map[string]int{"f": int(f)},
 	})
@@ -138,7 +138,7 @@ func (e *Eval) delay(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	// block until sim is done with the action; unless we're done
-	err = e.sendAction(&action.Eval{
+	err = e.sendAction(c.Pos, &action.Eval{
 		Action: action.ActionDelay,
 		Param:  map[string]int{"f": int(f)},
 	})
@@ -452,7 +452,9 @@ func (e *Eval) setOnTick(c *ast.CallExpr, env *Env) (Obj, error) {
 	fn := objs[0].(*funcval)
 
 	e.Core.Events.Subscribe(event.OnTick, func(args ...any) {
+		e.inOnTick = true
 		_, err := e.evalNode(fn.Body, env)
+		e.inOnTick = false
 		if err != nil {
 			// handle the error
 			e.err = err
@@ -488,7 +490,7 @@ func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
 
 	// if char is not on field then we need to send an implicit swap
 	if charKey != e.Core.Player.ActiveChar().Base.Key {
-		err = e.sendAction(&action.Eval{
+		err = e.sendAction(c.Pos, &action.Eval{
 			Char:   charKey,
 			Action: action.ActionSwap,
 		})
@@ -496,7 +498,7 @@ func (e *Eval) executeAction(c *ast.CallExpr, env *Env) (Obj, error) {
 			return nil, err
 		}
 	}
-	err = e.sendAction(&action.Eval{
+	err = e.sendAction(c.Pos, &action.Eval{
 		Char:   charKey,
 		Action: actionKey,
 		Param:  params,
