@@ -8,8 +8,9 @@ Playwright config:
   wasm + workers, validates and runs a config, and asserts the viewer renders.
   Beyond that smoke path it also covers the dash home, the viewer's Config and
   Sample tabs, the share and local viewer routes (`?tab=`, legacy `#tab=`
-  redirects, load errors and retry), `/sample/local`, and the GOOD / Enka
-  toolbox imports (each stubbing the network it needs so it stays offline).
+  redirects, load errors and retry), the retired `/db` and `/db/:id` routes,
+  `/sample/local`, and the GOOD / Enka toolbox imports (each stubbing the
+  network it needs so it stays offline).
 - **docs** (`playwright.docs.config.ts`) — builds and serves the Docusaurus docs
   site, then asserts one page per top-level sidebar section renders (route,
   title, `<h1>`, non-empty body) with its content images loaded, failing only on
@@ -94,10 +95,9 @@ console monitor.
 - `goto()` — navigate and wait for React to mount into `#root`.
 - `waitForLoaded()` — assert the title, the nav bar's Simulator link, and the
   "Open Simulator" CTA link. **Structural only.**
-- `waitForSharedByOthers()` — assert the "Shared by others" heading and at least
-  one team-card link (matched by its fixed "DPS / target" label). The cards fetch
-  `/api/db`, so a spec stubs that route (reusing `installDbRoutes`) before
-  navigating.
+- `waitForSharedByOthers()` — assert the "Shared by others, courtesy of KQM DB"
+  heading and at least one card linking to `db.kqm.gg/db/`. The cards fetch
+  KQM DB's `/api/db`, so a spec calls `installOfflineRoutes` before navigating.
 
 ### `SimulatorPage` (`src/pages/simulator-page.ts`) — the `/simulator` route
 
@@ -178,20 +178,19 @@ The toolbox-import specs' fixtures, both re-exported from `src/`:
   returns `enkaImportPayload`, a minimal Enka response that `EnkaToGOOD` parses
   into one character (Bennett), for `ENKA_UID`.
 
-### Db fixtures (`src/db-fixtures.ts`)
+### Offline fixtures (`src/offline-fixtures.ts`)
 
-`installDbRoutes(page)` stubs the web app's `/api/db` (the dash's "Shared by
-others" cards) so those specs stay offline:
+`installOfflineRoutes(page)` stubs the web app's network so the dash and nav
+specs stay offline:
 
-- `/api/db` returns the two `dbEntries`;
 - `/api/assets/**` returns a 1x1 PNG (avatars, art);
 - `api.github.com` (latest-release lookup) returns a fixed payload;
+- `db.kqm.gg/api/db` returns the two `kqmEntries` (Shared by others);
 - any other `/api/**` returns an empty 200.
 
 ## Out of scope
 
-CI integration, the production/preview (R2 wasm) path, server mode, the
-`/db/:id` viewer render, creating a new share from `/web`,
-engine-correctness or numeric assertions, and non-Chromium browsers. See issues
-#2805, #2869 and #2871. For docs: the search backend, i18n/translations, and
-visual regression (issue #2868).
+CI integration, the production/preview (R2 wasm) path, server mode, creating a
+new share from `/web`, engine-correctness or numeric assertions, and
+non-Chromium browsers. See issues #2805, #2869 and #2871. For docs: the search
+backend, i18n/translations, and visual regression (issue #2868).

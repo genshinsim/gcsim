@@ -235,8 +235,6 @@ function link(route: string, id: string): string {
 function extractFromLocation(location: string) {
 	if (location.startsWith("/sh/")) {
 		return link("sh", location.substring(location.lastIndexOf("/") + 1));
-	} else if (location.startsWith("/db/")) {
-		return link("db", location.substring(location.lastIndexOf("/") + 1));
 	}
 	return null;
 }

@@ -1,7 +1,5 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
-const TEAM_CARD_LABEL = /DPS \/ target/;
-
 export class DashPage {
 	readonly page: Page;
 	readonly openSimulator: Locator;
@@ -18,9 +16,9 @@ export class DashPage {
 			.first();
 		this.sharedByOthersHeading = page.getByRole("heading", {
 			level: 2,
-			name: "Shared by others",
+			name: "Shared by others, courtesy of KQM DB",
 		});
-		this.teamCards = page.getByRole("link", { name: TEAM_CARD_LABEL });
+		this.teamCards = page.locator("a[href^='https://db.kqm.gg/db/']");
 	}
 
 	/** Navigate to the home route and wait for React to mount into `#root`. */
@@ -35,7 +33,7 @@ export class DashPage {
 		await expect(this.openSimulator).toBeVisible();
 	}
 
-	/** Depends on a stubbed `/api/db`. */
+	/** Depends on a stubbed KQM DB `/api/db` (see `installOfflineRoutes`). */
 	async waitForSharedByOthers(): Promise<void> {
 		await expect(this.sharedByOthersHeading).toBeVisible();
 		await expect(this.teamCards.first()).toBeVisible();

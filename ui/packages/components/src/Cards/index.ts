@@ -5,7 +5,6 @@ export {
 	type CharStatBlock,
 } from "./CharacterCard/CharacterCard";
 export { CharacterTile } from "./CharacterTile/CharacterTile";
-export { DBCard } from "./DBCard/DBCard";
 export { HistogramGraph } from "./DistributionCard/HistogramGraph";
 export { default as CharacterDPSBarChart } from "./ResultCards/Damage/CharacterDPSBarChart";
 export { default as CharacterDPSCard } from "./ResultCards/Damage/CharacterDPSCard";

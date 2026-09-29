@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { WhatsNew } from "../../components/WhatsNew";
 import { CommunityCta } from "./CommunityCta";
 import { Hero } from "./Hero";
+import { KQM_DB_URL } from "./kqm";
 import { SectionHead } from "./SectionHead";
 import { SharedByOthers } from "./SharedByOthers";
 
@@ -30,7 +31,7 @@ export function DashDesktop() {
 					title={t("dash.shared_title")}
 					subtitle={t("dash.shared_sub")}
 					linkLabel={t("dash.view_all")}
-					linkHref="https://gcsim.app/db"
+					linkHref={KQM_DB_URL}
 				/>
 				<SharedByOthers className="pb-g-section" />
 			</div>
