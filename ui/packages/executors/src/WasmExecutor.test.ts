@@ -29,6 +29,8 @@ class FakeWorker {
 	// runs requested minus results aggregated, across the pool
 	static ahead = 0;
 	static maxAhead = 0;
+	// every response the page got, from any worker
+	static toPage: Message[] = [];
 
 	role: "helper" | "aggregator" | "worker";
 	onmessage: ((ev: MessageEvent) => void) | null = null;
@@ -42,6 +44,9 @@ class FakeWorker {
 	private inbox: Message[] = [];
 	private busy = false;
 	private added = 0;
+	// the ends of the channels between the helper and the aggregator or a sim worker
+	private ports: MessagePort[] = [];
+	module: unknown = null;
 	private iterations = 0;
 
 	constructor(url: URL | string) {
@@ -54,7 +59,7 @@ class FakeWorker {
 		FakeWorker.all.push(this);
 	}
 
-	postMessage(msg: Message) {
+	postMessage(msg: Message, _transfer?: Transferable[]) {
 		this.received.push(msg);
 		if (msg.type === "run") {
 			this.queuedRuns++;
@@ -69,6 +74,9 @@ class FakeWorker {
 	terminate() {
 		this.terminated = true;
 		this.inbox = [];
+		for (const port of this.ports) {
+			port.close();
+		}
 	}
 
 	private pump() {
@@ -97,6 +105,7 @@ class FakeWorker {
 	}
 
 	private respond(resp: Message) {
+		FakeWorker.toPage.push(resp);
 		this.onmessage?.(new MessageEvent("message", { data: resp }));
 	}
 
@@ -118,25 +127,48 @@ class FakeWorker {
 		}
 		switch (request) {
 			case "helper:ready":
-				// the helper compiles the wasm and hands the module back
+				// the helper compiles the wasm
 				return FakeWorker.failLoad
 					? { type: "failed", reason: "no wasm", fatal: true }
-					: { type: "ready", module: fakeModule };
+					: { type: "ready" };
+			case "helper:share": {
+				// and sends the module to the aggregator or sim worker holding the other end
+				// once it asks, not to the page
+				const port = msg.port as MessagePort;
+				this.ports.push(port);
+				port.onmessage = () => {
+					if (!this.terminated) {
+						port.postMessage(fakeModule);
+						this.respond({ type: "shared", id: msg.id });
+					}
+				};
+				return null;
+			}
 			case "helper:validate":
 				return { type: "validated", id: msg.id, cfg: {} };
 			case "aggregator:ready":
-			case "worker:ready":
-				if (FakeWorker.loadDelay > 0) {
-					setTimeout(() => {
+			case "worker:ready": {
+				// asks the helper for the module and loads once it has it
+				const port = msg.port as MessagePort;
+				this.ports.push(port);
+				port.onmessage = (ev) => {
+					port.close();
+					this.module = ev.data;
+					const loaded = () => {
 						this.loaded = true;
 						if (!this.terminated) {
 							this.respond({ type: "ready" });
 						}
-					}, FakeWorker.loadDelay);
-					return null;
-				}
-				this.loaded = true;
-				return { type: "ready" };
+					};
+					if (FakeWorker.loadDelay > 0) {
+						setTimeout(loaded, FakeWorker.loadDelay);
+					} else {
+						loaded();
+					}
+				};
+				port.postMessage(null);
+				return null;
+			}
 			case "aggregator:initialize":
 				this.added = 0;
 				this.iterations = Number(msg.cfg);
@@ -182,7 +214,7 @@ const settle = () => new Promise((r) => setTimeout(r, 20));
 const within = <T>(p: Promise<T>, ms = 1000) =>
 	Promise.race([p, new Promise((r) => setTimeout(r, ms, "timed out"))]);
 
-const fakeModule = {} as WebAssembly.Module;
+const fakeModule = { compiled: "/main.wasm" } as unknown as WebAssembly.Module;
 
 beforeEach(() => {
 	FakeWorker.all = [];
@@ -195,6 +227,7 @@ beforeEach(() => {
 	FakeWorker.delay = () => 0;
 	FakeWorker.ahead = 0;
 	FakeWorker.maxAhead = 0;
+	FakeWorker.toPage = [];
 	vi.stubGlobal("Worker", FakeWorker);
 	vi.stubGlobal(
 		"fetch",
@@ -277,14 +310,49 @@ describe("WasmExecutor", () => {
 		expect(sent("helper", "ready")).toEqual([
 			{ type: "ready", wasm: "/main.wasm" },
 		]);
-		const readies = [
-			...sent("aggregator", "ready"),
-			...sent("worker", "ready"),
-		];
-		expect(readies).toHaveLength(5);
-		for (const ready of readies) {
-			expect(ready).toEqual({ type: "ready", module: fakeModule });
+		// one share per instance, each over the channel its ready request carries
+		const pool = [...byRole("aggregator"), ...byRole("worker")];
+		expect(pool).toHaveLength(5);
+		expect(sent("helper", "share")).toHaveLength(5);
+		for (const member of pool) {
+			const readies = member.received.filter((m) => m.type === "ready");
+			expect(readies).toHaveLength(1);
+			expect(readies[0].port).toBeInstanceOf(MessagePort);
+			expect(member.module).toEqual(fakeModule);
 		}
+	});
+
+	// Under the page's CSP, Firefox can't deserialize a WebAssembly.Module on the page, so
+	// the module must go worker to worker.
+	it("never sends the module to the page", async () => {
+		const exec = new WasmExecutor("/main.wasm");
+		exec.setWorkerCount(3);
+
+		await start(exec, 5).done;
+
+		expect(FakeWorker.toPage.length).toBeGreaterThan(0);
+		for (const resp of FakeWorker.toPage) {
+			expect(Object.values(resp)).not.toContainEqual(fakeModule);
+		}
+	});
+
+	it("fails the run when the helper dies before sharing the module, then recovers", async () => {
+		const exec = new WasmExecutor("/main.wasm");
+		exec.setWorkerCount(2);
+		FakeWorker.crashOn = (request) => request === "helper:share";
+
+		await expect(within(start(exec, 5).done)).rejects.toBe("helper exited");
+		expect(exec.running()).toBe(false);
+		expect(byRole("helper")[0].terminated).toBe(true);
+		for (const member of [...byRole("aggregator"), ...byRole("worker")]) {
+			expect(member.terminated).toBe(true);
+		}
+
+		FakeWorker.crashOn = null;
+		const second = start(exec, 5);
+		expect(await within(second.done)).toBe(true);
+		expect(second.updates.at(-1)?.hash).toBe("hash-5");
+		expect(byRole("helper")).toHaveLength(2);
 	});
 
 	it("fails waiting requests when the helper can't load, then retries", async () => {
