@@ -5,9 +5,10 @@
 //
 // Subcommands:
 //   dump     --wasm F --configs DIR --out DIR [--ids FILE] [--iters 20] [--seed 1] [--flush-every 1]
-//            [--sample] [--jobs 8] [--timeout 300]
+//            [--sample] [--jobs 8] [--timeout 300] [--share-module]
 //            Runs bench.mjs's dump on every DIR/<id>.txt (or on the ids listed in FILE) in JOBS
-//            worker threads that share one compiled module; every config gets fresh Go instances.
+//            worker threads, each with its own compiled module (--share-module: one for all);
+//            every config gets fresh Go instances. A crashed pool process is restarted.
 //            Writes OUT/<id>.json, or OUT/<id>.err (JSON with the error, Go's output tail and
 //            whether it timed out). Configs that already have an output are skipped, so an
 //            interrupted run resumes. The defaults (20 iterations, a flush after each) compare
@@ -32,8 +33,10 @@
 //            cpu_ms_per_iter) and peak wasm memory, from compare.sh's raw output, then their
 //            distribution.
 
+import { spawn } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { isMainThread, parentPort, Worker, workerData } from "node:worker_threads";
 import { diff, dump, quantile, resolveGlue, sortNum } from "./bench.mjs";
 
@@ -88,10 +91,12 @@ function shuffle(a, rand) {
 // dump
 
 // Each worker thread runs bench.mjs's dump() on one config at a time, with fresh Go instances
-// (own vm realms) per config. The wasm is compiled once and shared, which saves a process start
-// and a compile per config. Go's stdout/stderr (a panic's message) is kept for the error record.
+// (own vm realms) per config. The worker compiles the wasm once (or gets the pool's shared
+// module), which saves a process start and a compile per config. Go's stdout/stderr (a panic's
+// message) is kept for the error record.
 function dumpWorker() {
-	const { module, wasm, glue } = workerData;
+	const { wasm, glue } = workerData;
+	const module = workerData.module ?? new WebAssembly.Module(fs.readFileSync(wasm));
 	parentPort.on("message", async (t) => {
 		const out = [];
 		const keep = (...a) => {
@@ -166,7 +171,24 @@ class Slot {
 	}
 }
 
+// node itself has died with SIGSEGV now and then early in a pool run (twice in about 15 runs,
+// both times within the first 20 configs). The pool therefore runs in a child process that is
+// restarted to resume after a crash. A config that was in flight in two crashes gets an .err.
+const MAX_RESTARTS = 20;
 async function cmdDump(args) {
+	if (args.child) return dumpPool(args);
+	for (let restarts = 0; ; restarts++) {
+		const argv = [...process.execArgv, fileURLToPath(import.meta.url), ...process.argv.slice(2), "--child"];
+		const { code, signal } = await new Promise((resolve) => {
+			spawn(process.execPath, argv, { stdio: "inherit" }).on("close", (c, s) => resolve({ code: c, signal: s }));
+		});
+		if (code === 0) return;
+		if (code !== null || restarts >= MAX_RESTARTS) throw new Error(`dump pool exited with ${signal ?? code}`);
+		console.error(`dump pool died (${signal}); resuming`);
+	}
+}
+
+async function dumpPool(args) {
 	const wasm = path.resolve(args.wasm);
 	const o = {
 		wasm,
@@ -175,7 +197,9 @@ async function cmdDump(args) {
 		out: path.resolve(args.out),
 		jobs: Number(args.jobs ?? 8),
 		timeout: Number(args.timeout ?? 300),
-		module: new WebAssembly.Module(fs.readFileSync(wasm)),
+		// Sharing one compiled module across the worker threads saves compile time and memory;
+		// it is off by default because the crashes above happened with it on.
+		module: args["share-module"] ? new WebAssembly.Module(fs.readFileSync(wasm)) : undefined,
 	};
 	const opts = {
 		iters: Number(args.iters ?? 20),
@@ -185,6 +209,14 @@ async function cmdDump(args) {
 	};
 	fs.mkdirSync(o.out, { recursive: true });
 	const all = listIds(o.configs, args.ids);
+	const running = (id) => path.join(o.out, `${id}.running`);
+	for (const id of all) {
+		if (fs.existsSync(running(id)) && Number(fs.readFileSync(running(id), "utf8")) >= 2) {
+			const rec = { id, reason: "node crashed twice while running this config", timedOut: false, ms: 0, output: "" };
+			fs.writeFileSync(path.join(o.out, `${id}.err`), `${JSON.stringify(rec)}\n`);
+			fs.rmSync(running(id));
+		}
+	}
 	const todo = all.filter((id) => !fs.existsSync(path.join(o.out, `${id}.json`)) && !fs.existsSync(path.join(o.out, `${id}.err`)));
 	console.error(`${all.length} configs, ${all.length - todo.length} done already, ${todo.length} to run, ${o.jobs} at a time`);
 	let next = 0;
@@ -202,9 +234,12 @@ async function cmdDump(args) {
 				tmp: `${final}.tmp`,
 				opts: { ...opts, sampleOut: opts.sample ? path.join(o.out, `${id}.sample.json`) : undefined },
 			};
+			const attempts = fs.existsSync(running(id)) ? Number(fs.readFileSync(running(id), "utf8")) : 0;
+			fs.writeFileSync(running(id), String(attempts + 1));
 			const t = performance.now();
 			const r = await slot.run(task);
 			const ms = performance.now() - t;
+			fs.rmSync(running(id), { force: true });
 			if (r.ok) {
 				fs.renameSync(task.tmp, final);
 			} else {
