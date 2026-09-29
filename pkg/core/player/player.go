@@ -75,7 +75,7 @@ type Handler struct {
 type Opt struct {
 	F            *int
 	Log          glog.Logger
-	Events       event.Eventter
+	Events       *event.Handler
 	Tasks        task.Tasker
 	Delays       info.Delays
 	Debug        bool
