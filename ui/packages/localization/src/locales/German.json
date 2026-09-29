@@ -72,7 +72,6 @@
 	"dash": {
 		"get_started": "Loslegen",
 		"users_submitted": "Schau was Nutzer eingereicht haben:",
-		"visit_teams_db": "Teamdatenbank besuchen",
 		"latest_release": "Neuester Release: ",
 		"view_releases": "Releases auf GitHub anschauen",
 		"new_characters": "Neue Charaktere",
@@ -181,7 +180,6 @@
 		"russian": "Русский",
 		"german": "Deutsch",
 		"simulator": "Simulator",
-		"teams_db": "Teamdatenbank",
 		"documentation": "Dokumentation",
 		"releases": "Releases"
 	},
@@ -244,7 +242,8 @@
 		"server_mode_default": "Default: "
 	},
 	"src": {
-		"this_page_is": "Diese Seite ist noch nicht implementiert. Bleiben Sie dran!"
+		"this_page_is": "Diese Seite ist noch nicht implementiert. Bleiben Sie dran!",
+		"db_entry_unavailable": "Dieser Datenbankeintrag ist auf gcsim nicht mehr verfügbar."
 	},
 	"result": {
 		"lower": "unten",

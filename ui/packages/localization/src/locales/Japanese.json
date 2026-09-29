@@ -72,7 +72,6 @@
 	"dash": {
 		"get_started": "スタート",
 		"users_submitted": "ユーザーの投稿をご覧ください:",
-		"visit_teams_db": "編成データベースを見る",
 		"latest_release": "最新リリース: ",
 		"view_releases": "GitHubでリリースを見る",
 		"new_characters": "新キャラクター",
@@ -181,7 +180,6 @@
 		"russian": "Русский",
 		"german": "Deutsch",
 		"simulator": "シミュレーター",
-		"teams_db": "編成データベース",
 		"documentation": "資料",
 		"releases": "リリース"
 	},
@@ -244,7 +242,8 @@
 		"server_mode_default": "デフォルト: "
 	},
 	"src": {
-		"this_page_is": "このページはまだ実装されていません。いましばらくお待ちください！"
+		"this_page_is": "このページはまだ実装されていません。いましばらくお待ちください！",
+		"db_entry_unavailable": "このデータベースエントリは gcsim では利用できなくなりました。"
 	},
 	"result": {
 		"lower": "低い",

@@ -72,7 +72,6 @@
 	"dash": {
 		"get_started": "Начать",
 		"users_submitted": "Посмотрите, что прислали пользователи:",
-		"visit_teams_db": "Посетить базу данных команд",
 		"latest_release": "Последний выпуск: ",
 		"view_releases": "Просмотреть выпуски на GitHub",
 		"new_characters": "Новые персонажи",
@@ -181,7 +180,6 @@
 		"russian": "Русский",
 		"german": "Deutsch",
 		"simulator": "Симулятор",
-		"teams_db": "База данных команд",
 		"documentation": "Документация",
 		"releases": "Выпуски"
 	},
@@ -244,7 +242,8 @@
 		"server_mode_default": "Значение по умолчанию: "
 	},
 	"src": {
-		"this_page_is": "Эта страница еще не доступна. Оставайтесь с нами!"
+		"this_page_is": "Эта страница еще не доступна. Оставайтесь с нами!",
+		"db_entry_unavailable": "Эта запись базы данных больше не доступна на gcsim."
 	},
 	"result": {
 		"lower": "нижний",

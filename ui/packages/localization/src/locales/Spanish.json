@@ -72,7 +72,6 @@
 	"dash": {
 		"get_started": "Empezar",
 		"users_submitted": "Echa un vistazo a lo que los usuarios han enviado:",
-		"visit_teams_db": "Visita la Base de Datos de Equipos",
 		"latest_release": "Última Versión: ",
 		"view_releases": "Ver Versiones en GitHub",
 		"new_characters": "Nuevos Personajes",
@@ -181,7 +180,6 @@
 		"russian": "Русский",
 		"german": "Deutsch",
 		"simulator": "Simulador",
-		"teams_db": "Base de Datos de Equipos",
 		"documentation": "Documentación",
 		"releases": "Versiones"
 	},
@@ -244,7 +242,8 @@
 		"server_mode_default": "Predeterminado: "
 	},
 	"src": {
-		"this_page_is": "Esta página aún no está implementada. ¡Mantente atento!"
+		"this_page_is": "Esta página aún no está implementada. ¡Mantente atento!",
+		"db_entry_unavailable": "Esta entrada de la base de datos ya no está disponible en gcsim."
 	},
 	"result": {
 		"lower": "inferior",

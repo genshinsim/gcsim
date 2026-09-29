@@ -72,7 +72,6 @@
 	"dash": {
 		"get_started": "시작하기",
 		"users_submitted": "유저들이 제출한 심을 구경해보세요:",
-		"visit_teams_db": "팀 데이터베이스 방문",
 		"latest_release": "최신 릴리스: ",
 		"view_releases": "GitHub에서 릴리스 보기",
 		"new_characters": "신규 캐릭터",
@@ -181,7 +180,6 @@
 		"russian": "Русский",
 		"german": "Deutsch",
 		"simulator": "시뮬레이터",
-		"teams_db": "팀 데이터베이스",
 		"documentation": "설명서",
 		"releases": "릴리스"
 	},
@@ -244,7 +242,8 @@
 		"server_mode_default": "기본값: "
 	},
 	"src": {
-		"this_page_is": "이 페이지는 아직 지원되지 않습니다. 기대해주세요!"
+		"this_page_is": "이 페이지는 아직 지원되지 않습니다. 기대해주세요!",
+		"db_entry_unavailable": "이 데이터베이스 항목은 더 이상 gcsim에서 제공되지 않습니다."
 	},
 	"result": {
 		"lower": "하한",

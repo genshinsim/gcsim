@@ -72,7 +72,6 @@
 	"dash": {
 		"get_started": "入门",
 		"users_submitted": "看看用户提交的内容:",
-		"visit_teams_db": "访问配队数据库",
 		"latest_release": "最新发布版: ",
 		"view_releases": "在 GitHub 上查看发布版",
 		"new_characters": "新角色",
@@ -181,7 +180,6 @@
 		"russian": "Русский",
 		"german": "Deutsch",
 		"simulator": "模拟器",
-		"teams_db": "配队数据库",
 		"documentation": "文档",
 		"releases": "发布版"
 	},
@@ -244,7 +242,8 @@
 		"server_mode_default": "默认: "
 	},
 	"src": {
-		"this_page_is": "此页面正在施工中。敬请期待！"
+		"this_page_is": "此页面正在施工中。敬请期待！",
+		"db_entry_unavailable": "此数据库条目已不再在 gcsim 上提供。"
 	},
 	"result": {
 		"lower": "下限值",

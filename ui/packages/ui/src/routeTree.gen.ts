@@ -17,7 +17,6 @@ import { Route as SimpleRouteImport } from './routes/simple'
 import { Route as SimulatorRouteImport } from './routes/simulator'
 import { Route as WebRouteImport } from './routes/web'
 import { Route as AuthDiscordRouteImport } from './routes/auth/discord'
-import { Route as DbIndexRouteImport } from './routes/db/index'
 import { Route as DbIdRouteImport } from './routes/db/$id'
 import { Route as SIdRouteImport } from './routes/s/$id'
 import { Route as SampleLocalRouteImport } from './routes/sample/local'
@@ -67,11 +66,6 @@ const WebRoute = WebRouteImport.update({
 const AuthDiscordRoute = AuthDiscordRouteImport.update({
   id: '/auth/discord',
   path: '/auth/discord',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DbIndexRoute = DbIndexRouteImport.update({
-  id: '/db/',
-  path: '/db/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DbIdRoute = DbIdRouteImport.update({
@@ -141,7 +135,6 @@ export interface FileRoutesByFullPath {
   '/sh/$id': typeof ShIdRoute
   '/viewer/local': typeof ViewerLocalRoute
   '/viewer/web': typeof ViewerWebRoute
-  '/db/': typeof DbIndexRoute
   '/viewer/': typeof ViewerIndexRoute
   '/viewer/share/$id': typeof ViewerShareIdRoute
   '/v3/viewer/share/$id': typeof V3ViewerShareIdRoute
@@ -162,7 +155,6 @@ export interface FileRoutesByTo {
   '/sh/$id': typeof ShIdRoute
   '/viewer/local': typeof ViewerLocalRoute
   '/viewer/web': typeof ViewerWebRoute
-  '/db': typeof DbIndexRoute
   '/viewer': typeof ViewerIndexRoute
   '/viewer/share/$id': typeof ViewerShareIdRoute
   '/v3/viewer/share/$id': typeof V3ViewerShareIdRoute
@@ -184,7 +176,6 @@ export interface FileRoutesById {
   '/sh/$id': typeof ShIdRoute
   '/viewer/local': typeof ViewerLocalRoute
   '/viewer/web': typeof ViewerWebRoute
-  '/db/': typeof DbIndexRoute
   '/viewer/': typeof ViewerIndexRoute
   '/viewer/share/$id': typeof ViewerShareIdRoute
   '/v3/viewer/share/$id': typeof V3ViewerShareIdRoute
@@ -207,7 +198,6 @@ export interface FileRouteTypes {
     | '/sh/$id'
     | '/viewer/local'
     | '/viewer/web'
-    | '/db/'
     | '/viewer/'
     | '/viewer/share/$id'
     | '/v3/viewer/share/$id'
@@ -228,7 +218,6 @@ export interface FileRouteTypes {
     | '/sh/$id'
     | '/viewer/local'
     | '/viewer/web'
-    | '/db'
     | '/viewer'
     | '/viewer/share/$id'
     | '/v3/viewer/share/$id'
@@ -249,7 +238,6 @@ export interface FileRouteTypes {
     | '/sh/$id'
     | '/viewer/local'
     | '/viewer/web'
-    | '/db/'
     | '/viewer/'
     | '/viewer/share/$id'
     | '/v3/viewer/share/$id'
@@ -271,7 +259,6 @@ export interface RootRouteChildren {
   ShIdRoute: typeof ShIdRoute
   ViewerLocalRoute: typeof ViewerLocalRoute
   ViewerWebRoute: typeof ViewerWebRoute
-  DbIndexRoute: typeof DbIndexRoute
   ViewerIndexRoute: typeof ViewerIndexRoute
   ViewerShareIdRoute: typeof ViewerShareIdRoute
   V3ViewerShareIdRoute: typeof V3ViewerShareIdRoute
@@ -333,13 +320,6 @@ declare module '@tanstack/react-router' {
       path: '/auth/discord'
       fullPath: '/auth/discord'
       preLoaderRoute: typeof AuthDiscordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/db/': {
-      id: '/db/'
-      path: '/db'
-      fullPath: '/db/'
-      preLoaderRoute: typeof DbIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/db/$id': {
@@ -431,7 +411,6 @@ const rootRouteChildren: RootRouteChildren = {
   ShIdRoute: ShIdRoute,
   ViewerLocalRoute: ViewerLocalRoute,
   ViewerWebRoute: ViewerWebRoute,
-  DbIndexRoute: DbIndexRoute,
   ViewerIndexRoute: ViewerIndexRoute,
   ViewerShareIdRoute: ViewerShareIdRoute,
   V3ViewerShareIdRoute: V3ViewerShareIdRoute,
