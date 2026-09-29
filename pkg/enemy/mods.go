@@ -23,7 +23,7 @@ func (e *Enemy) AddStatus(key string, dur int, hitlag bool) {
 	} else {
 		mod.ModExpiry = e.Core.F + mod.Dur
 	}
-	overwrote, oldEvt := modifier.Add[modifier.Mod](&e.mods, &mod, e.Core.F)
+	overwrote, oldEvt := modifier.Add(&e.mods, &mod, e.Core.F)
 	modifier.LogAdd("status", -1, &mod, e.Core.Log, overwrote, oldEvt)
 }
 
@@ -36,7 +36,7 @@ func (e *Enemy) AddStatus(key string, dur int, hitlag bool) {
 //	})
 func (e *Enemy) AddResistMod(mod info.ResistMod) {
 	mod.SetExpiry(e.Core.F)
-	overwrote, oldEvt := modifier.Add[modifier.Mod](&e.mods, &mod, e.Core.F)
+	overwrote, oldEvt := modifier.Add(&e.mods, &mod, e.Core.F)
 	modifier.LogAdd("enemy", -1, &mod, e.Core.Log, overwrote, oldEvt)
 }
 
@@ -48,7 +48,7 @@ func (e *Enemy) AddResistMod(mod info.ResistMod) {
 //	})
 func (e *Enemy) AddDefMod(mod info.DefMod) {
 	mod.SetExpiry(e.Core.F)
-	overwrote, oldEvt := modifier.Add[modifier.Mod](&e.mods, &mod, e.Core.F)
+	overwrote, oldEvt := modifier.Add(&e.mods, &mod, e.Core.F)
 	modifier.LogAdd("enemy", -1, &mod, e.Core.Log, overwrote, oldEvt)
 }
 
