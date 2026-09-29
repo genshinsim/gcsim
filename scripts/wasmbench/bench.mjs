@@ -26,7 +26,9 @@
 //         paired comparison in one process: every binary is loaded side by side, then each round
 //         runs the same --block seeds on each binary back to back (order rotates per round).
 //         Emits one record per (binary, round). This is what compare.sh uses by default.
-//   dump  --wasm F --config F [--iters N] [--seed N] [--out F]   canonical per-iteration + aggregate hashes
+//   dump  --wasm F --config F [--iters N] [--seed N] [--flush-every K] [--out F]
+//         canonical per-iteration + aggregate hashes; --flush-every K also flushes (and hashes the
+//         stats) after every K aggregated iterations, as the UI's throttled flushes do
 //   diff  golden.json candidate.json                            exit 1 on mismatch
 //   report results.jsonl...                                      comparison table (markdown)
 //
@@ -639,24 +641,44 @@ const sha = (s) => createHash("sha256").update(s).digest("hex");
 // Metadata fields that legitimately differ between builds or runs.
 const VOLATILE_META = ["sim_version", "modified", "build_date", "sample_seed"];
 
+// simulate() returns either a stats.Result (msgpack map with field names) or, since the
+// per-iteration reduction moved into the sim worker, an agg.Summary (msgpack tuple, seed first).
+function payloadKind(decoded) {
+	return Array.isArray(decoded) ? "summary" : "result";
+}
+function payloadSeed(decoded) {
+	return Array.isArray(decoded) ? decoded[0] : decoded.seed;
+}
+
+function flushStats(agg) {
+	const flushed = JSON.parse(agg.api.flush());
+	if (flushed.error) throw new Error(`flush failed: ${flushed.error}`);
+	return JSON.parse(canon(flushed.stats));
+}
+
 async function dump(o) {
 	const { sim, agg, meta } = await loadPair(o.wasm, o.glue, o.cfg);
 	for (const k of VOLATILE_META) delete meta[k];
 
 	const iterHashes = [];
+	const flushHashes = [];
 	const seedErrors = [];
+	let payload;
 	for (let i = 0; i < o.iters; i++) {
 		const res = unwrapErr(withSeed(o.seed, i, () => sim.api.simulate()), "simulate");
 		const decoded = mpDecode(res);
+		payload ??= payloadKind(decoded);
 		const want = expectedSeed(o.seed, i);
-		if (BigInt(decoded.seed) !== want) seedErrors.push({ i, want: want.toString(), got: String(decoded.seed) });
+		const got = payloadSeed(decoded);
+		if (got === undefined || BigInt(got) !== want) seedErrors.push({ i, want: want.toString(), got: String(got) });
 		iterHashes.push(sha(canon(decoded)).slice(0, 16));
 		const err = agg.api.aggregate(agg.toRealm(res));
 		if (err != null) unwrapErr(err, "aggregate");
+		if (o.flushEvery > 0 && (i + 1) % o.flushEvery === 0 && i + 1 < o.iters) {
+			flushHashes.push(sha(canon(flushStats(agg))).slice(0, 16));
+		}
 	}
-	const flushed = JSON.parse(agg.api.flush());
-	if (flushed.error) throw new Error(`flush failed: ${flushed.error}`);
-	const stats = JSON.parse(canon(flushed.stats));
+	const stats = flushStats(agg);
 
 	const validated = JSON.parse(sim.api.validateConfig(o.cfg));
 	const sampleSeed = expectedSeed(o.seed, 0).toString();
@@ -668,7 +690,10 @@ async function dump(o) {
 		config: o.configName,
 		iters: o.iters,
 		seed: o.seed,
+		payload,
+		flushEvery: o.flushEvery,
 		seedErrors,
+		flushHashes,
 		hashes: {
 			iterations: sha(iterHashes.join(",")),
 			stats: sha(canon(stats)),
@@ -695,14 +720,33 @@ function* walkDiff(a, b, p = "") {
 
 function diff(golden, cand, rtol) {
 	const problems = [];
-	if (golden.iters !== cand.iters || golden.seed !== cand.seed) {
-		problems.push(`run parameters differ: golden iters=${golden.iters} seed=${golden.seed}, candidate iters=${cand.iters} seed=${cand.seed}`);
+	const notes = [];
+	const gFlush = golden.flushEvery ?? 0;
+	const cFlush = cand.flushEvery ?? 0;
+	if (golden.iters !== cand.iters || golden.seed !== cand.seed || gFlush !== cFlush) {
+		problems.push(
+			`run parameters differ: golden iters=${golden.iters} seed=${golden.seed} flushEvery=${gFlush}, candidate iters=${cand.iters} seed=${cand.seed} flushEvery=${cFlush}`,
+		);
 	}
 	if (cand.seedErrors?.length) {
 		problems.push(`seed injection failed for ${cand.seedErrors.length} iterations (first: ${JSON.stringify(cand.seedErrors[0])})`);
 	}
+	// Goldens made before the payload field existed hold stats.Result payloads. Payloads of
+	// different formats can't be compared, so the aggregated stats are the check.
+	const samePayload = (golden.payload ?? "result") === (cand.payload ?? "result");
+	if (!samePayload) {
+		notes.push(`per-iteration payloads differ in format (${golden.payload ?? "result"} vs ${cand.payload}); compared aggregated stats only`);
+	}
+	const fg = golden.flushHashes ?? [];
+	const fc = cand.flushHashes ?? [];
+	const firstFlush = fg.findIndex((h, i) => h !== fc[i]);
+	if (fg.length !== fc.length || firstFlush >= 0) {
+		const at = firstFlush >= 0 ? firstFlush : Math.min(fg.length, fc.length);
+		problems.push(`intermediate flushes differ, first after iteration ${(at + 1) * gFlush}`);
+	}
 	for (const k of Object.keys(golden.hashes)) {
 		if (golden.hashes[k] === cand.hashes[k]) continue;
+		if (k === "iterations" && !samePayload) continue;
 		if (k === "iterations") {
 			const idx = golden.iterHashes.findIndex((h, i) => h !== cand.iterHashes[i]);
 			const n = golden.iterHashes.filter((h, i) => h !== cand.iterHashes[i]).length;
@@ -717,7 +761,7 @@ function diff(golden, cand, rtol) {
 			problems.push(`${k} output differs`);
 		}
 	}
-	return problems;
+	return { problems, notes };
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -841,6 +885,7 @@ function loadRunOpts(args) {
 		warmup: num(args.warmup, 20),
 		seed: num(args.seed, 1),
 		workers: num(args.workers, 0),
+		flushEvery: num(args["flush-every"], 0),
 	};
 }
 
@@ -909,12 +954,14 @@ async function main() {
 			const [g, c] = args._.slice(1);
 			const golden = JSON.parse(fs.readFileSync(g, "utf8"));
 			const cand = JSON.parse(fs.readFileSync(c, "utf8"));
-			const problems = diff(golden, cand, num(args.rtol, 0));
+			const { problems, notes } = diff(golden, cand, num(args.rtol, 0));
+			const flushes = golden.flushEvery ? `, flush every ${golden.flushEvery}` : "";
 			if (problems.length) {
 				console.log(`FAIL ${golden.config}`);
 				for (const p of problems) console.log(`  ${p}`);
 				process.exitCode = 1;
-			} else console.log(`ok   ${golden.config} (${golden.iters} iterations, seed ${golden.seed})`);
+			} else console.log(`ok   ${golden.config} (${golden.iters} iterations, seed ${golden.seed}${flushes})`);
+			for (const n of notes) console.log(`  note: ${n}`);
 			return;
 		}
 		case "report":
