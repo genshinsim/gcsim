@@ -72,25 +72,17 @@ export class WasmExecutor implements Executor {
 	}
 
 	// The aggregator and the sim workers for a run: those kept from earlier runs, minus any that
-	// failed to load, plus new ones up to the worker count. Some may still be loading.
+	// died, plus new ones up to the worker count. Some may still be loading.
 	private pool(module: WebAssembly.Module) {
-		if (this.aggregator == null || this.aggregator.failed) {
-			this.aggregator = new PoolWorker(
-				new Worker(new URL("./Workers/aggregator.ts", import.meta.url)),
-				Aggregator.ReadyRequest(module),
-			);
+		if (this.aggregator == null || this.aggregator.dead) {
+			this.aggregator = newAggregator(module);
 		}
-		this.workers = this.workers.filter((w) => !w.failed);
+		this.workers = this.workers.filter((w) => !w.dead);
 		for (const worker of this.workers.splice(this.workerCount)) {
 			worker.terminate();
 		}
 		while (this.workers.length < this.workerCount) {
-			this.workers.push(
-				new PoolWorker(
-					new Worker(new URL("./Workers/worker.ts", import.meta.url)),
-					SimWorker.ReadyRequest(module),
-				),
-			);
+			this.workers.push(newSimWorker(module));
 		}
 		return { aggregator: this.aggregator, workers: [...this.workers] };
 	}
@@ -103,12 +95,18 @@ export class WasmExecutor implements Executor {
 		this.runStarted = performance.now();
 
 		// The workers and the aggregator are reused across runs, so their queues can still hold
-		// requests from a cancelled run. Every request carries the run id and every response
-		// echoes it; responses from any other run are dropped. A cancelled run sends nothing
-		// more, and its promise never settles.
+		// requests from a cancelled or failed run. Every request carries the run id and every
+		// response echoes it; responses from any other run are dropped. A cancelled run sends
+		// nothing more, and its promise never settles.
 		const run = ++this.runId;
 		const current = () => this.runId === run;
-		const isCurrent = (ev: MessageEvent) => current() && ev.data.run === run;
+		const isCurrent = (ev: MessageEvent) =>
+			current() && (ev.data.run === run || ev.data.fatal === true);
+		// A worker handles its requests in order, so one that died on another run's request has
+		// not handled any of this run's yet and can be replaced. One that died on this run's
+		// request, or without saying on which, fails the run.
+		const diedOnLeftover = (ev: MessageEvent) =>
+			ev.data.fatal === true && ev.data.run != null && ev.data.run !== run;
 
 		return new Promise<boolean>((resolve, reject) => {
 			const stop = () => {
@@ -127,7 +125,7 @@ export class WasmExecutor implements Executor {
 				if (!current()) {
 					return;
 				}
-				const { aggregator, workers } = this.pool(module);
+				let { aggregator, workers } = this.pool(module);
 
 				let result: model.SimulationResult | null = null;
 				let maxIterations = 0;
@@ -164,60 +162,78 @@ export class WasmExecutor implements Executor {
 						dispatch();
 					}
 				};
+				// Workers kept from an earlier run may still be loading; nothing but the ready
+				// request may reach them before they have.
+				const initialize = (worker: PoolWorker, request: unknown) => {
+					worker.ready.then(() => {
+						if (current()) {
+							worker.post(request);
+						}
+					}, fail);
+				};
 
-				aggregator.listen((ev) => {
-					if (!isCurrent(ev)) {
-						return;
-					}
-					switch (ev.data.type as Aggregator.Response) {
-						case Aggregator.Response.Initialized:
-							result = (ev.data as Aggregator.InitializeResponse).result;
-							maxIterations = result?.simulator_settings?.iterations ?? 1000;
-							initialized();
-							return;
-						case Aggregator.Response.Result: {
-							const resp = ev.data as Aggregator.ResultResponse;
-							const { hash, stats } = resp.result;
-
-							const out = Object.assign({}, result);
-							out.statistics = stats;
-							updateResult(out, hash);
-
-							if (resp.final) {
-								stop();
-								resolve(true);
-								if (this.runStarted > 0) {
-									const end = performance.now();
-									console.log(`run time: ${end - this.runStarted} ms`);
-									this.runStarted = 0;
-								}
-								return;
-							}
-							flushing = false;
-							nextFlush =
-								performance.now() +
-								Math.min(
-									Math.max(FLUSH_COST_RATIO * resp.ms, MIN_FLUSH_INTERVAL),
-									MAX_FLUSH_INTERVAL,
-								);
+				const setUpAggregator = () => {
+					aggregator.listen((ev) => {
+						if (!isCurrent(ev)) {
 							return;
 						}
-						case Aggregator.Response.Done:
-							completed += 1;
-							if (completed === maxIterations) {
-								aggregator.post(Aggregator.FlushRequest(run, true));
-							} else if (!flushing && performance.now() >= nextFlush) {
-								flushing = true;
-								aggregator.post(Aggregator.FlushRequest(run, false));
-							}
-							dispatch();
-							return;
-						case Aggregator.Response.Failed:
-							fail((ev.data as Aggregator.FailedResponse).reason);
-					}
-				});
+						switch (ev.data.type as Aggregator.Response) {
+							case Aggregator.Response.Initialized:
+								result = (ev.data as Aggregator.InitializeResponse).result;
+								maxIterations = result?.simulator_settings?.iterations ?? 1000;
+								initialized();
+								return;
+							case Aggregator.Response.Result: {
+								const resp = ev.data as Aggregator.ResultResponse;
+								const { hash, stats } = resp.result;
 
-				workers.forEach((worker, i) => {
+								const out = Object.assign({}, result);
+								out.statistics = stats;
+								updateResult(out, hash);
+
+								if (resp.final) {
+									stop();
+									resolve(true);
+									if (this.runStarted > 0) {
+										const end = performance.now();
+										console.log(`run time: ${end - this.runStarted} ms`);
+										this.runStarted = 0;
+									}
+									return;
+								}
+								flushing = false;
+								nextFlush =
+									performance.now() +
+									Math.min(
+										Math.max(FLUSH_COST_RATIO * resp.ms, MIN_FLUSH_INTERVAL),
+										MAX_FLUSH_INTERVAL,
+									);
+								return;
+							}
+							case Aggregator.Response.Done:
+								completed += 1;
+								if (completed === maxIterations) {
+									aggregator.post(Aggregator.FlushRequest(run, true));
+								} else if (!flushing && performance.now() >= nextFlush) {
+									flushing = true;
+									aggregator.post(Aggregator.FlushRequest(run, false));
+								}
+								dispatch();
+								return;
+							case Aggregator.Response.Failed:
+								if (diedOnLeftover(ev)) {
+									aggregator = this.aggregator = newAggregator(module);
+									setUpAggregator();
+									return;
+								}
+								fail((ev.data as Aggregator.FailedResponse).reason);
+						}
+					});
+					initialize(aggregator, Aggregator.InitializeRequest(run, cfg));
+				};
+
+				const setUpWorker = (i: number) => {
+					const worker = workers[i];
 					worker.listen((ev) => {
 						if (!isCurrent(ev)) {
 							return;
@@ -237,25 +253,24 @@ export class WasmExecutor implements Executor {
 								return;
 							}
 							case SimWorker.Response.Failed:
+								if (diedOnLeftover(ev)) {
+									workers[i] = newSimWorker(module);
+									this.workers = this.workers.map((w) =>
+										w === worker ? workers[i] : w,
+									);
+									setUpWorker(i);
+									return;
+								}
 								fail((ev.data as SimWorker.FailedResponse).reason);
 						}
 					});
-				});
+					initialize(worker, SimWorker.InitializeRequest(run, cfg));
+				};
 
-				// Instances kept from a cancelled run may still be loading; nothing but the ready
-				// request may reach them before they have.
-				Promise.all([aggregator.ready, ...workers.map((w) => w.ready)]).then(
-					() => {
-						if (!current()) {
-							return;
-						}
-						aggregator.post(Aggregator.InitializeRequest(run, cfg));
-						for (const worker of workers) {
-							worker.post(SimWorker.InitializeRequest(run, cfg));
-						}
-					},
-					fail,
-				);
+				setUpAggregator();
+				workers.forEach((_, i) => {
+					setUpWorker(i);
+				});
 			}, fail);
 		});
 	}
@@ -293,13 +308,14 @@ export class WasmExecutor implements Executor {
 }
 
 // A worker running one wasm instance, the aggregator or a sim worker. The executor keeps it
-// across runs.
+// across runs until it dies.
 class PoolWorker {
 	// Resolves once the instance has loaded. The worker scripts only define the Go functions
 	// once go.run has returned, so no request but the ready request may reach it before then.
 	readonly ready: Promise<void>;
-	// it failed to load; the next run replaces it
-	failed = false;
+	// The instance can't be used anymore: it failed to load, its Go program exited or threw
+	// (e.g. it ran out of memory), or the worker script threw. The next run replaces it.
+	dead = false;
 	private worker: Worker;
 	private handler: (ev: MessageEvent) => void = () => {};
 
@@ -308,26 +324,44 @@ class PoolWorker {
 		readyRequest: Aggregator.ReadyRequest | SimWorker.ReadyRequest,
 	) {
 		this.worker = worker;
+		let loaded = () => {};
+		let failed = (_: string) => {};
 		this.ready = new Promise((resolve, reject) => {
-			worker.onmessage = (ev) => {
-				// the aggregator's and the sim workers' Ready and Failed responses are the same
-				switch (ev.data.type) {
-					case SimWorker.Response.Ready:
-						resolve();
-						return;
-					case SimWorker.Response.Failed:
-						if (ev.data.run == null) {
-							this.failed = true;
-							worker.terminate();
-							reject((ev.data as SimWorker.FailedResponse).reason);
-							return;
-						}
-				}
-				this.handler(ev);
-			};
+			loaded = resolve;
+			failed = reject;
 		});
 		// a run waiting on it handles the failure; don't report it as unhandled otherwise
 		this.ready.catch(() => {});
+
+		// Terminates the worker and fails the current run with a fatal Failed response.
+		const die = (ev: MessageEvent) => {
+			if (this.dead) {
+				return;
+			}
+			this.dead = true;
+			worker.terminate();
+			failed(ev.data.reason);
+			this.handler(ev);
+		};
+		worker.onmessage = (ev) => {
+			// the aggregator's and the sim workers' Ready and Failed responses are the same
+			if (ev.data.type === SimWorker.Response.Ready) {
+				loaded();
+			} else if (ev.data.type === SimWorker.Response.Failed && ev.data.fatal) {
+				die(ev);
+			} else {
+				this.handler(ev);
+			}
+		};
+		// a script that fails to load fires a plain Event, without a message
+		worker.onerror = (ev) => {
+			const reason = `A worker stopped with an error${ev.message ? `: ${ev.message}` : ""}`;
+			die(
+				new MessageEvent("message", {
+					data: { type: SimWorker.Response.Failed, reason, fatal: true },
+				}),
+			);
+		};
 		worker.postMessage(readyRequest);
 	}
 
@@ -343,6 +377,20 @@ class PoolWorker {
 	public terminate() {
 		this.worker.terminate();
 	}
+}
+
+function newAggregator(module: WebAssembly.Module) {
+	return new PoolWorker(
+		new Worker(new URL("./Workers/aggregator.ts", import.meta.url)),
+		Aggregator.ReadyRequest(module),
+	);
+}
+
+function newSimWorker(module: WebAssembly.Module) {
+	return new PoolWorker(
+		new Worker(new URL("./Workers/worker.ts", import.meta.url)),
+		SimWorker.ReadyRequest(module),
+	);
 }
 
 class HelperExecutor {
@@ -378,28 +426,34 @@ class HelperExecutor {
 		module.catch(() => {});
 		this.module = module;
 
+		// The helper failed to load or crashed. Fail whatever is still waiting on it and start
+		// over with a new one on the next call.
+		const die = (reason: string) => {
+			if (this.helper !== helper) {
+				return;
+			}
+			rejectModule(reason);
+			helper.terminate();
+			this.helper = undefined;
+			this.module = undefined;
+			for (const [id, handleResponse] of this.pending) {
+				handleResponse(
+					new MessageEvent("message", {
+						data: Helper.FailedResponse(id, reason),
+					}),
+				);
+			}
+			this.pending.clear();
+		};
+
 		helper.postMessage(Helper.ReadyRequest(this.wasmPath));
 		helper.onmessage = (ev) => {
 			if (ev.data.type === Helper.Response.Ready) {
 				resolveModule((ev.data as Helper.ReadyResponse).module);
 				return;
 			}
-			if (ev.data.type === Helper.Response.Failed && ev.data.id == null) {
-				// Loading failed. Fail whatever is still waiting on this helper and start over
-				// with a new one on the next call.
-				const reason = (ev.data as Helper.FailedResponse).reason;
-				rejectModule(reason);
-				helper.terminate();
-				this.helper = undefined;
-				this.module = undefined;
-				for (const [id, handleResponse] of this.pending) {
-					handleResponse(
-						new MessageEvent("message", {
-							data: Helper.FailedResponse(id, reason),
-						}),
-					);
-				}
-				this.pending.clear();
+			if (ev.data.type === Helper.Response.Failed && ev.data.fatal) {
+				die((ev.data as Helper.FailedResponse).reason);
 				return;
 			}
 
@@ -410,6 +464,11 @@ class HelperExecutor {
 			}
 			this.pending.delete(ev.data.id);
 			handleResponse(ev);
+		};
+		helper.onerror = (ev) => {
+			die(
+				`The helper stopped with an error${ev.message ? `: ${ev.message}` : ""}`,
+			);
 		};
 		return module;
 	}

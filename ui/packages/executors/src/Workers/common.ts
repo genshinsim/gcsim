@@ -2,6 +2,10 @@
 /* eslint-disable @typescript-eslint/no-namespace */
 // Requests to the aggregator and sim workers (other than Ready) carry the id of the run they
 // belong to, and the responses echo it, so the executor can drop responses from a cancelled run.
+//
+// A Failed response with fatal set means the worker's wasm instance can't be used anymore: it
+// failed to load, or its Go program exited or threw during a call (a fatal error such as running
+// out of memory). The executor then terminates the worker and starts a new one when needed.
 export namespace Aggregator {
 	export enum Request {
 		Ready = "ready",
@@ -22,6 +26,7 @@ export namespace Aggregator {
 		type: Response.Failed;
 		run: number;
 		reason: string;
+		fatal?: boolean;
 	}
 
 	export function FailedResponse(run: number, reason: string): FailedResponse {
@@ -148,6 +153,7 @@ export namespace Helper {
 		id: number;
 		type: Response.Failed;
 		reason: string;
+		fatal?: boolean;
 	}
 
 	export function FailedResponse(id: number, reason: string): FailedResponse {
@@ -229,6 +235,7 @@ export namespace SimWorker {
 		type: Response.Failed;
 		run: number;
 		reason: string;
+		fatal?: boolean;
 	}
 
 	export function FailedResponse(run: number, reason: string): FailedResponse {

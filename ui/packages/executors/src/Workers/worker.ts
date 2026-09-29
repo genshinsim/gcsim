@@ -3,8 +3,11 @@
 self.importScripts("/wasm_exec.js");
 
 // @ts-ignore
+let go: Go;
+
+// @ts-ignore
 function ready(req: { module: WebAssembly.Module }) {
-	const go = new Go();
+	go = new Go();
 	WebAssembly.instantiate(req.module, go.importObject)
 		.then((instance) => {
 			go.run(instance);
@@ -15,8 +18,34 @@ function ready(req: { module: WebAssembly.Module }) {
 			postMessage({
 				type: WorkerResponse.Failed,
 				reason: e instanceof Error ? e.message : "Unknown Error",
+				fatal: true,
 			});
 		});
+}
+
+// Handles a request that calls into Go. The Go functions return their errors, so if the call
+// throws, or the Go program exits during it (a fatal error such as running out of memory), this
+// instance is unusable: the fatal response makes the executor replace the worker.
+// @ts-ignore
+function callGo(handle: () => any): any {
+	let reason =
+		"its Go program exited (the console shows why, e.g. out of memory)";
+	try {
+		const resp = handle();
+		if (!go.exited) {
+			return resp;
+		}
+	} catch (e) {
+		console.error(e);
+		if (!go.exited) {
+			reason = `${e}`;
+		}
+	}
+	return {
+		type: WorkerResponse.Failed,
+		reason: `A sim worker crashed: ${reason}`,
+		fatal: true,
+	};
 }
 
 // @ts-ignore
@@ -29,19 +58,14 @@ function initialize(req: { cfg: string }) {
 }
 
 function run(req: { itr: number }) {
-	try {
-		const resp = simulate();
-		if (typeof resp === "string" || resp instanceof String) {
-			return {
-				type: WorkerResponse.Failed,
-				reason: JSON.parse(resp as string).error,
-			};
-		}
-		return { type: WorkerResponse.Done, result: resp, itr: req.itr };
-	} catch (e) {
-		console.log("simulate() call failed");
-		return { type: WorkerResponse.Failed, reason: `Failed with error: ${e}` };
+	const resp = simulate();
+	if (typeof resp === "string" || resp instanceof String) {
+		return {
+			type: WorkerResponse.Failed,
+			reason: JSON.parse(resp as string).error,
+		};
 	}
+	return { type: WorkerResponse.Done, result: resp, itr: req.itr };
 }
 
 // @ts-ignore
@@ -50,9 +74,12 @@ function handleRequest(req: any) {
 		case WorkerRequest.Ready:
 			return ready(req);
 		case WorkerRequest.Initialize:
-			return respond(req, initialize(req));
+			return respond(
+				req,
+				callGo(() => initialize(req)),
+			);
 		case WorkerRequest.Run: {
-			const resp = run(req);
+			const resp = callGo(() => run(req));
 			// transfer the result's buffer instead of copying it
 			return respond(
 				req,

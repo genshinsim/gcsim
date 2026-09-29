@@ -17,15 +17,26 @@ class FakeWorker {
 	// Requests an instance handled before it had loaded. The real worker scripts throw on
 	// those: the Go functions only exist once go.run has returned.
 	static early: string[] = [];
+	// The instance's Go program exits while handling a request this matches, as on a fatal
+	// error such as running out of memory. It then fails every request, as wasm_exec.js does
+	// once the program has exited.
+	static crashOn: ((request: string, msg: Message) => boolean) | null = null;
+	// "role:type": the worker script throws while handling this request, which the page sees
+	// as an error event on the Worker.
+	static throwOn: string | null = null;
+	// ms a request of this "role:type" takes to handle (default 0)
+	static delay: Record<string, number> = {};
 	// runs requested minus results aggregated, across the pool
 	static ahead = 0;
 	static maxAhead = 0;
 
 	role: "helper" | "aggregator" | "worker";
 	onmessage: ((ev: MessageEvent) => void) | null = null;
+	onerror: ((ev: ErrorEvent) => void) | null = null;
 	received: Message[] = [];
 	terminated = false;
 	loaded = false;
+	exited = false;
 	queuedRuns = 0;
 	maxQueuedRuns = 0;
 	private inbox: Message[] = [];
@@ -79,7 +90,7 @@ class FakeWorker {
 				this.respond(resp);
 			}
 			this.pump();
-		}, 0);
+		}, FakeWorker.delay[`${this.role}:${msg.type}`] ?? 0);
 	}
 
 	private respond(resp: Message) {
@@ -88,15 +99,25 @@ class FakeWorker {
 
 	private handle(msg: Message): Message | null {
 		const run = msg.run;
+		const request = `${this.role}:${msg.type}`;
 		if (this.role !== "helper" && msg.type !== "ready" && !this.loaded) {
-			FakeWorker.early.push(`${this.role}:${msg.type}`);
+			FakeWorker.early.push(request);
 			return null;
 		}
-		switch (`${this.role}:${msg.type}`) {
+		if (this.exited || FakeWorker.crashOn?.(request, msg)) {
+			this.exited = true;
+			const reason = `${this.role} exited`;
+			return { type: "failed", run, id: msg.id, reason, fatal: true };
+		}
+		if (request === FakeWorker.throwOn) {
+			this.onerror?.({ message: `${this.role} threw` } as ErrorEvent);
+			return null;
+		}
+		switch (request) {
 			case "helper:ready":
 				// the helper compiles the wasm and hands the module back
 				return FakeWorker.failLoad
-					? { type: "failed", reason: "no wasm" }
+					? { type: "failed", reason: "no wasm", fatal: true }
 					: { type: "ready", module: fakeModule };
 			case "helper:validate":
 				return { type: "validated", id: msg.id, cfg: {} };
@@ -154,6 +175,9 @@ const byRole = (role: FakeWorker["role"]) =>
 const sent = (role: FakeWorker["role"], type: string) =>
 	byRole(role).flatMap((w) => w.received.filter((m) => m.type === type));
 const settle = () => new Promise((r) => setTimeout(r, 20));
+// resolves to "timed out" instead of hanging the test
+const within = <T>(p: Promise<T>, ms = 1000) =>
+	Promise.race([p, new Promise((r) => setTimeout(r, ms, "timed out"))]);
 
 const fakeModule = {} as WebAssembly.Module;
 
@@ -163,6 +187,9 @@ beforeEach(() => {
 	FakeWorker.failLoad = false;
 	FakeWorker.loadDelay = 0;
 	FakeWorker.early = [];
+	FakeWorker.crashOn = null;
+	FakeWorker.throwOn = null;
+	FakeWorker.delay = {};
 	FakeWorker.ahead = 0;
 	FakeWorker.maxAhead = 0;
 	vi.stubGlobal("Worker", FakeWorker);
@@ -299,16 +326,115 @@ describe("WasmExecutor", () => {
 		exec.cancel();
 		const second = start(exec, 10);
 
-		const outcome = await Promise.race([
-			second.done,
-			new Promise((r) => setTimeout(r, 1000, "timed out")),
-		]);
-		expect(outcome).toBe(true);
+		expect(await within(second.done)).toBe(true);
 		expect(second.updates.at(-1)?.hash).toBe("hash-10");
 		expect(FakeWorker.early).toEqual([]);
 		// the cancelled run sent nothing once the pool had loaded
 		expect(sent("aggregator", "initialize")).toHaveLength(1);
 		expect(sent("worker", "initialize")).toHaveLength(2);
+	});
+
+	it("fails the run when the aggregator's Go program exits, then replaces it", async () => {
+		const exec = new WasmExecutor("/main.wasm");
+		exec.setWorkerCount(2);
+		FakeWorker.crashOn = (request) => request === "aggregator:add";
+
+		expect(await within(start(exec, 10).done.catch((e) => e))).toBe(
+			"aggregator exited",
+		);
+		expect(exec.running()).toBe(false);
+		const [crashed] = byRole("aggregator");
+		expect(crashed.terminated).toBe(true);
+
+		FakeWorker.crashOn = null;
+		const second = start(exec, 10);
+		expect(await within(second.done)).toBe(true);
+		expect(second.updates.at(-1)?.hash).toBe("hash-10");
+		expect(byRole("aggregator")).toHaveLength(2);
+		// the sim workers were fine and are kept
+		expect(byRole("worker")).toHaveLength(2);
+	});
+
+	it("replaces a sim worker whose script threw and keeps the worker count", async () => {
+		const exec = new WasmExecutor("/main.wasm");
+		exec.setWorkerCount(3);
+		await start(exec, 10).done;
+		FakeWorker.throwOn = "worker:initialize";
+
+		expect(await within(start(exec, 10).done.catch((e) => e))).toContain(
+			"worker threw",
+		);
+		expect(exec.running()).toBe(false);
+
+		FakeWorker.throwOn = null;
+		const third = start(exec, 10);
+		expect(await within(third.done)).toBe(true);
+		const alive = byRole("worker").filter((w) => !w.terminated);
+		expect(alive).toHaveLength(3);
+		expect(byRole("aggregator")).toHaveLength(1);
+	});
+
+	it("replaces sim workers that die on a cancelled run's leftover requests", async () => {
+		const exec = new WasmExecutor("/main.wasm");
+		exec.setWorkerCount(3);
+		// slow sims, so every worker has run requests queued when the run is cancelled
+		FakeWorker.delay = { "worker:run": 5 };
+		const first = start(exec, 1000);
+		await vi.waitFor(() => expect(first.updates.length).toBeGreaterThan(0));
+		exec.cancel();
+		const cancelled = sent("worker", "run")[0].run;
+		FakeWorker.crashOn = (request, msg) =>
+			request === "worker:run" && msg.run === cancelled;
+
+		const second = start(exec, 10);
+		expect(await within(second.done)).toBe(true);
+		expect(second.updates.at(-1)?.hash).toBe("hash-10");
+		expect(byRole("worker").filter((w) => w.exited)).toHaveLength(3);
+		expect(byRole("worker").filter((w) => !w.terminated)).toHaveLength(3);
+	});
+
+	it("replaces an aggregator that dies on a cancelled run's leftover request", async () => {
+		const exec = new WasmExecutor("/main.wasm");
+		exec.setWorkerCount(3);
+		// the fake aggregator falls behind three workers, so adds are queued when the run is
+		// cancelled
+		const first = start(exec, 1000);
+		await vi.waitFor(() => expect(first.updates.length).toBeGreaterThan(0));
+		exec.cancel();
+		const cancelled = sent("worker", "run")[0].run;
+		FakeWorker.crashOn = (request, msg) =>
+			request === "aggregator:add" && msg.run === cancelled;
+
+		const second = start(exec, 10);
+		expect(await within(second.done)).toBe(true);
+		expect(second.updates.at(-1)?.hash).toBe("hash-10");
+		expect(byRole("aggregator").map((w) => w.exited)).toEqual([true, false]);
+	});
+
+	it("fails the run when a sim worker's Go program exits on the run's own request", async () => {
+		const exec = new WasmExecutor("/main.wasm");
+		exec.setWorkerCount(2);
+		FakeWorker.crashOn = (request, msg) =>
+			request === "worker:run" && msg.itr === 3;
+
+		expect(await within(start(exec, 10).done.catch((e) => e))).toBe(
+			"worker exited",
+		);
+		FakeWorker.crashOn = null;
+		expect(await within(start(exec, 10).done)).toBe(true);
+		expect(byRole("worker")).toHaveLength(3);
+	});
+
+	it("replaces a helper whose Go program exited", async () => {
+		const exec = new WasmExecutor("/main.wasm");
+		FakeWorker.crashOn = (request) => request === "helper:validate";
+
+		await expect(within(exec.validate("cfg"))).rejects.toBe("helper exited");
+		expect(byRole("helper")[0].terminated).toBe(true);
+
+		FakeWorker.crashOn = null;
+		await expect(within(exec.validate("cfg"))).resolves.toEqual({});
+		expect(byRole("helper")).toHaveLength(2);
 	});
 
 	it("bounds the work requested ahead of the aggregator", async () => {
