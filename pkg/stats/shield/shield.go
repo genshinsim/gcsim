@@ -1,6 +1,9 @@
 package shield
 
 import (
+	"maps"
+	"slices"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -151,10 +154,10 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 
 func (b buffer) Flush(core *core.Core, result *stats.Result) {
 	shields := make([]stats.ShieldStats, 0, len(b.shields))
-	for name, sb := range b.shields {
+	for _, name := range slices.Sorted(maps.Keys(b.shields)) {
 		shield := stats.ShieldStats{
 			Name:      name,
-			Intervals: sb,
+			Intervals: b.shields[name],
 		}
 		shields = append(shields, shield)
 	}

@@ -144,15 +144,17 @@ scripts/wasmbench/corpus-pgo.sh $C/pgo $C/corpus.pgo
 
 Known nondeterminism, present in the baseline too (a rerun of the same binary differs):
 
-- `computeEffective` in `pkg/stats/shield` ranges over maps, so the `shields.effective` and
-  `shp` stats of teams with two or more overlapping shields change between processes.
-- The per-iteration payload lists shields in map order (`shield.Flush`), and a `stats.Result`
-  also lists auras still active at the end in map order (`status.Flush`). Per-iteration hashes
-  of such configs differ between processes while the aggregated stats match.
+- A `stats.Result` lists auras still active at the end in map order (`status.Flush`).
+  Per-iteration hashes of such configs differ between processes while the aggregated stats
+  match. Summary-format builds don't carry that list.
 - `sample()` events whose content lists things in Go map order differ between processes: the
   `ordering` of the frame-0 stats snapshot with two 2-piece sets (`core.go` ranges over the
   sets), and `mods affected` in hitlag events after Xilonen's shred or Hakushin Ring. The
   per-frame comparison sorts events but not their contents.
+
+Builds from before `pkg/stats/shield` was made deterministic also vary in the `shields` and
+`shp` stats of teams with two or more overlapping shields. To diff such a baseline against the
+corpus, build it with that fix applied.
 
 ## Caveats
 
