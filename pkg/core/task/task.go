@@ -87,7 +87,14 @@ func (s *Handler) Extend(delay int) {
 // container/heap's Push and Pop, but shift elements into a hole instead of swapping.
 
 func (t *task) less(o *task) bool {
-	return t.executeBy < o.executeBy || (t.executeBy == o.executeBy && t.id < o.id)
+	// compares (executeBy, id) without branching: on wasm every branch taken goes through the
+	// function's br_table dispatch, and the heap compares on every level
+	a, b := t.executeBy, o.executeBy
+	ia, ib := t.id, o.id
+	if a == b {
+		a, b = ia, ib
+	}
+	return a < b
 }
 
 func (h *minHeap) push(t task) {
