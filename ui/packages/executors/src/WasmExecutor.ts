@@ -167,7 +167,7 @@ export class WasmExecutor implements Executor {
 
 		// 1. Create Aggregator & Workers
 		const created = this.helper
-			.compile()
+			.load()
 			.then((module) =>
 				Promise.all([
 					this.createAggregator(module),
@@ -245,6 +245,30 @@ export class WasmExecutor implements Executor {
 				let completed = 0;
 				let flushing = false; // an intermediate flush is outstanding
 				let nextFlush = 0;
+
+				const workers = this.workers;
+				const maxOutstanding = workers.length * MAX_OUTSTANDING_PER_WORKER;
+				const queued = workers.map(() => 0);
+				let requested = 0;
+				const dispatch = () => {
+					// Near the end, queue one at a time so no worker sits on the last iterations
+					// while the others go idle.
+					const depth =
+						maxIterations - requested > workers.length * PIPELINE_DEPTH
+							? PIPELINE_DEPTH
+							: 1;
+					workers.forEach((worker, i) => {
+						while (
+							queued[i] < depth &&
+							requested < maxIterations &&
+							requested - completed < maxOutstanding
+						) {
+							worker.postMessage(SimWorker.RunRequest(run, requested++));
+							queued[i]++;
+						}
+					});
+				};
+
 				aggregator.onmessage = (ev) => {
 					if (!isCurrent(ev)) {
 						return;
@@ -292,29 +316,6 @@ export class WasmExecutor implements Executor {
 					}
 				};
 
-				const workers = this.workers;
-				const maxOutstanding = workers.length * MAX_OUTSTANDING_PER_WORKER;
-				const queued = workers.map(() => 0);
-				let requested = 0;
-				const dispatch = () => {
-					// Near the end, queue one at a time so no worker sits on the last iterations
-					// while the others go idle.
-					const depth =
-						maxIterations - requested > workers.length * PIPELINE_DEPTH
-							? PIPELINE_DEPTH
-							: 1;
-					workers.forEach((worker, i) => {
-						while (
-							queued[i] < depth &&
-							requested < maxIterations &&
-							requested - completed < maxOutstanding
-						) {
-							worker.postMessage(SimWorker.RunRequest(run, requested++));
-							queued[i]++;
-						}
-					});
-				};
-
 				workers.forEach((worker, i) => {
 					worker.onmessage = (ev) => {
 						if (!isCurrent(ev)) {
@@ -325,7 +326,7 @@ export class WasmExecutor implements Executor {
 								const resp: SimWorker.RunResponse = ev.data;
 								queued[i]--;
 								// transfer rather than copy; the result is only forwarded
-								this.aggregator?.postMessage(
+								aggregator.postMessage(
 									Aggregator.AddRequest(run, resp.result),
 									[resp.result.buffer],
 								);
@@ -391,16 +392,13 @@ class HelperExecutor {
 		this.wasmPath = wasm;
 	}
 
-	// The helper fetches and compiles the wasm and sends the compiled module back, so the
-	// aggregator and the sim workers instantiate it instead of each compiling their own copy.
-	// It is compiled in a worker because the page's CSP (script-src without
-	// 'wasm-unsafe-eval') does not allow compiling wasm on the main thread.
-	public compile(): Promise<WebAssembly.Module> {
-		return this.initialize();
-	}
-
-	private initialize(): Promise<WebAssembly.Module> {
-		if (this.helper != null && this.module != null) {
+	// Starts the helper if needed and resolves to the compiled module. The helper fetches and
+	// compiles the wasm and sends the module back, so the aggregator and the sim workers
+	// instantiate it instead of each compiling their own copy. It is compiled in a worker
+	// because the page's CSP (script-src without 'wasm-unsafe-eval') does not allow compiling
+	// wasm on the main thread.
+	public load(): Promise<WebAssembly.Module> {
+		if (this.module != null) {
 			return this.module;
 		}
 
@@ -457,7 +455,7 @@ class HelperExecutor {
 	}
 
 	public validate(cfg: string): Promise<ParsedResult> {
-		this.initialize();
+		this.load();
 
 		const id = this.requestId();
 		return new Promise((resolve, reject) => {
@@ -479,7 +477,7 @@ class HelperExecutor {
 	}
 
 	public sample(cfg: string, seed: string): Promise<Sample> {
-		this.initialize();
+		this.load();
 		const id = this.requestId();
 
 		return new Promise((resolve, reject) => {
