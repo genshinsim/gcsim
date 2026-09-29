@@ -369,7 +369,10 @@ func (c *CharWrapper) HealBonus() float64 {
 // TODO: consider merging this with just attack mods? reaction bonus should
 // maybe just be it's own stat instead of being a separate mod really
 func (c *CharWrapper) ReactBonus(atk info.AttackInfo) float64 {
-	evt := c.log.NewEvent(atk.Abil+" [React Bonus]", glog.LogPreDamageMod, c.index)
+	var evt glog.Event
+	if c.debug {
+		evt = c.log.NewEvent(atk.Abil+" [React Bonus]", glog.LogPreDamageMod, c.index)
+	}
 	n := 0
 	amt := 0.0
 	for _, v := range c.mods {
@@ -384,7 +387,7 @@ func (c *CharWrapper) ReactBonus(atk info.AttackInfo) float64 {
 			amt += val
 			c.mods[n] = v
 			n++
-			if val != 0 {
+			if c.debug && val != 0 {
 				evt.Write(m.ModKey, val)
 			}
 		}
