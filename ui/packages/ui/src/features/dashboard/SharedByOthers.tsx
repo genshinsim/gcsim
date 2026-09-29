@@ -1,22 +1,11 @@
-// Not currently mounted: the Shared by others section is commented out in
-// DashDesktop and DashMobile.
 import { cn } from "@gcsim/primitives";
-import type { db } from "@gcsim/types";
-import axios from "axios";
+import { db } from "@gcsim/types";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { KQM_DB_URL } from "./kqm";
 import { TeamCard } from "./TeamCard";
 
-const sharedQuery = {
-	query: {
-		$sampleRate: 0.02,
-	},
-	limit: 3,
-	skip: 0,
-	sort: {
-		create_date: -1,
-	},
-};
+const sharedQuery = encodeURIComponent(JSON.stringify({ limit: 3 }));
 
 type SharedByOthersProps = {
 	className?: string;
@@ -29,14 +18,14 @@ export function SharedByOthers({ className }: SharedByOthersProps) {
 	const [isLoaded, setIsLoaded] = useState(false);
 
 	useEffect(() => {
-		axios(`/api/db?q=${encodeURIComponent(JSON.stringify(sharedQuery))}`)
-			.then((resp: { data: db.Entries }) => {
-				if (resp.data?.data) {
-					setEntries(resp.data.data);
-				}
-				setIsLoaded(true);
+		fetch(`${KQM_DB_URL}/api/db?q=${sharedQuery}`)
+			.then((resp) => {
+				if (!resp.ok) throw new Error("Could not load simulations");
+				return resp.json();
 			})
-			.catch((err) => console.log(err));
+			.then((json) => setEntries(db.Entries.fromJSON(json).data ?? []))
+			.catch((err) => console.log(err))
+			.finally(() => setIsLoaded(true));
 	}, []);
 
 	if (!isLoaded) {

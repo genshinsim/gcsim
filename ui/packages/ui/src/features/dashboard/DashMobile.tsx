@@ -7,8 +7,9 @@ import "./dashMobile.css";
 import { WhatsNew } from "../../components/WhatsNew";
 import { HeroArt } from "./HeroArt";
 import { getHero } from "./heroImages";
+import { KQM_DB_URL } from "./kqm";
 import { SectionHead } from "./SectionHead";
-// import { SharedByOthers } from "./SharedByOthers";
+import { SharedByOthers } from "./SharedByOthers";
 
 export function DashMobile() {
 	const { t } = useTranslation();
@@ -30,16 +31,14 @@ export function DashMobile() {
 						/>
 						<WhatsNew className="g-m-fade-card mb-[14px]" />
 						<CommunityCta className="mb-g-section" />
-						{/* Shared by others is unmounted since the db moved off gcsim; it may come back.
 						<SectionHead
 							className="mb-4"
 							title={t("dash.shared_title")}
 							subtitle={t("dash.shared_sub")}
 							linkLabel={t("dash.view_all")}
-							linkHref="https://gcsim.app/db"
+							linkHref={KQM_DB_URL}
 						/>
 						<SharedByOthers className="pb-4" />
-						*/}
 					</div>
 					<div className="g-m-ctabar">
 						<Button asChild className="flex-1">

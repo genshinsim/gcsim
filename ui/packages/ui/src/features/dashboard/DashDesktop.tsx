@@ -2,8 +2,9 @@ import { useTranslation } from "react-i18next";
 import { WhatsNew } from "../../components/WhatsNew";
 import { CommunityCta } from "./CommunityCta";
 import { Hero } from "./Hero";
+import { KQM_DB_URL } from "./kqm";
 import { SectionHead } from "./SectionHead";
-// import { SharedByOthers } from "./SharedByOthers";
+import { SharedByOthers } from "./SharedByOthers";
 
 export function DashDesktop() {
 	const { t } = useTranslation();
@@ -25,16 +26,14 @@ export function DashDesktop() {
 					<CommunityCta />
 				</div>
 
-				{/* Shared by others is unmounted since the db moved off gcsim; it may come back.
 				<SectionHead
 					className="mb-[18px]"
 					title={t("dash.shared_title")}
 					subtitle={t("dash.shared_sub")}
 					linkLabel={t("dash.view_all")}
-					linkHref="https://gcsim.app/db"
+					linkHref={KQM_DB_URL}
 				/>
 				<SharedByOthers className="pb-g-section" />
-				*/}
 			</div>
 		</main>
 	);

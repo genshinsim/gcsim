@@ -1,8 +1,19 @@
-// Not currently mounted: the Shared by others section is commented out in
-// DashDesktop and DashMobile.
 import { cn } from "@gcsim/primitives";
-import type { db, model } from "@gcsim/types";
+import { type db, model } from "@gcsim/types";
+import type { CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
+import { KQM_DB_URL } from "./kqm";
+
+// KQM DB lavender mixed into the active theme's own tokens, so it holds in
+// light and dark themes alike.
+const KQM_TINT = "#b07ae0";
+const kqmStyle = {
+	"--kqm-bg": `color-mix(in oklab, var(--g-surface) 88%, ${KQM_TINT})`,
+	"--kqm-bg-hover": `color-mix(in oklab, var(--g-surface) 82%, ${KQM_TINT})`,
+	"--kqm-line": `color-mix(in oklab, var(--g-border) 55%, ${KQM_TINT})`,
+	"--kqm-line-hover": `color-mix(in oklab, var(--g-border) 25%, ${KQM_TINT})`,
+	"--kqm-ink": `color-mix(in oklab, ${KQM_TINT} 55%, var(--g-text))`,
+} as CSSProperties;
 
 type TeamCardProps = {
 	entry: db.Entry;
@@ -37,11 +48,12 @@ export function TeamCard({ entry, className }: TeamCardProps) {
 
 	return (
 		<a
-			href={`https://gcsim.app/db/${entry._id}`}
+			href={`${KQM_DB_URL}/db/${entry._id}`}
 			target="_blank"
 			rel="noreferrer"
+			style={kqmStyle}
 			className={cn(
-				"block rounded-g-lg border border-g-line bg-g-surface p-g-card shadow-g-card transition-colors hover:border-g-accent",
+				"block rounded-g-lg border border-(--kqm-line) bg-(--kqm-bg) p-g-card shadow-g-card transition-colors hover:border-(--kqm-line-hover) hover:bg-(--kqm-bg-hover)",
 				className,
 			)}
 		>
@@ -78,11 +90,12 @@ export function TeamCard({ entry, className }: TeamCardProps) {
 							{t("dash.dps_per_target")}
 						</div>
 					</div>
-					<span className="inline-flex items-center rounded-g-pill border border-g-line-soft bg-g-surface-2 px-2.5 py-1 text-g-xs font-semibold text-g-ink-dim">
+					<span className="inline-flex items-center rounded-g-pill border border-(--kqm-line) bg-(--kqm-bg-hover) px-2.5 py-1 text-g-xs font-semibold text-(--kqm-ink)">
 						{t("dash.mode_label", {
-							mode: entry.summary?.mode
-								? t("dash.mode_ttk")
-								: t("dash.mode_duration"),
+							mode:
+								entry.summary?.mode === model.SimMode.TTK_MODE
+									? t("dash.mode_ttk")
+									: t("dash.mode_duration"),
 						})}
 					</span>
 				</div>
