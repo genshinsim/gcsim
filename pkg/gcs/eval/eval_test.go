@@ -1,11 +1,14 @@
 package eval
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"testing"
 
+	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 	"github.com/genshinsim/gcsim/pkg/gcs/parser"
 )
@@ -244,4 +247,46 @@ func TestRunSyncTerminate(t *testing.T) {
 	if eval.Err() != nil {
 		t.Error(eval.Err())
 	}
+}
+
+func TestActionInOnTick(t *testing.T) {
+	// an action in a set_on_tick callback is an error at the call, while the program runs and
+	// after it has ended
+	c, err := core.New(core.Opt{})
+	if err != nil {
+		t.Fatal(err)
+	}
+	file := ast.NewFile()
+	p := parser.New(file, `set_on_tick(fn() { wait(1); });
+delay(1);`)
+	_, gcsl, err := p.Parse()
+	if err != nil {
+		t.Fatal(err)
+	}
+	eval, _ := NewEvaluator(file, gcsl, c)
+	eval.Log = log.Default()
+	const want = "ln1:24: actions can't be used in set_on_tick"
+	check := func(when string) {
+		t.Helper()
+		var aerr ast.Error
+		if err := eval.Err(); !errors.As(err, &aerr) || err.Error() != want {
+			t.Errorf("%v: expecting ast.Error %q, got %v", when, want, err)
+		}
+	}
+	count := 0
+	err = eval.RunSync(func(a *action.Eval) bool {
+		count++
+		// the sim runs a frame for the action
+		c.Events.Emit(event.OnTick)
+		check("while the program runs")
+		return true
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if count != 1 {
+		t.Errorf("expecting exec to be called once, got %v", count)
+	}
+	c.Events.Emit(event.OnTick)
+	check("after the program has ended")
 }
