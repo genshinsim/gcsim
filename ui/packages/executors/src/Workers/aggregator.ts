@@ -37,13 +37,19 @@ function add(req: { result: Uint8Array }) {
 	return { type: AggResponse.Done };
 }
 
-function doFlush() {
+function doFlush(req: { final: boolean }) {
+	const start = performance.now();
 	// TODO: have a specific result response type to enforce (protos?)
 	const resp = JSON.parse(flush());
 	if (resp.error) {
 		return { type: AggResponse.Failed, reason: resp.error };
 	}
-	return { type: AggResponse.Result, result: resp };
+	return {
+		type: AggResponse.Result,
+		final: req.final,
+		ms: performance.now() - start,
+		result: resp,
+	};
 }
 
 // @ts-ignore
@@ -56,7 +62,7 @@ function handleRequest(req: any): any {
 		case AggRequest.Add:
 			return respond(req, add(req));
 		case AggRequest.Flush:
-			return respond(req, doFlush());
+			return respond(req, doFlush(req));
 		default:
 			console.error("aggregator - unknown request: ", req);
 			throw new Error("aggregator unknown request");
