@@ -35,6 +35,9 @@ func (t *Base) Extend(key string, logger glog.Logger, index, amt int) {
 		t.extension = 0
 	}
 	t.event.SetEnded(t.Expiry())
+	if !glog.Enabled(logger) {
+		return
+	}
 	logger.NewEvent("mod extended", glog.LogStatusEvent, index).
 		Write("key", key).
 		Write("amt", amt).
@@ -127,6 +130,15 @@ func FindCheckExpiry[K Mod](slice *[]K, key string, f int) (int, bool) {
 
 // LogAdd is a helper that logs mod add events
 func LogAdd[K Mod](prefix string, index int, mod K, logger glog.Logger, overwrote bool, oldEvt glog.Event) {
+	if !glog.Enabled(logger) {
+		// nothing is recorded, but the mod still needs an event to end on delete/extend
+		evt := oldEvt
+		if !overwrote {
+			evt = logger.NewEvent(prefix, glog.LogStatusEvent, index)
+		}
+		mod.SetEvent(evt)
+		return
+	}
 	var evt glog.Event
 	if overwrote {
 		logger.NewEventBuildMsg(
