@@ -18,47 +18,47 @@ func (z *CharacterSummary) MarshalMsg(b []byte) (o []byte, err error) {
 		err = msgp.WrapError(err, "Failures")
 		return
 	}
-	o = msgp.AppendMapHeader(o, uint32(len(z.Actions)))
-	for za0001, za0002 := range z.Actions {
-		o = msgp.AppendString(o, za0001)
-		o = msgp.AppendFloat64(o, za0002)
+	o, err = z.Actions.MarshalMsg(o)
+	if err != nil {
+		err = msgp.WrapError(err, "Actions")
+		return
 	}
-	o = msgp.AppendMapHeader(o, uint32(len(z.Reactions)))
-	for za0003, za0004 := range z.Reactions {
-		o = msgp.AppendString(o, za0003)
-		o = msgp.AppendFloat64(o, za0004)
+	o, err = z.Reactions.MarshalMsg(o)
+	if err != nil {
+		err = msgp.WrapError(err, "Reactions")
+		return
 	}
-	o = msgp.AppendMapHeader(o, uint32(len(z.Energy)))
-	for za0005, za0006 := range z.Energy {
-		o = msgp.AppendString(o, za0005)
-		o = msgp.AppendFloat64(o, za0006)
+	o, err = z.Energy.MarshalMsg(o)
+	if err != nil {
+		err = msgp.WrapError(err, "Energy")
+		return
 	}
 	o = msgp.AppendFloat64(o, z.Damage)
-	o = msgp.AppendMapHeader(o, uint32(len(z.DamageByElement)))
-	for za0007, za0008 := range z.DamageByElement {
-		o = msgp.AppendString(o, za0007)
-		o = msgp.AppendFloat64(o, za0008)
+	o, err = z.DamageByElement.MarshalMsg(o)
+	if err != nil {
+		err = msgp.WrapError(err, "DamageByElement")
+		return
 	}
 	o = msgp.AppendArrayHeader(o, uint32(len(z.DamageByTarget)))
-	for za0009 := range z.DamageByTarget {
+	for za0001 := range z.DamageByTarget {
 		// array header, size 2
 		o = append(o, 0x92)
-		o = msgp.AppendInt(o, z.DamageByTarget[za0009].Target)
-		o = msgp.AppendFloat64(o, z.DamageByTarget[za0009].Damage)
+		o = msgp.AppendInt(o, z.DamageByTarget[za0001].Target)
+		o = msgp.AppendFloat64(o, z.DamageByTarget[za0001].Damage)
 	}
-	o = msgp.AppendMapHeader(o, uint32(len(z.DamageBySource)))
-	for za0010, za0011 := range z.DamageBySource {
-		o = msgp.AppendString(o, za0010)
-		o = msgp.AppendFloat64(o, za0011)
+	o, err = z.DamageBySource.MarshalMsg(o)
+	if err != nil {
+		err = msgp.WrapError(err, "DamageBySource")
+		return
 	}
-	o = msgp.AppendMapHeader(o, uint32(len(z.DamageInstances)))
-	for za0012, za0013 := range z.DamageInstances {
-		o = msgp.AppendString(o, za0012)
-		o = msgp.AppendFloat64(o, za0013)
+	o, err = z.DamageInstances.MarshalMsg(o)
+	if err != nil {
+		err = msgp.WrapError(err, "DamageInstances")
+		return
 	}
 	o = msgp.AppendArrayHeader(o, uint32(len(z.DamageCumulativeContrib)))
-	for za0014 := range z.DamageCumulativeContrib {
-		o = msgp.AppendFloat64(o, z.DamageCumulativeContrib[za0014])
+	for za0002 := range z.DamageCumulativeContrib {
+		o = msgp.AppendFloat64(o, z.DamageCumulativeContrib[za0002])
 	}
 	return
 }
@@ -85,233 +85,89 @@ func (z *CharacterSummary) UnmarshalMsg(bts []byte) (o []byte, err error) {
 		err = msgp.WrapError(err, "Failures")
 		return
 	}
-	var zb0002 uint32
-	zb0002, bts, err = msgp.ReadMapHeaderBytes(bts)
+	bts, err = z.Actions.UnmarshalMsg(bts)
 	if err != nil {
 		err = msgp.WrapError(err, "Actions")
 		return
 	}
-	if z.Actions == nil {
-		z.Actions = make(map[string]float64, zb0002)
-	} else if len(z.Actions) > 0 {
-		for key := range z.Actions {
-			delete(z.Actions, key)
-		}
-	}
-	for zb0002 > 0 {
-		var za0001 string
-		var za0002 float64
-		zb0002--
-		za0001, bts, err = msgp.ReadStringBytes(bts)
-		if err != nil {
-			err = msgp.WrapError(err, "Actions")
-			return
-		}
-		za0002, bts, err = msgp.ReadFloat64Bytes(bts)
-		if err != nil {
-			err = msgp.WrapError(err, "Actions", za0001)
-			return
-		}
-		z.Actions[za0001] = za0002
-	}
-	var zb0003 uint32
-	zb0003, bts, err = msgp.ReadMapHeaderBytes(bts)
+	bts, err = z.Reactions.UnmarshalMsg(bts)
 	if err != nil {
 		err = msgp.WrapError(err, "Reactions")
 		return
 	}
-	if z.Reactions == nil {
-		z.Reactions = make(map[string]float64, zb0003)
-	} else if len(z.Reactions) > 0 {
-		for key := range z.Reactions {
-			delete(z.Reactions, key)
-		}
-	}
-	for zb0003 > 0 {
-		var za0003 string
-		var za0004 float64
-		zb0003--
-		za0003, bts, err = msgp.ReadStringBytes(bts)
-		if err != nil {
-			err = msgp.WrapError(err, "Reactions")
-			return
-		}
-		za0004, bts, err = msgp.ReadFloat64Bytes(bts)
-		if err != nil {
-			err = msgp.WrapError(err, "Reactions", za0003)
-			return
-		}
-		z.Reactions[za0003] = za0004
-	}
-	var zb0004 uint32
-	zb0004, bts, err = msgp.ReadMapHeaderBytes(bts)
+	bts, err = z.Energy.UnmarshalMsg(bts)
 	if err != nil {
 		err = msgp.WrapError(err, "Energy")
 		return
-	}
-	if z.Energy == nil {
-		z.Energy = make(map[string]float64, zb0004)
-	} else if len(z.Energy) > 0 {
-		for key := range z.Energy {
-			delete(z.Energy, key)
-		}
-	}
-	for zb0004 > 0 {
-		var za0005 string
-		var za0006 float64
-		zb0004--
-		za0005, bts, err = msgp.ReadStringBytes(bts)
-		if err != nil {
-			err = msgp.WrapError(err, "Energy")
-			return
-		}
-		za0006, bts, err = msgp.ReadFloat64Bytes(bts)
-		if err != nil {
-			err = msgp.WrapError(err, "Energy", za0005)
-			return
-		}
-		z.Energy[za0005] = za0006
 	}
 	z.Damage, bts, err = msgp.ReadFloat64Bytes(bts)
 	if err != nil {
 		err = msgp.WrapError(err, "Damage")
 		return
 	}
-	var zb0005 uint32
-	zb0005, bts, err = msgp.ReadMapHeaderBytes(bts)
+	bts, err = z.DamageByElement.UnmarshalMsg(bts)
 	if err != nil {
 		err = msgp.WrapError(err, "DamageByElement")
 		return
 	}
-	if z.DamageByElement == nil {
-		z.DamageByElement = make(map[string]float64, zb0005)
-	} else if len(z.DamageByElement) > 0 {
-		for key := range z.DamageByElement {
-			delete(z.DamageByElement, key)
-		}
-	}
-	for zb0005 > 0 {
-		var za0007 string
-		var za0008 float64
-		zb0005--
-		za0007, bts, err = msgp.ReadStringBytes(bts)
-		if err != nil {
-			err = msgp.WrapError(err, "DamageByElement")
-			return
-		}
-		za0008, bts, err = msgp.ReadFloat64Bytes(bts)
-		if err != nil {
-			err = msgp.WrapError(err, "DamageByElement", za0007)
-			return
-		}
-		z.DamageByElement[za0007] = za0008
-	}
-	var zb0006 uint32
-	zb0006, bts, err = msgp.ReadArrayHeaderBytes(bts)
+	var zb0002 uint32
+	zb0002, bts, err = msgp.ReadArrayHeaderBytes(bts)
 	if err != nil {
 		err = msgp.WrapError(err, "DamageByTarget")
 		return
 	}
-	if cap(z.DamageByTarget) >= int(zb0006) {
-		z.DamageByTarget = (z.DamageByTarget)[:zb0006]
+	if cap(z.DamageByTarget) >= int(zb0002) {
+		z.DamageByTarget = (z.DamageByTarget)[:zb0002]
 	} else {
-		z.DamageByTarget = make([]TargetDamage, zb0006)
+		z.DamageByTarget = make([]TargetDamage, zb0002)
 	}
-	for za0009 := range z.DamageByTarget {
-		var zb0007 uint32
-		zb0007, bts, err = msgp.ReadArrayHeaderBytes(bts)
+	for za0001 := range z.DamageByTarget {
+		var zb0003 uint32
+		zb0003, bts, err = msgp.ReadArrayHeaderBytes(bts)
 		if err != nil {
-			err = msgp.WrapError(err, "DamageByTarget", za0009)
+			err = msgp.WrapError(err, "DamageByTarget", za0001)
 			return
 		}
-		if zb0007 != 2 {
-			err = msgp.ArrayError{Wanted: 2, Got: zb0007}
+		if zb0003 != 2 {
+			err = msgp.ArrayError{Wanted: 2, Got: zb0003}
 			return
 		}
-		z.DamageByTarget[za0009].Target, bts, err = msgp.ReadIntBytes(bts)
+		z.DamageByTarget[za0001].Target, bts, err = msgp.ReadIntBytes(bts)
 		if err != nil {
-			err = msgp.WrapError(err, "DamageByTarget", za0009, "Target")
+			err = msgp.WrapError(err, "DamageByTarget", za0001, "Target")
 			return
 		}
-		z.DamageByTarget[za0009].Damage, bts, err = msgp.ReadFloat64Bytes(bts)
+		z.DamageByTarget[za0001].Damage, bts, err = msgp.ReadFloat64Bytes(bts)
 		if err != nil {
-			err = msgp.WrapError(err, "DamageByTarget", za0009, "Damage")
+			err = msgp.WrapError(err, "DamageByTarget", za0001, "Damage")
 			return
 		}
 	}
-	var zb0008 uint32
-	zb0008, bts, err = msgp.ReadMapHeaderBytes(bts)
+	bts, err = z.DamageBySource.UnmarshalMsg(bts)
 	if err != nil {
 		err = msgp.WrapError(err, "DamageBySource")
 		return
 	}
-	if z.DamageBySource == nil {
-		z.DamageBySource = make(map[string]float64, zb0008)
-	} else if len(z.DamageBySource) > 0 {
-		for key := range z.DamageBySource {
-			delete(z.DamageBySource, key)
-		}
-	}
-	for zb0008 > 0 {
-		var za0010 string
-		var za0011 float64
-		zb0008--
-		za0010, bts, err = msgp.ReadStringBytes(bts)
-		if err != nil {
-			err = msgp.WrapError(err, "DamageBySource")
-			return
-		}
-		za0011, bts, err = msgp.ReadFloat64Bytes(bts)
-		if err != nil {
-			err = msgp.WrapError(err, "DamageBySource", za0010)
-			return
-		}
-		z.DamageBySource[za0010] = za0011
-	}
-	var zb0009 uint32
-	zb0009, bts, err = msgp.ReadMapHeaderBytes(bts)
+	bts, err = z.DamageInstances.UnmarshalMsg(bts)
 	if err != nil {
 		err = msgp.WrapError(err, "DamageInstances")
 		return
 	}
-	if z.DamageInstances == nil {
-		z.DamageInstances = make(map[string]float64, zb0009)
-	} else if len(z.DamageInstances) > 0 {
-		for key := range z.DamageInstances {
-			delete(z.DamageInstances, key)
-		}
-	}
-	for zb0009 > 0 {
-		var za0012 string
-		var za0013 float64
-		zb0009--
-		za0012, bts, err = msgp.ReadStringBytes(bts)
-		if err != nil {
-			err = msgp.WrapError(err, "DamageInstances")
-			return
-		}
-		za0013, bts, err = msgp.ReadFloat64Bytes(bts)
-		if err != nil {
-			err = msgp.WrapError(err, "DamageInstances", za0012)
-			return
-		}
-		z.DamageInstances[za0012] = za0013
-	}
-	var zb0010 uint32
-	zb0010, bts, err = msgp.ReadArrayHeaderBytes(bts)
+	var zb0004 uint32
+	zb0004, bts, err = msgp.ReadArrayHeaderBytes(bts)
 	if err != nil {
 		err = msgp.WrapError(err, "DamageCumulativeContrib")
 		return
 	}
-	if cap(z.DamageCumulativeContrib) >= int(zb0010) {
-		z.DamageCumulativeContrib = (z.DamageCumulativeContrib)[:zb0010]
+	if cap(z.DamageCumulativeContrib) >= int(zb0004) {
+		z.DamageCumulativeContrib = (z.DamageCumulativeContrib)[:zb0004]
 	} else {
-		z.DamageCumulativeContrib = make([]float64, zb0010)
+		z.DamageCumulativeContrib = make([]float64, zb0004)
 	}
-	for za0014 := range z.DamageCumulativeContrib {
-		z.DamageCumulativeContrib[za0014], bts, err = msgp.ReadFloat64Bytes(bts)
+	for za0002 := range z.DamageCumulativeContrib {
+		z.DamageCumulativeContrib[za0002], bts, err = msgp.ReadFloat64Bytes(bts)
 		if err != nil {
-			err = msgp.WrapError(err, "DamageCumulativeContrib", za0014)
+			err = msgp.WrapError(err, "DamageCumulativeContrib", za0002)
 			return
 		}
 	}
@@ -321,49 +177,7 @@ func (z *CharacterSummary) UnmarshalMsg(bts []byte) (o []byte, err error) {
 
 // Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
 func (z *CharacterSummary) Msgsize() (s int) {
-	s = 1 + msgp.IntSize + z.Failures.Msgsize() + msgp.MapHeaderSize
-	if z.Actions != nil {
-		for za0001, za0002 := range z.Actions {
-			_ = za0002
-			s += msgp.StringPrefixSize + len(za0001) + msgp.Float64Size
-		}
-	}
-	s += msgp.MapHeaderSize
-	if z.Reactions != nil {
-		for za0003, za0004 := range z.Reactions {
-			_ = za0004
-			s += msgp.StringPrefixSize + len(za0003) + msgp.Float64Size
-		}
-	}
-	s += msgp.MapHeaderSize
-	if z.Energy != nil {
-		for za0005, za0006 := range z.Energy {
-			_ = za0006
-			s += msgp.StringPrefixSize + len(za0005) + msgp.Float64Size
-		}
-	}
-	s += msgp.Float64Size + msgp.MapHeaderSize
-	if z.DamageByElement != nil {
-		for za0007, za0008 := range z.DamageByElement {
-			_ = za0008
-			s += msgp.StringPrefixSize + len(za0007) + msgp.Float64Size
-		}
-	}
-	s += msgp.ArrayHeaderSize + (len(z.DamageByTarget) * (15 + msgp.IntSize + msgp.Float64Size)) + msgp.MapHeaderSize
-	if z.DamageBySource != nil {
-		for za0010, za0011 := range z.DamageBySource {
-			_ = za0011
-			s += msgp.StringPrefixSize + len(za0010) + msgp.Float64Size
-		}
-	}
-	s += msgp.MapHeaderSize
-	if z.DamageInstances != nil {
-		for za0012, za0013 := range z.DamageInstances {
-			_ = za0013
-			s += msgp.StringPrefixSize + len(za0012) + msgp.Float64Size
-		}
-	}
-	s += msgp.ArrayHeaderSize + (len(z.DamageCumulativeContrib) * (msgp.Float64Size))
+	s = 1 + msgp.IntSize + z.Failures.Msgsize() + z.Actions.Msgsize() + z.Reactions.Msgsize() + z.Energy.Msgsize() + msgp.Float64Size + z.DamageByElement.Msgsize() + msgp.ArrayHeaderSize + (len(z.DamageByTarget) * (15 + msgp.IntSize + msgp.Float64Size)) + z.DamageBySource.Msgsize() + z.DamageInstances.Msgsize() + msgp.ArrayHeaderSize + (len(z.DamageCumulativeContrib) * (msgp.Float64Size))
 	return
 }
 
@@ -732,6 +546,84 @@ func (z *Summary) Msgsize() (s int) {
 	for za0004 := range z.Enemies {
 		s += z.Enemies[za0004].Msgsize()
 	}
+	return
+}
+
+// MarshalMsg implements msgp.Marshaler
+func (z *Sums) MarshalMsg(b []byte) (o []byte, err error) {
+	o = msgp.Require(b, z.Msgsize())
+	// array header, size 2
+	o = append(o, 0x92)
+	o = msgp.AppendArrayHeader(o, uint32(len(z.Keys)))
+	for za0001 := range z.Keys {
+		o = msgp.AppendString(o, z.Keys[za0001])
+	}
+	o = msgp.AppendArrayHeader(o, uint32(len(z.Values)))
+	for za0002 := range z.Values {
+		o = msgp.AppendFloat64(o, z.Values[za0002])
+	}
+	return
+}
+
+// UnmarshalMsg implements msgp.Unmarshaler
+func (z *Sums) UnmarshalMsg(bts []byte) (o []byte, err error) {
+	var zb0001 uint32
+	zb0001, bts, err = msgp.ReadArrayHeaderBytes(bts)
+	if err != nil {
+		err = msgp.WrapError(err)
+		return
+	}
+	if zb0001 != 2 {
+		err = msgp.ArrayError{Wanted: 2, Got: zb0001}
+		return
+	}
+	var zb0002 uint32
+	zb0002, bts, err = msgp.ReadArrayHeaderBytes(bts)
+	if err != nil {
+		err = msgp.WrapError(err, "Keys")
+		return
+	}
+	if cap(z.Keys) >= int(zb0002) {
+		z.Keys = (z.Keys)[:zb0002]
+	} else {
+		z.Keys = make([]string, zb0002)
+	}
+	for za0001 := range z.Keys {
+		z.Keys[za0001], bts, err = msgp.ReadStringBytes(bts)
+		if err != nil {
+			err = msgp.WrapError(err, "Keys", za0001)
+			return
+		}
+	}
+	var zb0003 uint32
+	zb0003, bts, err = msgp.ReadArrayHeaderBytes(bts)
+	if err != nil {
+		err = msgp.WrapError(err, "Values")
+		return
+	}
+	if cap(z.Values) >= int(zb0003) {
+		z.Values = (z.Values)[:zb0003]
+	} else {
+		z.Values = make([]float64, zb0003)
+	}
+	for za0002 := range z.Values {
+		z.Values[za0002], bts, err = msgp.ReadFloat64Bytes(bts)
+		if err != nil {
+			err = msgp.WrapError(err, "Values", za0002)
+			return
+		}
+	}
+	o = bts
+	return
+}
+
+// Msgsize returns an upper bound estimate of the number of bytes occupied by the serialized message
+func (z *Sums) Msgsize() (s int) {
+	s = 1 + msgp.ArrayHeaderSize
+	for za0001 := range z.Keys {
+		s += msgp.StringPrefixSize + len(z.Keys[za0001])
+	}
+	s += msgp.ArrayHeaderSize + (len(z.Values) * (msgp.Float64Size))
 	return
 }
 

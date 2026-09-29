@@ -33,7 +33,7 @@ func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 
 func (b *buffer) Add(result *agg.Summary) {
 	for i := range result.Characters {
-		for k, v := range result.Characters[i].Actions {
+		for k, v := range result.Characters[i].Actions.All() {
 			if _, ok := b.characterActions[i][k]; !ok {
 				b.characterActions[i][k] = &calc.StreamStats{}
 			}
