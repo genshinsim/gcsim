@@ -1,7 +1,9 @@
 package shield
 
 import (
+	"maps"
 	"math"
+	"slices"
 	"sort"
 
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -18,7 +20,8 @@ type byPosition []endpoint
 func (p byPosition) Len() int      { return len(p) }
 func (p byPosition) Swap(i, j int) { p[i], p[j] = p[j], p[i] }
 func (p byPosition) Less(i, j int) bool {
-	return p[i].pos < p[j].pos || (p[i].pos == p[j].pos && p[i].end)
+	// on the same frame, ends come before starts
+	return p[i].pos < p[j].pos || (p[i].pos == p[j].pos && p[i].end && !p[j].end)
 }
 
 func computeEffective(shields map[string][]stats.ShieldInterval) map[string][]stats.ShieldSingleInterval {
@@ -27,16 +30,17 @@ func computeEffective(shields map[string][]stats.ShieldInterval) map[string][]st
 		n += len(v)
 	}
 
-	// populate and sort endpoints
+	// populate and sort endpoints. Names are sorted and the sort is stable so that endpoints on
+	// the same frame keep an order that doesn't depend on map iteration
 	endpoints := make([]endpoint, 0, n*2)
-	for name := range shields {
+	for _, name := range slices.Sorted(maps.Keys(shields)) {
 		for i := range shields[name] {
 			start := endpoint{pos: shields[name][i].Start, end: false, interval: &shields[name][i]}
 			end := endpoint{pos: shields[name][i].End, end: true, interval: &shields[name][i]}
 			endpoints = append(endpoints, start, end)
 		}
 	}
-	sort.Sort(byPosition(endpoints))
+	sort.Stable(byPosition(endpoints))
 
 	out := make(map[string][]stats.ShieldSingleInterval)
 	for _, e := range elements {
@@ -45,21 +49,23 @@ func computeEffective(shields map[string][]stats.ShieldInterval) map[string][]st
 	out[normalized] = make([]stats.ShieldSingleInterval, 0, n)
 
 	current := make(map[attributes.Element]*stats.ShieldInterval)
-	active := make(map[*stats.ShieldInterval]bool)
+	// active intervals in the order they started
+	var active []*stats.ShieldInterval
 	handleEnd := func(endpoint endpoint) {
 		// if other shields are active, need to elect greatest as new effective
 		var normalizedHP float64
 		normalizedEnd := math.MaxInt
 		for _, e := range elements {
 			if current[e] == endpoint.interval {
+				// a shield that ends on this frame can't take over; on a tie, the one that started
+				// first wins
 				var best *stats.ShieldInterval
-				for k := range active {
-					if best == nil || k.HP[e.String()] > best.HP[e.String()] {
+				for _, k := range active {
+					if k.End > endpoint.pos && (best == nil || k.HP[e.String()] > best.HP[e.String()]) {
 						best = k
 					}
 				}
-				// only add if this new interval is at least 1 frame wide
-				if best.End > endpoint.pos {
+				if best != nil {
 					current[e] = best
 					out[e.String()] = append(out[e.String()], stats.ShieldSingleInterval{
 						Start: endpoint.pos,
@@ -84,7 +90,9 @@ func computeEffective(shields map[string][]stats.ShieldInterval) map[string][]st
 
 	for _, endpoint := range endpoints {
 		if endpoint.end {
-			delete(active, endpoint.interval)
+			if i := slices.Index(active, endpoint.interval); i >= 0 {
+				active = slices.Delete(active, i, i+1)
+			}
 			if len(active) == 0 {
 				continue
 			}
@@ -93,7 +101,7 @@ func computeEffective(shields map[string][]stats.ShieldInterval) map[string][]st
 		}
 
 		// start endpoint, add this interval to active set
-		active[endpoint.interval] = true
+		active = append(active, endpoint.interval)
 
 		// only 1 active shield == effective shield
 		if len(active) == 1 {
