@@ -143,7 +143,14 @@ func (h *Handler) OnDamage(char, active int, dmg float64, ele attributes.Element
 	return mintaken
 }
 
+// Tick runs every frame; with no shields there is nothing to expire, and the check inlines.
 func (h *Handler) Tick() {
+	if len(h.shields) > 0 {
+		h.tick()
+	}
+}
+
+func (h *Handler) tick() {
 	n := 0
 	broken := make([]Shield, 0)
 	for _, v := range h.shields {
