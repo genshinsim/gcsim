@@ -20,6 +20,10 @@ type Simulation struct {
 	eval          action.Evaluator
 	noMoreActions bool
 	collectors    []stats.Collector
+	// set when eval is a syncEvaluator: it runs on the sim's goroutine, and queuePhase returns to
+	// it with awaitingAction set instead of waiting on Continue/NextAction
+	syncEval       bool
+	awaitingAction bool
 
 	// track previous action, when it was used at, and the earliest
 	// useable frame for all other chained actions
