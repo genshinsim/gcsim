@@ -8,8 +8,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-// attack returns true if the attack lands
-func (h *Handler) attack(t info.Target, a *info.AttackEvent) (float64, bool) {
+// attack returns true if the attack lands. g is t if t is a gadget and nil otherwise.
+func (h *Handler) attack(t info.Target, g info.Gadget, a *info.AttackEvent) (float64, bool) {
 	willHit, reason := t.AttackWillLand(a.Pattern)
 	if !willHit {
 		// Move target logs into the "Sim" event log to avoid cluttering main display for stuff like Guoba
@@ -25,6 +25,12 @@ func (h *Handler) attack(t info.Target, a *info.AttackEvent) (float64, bool) {
 		}
 		return 0, false
 	}
+	// gadgets are hit by every attack around them, and some don't need the event
+	if g != nil {
+		if dmg, ok := g.HandleSharedAttack(a); ok {
+			return dmg, true
+		}
+	}
 	// make a copy first
 	cpy := *a
 	dmg := t.HandleAttack(&cpy)
@@ -39,7 +45,7 @@ func (h *Handler) ApplyAttack(a *info.AttackEvent) float64 {
 	// check player
 	if !a.Pattern.SkipTargets[info.TargettablePlayer] {
 		// TODO: we don't check for landed here since attack that hit player should never generate hitlag?
-		h.attack(h.player, a)
+		h.attack(h.player, nil, a)
 	}
 	// check enemies
 	if !a.Pattern.SkipTargets[info.TargettableEnemy] {
@@ -50,7 +56,7 @@ func (h *Handler) ApplyAttack(a *info.AttackEvent) float64 {
 			if !v.IsAlive() {
 				continue
 			}
-			a, l := h.attack(v, a)
+			a, l := h.attack(v, nil, a)
 			total += a
 			if l {
 				landed = true
@@ -64,7 +70,7 @@ func (h *Handler) ApplyAttack(a *info.AttackEvent) float64 {
 			if h.gadgets[i] == nil {
 				continue
 			}
-			h.attack(h.gadgets[i], a)
+			h.attack(h.gadgets[i], h.gadgets[i], a)
 		}
 	}
 	// add hitlag to actor but ignore if this is deployable

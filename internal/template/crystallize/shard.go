@@ -78,6 +78,17 @@ func (cs *Shard) HandleAttack(atk *info.AttackEvent) float64 {
 	cs.Core.Events.Emit(event.OnGadgetHit, cs, atk)
 	return 0
 }
+
+// HandleSharedAttack lets combat skip copying the event for shards, which are hit by most
+// attacks around a target: only OnGadgetHit hooks can see it, so it's copied only for them.
+func (cs *Shard) HandleSharedAttack(atk *info.AttackEvent) (float64, bool) {
+	if !cs.Core.Events.HasHooks(event.OnGadgetHit) {
+		return 0, true
+	}
+	cpy := *atk
+	return cs.HandleAttack(&cpy), true
+}
+
 func (cs *Shard) Attack(*info.AttackEvent, glog.Event) (float64, bool) { return 0, false }
 func (cs *Shard) SetDirection(trg info.Point)                          {}
 func (cs *Shard) SetDirectionToClosestEnemy()                          {}
