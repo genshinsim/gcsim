@@ -48,10 +48,18 @@ func NewEvaluator(file *ast.File, ast ast.Node, c *core.Core) (*Eval, error) {
 }
 
 func NewEnv(parent *Env) *Env {
+	// varMap is made on the first set: most scopes (every block run) declare nothing
 	return &Env{
 		parent: parent,
-		varMap: make(map[string]*Obj),
 	}
+}
+
+//nolint:gocritic // non-pointer type for *Obj doesn't make sense
+func (e *Env) set(s string, o *Obj) {
+	if e.varMap == nil {
+		e.varMap = make(map[string]*Obj)
+	}
+	e.varMap[s] = o
 }
 
 //nolint:gocritic // non-pointer type for *Obj doesn't make sense
