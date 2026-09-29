@@ -1,7 +1,7 @@
 # @gcsim/e2e
 
 Local, Playwright-driven end-to-end smoke tests for gcsim, catching regressions
-where a site *builds* but breaks at *runtime*. Four suites, each its own
+where a site *builds* but breaks at *runtime*. Three suites, each its own
 Playwright config:
 
 - **web** (`playwright.config.ts`, default) — boots the web app, waits for
@@ -17,10 +17,6 @@ Playwright config:
 - **db** ("Simpact", `playwright.db.config.ts`) — boots the db app and asserts
   the home and browse views render. The db app is pure front-end (no wasm), and
   the spec stubs every `/api` call, so it needs neither Go nor network.
-- **taghelper** (`playwright.taghelper.config.ts`) — boots the taghelper app (the
-  Discord moderation helper) and asserts the `/id/:id` moderation view renders.
-  Like db, it is pure front-end and stubs every `/api` call, so it needs neither
-  Go nor network.
 
 Two layers:
 
@@ -51,19 +47,18 @@ has no wasm, workers, or backend, and building first makes the smoke spec catch
 build-time breakage too (broken links, MDX compile errors, a bad sidebar entry).
 It still needs the pnpm deps and the Chromium browser above.
 
-The **db** and **taghelper** suites also need none of the wasm toolchain. Each
-runs its vite dev server and stubs every `/api` call, so it needs no Go, no
-backend, and no network — only the pnpm deps and the Chromium browser above.
+The **db** suite also needs none of the wasm toolchain. It runs its vite dev
+server and stubs every `/api` call, so it needs no Go, no backend, and no
+network — only the pnpm deps and the Chromium browser above.
 
 ## Run it
 
 From the `ui/` workspace root:
 
 ```sh
-pnpm test:e2e            # web app suite  (builds wasm; needs Go + task)
-pnpm test:e2e:docs       # docs site suite
-pnpm test:e2e:db         # db app suite         (no wasm, no network)
-pnpm test:e2e:taghelper  # taghelper app suite  (no wasm, no network)
+pnpm test:e2e       # web app suite  (builds wasm; needs Go + task)
+pnpm test:e2e:docs  # docs site suite
+pnpm test:e2e:db    # db app suite   (no wasm, no network)
 ```
 
 `test:e2e` builds the wasm binary, boots the dev server on a fixed strict port
@@ -76,13 +71,10 @@ and tears the server down after — a running server on `4173` is reused locally
 `test:e2e:db` boots the db dev server on `5273` and runs the db suite; a running
 server on `5273` is reused locally.
 
-`test:e2e:taghelper` boots the taghelper dev server on `5174` and runs the
-taghelper suite; a running server on `5174` is reused locally.
-
 Other entry points (from `ui/packages/e2e`):
 
-- `pnpm --filter @gcsim/e2e test:headed` / `test:db:headed` /
-  `test:taghelper:headed` — watch it drive a real browser.
+- `pnpm --filter @gcsim/e2e test:headed` / `test:db:headed` — watch it drive a
+  real browser.
 - `pnpm --filter @gcsim/e2e report` — open the HTML report from the last run.
 
 ## On failure
@@ -169,7 +161,7 @@ same sidebar chrome), so one class owns the whole surface plus a
 Watches the page console for its whole lifetime, and offers two contracts:
 
 - `assertNoErrors()` fails on any un-ignored `console.error` or `pageerror` seen
-  across the flow (used by the web, db, and taghelper suites);
+  across the flow (used by the web and db suites);
 - `assertNoCrashes()` fails only on an uncaught exception (`pageerror`), ignoring
   ambient `console.error` noise such as a transient resource 404 (used by the
   docs suite, whose production build serves noisy static assets on cold start).
@@ -228,28 +220,6 @@ spec deterministic and offline.
   the Characters section to its portrait picker.
 - `filterByCharacter(name)` — pick a character from the search box, which
   refetches `/api/db` with the narrowed query; pair with `expectShowing(n)`.
-
-### `TaghelperHarness` (`src/taghelper-harness.ts`) — the taghelper app
-
-Taghelper is a single surface — the `/id/:id` moderation view for one db entry —
-so, like `DocsHarness`, one class owns the whole surface plus a `ConsoleMonitor`.
-The `taghelper` test fixture stubs the app's network before any navigation via
-`installTaghelperRoutes` (`src/taghelper-fixtures.ts`): `/api/db/id/:id` returns
-the `mainEntry`, `/api/db` returns the related entries, and `/api/assets/**`
-returns a 1x1 PNG. The dev server proxies `/api` to production (simimpact.app) by
-default; these routes keep the spec deterministic and offline.
-
-- `goto(id)` — navigate to `/id/:id` and wait for the main entry's heading.
-- `waitForEntry(chars, sourceTag)` — assert the team portraits (by `alt`) and the
-  summary stat chips (mode / target / dps / avg sim time / created / source tag).
-  **Structural only** — never asserts numeric results.
-- `waitForControls()` — assert the Copy Reject / Copy Approve / Result Viewer
-  moderation controls.
-- `waitForExistingSims()` — assert the "existing sims" section rendered either
-  result rows (each with a Replace This control) or the "Nothing found" empty
-  state.
-- `copyCommand(name)` — click a copy button and return the resulting clipboard
-  text (e.g. `/approve id:…`).
 
 ## Out of scope
 
