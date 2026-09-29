@@ -17,7 +17,6 @@
 @source "./db/src";
 @source "./storybook/src";
 @source "./embed/src";
-@source "./taghelper/src";
 @source "./web/src";
 
 @theme {

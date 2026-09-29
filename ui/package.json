@@ -18,7 +18,6 @@
 		"start:web": "pnpm --filter @gcsim/web dev",
 		"start:db": "pnpm --filter @gcsim/db dev",
 		"start:docs": "pnpm --filter @gcsim/docs start",
-		"start:taghelper": "pnpm --filter @gcsim/taghelper dev",
 		"preview": "pnpm run preview:web",
 		"preview:web": "pnpm --filter @gcsim/web preview",
 		"build": "pnpm run build:wasm && pnpm run build:web",
@@ -26,14 +25,12 @@
 		"build:web": "pnpm --filter @gcsim/web build",
 		"build:db": "pnpm --filter @gcsim/db build",
 		"build:docs": "pnpm --filter @gcsim/docs build",
-		"build:taghelper": "pnpm --filter @gcsim/taghelper build",
 		"deploy:workers": "pnpm --filter @gcsim/workers deploy",
 		"start:workers": "pnpm --filter @gcsim/workers start",
 		"storybook": "pnpm --filter @gcsim/storybook storybook",
 		"test:e2e": "pnpm --filter @gcsim/e2e test",
 		"test:e2e:docs": "pnpm --filter @gcsim/e2e test:docs",
-		"test:e2e:db": "pnpm --filter @gcsim/e2e test:db",
-		"test:e2e:taghelper": "pnpm --filter @gcsim/e2e test:taghelper"
+		"test:e2e:db": "pnpm --filter @gcsim/e2e test:db"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.13",
