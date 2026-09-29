@@ -10,7 +10,7 @@ import {
 } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { Footer, Nav } from "../Sectioning";
+import { Footer, Nav } from "../features/layout";
 import { lastRunStore } from "../stores/lastRun";
 
 export type AppContext = {

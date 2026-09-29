@@ -1,5 +1,5 @@
 import { Toaster } from "@gcsim/primitives";
-import { Footer } from "@gcsim/ui/src/Sectioning";
+import { Footer } from "@gcsim/ui/src/features/layout";
 import Nav from "./Nav";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
