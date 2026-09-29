@@ -2,11 +2,13 @@ version: v2
 # Module root is the repo root because the .proto files import each other with
 # repo-root-relative paths, e.g. `import "protos/model/result.proto";`.
 # `ui` is excluded so buf does not pick up the stray *.proto files vendored
-# under ui/node_modules.
+# under ui/node_modules. `.worktree` holds local git worktrees whose protos
+# would otherwise be declared twice.
 modules:
   - path: .
     excludes:
       - ui
+      - .worktree
 lint:
   use:
     - STANDARD
