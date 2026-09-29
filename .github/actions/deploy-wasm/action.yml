@@ -34,7 +34,10 @@ runs:
     run: |
       set -euo pipefail
       tarball="$RUNNER_TEMP/binaryen.tar.gz"
-      curl -sSfL -o "$tarball" "https://github.com/WebAssembly/binaryen/releases/download/${BINARYEN_VERSION}/binaryen-${BINARYEN_VERSION}-x86_64-linux.tar.gz"
+      # Retry so one transient failure doesn't block the deploy. --retry alone misses a 5xx served
+      # over HTTP/2 when --fail is set (curl reports it as error 56), hence --retry-all-errors.
+      curl -sSfL --retry 3 --retry-delay 5 --retry-all-errors -o "$tarball" \
+        "https://github.com/WebAssembly/binaryen/releases/download/${BINARYEN_VERSION}/binaryen-${BINARYEN_VERSION}-x86_64-linux.tar.gz"
       echo "${BINARYEN_SHA256}  $tarball" | sha256sum -c -
       tar -xzf "$tarball" -C "$RUNNER_TEMP"
       wasm="cmd/wasm/dist/${GITHUB_SHA}/main.wasm"
