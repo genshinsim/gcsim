@@ -5,19 +5,22 @@ WASMBENCH_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WASMBENCH_HOME="${WASMBENCH_HOME:-${TMPDIR:-/tmp}/wasmbench}"
 WASMBENCH_LOCK="${WASMBENCH_LOCK:-$WASMBENCH_HOME/wasmbench.lock}"
 NODE="${NODE:-node}"
+# The config set: a manifest.tsv with <name>.txt next to it (corpus.mjs manifest writes one).
+WASMBENCH_MANIFEST="${WASMBENCH_MANIFEST:-$WASMBENCH_DIR/configs/manifest.tsv}"
 mkdir -p "$WASMBENCH_HOME"
 
-# Prints "name iters warmup path" for each config in configs/manifest.tsv.
+# Prints "name iters warmup path" for each config in $WASMBENCH_MANIFEST.
 # CONFIGS (space separated names) restricts the set.
 wasmbench_configs() {
-	local name iters warmup _
+	local name iters warmup _ dir
+	dir="$(cd "$(dirname "$WASMBENCH_MANIFEST")" && pwd)"
 	while IFS=$'\t' read -r name iters warmup _; do
 		[[ -z "$name" || "$name" == \#* ]] && continue
 		if [[ -n "${CONFIGS:-}" && " $CONFIGS " != *" $name "* ]]; then
 			continue
 		fi
-		echo "$name $iters $warmup $WASMBENCH_DIR/configs/$name.txt"
-	done <"$WASMBENCH_DIR/configs/manifest.tsv"
+		echo "$name $iters $warmup $dir/$name.txt"
+	done <"$WASMBENCH_MANIFEST"
 }
 
 # mkdir-based machine-wide lock so only one benchmark runs at a time. Waits (never fails)
