@@ -178,3 +178,70 @@ func TestDoneCheck(t *testing.T) {
 		}
 	}
 }
+
+func TestRunSync(t *testing.T) {
+	// the program runs on the calling goroutine and hands every action to exec
+	file := ast.NewFile()
+	p := parser.New(file, `
+	for let i = 0; i < 4; i = i + 1 {
+		delay(1);
+	}
+	wait(2);`)
+	_, gcsl, err := p.Parse()
+	if err != nil {
+		t.Fatal(err)
+	}
+	eval, _ := NewEvaluator(file, gcsl, nil)
+	eval.Log = log.Default()
+	var got []action.Action
+	err = eval.RunSync(func(a *action.Eval) bool {
+		got = append(got, a.Action)
+		return true
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := []action.Action{action.ActionDelay, action.ActionDelay, action.ActionDelay, action.ActionDelay, action.ActionWait}
+	if fmt.Sprint(got) != fmt.Sprint(want) {
+		t.Errorf("expecting actions %v, got %v", want, got)
+	}
+	if eval.Err() != nil {
+		t.Error(eval.Err())
+	}
+}
+
+func TestRunSyncTerminate(t *testing.T) {
+	// exec returning false stops the program right away, even inside a for loop's post statement
+	file := ast.NewFile()
+	p := parser.New(file, `
+	fn next(x) {
+		delay(1);
+		return x + 1;
+	}
+	for let i = 0; i < 50; i = next(i) {
+		wait(1);
+	}`)
+	_, gcsl, err := p.Parse()
+	if err != nil {
+		t.Fatal(err)
+	}
+	eval, _ := NewEvaluator(file, gcsl, nil)
+	eval.Log = log.Default()
+	count := 0
+	stopped := false
+	err = eval.RunSync(func(a *action.Eval) bool {
+		count++
+		// stop on the first delay, which is in the post statement
+		stopped = stopped || a.Action == action.ActionDelay
+		return !stopped
+	})
+	if err != nil {
+		t.Errorf("unexpected error from RunSync: %v", err)
+	}
+	if count != 2 {
+		t.Errorf("expecting exec to be called 2 times, got %v", count)
+	}
+	if eval.Err() != nil {
+		t.Error(eval.Err())
+	}
+}

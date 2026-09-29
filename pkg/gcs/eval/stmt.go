@@ -1,6 +1,8 @@
 package eval
 
 import (
+	"errors"
+
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
@@ -165,8 +167,12 @@ func (e *Eval) evalWhileStmt(w *ast.WhileStmt, env *Env) (Obj, error) {
 
 func (e *Eval) evalForStmt(f *ast.ForStmt, env *Env) (Obj, error) {
 	scope := NewEnv(env)
+	// errors from init and post are ignored, except termination: once the sim is done, no more
+	// of the program may run (RunSync resumes the program on the sim's goroutine)
 	if f.Init != nil {
-		e.evalStmt(f.Init, scope)
+		if _, err := e.evalStmt(f.Init, scope); errors.Is(err, ErrTerminated) {
+			return nil, err
+		}
 	}
 
 	for {
@@ -193,7 +199,9 @@ func (e *Eval) evalForStmt(f *ast.ForStmt, env *Env) (Obj, error) {
 		}
 
 		if f.Post != nil {
-			e.evalStmt(f.Post, scope)
+			if _, err := e.evalStmt(f.Post, scope); errors.Is(err, ErrTerminated) {
+				return nil, err
+			}
 		}
 	}
 	return &null{}, nil
