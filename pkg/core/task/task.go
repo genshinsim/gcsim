@@ -1,5 +1,7 @@
 package task
 
+import "math"
+
 // TODO: the behavior of delay<=0 is inconsistent
 // TODO: consider merging all tasks into a single handler
 // Currently tasks are executed in the following order: (enemy1, enemy2, ...), (char1, char2, ...), (core tasks)
@@ -23,6 +25,9 @@ type Handler struct {
 	f       *int
 	tasks   *minHeap
 	counter int
+	// next is the executeBy of the earliest task, or math.MaxInt when there is none, so the
+	// per-frame check in Run is one compare
+	next int
 }
 
 type Tasker interface {
@@ -33,21 +38,32 @@ func New(f *int) *Handler {
 	return &Handler{
 		f:     f,
 		tasks: &minHeap{},
+		next:  math.MaxInt,
 	}
 }
 
 // Run executes every task that is due. It runs for every queue on every frame and usually
 // finds nothing due, so the check is kept small enough to inline into the caller.
 func (s *Handler) Run() {
-	if t := *s.tasks; len(t) > 0 && t[0].executeBy <= *s.f {
+	if s.next <= *s.f {
 		s.run()
 	}
 }
 
 func (s *Handler) run() {
 	for len(*s.tasks) > 0 && (*s.tasks)[0].executeBy <= *s.f {
-		s.tasks.pop().f()
+		t := s.tasks.pop()
+		s.updateNext()
+		t.f()
 	}
+}
+
+func (s *Handler) updateNext() {
+	if len(*s.tasks) == 0 {
+		s.next = math.MaxInt
+		return
+	}
+	s.next = (*s.tasks)[0].executeBy
 }
 
 func (s *Handler) Add(f func(), delay int) {
@@ -57,12 +73,14 @@ func (s *Handler) Add(f func(), delay int) {
 		id:        s.counter,
 	})
 	s.counter += 1
+	s.next = (*s.tasks)[0].executeBy
 }
 
 func (s *Handler) Extend(delay int) {
 	for i := range *s.tasks {
 		(*s.tasks)[i].extend(delay)
 	}
+	s.updateNext()
 }
 
 // min heap functions. push and pop make the same comparisons and leave the same layout as
