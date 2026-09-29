@@ -1,9 +1,9 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { WebViewer } from "../features/viewer";
 import {
 	legacyHashSearch,
 	validateViewerSearch,
 } from "../features/viewer/search";
-import { WebViewer } from "../Pages";
 
 export const Route = createFileRoute("/web")({
 	validateSearch: validateViewerSearch,
