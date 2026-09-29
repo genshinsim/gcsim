@@ -55,8 +55,7 @@ export default ({ data, redirect, mode, commit }: Props) => {
 	// only show hash mismatch on share links to reduce noise (for now)
 	if (
 		mismatch === MismatchType.CommitMismatch &&
-		!location.pathname.startsWith("/sh/") &&
-		!location.pathname.startsWith("/db/")
+		!location.pathname.startsWith("/sh/")
 	) {
 		return null;
 	}
