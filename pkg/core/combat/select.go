@@ -1,7 +1,7 @@
 package combat
 
 import (
-	"sort"
+	"slices"
 
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
@@ -11,7 +11,7 @@ import (
 func enemiesWithinAreaFiltered(a info.AttackPattern, filter func(t info.Enemy) bool, originalEnemies []info.Target) []info.Enemy {
 	var enemies []info.Enemy
 	hasFilter := filter != nil
-	for _, v := range originalEnemies {
+	for i, v := range originalEnemies {
 		e, ok := v.(info.Enemy)
 		if !ok {
 			panic("enemies should contain targets that implement the Enemy interface")
@@ -25,6 +25,9 @@ func enemiesWithinAreaFiltered(a info.AttackPattern, filter func(t info.Enemy) b
 		if !e.IsWithinArea(a) {
 			continue
 		}
+		if enemies == nil {
+			enemies = make([]info.Enemy, 0, len(originalEnemies)-i)
+		}
 		enemies = append(enemies, e)
 	}
 	return enemies
@@ -33,7 +36,7 @@ func enemiesWithinAreaFiltered(a info.AttackPattern, filter func(t info.Enemy) b
 func gadgetsWithinAreaFiltered(a info.AttackPattern, filter func(t info.Gadget) bool, originalGadgets []info.Gadget) []info.Gadget {
 	var gadgets []info.Gadget
 	hasFilter := filter != nil
-	for _, v := range originalGadgets {
+	for i, v := range originalGadgets {
 		if v == nil {
 			continue
 		}
@@ -49,6 +52,9 @@ func gadgetsWithinAreaFiltered(a info.AttackPattern, filter func(t info.Gadget) 
 		}
 		if !v.IsWithinArea(a) {
 			continue
+		}
+		if gadgets == nil {
+			gadgets = make([]info.Gadget, 0, len(originalGadgets)-i)
 		}
 		gadgets = append(gadgets, v)
 	}
@@ -139,6 +145,20 @@ func (h *Handler) RandomGadgetsWithinArea(a info.AttackPattern, filter func(t in
 
 // closest targets
 
+// byDist orders distances for slices.SortFunc. It is negative exactly when a < b, the less
+// function the sorts used with sort.Slice: both sorts run the same pdqsort and only test
+// cmp(x, y) < 0, so equal (or NaN) distances end up in the same order as before, without
+// sort.Slice's reflection-based swapper and its allocations.
+func byDist(a, b float64) int {
+	if a < b {
+		return -1
+	}
+	if a > b {
+		return 1
+	}
+	return 0
+}
+
 type enemyTuple struct {
 	enemy info.Enemy
 	dist  float64
@@ -148,7 +168,7 @@ func enemiesWithinAreaSorted(a info.AttackPattern, filter func(t info.Enemy) boo
 	var enemies []enemyTuple
 
 	hasFilter := filter != nil
-	for _, v := range originalEnemies {
+	for i, v := range originalEnemies {
 		e, ok := v.(info.Enemy)
 		if !ok {
 			panic("c.enemies should contain targets that implement the Enemy interface")
@@ -162,6 +182,9 @@ func enemiesWithinAreaSorted(a info.AttackPattern, filter func(t info.Enemy) boo
 		if !skipAttackPattern && !e.IsWithinArea(a) {
 			continue
 		}
+		if enemies == nil {
+			enemies = make([]enemyTuple, 0, len(originalEnemies)-i)
+		}
 		enemies = append(enemies, enemyTuple{enemy: e, dist: a.Shape.Pos().Sub(e.Pos()).MagnitudeSquared()})
 	}
 
@@ -169,8 +192,8 @@ func enemiesWithinAreaSorted(a info.AttackPattern, filter func(t info.Enemy) boo
 		return nil
 	}
 
-	sort.Slice(enemies, func(i, j int) bool {
-		return enemies[i].dist < enemies[j].dist
+	slices.SortFunc(enemies, func(x, y enemyTuple) int {
+		return byDist(x.dist, y.dist)
 	})
 
 	return enemies
@@ -185,7 +208,7 @@ func gadgetsWithinAreaSorted(a info.AttackPattern, filter func(t info.Gadget) bo
 	var gadgets []gadgetTuple
 
 	hasFilter := filter != nil
-	for _, v := range originalGadgets {
+	for i, v := range originalGadgets {
 		if v == nil {
 			continue
 		}
@@ -202,6 +225,9 @@ func gadgetsWithinAreaSorted(a info.AttackPattern, filter func(t info.Gadget) bo
 		if !skipAttackPattern && !v.IsWithinArea(a) {
 			continue
 		}
+		if gadgets == nil {
+			gadgets = make([]gadgetTuple, 0, len(originalGadgets)-i)
+		}
 		gadgets = append(gadgets, gadgetTuple{Gadget: v, dist: a.Shape.Pos().Sub(v.Pos()).MagnitudeSquared()})
 	}
 
@@ -209,8 +235,8 @@ func gadgetsWithinAreaSorted(a info.AttackPattern, filter func(t info.Gadget) bo
 		return nil
 	}
 
-	sort.Slice(gadgets, func(i, j int) bool {
-		return gadgets[i].dist < gadgets[j].dist
+	slices.SortFunc(gadgets, func(x, y gadgetTuple) int {
+		return byDist(x.dist, y.dist)
 	})
 
 	return gadgets
