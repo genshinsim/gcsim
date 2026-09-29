@@ -5,6 +5,16 @@ import { Aggregator, Helper, SimWorker } from "./Workers/common";
 
 const VIEWER_THROTTLE = 100;
 
+// Run requests queued per worker. With more than one, a worker starts its next iteration
+// right away instead of waiting a round trip through the main thread, which may be busy
+// rendering results.
+const PIPELINE_DEPTH = 2;
+
+// Cap on iterations requested but not yet aggregated, per worker. It only binds when the
+// aggregator falls behind, and then bounds its backlog: the memory held by queued results
+// (100-200 KB each) and the leftover work a cancelled run leaves in its queue.
+const MAX_OUTSTANDING_PER_WORKER = 4;
+
 export class WasmExecutor implements Executor {
 	private helper: HelperExecutor;
 	private aggregator: Worker | null;
@@ -245,14 +255,37 @@ export class WasmExecutor implements Executor {
 						case Aggregator.Response.Done:
 							completed += 1;
 							throttledFlush();
+							dispatch();
 							return;
 						case Aggregator.Response.Failed:
 							reject((ev.data as Aggregator.FailedResponse).reason);
 					}
 				};
 
+				const workers = this.workers;
+				const maxOutstanding = workers.length * MAX_OUTSTANDING_PER_WORKER;
+				const queued = workers.map(() => 0);
 				let requested = 0;
-				this.workers.forEach((worker) => {
+				const dispatch = () => {
+					// Near the end, queue one at a time so no worker sits on the last iterations
+					// while the others go idle.
+					const depth =
+						maxIterations - requested > workers.length * PIPELINE_DEPTH
+							? PIPELINE_DEPTH
+							: 1;
+					workers.forEach((worker, i) => {
+						while (
+							queued[i] < depth &&
+							requested < maxIterations &&
+							requested - completed < maxOutstanding
+						) {
+							worker.postMessage(SimWorker.RunRequest(run, requested++));
+							queued[i]++;
+						}
+					});
+				};
+
+				workers.forEach((worker, i) => {
 					worker.onmessage = (ev) => {
 						if (!isCurrent(ev)) {
 							return;
@@ -260,23 +293,21 @@ export class WasmExecutor implements Executor {
 						switch (ev.data.type as SimWorker.Response) {
 							case SimWorker.Response.Done: {
 								const resp: SimWorker.RunResponse = ev.data;
+								queued[i]--;
+								// transfer rather than copy; the result is only forwarded
 								this.aggregator?.postMessage(
 									Aggregator.AddRequest(run, resp.result),
+									[resp.result.buffer],
 								);
-								if (requested < maxIterations) {
-									worker.postMessage(SimWorker.RunRequest(run, requested++));
-								}
+								dispatch();
 								return;
 							}
 							case SimWorker.Response.Failed:
 								reject((ev.data as Aggregator.FailedResponse).reason);
 						}
 					};
-
-					if (requested < maxIterations) {
-						worker.postMessage(SimWorker.RunRequest(run, requested++));
-					}
 				});
+				dispatch();
 			});
 		});
 
