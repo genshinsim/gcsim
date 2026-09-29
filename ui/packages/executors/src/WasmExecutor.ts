@@ -6,8 +6,9 @@ import { Aggregator, Helper, SimWorker } from "./Workers/common";
 // that also has to aggregate every iteration; one costs 10-35 ms for a typical team. While
 // a run is in progress, flush no more often than FLUSH_COST_RATIO times the last flush's
 // cost, clamped to [MIN_FLUSH_INTERVAL, MAX_FLUSH_INTERVAL] ms, so flushing takes at most
-// about a tenth of the aggregator. The final flush is sent as soon as the last iteration is
-// aggregated.
+// about a tenth of the aggregator. Iterations that finish before the interval is up are
+// flushed when it is, so progress shows even while the next iteration takes a long time.
+// The final flush is sent as soon as the last iteration is aggregated.
 //
 // Intermediate results stay signed: a cancelled, failed or interrupted (pagehide) run keeps
 // the last one it received, and that result must still be shareable.
@@ -109,7 +110,9 @@ export class WasmExecutor implements Executor {
 			ev.data.fatal === true && ev.data.run != null && ev.data.run !== run;
 
 		return new Promise<boolean>((resolve, reject) => {
+			let flushTimer: ReturnType<typeof setTimeout> | undefined;
 			const stop = () => {
+				clearTimeout(flushTimer);
 				this.runId++;
 				this.isRunning = false;
 			};
@@ -132,6 +135,8 @@ export class WasmExecutor implements Executor {
 				// the aggregator and the workers yet to answer the initialize request
 				let initializing = workers.length + 1;
 				let completed = 0;
+				let forwarded = 0; // results sent to the aggregator
+				let flushed = 0; // results sent to the aggregator before the last flush request
 				let flushing = false; // an intermediate flush is outstanding
 				let nextFlush = 0;
 
@@ -161,6 +166,28 @@ export class WasmExecutor implements Executor {
 					if (initializing === 0) {
 						dispatch();
 					}
+				};
+				// Requests an intermediate flush of the iterations aggregated since the last one,
+				// now or once the flush interval is up.
+				const flush = () => {
+					clearTimeout(flushTimer);
+					flushTimer = undefined;
+					if (
+						!current() ||
+						flushing ||
+						completed <= flushed ||
+						completed === maxIterations
+					) {
+						return;
+					}
+					const wait = nextFlush - performance.now();
+					if (wait > 0) {
+						flushTimer = setTimeout(flush, wait);
+						return;
+					}
+					flushing = true;
+					flushed = forwarded;
+					aggregator.post(Aggregator.FlushRequest(run, false));
 				};
 				// Workers kept from an earlier run may still be loading; nothing but the ready
 				// request may reach them before they have.
@@ -208,15 +235,17 @@ export class WasmExecutor implements Executor {
 										Math.max(FLUSH_COST_RATIO * resp.ms, MIN_FLUSH_INTERVAL),
 										MAX_FLUSH_INTERVAL,
 									);
+								// what was aggregated after this flush was requested goes out next
+								flush();
 								return;
 							}
 							case Aggregator.Response.Done:
 								completed += 1;
 								if (completed === maxIterations) {
+									clearTimeout(flushTimer);
 									aggregator.post(Aggregator.FlushRequest(run, true));
-								} else if (!flushing && performance.now() >= nextFlush) {
-									flushing = true;
-									aggregator.post(Aggregator.FlushRequest(run, false));
+								} else if (flushTimer === undefined) {
+									flush();
 								}
 								dispatch();
 								return;
@@ -249,6 +278,7 @@ export class WasmExecutor implements Executor {
 								aggregator.post(Aggregator.AddRequest(run, resp.result), [
 									resp.result.buffer,
 								]);
+								forwarded++;
 								dispatch();
 								return;
 							}
