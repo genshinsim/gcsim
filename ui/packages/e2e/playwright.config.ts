@@ -14,9 +14,6 @@ const HOST = `http://localhost:${PORT}`;
  */
 export default defineConfig({
 	testDir: "./tests",
-	// The docs and db suites have their own configs
-	// (playwright.docs.config.ts, playwright.db.config.ts) with their own web
-	// servers; keep their specs out of this wasm-backed run.
 	testIgnore: ["**/docs/**", "**/db/**"],
 	fullyParallel: true,
 	forbidOnly: !!process.env.CI,
