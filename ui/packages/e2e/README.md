@@ -36,8 +36,11 @@ wasm build shells out to `task wasm` (`go build` for `GOOS=js`), so you need:
 - **Go** and **[Task](https://taskfile.dev)** (`task`) on your `PATH` — the wasm
   build step.
 - **pnpm** deps installed: from `ui/`, run `pnpm install`.
-- **Playwright's Chromium** browser: from `ui/`, run
-  `pnpm --filter @gcsim/e2e exec playwright install chromium`.
+- **Playwright's browsers**: from `ui/`, run
+  `pnpm --filter @gcsim/e2e exec playwright install chromium firefox webkit`.
+  Only `wasm-csp.spec.ts` runs in Firefox and WebKit: browsers differ in how
+  the page's CSP applies to wasm, and Chromium alone doesn't catch it. Add
+  `--project chromium` to run without them.
 
 The **docs** suite needs none of the wasm toolchain — no Go, no `task`. It
 serves a *production build* (`docusaurus build` then `docusaurus serve`): docs
@@ -55,7 +58,8 @@ pnpm test:e2e:docs  # docs site suite
 ```
 
 `test:e2e` builds the wasm binary, boots the dev server on a fixed strict port
-(`5173`), runs the suite headless in Chromium, and tears the server down after.
+(`5173`), runs the suite headless in Chromium (and the CSP spec in Firefox and
+WebKit), and tears the server down after.
 A running dev server on `5173` is reused (locally) instead of restarted.
 
 `test:e2e:docs` builds the docs site, serves it on port `4173`, runs the suite,
@@ -192,5 +196,5 @@ specs stay offline:
 
 CI integration, the production/preview (R2 wasm) path, server mode, creating a
 new share from `/web`, engine-correctness or numeric assertions, and
-non-Chromium browsers. See issues #2805, #2869 and #2871. For docs: the search
+non-Chromium browsers beyond the CSP spec. See issues #2805, #2869 and #2871. For docs: the search
 backend, i18n/translations, and visual regression (issue #2868).
