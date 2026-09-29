@@ -4,6 +4,8 @@ export class DashPage {
 	readonly page: Page;
 	readonly openSimulator: Locator;
 	readonly navSimulator: Locator;
+	readonly sharedByOthersHeading: Locator;
+	readonly teamCards: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
@@ -12,6 +14,11 @@ export class DashPage {
 		this.navSimulator = page
 			.getByRole("link", { name: "Simulator", exact: true })
 			.first();
+		this.sharedByOthersHeading = page.getByRole("heading", {
+			level: 2,
+			name: "Shared by others, courtesy of KQM DB",
+		});
+		this.teamCards = page.locator("a[href^='https://db.kqm.gg/db/']");
 	}
 
 	/** Navigate to the home route and wait for React to mount into `#root`. */
@@ -24,5 +31,11 @@ export class DashPage {
 		await expect(this.page).toHaveTitle("gcsim - simulation impact");
 		await expect(this.navSimulator).toBeVisible();
 		await expect(this.openSimulator).toBeVisible();
+	}
+
+	/** Depends on a stubbed KQM DB `/api/db` (see `installOfflineRoutes`). */
+	async waitForSharedByOthers(): Promise<void> {
+		await expect(this.sharedByOthersHeading).toBeVisible();
+		await expect(this.teamCards.first()).toBeVisible();
 	}
 }

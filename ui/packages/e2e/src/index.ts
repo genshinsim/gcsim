@@ -9,7 +9,7 @@ export {
 	goodImport,
 	installEnkaRoutes,
 } from "./import-fixtures";
-export { installOfflineRoutes } from "./offline-fixtures";
+export { installOfflineRoutes, kqmEntries } from "./offline-fixtures";
 export { DashPage } from "./pages/dash-page";
 export { SimulatorPage } from "./pages/simulator-page";
 export { ViewerPage } from "./pages/viewer-page";
