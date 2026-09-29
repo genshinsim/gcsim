@@ -11,6 +11,12 @@ class FakeWorker {
 	static all: FakeWorker[] = [];
 	static failRun = false;
 	static failLoad = false;
+	// With loadDelay > 0, the aggregator and the sim workers finish loading that many ms
+	// after handling "ready", like WebAssembly.instantiate resolving in a later task.
+	static loadDelay = 0;
+	// Requests an instance handled before it had loaded. The real worker scripts throw on
+	// those: the Go functions only exist once go.run has returned.
+	static early: string[] = [];
 	// runs requested minus results aggregated, across the pool
 	static ahead = 0;
 	static maxAhead = 0;
@@ -19,6 +25,7 @@ class FakeWorker {
 	onmessage: ((ev: MessageEvent) => void) | null = null;
 	received: Message[] = [];
 	terminated = false;
+	loaded = false;
 	queuedRuns = 0;
 	maxQueuedRuns = 0;
 	private inbox: Message[] = [];
@@ -69,14 +76,22 @@ class FakeWorker {
 			}
 			const resp = this.handle(msg);
 			if (resp != null) {
-				this.onmessage?.(new MessageEvent("message", { data: resp }));
+				this.respond(resp);
 			}
 			this.pump();
 		}, 0);
 	}
 
+	private respond(resp: Message) {
+		this.onmessage?.(new MessageEvent("message", { data: resp }));
+	}
+
 	private handle(msg: Message): Message | null {
 		const run = msg.run;
+		if (this.role !== "helper" && msg.type !== "ready" && !this.loaded) {
+			FakeWorker.early.push(`${this.role}:${msg.type}`);
+			return null;
+		}
 		switch (`${this.role}:${msg.type}`) {
 			case "helper:ready":
 				// the helper compiles the wasm and hands the module back
@@ -87,6 +102,16 @@ class FakeWorker {
 				return { type: "validated", id: msg.id, cfg: {} };
 			case "aggregator:ready":
 			case "worker:ready":
+				if (FakeWorker.loadDelay > 0) {
+					setTimeout(() => {
+						this.loaded = true;
+						if (!this.terminated) {
+							this.respond({ type: "ready" });
+						}
+					}, FakeWorker.loadDelay);
+					return null;
+				}
+				this.loaded = true;
 				return { type: "ready" };
 			case "aggregator:initialize":
 				this.added = 0;
@@ -136,6 +161,8 @@ beforeEach(() => {
 	FakeWorker.all = [];
 	FakeWorker.failRun = false;
 	FakeWorker.failLoad = false;
+	FakeWorker.loadDelay = 0;
+	FakeWorker.early = [];
 	FakeWorker.ahead = 0;
 	FakeWorker.maxAhead = 0;
 	vi.stubGlobal("Worker", FakeWorker);
@@ -257,6 +284,31 @@ describe("WasmExecutor", () => {
 		expect(first.updates).toHaveLength(seen);
 		expect(FakeWorker.all.some((w) => w.terminated)).toBe(false);
 		expect(byRole("aggregator")).toHaveLength(1);
+	});
+
+	it("waits for a pool that is still loading, also after a cancel", async () => {
+		const exec = new WasmExecutor("/main.wasm");
+		exec.setWorkerCount(2);
+		FakeWorker.loadDelay = 100;
+
+		start(exec, 10);
+		// the helper has handed over the module and the pool exists, but hasn't loaded yet
+		await vi.waitFor(() => expect(byRole("worker")).toHaveLength(2), {
+			interval: 1,
+		});
+		exec.cancel();
+		const second = start(exec, 10);
+
+		const outcome = await Promise.race([
+			second.done,
+			new Promise((r) => setTimeout(r, 1000, "timed out")),
+		]);
+		expect(outcome).toBe(true);
+		expect(second.updates.at(-1)?.hash).toBe("hash-10");
+		expect(FakeWorker.early).toEqual([]);
+		// the cancelled run sent nothing once the pool had loaded
+		expect(sent("aggregator", "initialize")).toHaveLength(1);
+		expect(sent("worker", "initialize")).toHaveLength(2);
 	});
 
 	it("bounds the work requested ahead of the aggregator", async () => {
