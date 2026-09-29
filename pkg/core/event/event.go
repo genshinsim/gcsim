@@ -98,6 +98,8 @@ type Handler struct {
 	depth   int
 }
 
+// Hook handles an emitted event. Emit reuses the args buffer, so a hook must not keep args after
+// returning or assign to its elements; it may modify what they point to.
 type Hook func(args ...any)
 
 type Eventter interface {
