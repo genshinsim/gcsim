@@ -243,6 +243,37 @@ func TestKillGadgetOnCollision(t *testing.T) {
 	}
 }
 
+type sharedTarg struct {
+	*testtarg
+	got *info.AttackEvent
+}
+
+func (s *sharedTarg) HandleSharedAttack(a *info.AttackEvent) (float64, bool) {
+	s.got = a
+	return 0, true
+}
+
+func TestHandleSharedAttackGetsEvent(t *testing.T) {
+	c := newCombatCtrl()
+	c.SetPlayer(&testtarg{
+		typ:   info.TargettablePlayer,
+		shp:   newSimpleCircle(0, 0, 0.2),
+		alive: true,
+	})
+	g := &sharedTarg{testtarg: &testtarg{
+		typ:   info.TargettableGadget,
+		shp:   newSimpleCircle(0, 0, 0.1),
+		alive: true,
+	}}
+	c.AddGadget(g)
+
+	a := &info.AttackEvent{Pattern: NewCircleHitOnTarget(info.Point{}, nil, 1)}
+	c.ApplyAttack(a)
+	if g.got != a {
+		t.Fatalf("expecting HandleSharedAttack to get the attack event itself, got %p want %p", g.got, a)
+	}
+}
+
 func TestGadgetMadeCollidableAfterAdd(t *testing.T) {
 	c := newCombatCtrl()
 	c.SetPlayer(&testtarg{
