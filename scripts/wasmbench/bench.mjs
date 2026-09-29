@@ -650,6 +650,22 @@ function payloadSeed(decoded) {
 	return Array.isArray(decoded) ? decoded[0] : decoded.seed;
 }
 
+// sample() returns the debug log in emission order. Within a frame that order can follow Go map
+// iteration (SetupResonance and artifact set setup range over maps), so it differs between
+// processes running the same binary. This form sorts each frame's events: any change in what is
+// logged, or in which frame, still shows, but the order within a frame does not.
+function sampleByFrame(sample) {
+	const logs = sample.logs ?? [];
+	const frames = [];
+	for (let i = 0; i < logs.length; ) {
+		let j = i;
+		while (j < logs.length && logs[j].frame === logs[i].frame) j++;
+		frames.push(logs.slice(i, j).map(canon).sort());
+		i = j;
+	}
+	return { ...sample, logs: frames };
+}
+
 function flushStats(agg) {
 	const flushed = JSON.parse(agg.api.flush());
 	if (flushed.error) throw new Error(`flush failed: ${flushed.error}`);
@@ -700,6 +716,7 @@ async function dump(o) {
 			meta: sha(canon(meta)),
 			validate: sha(canon(validated)),
 			sample: sha(canon(sample)),
+			sampleByFrame: sha(canon(sampleByFrame(sample))),
 		},
 		iterHashes,
 		stats,
@@ -737,6 +754,8 @@ function diff(golden, cand, rtol) {
 	if (!samePayload) {
 		notes.push(`per-iteration payloads differ in format (${golden.payload ?? "result"} vs ${cand.payload}); compared aggregated stats only`);
 	}
+	// Goldens made before sampleByFrame existed compare the sample log in exact order.
+	const sampleByFrameBoth = golden.hashes.sampleByFrame !== undefined && cand.hashes.sampleByFrame !== undefined;
 	const fg = golden.flushHashes ?? [];
 	const fc = cand.flushHashes ?? [];
 	const firstFlush = fg.findIndex((h, i) => h !== fc[i]);
@@ -747,6 +766,10 @@ function diff(golden, cand, rtol) {
 	for (const k of Object.keys(golden.hashes)) {
 		if (golden.hashes[k] === cand.hashes[k]) continue;
 		if (k === "iterations" && !samePayload) continue;
+		if (k === "sample" && sampleByFrameBoth) {
+			notes.push("sample() log events come in a different order within some frames (Go map iteration); compared per frame");
+			continue;
+		}
 		if (k === "iterations") {
 			const idx = golden.iterHashes.findIndex((h, i) => h !== cand.iterHashes[i]);
 			const n = golden.iterHashes.filter((h, i) => h !== cand.iterHashes[i]).length;

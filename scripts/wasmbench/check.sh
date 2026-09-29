@@ -7,10 +7,11 @@
 # For every config, runs CHECK_ITERS iterations with fixed per-iteration seeds through the UI
 # API and compares: each iteration's result (msgpack decoded to canonical JSON, hashed), the
 # aggregated statistics from flush(), initializeAggregator() metadata (minus build info),
-# validateConfig() and sample() output. Exact match required unless RTOL is set, which only
-# relaxes numeric comparison of aggregated stats. If the candidate's simulate() payload is in a
-# different format from the golden's (stats.Result vs agg.Summary), per-iteration hashes are
-# skipped and the aggregated stats (plus intermediate flushes, see FLUSH_EVERY) are the check.
+# validateConfig() and sample() output (its log compared per frame, ignoring the order of events
+# within a frame). Exact match required unless RTOL is set, which only relaxes numeric comparison
+# of aggregated stats. If the candidate's simulate() payload is in a different format from the
+# golden's (stats.Result vs agg.Summary), per-iteration hashes are skipped and the aggregated
+# stats (plus intermediate flushes, see FLUSH_EVERY) are the check.
 #
 # env:
 #   GOLDEN_DIR      default $WASMBENCH_HOME/wasmbench-golden

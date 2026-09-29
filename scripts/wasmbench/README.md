@@ -92,7 +92,11 @@ oracle compares exactly:
   too. Flushes pad some statistics, so this covers the UI's intermediate flushes, and with K=1 it
   pins down the first iteration whose contribution differs
 - `initializeAggregator()` metadata without build info and `sample_seed`, `validateConfig()`,
-  and `sample(cfg, seed)`
+  and `sample(cfg, seed)`. The sample's debug log is compared frame by frame with the events of
+  each frame sorted, because their order within a frame can follow Go map iteration
+  (`SetupResonance` and artifact set setup range over maps) and so differs between processes
+  running the same binary. Goldens made before this compare the log in exact order and fail
+  spuriously now and then on configs with two resonances; regenerate them
 
 `--regen` dumps twice in separate processes and fails if they differ. A change that scales
 damage by 1+1e-12 fails the check. If a candidate legitimately changes float evaluation
