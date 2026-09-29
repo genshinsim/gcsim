@@ -28,7 +28,7 @@ type StellarVortex struct {
 func (r *Reactable) newStellarVortex() *StellarVortex {
 	p := &StellarVortex{r: r}
 
-	p.Gadget = gadget.New(r.core, r.core.Combat.Player().Pos(), 1, info.GadgetTypPolestarField)
+	p.Gadget = gadget.New(r.core, r.core.Combat.Player().Pos(), 1, info.GadgetTypStellarVortex)
 	p.ThinkInterval = sswThinkInterval
 	p.Duration = sswDuration
 	p.OnKill = p.explode
