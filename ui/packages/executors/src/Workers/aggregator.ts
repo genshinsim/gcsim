@@ -2,20 +2,12 @@
 // @ts-ignore
 self.importScripts("/wasm_exec.js");
 
-if (!WebAssembly.instantiateStreaming) {
-	// polyfill
-	WebAssembly.instantiateStreaming = async (resp, importObject) => {
-		const source = await (await resp).arrayBuffer();
-		return await WebAssembly.instantiate(source, importObject);
-	};
-}
-
 // @ts-ignore
-function ready(req: { wasm: string }) {
+function ready(req: { module: WebAssembly.Module }) {
 	const go = new Go();
-	WebAssembly.instantiateStreaming(fetch(req.wasm), go.importObject)
-		.then((result) => {
-			go.run(result.instance);
+	WebAssembly.instantiate(req.module, go.importObject)
+		.then((instance) => {
+			go.run(instance);
 			console.log("aggregator loaded okay");
 			postMessage({ type: AggResponse.Ready });
 		})

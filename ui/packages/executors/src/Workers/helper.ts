@@ -2,23 +2,20 @@
 // @ts-ignore
 self.importScripts("/wasm_exec.js");
 
-if (!WebAssembly.instantiateStreaming) {
-	// polyfill
-	WebAssembly.instantiateStreaming = async (resp, importObject) => {
-		const source = await (await resp).arrayBuffer();
-		return await WebAssembly.instantiate(source, importObject);
-	};
-}
-
 let readyState = false;
 let loadError: string | null = null;
 
 // @ts-ignore
 function ready(req: { wasm: string }) {
 	const go = new Go();
-	WebAssembly.instantiateStreaming(fetch(req.wasm), go.importObject)
-		.then((result) => {
-			go.run(result.instance);
+	compileWasm(req.wasm)
+		.then((module) => {
+			// the executor shares the compiled module with the aggregator and the sim workers
+			postMessage({ type: HelpResponse.Ready, module: module });
+			return WebAssembly.instantiate(module, go.importObject);
+		})
+		.then((instance) => {
+			go.run(instance);
 			console.log("helper loaded okay");
 			readyState = true;
 			processQueue();
@@ -27,7 +24,18 @@ function ready(req: { wasm: string }) {
 			console.error(e);
 			loadError = e instanceof Error ? e.message : "Unknown Error";
 			processQueue();
+			postMessage({ type: HelpResponse.Failed, reason: loadError });
 		});
+}
+
+function compileWasm(url: string): Promise<WebAssembly.Module> {
+	if (!WebAssembly.compileStreaming) {
+		// polyfill
+		return fetch(url)
+			.then((resp) => resp.arrayBuffer())
+			.then((source) => WebAssembly.compile(source));
+	}
+	return WebAssembly.compileStreaming(fetch(url));
 }
 
 function validate(req: { id: number; cfg: string }) {
@@ -102,6 +110,7 @@ enum HelpRequest {
 
 enum HelpResponse {
 	Failed = "failed",
+	Ready = "ready",
 	Validate = "validated",
 	Sample = "sample",
 }

@@ -6,7 +6,6 @@ import { Aggregator, Helper, SimWorker } from "./Workers/common";
 const VIEWER_THROTTLE = 100;
 
 export class WasmExecutor implements Executor {
-	private wasmPath: string;
 	private helper: HelperExecutor;
 	private aggregator: Worker | null;
 	private workers: Worker[];
@@ -15,7 +14,6 @@ export class WasmExecutor implements Executor {
 	private runStarted: number;
 
 	constructor(wasm: string) {
-		this.wasmPath = wasm;
 		this.helper = new HelperExecutor(wasm);
 
 		this.aggregator = null;
@@ -37,7 +35,7 @@ export class WasmExecutor implements Executor {
 		this.workerCount = count;
 	}
 
-	private createAggregator(): Promise<boolean> {
+	private createAggregator(module: WebAssembly.Module): Promise<boolean> {
 		return new Promise((resolve, reject) => {
 			if (this.aggregator) {
 				resolve(true);
@@ -47,7 +45,7 @@ export class WasmExecutor implements Executor {
 			this.aggregator = new Worker(
 				new URL("./Workers/aggregator.ts", import.meta.url),
 			);
-			this.aggregator.postMessage(Aggregator.ReadyRequest(this.wasmPath));
+			this.aggregator.postMessage(Aggregator.ReadyRequest(module));
 			this.aggregator.onmessage = (ev) => {
 				switch (ev.data.type as Aggregator.Response) {
 					case Aggregator.Response.Ready:
@@ -61,7 +59,7 @@ export class WasmExecutor implements Executor {
 		});
 	}
 
-	private createWorkers(): Promise<boolean> {
+	private createWorkers(module: WebAssembly.Module): Promise<boolean> {
 		console.log("loading workers", this.workerCount, this);
 		const diff = this.workerCount - this.workers.length;
 
@@ -80,7 +78,7 @@ export class WasmExecutor implements Executor {
 					const worker = new Worker(
 						new URL("./Workers/worker.ts", import.meta.url),
 					);
-					worker.postMessage(SimWorker.ReadyRequest(this.wasmPath));
+					worker.postMessage(SimWorker.ReadyRequest(module));
 
 					const idx = this.workers.push(worker) - 1;
 					worker.onmessage = (ev) => {
@@ -112,10 +110,14 @@ export class WasmExecutor implements Executor {
 		this.runStarted = performance.now();
 
 		// 1. Create Aggregator & Workers
-		const created = Promise.all([
-			this.createAggregator(),
-			this.createWorkers(),
-		]);
+		const created = this.helper
+			.compile()
+			.then((module) =>
+				Promise.all([
+					this.createAggregator(module),
+					this.createWorkers(module),
+				]),
+			);
 
 		let result: model.SimulationResult | null = null;
 		let maxIterations = 0;
@@ -294,6 +296,7 @@ export class WasmExecutor implements Executor {
 class HelperExecutor {
 	private wasmPath: string;
 	private helper: Worker | undefined;
+	private module: Promise<WebAssembly.Module> | undefined;
 	private pending = new Map<number, (event: MessageEvent) => void>();
 	private id = 0;
 
@@ -301,14 +304,56 @@ class HelperExecutor {
 		this.wasmPath = wasm;
 	}
 
-	private initialize() {
-		if (this.helper != null) {
-			return;
+	// The helper fetches and compiles the wasm and sends the compiled module back, so the
+	// aggregator and the sim workers instantiate it instead of each compiling their own copy.
+	// It is compiled in a worker because the page's CSP (script-src without
+	// 'wasm-unsafe-eval') does not allow compiling wasm on the main thread.
+	public compile(): Promise<WebAssembly.Module> {
+		return this.initialize();
+	}
+
+	private initialize(): Promise<WebAssembly.Module> {
+		if (this.helper != null && this.module != null) {
+			return this.module;
 		}
 
-		this.helper = new Worker(new URL("./Workers/helper.ts", import.meta.url));
-		this.helper.postMessage(Helper.ReadyRequest(this.wasmPath));
-		this.helper.onmessage = (ev) => {
+		const helper = new Worker(new URL("./Workers/helper.ts", import.meta.url));
+		this.helper = helper;
+		let resolveModule: (module: WebAssembly.Module) => void = () => {};
+		let rejectModule: (reason: string) => void = () => {};
+		const module = new Promise<WebAssembly.Module>((resolve, reject) => {
+			resolveModule = resolve;
+			rejectModule = reject;
+		});
+		// callers that only validate or sample get the failure through their own request
+		module.catch(() => {});
+		this.module = module;
+
+		helper.postMessage(Helper.ReadyRequest(this.wasmPath));
+		helper.onmessage = (ev) => {
+			if (ev.data.type === Helper.Response.Ready) {
+				resolveModule((ev.data as Helper.ReadyResponse).module);
+				return;
+			}
+			if (ev.data.type === Helper.Response.Failed && ev.data.id == null) {
+				// Loading failed. Fail whatever is still waiting on this helper and start over
+				// with a new one on the next call.
+				const reason = (ev.data as Helper.FailedResponse).reason;
+				rejectModule(reason);
+				helper.terminate();
+				this.helper = undefined;
+				this.module = undefined;
+				for (const [id, handleResponse] of this.pending) {
+					handleResponse(
+						new MessageEvent("message", {
+							data: Helper.FailedResponse(id, reason),
+						}),
+					);
+				}
+				this.pending.clear();
+				return;
+			}
+
 			const handleResponse = this.pending.get(ev.data.id);
 			if (handleResponse == null) {
 				console.error("helper - response without a pending request: ", ev.data);
@@ -317,6 +362,7 @@ class HelperExecutor {
 			this.pending.delete(ev.data.id);
 			handleResponse(ev);
 		};
+		return module;
 	}
 
 	private requestId() {

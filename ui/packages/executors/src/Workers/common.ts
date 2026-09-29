@@ -27,11 +27,11 @@ export namespace Aggregator {
 
 	export interface ReadyRequest {
 		type: Request.Ready;
-		wasm: string;
+		module: WebAssembly.Module;
 	}
 
-	export function ReadyRequest(wasm: string): ReadyRequest {
-		return { type: Request.Ready, wasm: wasm };
+	export function ReadyRequest(module: WebAssembly.Module): ReadyRequest {
+		return { type: Request.Ready, module: module };
 	}
 
 	export interface ReadyResponse {
@@ -107,10 +107,12 @@ export namespace Helper {
 
 	export enum Response {
 		Failed = "failed",
+		Ready = "ready",
 		Validate = "validated",
 		Sample = "sample",
 	}
 
+	// id is missing when loading the wasm failed
 	export interface FailedResponse {
 		id: number;
 		type: Response.Failed;
@@ -128,6 +130,12 @@ export namespace Helper {
 
 	export function ReadyRequest(wasm: string): ReadyRequest {
 		return { type: Request.Ready, wasm: wasm };
+	}
+
+	// the compiled module, for the executor to share with the other workers
+	export interface ReadyResponse {
+		type: Response.Ready;
+		module: WebAssembly.Module;
 	}
 
 	export interface ValidateRequest {
@@ -197,11 +205,11 @@ export namespace SimWorker {
 
 	export interface ReadyRequest {
 		type: Request.Ready;
-		wasm: string;
+		module: WebAssembly.Module;
 	}
 
-	export function ReadyRequest(wasm: string): ReadyRequest {
-		return { type: Request.Ready, wasm: wasm };
+	export function ReadyRequest(module: WebAssembly.Module): ReadyRequest {
+		return { type: Request.Ready, module: module };
 	}
 
 	export interface ReadyResponse {
