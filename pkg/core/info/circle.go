@@ -11,7 +11,8 @@ type Circle struct {
 	dir      Point
 	fanAngle float64
 	segments []Point
-	aabb     []Point
+	aabb     []Point // points into aabbBuf
+	aabbBuf  [2]Point
 }
 
 func NewCircle(center Point, r float64, dir Point, fanAngle float64) *Circle {
@@ -19,14 +20,16 @@ func NewCircle(center Point, r float64, dir Point, fanAngle float64) *Circle {
 	if fanAngle > 0 && fanAngle < 360 {
 		segments = calcSegments(center, r, dir, fanAngle)
 	}
-	return &Circle{
+	c := &Circle{
 		center:   center,
 		r:        r,
 		dir:      dir,
 		fanAngle: fanAngle,
 		segments: segments,
-		aabb:     calcCircleAABB(center, r),
+		aabbBuf:  [2]Point{{X: center.X - r, Y: center.Y - r}, {X: center.X + r, Y: center.Y + r}},
 	}
+	c.aabb = c.aabbBuf[:]
+	return c
 }
 
 func (c *Circle) Pos() Point {
@@ -68,10 +71,6 @@ func calcSegments(center Point, r float64, dir Point, fanAngle float64) []Point 
 }
 
 // AABB is always for full circle
-func calcCircleAABB(center Point, r float64) []Point {
-	return []Point{{X: center.X - r, Y: center.Y - r}, {X: center.X + r, Y: center.Y + r}}
-}
-
 // collision related
 
 func (c *Circle) PointInShape(p Point) bool {

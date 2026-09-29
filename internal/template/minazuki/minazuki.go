@@ -126,8 +126,10 @@ func (w *Watcher) stateChangeHook() {
 			// if w.shouldDelay() {
 			if delay := w.core.Player.ActiveChar().AnimationStartDelay(w.delayKey); delay > 0 {
 				c := w.caster
-				w.core.Log.NewEventBuildMsg(glog.LogDebugEvent, c.Index(), w.abil, " delay on state change").
-					Write("delay", delay)
+				if w.core.Flags.LogDebug {
+					w.core.Log.NewEventBuildMsg(glog.LogDebugEvent, c.Index(), w.abil, " delay on state change").
+						Write("delay", delay)
+				}
 				w.core.Tasks.Add(w.onStateChange(next), delay)
 				return
 			}
@@ -143,16 +145,20 @@ func (w *Watcher) onStateChange(next action.AnimationState) func() {
 			return
 		}
 		if w.icdKey != "" && c.StatusIsActive(w.icdKey) {
-			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " not triggered on state change; on icd").
-				Write("icd", c.StatusExpiry(w.icdKey)).
-				Write("icd_key", w.icdKey)
+			if w.core.Flags.LogDebug {
+				w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " not triggered on state change; on icd").
+					Write("icd", c.StatusExpiry(w.icdKey)).
+					Write("icd_key", w.icdKey)
+			}
 			return
 		}
 		w.triggerFunc()
-		w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " triggered on state change").
-			Write("state", next).
-			Write("icd", c.StatusExpiry(w.icdKey)).
-			Write("icd_key", w.icdKey)
+		if w.core.Flags.LogDebug {
+			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " triggered on state change").
+				Write("state", next).
+				Write("icd", c.StatusExpiry(w.icdKey)).
+				Write("icd_key", w.icdKey)
+		}
 
 		w.tickSrc = w.core.F
 		w.queueTick(w.core.F)
@@ -177,40 +183,50 @@ func (w *Watcher) tickerFunc(src int) func() {
 		c := w.caster
 		// check if buff is up
 		if !c.StatusIsActive(w.statusKey) {
-			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " not triggered on tick; on icd").
-				Write("icd", c.StatusExpiry(w.icdKey)).
-				Write("icd_key", w.icdKey)
+			if w.core.Flags.LogDebug {
+				w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " not triggered on tick; on icd").
+					Write("icd", c.StatusExpiry(w.icdKey)).
+					Write("icd_key", w.icdKey)
+			}
 			return
 		}
 		if w.tickSrc != src {
-			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " tick check ignored, src diff").
-				Write("src", src).
-				Write("new src", w.tickSrc)
+			if w.core.Flags.LogDebug {
+				w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " tick check ignored, src diff").
+					Write("src", src).
+					Write("new src", w.tickSrc)
+			}
 			return
 		}
 		// stop if we are no longer in the right animation state
 		state := w.core.Player.CurrentState()
 		if state != w.state {
-			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " tick check stopped, wrong state").
-				Write("src", src).
-				Write("state", state)
+			if w.core.Flags.LogDebug {
+				w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " tick check stopped, wrong state").
+					Write("src", src).
+					Write("state", state)
+			}
 			return
 		}
 		if w.shouldDelay != nil && w.shouldDelay() {
 			// only nesting the if so it's easier to read...
 			s := w.core.Player.CurrentStateStart()
 			if w.core.F-s < w.core.Player.ActiveChar().AnimationStartDelay(w.delayKey) {
-				w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " not triggered; not enough time since normal state start").
-					Write("current_state", state).
-					Write("state_start", s)
+				if w.core.Flags.LogDebug {
+					w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " not triggered; not enough time since normal state start").
+						Write("current_state", state).
+						Write("state_start", s)
+				}
 				return
 			}
 		}
 		// if there is a delay check then make sure current frame count is passed the delay
-		w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " triggered from ticker").
-			Write("src", src).
-			Write("state", state).
-			Write("icd", c.StatusExpiry(w.statusKey))
+		if w.core.Flags.LogDebug {
+			w.core.Log.NewEventBuildMsg(glog.LogCharacterEvent, c.Index(), w.abil, " triggered from ticker").
+				Write("src", src).
+				Write("state", state).
+				Write("icd", c.StatusExpiry(w.statusKey))
+		}
 		// we can trigger a wave here b/c we're in normal state still and src is still the same
 		w.triggerFunc()
 		// in theory this should not hit an icd?
