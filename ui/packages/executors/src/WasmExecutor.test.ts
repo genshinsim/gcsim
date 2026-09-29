@@ -24,8 +24,8 @@ class FakeWorker {
 	// "role:type": the worker script throws while handling this request, which the page sees
 	// as an error event on the Worker.
 	static throwOn: string | null = null;
-	// ms a request of this "role:type" takes to handle (default 0)
-	static delay: Record<string, number> = {};
+	// ms a request takes to handle
+	static delay: (request: string, msg: Message) => number = () => 0;
 	// runs requested minus results aggregated, across the pool
 	static ahead = 0;
 	static maxAhead = 0;
@@ -80,17 +80,20 @@ class FakeWorker {
 			return;
 		}
 		this.busy = true;
-		setTimeout(() => {
-			this.busy = false;
-			if (this.terminated) {
-				return;
-			}
-			const resp = this.handle(msg);
-			if (resp != null) {
-				this.respond(resp);
-			}
-			this.pump();
-		}, FakeWorker.delay[`${this.role}:${msg.type}`] ?? 0);
+		setTimeout(
+			() => {
+				this.busy = false;
+				if (this.terminated) {
+					return;
+				}
+				const resp = this.handle(msg);
+				if (resp != null) {
+					this.respond(resp);
+				}
+				this.pump();
+			},
+			FakeWorker.delay(`${this.role}:${msg.type}`, msg),
+		);
 	}
 
 	private respond(resp: Message) {
@@ -189,7 +192,7 @@ beforeEach(() => {
 	FakeWorker.early = [];
 	FakeWorker.crashOn = null;
 	FakeWorker.throwOn = null;
-	FakeWorker.delay = {};
+	FakeWorker.delay = () => 0;
 	FakeWorker.ahead = 0;
 	FakeWorker.maxAhead = 0;
 	vi.stubGlobal("Worker", FakeWorker);
@@ -234,6 +237,22 @@ describe("WasmExecutor", () => {
 			},
 			hash: "hash-25",
 		});
+	});
+
+	it("shows the latest iterations within the flush interval when the next is slow", async () => {
+		const exec = new WasmExecutor("/main.wasm");
+		exec.setWorkerCount(1);
+		// the fake's flushes cost 1 ms, so they are spaced by the 100 ms minimum; the last
+		// iteration takes much longer than that
+		FakeWorker.delay = (request, msg) =>
+			request === "worker:run" ? (msg.itr === 3 ? 600 : 10) : 0;
+
+		const { updates, done } = start(exec, 4);
+		await vi.waitFor(() => expect(updates.at(-1)?.hash).toBe("hash-3"), {
+			timeout: 400,
+		});
+		await done;
+		expect(updates.map((u) => u.hash)).toEqual(["hash-1", "hash-3", "hash-4"]);
 	});
 
 	it("keeps at most two runs queued per worker", async () => {
@@ -378,7 +397,7 @@ describe("WasmExecutor", () => {
 		const exec = new WasmExecutor("/main.wasm");
 		exec.setWorkerCount(3);
 		// slow sims, so every worker has run requests queued when the run is cancelled
-		FakeWorker.delay = { "worker:run": 5 };
+		FakeWorker.delay = (request) => (request === "worker:run" ? 5 : 0);
 		const first = start(exec, 1000);
 		await vi.waitFor(() => expect(first.updates.length).toBeGreaterThan(0));
 		exec.cancel();
