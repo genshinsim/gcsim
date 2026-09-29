@@ -17,7 +17,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 	"github.com/genshinsim/gcsim/pkg/simulator"
-	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
 const DefaultBufferLength = 1024 * 10
@@ -123,7 +122,7 @@ func initializeWorker(this js.Value, args []js.Value) interface{} {
 	return nil
 }
 
-// simulate() -> js Uint8Array
+// simulate() -> js Uint8Array (msgpack agg.Summary)
 func simulate(this js.Value, args []js.Value) (out interface{}) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -153,7 +152,8 @@ func simulate(this js.Value, args []js.Value) (out interface{}) {
 		return marshal(err)
 	}
 
-	buffer, err = result.MarshalMsg(buffer[:0])
+	summary := agg.Summarize(&result)
+	buffer, err = summary.MarshalMsg(buffer[:0])
 	if err != nil {
 		return marshal(err)
 	}
@@ -214,7 +214,7 @@ func initializeAggregator(this js.Value, args []js.Value) (out interface{}) {
 	return string(marshalled)
 }
 
-// aggregate(src: Uint8Array)
+// aggregate(src: Uint8Array) where src is the output of simulate()
 func aggregate(this js.Value, args []js.Value) (out interface{}) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -240,13 +240,12 @@ func aggregate(this js.Value, args []js.Value) (out interface{}) {
 		marshal(errors.New("BytesToGo: copied array was the incorrect size!"))
 	}
 
-	result := stats.Result{}
-	_, err = result.UnmarshalMsg(buffer)
+	summary := agg.Summary{}
+	_, err = summary.UnmarshalMsg(buffer)
 	if err != nil {
 		return marshal(err)
 	}
 
-	summary := agg.Summarize(&result)
 	for _, a := range aggregators {
 		a.Add(&summary)
 	}
