@@ -203,8 +203,11 @@ func initialize(s *Simulation) (stateFn, error) {
 }
 
 func queuePhase(s *Simulation) (stateFn, error) {
-	if s.noMoreActions {
-		return s.advanceFrames(1, queuePhase)
+	// noMoreActions stays set, so this runs frames until the sim ends
+	for s.noMoreActions {
+		if done, err := s.nextFrame(); done || err != nil {
+			return nil, err
+		}
 	}
 	if s.syncEval {
 		// return to the evaluator, which calls execAction with the next action
@@ -253,46 +256,47 @@ func (s *Simulation) queueAction(next *action.Eval) (stateFn, error) {
 }
 
 func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
-	// TODO: this sanity check is probably not necessary
-	if len(s.queue) == 0 {
-		return nil, errors.New("unexpected queue length is 0")
-	}
-	q := s.queue[0]
-
-	// check if the next queue item is valid
-	// example: most sword characters can't do charge if the previous action was not attack
-	char := s.C.Player.ActiveChar()
-	if err := char.NextQueueItemIsValid(q.Char, q.Action, q.Param); err != nil {
-		switch {
-		case errors.Is(err, player.ErrInvalidChargeAction):
-			return nil, fmt.Errorf("%v: %w", char.Base.Key, player.ErrInvalidChargeAction)
-		default:
-			return nil, err
+	// the phases that wait frame by frame loop over nextFrame themselves instead of returning
+	// to runStates each frame, which costs two more calls per frame
+	for {
+		// TODO: this sanity check is probably not necessary
+		if len(s.queue) == 0 {
+			return nil, errors.New("unexpected queue length is 0")
 		}
-	}
+		q := s.queue[0]
 
-	// TODO: this loop should be optimized to skip more than 1 frame at a time
-	if err := s.C.Player.ReadyCheck(q.Action, q.Char, q.Param); err != nil {
-		// repeat this phase until action is ready
+		// check if the next queue item is valid
+		// example: most sword characters can't do charge if the previous action was not attack
+		char := s.C.Player.ActiveChar()
+		if err := char.NextQueueItemIsValid(q.Char, q.Action, q.Param); err != nil {
+			switch {
+			case errors.Is(err, player.ErrInvalidChargeAction):
+				return nil, fmt.Errorf("%v: %w", char.Base.Key, player.ErrInvalidChargeAction)
+			default:
+				return nil, err
+			}
+		}
+
+		// TODO: this loop should be optimized to skip more than 1 frame at a time
 		// ReadyCheck returns the sentinels unwrapped; comparing with == avoids the interface
 		// assertions in errors.Is on every frame the action waits
 		//nolint:errorlint // see above
-		switch err {
+		switch err := s.C.Player.ReadyCheck(q.Action, q.Char, q.Param); err {
+		case nil, player.ErrActionNoOp:
+			return executeActionPhase, nil
 		case player.ErrActionNotReady:
 			if s.C.Flags.LogDebug {
 				s.C.Log.NewEvent(fmt.Sprintf("could not execute %v; action not ready", q.Action), glog.LogSimEvent, s.C.Player.Active())
 			}
-			return s.advanceFrames(1, actionReadyCheckPhase)
 		case player.ErrPlayerNotReady:
-			return s.advanceFrames(1, actionReadyCheckPhase)
-		case player.ErrActionNoOp:
-			// don't do anything here
 		default:
 			return nil, err
 		}
+		// repeat this phase on the next frame until action is ready
+		if done, err := s.nextFrame(); done || err != nil {
+			return nil, err
+		}
 	}
-
-	return executeActionPhase, nil
 }
 
 func (s *Simulation) handleWait(q *action.Eval) (stateFn, error) {
@@ -315,11 +319,13 @@ func (s *Simulation) handleWait(q *action.Eval) (stateFn, error) {
 }
 
 func executeActionDelay(s *Simulation) (stateFn, error) {
-	if s.preActionDelay > 0 {
+	for s.preActionDelay > 0 {
 		if !s.C.Player.ActiveChar().FramePausedOnHitlag() {
 			s.preActionDelay--
 		}
-		return s.advanceFrames(1, executeActionDelay)
+		if done, err := s.nextFrame(); done || err != nil {
+			return nil, err
+		}
 	}
 	// go back to the ready check phase in case an action becomes unavailable after delay
 	return actionReadyCheckPhase, nil
@@ -361,8 +367,10 @@ func executeActionPhase(s *Simulation) (stateFn, error) {
 }
 
 func skipUntilCanQueue(s *Simulation) (stateFn, error) {
-	if !s.C.Player.CanQueueNextAction() {
-		return s.advanceFrames(1, skipUntilCanQueue)
+	for !s.C.Player.CanQueueNextAction() {
+		if done, err := s.nextFrame(); done || err != nil {
+			return nil, err
+		}
 	}
 	return queuePhase, nil
 }
