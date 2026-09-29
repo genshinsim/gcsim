@@ -1,8 +1,8 @@
 import type { Set as ArtifactSet, Character, Weapon } from "@gcsim/types";
-import { ArtifactMainStatsData } from "@ui/Data";
-import ArtifactDataGen from "@ui/Data/artifact.dm.json";
-import CharDataGen from "@ui/Data/character.dm.json";
-import WeaponDataGen from "@ui/Data/weapon.dm.json";
+import { ArtifactMainStatsData } from "@ui/data";
+import ArtifactDataGen from "@ui/data/artifact.dm.json";
+import CharDataGen from "@ui/data/character.dm.json";
+import WeaponDataGen from "@ui/data/weapon.dm.json";
 import type { GOODStatKey } from "../GOOD/GOODTypes";
 import {
 	ascLvlMax,

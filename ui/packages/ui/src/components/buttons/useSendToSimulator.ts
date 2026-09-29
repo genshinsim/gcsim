@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback } from "react";
-import { useDraft } from "../../Stores/AppState";
-import type { SendOptions } from "../../Stores/draft";
+import { useDraft } from "../../stores/AppState";
+import type { SendOptions } from "../../stores/draft";
 
 export function useSendToSimulator() {
 	const { send } = useDraft();

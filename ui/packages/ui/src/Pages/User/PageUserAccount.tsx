@@ -2,8 +2,8 @@ import { Button, ButtonGroup, Checkbox, Label } from "@gcsim/primitives";
 import type { UserInfo } from "@gcsim/types";
 import axios from "axios";
 import { LogOut, Save } from "lucide-react";
-import { Viewport } from "../../Components";
-import { useUser } from "../../Stores/AppState";
+import { Viewport } from "../../components";
+import { useUser } from "../../stores/AppState";
 import { authProvider, Login } from "./Login";
 
 function saveSettings(user: UserInfo) {

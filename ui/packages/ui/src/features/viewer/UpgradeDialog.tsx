@@ -21,7 +21,7 @@ import classNames from "classnames";
 import { History } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import ExecutorSettingsButton from "../../Components/Buttons/ExecutorSettingsButton";
+import ExecutorSettingsButton from "../../components/buttons/ExecutorSettingsButton";
 
 // THIS MUST ALWAYS BE IN SYNC WITH THE GCSIM BINARY
 const MAJOR = "4"; // Make sure the gcsim binary has also been updated

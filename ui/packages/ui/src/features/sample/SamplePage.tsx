@@ -19,8 +19,8 @@ import {
 import type { Sample } from "@gcsim/types";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { CopyToClipboard, SendToSimulator } from "../../Components/Buttons";
-import { useSendToSimulator } from "../../Components/Buttons/useSendToSimulator";
+import { CopyToClipboard, SendToSimulator } from "../../components/buttons";
+import { useSendToSimulator } from "../../components/buttons/useSendToSimulator";
 import { downloadSample } from "./downloadSample";
 import { useSample } from "./useSample";
 

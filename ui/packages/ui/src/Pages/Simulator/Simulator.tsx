@@ -1,9 +1,9 @@
 import { Editor, useExecutor, useValidation } from "@gcsim/components";
 import type { model } from "@gcsim/types";
 import React from "react";
-import { Viewport } from "../../Components";
-import { CharMap } from "../../Data";
-import { useDraft } from "../../Stores/AppState";
+import { Viewport } from "../../components";
+import { CharMap } from "../../data";
+import { useDraft } from "../../stores/AppState";
 import { EditorSettings } from "./EditorSettings";
 import { useEditorPrefs } from "./editorPrefs";
 import {

@@ -10,7 +10,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Download, Upload } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
-import ExecutorSettingsButton from "../../Components/Buttons/ExecutorSettingsButton";
+import ExecutorSettingsButton from "../../components/buttons/ExecutorSettingsButton";
 import { ImportFromEnkaDialog, ImportFromGOODDialog } from "./Components";
 
 export function EditorSettings() {

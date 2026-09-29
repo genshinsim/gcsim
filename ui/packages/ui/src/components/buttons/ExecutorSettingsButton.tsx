@@ -1,7 +1,7 @@
 import { Button } from "@gcsim/primitives";
 import { Settings } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { usePrefs } from "../../Stores/AppState";
+import { usePrefs } from "../../stores/AppState";
 
 // TODO: translation
 export default () => {

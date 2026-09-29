@@ -12,11 +12,11 @@ import {
 	useRouter,
 	useSearch,
 } from "@tanstack/react-router";
-import { usePrefs } from "@ui/Stores/AppState";
+import { usePrefs } from "@ui/stores/AppState";
 import axios from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
-import ExecutorSettingsButton from "../../Components/Buttons/ExecutorSettingsButton";
-import { useSendToSimulator } from "../../Components/Buttons/useSendToSimulator";
+import ExecutorSettingsButton from "../../components/buttons/ExecutorSettingsButton";
+import { useSendToSimulator } from "../../components/buttons/useSendToSimulator";
 import { useEditorPrefs } from "../../Pages/Simulator/editorPrefs";
 import { autoSampleSeed, useSample } from "../sample/useSample";
 import { ResultSource } from "./components/LoadingToast";

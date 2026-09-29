@@ -4,7 +4,7 @@ import { Link } from "@tanstack/react-router";
 import classNames from "classnames";
 import { type MouseEvent, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { CopyToClipboard, SendToSimulator } from "../../../Components/Buttons";
+import { CopyToClipboard, SendToSimulator } from "../../../components/buttons";
 import { VIEWER_TABS, type ViewerTab } from "../search";
 import type { ViewerActions } from "../Viewer";
 import Share from "./Share";

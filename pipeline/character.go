@@ -404,7 +404,7 @@ func (c *Compiled) GenerateCharacters() error {
 		return fmt.Errorf("failed to marshal %v models: %w", kind, err)
 	}
 	writeFile(fmt.Sprintf("ui/packages/db/src/Data/%s.dm.json", kind), data)
-	writeFile(fmt.Sprintf("ui/packages/ui/src/Data/%s.dm.json", kind), data)
+	writeFile(fmt.Sprintf("ui/packages/ui/src/data/%s.dm.json", kind), data)
 
 	return nil
 }

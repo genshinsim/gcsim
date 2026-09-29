@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import React from "react";
-import { useUser } from "../../Stores/AppState";
+import { useUser } from "../../stores/AppState";
 import { authProvider } from "./Login";
 
 export function DiscordCallback() {

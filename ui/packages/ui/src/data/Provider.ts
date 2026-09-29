@@ -1,6 +1,6 @@
 import type { UserInfo } from "@gcsim/types";
 import axios from "axios";
-import { defaultUser } from "../Stores/user";
+import { defaultUser } from "../stores/user";
 
 export interface AuthProvider {
 	login(): void;

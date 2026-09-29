@@ -12,8 +12,8 @@ import {
 	AlertDialogTitle,
 } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
-import CopyToClipboard from "@ui/Components/Buttons/CopyToClipboard";
-import SendToSimulator from "@ui/Components/Buttons/SendToSimulator";
+import CopyToClipboard from "@ui/components/buttons/CopyToClipboard";
+import SendToSimulator from "@ui/components/buttons/SendToSimulator";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import type { SampleState } from "../sample/useSample";

@@ -1,5 +1,5 @@
 import type { Character, Weapon } from "@gcsim/types";
-import { ArtifactMainStatsData, CharMap } from "../../../../Data";
+import { ArtifactMainStatsData, CharMap } from "../../../../data";
 import { ascLvlMax, StatToIndexMap } from "../util";
 import type {
 	GOODArtifact,
