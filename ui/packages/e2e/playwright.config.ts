@@ -14,7 +14,7 @@ const HOST = `http://localhost:${PORT}`;
  */
 export default defineConfig({
 	testDir: "./tests",
-	testIgnore: ["**/docs/**", "**/db/**"],
+	testIgnore: ["**/docs/**"],
 	fullyParallel: true,
 	forbidOnly: !!process.env.CI,
 	retries: process.env.CI ? 1 : 0,

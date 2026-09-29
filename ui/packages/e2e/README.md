@@ -1,7 +1,7 @@
 # @gcsim/e2e
 
 Local, Playwright-driven end-to-end smoke tests for gcsim, catching regressions
-where a site *builds* but breaks at *runtime*. Three suites, each its own
+where a site *builds* but breaks at *runtime*. Two suites, each its own
 Playwright config:
 
 - **web** (`playwright.config.ts`, default) — boots the web app, waits for
@@ -14,9 +14,6 @@ Playwright config:
   site, then asserts one page per top-level sidebar section renders (route,
   title, `<h1>`, non-empty body) with its content images loaded, failing only on
   an uncaught exception — not on ambient console noise.
-- **db** ("Simpact", `playwright.db.config.ts`) — boots the db app and asserts
-  the home and browse views render. The db app is pure front-end (no wasm), and
-  the spec stubs every `/api` call, so it needs neither Go nor network.
 
 Two layers:
 
@@ -47,10 +44,6 @@ has no wasm, workers, or backend, and building first makes the smoke spec catch
 build-time breakage too (broken links, MDX compile errors, a bad sidebar entry).
 It still needs the pnpm deps and the Chromium browser above.
 
-The **db** suite also needs none of the wasm toolchain. It runs its vite dev
-server and stubs every `/api` call, so it needs no Go, no backend, and no
-network — only the pnpm deps and the Chromium browser above.
-
 ## Run it
 
 From the `ui/` workspace root:
@@ -58,7 +51,6 @@ From the `ui/` workspace root:
 ```sh
 pnpm test:e2e       # web app suite  (builds wasm; needs Go + task)
 pnpm test:e2e:docs  # docs site suite
-pnpm test:e2e:db    # db app suite   (no wasm, no network)
 ```
 
 `test:e2e` builds the wasm binary, boots the dev server on a fixed strict port
@@ -68,13 +60,9 @@ A running dev server on `5173` is reused (locally) instead of restarted.
 `test:e2e:docs` builds the docs site, serves it on port `4173`, runs the suite,
 and tears the server down after — a running server on `4173` is reused locally.
 
-`test:e2e:db` boots the db dev server on `5273` and runs the db suite; a running
-server on `5273` is reused locally.
-
 Other entry points (from `ui/packages/e2e`):
 
-- `pnpm --filter @gcsim/e2e test:headed` / `test:db:headed` — watch it drive a
-  real browser.
+- `pnpm --filter @gcsim/e2e test:headed` — watch it drive a real browser.
 - `pnpm --filter @gcsim/e2e report` — open the HTML report from the last run.
 
 ## On failure
@@ -161,7 +149,7 @@ same sidebar chrome), so one class owns the whole surface plus a
 Watches the page console for its whole lifetime, and offers two contracts:
 
 - `assertNoErrors()` fails on any un-ignored `console.error` or `pageerror` seen
-  across the flow (used by the web and db suites);
+  across the flow (used by the web suite);
 - `assertNoCrashes()` fails only on an uncaught exception (`pageerror`), ignoring
   ambient `console.error` noise such as a transient resource 404 (used by the
   docs suite, whose production build serves noisy static assets on cold start).
@@ -190,36 +178,15 @@ The toolbox-import specs' fixtures, both re-exported from `src/`:
   returns `enkaImportPayload`, a minimal Enka response that `EnkaToGOOD` parses
   into one character (Bennett), for `ENKA_UID`.
 
-### `DbHarness` (`src/db-harness.ts`) — the db app
+### Db fixtures (`src/db-fixtures.ts`)
 
-Bundles the db page objects (`DbHomePage`, `DbDatabasePage`) and a
-`ConsoleMonitor`. The `db` test fixture stubs the app's network before any
-navigation via `installDbRoutes` (`src/db-fixtures.ts`):
+`installDbRoutes(page)` stubs the web app's `/api/db` (the dash's "Shared by
+others" cards) so those specs stay offline:
 
-- `/api/db` returns the two `dbEntries`, narrowed to the characters an included
-  filter names — so a character filter visibly shrinks the list (2 → 1);
+- `/api/db` returns the two `dbEntries`;
 - `/api/assets/**` returns a 1x1 PNG (avatars, art);
-- `api.github.com` (the home page's latest-release lookup) returns a fixed
-  payload;
+- `api.github.com` (latest-release lookup) returns a fixed payload;
 - any other `/api/**` returns an empty 200.
-
-The db dev server proxies `/api` to production by default; these routes keep the
-spec deterministic and offline.
-
-#### `DbHomePage` (`src/pages/db-home-page.ts`) — the `/` route
-
-- `goto()` — navigate and wait for React to mount into `#root`.
-- `waitForLoaded()` — assert the welcome copy, the tag-list copy, and the "Get
-  started" CTA rendered.
-
-#### `DbDatabasePage` (`src/pages/db-database-page.ts`) — the `/database` route
-
-- `goto()` / `waitForBrowse()` — open the route; assert the count, search box,
-  filter funnel, and an entry card's Copy Config / Open in Viewer controls.
-- `openFilterPanel()` / `expandCharacters()` — open the filter drawer; expand
-  the Characters section to its portrait picker.
-- `filterByCharacter(name)` — pick a character from the search box, which
-  refetches `/api/db` with the narrowed query; pair with `expectShowing(n)`.
 
 ## Out of scope
 

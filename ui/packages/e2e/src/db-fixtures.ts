@@ -1,8 +1,7 @@
 import type { Page } from "@playwright/test";
 
 /**
- * Minimal structural shape of a db entry — only the fields the db app actually
- * reads (`DBCard`, `craftQuery`). Kept local rather than importing
+ * Minimal structural shape of a db entry. Kept local rather than importing
  * `@gcsim/types` so the e2e harness stays dependency-free.
  */
 export interface DbEntry {
@@ -84,7 +83,7 @@ function includedCharsFromQuery(q: string): string[] {
 }
 
 /**
- * Route every network dependency of the db app to a local, deterministic stub:
+ * Route the web app's `/api/db` dependencies to a local, deterministic stub:
  *
  *  - `/api/db` returns {@link dbEntries}, filtered to the characters an included
  *    filter names (see {@link includedCharsFromQuery}) so a character filter
