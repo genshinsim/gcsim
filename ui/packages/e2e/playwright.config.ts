@@ -4,7 +4,8 @@ const PORT = 5173;
 const HOST = `http://localhost:${PORT}`;
 
 /**
- * Chromium-only e2e config. Runs against the *dev server* (build wasm, then
+ * Chromium e2e config (plus Firefox and WebKit for the wasm CSP spec). Runs
+ * against the *dev server* (build wasm, then
  * `vite`), because a production build points the wasm URL at a remote origin
  * (R2 / `/api/wasm/...`) that is not available locally.
  *
@@ -33,6 +34,18 @@ export default defineConfig({
 		{
 			name: "chromium",
 			use: { ...devices["Desktop Chrome"] },
+		},
+		// Browsers differ in how the page's CSP applies to wasm, which Chromium
+		// alone doesn't catch; only the CSP spec runs in these.
+		{
+			name: "firefox",
+			use: { ...devices["Desktop Firefox"] },
+			testMatch: /wasm-csp\.spec\.ts/,
+		},
+		{
+			name: "webkit",
+			use: { ...devices["Desktop Safari"] },
+			testMatch: /wasm-csp\.spec\.ts/,
 		},
 	],
 	webServer: {
