@@ -11,6 +11,7 @@ export class WasmExecutor implements Executor {
 	private workers: Worker[];
 	private workerCount: number;
 	private isRunning: boolean;
+	private runId: number;
 	private runStarted: number;
 
 	constructor(wasm: string) {
@@ -20,6 +21,7 @@ export class WasmExecutor implements Executor {
 		this.workers = [];
 		this.workerCount = 3;
 		this.isRunning = false;
+		this.runId = 0;
 		this.runStarted = 0;
 	}
 
@@ -42,16 +44,20 @@ export class WasmExecutor implements Executor {
 				return;
 			}
 
-			this.aggregator = new Worker(
+			const aggregator = new Worker(
 				new URL("./Workers/aggregator.ts", import.meta.url),
 			);
-			this.aggregator.postMessage(Aggregator.ReadyRequest(module));
-			this.aggregator.onmessage = (ev) => {
+			this.aggregator = aggregator;
+			aggregator.postMessage(Aggregator.ReadyRequest(module));
+			aggregator.onmessage = (ev) => {
 				switch (ev.data.type as Aggregator.Response) {
 					case Aggregator.Response.Ready:
 						resolve(true);
 						return;
 					case Aggregator.Response.Failed:
+						// the aggregator is reused across runs; don't keep a broken one
+						aggregator.terminate();
+						this.aggregator = null;
 						reject((ev.data as Aggregator.FailedResponse).reason);
 						return;
 				}
@@ -87,6 +93,9 @@ export class WasmExecutor implements Executor {
 								resolve(true);
 								return;
 							case SimWorker.Response.Failed:
+								// drop it so the next run doesn't wait on a worker that never loaded
+								this.workers = this.workers.filter((w) => w !== worker);
+								worker.terminate();
 								reject(
 									"Worker " +
 										idx +
@@ -108,6 +117,19 @@ export class WasmExecutor implements Executor {
 	): Promise<boolean | void> {
 		this.isRunning = true;
 		this.runStarted = performance.now();
+
+		// The workers and the aggregator are reused across runs, so their queues can still hold
+		// requests from a cancelled run. Every request carries the run id and every response
+		// echoes it; responses from any other run are dropped.
+		const run = ++this.runId;
+		const isCurrent = (ev: MessageEvent) =>
+			ev.data.run === run && this.runId === run;
+		const stop = () => {
+			if (this.runId === run) {
+				this.runId++;
+				this.isRunning = false;
+			}
+		};
 
 		// 1. Create Aggregator & Workers
 		const created = this.helper
@@ -135,6 +157,9 @@ export class WasmExecutor implements Executor {
 					}
 
 					this.aggregator.onmessage = (ev) => {
+						if (!isCurrent(ev)) {
+							return;
+						}
 						switch (ev.data.type as Aggregator.Response) {
 							case Aggregator.Response.Initialized:
 								result = (ev.data as Aggregator.InitializeResponse).result;
@@ -146,7 +171,7 @@ export class WasmExecutor implements Executor {
 								return;
 						}
 					};
-					this.aggregator.postMessage(Aggregator.InitializeRequest(cfg));
+					this.aggregator.postMessage(Aggregator.InitializeRequest(run, cfg));
 				}),
 			);
 
@@ -155,6 +180,9 @@ export class WasmExecutor implements Executor {
 				promises.push(
 					new Promise<boolean>((resolve, reject) => {
 						worker.onmessage = (ev) => {
+							if (!isCurrent(ev)) {
+								return;
+							}
 							switch (ev.data.type as SimWorker.Response) {
 								case SimWorker.Response.Initialized:
 									resolve(true);
@@ -164,7 +192,7 @@ export class WasmExecutor implements Executor {
 									return;
 							}
 						};
-						worker.postMessage(SimWorker.InitializeRequest(cfg));
+						worker.postMessage(SimWorker.InitializeRequest(run, cfg));
 					}),
 				);
 			});
@@ -174,8 +202,8 @@ export class WasmExecutor implements Executor {
 
 		const throttledFlush = throttle(
 			() => {
-				if (this.isRunning) {
-					this.aggregator?.postMessage(Aggregator.FlushRequest());
+				if (this.runId === run) {
+					this.aggregator?.postMessage(Aggregator.FlushRequest(run));
 				}
 			},
 			VIEWER_THROTTLE,
@@ -183,14 +211,17 @@ export class WasmExecutor implements Executor {
 		);
 
 		// 3. start execution
-		return initialized.then(() => {
-			return new Promise((resolve, reject) => {
+		const executed = initialized.then(() => {
+			return new Promise<boolean>((resolve, reject) => {
 				if (this.aggregator == null) {
 					reject("Aggregator is null!");
 					return;
 				}
 				let completed = 0;
 				this.aggregator.onmessage = (ev) => {
+					if (!isCurrent(ev)) {
+						return;
+					}
 					switch (ev.data.type as Aggregator.Response) {
 						case Aggregator.Response.Result: {
 							const { hash, stats } = (ev.data as Aggregator.ResultResponse)
@@ -201,7 +232,7 @@ export class WasmExecutor implements Executor {
 							updateResult(out, hash);
 
 							if (completed >= maxIterations) {
-								this.isRunning = false;
+								stop();
 								resolve(true);
 								if (this.runStarted > 0) {
 									const end = performance.now();
@@ -216,26 +247,24 @@ export class WasmExecutor implements Executor {
 							throttledFlush();
 							return;
 						case Aggregator.Response.Failed:
-							// TODO: bug with throttled flush where a flush may happen after a cancel request.
-							//    When this happens, the existing aggregator has no data and fails to flush.
-							//    this doesnt cause any problems (yet) and just produces an error in console.
-							if (this.isRunning) {
-								reject((ev.data as Aggregator.FailedResponse).reason);
-							}
+							reject((ev.data as Aggregator.FailedResponse).reason);
 					}
 				};
 
 				let requested = 0;
 				this.workers.forEach((worker) => {
 					worker.onmessage = (ev) => {
+						if (!isCurrent(ev)) {
+							return;
+						}
 						switch (ev.data.type as SimWorker.Response) {
 							case SimWorker.Response.Done: {
 								const resp: SimWorker.RunResponse = ev.data;
 								this.aggregator?.postMessage(
-									Aggregator.AddRequest(resp.result),
+									Aggregator.AddRequest(run, resp.result),
 								);
 								if (requested < maxIterations) {
-									worker.postMessage(SimWorker.RunRequest(requested++));
+									worker.postMessage(SimWorker.RunRequest(run, requested++));
 								}
 								return;
 							}
@@ -245,33 +274,30 @@ export class WasmExecutor implements Executor {
 					};
 
 					if (requested < maxIterations) {
-						worker.postMessage(SimWorker.RunRequest(requested++));
+						worker.postMessage(SimWorker.RunRequest(run, requested++));
 					}
 				});
 			});
 		});
+
+		// a failed run frees the executor for the next one
+		return executed.catch((e) => {
+			stop();
+			throw e;
+		});
 	}
 
 	public cancel(): void {
-		if (!this.isRunning || this.aggregator == null) {
+		if (!this.isRunning) {
 			return;
 		}
 
+		// The workers and the aggregator are kept. Requests of the cancelled run still in their
+		// queues are processed, but their responses are dropped by run id, and the next run's
+		// initialize request resets the aggregator after them.
+		this.runId++;
 		this.isRunning = false;
 		console.log("execution canceled");
-		this.workers.forEach((worker) => {
-			worker.onmessage = null;
-		});
-
-		// It is possible that there are N AddRequests in the aggregator queue that we have no control
-		// over. Even if we set the onmessage here to null, the aggregator will still process through
-		// all N requests. Since there is no way to clear the worker queue, recreating the worker is the
-		// next best thing.
-		//
-		// Downside of this approach is any memory allocation/optimizations from previous runs will not
-		// carry over, making executions after a cancel "less optimal".
-		this.aggregator.terminate();
-		this.aggregator = null;
 
 		if (this.runStarted > 0) {
 			const end = performance.now();

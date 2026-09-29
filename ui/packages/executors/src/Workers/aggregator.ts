@@ -52,17 +52,23 @@ function handleRequest(req: any): any {
 		case AggRequest.Ready:
 			return ready(req);
 		case AggRequest.Initialize:
-			return postMessage(initialize(req));
+			return respond(req, initialize(req));
 		case AggRequest.Add:
-			return postMessage(add(req));
+			return respond(req, add(req));
 		case AggRequest.Flush:
-			return postMessage(doFlush());
+			return respond(req, doFlush());
 		default:
 			console.error("aggregator - unknown request: ", req);
 			throw new Error("aggregator unknown request");
 	}
 }
 self.onmessage = (ev) => handleRequest(ev.data);
+
+// Echoes the request's run id so the executor can drop responses from a cancelled run.
+// @ts-ignore
+function respond(req: { run: number }, resp: object) {
+	postMessage({ ...resp, run: req.run });
+}
 
 // TODO: I hate this
 // Web Workers do not currently support modules (in all browsers), so instead all the relevant code in common
