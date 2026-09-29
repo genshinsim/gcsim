@@ -41,8 +41,8 @@ export function defaultWorkerCount(): number {
 
 export class WasmExecutor implements Executor {
 	private helper: HelperExecutor;
-	private aggregator: Worker | null;
-	private workers: Worker[];
+	private aggregator: PoolWorker | null;
+	private workers: PoolWorker[];
 	private workerCount: number;
 	private isRunning: boolean;
 	private runId: number;
@@ -71,78 +71,28 @@ export class WasmExecutor implements Executor {
 		this.workerCount = count;
 	}
 
-	private createAggregator(module: WebAssembly.Module): Promise<boolean> {
-		return new Promise((resolve, reject) => {
-			if (this.aggregator) {
-				resolve(true);
-				return;
-			}
-
-			const aggregator = new Worker(
-				new URL("./Workers/aggregator.ts", import.meta.url),
-			);
-			this.aggregator = aggregator;
-			aggregator.postMessage(Aggregator.ReadyRequest(module));
-			aggregator.onmessage = (ev) => {
-				switch (ev.data.type as Aggregator.Response) {
-					case Aggregator.Response.Ready:
-						resolve(true);
-						return;
-					case Aggregator.Response.Failed:
-						// the aggregator is reused across runs; don't keep a broken one
-						aggregator.terminate();
-						this.aggregator = null;
-						reject((ev.data as Aggregator.FailedResponse).reason);
-						return;
-				}
-			};
-		});
-	}
-
-	private createWorkers(module: WebAssembly.Module): Promise<boolean> {
-		console.log("loading workers", this.workerCount, this);
-		const diff = this.workerCount - this.workers.length;
-
-		if (diff < 0) {
-			this.workers.splice(diff).forEach((w) => {
-				w.terminate();
-			});
-			return Promise.resolve(true);
-		}
-
-		console.log("loading " + diff + " workers");
-		const promises: Promise<boolean>[] = [];
-		for (let i = 0; i < diff; i++) {
-			promises.push(
-				new Promise<boolean>((resolve, reject) => {
-					const worker = new Worker(
-						new URL("./Workers/worker.ts", import.meta.url),
-					);
-					worker.postMessage(SimWorker.ReadyRequest(module));
-
-					const idx = this.workers.push(worker) - 1;
-					worker.onmessage = (ev) => {
-						switch (ev.data.type as SimWorker.Response) {
-							case SimWorker.Response.Ready:
-								resolve(true);
-								return;
-							case SimWorker.Response.Failed:
-								// drop it so the next run doesn't wait on a worker that never loaded
-								this.workers = this.workers.filter((w) => w !== worker);
-								worker.terminate();
-								reject(
-									"Worker " +
-										idx +
-										" " +
-										(ev.data as SimWorker.FailedResponse).reason,
-								);
-								return;
-						}
-					};
-				}),
+	// The aggregator and the sim workers for a run: those kept from earlier runs, minus any that
+	// failed to load, plus new ones up to the worker count. Some may still be loading.
+	private pool(module: WebAssembly.Module) {
+		if (this.aggregator == null || this.aggregator.failed) {
+			this.aggregator = new PoolWorker(
+				new Worker(new URL("./Workers/aggregator.ts", import.meta.url)),
+				Aggregator.ReadyRequest(module),
 			);
 		}
-		return Promise.all(promises).then(() => true);
+		this.workers = this.workers.filter((w) => !w.failed);
+		for (const worker of this.workers.splice(this.workerCount)) {
+			worker.terminate();
+		}
+		while (this.workers.length < this.workerCount) {
+			this.workers.push(
+				new PoolWorker(
+					new Worker(new URL("./Workers/worker.ts", import.meta.url)),
+					SimWorker.ReadyRequest(module),
+				),
+			);
+		}
+		return { aggregator: this.aggregator, workers: [...this.workers] };
 	}
 
 	public run(
@@ -154,99 +104,39 @@ export class WasmExecutor implements Executor {
 
 		// The workers and the aggregator are reused across runs, so their queues can still hold
 		// requests from a cancelled run. Every request carries the run id and every response
-		// echoes it; responses from any other run are dropped.
+		// echoes it; responses from any other run are dropped. A cancelled run sends nothing
+		// more, and its promise never settles.
 		const run = ++this.runId;
-		const isCurrent = (ev: MessageEvent) =>
-			ev.data.run === run && this.runId === run;
-		const stop = () => {
-			if (this.runId === run) {
+		const current = () => this.runId === run;
+		const isCurrent = (ev: MessageEvent) => current() && ev.data.run === run;
+
+		return new Promise<boolean>((resolve, reject) => {
+			const stop = () => {
 				this.runId++;
 				this.isRunning = false;
-			}
-		};
+			};
+			// a failed run frees the executor for the next one
+			const fail = (reason: unknown) => {
+				if (current()) {
+					stop();
+					reject(reason);
+				}
+			};
 
-		// 1. Create Aggregator & Workers
-		const created = this.helper
-			.load()
-			.then((module) =>
-				Promise.all([
-					this.createAggregator(module),
-					this.createWorkers(module),
-				]),
-			);
-
-		let result: model.SimulationResult | null = null;
-		let maxIterations = 0;
-
-		// 2. Initialize Aggregator & Workers
-		const initialized = created.then(() => {
-			const promises: Promise<boolean>[] = [];
-
-			// initialize aggregator
-			promises.push(
-				new Promise<boolean>((resolve, reject) => {
-					if (this.aggregator == null) {
-						reject("Aggregator is null!");
-						return;
-					}
-
-					this.aggregator.onmessage = (ev) => {
-						if (!isCurrent(ev)) {
-							return;
-						}
-						switch (ev.data.type as Aggregator.Response) {
-							case Aggregator.Response.Initialized:
-								result = (ev.data as Aggregator.InitializeResponse).result;
-								maxIterations = result?.simulator_settings?.iterations ?? 1000;
-								resolve(true);
-								return;
-							case Aggregator.Response.Failed:
-								reject((ev.data as Aggregator.FailedResponse).reason);
-								return;
-						}
-					};
-					this.aggregator.postMessage(Aggregator.InitializeRequest(run, cfg));
-				}),
-			);
-
-			// initialize workers
-			this.workers.forEach((worker) => {
-				promises.push(
-					new Promise<boolean>((resolve, reject) => {
-						worker.onmessage = (ev) => {
-							if (!isCurrent(ev)) {
-								return;
-							}
-							switch (ev.data.type as SimWorker.Response) {
-								case SimWorker.Response.Initialized:
-									resolve(true);
-									return;
-								case SimWorker.Response.Failed:
-									reject((ev.data as SimWorker.FailedResponse).reason);
-									return;
-							}
-						};
-						worker.postMessage(SimWorker.InitializeRequest(run, cfg));
-					}),
-				);
-			});
-
-			return Promise.all(promises);
-		});
-
-		// 3. start execution
-		const executed = initialized.then(() => {
-			return new Promise<boolean>((resolve, reject) => {
-				if (this.aggregator == null) {
-					reject("Aggregator is null!");
+			this.helper.load().then((module) => {
+				if (!current()) {
 					return;
 				}
-				const aggregator = this.aggregator;
+				const { aggregator, workers } = this.pool(module);
+
+				let result: model.SimulationResult | null = null;
+				let maxIterations = 0;
+				// the aggregator and the workers yet to answer the initialize request
+				let initializing = workers.length + 1;
 				let completed = 0;
 				let flushing = false; // an intermediate flush is outstanding
 				let nextFlush = 0;
 
-				const workers = this.workers;
 				const maxOutstanding = workers.length * MAX_OUTSTANDING_PER_WORKER;
 				const queued = workers.map(() => 0);
 				let requested = 0;
@@ -263,17 +153,28 @@ export class WasmExecutor implements Executor {
 							requested < maxIterations &&
 							requested - completed < maxOutstanding
 						) {
-							worker.postMessage(SimWorker.RunRequest(run, requested++));
+							worker.post(SimWorker.RunRequest(run, requested++));
 							queued[i]++;
 						}
 					});
 				};
+				const initialized = () => {
+					initializing--;
+					if (initializing === 0) {
+						dispatch();
+					}
+				};
 
-				aggregator.onmessage = (ev) => {
+				aggregator.listen((ev) => {
 					if (!isCurrent(ev)) {
 						return;
 					}
 					switch (ev.data.type as Aggregator.Response) {
+						case Aggregator.Response.Initialized:
+							result = (ev.data as Aggregator.InitializeResponse).result;
+							maxIterations = result?.simulator_settings?.iterations ?? 1000;
+							initialized();
+							return;
 						case Aggregator.Response.Result: {
 							const resp = ev.data as Aggregator.ResultResponse;
 							const { hash, stats } = resp.result;
@@ -304,48 +205,58 @@ export class WasmExecutor implements Executor {
 						case Aggregator.Response.Done:
 							completed += 1;
 							if (completed === maxIterations) {
-								aggregator.postMessage(Aggregator.FlushRequest(run, true));
+								aggregator.post(Aggregator.FlushRequest(run, true));
 							} else if (!flushing && performance.now() >= nextFlush) {
 								flushing = true;
-								aggregator.postMessage(Aggregator.FlushRequest(run, false));
+								aggregator.post(Aggregator.FlushRequest(run, false));
 							}
 							dispatch();
 							return;
 						case Aggregator.Response.Failed:
-							reject((ev.data as Aggregator.FailedResponse).reason);
+							fail((ev.data as Aggregator.FailedResponse).reason);
 					}
-				};
+				});
 
 				workers.forEach((worker, i) => {
-					worker.onmessage = (ev) => {
+					worker.listen((ev) => {
 						if (!isCurrent(ev)) {
 							return;
 						}
 						switch (ev.data.type as SimWorker.Response) {
+							case SimWorker.Response.Initialized:
+								initialized();
+								return;
 							case SimWorker.Response.Done: {
 								const resp: SimWorker.RunResponse = ev.data;
 								queued[i]--;
 								// transfer rather than copy; the result is only forwarded
-								aggregator.postMessage(
-									Aggregator.AddRequest(run, resp.result),
-									[resp.result.buffer],
-								);
+								aggregator.post(Aggregator.AddRequest(run, resp.result), [
+									resp.result.buffer,
+								]);
 								dispatch();
 								return;
 							}
 							case SimWorker.Response.Failed:
-								reject((ev.data as Aggregator.FailedResponse).reason);
+								fail((ev.data as SimWorker.FailedResponse).reason);
 						}
-					};
+					});
 				});
-				dispatch();
-			});
-		});
 
-		// a failed run frees the executor for the next one
-		return executed.catch((e) => {
-			stop();
-			throw e;
+				// Instances kept from a cancelled run may still be loading; nothing but the ready
+				// request may reach them before they have.
+				Promise.all([aggregator.ready, ...workers.map((w) => w.ready)]).then(
+					() => {
+						if (!current()) {
+							return;
+						}
+						aggregator.post(Aggregator.InitializeRequest(run, cfg));
+						for (const worker of workers) {
+							worker.post(SimWorker.InitializeRequest(run, cfg));
+						}
+					},
+					fail,
+				);
+			}, fail);
 		});
 	}
 
@@ -378,6 +289,59 @@ export class WasmExecutor implements Executor {
 
 	public buildInfo(): { hash: string; date: string } {
 		return this.helper.buildInfo();
+	}
+}
+
+// A worker running one wasm instance, the aggregator or a sim worker. The executor keeps it
+// across runs.
+class PoolWorker {
+	// Resolves once the instance has loaded. The worker scripts only define the Go functions
+	// once go.run has returned, so no request but the ready request may reach it before then.
+	readonly ready: Promise<void>;
+	// it failed to load; the next run replaces it
+	failed = false;
+	private worker: Worker;
+	private handler: (ev: MessageEvent) => void = () => {};
+
+	constructor(
+		worker: Worker,
+		readyRequest: Aggregator.ReadyRequest | SimWorker.ReadyRequest,
+	) {
+		this.worker = worker;
+		this.ready = new Promise((resolve, reject) => {
+			worker.onmessage = (ev) => {
+				// the aggregator's and the sim workers' Ready and Failed responses are the same
+				switch (ev.data.type) {
+					case SimWorker.Response.Ready:
+						resolve();
+						return;
+					case SimWorker.Response.Failed:
+						if (ev.data.run == null) {
+							this.failed = true;
+							worker.terminate();
+							reject((ev.data as SimWorker.FailedResponse).reason);
+							return;
+						}
+				}
+				this.handler(ev);
+			};
+		});
+		// a run waiting on it handles the failure; don't report it as unhandled otherwise
+		this.ready.catch(() => {});
+		worker.postMessage(readyRequest);
+	}
+
+	// Sends the instance's responses to handler, in place of the previous run's.
+	public listen(handler: (ev: MessageEvent) => void) {
+		this.handler = handler;
+	}
+
+	public post(message: unknown, transfer: Transferable[] = []) {
+		this.worker.postMessage(message, transfer);
+	}
+
+	public terminate() {
+		this.worker.terminate();
 	}
 }
 
