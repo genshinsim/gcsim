@@ -21,3 +21,11 @@ func (n *NilLogger) NewEventBuildMsg(typ Source, srcChar int, msg ...string) Eve
 func (n *NilLogger) NewEvent(msg string, typ Source, srcChar int) Event {
 	return &NilLogEvent{}
 }
+
+// Enabled reports whether l records events. Writing to a NilLogger still boxes every
+// value into an interface, so hot paths without access to core.Flags.LogDebug use this
+// to skip building events that would be discarded.
+func Enabled(l Logger) bool {
+	_, ok := l.(*NilLogger)
+	return !ok
+}
