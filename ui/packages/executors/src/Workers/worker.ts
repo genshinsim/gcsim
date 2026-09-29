@@ -50,15 +50,21 @@ function handleRequest(req: any) {
 		case WorkerRequest.Ready:
 			return ready(req);
 		case WorkerRequest.Initialize:
-			return postMessage(initialize(req));
+			return respond(req, initialize(req));
 		case WorkerRequest.Run:
-			return postMessage(run(req));
+			return respond(req, run(req));
 		default:
 			console.error("aggregator - unknown request: ", req);
 			throw new Error("aggregator unknown request");
 	}
 }
 self.onmessage = (ev) => handleRequest(ev.data);
+
+// Echoes the request's run id so the executor can drop responses from a cancelled run.
+// @ts-ignore
+function respond(req: { run: number }, resp: object) {
+	postMessage({ ...resp, run: req.run });
+}
 
 // TODO: I hate this
 // Web Workers do not currently support modules (in all browsers), so instead the relevant code in common
