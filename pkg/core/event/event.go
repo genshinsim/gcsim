@@ -177,10 +177,18 @@ func (h *Handler) Emit(e Event, args ...any) {
 	}
 	// a hook may emit again, so each nesting depth gets its own buffer
 	if h.depth == len(h.argBufs) {
-		h.argBufs = append(h.argBufs, make([]any, 0, 7))
+		h.argBufs = append(h.argBufs, make([]any, 7))
 	}
-	buf := append(h.argBufs[h.depth][:0], args...)
-	h.argBufs[h.depth] = buf
+	buf := h.argBufs[h.depth]
+	if len(args) > len(buf) {
+		buf = make([]any, len(args))
+		h.argBufs[h.depth] = buf
+	}
+	buf = buf[:len(args)]
+	// element-wise rather than copy/clear: those are runtime calls on wasm, and args is short
+	for i, a := range args { //nolint:staticcheck // S1001: see above
+		buf[i] = a
+	}
 	h.depth++
 	for _, v := range hooks {
 		if v.f != nil {
@@ -188,5 +196,7 @@ func (h *Handler) Emit(e Event, args ...any) {
 		}
 	}
 	h.depth--
-	clear(buf)
+	for i := 0; i < len(buf); i++ { // not `range`, which compiles to a memclr call
+		buf[i] = nil
+	}
 }
