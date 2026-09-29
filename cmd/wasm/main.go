@@ -241,7 +241,7 @@ func aggregate(this js.Value, args []js.Value) (out interface{}) {
 	}
 
 	result := stats.Result{}
-	buffer, err = result.UnmarshalMsg(buffer)
+	_, err = result.UnmarshalMsg(buffer)
 	if err != nil {
 		return marshal(err)
 	}
