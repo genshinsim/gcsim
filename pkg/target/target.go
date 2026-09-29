@@ -144,14 +144,16 @@ func (t *Target) SetDirectionToClosestEnemy() {
 func (t *Target) CalcTempDirection(trg info.Point) info.Point {
 	src := t.Pos()
 	direction := info.CalcDirection(src, trg)
-	t.Core.Combat.Log.NewEvent("using temporary target direction", glog.LogDebugEvent, -1).
-		Write("src target key", t.key).
-		Write("srcX", src.X).
-		Write("srcY", src.Y).
-		Write("trgX", trg.X).
-		Write("trgY", trg.Y).
-		Write("direction", t.direction).
-		Write("temporary direction", direction)
+	if t.Core.Flags.LogDebug {
+		t.Core.Combat.Log.NewEvent("using temporary target direction", glog.LogDebugEvent, -1).
+			Write("src target key", t.key).
+			Write("srcX", src.X).
+			Write("srcY", src.Y).
+			Write("trgX", trg.X).
+			Write("trgY", trg.Y).
+			Write("direction", t.direction).
+			Write("temporary direction", direction)
+	}
 	return direction
 }
 

@@ -88,14 +88,18 @@ func (t *Target) ResetDamageCounterAfterDelay(tag attacks.ICDTag, grp attacks.IC
 		// set the counter back to 0
 		s.damageTagCounter = 0
 		s.damageTagOnTimer = false
-		t.Core.Log.NewEvent("damage counter reset", glog.LogICDEvent, char).
-			Write("tag", tag).
-			Write("grp", grp)
+		if t.Core.Flags.LogDebug {
+			t.Core.Log.NewEvent("damage counter reset", glog.LogICDEvent, char).
+				Write("tag", tag).
+				Write("grp", grp)
+		}
 	}, attacks.ICDGroupResetTimer[grp]-1)
-	t.Core.Log.NewEvent("damage reset timer set", glog.LogICDEvent, char).
-		Write("tag", tag).
-		Write("grp", grp).
-		Write("reset", t.Core.F+attacks.ICDGroupResetTimer[grp]-1)
+	if t.Core.Flags.LogDebug {
+		t.Core.Log.NewEvent("damage reset timer set", glog.LogICDEvent, char).
+			Write("tag", tag).
+			Write("grp", grp).
+			Write("reset", t.Core.F+attacks.ICDGroupResetTimer[grp]-1)
+	}
 }
 
 func (t *Target) ResetTagCounterAfterDelay(tag attacks.ICDTag, grp attacks.ICDGroup, char int) {
@@ -104,12 +108,16 @@ func (t *Target) ResetTagCounterAfterDelay(tag attacks.ICDTag, grp attacks.ICDGr
 		// set the counter back to 0
 		s.tagCounter = 0
 		s.tagOnTimer = false
-		t.Core.Log.NewEvent("ele app counter reset", glog.LogICDEvent, char).
-			Write("tag", tag).
-			Write("grp", grp)
+		if t.Core.Flags.LogDebug {
+			t.Core.Log.NewEvent("ele app counter reset", glog.LogICDEvent, char).
+				Write("tag", tag).
+				Write("grp", grp)
+		}
 	}, attacks.ICDGroupResetTimer[grp]-1)
-	t.Core.Log.NewEvent("ele app reset timer set", glog.LogICDEvent, char).
-		Write("tag", tag).
-		Write("grp", grp).
-		Write("reset", t.Core.F+attacks.ICDGroupResetTimer[grp]-1)
+	if t.Core.Flags.LogDebug {
+		t.Core.Log.NewEvent("ele app reset timer set", glog.LogICDEvent, char).
+			Write("tag", tag).
+			Write("grp", grp).
+			Write("reset", t.Core.F+attacks.ICDGroupResetTimer[grp]-1)
+	}
 }
