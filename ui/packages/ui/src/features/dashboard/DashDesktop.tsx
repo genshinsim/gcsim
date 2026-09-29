@@ -3,7 +3,7 @@ import { WhatsNew } from "../../components/WhatsNew";
 import { CommunityCta } from "./CommunityCta";
 import { Hero } from "./Hero";
 import { SectionHead } from "./SectionHead";
-import { SharedByOthers } from "./SharedByOthers";
+// import { SharedByOthers } from "./SharedByOthers";
 
 export function DashDesktop() {
 	const { t } = useTranslation();
@@ -25,6 +25,7 @@ export function DashDesktop() {
 					<CommunityCta />
 				</div>
 
+				{/* Shared by others is unmounted since the db moved off gcsim; it may come back pointing at db.kqm.gg.
 				<SectionHead
 					className="mb-[18px]"
 					title={t("dash.shared_title")}
@@ -33,6 +34,7 @@ export function DashDesktop() {
 					linkHref="https://gcsim.app/db"
 				/>
 				<SharedByOthers className="pb-g-section" />
+				*/}
 			</div>
 		</main>
 	);

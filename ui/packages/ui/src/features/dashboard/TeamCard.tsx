@@ -1,3 +1,5 @@
+// Not currently mounted: the Shared by others section is commented out in
+// DashDesktop and DashMobile.
 import { cn } from "@gcsim/primitives";
 import type { db, model } from "@gcsim/types";
 import { useTranslation } from "react-i18next";
