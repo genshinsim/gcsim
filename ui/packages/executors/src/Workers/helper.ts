@@ -4,10 +4,12 @@ self.importScripts("/wasm_exec.js");
 
 let readyState = false;
 let loadError: string | null = null;
+// @ts-ignore
+let go: Go;
 
 // @ts-ignore
 function ready(req: { wasm: string }) {
-	const go = new Go();
+	go = new Go();
 	compileWasm(req.wasm)
 		.then((module) => {
 			// the executor shares the compiled module with the aggregator and the sim workers
@@ -24,8 +26,38 @@ function ready(req: { wasm: string }) {
 			console.error(e);
 			loadError = e instanceof Error ? e.message : "Unknown Error";
 			processQueue();
-			postMessage({ type: HelpResponse.Failed, reason: loadError });
+			postMessage({
+				type: HelpResponse.Failed,
+				reason: loadError,
+				fatal: true,
+			});
 		});
+}
+
+// Handles a request that calls into Go. The Go functions return their errors, so if the call
+// throws, or the Go program exits during it (a fatal error such as running out of memory), this
+// instance is unusable: the fatal response makes the executor replace the helper.
+// @ts-ignore
+function callGo(req: { id: number }, handle: () => any): any {
+	let reason =
+		"its Go program exited (the console shows why, e.g. out of memory)";
+	try {
+		const resp = handle();
+		if (!go.exited) {
+			return resp;
+		}
+	} catch (e) {
+		console.error(e);
+		if (!go.exited) {
+			reason = `${e}`;
+		}
+	}
+	return {
+		type: HelpResponse.Failed,
+		reason: `The helper crashed: ${reason}`,
+		fatal: true,
+		id: req.id,
+	};
 }
 
 function compileWasm(url: string): Promise<WebAssembly.Module> {
@@ -58,9 +90,9 @@ function doSample(req: { id: number; cfg: string; seed: string }) {
 function handleRequest(req: any): any {
 	switch (req.type as HelpRequest) {
 		case HelpRequest.Validate:
-			return validate(req);
+			return callGo(req, () => validate(req));
 		case HelpRequest.Sample:
-			return doSample(req);
+			return callGo(req, () => doSample(req));
 		default:
 			console.error("helper - unknown request: ", req);
 			throw new Error("helper unknown request");

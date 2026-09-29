@@ -3,8 +3,11 @@
 self.importScripts("/wasm_exec.js");
 
 // @ts-ignore
+let go: Go;
+
+// @ts-ignore
 function ready(req: { module: WebAssembly.Module }) {
-	const go = new Go();
+	go = new Go();
 	WebAssembly.instantiate(req.module, go.importObject)
 		.then((instance) => {
 			go.run(instance);
@@ -16,8 +19,34 @@ function ready(req: { module: WebAssembly.Module }) {
 			postMessage({
 				type: AggResponse.Failed,
 				reason: e instanceof Error ? e.message : "Unknown Error",
+				fatal: true,
 			});
 		});
+}
+
+// Handles a request that calls into Go. The Go functions return their errors, so if the call
+// throws, or the Go program exits during it (a fatal error such as running out of memory), this
+// instance is unusable: the fatal response makes the executor replace the aggregator.
+// @ts-ignore
+function callGo(handle: () => any): any {
+	let reason =
+		"its Go program exited (the console shows why, e.g. out of memory)";
+	try {
+		const resp = handle();
+		if (!go.exited) {
+			return resp;
+		}
+	} catch (e) {
+		console.error(e);
+		if (!go.exited) {
+			reason = `${e}`;
+		}
+	}
+	return {
+		type: AggResponse.Failed,
+		reason: `The aggregator crashed: ${reason}`,
+		fatal: true,
+	};
 }
 
 // @ts-ignore
@@ -58,11 +87,20 @@ function handleRequest(req: any): any {
 		case AggRequest.Ready:
 			return ready(req);
 		case AggRequest.Initialize:
-			return respond(req, initialize(req));
+			return respond(
+				req,
+				callGo(() => initialize(req)),
+			);
 		case AggRequest.Add:
-			return respond(req, add(req));
+			return respond(
+				req,
+				callGo(() => add(req)),
+			);
 		case AggRequest.Flush:
-			return respond(req, doFlush(req));
+			return respond(
+				req,
+				callGo(() => doFlush(req)),
+			);
 		default:
 			console.error("aggregator - unknown request: ", req);
 			throw new Error("aggregator unknown request");
