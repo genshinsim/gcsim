@@ -11,6 +11,7 @@ if (!WebAssembly.instantiateStreaming) {
 }
 
 let readyState = false;
+let loadError: string | null = null;
 
 // @ts-ignore
 function ready(req: { wasm: string }) {
@@ -20,13 +21,12 @@ function ready(req: { wasm: string }) {
 			go.run(result.instance);
 			console.log("helper loaded okay");
 			readyState = true;
+			processQueue();
 		})
 		.catch((e) => {
 			console.error(e);
-			postMessage({
-				type: HelpResponse.Failed,
-				reason: e instanceof Error ? e.message : "Unknown Error",
-			});
+			loadError = e instanceof Error ? e.message : "Unknown Error";
+			processQueue();
 		});
 }
 
@@ -67,17 +67,24 @@ self.onmessage = (ev) => {
 	}
 
 	queue.push(ev);
-	tryProcess();
+	processQueue();
 };
 
-function tryProcess() {
-	if (!readyState) {
-		setTimeout(tryProcess, 100);
+// Requests that arrive before the wasm is loaded wait in the queue; ready() drains it.
+function processQueue() {
+	if (!readyState && loadError == null) {
 		return;
 	}
 
-	const event = queue.shift();
-	if (event) {
+	for (let event = queue.shift(); event; event = queue.shift()) {
+		if (loadError != null) {
+			postMessage({
+				type: HelpResponse.Failed,
+				reason: loadError,
+				id: event.data.id,
+			});
+			continue;
+		}
 		postMessage(handleRequest(event.data));
 	}
 }
