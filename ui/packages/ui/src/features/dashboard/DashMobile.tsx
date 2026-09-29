@@ -4,11 +4,11 @@ import { BookOpen, Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { CommunityCta } from "./CommunityCta";
 import "./dashMobile.css";
+import { WhatsNew } from "../../components/WhatsNew";
 import { HeroArt } from "./HeroArt";
 import { getHero } from "./heroImages";
 import { SectionHead } from "./SectionHead";
 import { SharedByOthers } from "./SharedByOthers";
-import { WhatsNew } from "./WhatsNew";
 
 export function DashMobile() {
 	const { t } = useTranslation();

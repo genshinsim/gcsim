@@ -1,7 +1,7 @@
 import tagData from "@gcsim/data/src/tags.json";
 import { dynamicKey } from "@gcsim/localization";
 import { Alert, AlertDescription, AlertTitle, Button } from "@gcsim/primitives";
-import { WhatsNew } from "@gcsim/ui/src/Pages/Dash/WhatsNew";
+import { WhatsNew } from "@gcsim/ui/src/components/WhatsNew";
 import { Trans, useTranslation } from "react-i18next";
 import {
 	FaCalculator,
