@@ -14,14 +14,13 @@ const (
 
 // this has to be checked after the animation handler, since the task is set by the handler
 func (h *Handler) verdantDewTick() {
-	if h.verdantDew >= 3 {
+	if h.verdantDew >= 3 || h.verdantDewExpiryFrame < *h.F {
 		return
 	}
+	h.verdantDewGen()
+}
 
-	if h.verdantDewExpiryFrame < *h.F {
-		return
-	}
-
+func (h *Handler) verdantDewGen() {
 	if h.verdantDewExpiryFrame == *h.F {
 		h.Log.NewEvent("verdant dew generation stopped", glog.LogElementEvent, -1)
 	}

@@ -294,8 +294,14 @@ func (s *Simulation) nextFrame() (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	s.handleEnergy()
-	s.handleHurt()
+	// handleEnergy and handleHurt do nothing unless these hold; checking here saves two
+	// calls per frame
+	if e := &s.cfg.EnergySettings; e.Active && (e.Once || s.C.F-e.LastEnergyDrop >= e.Start) {
+		s.handleEnergy()
+	}
+	if h := &s.cfg.HurtSettings; h.Active && (h.Once || s.C.F-h.LastHurt >= h.Start) {
+		s.handleHurt()
+	}
 	s.C.Events.Emit(event.OnTick)
 	return s.stopCheck(), nil
 }

@@ -36,7 +36,15 @@ func New(f *int) *Handler {
 	}
 }
 
+// Run executes every task that is due. It runs for every queue on every frame and usually
+// finds nothing due, so the check is kept small enough to inline into the caller.
 func (s *Handler) Run() {
+	if t := *s.tasks; len(t) > 0 && t[0].executeBy <= *s.f {
+		s.run()
+	}
+}
+
+func (s *Handler) run() {
 	for len(*s.tasks) > 0 && (*s.tasks)[0].executeBy <= *s.f {
 		s.tasks.pop().f()
 	}
