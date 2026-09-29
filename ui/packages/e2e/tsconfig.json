@@ -11,7 +11,6 @@
 		"src",
 		"tests",
 		"playwright.config.ts",
-		"playwright.docs.config.ts",
-		"playwright.db.config.ts"
+		"playwright.docs.config.ts"
 	]
 }

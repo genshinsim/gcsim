@@ -144,26 +144,11 @@
 		"sort_by": "Ordenar por",
 		"seen_it_all": "¡Bien! ¡Has visto todo!",
 		"not_find": "¿No encontraste lo que buscas? Crea y envía tus propias Simulaciones en nuestro Discord.",
-		"readme_header": "¡Por favor, lee!",
-		"readme_body": "<0>A menos que se indique lo contrario, las simulaciones en esta base de datos están aquí para proporcionar ejemplos de configuraciones interesantes enviadas por los usuarios.</0> <1>Ten en cuenta que estas configuraciones variarán según diferentes estándares, niveles de optimización y aplicación razonable al rendimiento en el juego. Se te anima a escribir tus propias configuraciones, o editar estas y hacer clic en \"{{rerun}}\".</1> <2>gcsim no existe únicamente para generar un DPS medio teórico estandarizado. Depende completamente de los usuarios ingresar lo que consideren útil. Así que deja de comparar ciegamente el DPS de las configuraciones aquí. Lo estás haciendo mal.</2>",
 		"readme_show": "Mostrar README",
 		"home": {
-			"get_started": "Comenzar",
-			"eyebrow": "gcsim · base de datos de la comunidad",
-			"browse_database": "Explorar base de datos",
-			"run_simulations": "Ejecutar simulaciones",
-			"welcome": "Bienvenido a Simpact",
-			"archive_banner_title": "Esta base de datos se está archivando",
-			"archive_banner_body": "La base de datos de Simpact está en proceso de archivarse. Ya no aceptamos nuevos envíos. Las entradas existentes seguirán disponibles para consultar por ahora. Mantente atento a más novedades.",
-			"simpact_desc": "Simpact es una base de datos de simulaciones de gcsim enviadas y mantenidas por usuarios de gcsim.",
-			"simpact_tag_desc": "La base de datos consta de varias etiquetas, cada etiqueta representa una colección de simulaciones. Estas colecciones son mantenidas por voluntarios y cada colección sigue sus propias reglas.",
-			"simpact_tag_list_header": "A continuación se muestran las etiquetas disponibles actualmente:",
-			"tag_desc_1": "La etiqueta predeterminada sin nombre contiene cientos de simulaciones interesantes destinadas como ejemplos para que los usuarios busquen un equipo y tengan algo con qué trabajar. No hay requisitos para seguir ningún tipo de estandarización, y el nivel de optimización o aplicación razonable al rendimiento en el juego puede variar considerablemente.",
-			"tag_desc_5": "Simulaciones de Itto haciendo cosas de Itto (mantenidas por Tris).",
-			"tag_desc_6": "Simulaciones que utilizan muchos delays antes de ejecutar acciones, o tienen variaciones en su swap_delay en lugar de ser fijas. Por lo general, involucran distribuciones aleatorias. Intentan modelar lo que sucede cuando las simulaciones no se ejecutan perfectamente en cada frame, especialmente para equipos con reacciones sensibles al timing.",
-			"tag_desc_7": "Colección de simulaciones de Arfoire dirigidas a nuevos jugadores.",
-			"tag_desc_8": "Simulaciones con todas sus acciones escritas como una lista de prioridades en lugar de repetir el mismo conjunto de acciones una y otra vez",
-			"tag_desc_9": "Simulaciones utilizadas por varios escritores de guías para KQM, etc."
+			"archived_title": "Simpact ha sido archivado.",
+			"archived_body": "Para todas tus necesidades futuras, visita <url>db.kqm.gg</url>, gestionado de forma independiente por KQM.",
+			"archived_contact": "Para cualquier problema o pregunta, contacta con KQM en Discord: <url>https://discord.gg/keqing</url>"
 		}
 	},
 	"elements": {
