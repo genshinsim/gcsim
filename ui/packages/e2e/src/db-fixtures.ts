@@ -1,9 +1,6 @@
 import type { Page } from "@playwright/test";
 
-/**
- * Minimal structural shape of a db entry. Kept local rather than importing
- * `@gcsim/types` so the e2e harness stays dependency-free.
- */
+/** Minimal structural shape of a db entry. */
 export interface DbEntry {
 	_id: string;
 	create_date: number;
@@ -23,12 +20,7 @@ export interface DbEntry {
 const team = (...names: string[]): { name: string }[] =>
 	names.map((name) => ({ name }));
 
-/**
- * The deterministic entries the stubbed `/api/db` returns for an unfiltered
- * browse. Only the first team contains Nahida, so a Nahida character filter
- * narrows the result set from two entries to one — an observable "list
- * updated" signal.
- */
+/** The deterministic entries the stubbed `/api/db` returns. */
 export const dbEntries: DbEntry[] = [
 	{
 		_id: "aaaaaaaaaaaaaaaaaaaaaaaa",
@@ -69,25 +61,13 @@ const PNG_1x1 = Buffer.from(
 	"base64",
 );
 
-// Stub GitHub "latest release" payload for the home page's <LatestVersion />,
-// which fetches it directly (not via `/api`). Keeps the home test offline.
+// Stub GitHub "latest release" payload, fetched directly (not via `/api`).
 const GITHUB_RELEASE = { name: "v5.0", body: "e2e stub release notes" };
 
 /**
- * The characters an included filter names in a `/api/db` query. `craftQuery`
- * serializes an included char as `"summary.char_names":"<char>"`; an excluded
- * char uses a `{ "$ne": ... }` object, which this pattern does not match.
- */
-function includedCharsFromQuery(q: string): string[] {
-	return [...q.matchAll(/"summary\.char_names":"(\w+)"/g)].map((m) => m[1]);
-}
-
-/**
- * Route the web app's `/api/db` dependencies to a local, deterministic stub:
+ * Route the web app's network to a local, deterministic stub:
  *
- *  - `/api/db` returns {@link dbEntries}, filtered to the characters an included
- *    filter names (see {@link includedCharsFromQuery}) so a character filter
- *    visibly narrows the list;
+ *  - `/api/db` returns {@link dbEntries};
  *  - `/api/assets/**` (avatars, weapons, misc art) returns a 1x1 PNG;
  *  - `api.github.com` (latest-release lookup) returns a fixed payload;
  *  - any other `/api/**` call returns an empty 200 so nothing reaches prod.
@@ -109,18 +89,10 @@ export async function installDbRoutes(page: Page): Promise<void> {
 			body: JSON.stringify(GITHUB_RELEASE),
 		}),
 	);
-	await page.route("**/api/db*", (route) => {
-		const q = new URL(route.request().url()).searchParams.get("q") ?? "";
-		const included = includedCharsFromQuery(q);
-		const data =
-			included.length > 0
-				? dbEntries.filter((e) =>
-						included.every((c) => e.summary.char_names.includes(c)),
-					)
-				: dbEntries;
+	await page.route("**/api/db*", (route) =>
 		route.fulfill({
 			contentType: "application/json",
-			body: JSON.stringify({ data }),
-		});
-	});
+			body: JSON.stringify({ data: dbEntries }),
+		}),
+	);
 }
