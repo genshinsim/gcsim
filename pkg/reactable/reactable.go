@@ -1,7 +1,7 @@
 package reactable
 
 import (
-	"slices"
+	"math"
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/core"
@@ -180,8 +180,61 @@ func (r *Reactable) AttachOrRefill(a *info.AttackEvent) bool {
 	return true
 }
 
+// maxDur and minDur are the builtin max and min for Durability, copied from runtime/minmax.go
+// so the result is bit-identical (NaN propagation, max(-0, +0) = +0, min(-0, +0) = -0). On
+// GOARCH=wasm the builtins compile to calls to runtime.fmax64/fmin64; these inline.
+func maxDur(x, y info.Durability) info.Durability {
+	if isNaN(y) || y > x {
+		return y
+	}
+	if isNaN(x) || x > y || x != 0 {
+		return x
+	}
+	return info.Durability(math.Float64frombits(math.Float64bits(float64(x)) & math.Float64bits(float64(y))))
+}
+
+func minDur(x, y info.Durability) info.Durability {
+	if isNaN(y) || y < x {
+		return y
+	}
+	if isNaN(x) || x < y || x != 0 {
+		return x
+	}
+	return info.Durability(math.Float64frombits(math.Float64bits(float64(x)) | math.Float64bits(float64(y))))
+}
+
+func isNaN(x info.Durability) bool { return math.IsNaN(float64(x)) }
+
+// The aura helpers below and reduceMod are unrolled for 4 sources, since on wasm every loop
+// iteration jumps through the function's br_table dispatch. This stops compiling if
+// info.MaxChars changes.
+var _ [4]info.Durability = [info.MaxChars]info.Durability{}
+
+// GetAuraDurability returns the largest durability of mod across all sources, folding from the
+// left like slices.Max.
 func (r *Reactable) GetAuraDurability(mod info.ReactionModKey) info.Durability {
-	return slices.Max(r.Durability[mod][:])
+	d := &r.Durability[mod]
+	return maxDur(maxDur(maxDur(d[0], d[1]), d[2]), d[3])
+}
+
+// auraAbove, auraBelow and auraAtMost report GetAuraDurability(mod) > x, < x and <= x without
+// computing the max. A NaN source makes the max NaN and every comparison false: auraBelow and
+// auraAtMost are false on NaN by themselves, auraAbove checks for it.
+func (r *Reactable) auraAbove(mod info.ReactionModKey, x info.Durability) bool {
+	d := &r.Durability[mod]
+	// d == d is the NaN check; isNaN would push this past the inlining budget
+	return (d[0] > x || d[1] > x || d[2] > x || d[3] > x) &&
+		d[0] == d[0] && d[1] == d[1] && d[2] == d[2] && d[3] == d[3] //nolint:gocritic // NaN check
+}
+
+func (r *Reactable) auraBelow(mod info.ReactionModKey, x info.Durability) bool {
+	d := &r.Durability[mod]
+	return d[0] < x && d[1] < x && d[2] < x && d[3] < x
+}
+
+func (r *Reactable) auraAtMost(mod info.ReactionModKey, x info.Durability) bool {
+	d := &r.Durability[mod]
+	return d[0] <= x && d[1] <= x && d[2] <= x && d[3] <= x
 }
 
 func (r *Reactable) GetDurability() []info.Durability {
@@ -222,7 +275,7 @@ func (r *Reactable) attachOrRefillNormalEle(mod info.ReactionModKey, dur info.Du
 
 func (r *Reactable) attachOverlap(mod info.ReactionModKey, amt, length info.Durability, src int) {
 	if r.GetAuraDurability(mod) > info.ZeroDur {
-		add := max(amt-r.Durability[mod][src], 0)
+		add := maxDur(amt-r.Durability[mod][src], 0)
 		if add > 0 {
 			r.addDurability(mod, add, src)
 		}
@@ -284,10 +337,12 @@ func (r *Reactable) IsBurning() bool {
 }
 
 func (r *Reactable) reduceMod(mod info.ReactionModKey, amt info.Durability) {
-	for i := range r.Durability[mod] {
-		r.Durability[mod][i] -= min(amt, r.Durability[mod][i])
-	}
-	if r.GetAuraDurability(mod) <= info.ZeroDur {
+	d := &r.Durability[mod] // unrolled, see GetAuraDurability
+	d[0] -= minDur(amt, d[0])
+	d[1] -= minDur(amt, d[1])
+	d[2] -= minDur(amt, d[2])
+	d[3] -= minDur(amt, d[3])
+	if r.auraAtMost(mod, info.ZeroDur) {
 		r.emitEvent(event.OnAuraDurabilityDepleted, r.self, mod)
 	}
 }
@@ -311,14 +366,14 @@ func (r *Reactable) reduce(e attributes.Element, dur, factor info.Durability) in
 		if i.Element() != e {
 			continue
 		}
-		if r.GetAuraDurability(i) < info.ZeroDur {
+		if r.auraBelow(i, info.ZeroDur) {
 			// also skip if durability already 0
 			// this allows us to safely call reduce even if an element doesn't exist
 			continue
 		}
 		// reduce by lesser of remaining and m
 
-		red := min(m, r.GetAuraDurability(i))
+		red := minDur(m, r.GetAuraDurability(i))
 
 		r.reduceMod(i, red)
 
@@ -331,7 +386,7 @@ func (r *Reactable) reduce(e attributes.Element, dur, factor info.Durability) in
 }
 
 func (r *Reactable) deplete(m info.ReactionModKey) {
-	if r.GetAuraDurability(m) <= info.ZeroDur {
+	if r.auraAtMost(m, info.ZeroDur) {
 		r.SetAuraDecayRate(m, 0)
 		r.emitEvent(event.OnAuraDurabilityDepleted, r.self, attributes.Element(m))
 	}
@@ -352,7 +407,7 @@ func (r *Reactable) Tick() {
 		if r.DecayRate[i] == 0 {
 			continue
 		}
-		if r.GetAuraDurability(i) > info.ZeroDur {
+		if r.auraAbove(i, info.ZeroDur) {
 			r.reduceMod(i, r.DecayRate[i])
 			r.deplete(i)
 		}
@@ -360,7 +415,7 @@ func (r *Reactable) Tick() {
 
 	// check burning first since that affects dendro/quicken decay
 
-	if r.burningTickSrc > -1 && r.GetAuraDurability(info.ReactionModKeyBurningFuel) < info.ZeroDur {
+	if r.burningTickSrc > -1 && r.auraBelow(info.ReactionModKeyBurningFuel, info.ZeroDur) {
 		// reset src when burning fuel is gone
 		r.burningTickSrc = -1
 		// remove burning
@@ -373,14 +428,14 @@ func (r *Reactable) Tick() {
 	// if burning fuel is present, dendro and quicken uses burning fuel decay rate
 	// otherwise it uses it's own
 	for i := info.ReactionModKeyDendro; i <= info.ReactionModKeyQuicken; i++ {
-		if r.GetAuraDurability(i) < info.ZeroDur {
+		if r.auraBelow(i, info.ZeroDur) {
 			continue
 		}
 		rate := r.DecayRate[i]
-		if r.GetAuraDurability(info.ReactionModKeyBurningFuel) > info.ZeroDur {
+		if r.auraAbove(info.ReactionModKeyBurningFuel, info.ZeroDur) {
 			rate = r.DecayRate[info.ReactionModKeyBurningFuel]
 			if i == info.ReactionModKeyDendro {
-				rate = max(rate, r.DecayRate[i]*2)
+				rate = maxDur(rate, r.DecayRate[i]*2)
 			}
 		}
 		r.reduceMod(i, rate)
@@ -389,7 +444,7 @@ func (r *Reactable) Tick() {
 
 	// for freeze, durability can be calculated as:
 	// d_f(t) = -1.25 * (t/60)^2 - k * (t/60) + d_f(0)
-	if r.GetAuraDurability(info.ReactionModKeyFrozen) > info.ZeroDur {
+	if r.auraAbove(info.ReactionModKeyFrozen, info.ZeroDur) {
 		// ramp up decay rate first
 		r.DecayRate[info.ReactionModKeyFrozen] += frzDelta
 		r.reduceMod(info.ReactionModKeyFrozen, r.DecayRate[info.ReactionModKeyFrozen]/info.Durability(1.0-r.FreezeResist))
@@ -406,7 +461,7 @@ func (r *Reactable) Tick() {
 
 	// for ec we need to reset src if ec is gone
 	if r.ecTickSrc > -1 {
-		if r.GetAuraDurability(info.ReactionModKeyElectro) < info.ZeroDur || r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
+		if r.auraBelow(info.ReactionModKeyElectro, info.ZeroDur) || r.auraBelow(info.ReactionModKeyHydro, info.ZeroDur) {
 			r.ecTickSrc = -1
 		}
 	}
