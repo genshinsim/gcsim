@@ -4,8 +4,8 @@ import React from "react";
 import { Viewport } from "../../components";
 import { CharMap } from "../../data";
 import { useDraft } from "../../stores/AppState";
+import { useEditorPrefs } from "../../stores/editorPrefs";
 import { EditorSettings } from "./EditorSettings";
-import { useEditorPrefs } from "./editorPrefs";
 import {
 	ImportedCharactersProvider,
 	useImportedCharacters,

@@ -3,7 +3,7 @@ import { ArtifactMainStatsData } from "@ui/data";
 import ArtifactDataGen from "@ui/data/artifact.dm.json";
 import CharDataGen from "@ui/data/character.dm.json";
 import WeaponDataGen from "@ui/data/weapon.dm.json";
-import type { GOODStatKey } from "../GOOD/GOODTypes";
+import type { GOODStatKey } from "../good/GOODTypes";
 import {
 	ascLvlMax,
 	ascToMaxLvl,

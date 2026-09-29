@@ -13,7 +13,7 @@ import {
 import type { Character } from "@gcsim/types";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { useImportedCharacters } from "../../ImportedCharacters";
+import { useImportedCharacters } from "../ImportedCharacters";
 import FetchCharsFromEnka from "./FetchCharsFromEnka";
 
 type Props = {

@@ -17,7 +17,7 @@ import axios from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
 import ExecutorSettingsButton from "../../components/buttons/ExecutorSettingsButton";
 import { useSendToSimulator } from "../../components/buttons/useSendToSimulator";
-import { useEditorPrefs } from "../../Pages/Simulator/editorPrefs";
+import { useEditorPrefs } from "../../stores/editorPrefs";
 import { autoSampleSeed, useSample } from "../sample/useSample";
 import { ResultSource } from "./components/LoadingToast";
 import type { ViewerTab } from "./search";

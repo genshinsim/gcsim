@@ -12,7 +12,7 @@ import {
 } from "@gcsim/primitives";
 import React from "react";
 import { Trans, useTranslation } from "react-i18next";
-import { useImportedCharacters } from "../../ImportedCharacters";
+import { useImportedCharacters } from "../ImportedCharacters";
 import { type IGOODImport, parseFromGOOD } from "./parseFromGOOD";
 
 type Props = {

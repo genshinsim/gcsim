@@ -11,7 +11,8 @@ import { Download, Upload } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import ExecutorSettingsButton from "../../components/buttons/ExecutorSettingsButton";
-import { ImportFromEnkaDialog, ImportFromGOODDialog } from "./Components";
+import { ImportFromEnkaDialog } from "./enka/ImportFromEnkaDialog";
+import { ImportFromGOODDialog } from "./good/ImportFromGOODDialog";
 
 export function EditorSettings() {
 	const { t } = useTranslation();
