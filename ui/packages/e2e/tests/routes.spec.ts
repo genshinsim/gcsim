@@ -1,4 +1,4 @@
-import { expect, installDbRoutes, sucroseConfig, test } from "../src";
+import { expect, installOfflineRoutes, sucroseConfig, test } from "../src";
 
 test.describe("routes", () => {
 	const pages: [string, string][] = [
@@ -35,8 +35,33 @@ test.describe("routes", () => {
 		});
 	}
 
+	test("/db stays put and shows not-found", async ({ page }) => {
+		await page.goto("/db");
+		await expect(page).toHaveURL(/\/db$/);
+		await expect(
+			page.getByText("This page is not implemented yet. Stay tuned!"),
+		).toBeVisible();
+	});
+
+	test("/db/:id shows the unavailable message without fetching", async ({
+		page,
+	}) => {
+		const shareRequests: string[] = [];
+		page.on("request", (req) => {
+			if (new URL(req.url()).pathname.startsWith("/api/share/db")) {
+				shareRequests.push(req.url());
+			}
+		});
+		await page.goto("/db/abc");
+		await expect(
+			page.getByText("This database entry is no longer available on gcsim."),
+		).toBeVisible();
+		await expect(page.getByRole("tab", { name: "Results" })).toHaveCount(0);
+		expect(shareRequests).toEqual([]);
+	});
+
 	test("nav links move between pages", async ({ page }) => {
-		await installDbRoutes(page);
+		await installOfflineRoutes(page);
 		await page.goto("/");
 		await page.locator("nav a[href='/simulator']").first().click();
 		await expect(page).toHaveURL(/\/simulator$/);

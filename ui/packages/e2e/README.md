@@ -94,10 +94,6 @@ console monitor.
 - `goto()` — navigate and wait for React to mount into `#root`.
 - `waitForLoaded()` — assert the title, the nav bar's Simulator link, and the
   "Open Simulator" CTA link. **Structural only.**
-- `waitForSharedByOthers()` — assert the "Shared by others" heading and at least
-  one team-card link (matched by its fixed "DPS / target" label). The cards fetch
-  `/api/db`, so a spec stubs that route (reusing `installDbRoutes`) before
-  navigating.
 
 ### `SimulatorPage` (`src/pages/simulator-page.ts`) — the `/simulator` route
 
@@ -178,20 +174,18 @@ The toolbox-import specs' fixtures, both re-exported from `src/`:
   returns `enkaImportPayload`, a minimal Enka response that `EnkaToGOOD` parses
   into one character (Bennett), for `ENKA_UID`.
 
-### Db fixtures (`src/db-fixtures.ts`)
+### Offline fixtures (`src/offline-fixtures.ts`)
 
-`installDbRoutes(page)` stubs the web app's `/api/db` (the dash's "Shared by
-others" cards) so those specs stay offline:
+`installOfflineRoutes(page)` stubs the web app's network so the dash specs stay
+offline:
 
-- `/api/db` returns the two `dbEntries`;
 - `/api/assets/**` returns a 1x1 PNG (avatars, art);
 - `api.github.com` (latest-release lookup) returns a fixed payload;
 - any other `/api/**` returns an empty 200.
 
 ## Out of scope
 
-CI integration, the production/preview (R2 wasm) path, server mode, the
-`/db/:id` viewer render, creating a new share from `/web`,
-engine-correctness or numeric assertions, and non-Chromium browsers. See issues
-#2805, #2869 and #2871. For docs: the search backend, i18n/translations, and
-visual regression (issue #2868).
+CI integration, the production/preview (R2 wasm) path, server mode, creating a
+new share from `/web`, engine-correctness or numeric assertions, and
+non-Chromium browsers. See issues #2805, #2869 and #2871. For docs: the search
+backend, i18n/translations, and visual regression (issue #2868).
