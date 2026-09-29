@@ -4,8 +4,8 @@
 # Mirrors cmd/wasm/build.sh (used by .github/actions/deploy-wasm) and the Taskfile `wasm`
 # task (used by `pnpm build:wasm`):
 #   GOOS=js GOARCH=wasm go build -trimpath -ldflags="-X 'main.shareKey=$GCSIM_SHARE_KEY'"
-# CI additionally runs `wasm-opt --enable-bulk-memory -Oz` on the result; set WASM_OPT to do
-# the same here.
+# CI additionally runs binaryen version_133's wasm-opt with the flags in CI_WASM_OPT below on the
+# result; set WASM_OPT=ci to do the same here.
 #
 # usage: build.sh <out.wasm>
 #
@@ -16,9 +16,9 @@
 #   EXTRA_BUILD_FLAGS  extra args appended to `go build` (word-split), e.g. '-gcflags=all=-B'
 #   BASE_BUILD_FLAGS   replaces the default '-trimpath' (e.g. empty for toolchains without it)
 #   GCSIM_SHARE_KEY    baked into main.shareKey (default: empty, same as a local UI build)
-#   WASM_OPT           if set, run wasm-opt with these args after building,
-#                      e.g. WASM_OPT='--enable-bulk-memory -Oz' (CI uses exactly this)
-#   WASM_OPT_BIN       wasm-opt binary (default: wasm-opt)
+#   WASM_OPT           if set, run wasm-opt with these args after building; `ci` means the
+#                      flags CI deploys with (CI_WASM_OPT). Fails if wasm-opt fails.
+#   WASM_OPT_BIN       wasm-opt binary (default: wasm-opt; CI uses binaryen version_133)
 #   WASM_EXEC          wasm_exec.js to ship with the binary (default: the toolchain's own)
 #
 # Output: <out.wasm> plus <out>.wasm_exec.js (the JS glue matching the toolchain), which
@@ -56,9 +56,17 @@ fi
 		$EXTRA_BUILD_FLAGS -o "$out" "$PKG"
 )
 
+# The wasm-opt flags of .github/actions/deploy-wasm. Go's output uses saturating float-to-int
+# conversions, sign-extension ops and mutable globals, and wasm-opt rejects the module unless
+# all of them are enabled.
+CI_WASM_OPT='--enable-bulk-memory --enable-nontrapping-float-to-int --enable-sign-ext --enable-mutable-globals -Oz'
+if [[ "${WASM_OPT:-}" == ci ]]; then
+	WASM_OPT="$CI_WASM_OPT"
+fi
 if [[ -n "${WASM_OPT:-}" ]]; then
 	# shellcheck disable=SC2086
-	"${WASM_OPT_BIN:-wasm-opt}" $WASM_OPT "$out" -o "$out"
+	"${WASM_OPT_BIN:-wasm-opt}" $WASM_OPT "$out" -o "$out.opt"
+	mv "$out.opt" "$out"
 fi
 
 # Ship the JS glue that matches the toolchain next to the binary.

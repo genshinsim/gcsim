@@ -28,7 +28,7 @@ node scripts/wasmbench/bench.mjs run --wasm $B/cand.wasm \
 
 | file | what |
 |---|---|
-| `build.sh <out.wasm>` | `GOOS=js GOARCH=wasm go build -trimpath -ldflags "-X main.shareKey=…" ./cmd/wasm`, the same as `cmd/wasm/build.sh` (CI deploy) and `task wasm` (`pnpm build:wasm`). Env: `GO`, `GOWASM`, `EXTRA_BUILD_FLAGS`, `BASE_BUILD_FLAGS` (default `-trimpath`), `PKG`, `WASM_OPT` (e.g. `'--enable-bulk-memory -Oz'`, what CI deploys), `WASM_EXEC`. Also copies the toolchain's `wasm_exec.js` to `<out>.wasm_exec.js`. |
+| `build.sh <out.wasm>` | `GOOS=js GOARCH=wasm go build -trimpath -ldflags "-X main.shareKey=…" ./cmd/wasm`, the same as `cmd/wasm/build.sh` (CI deploy) and `task wasm` (`pnpm build:wasm`). Env: `GO`, `GOWASM`, `EXTRA_BUILD_FLAGS`, `BASE_BUILD_FLAGS` (default `-trimpath`), `PKG`, `WASM_OPT` (`ci` for the flags CI deploys with, or any wasm-opt arguments), `WASM_OPT_BIN`, `WASM_EXEC`. Also copies the toolchain's `wasm_exec.js` to `<out>.wasm_exec.js`. |
 | `compare.sh a.wasm b.wasm [c.wasm…]` | Fixed seeds, fixed iteration counts, binaries interleaved. Prints per config: median ms/iter, IQR/median, ratio vs the first binary with a bootstrap 95% CI, and the geomean ratio. Env: `CONFIGS`, `PROCS` (3), `ROUNDS` (20 paired / 4 pool), `BLOCK`, `WARMUP`, `WORKERS` (0), `ITERS` (pool, 1000), `SEED`, `METRIC`, `OUT`, `NODE_FLAGS`. |
 | `check.sh cand.wasm` / `check.sh --regen base.wasm` | Correctness oracle against goldens in `$WASMBENCH_HOME/wasmbench-golden` (`GOLDEN_DIR`). Env: `CHECK_ITERS` (100), `FLUSH_EVERY` (0), `SEED`, `CONFIGS`, `RTOL`. |
 | `bench.mjs` | The runner: `run`, `ab`, `dump`, `diff`, `report` subcommands (see its header). |
@@ -114,7 +114,9 @@ order, `RTOL` relaxes the aggregated-stats comparison. Per-iteration hashes stay
 
 ## Caveats
 
-- CI runs `wasm-opt --enable-bulk-memory -Oz` on the deployed binary. `build.sh` skips it unless `WASM_OPT` is set.
+- CI runs binaryen version_133's `wasm-opt -Oz` (with the features Go's output needs) on the
+  deployed binary. `build.sh` skips it unless `WASM_OPT` is set; `WASM_OPT=ci` uses CI's flags.
+  Point `WASM_OPT_BIN` at a version_133 `wasm-opt` to match CI.
 - The UI serves its own checked-in `ui/packages/web/public/wasm_exec.js`, an older copy that
   lacks a few test-only hooks. The harness uses the glue matching the binary's toolchain
   (`<name>.wasm_exec.js`, else `$(go env GOROOT)/lib/wasm/wasm_exec.js`). Override with `--glue`.
