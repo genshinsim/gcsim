@@ -28,16 +28,19 @@ const MAX_OUTSTANDING_PER_WORKER = 4;
 
 // Default number of sim workers: one per logical core, minus one for the aggregator and one
 // for the page, clamped to [3, 8]. 3 was the fixed default before, so no machine gets fewer
-// workers than it used to. The cap bounds memory: every worker holds its own wasm instance
-// (~40-60 MB of linear memory on top of the shared compiled module). Devices that report under
-// 4 GB of memory (navigator.deviceMemory, Chromium only) keep 3. Users can still set 1-30.
+// workers than it used to. Every worker holds its own wasm instance: about 40-50 MB of linear
+// memory for a typical config, but a few hundred MB for one with a huge live heap (e.g. a
+// damage-mode sim of many hours), and it never shrinks. So only devices that report at least
+// 8 GB (navigator.deviceMemory, Chromium only) get more than 4; those that report less than
+// 4 GB keep 3. Firefox and Safari don't report it and get at most 4. Users can still set 1-30.
 export function defaultWorkerCount(): number {
 	const cores = navigator.hardwareConcurrency;
 	const memory = (navigator as { deviceMemory?: number }).deviceMemory;
 	if (!cores || (memory != null && memory < 4)) {
 		return 3;
 	}
-	return Math.min(Math.max(cores - 2, 3), 8);
+	const max = memory != null && memory >= 8 ? 8 : 4;
+	return Math.min(Math.max(cores - 2, 3), max);
 }
 
 export class WasmExecutor implements Executor {

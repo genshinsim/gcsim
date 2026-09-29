@@ -492,15 +492,26 @@ describe("defaultWorkerCount", () => {
 		[8, 6],
 		[10, 8],
 		[32, 8],
-	])("uses %s cores -> %s workers", (cores, expected) => {
-		withNavigator(cores);
-		expect(defaultWorkerCount()).toBe(expected);
-	});
+	])(
+		"uses %s cores -> %s workers on devices reporting 8 GB",
+		(cores, expected) => {
+			withNavigator(cores, 8);
+			expect(defaultWorkerCount()).toBe(expected);
+		},
+	);
 
 	it("keeps 3 on devices reporting under 4 GB", () => {
-		withNavigator(8, 2);
+		withNavigator(16, 2);
 		expect(defaultWorkerCount()).toBe(3);
-		withNavigator(8, 4);
-		expect(defaultWorkerCount()).toBe(6);
+	});
+
+	it("uses at most 4 on devices reporting 4 GB and where the memory is unknown", () => {
+		withNavigator(16, 4);
+		expect(defaultWorkerCount()).toBe(4);
+		// Firefox and Safari
+		withNavigator(16);
+		expect(defaultWorkerCount()).toBe(4);
+		withNavigator(4);
+		expect(defaultWorkerCount()).toBe(3);
 	});
 });
