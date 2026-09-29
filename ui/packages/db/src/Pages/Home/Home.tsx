@@ -1,6 +1,24 @@
+import type { ReactNode } from "react";
 import { Trans, useTranslation } from "react-i18next";
 
-const linkClass = "font-semibold text-g-accent underline hover:text-g-ink";
+const TextLink = ({
+	href,
+	newTab,
+	children,
+}: {
+	href: string;
+	newTab?: boolean;
+	children?: ReactNode;
+}) => (
+	<a
+		href={href}
+		target={newTab ? "_blank" : undefined}
+		rel={newTab ? "noreferrer" : undefined}
+		className="font-semibold text-g-accent underline hover:text-g-ink"
+	>
+		{children}
+	</a>
+);
 
 export const Home = () => {
 	const { t } = useTranslation();
@@ -15,25 +33,14 @@ export const Home = () => {
 					<p>
 						<Trans
 							i18nKey="db.home.archived_body"
-							components={{
-								// biome-ignore lint/a11y/useAnchorContent: text injected at runtime by <Trans>
-								url: <a href="https://db.kqm.gg/" className={linkClass} />,
-							}}
+							components={{ url: <TextLink href="https://db.kqm.gg/" /> }}
 						/>
 					</p>
 					<p>
 						<Trans
 							i18nKey="db.home.archived_contact"
 							components={{
-								url: (
-									// biome-ignore lint/a11y/useAnchorContent: text injected at runtime by <Trans>
-									<a
-										href="https://discord.gg/keqing"
-										target="_blank"
-										rel="noreferrer"
-										className={linkClass}
-									/>
-								),
+								url: <TextLink href="https://discord.gg/keqing" newTab />,
 							}}
 						/>
 					</p>

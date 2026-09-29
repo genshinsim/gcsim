@@ -144,8 +144,6 @@
 		"sort_by": "Ordenar por",
 		"seen_it_all": "¡Bien! ¡Has visto todo!",
 		"not_find": "¿No encontraste lo que buscas? Crea y envía tus propias Simulaciones en nuestro Discord.",
-		"readme_header": "¡Por favor, lee!",
-		"readme_body": "<0>A menos que se indique lo contrario, las simulaciones en esta base de datos están aquí para proporcionar ejemplos de configuraciones interesantes enviadas por los usuarios.</0> <1>Ten en cuenta que estas configuraciones variarán según diferentes estándares, niveles de optimización y aplicación razonable al rendimiento en el juego. Se te anima a escribir tus propias configuraciones, o editar estas y hacer clic en \"{{rerun}}\".</1> <2>gcsim no existe únicamente para generar un DPS medio teórico estandarizado. Depende completamente de los usuarios ingresar lo que consideren útil. Así que deja de comparar ciegamente el DPS de las configuraciones aquí. Lo estás haciendo mal.</2>",
 		"readme_show": "Mostrar README",
 		"home": {
 			"archived_title": "Simpact ha sido archivado.",

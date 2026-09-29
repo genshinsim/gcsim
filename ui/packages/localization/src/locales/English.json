@@ -144,8 +144,6 @@
 		"sort_by": "Sort by",
 		"seen_it_all": "Yay! You have seen it all.",
 		"not_find": "Didn't find what you're looking for? Create and submit your own Simulations on our Discord.",
-		"readme_header": "Please read!",
-		"readme_body": "<0>Unless tagged otherwise, the sims in this database are here to provide examples of interesting, user-submitted configs.</0> <1>Be aware that these configs will vary with different standards, levels of optimization, and reasonable application to in-game performance. You are encouraged to write your own configs, or edit these and click \"{{rerun}}\".</1> <2>gcsim does not exist solely to output standardized theoretical mean DPS. It is entirely up to users to input what they deem useful. So stop blindly comparing the DPS of the configs here. You're doing it wrong.</2>",
 		"readme_show": "Show README",
 		"home": {
 			"archived_title": "Simpact has been archived.",

@@ -1,4 +1,4 @@
-import { Home } from "Pages/Home";
+import { Home } from "./Pages/Home";
 import Layout from "./Sectioning/layout";
 
 export default function App() {

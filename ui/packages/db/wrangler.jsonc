@@ -3,9 +3,6 @@
 	"compatibility_date": "2026-09-12",
 	"workers_dev": false,
 	// Static-only Worker: no worker script, no R2 bindings, no API routes.
-	// Serves the built db landing page with SPA fallback so every path renders
-	// it. Single production deploy — no preview,
-	// per-branch, or staging environments.
 	"assets": {
 		"directory": "./dist",
 		"not_found_handling": "single-page-application"
