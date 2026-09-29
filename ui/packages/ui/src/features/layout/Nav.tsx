@@ -17,7 +17,7 @@ import {
 import { Link, type LinkProps } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
-import { FaCalculator, FaDatabase, FaDiscord } from "react-icons/fa";
+import { FaCalculator, FaDiscord } from "react-icons/fa";
 import { IoIosDocument, IoIosMenu } from "react-icons/io";
 import { MdOutlineUpdate } from "react-icons/md";
 import logo from "./logo.png";
@@ -36,12 +36,6 @@ function useNavLinks(): NavLink[] {
 			to: "/simulator",
 			icon: <FaCalculator />,
 			text: t("nav.simulator"),
-		},
-		{
-			key: "db",
-			href: "https://simpact.app/",
-			icon: <FaDatabase />,
-			text: t("nav.teams_db"),
 		},
 		{
 			key: "doc",
