@@ -21,12 +21,28 @@ runs:
     env:
       GCSIM_SHARE_KEY: ${{ inputs.shareKey }}
 
+  # Go's wasm output uses saturating float-to-int conversions, sign-extension ops and mutable
+  # globals, so wasm-opt must allow all of them or it rejects the module. The step fails if
+  # wasm-opt does (NiklasEi/wasm-opt-action ignored its exit status, so a failed validation
+  # used to ship the unoptimized binary). Keep in sync with WASM_OPT=ci in
+  # scripts/wasmbench/build.sh.
   - name: Optimize WASM
-    uses: NiklasEi/wasm-opt-action@v2
-    with:
-      file: cmd/wasm/dist/${{ github.sha }}/main.wasm
-      output: cmd/wasm/dist/${{ github.sha }}/main.wasm
-      options: --enable-bulk-memory -Oz  
+    shell: bash
+    env:
+      BINARYEN_VERSION: version_133
+      BINARYEN_SHA256: 2dc9c7813f5375db93d96ead4b78222fcc3e2677bbb832297af4797782a37489
+    run: |
+      set -euo pipefail
+      tarball="$RUNNER_TEMP/binaryen.tar.gz"
+      curl -sSfL -o "$tarball" "https://github.com/WebAssembly/binaryen/releases/download/${BINARYEN_VERSION}/binaryen-${BINARYEN_VERSION}-x86_64-linux.tar.gz"
+      echo "${BINARYEN_SHA256}  $tarball" | sha256sum -c -
+      tar -xzf "$tarball" -C "$RUNNER_TEMP"
+      wasm="cmd/wasm/dist/${GITHUB_SHA}/main.wasm"
+      "$RUNNER_TEMP/binaryen-${BINARYEN_VERSION}/bin/wasm-opt" \
+        --enable-bulk-memory --enable-nontrapping-float-to-int --enable-sign-ext --enable-mutable-globals \
+        -Oz "$wasm" -o "$wasm.opt"
+      ls -l "$wasm" "$wasm.opt"
+      mv "$wasm.opt" "$wasm"
 
   - name: Upload to R2
     uses: AnimMouse/setup-rclone@v1 
