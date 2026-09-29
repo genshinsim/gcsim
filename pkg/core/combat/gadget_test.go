@@ -242,3 +242,34 @@ func TestKillGadgetOnCollision(t *testing.T) {
 		t.FailNow()
 	}
 }
+
+func TestGadgetMadeCollidableAfterAdd(t *testing.T) {
+	c := newCombatCtrl()
+	c.SetPlayer(&testtarg{
+		typ:   info.TargettablePlayer,
+		shp:   newSimpleCircle(0, 0, 0.2),
+		alive: true,
+	})
+	count := 0
+	g := &testtarg{
+		typ:   info.TargettableGadget,
+		shp:   newSimpleCircle(0, 0, 0.1),
+		alive: true,
+		onCollision: func(info.Target) {
+			count++
+		},
+	}
+	c.AddGadget(g)
+
+	c.Tick()
+	if count != 0 {
+		t.Fatalf("expecting 0 collisions before the gadget is collidable, got %v", count)
+	}
+
+	g.collideWith[info.TargettablePlayer] = true
+	c.EnableCollisionChecks()
+	c.Tick()
+	if count != 1 {
+		t.Fatalf("expecting 1 collision after the gadget is collidable, got %v", count)
+	}
+}
