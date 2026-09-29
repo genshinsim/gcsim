@@ -200,7 +200,7 @@ func GenerateResult(cfg string, simcfg *info.ActionList) (*model.SimulationResul
 		//    Minor: increase if new schema is backwards compatible with previous
 		//        Ex - added new data for new graph on UI. UI still functional if this data is missing
 		// Increasing the version will result in the UI flagging all old sims as outdated
-		SchemaVersion: &model.Version{Major: "4", Minor: "2"}, // MAKE SURE UI VERSION IS IN SYNC in ui/packages/ui/src/Pages/Viewer/UpgradeDialog.tsx
+		SchemaVersion: &model.Version{Major: "4", Minor: "2"}, // MAKE SURE UI VERSION IS IN SYNC in ui/packages/ui/src/features/viewer/UpgradeDialog.tsx
 		SimVersion:    &sha1ver,
 		BuildDate:     buildTime,
 		Modified:      &modified,

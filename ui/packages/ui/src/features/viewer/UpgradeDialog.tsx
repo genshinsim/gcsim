@@ -1,0 +1,298 @@
+import { useExecutor } from "@gcsim/components";
+import {
+	Alert,
+	AlertDescription,
+	AlertTitle,
+	Button,
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	Separator,
+	Spinner,
+} from "@gcsim/primitives";
+import type { model } from "@gcsim/types";
+import {
+	type LinkProps,
+	useLocation,
+	useNavigate,
+} from "@tanstack/react-router";
+import classNames from "classnames";
+import { History } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import ExecutorSettingsButton from "../../components/buttons/ExecutorSettingsButton";
+
+// THIS MUST ALWAYS BE IN SYNC WITH THE GCSIM BINARY
+const MAJOR = "4"; // Make sure the gcsim binary has also been updated
+const MINOR = "2"; // Make sure the gcsim binary has also been updated
+
+enum MismatchType {
+	MajorVersionMismatch,
+	MinorVersionMismatch,
+	CommitMismatch,
+	NoMismatch,
+}
+
+type Props = {
+	data: model.SimulationResult | null;
+	redirect: LinkProps["to"];
+	mode: string;
+	commit: string;
+};
+
+// TODO: translations
+export default ({ data, redirect, mode, commit }: Props) => {
+	const { t } = useTranslation();
+	const mismatch = useMismatch(data?.sim_version, commit, data?.schema_version);
+	const [isOpen, setOpen] = useState(true);
+	const location = useLocation();
+
+	if (data == null || mismatch === MismatchType.NoMismatch) {
+		return null;
+	}
+
+	// only show hash mismatch on share links to reduce noise (for now)
+	if (
+		mismatch === MismatchType.CommitMismatch &&
+		!location.pathname.startsWith("/sh/") &&
+		!location.pathname.startsWith("/db/")
+	) {
+		return null;
+	}
+
+	// only show major version errors in development
+	if (
+		mismatch !== MismatchType.MajorVersionMismatch &&
+		mode === "development"
+	) {
+		return null;
+	}
+
+	const minor =
+		mismatch === MismatchType.CommitMismatch ||
+		mismatch === MismatchType.MinorVersionMismatch;
+
+	return (
+		<Dialog
+			open={isOpen}
+			onOpenChange={(open) => {
+				if (!open && minor) {
+					setOpen(false);
+				}
+			}}
+		>
+			<DialogContent
+				showCloseButton={minor}
+				onEscapeKeyDown={(e) => {
+					if (!minor) {
+						e.preventDefault();
+					}
+				}}
+				onInteractOutside={(e) => {
+					if (!minor) {
+						e.preventDefault();
+					}
+				}}
+			>
+				<DialogHeader>
+					<DialogTitle className="flex items-center gap-2">
+						<History className="size-5" />
+						{t("viewer.results_outdated")}
+					</DialogTitle>
+				</DialogHeader>
+				<DialogBody mismatch={mismatch} data={data} latestCommit={commit} />
+				<div className="flex justify-between items-end gap-16 mx-4">
+					<div className="max-w-[196px] min-w-[120px] flex-auto">
+						<ExecutorSettingsButton />
+					</div>
+					<div className="flex justify-end gap-[10px]">
+						<UpgradeButton cfg={data.config_file} />
+						<CancelButton
+							mismatch={mismatch}
+							setOpen={setOpen}
+							redirect={redirect}
+						/>
+					</div>
+				</div>
+			</DialogContent>
+		</Dialog>
+	);
+};
+
+function useMismatch(
+	resultCommit?: string,
+	latestCommit?: string,
+	schema_version?: model.Version,
+): MismatchType | null {
+	const [mismatch, setMismatch] = useState<MismatchType | null>(null);
+
+	useEffect(() => {
+		if (schema_version == null) {
+			setMismatch(MismatchType.MajorVersionMismatch);
+		} else if (schema_version.major !== MAJOR) {
+			setMismatch(MismatchType.MajorVersionMismatch);
+		} else if (schema_version.minor !== MINOR) {
+			setMismatch(MismatchType.MinorVersionMismatch);
+		} else if (resultCommit !== latestCommit) {
+			setMismatch(MismatchType.CommitMismatch);
+		} else {
+			setMismatch(MismatchType.NoMismatch);
+		}
+	}, [schema_version, resultCommit, latestCommit]);
+
+	return mismatch;
+}
+
+type BodyProps = {
+	mismatch: MismatchType | null;
+	data: model.SimulationResult | null;
+	latestCommit?: string;
+};
+
+const DialogBody = ({ mismatch, data, latestCommit }: BodyProps) => {
+	const { t } = useTranslation();
+	const simCommit = data?.sim_version;
+
+	const shortResultCommit = simCommit?.substring(0, 7);
+	const shortLatestCommit = latestCommit?.substring(0, 7);
+	const resultCommitUrl =
+		"https://github.com/genshinsim/gcsim/commits/" + simCommit;
+	const latestCommitUrl =
+		"https://github.com/genshinsim/gcsim/commits/" + latestCommit;
+	const diffUrl =
+		"https://github.com/genshinsim/gcsim/compare/" +
+		simCommit +
+		"..." +
+		latestCommit;
+
+	const dirty = data?.modified || simCommit === "";
+
+	const major = data?.schema_version?.major;
+	const minor = data?.schema_version?.minor;
+
+	const versionClass = classNames(
+		"inline-grid grid-cols-[repeat(6,_max-content)] justify-start gap-y-0 gap-x-3",
+		"text-g-xs pt-2 font-g-mono text-g-ink-mute",
+	);
+
+	const VersionInfo = () => (
+		<div className={versionClass}>
+			{/* version line */}
+			<div>version</div>
+			<div>
+				{major == null || minor == null ? "legacy" : `${major}.${minor}`}
+			</div>
+			<Separator orientation="vertical" className="h-full" />
+			<div>latest</div>
+			<div>
+				{MAJOR}.{MINOR}{" "}
+			</div>
+			<div></div>
+
+			{/* commit line */}
+			<div className="justify-self-end">commit</div>
+			<a href={resultCommitUrl} target="_blank" rel="noreferrer">
+				{shortResultCommit}
+			</a>
+			<Separator
+				orientation="vertical"
+				className={classNames({ ["h-full"]: dirty })}
+			/>
+			<div>latest</div>
+			<a href={latestCommitUrl} target="_blank" rel="noreferrer">
+				{shortLatestCommit}
+			</a>
+			<a href={diffUrl} target="_blank" rel="noreferrer">
+				(diff)
+			</a>
+
+			{/* dirty line */}
+			{dirty && (
+				<>
+					<div className="justify-self-end">dirty?</div>
+					<div className="text-g-danger">true</div>
+					<Separator orientation="vertical" />
+				</>
+			)}
+		</div>
+	);
+
+	if (mismatch === MismatchType.CommitMismatch) {
+		return (
+			<Alert variant="warning">
+				<AlertTitle>{t("viewer.commit_mismatch_title_hash")}</AlertTitle>
+				<AlertDescription>
+					<div>{t("viewer.commit_mismatch_body_hash")}</div>
+					<VersionInfo />
+				</AlertDescription>
+			</Alert>
+		);
+	}
+
+	if (mismatch === MismatchType.MinorVersionMismatch) {
+		return (
+			<Alert variant="warning">
+				<AlertTitle>{t("viewer.commit_mismatch_title_minor")}</AlertTitle>
+				<AlertDescription>
+					<div>{t("viewer.commit_mismatch_body_minor")}</div>
+					<VersionInfo />
+				</AlertDescription>
+			</Alert>
+		);
+	}
+	return (
+		<Alert variant="destructive">
+			<AlertTitle>{t("viewer.commit_mismatch_title_major")}</AlertTitle>
+			<AlertDescription>
+				<div>{t("viewer.commit_mismatch_body_major")}</div>
+				<VersionInfo />
+			</AlertDescription>
+		</Alert>
+	);
+};
+
+const UpgradeButton = ({ cfg }: { cfg?: string }) => {
+	const { t } = useTranslation();
+	const { isReady, run } = useExecutor();
+
+	return (
+		<Button
+			disabled={!isReady}
+			onClick={() => {
+				if (cfg != null) {
+					run(cfg);
+				}
+			}}
+		>
+			{!isReady ? <Spinner /> : null}
+			{t("viewer.upgrade")}
+		</Button>
+	);
+};
+
+const CancelButton = ({
+	mismatch,
+	setOpen,
+	redirect,
+}: {
+	mismatch: MismatchType | null;
+	setOpen: (open: boolean) => void;
+	redirect: LinkProps["to"];
+}) => {
+	const { t } = useTranslation();
+	const navigate = useNavigate();
+
+	if (mismatch === MismatchType.MajorVersionMismatch) {
+		return (
+			<Button variant="destructive" onClick={() => navigate({ to: redirect })}>
+				{t("db.cancel")}
+			</Button>
+		);
+	}
+	return (
+		<Button variant="secondary" onClick={() => setOpen(false)}>
+			{t("viewer.ignore")}
+		</Button>
+	);
+};

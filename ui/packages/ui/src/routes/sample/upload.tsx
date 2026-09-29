@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { UploadSample } from "../../Pages";
+import { UploadSample } from "../../features/sample/UploadSample";
 
 export const Route = createFileRoute("/sample/upload")({
 	component: () => (

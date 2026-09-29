@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PageUserAccount } from "../Pages";
+import { PageUserAccount } from "../features/user/PageUserAccount";
 
 export const Route = createFileRoute("/account")({
 	component: () => (

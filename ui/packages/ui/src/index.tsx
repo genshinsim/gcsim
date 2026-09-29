@@ -17,7 +17,7 @@ import { type ReactNode, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import type { AppContext } from "./routes/__root";
 import { routeTree } from "./routeTree.gen";
-import { AppStateProvider, usePrefs } from "./Stores/AppState";
+import { AppStateProvider, usePrefs } from "./stores/AppState";
 
 import "@gcsim/components/src/index.css";
 import "./index.css";

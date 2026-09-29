@@ -185,7 +185,7 @@ func (c *Compiled) GenerateArtifacts() error {
 	if err != nil {
 		return fmt.Errorf("failed to marshal %v models: %w", kind, err)
 	}
-	writeFile(fmt.Sprintf("ui/packages/ui/src/Data/%s.dm.json", kind), data)
+	writeFile(fmt.Sprintf("ui/packages/ui/src/data/%s.dm.json", kind), data)
 
 	return nil
 }

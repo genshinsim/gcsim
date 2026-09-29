@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Simulator } from "../Pages";
+import { Simulator } from "../features/simulator/Simulator";
 
 export const Route = createFileRoute("/simulator")({
 	component: () => (
