@@ -23,8 +23,7 @@ func (e *Enemy) AddStatus(key string, dur int, hitlag bool) {
 	} else {
 		mod.ModExpiry = e.Core.F + mod.Dur
 	}
-	overwrote, oldEvt := modifier.Add(&e.mods, &mod, e.Core.F)
-	modifier.LogAdd("status", -1, &mod, e.Core.Log, overwrote, oldEvt)
+	addMod(e, "status", key, &mod)
 }
 
 // Add a ResistMod
@@ -36,8 +35,7 @@ func (e *Enemy) AddStatus(key string, dur int, hitlag bool) {
 //	})
 func (e *Enemy) AddResistMod(mod info.ResistMod) {
 	mod.SetExpiry(e.Core.F)
-	overwrote, oldEvt := modifier.Add(&e.mods, &mod, e.Core.F)
-	modifier.LogAdd("enemy", -1, &mod, e.Core.Log, overwrote, oldEvt)
+	addMod(e, "enemy", mod.ModKey, &mod)
 }
 
 // Add a DefMod
@@ -48,8 +46,37 @@ func (e *Enemy) AddResistMod(mod info.ResistMod) {
 //	})
 func (e *Enemy) AddDefMod(mod info.DefMod) {
 	mod.SetExpiry(e.Core.F)
-	overwrote, oldEvt := modifier.Add(&e.mods, &mod, e.Core.F)
-	modifier.LogAdd("enemy", -1, &mod, e.Core.Log, overwrote, oldEvt)
+	addMod(e, "enemy", mod.ModKey, &mod)
+}
+
+// addMod adds a copy of mod, whose key is key, the way modifier.Add adds a mod. When a mod of
+// the same key and type is already there, it is overwritten in place instead of being replaced
+// by a new allocation. For enemies that is the same thing: no pointer to an enemy mod is kept
+// outside e.mods, and nothing that ranges over e.mods can add a mod.
+func addMod[T any, PT interface {
+	*T
+	modifier.Mod
+}](e *Enemy, prefix, key string, mod *T) {
+	ind := modifier.Find(&e.mods, key)
+	if ind != -1 {
+		if old, ok := e.mods[ind].(PT); ok {
+			overwrote, oldEvt := modifier.Replaced(old, e.Core.F)
+			*old = *mod
+			modifier.LogAdd(prefix, -1, old, e.Core.Log, overwrote, oldEvt)
+			return
+		}
+	}
+	m := PT(new(T))
+	*m = *mod
+	overwrote := false
+	var oldEvt glog.Event
+	if ind == -1 {
+		e.mods = append(e.mods, m)
+	} else {
+		overwrote, oldEvt = modifier.Replaced(e.mods[ind], e.Core.F)
+		e.mods[ind] = m
+	}
+	modifier.LogAdd(prefix, -1, m, e.Core.Log, overwrote, oldEvt)
 }
 
 // Delete.
