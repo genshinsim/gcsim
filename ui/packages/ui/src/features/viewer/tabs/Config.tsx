@@ -49,6 +49,7 @@ export default ({
 				onChange={setConfig}
 				theme={theme}
 				fontSize={fontSize}
+				maxLines={Infinity}
 			/>
 		</div>
 	);

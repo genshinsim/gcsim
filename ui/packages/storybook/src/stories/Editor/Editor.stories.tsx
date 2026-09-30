@@ -62,6 +62,12 @@ export const LargeFont: Story = {
 	},
 };
 
+export const GrowToFit: Story = {
+	args: {
+		maxLines: Infinity,
+	},
+};
+
 export const PrimaryMobile: Story = {
 	args: {
 		onAppearanceChange: fn(),

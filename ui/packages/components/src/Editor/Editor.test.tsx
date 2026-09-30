@@ -14,16 +14,19 @@ vi.mock("./AceEditorWrapper", () => ({
 		onChange,
 		theme,
 		fontSize,
+		maxLines,
 	}: {
 		value: string;
 		onChange: (v: string) => void;
 		theme?: string;
 		fontSize?: number;
+		maxLines?: number;
 	}) => (
 		<textarea
 			data-testid="ace"
 			data-theme={theme}
 			data-font-size={fontSize}
+			data-max-lines={maxLines}
 			value={value}
 			onChange={(e) => onChange(e.currentTarget.value)}
 		/>
@@ -61,6 +64,11 @@ describe("Editor", () => {
 		render(<Editor {...baseProps} theme="github" fontSize={18} />);
 		expect(ace().dataset.theme).toBe("github");
 		expect(ace().dataset.fontSize).toBe("18");
+	});
+
+	it("passes the line limit to the text area", () => {
+		render(<Editor {...baseProps} maxLines={Infinity} />);
+		expect(ace().dataset.maxLines).toBe("Infinity");
 	});
 
 	it("hides the appearance toolbar without a change handler", () => {
