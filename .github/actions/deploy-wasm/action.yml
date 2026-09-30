@@ -22,11 +22,12 @@ runs:
       GCSIM_SHARE_KEY: ${{ inputs.shareKey }}
 
   # Go's wasm output uses saturating float-to-int conversions, sign-extension ops and mutable
-  # globals, so wasm-opt must allow all of them or it rejects the module. The step fails if
-  # wasm-opt does (NiklasEi/wasm-opt-action ignored its exit status, so a failed validation
-  # used to ship the unoptimized binary). Keep in sync with WASM_OPT=ci in
-  # scripts/wasmbench/build.sh.
+  # globals, so wasm-opt must allow all of them or it rejects the module. Keep in sync with
+  # WASM_OPT=ci in scripts/wasmbench/build.sh. If this step fails, main.wasm is left as the
+  # unoptimized go build output and the deploy continues with it (see the next step).
   - name: Optimize WASM
+    id: wasm-opt
+    continue-on-error: true
     shell: bash
     env:
       BINARYEN_VERSION: version_133
@@ -46,6 +47,14 @@ runs:
         -Oz "$wasm" -o "$wasm.opt"
       ls -l "$wasm" "$wasm.opt"
       mv "$wasm.opt" "$wasm"
+
+  - name: Fall back to unoptimized WASM
+    if: steps.wasm-opt.outcome == 'failure'
+    shell: bash
+    run: |
+      # Don't sync a partial wasm-opt output to R2.
+      rm -f "cmd/wasm/dist/${GITHUB_SHA}/main.wasm.opt"
+      echo "::warning title=wasm-opt failed::deploying the unoptimized wasm"
 
   - name: Upload to R2
     uses: AnimMouse/setup-rclone@v1 
