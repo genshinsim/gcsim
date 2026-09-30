@@ -14,7 +14,7 @@ type Target struct {
 	key             info.TargetKey
 	Hitbox          info.Circle
 	Tags            map[string]int
-	CollidableTypes [info.TargettableTypeCount]bool
+	collidableTypes [info.TargettableTypeCount]bool
 	OnCollision     func(info.Target)
 
 	Alive bool
@@ -45,7 +45,17 @@ func New(core *core.Core, p info.Point, r float64) *Target {
 }
 
 func (t *Target) Collidable() bool                           { return t.OnCollision != nil }
-func (t *Target) CollidableWith(x info.TargettableType) bool { return t.CollidableTypes[x] }
+func (t *Target) CollidableWith(x info.TargettableType) bool { return t.collidableTypes[x] }
+
+// SetCollidableWith sets whether the target collides with targets of type x. Enabling a type
+// also turns on the collision checks in combat, which are skipped while nothing is collidable.
+func (t *Target) SetCollidableWith(x info.TargettableType, v bool) {
+	t.collidableTypes[x] = v
+	if v {
+		t.Core.Combat.EnableCollisionChecks()
+	}
+}
+
 func (t *Target) CollidedWith(x info.Target) {
 	if t.OnCollision != nil {
 		t.OnCollision(x)

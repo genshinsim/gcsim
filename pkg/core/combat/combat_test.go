@@ -58,6 +58,7 @@ func (t *testtarg) Kill()                                                { t.hdl
 func (t *testtarg) CollidableWith(x info.TargettableType) bool           { return t.collideWith[x] }
 func (t *testtarg) GadgetTyp() info.GadgetTyp                            { return t.gadgetTyp }
 func (t *testtarg) Src() int                                             { return t.src }
+func (t *testtarg) HandleSharedAttack(*info.AttackEvent) (float64, bool) { return 0, false }
 func (t *testtarg) CollidedWith(x info.Target) {
 	if t.onCollision != nil {
 		t.onCollision(x)

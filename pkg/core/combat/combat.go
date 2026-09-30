@@ -31,6 +31,9 @@ type Handler struct {
 	TotalDamage float64
 	gccount     int
 	keycount    info.TargetKey
+	// collisions is set once some gadget may be collidable. Until then Tick skips the collision
+	// checks, which would only call CollidableWith on every gadget and find nothing.
+	collisions bool
 }
 
 type Opt struct {
@@ -57,6 +60,11 @@ func New(opt Opt) *Handler {
 	return h
 }
 
+// EnableCollisionChecks makes Tick check gadget collisions from now on. AddGadget and
+// ReplaceGadget call it for gadgets that are already collidable; a gadget must call it when
+// CollidableWith can turn true after it was added.
+func (h *Handler) EnableCollisionChecks() { h.collisions = true }
+
 func (h *Handler) nextkey() info.TargetKey {
 	h.keycount++
 	return h.keycount - 1
@@ -66,7 +74,7 @@ func (h *Handler) Tick() {
 	// collision check happens before each object ticks (as collision may remove the object)
 	// enemy and player does not check for collision
 	// gadgets check against player and enemy
-	for i := 0; i < len(h.gadgets); i++ {
+	for i := 0; h.collisions && i < len(h.gadgets); i++ {
 		if h.gadgets[i] != nil && h.gadgets[i].CollidableWith(info.TargettablePlayer) {
 			if h.gadgets[i].WillCollide(h.player.Shape()) {
 				h.gadgets[i].CollidedWith(h.player)
