@@ -5,7 +5,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/agg"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/model"
-	"github.com/genshinsim/gcsim/pkg/stats"
 )
 
 func init() {
@@ -37,7 +36,7 @@ func NewAgg(cfg *info.ActionList) (agg.Aggregator, error) {
 	return &out, nil
 }
 
-func (b *buffer) Add(result stats.Result) {
+func (b *buffer) Add(result *agg.Summary) {
 	for i, v := range result.EndStats {
 		b.endStats[i].endingEnergy.Add(v.EndingEnergy)
 	}

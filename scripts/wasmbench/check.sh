@@ -7,12 +7,17 @@
 # For every config, runs CHECK_ITERS iterations with fixed per-iteration seeds through the UI
 # API and compares: each iteration's result (msgpack decoded to canonical JSON, hashed), the
 # aggregated statistics from flush(), initializeAggregator() metadata (minus build info),
-# validateConfig() and sample() output. Exact match required unless RTOL is set, which only
-# relaxes numeric comparison of aggregated stats.
+# validateConfig() and sample() output (its log compared per frame, ignoring the order of events
+# within a frame). Exact match required unless RTOL is set, which only relaxes numeric comparison
+# of aggregated stats. If the candidate's simulate() payload is in a different format from the
+# golden's (stats.Result vs agg.Summary), per-iteration hashes are skipped and the aggregated
+# stats (plus intermediate flushes, see FLUSH_EVERY) are the check.
 #
 # env:
 #   GOLDEN_DIR      default $WASMBENCH_HOME/wasmbench-golden
 #   CHECK_ITERS=100 iterations per config (regen only; check uses the golden's count)
+#   FLUSH_EVERY=0   also flush after every K iterations and compare those stats too, which
+#                   covers the UI's intermediate flushes (regen only; check uses the golden's)
 #   SEED=1          base seed (regen only)
 #   CONFIGS=...     subset of configs/manifest.tsv names
 #   RTOL=0          relative tolerance for aggregated stats
@@ -33,6 +38,7 @@ fi
 wasm="$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
 GOLDEN_DIR="${GOLDEN_DIR:-$WASMBENCH_HOME/wasmbench-golden}"
 CHECK_ITERS="${CHECK_ITERS:-100}"
+FLUSH_EVERY="${FLUSH_EVERY:-0}"
 SEED="${SEED:-1}"
 RTOL="${RTOL:-0}"
 tmp="$(mktemp -d "$WASMBENCH_HOME/check.XXXXXX")"
@@ -48,7 +54,7 @@ if [[ $regen == 1 ]]; then
 		echo "bytes:    $(wc -c <"$wasm" | tr -d ' ')"
 		echo "created:  $(date -u +%FT%TZ)"
 		echo "repo:     $(git -C "$WASMBENCH_DIR" rev-parse HEAD 2>/dev/null || echo '?')"
-		echo "iters:    $CHECK_ITERS  seed: $SEED"
+		echo "iters:    $CHECK_ITERS  seed: $SEED  flush every: $FLUSH_EVERY"
 	} >"$GOLDEN_DIR/BASELINE.txt"
 fi
 
@@ -61,10 +67,10 @@ for c in "${configs[@]}"; do
 	golden="$GOLDEN_DIR/$name.json"
 	if [[ $regen == 1 ]]; then
 		"$NODE" "$WASMBENCH_DIR/bench.mjs" dump --wasm "$wasm" --config "$path" \
-			--iters "$CHECK_ITERS" --seed "$SEED" --out "$golden"
+			--iters "$CHECK_ITERS" --seed "$SEED" --flush-every "$FLUSH_EVERY" --out "$golden"
 		# a second, independent process must reproduce the golden bit for bit
 		"$NODE" "$WASMBENCH_DIR/bench.mjs" dump --wasm "$wasm" --config "$path" \
-			--iters "$CHECK_ITERS" --seed "$SEED" --out "$tmp/$name.json"
+			--iters "$CHECK_ITERS" --seed "$SEED" --flush-every "$FLUSH_EVERY" --out "$tmp/$name.json"
 		if ! "$NODE" "$WASMBENCH_DIR/bench.mjs" diff "$golden" "$tmp/$name.json" >"$tmp/diff.txt"; then
 			echo "NOT REPRODUCIBLE: $name" >&2
 			cat "$tmp/diff.txt" >&2
@@ -79,9 +85,9 @@ for c in "${configs[@]}"; do
 		fail=1
 		continue
 	fi
-	read -r giters gseed < <("$NODE" -e 'const g=require(process.argv[1]); console.log(g.iters, g.seed)' "$golden")
+	read -r giters gseed gflush < <("$NODE" -e 'const g=require(process.argv[1]); console.log(g.iters, g.seed, g.flushEvery ?? 0)' "$golden")
 	if ! "$NODE" "$WASMBENCH_DIR/bench.mjs" dump --wasm "$wasm" --config "$path" \
-		--iters "$giters" --seed "$gseed" --out "$tmp/$name.json"; then
+		--iters "$giters" --seed "$gseed" --flush-every "$gflush" --out "$tmp/$name.json"; then
 		echo "FAIL $name (candidate crashed)"
 		fail=1
 		continue

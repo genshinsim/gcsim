@@ -30,9 +30,13 @@ node scripts/wasmbench/bench.mjs run --wasm $B/cand.wasm \
 |---|---|
 | `build.sh <out.wasm>` | `GOOS=js GOARCH=wasm go build -trimpath -ldflags "-X main.shareKey=…" ./cmd/wasm`, the same as `cmd/wasm/build.sh` (CI deploy) and `task wasm` (`pnpm build:wasm`). Env: `GO`, `GOWASM`, `EXTRA_BUILD_FLAGS`, `BASE_BUILD_FLAGS` (default `-trimpath`), `PKG`, `WASM_OPT` (e.g. `'--enable-bulk-memory -Oz'`, what CI deploys), `WASM_EXEC`. Also copies the toolchain's `wasm_exec.js` to `<out>.wasm_exec.js`. |
 | `compare.sh a.wasm b.wasm [c.wasm…]` | Fixed seeds, fixed iteration counts, binaries interleaved. Prints per config: median ms/iter, IQR/median, ratio vs the first binary with a bootstrap 95% CI, and the geomean ratio. Env: `CONFIGS`, `PROCS` (3), `ROUNDS` (20 paired / 4 pool), `BLOCK`, `WARMUP`, `WORKERS` (0), `ITERS` (pool, 1000), `SEED`, `METRIC`, `OUT`, `NODE_FLAGS`. |
-| `check.sh cand.wasm` / `check.sh --regen base.wasm` | Correctness oracle against goldens in `$WASMBENCH_HOME/wasmbench-golden` (`GOLDEN_DIR`). Env: `CHECK_ITERS` (100), `SEED`, `CONFIGS`, `RTOL`. |
+| `check.sh cand.wasm` / `check.sh --regen base.wasm` | Correctness oracle against goldens in `$WASMBENCH_HOME/wasmbench-golden` (`GOLDEN_DIR`). Env: `CHECK_ITERS` (100), `FLUSH_EVERY` (0), `SEED`, `CONFIGS`, `RTOL`. |
 | `bench.mjs` | The runner: `run`, `ab`, `dump`, `diff`, `report` subcommands (see its header). |
-| `configs/` | Team configs plus `manifest.tsv` (per-config block size, warmup, source). |
+| `pgo.sh [out]` | Regenerates `cmd/wasm/default.pgo`, the PGO profile every build of `cmd/wasm` picks up: a native CPU profile of `simulate()` + `aggregate()`'s work (`pgo/main.go`) at `GOMAXPROCS=1` over the configs. Env: `SECS` (8 per config), `CONFIGS`. |
+| `configs/` | Team configs plus `manifest.tsv` (per-config block size, warmup, source). `WASMBENCH_MANIFEST=<dir>/manifest.tsv` points `compare.sh`, `check.sh` and `pgo.sh` at another set (`<name>.txt` next to it). |
+| `corpus-extract.sh <dump.tar.xz\|dir> <out>` | Unpacks a gcsim DB dump (protojson `db.Entry` per file, parsed by `corpus/main.go`) into `<out>/configs/<id>.txt` (distinct configs) and `<out>/entries.tsv` (folder, mode, targets, characters, duration, duplicate-of). |
+| `corpus.mjs` | Corpus runs (see its header): `dump` runs `bench.mjs dump` on a config directory in a worker-thread pool (resumable, restarted if node crashes; `.err` records for failures), `diff` compares two dump directories with the oracle above, `errors` groups failures, `select` picks stratified or character-covering samples, `manifest` writes a `manifest.tsv` for `compare.sh` with block sizes from the dumps' timings, `speed` turns `compare.sh` output into per-config ratios and peak memory. |
+| `corpus-pgo.sh <dir> [out]` | `pgo.sh`'s profile over every config in a directory, `SECS` (2) each. |
 
 `compare.sh` and `check.sh` take a mkdir lock at `$WASMBENCH_LOCK` (default
 `$WASMBENCH_HOME/wasmbench.lock`) so only one benchmark runs on the machine at a time. They
@@ -83,11 +87,20 @@ With fixed seeds, wasm output is bit-for-bit reproducible across processes. That
 though the Go runtime's own randomness (map iteration order) differs between runs, so the
 oracle compares exactly:
 
-- every iteration's `stats.Result` (msgpack decoded, canonicalised with sorted keys; nil and empty
-  slices/maps treated as equal), hashed
+- every iteration's `simulate()` payload (msgpack decoded, canonicalised with sorted keys; nil and empty
+  slices/maps treated as equal), hashed. The payload is a `stats.Result` up to the baseline and an
+  `agg.Summary` (tuple-encoded, seed first) after it. When the golden and the candidate use
+  different formats these hashes can't be compared and are skipped, with a note
 - the aggregated `flush()` statistics (the full JSON is kept in the golden, so a mismatch shows the paths that differ)
+- with `FLUSH_EVERY=K` (set at `--regen`), the statistics of a `flush()` after every K iterations
+  too. Flushes pad some statistics, so this covers the UI's intermediate flushes, and with K=1 it
+  pins down the first iteration whose contribution differs
 - `initializeAggregator()` metadata without build info and `sample_seed`, `validateConfig()`,
-  and `sample(cfg, seed)`
+  and `sample(cfg, seed)`. The sample's debug log is compared frame by frame with the events of
+  each frame sorted, because their order within a frame can follow Go map iteration
+  (`SetupResonance` and artifact set setup range over maps) and so differs between processes
+  running the same binary. Goldens made before this compare the log in exact order and fail
+  spuriously now and then on configs with two resonances; regenerate them
 
 `--regen` dumps twice in separate processes and fails if they differ. A change that scales
 damage by 1+1e-12 fails the check. If a candidate legitimately changes float evaluation
@@ -102,6 +115,44 @@ order, `RTOL` relaxes the aggregated-stats comparison. Per-iteration hashes stay
 | `overload_chevreuse` | 4, turrets | storybook `sampleConfig.ts` |
 | `geo_yelan_albedo` | 4, 109 s | `pkg/simulation/example/main.go` |
 | `national_zhongli` | 4, vape + geo | storybook `sampleResult.json` |
+
+## Corpus runs
+
+The 5 configs above are few. A dump of the gcsim DB (thousands of user submissions) covers
+nearly every character. It is user data, so keep it and everything derived from it outside the
+repo:
+
+```sh
+C=$WASMBENCH_HOME/corpus
+scripts/wasmbench/corpus-extract.sh gcsim-db-submissions.tar.xz $C
+node scripts/wasmbench/corpus.mjs dump --wasm $B/baseline.wasm --configs $C/configs --out $C/base --jobs 8
+node scripts/wasmbench/corpus.mjs dump --wasm $B/cand.wasm --configs $C/configs --out $C/cand --jobs 8
+node scripts/wasmbench/corpus.mjs diff $C/base $C/cand > $C/diff.tsv   # FAIL: rerun the baseline to rule out nondeterminism
+node scripts/wasmbench/corpus.mjs errors $C/base --ids-out $C/ok.txt
+
+# paired speed on a stratified sample (hold the lock per chunk of CONFIGS)
+node scripts/wasmbench/corpus.mjs select --entries $C/entries.tsv --ids $C/ok.txt --n 200 > $C/speed.txt
+node scripts/wasmbench/corpus.mjs manifest --timings $C/base --configs $C/configs --ids $C/speed.txt --out $C/speed
+WASMBENCH_MANIFEST=$C/speed/manifest.tsv PROCS=2 ROUNDS=10 OUT=$C/speed.jsonl scripts/wasmbench/compare.sh $B/baseline.wasm $B/cand.wasm
+node scripts/wasmbench/corpus.mjs speed $C/speed.jsonl --tsv $C/speed.tsv
+
+# a PGO profile over a character-covering set
+node scripts/wasmbench/corpus.mjs select --entries $C/entries.tsv --ids $C/ok.txt --n 100 --cover > $C/pgo.txt
+node scripts/wasmbench/corpus.mjs manifest --timings $C/base --configs $C/configs --ids $C/pgo.txt --out $C/pgo
+scripts/wasmbench/corpus-pgo.sh $C/pgo $C/corpus.pgo
+```
+
+Known nondeterminism, present in the baseline too (a rerun of the same binary differs):
+
+- `computeEffective` in `pkg/stats/shield` ranges over maps, so the `shields.effective` and
+  `shp` stats of teams with two or more overlapping shields change between processes.
+- The per-iteration payload lists shields in map order (`shield.Flush`), and a `stats.Result`
+  also lists auras still active at the end in map order (`status.Flush`). Per-iteration hashes
+  of such configs differ between processes while the aggregated stats match.
+- `sample()` events whose content lists things in Go map order differ between processes: the
+  `ordering` of the frame-0 stats snapshot with two 2-piece sets (`core.go` ranges over the
+  sets), and `mods affected` in hitlag events after Xilonen's shred or Hakushin Ring. The
+  per-frame comparison sorts events but not their contents.
 
 ## Caveats
 

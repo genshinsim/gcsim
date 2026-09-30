@@ -162,8 +162,9 @@ func run(ctx context.Context, file *ast.File, cfg string, simcfg *info.ActionLis
 	for count < simcfg.Settings.Iterations {
 		select {
 		case result := <-respCh:
+			summary := agg.Summarize(&result)
 			for _, a := range aggregators {
-				a.Add(result)
+				a.Add(&summary)
 			}
 			count += 1
 		case err := <-errCh:

@@ -26,7 +26,10 @@
 //         paired comparison in one process: every binary is loaded side by side, then each round
 //         runs the same --block seeds on each binary back to back (order rotates per round).
 //         Emits one record per (binary, round). This is what compare.sh uses by default.
-//   dump  --wasm F --config F [--iters N] [--seed N] [--out F]   canonical per-iteration + aggregate hashes
+//   dump  --wasm F --config F [--iters N] [--seed N] [--flush-every K] [--no-sample] [--sample-out F] [--out F]
+//         canonical per-iteration + aggregate hashes; --flush-every K also flushes (and hashes the
+//         stats) after every K aggregated iterations, as the UI's throttled flushes do.
+//         --no-sample skips sample(); --sample-out F writes its log, grouped per frame, to F
 //   diff  golden.json candidate.json                            exit 1 on mismatch
 //   report results.jsonl...                                      comparison table (markdown)
 //
@@ -37,6 +40,7 @@ import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 import { isMainThread, parentPort, Worker, workerData } from "node:worker_threads";
 
@@ -125,17 +129,32 @@ function readCached(f, enc) {
 // Starts one Go instance. realm "new": a fresh vm context with only what a browser Worker
 // offers the glue (console, performance, crypto, TextEncoder/Decoder, timers); realm "this":
 // the current global (used inside worker_threads, which are separate realms already).
-// Returns { api, mem(), toRealm(u8) } where api holds this instance's exported functions.
-async function startGo(wasm, glue, realm = "new") {
+// Returns { api, mem(), toRealm(u8), dispose() } where api holds this instance's exported
+// functions and dispose() cancels the timers the Go runtime left pending, so a finished instance
+// can be collected.
+// opts.module: an already compiled WebAssembly.Module of `wasm` (corpus.mjs shares one across
+// its worker threads); opts.logger: the console the glue prints Go's stdout/stderr to.
+async function startGo(wasm, glue, realm = "new", opts = {}) {
 	let g;
+	const timers = new Set();
 	if (realm === "new") {
 		const ctx = vm.createContext({
-			console,
+			console: opts.logger ?? console,
 			performance,
 			TextEncoder,
 			TextDecoder,
-			setTimeout,
-			clearTimeout,
+			setTimeout: (fn, ms, ...a) => {
+				const t = setTimeout(() => {
+					timers.delete(t);
+					fn(...a);
+				}, ms);
+				timers.add(t);
+				return t;
+			},
+			clearTimeout: (t) => {
+				timers.delete(t);
+				clearTimeout(t);
+			},
 			crypto: { getRandomValues: seededGetRandomValues },
 		});
 		// importScripts("/wasm_exec.js") equivalent: run the glue as a classic script.
@@ -146,7 +165,8 @@ async function startGo(wasm, glue, realm = "new") {
 		if (typeof g.Go !== "function") vm.runInThisContext(readCached(glue, "utf8"), { filename: glue });
 	}
 	const go = new g.Go();
-	const { instance } = await g.WebAssembly.instantiate(readCached(wasm), go.importObject);
+	const inst = await g.WebAssembly.instantiate(opts.module ?? readCached(wasm), go.importObject);
+	const instance = inst.instance ?? inst; // a Module instantiates to an Instance
 	go.run(instance);
 	const api = {};
 	for (const name of API) {
@@ -163,6 +183,10 @@ async function startGo(wasm, glue, realm = "new") {
 		api,
 		mem: () => instance.exports.mem.buffer.byteLength,
 		toRealm: (u8) => new U8(u8), // what structured clone does between workers
+		dispose: () => {
+			for (const t of timers) clearTimeout(t);
+			timers.clear();
+		},
 	};
 }
 
@@ -213,13 +237,22 @@ const sum = (a) => a.reduce((s, x) => s + x, 0);
 // ---------------------------------------------------------------------------------------------
 // run: single-thread mode
 
-async function loadPair(wasm, glue, cfg) {
-	const sim = await startGo(wasm, glue);
-	const agg = await startGo(wasm, glue);
-	unwrapErr(sim.api.initializeWorker(cfg) ?? {}, "initializeWorker");
-	const meta = JSON.parse(agg.api.initializeAggregator(cfg));
-	if (meta.error) throw new Error(`initializeAggregator failed: ${meta.error}`);
-	return { sim, agg, meta };
+async function loadPair(wasm, glue, cfg, opts = {}) {
+	const sim = await startGo(wasm, glue, "new", opts);
+	const agg = await startGo(wasm, glue, "new", opts);
+	const dispose = () => {
+		sim.dispose();
+		agg.dispose();
+	};
+	try {
+		unwrapErr(sim.api.initializeWorker(cfg) ?? {}, "initializeWorker");
+		const meta = JSON.parse(agg.api.initializeAggregator(cfg));
+		if (meta.error) throw new Error(`initializeAggregator failed: ${meta.error}`);
+		return { sim, agg, meta, dispose };
+	} catch (e) {
+		dispose();
+		throw e;
+	}
 }
 
 // Runs seeds [from, from+n) back to back on the sim instance, then aggregates the batch.
@@ -316,6 +349,8 @@ async function runAB(o) {
 				cpu_ms_per_iter: cpuMs / o.block,
 				agg_ms_per_iter: aggMs / o.block,
 				result_bytes_mean: bytes / o.block,
+				sim_mem_mb: p.sim.mem() / 2 ** 20,
+				agg_mem_mb: p.agg.mem() / 2 ** 20,
 			});
 		}
 	}
@@ -639,45 +674,108 @@ const sha = (s) => createHash("sha256").update(s).digest("hex");
 // Metadata fields that legitimately differ between builds or runs.
 const VOLATILE_META = ["sim_version", "modified", "build_date", "sample_seed"];
 
+// simulate() returns either a stats.Result (msgpack map with field names) or, since the
+// per-iteration reduction moved into the sim worker, an agg.Summary (msgpack tuple, seed first).
+function payloadKind(decoded) {
+	return Array.isArray(decoded) ? "summary" : "result";
+}
+function payloadSeed(decoded) {
+	return Array.isArray(decoded) ? decoded[0] : decoded.seed;
+}
+
+// sample() returns the debug log in emission order. Within a frame that order can follow Go map
+// iteration (SetupResonance and artifact set setup range over maps), so it differs between
+// processes running the same binary. This form sorts each frame's events: any change in what is
+// logged, or in which frame, still shows, but the order within a frame does not.
+function sampleByFrame(sample) {
+	const logs = sample.logs ?? [];
+	const frames = [];
+	for (let i = 0; i < logs.length; ) {
+		let j = i;
+		while (j < logs.length && logs[j].frame === logs[i].frame) j++;
+		frames.push(logs.slice(i, j).map(canon).sort());
+		i = j;
+	}
+	return { ...sample, logs: frames };
+}
+
+function flushStats(agg) {
+	const flushed = JSON.parse(agg.api.flush());
+	if (flushed.error) throw new Error(`flush failed: ${flushed.error}`);
+	return JSON.parse(canon(flushed.stats));
+}
+
 async function dump(o) {
-	const { sim, agg, meta } = await loadPair(o.wasm, o.glue, o.cfg);
+	const p = await loadPair(o.wasm, o.glue, o.cfg, { module: o.module, logger: o.logger });
+	try {
+		return dumpPair(o, p);
+	} finally {
+		p.dispose();
+	}
+}
+
+function dumpPair(o, { sim, agg, meta }) {
 	for (const k of VOLATILE_META) delete meta[k];
 
 	const iterHashes = [];
+	const flushHashes = [];
 	const seedErrors = [];
+	let payload;
+	let simMs = 0;
 	for (let i = 0; i < o.iters; i++) {
+		const t = performance.now();
 		const res = unwrapErr(withSeed(o.seed, i, () => sim.api.simulate()), "simulate");
+		simMs += performance.now() - t;
 		const decoded = mpDecode(res);
+		payload ??= payloadKind(decoded);
 		const want = expectedSeed(o.seed, i);
-		if (BigInt(decoded.seed) !== want) seedErrors.push({ i, want: want.toString(), got: String(decoded.seed) });
+		const got = payloadSeed(decoded);
+		if (got === undefined || BigInt(got) !== want) seedErrors.push({ i, want: want.toString(), got: String(got) });
 		iterHashes.push(sha(canon(decoded)).slice(0, 16));
 		const err = agg.api.aggregate(agg.toRealm(res));
 		if (err != null) unwrapErr(err, "aggregate");
+		if (o.flushEvery > 0 && (i + 1) % o.flushEvery === 0 && i + 1 < o.iters) {
+			flushHashes.push(sha(canon(flushStats(agg))).slice(0, 16));
+		}
 	}
-	const flushed = JSON.parse(agg.api.flush());
-	if (flushed.error) throw new Error(`flush failed: ${flushed.error}`);
-	const stats = JSON.parse(canon(flushed.stats));
+	const stats = flushStats(agg);
+	// Not compared: cold timings (no warmup) and each instance's wasm memory, which never
+	// shrinks, so it is the peak so far.
+	const perf = { simulate_ms: simMs, sim_mem_mb: sim.mem() / 2 ** 20, agg_mem_mb: agg.mem() / 2 ** 20 };
 
 	const validated = JSON.parse(sim.api.validateConfig(o.cfg));
-	const sampleSeed = expectedSeed(o.seed, 0).toString();
-	const sample = JSON.parse(sim.api.sample(o.cfg, sampleSeed));
-	if (sample.error) throw new Error(`sample failed: ${sample.error}`);
-	for (const k of VOLATILE_META) delete sample[k];
+	const hashes = {
+		iterations: sha(iterHashes.join(",")),
+		stats: sha(canon(stats)),
+		meta: sha(canon(meta)),
+		validate: sha(canon(validated)),
+	};
+	if (o.sample) {
+		const sampleSeed = expectedSeed(o.seed, 0).toString();
+		const t = performance.now();
+		const sample = JSON.parse(sim.api.sample(o.cfg, sampleSeed));
+		perf.sample_ms = performance.now() - t;
+		perf.sample_mem_mb = sim.mem() / 2 ** 20;
+		if (sample.error) throw new Error(`sample failed: ${sample.error}`);
+		for (const k of VOLATILE_META) delete sample[k];
+		const byFrame = sampleByFrame(sample);
+		hashes.sample = sha(canon(sample));
+		hashes.sampleByFrame = sha(canon(byFrame));
+		if (o.sampleOut) fs.writeFileSync(o.sampleOut, `${JSON.stringify(byFrame.logs)}\n`);
+	}
 
 	return {
 		config: o.configName,
 		iters: o.iters,
 		seed: o.seed,
+		payload,
+		flushEvery: o.flushEvery,
 		seedErrors,
-		hashes: {
-			iterations: sha(iterHashes.join(",")),
-			stats: sha(canon(stats)),
-			meta: sha(canon(meta)),
-			validate: sha(canon(validated)),
-			sample: sha(canon(sample)),
-		},
+		flushHashes,
+		hashes,
 		iterHashes,
 		stats,
+		perf,
 	};
 }
 
@@ -695,14 +793,43 @@ function* walkDiff(a, b, p = "") {
 
 function diff(golden, cand, rtol) {
 	const problems = [];
-	if (golden.iters !== cand.iters || golden.seed !== cand.seed) {
-		problems.push(`run parameters differ: golden iters=${golden.iters} seed=${golden.seed}, candidate iters=${cand.iters} seed=${cand.seed}`);
+	const notes = [];
+	const gFlush = golden.flushEvery ?? 0;
+	const cFlush = cand.flushEvery ?? 0;
+	if (golden.iters !== cand.iters || golden.seed !== cand.seed || gFlush !== cFlush) {
+		problems.push(
+			`run parameters differ: golden iters=${golden.iters} seed=${golden.seed} flushEvery=${gFlush}, candidate iters=${cand.iters} seed=${cand.seed} flushEvery=${cFlush}`,
+		);
 	}
 	if (cand.seedErrors?.length) {
 		problems.push(`seed injection failed for ${cand.seedErrors.length} iterations (first: ${JSON.stringify(cand.seedErrors[0])})`);
 	}
+	// Goldens made before the payload field existed hold stats.Result payloads. Payloads of
+	// different formats can't be compared, so the aggregated stats are the check.
+	const samePayload = (golden.payload ?? "result") === (cand.payload ?? "result");
+	if (!samePayload) {
+		notes.push(`per-iteration payloads differ in format (${golden.payload ?? "result"} vs ${cand.payload}); compared aggregated stats only`);
+	}
+	// Goldens made before sampleByFrame existed compare the sample log in exact order.
+	const sampleByFrameBoth = golden.hashes.sampleByFrame !== undefined && cand.hashes.sampleByFrame !== undefined;
+	const fg = golden.flushHashes ?? [];
+	const fc = cand.flushHashes ?? [];
+	const firstFlush = fg.findIndex((h, i) => h !== fc[i]);
+	if (fg.length !== fc.length || firstFlush >= 0) {
+		const at = firstFlush >= 0 ? firstFlush : Math.min(fg.length, fc.length);
+		problems.push(`intermediate flushes differ, first after iteration ${(at + 1) * gFlush}`);
+	}
 	for (const k of Object.keys(golden.hashes)) {
 		if (golden.hashes[k] === cand.hashes[k]) continue;
+		if (cand.hashes[k] === undefined) {
+			notes.push(`candidate has no ${k} output (dumped with --no-sample?); not compared`);
+			continue;
+		}
+		if (k === "iterations" && !samePayload) continue;
+		if (k === "sample" && sampleByFrameBoth) {
+			notes.push("sample() log events come in a different order within some frames (Go map iteration); compared per frame");
+			continue;
+		}
 		if (k === "iterations") {
 			const idx = golden.iterHashes.findIndex((h, i) => h !== cand.iterHashes[i]);
 			const n = golden.iterHashes.filter((h, i) => h !== cand.iterHashes[i]).length;
@@ -717,7 +844,7 @@ function diff(golden, cand, rtol) {
 			problems.push(`${k} output differs`);
 		}
 	}
-	return problems;
+	return { problems, notes };
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -841,6 +968,9 @@ function loadRunOpts(args) {
 		warmup: num(args.warmup, 20),
 		seed: num(args.seed, 1),
 		workers: num(args.workers, 0),
+		flushEvery: num(args["flush-every"], 0),
+		sample: !args["no-sample"],
+		sampleOut: args["sample-out"],
 	};
 }
 
@@ -909,12 +1039,14 @@ async function main() {
 			const [g, c] = args._.slice(1);
 			const golden = JSON.parse(fs.readFileSync(g, "utf8"));
 			const cand = JSON.parse(fs.readFileSync(c, "utf8"));
-			const problems = diff(golden, cand, num(args.rtol, 0));
+			const { problems, notes } = diff(golden, cand, num(args.rtol, 0));
+			const flushes = golden.flushEvery ? `, flush every ${golden.flushEvery}` : "";
 			if (problems.length) {
 				console.log(`FAIL ${golden.config}`);
 				for (const p of problems) console.log(`  ${p}`);
 				process.exitCode = 1;
-			} else console.log(`ok   ${golden.config} (${golden.iters} iterations, seed ${golden.seed})`);
+			} else console.log(`ok   ${golden.config} (${golden.iters} iterations, seed ${golden.seed}${flushes})`);
+			for (const n of notes) console.log(`  note: ${n}`);
 			return;
 		}
 		case "report":
@@ -926,11 +1058,16 @@ async function main() {
 	}
 }
 
-if (isMainThread) {
+// corpus.mjs imports dump() and the oracle, in its own worker threads too, so main() and
+// workerMain() only run for this file's own processes and pool workers.
+const isEntry = process.argv[1] !== undefined && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (!isMainThread) {
+	if (workerData?.role === "sim" || workerData?.role === "agg") workerMain();
+} else if (isEntry) {
 	main().catch((e) => {
 		console.error(e?.stack ?? String(e));
 		process.exit(1);
 	});
-} else {
-	workerMain();
 }
+
+export { diff, dump, quantile, resolveGlue, sortNum };
