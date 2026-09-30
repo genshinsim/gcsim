@@ -50,21 +50,11 @@ func (s *Simulation) run() (stats.Result, error) {
 
 	// TODO: do we need to catch panic here still? or can it be done outside in the worker
 	var err error
-	for state := initialize; state != nil; {
-		state, err = state(s)
-		if err != nil {
-			return s.resFromCurrentState(), err
-		}
+	if ev, ok := s.eval.(syncEvaluator); ok {
+		err = s.runSync(ev)
+	} else if err = s.runStates(initialize); err == nil {
+		err = s.exitEval()
 	}
-
-	// err = s.eval.Exit()
-	// if err != nil {
-	// 	fmt.Println("evaluator already closed")
-	// 	return s.resFromCurrentState(), err
-	// }
-	s.eval.Exit()
-
-	err = s.eval.Err()
 	if err != nil {
 		return s.resFromCurrentState(), err
 	}
@@ -107,8 +97,101 @@ func (s *Simulation) popQueue() int {
 	return len(s.queue)
 }
 
+// runStates runs the state machine from state until the sim ends or, with a sync evaluator, the
+// sim needs the next action
+func (s *Simulation) runStates(state stateFn) error {
+	var err error
+	for state != nil {
+		state, err = state(s)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// exitEval stops the evaluator and returns its error as of now
+func (s *Simulation) exitEval() error {
+	s.eval.Exit()
+	return s.eval.Err()
+}
+
+// syncEvaluator runs the program on the calling goroutine, passing each action to exec, which
+// returns false to stop the program (see eval.RunSync)
+type syncEvaluator interface {
+	RunSync(exec func(*action.Eval) bool) error
+}
+
+// runSync runs the sim with the evaluator on this goroutine instead of its own: the state machine
+// runs until it needs an action, then the program runs until it has one and passes it to exec,
+// which runs the state machine again. The two take turns at the same points as over
+// Continue/NextAction. It returns the sim's error, or else the evaluator's as of the sim's end.
+func (s *Simulation) runSync(ev syncEvaluator) error {
+	s.syncEval = true
+	if err := s.runStates(initialize); err != nil {
+		return err
+	}
+	if !s.awaitingAction {
+		// the sim ended before the program started
+		return s.exitEval()
+	}
+	var err error
+	ended := false
+	// the program's own errors are read through Err, as without RunSync
+	_ = ev.RunSync(func(next *action.Eval) bool {
+		err = s.execAction(next)
+		if err != nil {
+			return false
+		}
+		if s.awaitingAction {
+			return true
+		}
+		// the sim ended during this action. Read the evaluator's error before the program
+		// unwinds, as the goroutine version reads it before the evaluator goroutine resumes
+		err = s.exitEval()
+		ended = true
+		return false
+	})
+	if err != nil || ended {
+		return err
+	}
+	// the program is done while the sim waits for its next action
+	s.awaitingAction = false
+	state, err := s.queueAction(nil)
+	if err == nil {
+		err = s.runStates(state)
+	}
+	if err != nil {
+		return err
+	}
+	return s.exitEval()
+}
+
+// execAction queues next and runs the sim until it needs the next action or ends. A panic is
+// returned as the error Run would make of it, since the evaluator frames below would otherwise
+// recover it as a program error.
+func (s *Simulation) execAction(next *action.Eval) (err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = panicError(r)
+		}
+	}()
+	s.awaitingAction = false
+	state, err := s.queueAction(next)
+	if err != nil {
+		return err
+	}
+	return s.runStates(state)
+}
+
+func panicError(r any) error {
+	return fmt.Errorf("simulation panic occured: %v \n"+string(debug.Stack()), r)
+}
+
 func initialize(s *Simulation) (stateFn, error) {
-	go s.eval.Start()
+	if !s.syncEval {
+		go s.eval.Start()
+	}
 	// run sim for 90s if no duration set
 	if s.cfg.Settings.Duration == 0 {
 		// fmt.Println("no duration set, running for 90s")
@@ -120,14 +203,27 @@ func initialize(s *Simulation) (stateFn, error) {
 }
 
 func queuePhase(s *Simulation) (stateFn, error) {
-	if s.noMoreActions {
-		return s.advanceFrames(1, queuePhase)
+	// noMoreActions stays set, so this runs frames until the sim ends
+	for s.noMoreActions {
+		if done, err := s.nextFrame(); done || err != nil {
+			return nil, err
+		}
+	}
+	if s.syncEval {
+		// return to the evaluator, which calls execAction with the next action
+		s.awaitingAction = true
+		return nil, nil
 	}
 	s.eval.Continue()
 	next, err := s.eval.NextAction()
 	if err != nil {
 		return nil, err
 	}
+	return s.queueAction(next)
+}
+
+// queueAction handles the evaluator's next action, nil if the program has no more
+func (s *Simulation) queueAction(next *action.Eval) (stateFn, error) {
 	// skip a frame and come back to queue phase if eval does not have any more actions
 	// relying on advance frame to exit if need be
 	if next == nil {
@@ -160,46 +256,47 @@ func queuePhase(s *Simulation) (stateFn, error) {
 }
 
 func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
-	// TODO: this sanity check is probably not necessary
-	if len(s.queue) == 0 {
-		return nil, errors.New("unexpected queue length is 0")
-	}
-	q := s.queue[0]
-
-	// check if the next queue item is valid
-	// example: most sword characters can't do charge if the previous action was not attack
-	char := s.C.Player.ActiveChar()
-	if err := char.NextQueueItemIsValid(q.Char, q.Action, q.Param); err != nil {
-		switch {
-		case errors.Is(err, player.ErrInvalidChargeAction):
-			return nil, fmt.Errorf("%v: %w", char.Base.Key, player.ErrInvalidChargeAction)
-		default:
-			return nil, err
+	// the phases that wait frame by frame loop over nextFrame themselves instead of returning
+	// to runStates each frame, which costs two more calls per frame
+	for {
+		// TODO: this sanity check is probably not necessary
+		if len(s.queue) == 0 {
+			return nil, errors.New("unexpected queue length is 0")
 		}
-	}
+		q := s.queue[0]
 
-	// TODO: this loop should be optimized to skip more than 1 frame at a time
-	if err := s.C.Player.ReadyCheck(q.Action, q.Char, q.Param); err != nil {
-		// repeat this phase until action is ready
+		// check if the next queue item is valid
+		// example: most sword characters can't do charge if the previous action was not attack
+		char := s.C.Player.ActiveChar()
+		if err := char.NextQueueItemIsValid(q.Char, q.Action, q.Param); err != nil {
+			switch {
+			case errors.Is(err, player.ErrInvalidChargeAction):
+				return nil, fmt.Errorf("%v: %w", char.Base.Key, player.ErrInvalidChargeAction)
+			default:
+				return nil, err
+			}
+		}
+
+		// TODO: this loop should be optimized to skip more than 1 frame at a time
 		// ReadyCheck returns the sentinels unwrapped; comparing with == avoids the interface
 		// assertions in errors.Is on every frame the action waits
 		//nolint:errorlint // see above
-		switch err {
+		switch err := s.C.Player.ReadyCheck(q.Action, q.Char, q.Param); err {
+		case nil, player.ErrActionNoOp:
+			return executeActionPhase, nil
 		case player.ErrActionNotReady:
 			if s.C.Flags.LogDebug {
 				s.C.Log.NewEvent(fmt.Sprintf("could not execute %v; action not ready", q.Action), glog.LogSimEvent, s.C.Player.Active())
 			}
-			return s.advanceFrames(1, actionReadyCheckPhase)
 		case player.ErrPlayerNotReady:
-			return s.advanceFrames(1, actionReadyCheckPhase)
-		case player.ErrActionNoOp:
-			// don't do anything here
 		default:
 			return nil, err
 		}
+		// repeat this phase on the next frame until action is ready
+		if done, err := s.nextFrame(); done || err != nil {
+			return nil, err
+		}
 	}
-
-	return executeActionPhase, nil
 }
 
 func (s *Simulation) handleWait(q *action.Eval) (stateFn, error) {
@@ -222,11 +319,13 @@ func (s *Simulation) handleWait(q *action.Eval) (stateFn, error) {
 }
 
 func executeActionDelay(s *Simulation) (stateFn, error) {
-	if s.preActionDelay > 0 {
+	for s.preActionDelay > 0 {
 		if !s.C.Player.ActiveChar().FramePausedOnHitlag() {
 			s.preActionDelay--
 		}
-		return s.advanceFrames(1, executeActionDelay)
+		if done, err := s.nextFrame(); done || err != nil {
+			return nil, err
+		}
 	}
 	// go back to the ready check phase in case an action becomes unavailable after delay
 	return actionReadyCheckPhase, nil
@@ -268,8 +367,10 @@ func executeActionPhase(s *Simulation) (stateFn, error) {
 }
 
 func skipUntilCanQueue(s *Simulation) (stateFn, error) {
-	if !s.C.Player.CanQueueNextAction() {
-		return s.advanceFrames(1, skipUntilCanQueue)
+	for !s.C.Player.CanQueueNextAction() {
+		if done, err := s.nextFrame(); done || err != nil {
+			return nil, err
+		}
 	}
 	return queuePhase, nil
 }
@@ -333,7 +434,7 @@ func (s *Simulation) Run() (res stats.Result, err error) {
 		// recover from panic if one occured. Set err to nil otherwise.
 		if r := recover(); r != nil {
 			res = stats.Result{Seed: uint64(s.C.Seed), Duration: s.C.F + 1}
-			err = fmt.Errorf("simulation panic occured: %v \n"+string(debug.Stack()), r)
+			err = panicError(r)
 		}
 	}()
 	res, err = s.run()

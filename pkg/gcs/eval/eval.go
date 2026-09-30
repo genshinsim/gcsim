@@ -25,6 +25,11 @@ type Eval struct {
 	err error
 
 	isTerminated bool
+
+	// set by RunSync: actions are passed to exec instead of over work/next
+	exec func(*action.Eval) bool
+	// true while a set_on_tick callback runs, which is in the middle of a sim frame
+	inOnTick bool
 }
 
 type Env struct {
@@ -112,6 +117,16 @@ func (e *Eval) Err() error {
 	return e.err
 }
 
+// RunSync runs the program on the calling goroutine instead of the one Start runs on. Each action
+// is passed to exec, which returns true once the caller wants the next action, or false to stop
+// the program as Exit does. Nothing is sent over the channels, so an action costs no goroutine
+// switches, which are slow on js/wasm.
+func (e *Eval) RunSync(exec func(*action.Eval) bool) error {
+	e.exec = exec
+	_, err := e.Run()
+	return err
+}
+
 // Run will execute the provided AST. Any genshin specific actions will be available
 // via NextAction()
 // TODO: remove defer in favour of every function actually returning error
@@ -145,10 +160,13 @@ func (e *Eval) Run() (res Obj, err error) {
 	global := NewEnv(nil)
 	e.initSysFuncs(global)
 
-	// start running once we get the signal to go
-	err = e.waitForNext()
-	if err != nil {
-		return nil, err
+	// start running once we get the signal to go; RunSync is only called once the caller wants
+	// the first action
+	if e.exec == nil {
+		err = e.waitForNext()
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// this should run until it hits an Action
@@ -168,6 +186,24 @@ func (e *Eval) waitForNext() error {
 
 func (e *Eval) sendWork(w *action.Eval) {
 	e.work <- w
+}
+
+// sendAction hands w, the action of the call at pos, to the sim and blocks until the sim wants the
+// next action
+func (e *Eval) sendAction(pos ast.Pos, w *action.Eval) error {
+	if e.inOnTick {
+		// the callback runs in the middle of a sim frame, where the sim can't take an action
+		return ast.NewError(e.file.Position(pos), "actions can't be used in set_on_tick")
+	}
+	// once Exit has run, sendWork panics on the closed channel, with or without RunSync
+	if e.exec == nil || e.isTerminated {
+		e.sendWork(w)
+		return e.waitForNext()
+	}
+	if !e.exec(w) {
+		return ErrTerminated
+	}
+	return nil
 }
 
 var ErrTerminated = errors.New("eval terminated")
