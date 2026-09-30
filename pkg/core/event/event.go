@@ -98,8 +98,10 @@ type Handler struct {
 	depth   int
 }
 
-// Hook handles an emitted event. Emit reuses the args buffer, so a hook must not keep args after
-// returning or assign to its elements; it may modify what they point to.
+// Hook handles an emitted event. args is a buffer Emit reuses for the next event, so a hook must
+// not keep args, or a pointer into it, after returning: copy out the elements it needs instead.
+// Assigning to an element doesn't reach the emitter, so hooks don't; modifying what an element
+// points to is fine. TestHookArgs enforces this.
 type Hook func(args ...any)
 
 type Eventter interface {
@@ -186,7 +188,8 @@ func (h *Handler) Emit(e Event, args ...any) {
 		buf = make([]any, len(args))
 		h.argBufs[h.depth] = buf
 	}
-	buf = buf[:len(args)]
+	// cap == len so a hook's append(args, x) copies instead of writing into the spare capacity
+	buf = buf[:len(args):len(args)]
 	// element-wise rather than copy/clear: those are runtime calls on wasm, and args is short
 	for i, a := range args { //nolint:staticcheck // S1001: see above
 		buf[i] = a
