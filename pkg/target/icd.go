@@ -27,13 +27,16 @@ func (t *Target) WillApplyEle(tag attacks.ICDTag, grp attacks.ICDGroup, char int
 		groupSeq = attacks.ICDGroupEleApplicationSequence[grp][val]
 	}
 
-	t.Core.Log.NewEvent("ele icd check", glog.LogICDEvent, char).
-		Write("grp", grp).
-		Write("target", t.key).
-		Write("tag", tag).
-		Write("counter", val).
-		Write("val", groupSeq).
-		Write("group on timer", x)
+	// runs on every hit that applies an element; skip boxing the values when nothing logs them
+	if t.Core.Flags.LogDebug {
+		t.Core.Log.NewEvent("ele icd check", glog.LogICDEvent, char).
+			Write("grp", grp).
+			Write("target", t.key).
+			Write("tag", tag).
+			Write("counter", val).
+			Write("val", groupSeq).
+			Write("group on timer", x)
+	}
 
 	return groupSeq
 }

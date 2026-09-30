@@ -38,19 +38,21 @@ func (c *Character) Heal(hi *info.HealInfo) (float64, float64) {
 		overheal = 0
 	}
 
-	c.Core.Log.NewEvent(hi.Message, glog.LogHealEvent, c.Index()).
-		Write("previous_hp_ratio", prevHPRatio).
-		Write("previous_hp", prevHP).
-		Write("previous_hp_debt", prevHPDebt).
-		Write("base amount", hp).
-		Write("bonus", bonus).
-		Write("final amount", healAmt).
-		Write("received amount", heal).
-		Write("overheal", overheal).
-		Write("current_hp_ratio", c.CurrentHPRatio()).
-		Write("current_hp", c.CurrentHP()).
-		Write("current_hp_debt", c.CurrentHPDebt()).
-		Write("max_hp", c.MaxHP())
+	if c.Core.Flags.LogDebug {
+		c.Core.Log.NewEvent(hi.Message, glog.LogHealEvent, c.Index()).
+			Write("previous_hp_ratio", prevHPRatio).
+			Write("previous_hp", prevHP).
+			Write("previous_hp_debt", prevHPDebt).
+			Write("base amount", hp).
+			Write("bonus", bonus).
+			Write("final amount", healAmt).
+			Write("received amount", heal).
+			Write("overheal", overheal).
+			Write("current_hp_ratio", c.CurrentHPRatio()).
+			Write("current_hp", c.CurrentHP()).
+			Write("current_hp_debt", c.CurrentHPDebt()).
+			Write("max_hp", c.MaxHP())
+	}
 
 	c.Core.Events.Emit(event.OnHeal, hi, c.Index(), heal, overheal, healAmt)
 
@@ -62,13 +64,15 @@ func (c *Character) Drain(di *info.DrainInfo) float64 {
 	prevHP := c.CurrentHP()
 	c.ModifyHPByAmount(-di.Amount)
 
-	c.Core.Log.NewEvent(di.Abil, glog.LogHurtEvent, di.ActorIndex).
-		Write("previous_hp_ratio", prevHPRatio).
-		Write("previous_hp", prevHP).
-		Write("amount", di.Amount).
-		Write("current_hp_ratio", c.CurrentHPRatio()).
-		Write("current_hp", c.CurrentHP()).
-		Write("max_hp", c.MaxHP())
+	if c.Core.Flags.LogDebug {
+		c.Core.Log.NewEvent(di.Abil, glog.LogHurtEvent, di.ActorIndex).
+			Write("previous_hp_ratio", prevHPRatio).
+			Write("previous_hp", prevHP).
+			Write("amount", di.Amount).
+			Write("current_hp_ratio", c.CurrentHPRatio()).
+			Write("current_hp", c.CurrentHP()).
+			Write("max_hp", c.MaxHP())
+	}
 	c.Core.Events.Emit(event.OnPlayerHPDrain, di)
 	return di.Amount
 }

@@ -181,13 +181,18 @@ func actionReadyCheckPhase(s *Simulation) (stateFn, error) {
 	// TODO: this loop should be optimized to skip more than 1 frame at a time
 	if err := s.C.Player.ReadyCheck(q.Action, q.Char, q.Param); err != nil {
 		// repeat this phase until action is ready
-		switch {
-		case errors.Is(err, player.ErrActionNotReady):
-			s.C.Log.NewEvent(fmt.Sprintf("could not execute %v; action not ready", q.Action), glog.LogSimEvent, s.C.Player.Active())
+		// ReadyCheck returns the sentinels unwrapped; comparing with == avoids the interface
+		// assertions in errors.Is on every frame the action waits
+		//nolint:errorlint // see above
+		switch err {
+		case player.ErrActionNotReady:
+			if s.C.Flags.LogDebug {
+				s.C.Log.NewEvent(fmt.Sprintf("could not execute %v; action not ready", q.Action), glog.LogSimEvent, s.C.Player.Active())
+			}
 			return s.advanceFrames(1, actionReadyCheckPhase)
-		case errors.Is(err, player.ErrPlayerNotReady):
+		case player.ErrPlayerNotReady:
 			return s.advanceFrames(1, actionReadyCheckPhase)
-		case errors.Is(err, player.ErrActionNoOp):
+		case player.ErrActionNoOp:
 			// don't do anything here
 		default:
 			return nil, err
