@@ -25,8 +25,11 @@ runs:
   # globals, so wasm-opt must allow all of them or it rejects the module. Keep in sync with
   # WASM_OPT=ci in scripts/wasmbench/build.sh. If this step fails, main.wasm is left as the
   # unoptimized go build output and the deploy continues with it (see the next step).
+  # Disabled: -Oz peaks at ~34 GB RSS on this wasm, the 16 GB runner OOMs and the whole job is
+  # cancelled, so continue-on-error never gets a chance to fall back.
   - name: Optimize WASM
     id: wasm-opt
+    if: false
     continue-on-error: true
     shell: bash
     env:
