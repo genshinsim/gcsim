@@ -75,8 +75,9 @@ func RunWithConfigCustomStats[T any](
 		case result := <-customCh:
 			cagg(result)
 		case result := <-respCh:
+			summary := agg.Summarize(&result)
 			for _, a := range aggregators {
-				a.Add(result)
+				a.Add(&summary)
 			}
 			count += 1
 		case err := <-errCh:
