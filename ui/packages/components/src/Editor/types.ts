@@ -1,5 +1,4 @@
 import type { model } from "@gcsim/types";
-import type React from "react";
 
 // TEMPORARY: types for the TeamComposer add/remove crutch.
 export interface ImportedCharacterOption {
@@ -13,20 +12,20 @@ export interface TeamComposerCharacterSource {
 	imported?: ImportedCharacterOption[];
 }
 
+export type Theme = string;
+
+export interface EditorAppearance {
+	theme: Theme;
+	fontSize: number;
+}
+
 export interface EditorProps {
-	config: string;
-	setConfig: (v: string) => void;
-	error: string | null;
-	parsedTeam: model.Character[];
-	settings?: React.ReactNode;
-	teamCharacters?: TeamComposerCharacterSource;
-	showThemeSelector?: boolean;
-	showHelpers?: boolean;
-	onRun: () => void;
-	canRun: boolean;
-	busy?: boolean;
-	prefs: EditorPrefs;
-	onPrefsChange: (next: EditorPrefs) => void;
+	value: string;
+	onChange: (v: string) => void;
+	theme?: Theme;
+	fontSize?: number;
+	onAppearanceChange?: (next: EditorAppearance) => void;
+	maxLines?: number;
 }
 
 export interface EditorToggles {
@@ -46,27 +45,3 @@ export const defaultEditorPrefs: EditorPrefs = {
 	theme: "tomorrow_night",
 	fontSize: 14,
 };
-
-export interface AceEditorWrapperProps {
-	cfg: string;
-	onChange: (v: string) => void;
-	onRun?: () => void;
-	maxLines?: number;
-	fontSize?: number;
-	theme?: Theme;
-}
-
-export const themes = [
-	"monokai",
-	"github",
-	"tomorrow",
-	"tomorrow_night",
-	"kuroir",
-	"twilight",
-	"xcode",
-	"textmate",
-	"solarized_dark",
-	"solarized_light",
-	"terminal",
-];
-export type Theme = (typeof themes)[number];

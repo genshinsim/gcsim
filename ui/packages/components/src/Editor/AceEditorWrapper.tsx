@@ -16,12 +16,32 @@ import "ace-builds/src-noconflict/theme-twilight";
 import "ace-builds/src-noconflict/theme-xcode";
 //gcsim specific module
 import "./mode-gcsim.dm.js";
-import type { AceEditorWrapperProps } from "./types.js";
+
+export const themes = [
+	"monokai",
+	"github",
+	"tomorrow",
+	"tomorrow_night",
+	"kuroir",
+	"twilight",
+	"xcode",
+	"textmate",
+	"solarized_dark",
+	"solarized_light",
+	"terminal",
+];
+
+export interface AceEditorWrapperProps {
+	value: string;
+	onChange: (v: string) => void;
+	maxLines?: number;
+	fontSize?: number;
+	theme?: string;
+}
 
 export function AceEditorWrapper({
-	cfg,
+	value,
 	onChange,
-	onRun,
 	maxLines = 35,
 	fontSize = 14,
 	theme = "tomorrow_night",
@@ -32,19 +52,8 @@ export function AceEditorWrapper({
 			theme={theme}
 			width="100%"
 			onChange={onChange}
-			value={cfg}
+			value={value}
 			name="config_editor"
-			commands={
-				onRun
-					? [
-							{
-								name: "run",
-								bindKey: { win: "Ctrl-Enter", mac: "Command-Enter" },
-								exec: onRun,
-							},
-						]
-					: []
-			}
 			editorProps={{
 				$blockScrolling: true,
 			}}
