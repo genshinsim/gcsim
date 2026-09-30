@@ -64,8 +64,20 @@ function Layout() {
 	}, [pathname, cancel]);
 
 	return (
-		<div className="h-dvh flex flex-col">
-			<Toaster position="top-right" theme="dark" />
+		<div className="h-dvh flex flex-col pt-[env(safe-area-inset-top)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
+			<Toaster
+				position="top-right"
+				theme="dark"
+				offset={{
+					top: "calc(24px + env(safe-area-inset-top))",
+					right: "calc(24px + env(safe-area-inset-right))",
+				}}
+				mobileOffset={{
+					top: "calc(16px + env(safe-area-inset-top))",
+					right: "calc(16px + env(safe-area-inset-right))",
+					left: "calc(16px + env(safe-area-inset-left))",
+				}}
+			/>
 			<Nav />
 			<div
 				ref={content}
