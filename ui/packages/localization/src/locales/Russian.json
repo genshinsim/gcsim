@@ -239,7 +239,12 @@
 		"server_mode_disable": "Отключить серверный режим (только для продвинутых пользователей)",
 		"server_mode_url": "URL-адрес сервера",
 		"server_mode_required": "(необходимо)",
-		"server_mode_default": "Значение по умолчанию: "
+		"server_mode_default": "Значение по умолчанию: ",
+		"shared_config_heading": "Загрузить общую конфигурацию?",
+		"shared_config_title": "Название",
+		"shared_config_source": "Источник",
+		"shared_config_unknown": "Неизвестно",
+		"shared_config_invalid": "Не удалось прочитать конфигурацию из этой ссылки."
 	},
 	"src": {
 		"this_page_is": "Эта страница еще не доступна. Оставайтесь с нами!",

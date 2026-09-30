@@ -239,7 +239,12 @@
 		"server_mode_disable": "서버 모드 비활성화(고급 사용자만 해당)",
 		"server_mode_url": "서버 URL",
 		"server_mode_required": "(필수)",
-		"server_mode_default": "기본값: "
+		"server_mode_default": "기본값: ",
+		"shared_config_heading": "공유된 설정을 불러올까요?",
+		"shared_config_title": "제목",
+		"shared_config_source": "출처",
+		"shared_config_unknown": "알 수 없음",
+		"shared_config_invalid": "이 링크의 설정을 읽을 수 없습니다."
 	},
 	"src": {
 		"this_page_is": "이 페이지는 아직 지원되지 않습니다. 기대해주세요!",
