@@ -12,10 +12,10 @@ type Handler struct {
 	consNoLimit []Construct
 	log         glog.Logger
 	f           *int
-	evt         event.Eventter
+	evt         *event.Handler
 }
 
-func New(f *int, log glog.Logger, evt event.Eventter) *Handler {
+func New(f *int, log glog.Logger, evt *event.Handler) *Handler {
 	return &Handler{
 		constructs:  make([]Construct, 0, 3),
 		consNoLimit: make([]Construct, 0, 3),
