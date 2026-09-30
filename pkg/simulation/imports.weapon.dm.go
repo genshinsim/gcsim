@@ -234,6 +234,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/sacrificial"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/sapwoodblade"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/serenityscall"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/silverlight"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/silversword"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/skyrider"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/skyward"
