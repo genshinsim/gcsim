@@ -7,7 +7,7 @@
 	--m-body-top: 200px;
 	--m-fade-card: 70px;
 	position: relative;
-	min-height: 100vh;
+	min-height: 100dvh;
 }
 .g-m-art {
 	position: sticky;
