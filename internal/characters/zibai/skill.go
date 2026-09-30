@@ -57,11 +57,9 @@ func (c *char) onExitField() {
 		if prev != c.Index() {
 			return
 		}
-		if !c.StatusIsActive(skillKey) {
-			return
-		}
 
 		c.DeleteStatus(skillKey)
+		c.c4OnFieldExit()
 	}, "zibai-exit")
 }
 

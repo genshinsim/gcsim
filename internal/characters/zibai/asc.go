@@ -72,7 +72,8 @@ func (c *char) a4Init() {
 		}
 	}
 	c.AddStatMod(character.StatMod{
-		Base: modifier.NewBase(a4Key, -1),
+		Base:         modifier.NewBase(a4Key, -1),
+		AffectedStat: attributes.NoStat,
 		Amount: func() []float64 {
 			m[attributes.DEFP] = 0.15 * float64(geos)
 			m[attributes.EM] = 60.0 * float64(hydros)

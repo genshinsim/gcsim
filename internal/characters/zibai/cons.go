@@ -149,6 +149,14 @@ func (c *char) c4N4Bonus() float64 {
 	return 2.5 - 1.0
 }
 
+func (c *char) c4OnFieldExit() {
+	if c.Base.Cons < 4 {
+		return
+	}
+
+	c.DeleteStatus(c4Key)
+}
+
 // While Zibai is in the Lunar Phase Shift mode, her Phase Shift Radiance gain rate is increased by
 // 50%.
 // Additionally, Spirit Steed's Stride will change such that it will consume all Phase Shift
