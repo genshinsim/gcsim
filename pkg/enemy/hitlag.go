@@ -58,9 +58,11 @@ func (e *Enemy) Tick() {
 	if e.frozenFrames > 0 {
 		// frozen for this frame
 		e.frozenFrames--
-		e.Core.Log.NewEvent("enemy skipping tick", glog.LogHitlagEvent, -1).
-			Write("target", e.Key()).
-			Write("frozen_for", e.frozenFrames)
+		if e.Core.Flags.LogDebug {
+			e.Core.Log.NewEvent("enemy skipping tick", glog.LogHitlagEvent, -1).
+				Write("target", e.Key()).
+				Write("frozen_for", e.frozenFrames)
+		}
 		e.queue.Run()
 		return
 	}

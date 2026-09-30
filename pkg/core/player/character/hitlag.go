@@ -19,10 +19,9 @@ func (c *CharWrapper) Tick() {
 	if c.frozenFrames > 0 {
 		// frozen for this frame
 		c.frozenFrames--
-		c.queue.Run()
-		return
+	} else {
+		c.TimePassed++
 	}
-	c.TimePassed++
 	c.queue.Run()
 }
 

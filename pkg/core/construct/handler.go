@@ -89,7 +89,14 @@ func (h *Handler) cleanOutNils(constructs *[]Construct) {
 	(*constructs) = (*constructs)[:n]
 }
 
+// Tick runs every frame; with no constructs there is nothing to expire, and the check inlines.
 func (h *Handler) Tick() {
+	if len(h.constructs) > 0 || len(h.consNoLimit) > 0 {
+		h.tick()
+	}
+}
+
+func (h *Handler) tick() {
 	// clean out expired
 	n := 0
 	for _, v := range h.constructs {
