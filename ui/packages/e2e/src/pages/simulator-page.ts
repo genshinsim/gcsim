@@ -47,29 +47,47 @@ export class SimulatorPage {
 	/**
 	 * Replace the editor contents with `cfg`. Dispatches a native paste event on
 	 * Ace's proxy textarea rather than typing key-by-key — typing would trip
-	 * Ace's auto-indent and bracket matching and corrupt the config.
+	 * Ace's auto-indent and bracket matching and corrupt the config. Firefox
+	 * ignores the clipboardData of a synthetic paste event, so there it sets the
+	 * text through the Ace editor that `ace.edit` attaches to the container.
 	 */
 	async setConfig(cfg: string): Promise<void> {
 		const textarea = this.editor.locator("textarea.ace_text-input");
 		await textarea.focus();
-		await this.page.evaluate((text) => {
-			const ta = document.querySelector<HTMLTextAreaElement>(
-				"#config_editor textarea.ace_text-input",
-			);
-			if (ta == null) {
-				throw new Error("config editor textarea not found");
-			}
-			ta.focus();
-			const data = new DataTransfer();
-			data.setData("text/plain", text);
-			ta.dispatchEvent(
-				new ClipboardEvent("paste", {
-					clipboardData: data,
-					bubbles: true,
-					cancelable: true,
-				}),
-			);
-		}, cfg);
+		const firefox =
+			this.page.context().browser()?.browserType().name() === "firefox";
+		await this.page.evaluate(
+			({ text, firefox }) => {
+				if (firefox) {
+					const container = document.querySelector("#config_editor") as {
+						env?: { editor?: { setValue(text: string, cursor: number): void } };
+					} | null;
+					const editor = container?.env?.editor;
+					if (editor == null) {
+						throw new Error("config editor not found");
+					}
+					editor.setValue(text, 1);
+					return;
+				}
+				const ta = document.querySelector<HTMLTextAreaElement>(
+					"#config_editor textarea.ace_text-input",
+				);
+				if (ta == null) {
+					throw new Error("config editor textarea not found");
+				}
+				ta.focus();
+				const data = new DataTransfer();
+				data.setData("text/plain", text);
+				ta.dispatchEvent(
+					new ClipboardEvent("paste", {
+						clipboardData: data,
+						bubbles: true,
+						cancelable: true,
+					}),
+				);
+			},
+			{ text: cfg, firefox },
+		);
 	}
 
 	/**

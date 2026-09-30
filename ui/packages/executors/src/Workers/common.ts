@@ -1,5 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-namespace */
+// Requests to the aggregator and sim workers (other than Ready) carry the id of the run they
+// belong to, and the responses echo it, so the executor can drop responses from a cancelled run.
+//
+// A Failed response with fatal set means the worker's wasm instance can't be used anymore: it
+// failed to load, or its Go program exited or threw during a call (a fatal error such as running
+// out of memory). The executor then terminates the worker and starts a new one when needed.
 export namespace Aggregator {
 	export enum Request {
 		Ready = "ready",
@@ -18,20 +24,23 @@ export namespace Aggregator {
 
 	export interface FailedResponse {
 		type: Response.Failed;
+		run: number;
 		reason: string;
+		fatal?: boolean;
 	}
 
-	export function FailedResponse(reason: string): FailedResponse {
-		return { type: Response.Failed, reason: reason };
+	export function FailedResponse(run: number, reason: string): FailedResponse {
+		return { type: Response.Failed, run: run, reason: reason };
 	}
 
+	// the port to ask the helper for the compiled module on
 	export interface ReadyRequest {
 		type: Request.Ready;
-		wasm: string;
+		port: MessagePort;
 	}
 
-	export function ReadyRequest(wasm: string): ReadyRequest {
-		return { type: Request.Ready, wasm: wasm };
+	export function ReadyRequest(port: MessagePort): ReadyRequest {
+		return { type: Request.Ready, port: port };
 	}
 
 	export interface ReadyResponse {
@@ -44,57 +53,85 @@ export namespace Aggregator {
 
 	export interface InitializeRequest {
 		type: Request.Initialize;
+		run: number;
 		cfg: string;
 	}
 
-	export function InitializeRequest(cfg: string): InitializeRequest {
-		return { type: Request.Initialize, cfg: cfg };
+	export function InitializeRequest(
+		run: number,
+		cfg: string,
+	): InitializeRequest {
+		return { type: Request.Initialize, run: run, cfg: cfg };
 	}
 
 	export interface InitializeResponse {
 		type: Response.Initialized;
+		run: number;
 		result: any;
 	}
 
-	export function InitializeResponse(result: any): InitializeResponse {
-		return { type: Response.Initialized, result: result };
+	export function InitializeResponse(
+		run: number,
+		result: any,
+	): InitializeResponse {
+		return { type: Response.Initialized, run: run, result: result };
 	}
 
 	export interface AddRequest {
 		type: Request.Add;
+		run: number;
 		result: Uint8Array;
 	}
 
-	export function AddRequest(result: Uint8Array): AddRequest {
-		return { type: Request.Add, result: result };
+	export function AddRequest(run: number, result: Uint8Array): AddRequest {
+		return { type: Request.Add, run: run, result: result };
 	}
 
 	export interface AddResponse {
 		type: Response.Done;
+		run: number;
 	}
 
-	export function AddResponse(): AddResponse {
-		return { type: Response.Done };
+	export function AddResponse(run: number): AddResponse {
+		return { type: Response.Done, run: run };
 	}
 
 	export interface FlushRequest {
 		type: Request.Flush;
+		run: number;
+		// the last flush of the run; echoed in the response
+		final: boolean;
 	}
 
-	export function FlushRequest(): FlushRequest {
-		return { type: Request.Flush };
+	export function FlushRequest(run: number, final: boolean): FlushRequest {
+		return { type: Request.Flush, run: run, final: final };
 	}
 
 	export interface ResultResponse {
 		type: Response.Result;
+		run: number;
+		final: boolean;
+		// time the aggregator spent on the flush, in ms
+		ms: number;
 		result: {
 			hash: string;
 			stats: any;
 		};
 	}
 
-	export function ResultResponse(result: any): ResultResponse {
-		return { type: Response.Result, result: result };
+	export function ResultResponse(
+		run: number,
+		final: boolean,
+		ms: number,
+		result: any,
+	): ResultResponse {
+		return {
+			type: Response.Result,
+			run: run,
+			final: final,
+			ms: ms,
+			result: result,
+		};
 	}
 }
 
@@ -103,18 +140,23 @@ export namespace Helper {
 		Ready = "ready",
 		Validate = "validate",
 		Sample = "sample",
+		Share = "share",
 	}
 
 	export enum Response {
 		Failed = "failed",
+		Ready = "ready",
 		Validate = "validated",
 		Sample = "sample",
+		Shared = "shared",
 	}
 
+	// id is missing when loading the wasm failed
 	export interface FailedResponse {
 		id: number;
 		type: Response.Failed;
 		reason: string;
+		fatal?: boolean;
 	}
 
 	export function FailedResponse(id: number, reason: string): FailedResponse {
@@ -128,6 +170,28 @@ export namespace Helper {
 
 	export function ReadyRequest(wasm: string): ReadyRequest {
 		return { type: Request.Ready, wasm: wasm };
+	}
+
+	// the wasm is compiled and can be shared with the other workers
+	export interface ReadyResponse {
+		type: Response.Ready;
+	}
+
+	// Has the helper send the compiled module over port to the aggregator or a sim worker
+	// holding the other end, once that worker asks for it.
+	export interface ShareRequest {
+		id: number;
+		type: Request.Share;
+		port: MessagePort;
+	}
+
+	export function ShareRequest(id: number, port: MessagePort): ShareRequest {
+		return { id: id, type: Request.Share, port: port };
+	}
+
+	export interface SharedResponse {
+		id: number;
+		type: Response.Shared;
 	}
 
 	export interface ValidateRequest {
@@ -188,20 +252,23 @@ export namespace SimWorker {
 
 	export interface FailedResponse {
 		type: Response.Failed;
+		run: number;
 		reason: string;
+		fatal?: boolean;
 	}
 
-	export function FailedResponse(reason: string): FailedResponse {
-		return { type: Response.Failed, reason: reason };
+	export function FailedResponse(run: number, reason: string): FailedResponse {
+		return { type: Response.Failed, run: run, reason: reason };
 	}
 
+	// the port to ask the helper for the compiled module on
 	export interface ReadyRequest {
 		type: Request.Ready;
-		wasm: string;
+		port: MessagePort;
 	}
 
-	export function ReadyRequest(wasm: string): ReadyRequest {
-		return { type: Request.Ready, wasm: wasm };
+	export function ReadyRequest(port: MessagePort): ReadyRequest {
+		return { type: Request.Ready, port: port };
 	}
 
 	export interface ReadyResponse {
@@ -214,37 +281,48 @@ export namespace SimWorker {
 
 	export interface InitializeRequest {
 		type: Request.Initialize;
+		run: number;
 		cfg: string;
 	}
 
-	export function InitializeRequest(cfg: string): InitializeRequest {
-		return { type: Request.Initialize, cfg: cfg };
+	export function InitializeRequest(
+		run: number,
+		cfg: string,
+	): InitializeRequest {
+		return { type: Request.Initialize, run: run, cfg: cfg };
 	}
 
 	export interface InitializeResponse {
 		type: Response.Initialized;
+		run: number;
 	}
 
-	export function InitializeResponse(): InitializeResponse {
-		return { type: Response.Initialized };
+	export function InitializeResponse(run: number): InitializeResponse {
+		return { type: Response.Initialized, run: run };
 	}
 
 	export interface RunRequest {
 		type: Request.Run;
+		run: number;
 		itr: number;
 	}
 
-	export function RunRequest(itr: number): RunRequest {
-		return { type: Request.Run, itr: itr };
+	export function RunRequest(run: number, itr: number): RunRequest {
+		return { type: Request.Run, run: run, itr: itr };
 	}
 
 	export interface RunResponse {
 		type: Response.Done;
+		run: number;
 		result: Uint8Array;
 		itr: number;
 	}
 
-	export function RunResponse(result: Uint8Array, itr: number): RunResponse {
-		return { type: Response.Done, result: result, itr: itr };
+	export function RunResponse(
+		run: number,
+		result: Uint8Array,
+		itr: number,
+	): RunResponse {
+		return { type: Response.Done, run: run, result: result, itr: itr };
 	}
 }

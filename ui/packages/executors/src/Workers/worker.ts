@@ -2,20 +2,34 @@
 // @ts-ignore
 self.importScripts("/wasm_exec.js");
 
-if (!WebAssembly.instantiateStreaming) {
-	// polyfill
-	WebAssembly.instantiateStreaming = async (resp, importObject) => {
-		const source = await (await resp).arrayBuffer();
-		return await WebAssembly.instantiate(source, importObject);
+// @ts-ignore
+let go: Go;
+
+// Asks the helper for the compiled module over req.port, worker to worker (see share in
+// helper.ts).
+// @ts-ignore
+function ready(req: { port: MessagePort }) {
+	req.port.onmessage = (ev) => {
+		req.port.close();
+		load(ev.data);
 	};
+	req.port.onmessageerror = () => {
+		req.port.close();
+		postMessage({
+			type: WorkerResponse.Failed,
+			reason: "A sim worker couldn't receive the compiled wasm module",
+			fatal: true,
+		});
+	};
+	req.port.postMessage(null);
 }
 
 // @ts-ignore
-function ready(req: { wasm: string }) {
-	const go = new Go();
-	WebAssembly.instantiateStreaming(fetch(req.wasm), go.importObject)
-		.then((result) => {
-			go.run(result.instance);
+function load(module: WebAssembly.Module) {
+	go = new Go();
+	WebAssembly.instantiate(module, go.importObject)
+		.then((instance) => {
+			go.run(instance);
 			postMessage({ type: WorkerResponse.Ready });
 		})
 		.catch((e) => {
@@ -23,8 +37,34 @@ function ready(req: { wasm: string }) {
 			postMessage({
 				type: WorkerResponse.Failed,
 				reason: e instanceof Error ? e.message : "Unknown Error",
+				fatal: true,
 			});
 		});
+}
+
+// Handles a request that calls into Go. The Go functions return their errors, so if the call
+// throws, or the Go program exits during it (a fatal error such as running out of memory), this
+// instance is unusable: the fatal response makes the executor replace the worker.
+// @ts-ignore
+function callGo(handle: () => any): any {
+	let reason =
+		"its Go program exited (the console shows why, e.g. out of memory)";
+	try {
+		const resp = handle();
+		if (!go.exited) {
+			return resp;
+		}
+	} catch (e) {
+		console.error(e);
+		if (!go.exited) {
+			reason = `${e}`;
+		}
+	}
+	return {
+		type: WorkerResponse.Failed,
+		reason: `A sim worker crashed: ${reason}`,
+		fatal: true,
+	};
 }
 
 // @ts-ignore
@@ -37,19 +77,14 @@ function initialize(req: { cfg: string }) {
 }
 
 function run(req: { itr: number }) {
-	try {
-		const resp = simulate();
-		if (typeof resp === "string" || resp instanceof String) {
-			return {
-				type: WorkerResponse.Failed,
-				reason: JSON.parse(resp as string).error,
-			};
-		}
-		return { type: WorkerResponse.Done, result: resp, itr: req.itr };
-	} catch (e) {
-		console.log("simulate() call failed");
-		return { type: WorkerResponse.Failed, reason: `Failed with error: ${e}` };
+	const resp = simulate();
+	if (typeof resp === "string" || resp instanceof String) {
+		return {
+			type: WorkerResponse.Failed,
+			reason: JSON.parse(resp as string).error,
+		};
 	}
+	return { type: WorkerResponse.Done, result: resp, itr: req.itr };
 }
 
 // @ts-ignore
@@ -58,15 +93,35 @@ function handleRequest(req: any) {
 		case WorkerRequest.Ready:
 			return ready(req);
 		case WorkerRequest.Initialize:
-			return postMessage(initialize(req));
-		case WorkerRequest.Run:
-			return postMessage(run(req));
+			return respond(
+				req,
+				callGo(() => initialize(req)),
+			);
+		case WorkerRequest.Run: {
+			const resp = callGo(() => run(req));
+			// transfer the result's buffer instead of copying it
+			return respond(
+				req,
+				resp,
+				resp.result instanceof Uint8Array ? [resp.result.buffer] : [],
+			);
+		}
 		default:
 			console.error("aggregator - unknown request: ", req);
 			throw new Error("aggregator unknown request");
 	}
 }
 self.onmessage = (ev) => handleRequest(ev.data);
+
+// Echoes the request's run id so the executor can drop responses from a cancelled run.
+// @ts-ignore
+function respond(
+	req: { run: number },
+	resp: object,
+	transfer: Transferable[] = [],
+) {
+	postMessage({ ...resp, run: req.run }, transfer);
+}
 
 // TODO: I hate this
 // Web Workers do not currently support modules (in all browsers), so instead the relevant code in common

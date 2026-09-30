@@ -2,20 +2,34 @@
 // @ts-ignore
 self.importScripts("/wasm_exec.js");
 
-if (!WebAssembly.instantiateStreaming) {
-	// polyfill
-	WebAssembly.instantiateStreaming = async (resp, importObject) => {
-		const source = await (await resp).arrayBuffer();
-		return await WebAssembly.instantiate(source, importObject);
+// @ts-ignore
+let go: Go;
+
+// Asks the helper for the compiled module over req.port, worker to worker (see share in
+// helper.ts).
+// @ts-ignore
+function ready(req: { port: MessagePort }) {
+	req.port.onmessage = (ev) => {
+		req.port.close();
+		load(ev.data);
 	};
+	req.port.onmessageerror = () => {
+		req.port.close();
+		postMessage({
+			type: AggResponse.Failed,
+			reason: "The aggregator couldn't receive the compiled wasm module",
+			fatal: true,
+		});
+	};
+	req.port.postMessage(null);
 }
 
 // @ts-ignore
-function ready(req: { wasm: string }) {
-	const go = new Go();
-	WebAssembly.instantiateStreaming(fetch(req.wasm), go.importObject)
-		.then((result) => {
-			go.run(result.instance);
+function load(module: WebAssembly.Module) {
+	go = new Go();
+	WebAssembly.instantiate(module, go.importObject)
+		.then((instance) => {
+			go.run(instance);
 			console.log("aggregator loaded okay");
 			postMessage({ type: AggResponse.Ready });
 		})
@@ -24,8 +38,34 @@ function ready(req: { wasm: string }) {
 			postMessage({
 				type: AggResponse.Failed,
 				reason: e instanceof Error ? e.message : "Unknown Error",
+				fatal: true,
 			});
 		});
+}
+
+// Handles a request that calls into Go. The Go functions return their errors, so if the call
+// throws, or the Go program exits during it (a fatal error such as running out of memory), this
+// instance is unusable: the fatal response makes the executor replace the aggregator.
+// @ts-ignore
+function callGo(handle: () => any): any {
+	let reason =
+		"its Go program exited (the console shows why, e.g. out of memory)";
+	try {
+		const resp = handle();
+		if (!go.exited) {
+			return resp;
+		}
+	} catch (e) {
+		console.error(e);
+		if (!go.exited) {
+			reason = `${e}`;
+		}
+	}
+	return {
+		type: AggResponse.Failed,
+		reason: `The aggregator crashed: ${reason}`,
+		fatal: true,
+	};
 }
 
 // @ts-ignore
@@ -45,13 +85,19 @@ function add(req: { result: Uint8Array }) {
 	return { type: AggResponse.Done };
 }
 
-function doFlush() {
+function doFlush(req: { final: boolean }) {
+	const start = performance.now();
 	// TODO: have a specific result response type to enforce (protos?)
 	const resp = JSON.parse(flush());
 	if (resp.error) {
 		return { type: AggResponse.Failed, reason: resp.error };
 	}
-	return { type: AggResponse.Result, result: resp };
+	return {
+		type: AggResponse.Result,
+		final: req.final,
+		ms: performance.now() - start,
+		result: resp,
+	};
 }
 
 // @ts-ignore
@@ -60,17 +106,32 @@ function handleRequest(req: any): any {
 		case AggRequest.Ready:
 			return ready(req);
 		case AggRequest.Initialize:
-			return postMessage(initialize(req));
+			return respond(
+				req,
+				callGo(() => initialize(req)),
+			);
 		case AggRequest.Add:
-			return postMessage(add(req));
+			return respond(
+				req,
+				callGo(() => add(req)),
+			);
 		case AggRequest.Flush:
-			return postMessage(doFlush());
+			return respond(
+				req,
+				callGo(() => doFlush(req)),
+			);
 		default:
 			console.error("aggregator - unknown request: ", req);
 			throw new Error("aggregator unknown request");
 	}
 }
 self.onmessage = (ev) => handleRequest(ev.data);
+
+// Echoes the request's run id so the executor can drop responses from a cancelled run.
+// @ts-ignore
+function respond(req: { run: number }, resp: object) {
+	postMessage({ ...resp, run: req.run });
+}
 
 // TODO: I hate this
 // Web Workers do not currently support modules (in all browsers), so instead all the relevant code in common
