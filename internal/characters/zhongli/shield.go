@@ -18,6 +18,11 @@ func (c *char) addJadeShield() {
 
 	// add resist mod whenever we get a shield
 	res := []attributes.Element{attributes.Pyro, attributes.Hydro, attributes.Cryo, attributes.Electro, attributes.Geo, attributes.Anemo, attributes.Physical, attributes.Dendro}
+	// build the mod keys once instead of on every tick
+	keys := make([]string, len(res))
+	for i, v := range res {
+		keys[i] = fmt.Sprintf("zhongli-%v", v.String())
+	}
 
 	// shield applies res shred every 0.3s for 1s to all enemies within a certain area around the player
 	for i := 0; i <= 1200; i += 18 {
@@ -27,11 +32,10 @@ func (c *char) addJadeShield() {
 				return
 			}
 			enemies := c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 7.5), nil)
-			for _, v := range res {
-				key := fmt.Sprintf("zhongli-%v", v.String())
+			for j, v := range res {
 				for _, e := range enemies {
 					e.AddResistMod(info.ResistMod{
-						Base:  modifier.NewBaseWithHitlag(key, 60),
+						Base:  modifier.NewBaseWithHitlag(keys[j], 60),
 						Ele:   v,
 						Value: -0.2,
 					})

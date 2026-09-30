@@ -73,7 +73,7 @@ func (e *Eval) evalLet(l *ast.LetStmt, env *Env) (Obj, error) {
 		return nil, ast.NewErrorf(e.file.Position(l.Pos), "variable %v already exists; cannot redeclare", l.Ident.Val)
 	}
 	// num := *v //value copying
-	env.varMap[l.Ident.Val] = &res
+	env.set(l.Ident.Val, &res)
 	return &null{}, nil
 }
 
@@ -89,7 +89,7 @@ func (e *Eval) evalFnStmt(l *ast.FnStmt, env *Env) (Obj, error) {
 		Signature: l.Func.Signature,
 		Env:       NewEnv(env),
 	}
-	env.varMap[l.Ident.Val] = &res
+	env.set(l.Ident.Val, &res)
 	return &null{}, nil
 }
 

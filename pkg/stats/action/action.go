@@ -1,6 +1,8 @@
 package action
 
 import (
+	"slices"
+
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/event"
@@ -15,15 +17,29 @@ func init() {
 }
 
 type buffer struct {
-	energySpent    []float64
-	failures       [][]stats.ActionFailInterval
-	activeFailures []map[action.Action]activeFailure
+	energySpent []float64
+	failures    [][]stats.ActionFailInterval
+	// per char, the actions that failed and haven't been executed since, in the order they
+	// first failed. A char waits on one action at a time, so this rarely holds more than one
+	// and a scan is cheaper than a map lookup on every frame an action waits
+	activeFailures [][]activeFailure
 	actionEvents   [][]stats.ActionEvent
 }
 
 type activeFailure struct {
+	action action.Action
 	start  int
 	reason action.Failure
+}
+
+// findFailure returns the index of the active failure of e, or -1
+func findFailure(active []activeFailure, e action.Action) int {
+	for i := range active {
+		if active[i].action == e {
+			return i
+		}
+	}
+	return -1
 }
 
 func (b buffer) addFailure(core *core.Core, char int, active activeFailure) {
@@ -41,12 +57,8 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 	out := buffer{
 		energySpent:    make([]float64, len(core.Player.Chars())),
 		failures:       make([][]stats.ActionFailInterval, len(core.Player.Chars())),
-		activeFailures: make([]map[action.Action]activeFailure, len(core.Player.Chars())),
+		activeFailures: make([][]activeFailure, len(core.Player.Chars())),
 		actionEvents:   make([][]stats.ActionEvent, len(core.Player.Chars())),
-	}
-
-	for i := 0; i < len(out.activeFailures); i++ {
-		out.activeFailures[i] = make(map[action.Action]activeFailure)
 	}
 
 	core.Events.Subscribe(event.OnActionExec, func(args ...any) {
@@ -64,9 +76,9 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		}
 		out.actionEvents[char] = append(out.actionEvents[char], event)
 
-		if active, ok := out.activeFailures[char][e]; ok {
-			out.addFailure(core, char, active)
-			delete(out.activeFailures[char], e)
+		if i := findFailure(out.activeFailures[char], e); i != -1 {
+			out.addFailure(core, char, out.activeFailures[char][i])
+			out.activeFailures[char] = slices.Delete(out.activeFailures[char], i, i+1)
 		}
 	}, "stats-action-exec-log")
 
@@ -78,11 +90,12 @@ func NewStat(core *core.Core) (stats.Collector, error) {
 		// Assumes we will continue trying an action until it succeeds.
 		// If we ever give up trying actions, this will no longer be accurate
 		// TODO: track by action id to handle this edge case?
-		if _, ok := out.activeFailures[char][e]; !ok {
-			out.activeFailures[char][e] = activeFailure{
+		if findFailure(out.activeFailures[char], e) == -1 {
+			out.activeFailures[char] = append(out.activeFailures[char], activeFailure{
+				action: e,
 				start:  core.F,
 				reason: reason,
-			}
+			})
 		}
 	}, "stats-action-failed-log")
 

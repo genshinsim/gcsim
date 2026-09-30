@@ -69,7 +69,7 @@ func NewBaseWithHitlag(key string, dur int) Base {
 }
 
 // Delete removes a modifier. Returns true if deleted ok
-func Delete[K Mod](slice *[]K, key string) Mod {
+func Delete(slice *[]Mod, key string) Mod {
 	n := 0
 	var m Mod
 	for i, v := range *slice {
@@ -86,38 +86,43 @@ func Delete[K Mod](slice *[]K, key string) Mod {
 
 // Add adds a modifier. Returns true if overwritten and the original evt (if overwritten)
 // TODO: consider adding a map here to track the index to assist with faster lookups
-func Add[K Mod](slice *[]K, mod K, f int) (bool, glog.Event) {
+func Add(slice *[]Mod, mod Mod, f int) (bool, glog.Event) {
 	ind := Find(slice, mod.Key())
-	overwrote := false
-	var evt glog.Event
 
 	// if does not exist, make new and add
 	if ind == -1 {
 		*slice = append(*slice, mod)
-		return overwrote, evt
+		return false, nil
 	}
 
 	// otherwise check not expired
-	if (*slice)[ind].Expiry() > f || (*slice)[ind].Expiry() == -1 {
-		overwrote = true
-		evt = (*slice)[ind].Event()
-	}
+	overwrote, evt := Replaced((*slice)[ind], f)
 	(*slice)[ind] = mod
 
 	return overwrote, evt
 }
 
-func Find[K Mod](slice *[]K, key string) int {
-	ind := -1
-	for i, v := range *slice {
-		if v.Key() == key {
-			ind = i
-		}
+// Replaced returns what Add returns when a new mod replaces old at frame f: whether old is
+// still active, and if so its event, which the new mod takes over.
+func Replaced(old Mod, f int) (bool, glog.Event) {
+	if old.Expiry() > f || old.Expiry() == -1 {
+		return true, old.Event()
 	}
-	return ind
+	return false, nil
 }
 
-func FindCheckExpiry[K Mod](slice *[]K, key string, f int) (int, bool) {
+// Find returns the index of the mod with the given key, or -1. Add replaces a mod with
+// the same key, so keys are unique and the first match is the only one.
+func Find(slice *[]Mod, key string) int {
+	for i, v := range *slice {
+		if v.Key() == key {
+			return i
+		}
+	}
+	return -1
+}
+
+func FindCheckExpiry(slice *[]Mod, key string, f int) (int, bool) {
 	ind := Find(slice, key)
 	if ind == -1 {
 		return ind, false

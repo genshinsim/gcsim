@@ -95,7 +95,7 @@ func (e *Eval) evalCallExpr(c *ast.CallExpr, env *Env) (Obj, error) {
 		if err != nil {
 			return nil, err
 		}
-		local.varMap[v.Value] = &param
+		local.set(v.Value, &param)
 	}
 	res, err := e.evalBlock(fn.Body, local)
 	if err != nil {
