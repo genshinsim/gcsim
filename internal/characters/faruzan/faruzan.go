@@ -29,9 +29,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.a4()
-	if c.Base.Cons >= 6 {
-		c.c6Collapse()
-	}
+	c.c6Init()
 	return nil
 }
 

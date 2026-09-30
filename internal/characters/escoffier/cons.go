@@ -47,6 +47,25 @@ func (c *char) c1Init() {
 	c.c1Active = true
 	c.c1Buff = make([]float64, attributes.EndStatType)
 	c.c1Buff[attributes.CD] = 0.60
+
+	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
+		atk, ok := args[1].(*info.AttackEvent)
+		if !ok {
+			return
+		}
+
+		if !atk.Info.AttackTag.IsStellarReact() {
+			return
+		}
+
+		char := c.Core.Player.Chars()[atk.Info.ActorIndex]
+
+		if !char.StatModIsActive(c1Key) {
+			return
+		}
+
+		atk.Snapshot.Stats[attributes.CD] += c.c1Buff[attributes.CD]
+	}, "escoffier-c1-on-stellar")
 }
 
 func (c *char) c1() {

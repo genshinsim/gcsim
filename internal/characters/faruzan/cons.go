@@ -9,6 +9,11 @@ import (
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
+const (
+	c6Key    = "faruzan-c6"
+	c6ICDKey = "faruzan-c6-icd"
+)
+
 // C4: The vortex created by Wind Realm of Nasamjnin will restore Energy to
 // Faruzan based on the number of opponents hit: If it hits 1 opponent, it
 // will restore 2 Energy for Faruzan. Each additional opponent hit will
@@ -41,7 +46,7 @@ func (c *char) c6Buff(char *character.CharWrapper) {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.CD] = 0.4
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("faruzan-c6", 240),
+		Base: modifier.NewBaseWithHitlag(c6Key, 240),
 		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 			if atk.Info.Element != attributes.Anemo {
 				return nil
@@ -51,9 +56,11 @@ func (c *char) c6Buff(char *character.CharWrapper) {
 	})
 }
 
-const c6ICDKey = "faruzan-c6-icd"
+func (c *char) c6Init() {
+	if c.Base.Cons < 6 {
+		return
+	}
 
-func (c *char) c6Collapse() {
 	c.Core.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
 		if dmg := args[2].(float64); dmg == 0 {
 			return
@@ -73,4 +80,23 @@ func (c *char) c6Collapse() {
 		enemy := args[0].(*enemy.Enemy)
 		c.pressurizedCollapse(enemy.Pos())
 	}, "faruzan-c6-hook")
+
+	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
+		atk, ok := args[1].(*info.AttackEvent)
+		if !ok {
+			return
+		}
+
+		if atk.Info.Element != attributes.Anemo {
+			return
+		}
+
+		char := c.Core.Player.Chars()[atk.Info.ActorIndex]
+
+		if !char.StatModIsActive(c6Key) {
+			return
+		}
+
+		atk.Snapshot.Stats[attributes.CD] += 0.4
+	}, "faruzan-c6-on-stellar-swirl-anemo")
 }

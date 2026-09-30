@@ -45,10 +45,7 @@ func (c *char) Init() error {
 	c.burstBuff = make([]float64, attributes.EndStatType)
 	c.burstBuff[attributes.CryoP] = 0.15
 
-	if c.Base.Cons >= 2 {
-		c.c2buff = make([]float64, attributes.EndStatType)
-		c.c2buff[attributes.CD] = 0.15
-	}
+	c.c2Init()
 
 	return nil
 }

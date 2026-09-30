@@ -53,6 +53,28 @@ func (c *char) c2() {
 			},
 		})
 	}
+
+	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
+		if !c.Core.Combat.DamageMode {
+			return
+		}
+
+		r, ok := args[0].(*enemy.Enemy)
+		if !ok {
+			return
+		}
+
+		if r.HP()/r.MaxHP() >= 0.3 {
+			return
+		}
+
+		atk, ok := args[1].(*info.AttackEvent)
+		if !ok {
+			return
+		}
+
+		atk.Snapshot.Stats[attributes.CR] += c.c2bonus[attributes.CR]
+	}, "razor-c2-on-special-reaction")
 }
 
 // When casting Claw and Thunder (Press), opponents hit will have their DEF decreased by 15% for 7s.
