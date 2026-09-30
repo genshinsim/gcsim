@@ -1,84 +1,22 @@
-import { Button, Spinner } from "@gcsim/primitives";
-import { Play } from "lucide-react";
-import React from "react";
 import { useTranslation } from "react-i18next";
-import { AceEditorWrapper } from "./AceEditorWrapper";
-import { ConfigError } from "./ConfigError";
-import { HelperTools } from "./HelperTools";
-import { NameSearch } from "./NameSearch";
-import { SectionDivider } from "./SectionDivider";
-import { TeamComposer } from "./TeamComposer";
-import { ActionListTip, TeamTip } from "./Tips";
-import {
-	type EditorPrefs,
-	type EditorProps,
-	type EditorToggles,
-	themes,
-} from "./types";
+import { AceEditorWrapper, themes } from "./AceEditorWrapper";
+import type { EditorAppearance, EditorProps } from "./types";
 
 export const Editor = ({
-	config,
-	setConfig,
-	error,
-	parsedTeam,
-	settings,
-	teamCharacters,
-	showThemeSelector = false,
-	showHelpers = true,
-	onRun,
-	canRun,
-	busy = false,
-	prefs,
-	onPrefsChange,
+	value,
+	onChange,
+	theme = "tomorrow_night",
+	fontSize = 14,
+	onAppearanceChange,
+	maxLines,
 }: EditorProps) => {
 	const { t } = useTranslation();
-	const { toggles, theme, fontSize } = prefs;
-	const showTeam = showHelpers && toggles.team;
-	const showTips = showHelpers && toggles.tips;
-
-	// Ace binds commands once on mount, so the hotkey reads the latest props via a ref.
-	const runRef = React.useRef({ onRun, canRun });
-	runRef.current = { onRun, canRun };
-	const runFromHotkey = React.useCallback(() => {
-		if (runRef.current.canRun) {
-			runRef.current.onRun();
-		}
-	}, []);
-
-	const updatePrefs = (patch: Partial<EditorPrefs>) =>
-		onPrefsChange({ ...prefs, ...patch });
-	const toggle = (key: keyof EditorToggles) =>
-		updatePrefs({ toggles: { ...toggles, [key]: !toggles[key] } });
+	const updateAppearance = (patch: Partial<EditorAppearance>) =>
+		onAppearanceChange?.({ theme, fontSize, ...patch });
 
 	return (
 		<div className="flex flex-col">
-			{showTeam ? (
-				<>
-					<SectionDivider>{t("simple.team")}</SectionDivider>
-					{showTips ? <TeamTip onHide={() => toggle("tips")} /> : null}
-					<TeamComposer
-						parsedTeam={parsedTeam}
-						error={error}
-						config={config}
-						setConfig={setConfig}
-						characters={teamCharacters}
-					/>
-				</>
-			) : (
-				<ConfigError error={error} />
-			)}
-
-			{showHelpers && toggles.nameSearch ? (
-				<>
-					<SectionDivider>{t("simple.name_search")}</SectionDivider>
-					<NameSearch />
-				</>
-			) : null}
-
-			<SectionDivider>{t("simple.action_list")}</SectionDivider>
-			{showTips ? <ActionListTip onHide={() => toggle("tips")} /> : null}
-
-			{showThemeSelector ? (
+			{onAppearanceChange ? (
 				<div className="flex flex-wrap items-center justify-end gap-4">
 					<label className="flex items-center gap-2">
 						{t("simple.font_size")}
@@ -86,7 +24,7 @@ export const Editor = ({
 							type="number"
 							value={fontSize}
 							onChange={(e) =>
-								updatePrefs({ fontSize: Number(e.currentTarget.value) })
+								updateAppearance({ fontSize: Number(e.currentTarget.value) })
 							}
 						/>
 					</label>
@@ -94,7 +32,9 @@ export const Editor = ({
 						{t("simple.editor_theme")}
 						<select
 							value={theme}
-							onChange={(e) => updatePrefs({ theme: e.currentTarget.value })}
+							onChange={(e) =>
+								updateAppearance({ theme: e.currentTarget.value })
+							}
 						>
 							{themes.map((th) => (
 								<option key={th} value={th}>
@@ -105,33 +45,13 @@ export const Editor = ({
 					</label>
 				</div>
 			) : null}
-
 			<AceEditorWrapper
-				cfg={config}
-				onChange={setConfig}
-				onRun={runFromHotkey}
+				value={value}
+				onChange={onChange}
 				theme={theme}
 				fontSize={fontSize}
+				maxLines={maxLines}
 			/>
-
-			<div className="sticky bottom-0 z-10 mt-1 flex flex-row flex-wrap place-items-center gap-1 bg-g-canvas p-2">
-				<div className="flex flex-grow basis-full items-center p-1 sm:basis-0">
-					{settings}
-				</div>
-				<div className="flex basis-full flex-row flex-wrap gap-1 p-1 sm:basis-2/3">
-					{showHelpers ? (
-						<HelperTools
-							toggles={toggles}
-							onToggle={toggle}
-							className="flex-1"
-						/>
-					) : null}
-					<Button className="flex-1" onClick={onRun} disabled={!canRun}>
-						{busy ? <Spinner /> : <Play />}
-						{t("simple.run")}
-					</Button>
-				</div>
-			</div>
 		</div>
 	);
 };

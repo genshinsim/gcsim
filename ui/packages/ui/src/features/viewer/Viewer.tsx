@@ -1,4 +1,4 @@
-import { type EditorProps, ResultsView, RiskWarning } from "@gcsim/components";
+import { ResultsView, RiskWarning } from "@gcsim/components";
 import { dynamicKey } from "@gcsim/localization";
 import {
 	Alert,
@@ -21,7 +21,7 @@ import LoadingToast, { type ResultSource } from "./components/LoadingToast";
 import ViewerNav from "./components/ViewerNav";
 import Warnings from "./components/Warnings";
 import type { ViewerTab } from "./search";
-import ConfigUI from "./tabs/Config";
+import ConfigUI, { type ViewerEditorState } from "./tabs/Config";
 import SampleUI from "./tabs/Sample";
 
 export type ViewerActions = {
@@ -42,7 +42,7 @@ type ViewerProps = {
 	recoveryConfig: string | null;
 	tab: ViewerTab;
 	onTabChange: (tab: ViewerTab) => void;
-	editor: Omit<EditorProps, "onRun">;
+	editor: ViewerEditorState;
 	sample: SampleState;
 	shareLink?: string | null;
 	actions?: ViewerActions;
@@ -89,7 +89,7 @@ export default ({
 				{...editor}
 				loading={result?.config_file == null}
 				canRun={editor.canRun && onRun != null}
-				onRun={() => {
+				onRerun={() => {
 					onTabChange("results");
 					onRun?.(editor.config);
 				}}

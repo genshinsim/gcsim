@@ -1,4 +1,4 @@
-import { Editor, useExecutor, useValidation } from "@gcsim/components";
+import { useExecutor, useValidation } from "@gcsim/components";
 import type { model } from "@gcsim/types";
 import React from "react";
 import { Viewport } from "../../components";
@@ -11,6 +11,7 @@ import {
 	useImportedCharacters,
 } from "./ImportedCharacters";
 import { SharedConfigDialog } from "./SharedConfigDialog";
+import { SimulatorLayout } from "./SimulatorLayout";
 
 const defaultStats = [
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -53,14 +54,13 @@ function SimulatorEditor() {
 	return (
 		<>
 			<SharedConfigDialog onLoad={setCfg} />
-			<Editor
+			<SimulatorLayout
 				config={cfg}
 				setConfig={setCfg}
 				error={error}
 				parsedTeam={parsedTeam}
 				teamCharacters={teamCharacters}
 				settings={<EditorSettings />}
-				showThemeSelector
 				onRun={() => run(cfg)}
 				canRun={isReady && isValid}
 				busy={!isReady}

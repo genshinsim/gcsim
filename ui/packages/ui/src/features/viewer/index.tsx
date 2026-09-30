@@ -1,9 +1,4 @@
-import {
-	type EditorProps,
-	useExecutor,
-	useRunResult,
-	useValidation,
-} from "@gcsim/components";
+import { useExecutor, useRunResult, useValidation } from "@gcsim/components";
 import type { model } from "@gcsim/types";
 import {
 	type LinkProps,
@@ -15,12 +10,12 @@ import {
 import { usePrefs } from "@ui/stores/AppState";
 import axios from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
-import ExecutorSettingsButton from "../../components/buttons/ExecutorSettingsButton";
 import { useSendToSimulator } from "../../components/buttons/useSendToSimulator";
 import { useEditorPrefs } from "../../stores/editorPrefs";
 import { autoSampleSeed, useSample } from "../sample/useSample";
 import { ResultSource } from "./components/LoadingToast";
 import type { ViewerTab } from "./search";
+import type { ViewerEditorState } from "./tabs/Config";
 import UpgradeDialog from "./UpgradeDialog";
 import Viewer, { type ViewerActions } from "./Viewer";
 
@@ -174,11 +169,11 @@ const UpgradableViewer = (props: UpgradableViewerProps) => {
 function useViewerEditor(
 	resultConfig: string | undefined,
 	running: boolean,
-): Omit<EditorProps, "onRun"> {
+): ViewerEditorState {
 	const { isReady } = useExecutor();
 	const [config, setConfig] = useState(resultConfig ?? "");
-	const [prefs, setPrefs] = useEditorPrefs();
-	const { isValid, error, parsedTeam } = useValidation(config);
+	const [{ theme, fontSize }] = useEditorPrefs();
+	const { isValid, error } = useValidation(config);
 
 	useEffect(() => {
 		setConfig(resultConfig ?? "");
@@ -188,12 +183,10 @@ function useViewerEditor(
 		config,
 		setConfig,
 		error,
-		parsedTeam,
-		settings: <ExecutorSettingsButton />,
 		canRun: isReady && isValid && !running,
 		busy: !isReady || running,
-		prefs,
-		onPrefsChange: setPrefs,
+		theme,
+		fontSize,
 	};
 }
 

@@ -31,7 +31,7 @@ export class ViewerPage {
 		this.charts = page.locator('svg[role="img"]');
 		this.configEditor = page.locator("#config_editor");
 		this.generateButton = page.getByRole("button", { name: "Generate" });
-		this.rerunButton = page.getByRole("button", { name: "Run" });
+		this.rerunButton = page.getByRole("button", { name: "Rerun" });
 	}
 
 	/** Assert the viewer chrome rendered: title and the three-tab strip. */
