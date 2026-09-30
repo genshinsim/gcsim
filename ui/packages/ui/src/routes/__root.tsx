@@ -64,7 +64,7 @@ function Layout() {
 	}, [pathname, cancel]);
 
 	return (
-		<div className="h-screen flex flex-col">
+		<div className="h-dvh flex flex-col">
 			<Toaster position="top-right" theme="dark" />
 			<Nav />
 			<div
