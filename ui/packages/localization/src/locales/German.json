@@ -239,7 +239,12 @@
 		"server_mode_disable": "Servermodus deaktivieren (nur für Fortgeschrittene)",
 		"server_mode_url": "Server URL",
 		"server_mode_required": "(erforderlich)",
-		"server_mode_default": "Default: "
+		"server_mode_default": "Default: ",
+		"shared_config_heading": "Geteilte Konfiguration laden?",
+		"shared_config_title": "Titel",
+		"shared_config_source": "Quelle",
+		"shared_config_unknown": "Unbekannt",
+		"shared_config_invalid": "Die Konfiguration in diesem Link konnte nicht gelesen werden."
 	},
 	"src": {
 		"this_page_is": "Diese Seite ist noch nicht implementiert. Bleiben Sie dran!",
@@ -383,7 +388,10 @@
 		"upgrade": "Aktualisieren",
 		"upload": "Hochladen",
 		"upload_failed": "Der Upload ist fehlgeschlagen.",
-		"verbose": "Ausführlich"
+		"verbose": "Ausführlich",
+		"copy_as_text": "Als Text kopieren",
+		"copy_as_url": "Als teilbaren Link kopieren",
+		"copied_url_to_clipboard": "Teilbarer Link in die Zwischenablage kopiert"
 	},
 	"warnings": {
 		"incomplete_char_title": "Unvollständige Figuren benutzt",

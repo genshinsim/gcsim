@@ -239,7 +239,12 @@
 		"server_mode_disable": "Desactivar modo servidor (solo para usuarios avanzados)",
 		"server_mode_url": "URL del servidor",
 		"server_mode_required": "(requerido)",
-		"server_mode_default": "Predeterminado: "
+		"server_mode_default": "Predeterminado: ",
+		"shared_config_heading": "¿Cargar configuración compartida?",
+		"shared_config_title": "Título",
+		"shared_config_source": "Fuente",
+		"shared_config_unknown": "Desconocido",
+		"shared_config_invalid": "No se pudo leer la configuración de este enlace."
 	},
 	"src": {
 		"this_page_is": "Esta página aún no está implementada. ¡Mantente atento!",
@@ -383,7 +388,10 @@
 		"upgrade": "Actualizar",
 		"upload": "Cargar",
 		"upload_failed": "carga fallida",
-		"verbose": "Detallado"
+		"verbose": "Detallado",
+		"copy_as_text": "Copiar como texto",
+		"copy_as_url": "Copiar como enlace para compartir",
+		"copied_url_to_clipboard": "Enlace para compartir copiado al portapapeles"
 	},
 	"warnings": {
 		"incomplete_char_title": "Personajes Incompletos Utilizados",

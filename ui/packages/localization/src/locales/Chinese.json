@@ -239,7 +239,12 @@
 		"server_mode_disable": "禁用服务器模式（仅限高级用户）",
 		"server_mode_url": "服务器URL",
 		"server_mode_required": "(所需)",
-		"server_mode_default": "默认: "
+		"server_mode_default": "默认: ",
+		"shared_config_heading": "加载分享的配置？",
+		"shared_config_title": "标题",
+		"shared_config_source": "来源",
+		"shared_config_unknown": "未知",
+		"shared_config_invalid": "无法读取此链接中的配置。"
 	},
 	"src": {
 		"this_page_is": "此页面正在施工中。敬请期待！",
@@ -383,7 +388,10 @@
 		"upgrade": "升级",
 		"upload": "上传",
 		"upload_failed": "上传失败",
-		"verbose": "冗长"
+		"verbose": "冗长",
+		"copy_as_text": "复制为文本",
+		"copy_as_url": "复制为分享链接",
+		"copied_url_to_clipboard": "分享链接已复制到剪贴板"
 	},
 	"warnings": {
 		"incomplete_char_title": "使用的角色不完整",

@@ -239,7 +239,12 @@
 		"server_mode_disable": "Disable server mode (advanced users only)",
 		"server_mode_url": "Server URL",
 		"server_mode_required": "(required)",
-		"server_mode_default": "Default: "
+		"server_mode_default": "Default: ",
+		"shared_config_heading": "Load shared configuration?",
+		"shared_config_title": "Title",
+		"shared_config_source": "Source",
+		"shared_config_unknown": "Unknown",
+		"shared_config_invalid": "The configuration in this link could not be read."
 	},
 	"src": {
 		"this_page_is": "This page is not implemented yet. Stay tuned!",
@@ -383,7 +388,10 @@
 		"upgrade": "Upgrade",
 		"upload": "Upload",
 		"upload_failed": "upload failed",
-		"verbose": "Verbose"
+		"verbose": "Verbose",
+		"copy_as_text": "Copy as Text",
+		"copy_as_url": "Copy as Shareable URL",
+		"copied_url_to_clipboard": "Shareable URL copied to clipboard"
 	},
 	"warnings": {
 		"incomplete_char_title": "Incomplete Characters Used",

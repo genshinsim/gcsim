@@ -239,7 +239,12 @@
 		"server_mode_disable": "サーバーモードを無効にする（上級ユーザーのみ）",
 		"server_mode_url": "サーバーのURL",
 		"server_mode_required": "(必須)",
-		"server_mode_default": "デフォルト: "
+		"server_mode_default": "デフォルト: ",
+		"shared_config_heading": "共有された設定を読み込みますか？",
+		"shared_config_title": "タイトル",
+		"shared_config_source": "ソース",
+		"shared_config_unknown": "不明",
+		"shared_config_invalid": "このリンクの設定を読み込めませんでした。"
 	},
 	"src": {
 		"this_page_is": "このページはまだ実装されていません。いましばらくお待ちください！",
@@ -383,7 +388,10 @@
 		"upgrade": "アップグレード",
 		"upload": "アップロード",
 		"upload_failed": "アップロード失敗",
-		"verbose": "詳細"
+		"verbose": "詳細",
+		"copy_as_text": "テキストとしてコピー",
+		"copy_as_url": "共有URLとしてコピー",
+		"copied_url_to_clipboard": "共有URLをクリップボードにコピーしました"
 	},
 	"warnings": {
 		"incomplete_char_title": "使用されている不完全なキャラクター",

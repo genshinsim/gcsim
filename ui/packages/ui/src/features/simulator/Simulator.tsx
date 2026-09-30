@@ -10,6 +10,7 @@ import {
 	ImportedCharactersProvider,
 	useImportedCharacters,
 } from "./ImportedCharacters";
+import { SharedConfigDialog } from "./SharedConfigDialog";
 
 const defaultStats = [
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -50,20 +51,23 @@ function SimulatorEditor() {
 	);
 
 	return (
-		<Editor
-			config={cfg}
-			setConfig={setCfg}
-			error={error}
-			parsedTeam={parsedTeam}
-			teamCharacters={teamCharacters}
-			settings={<EditorSettings />}
-			showThemeSelector
-			onRun={() => run(cfg)}
-			canRun={isReady && isValid}
-			busy={!isReady}
-			prefs={prefs}
-			onPrefsChange={setPrefs}
-		/>
+		<>
+			<SharedConfigDialog onLoad={setCfg} />
+			<Editor
+				config={cfg}
+				setConfig={setCfg}
+				error={error}
+				parsedTeam={parsedTeam}
+				teamCharacters={teamCharacters}
+				settings={<EditorSettings />}
+				showThemeSelector
+				onRun={() => run(cfg)}
+				canRun={isReady && isValid}
+				busy={!isReady}
+				prefs={prefs}
+				onPrefsChange={setPrefs}
+			/>
+		</>
 	);
 }
 
