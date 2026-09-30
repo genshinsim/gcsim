@@ -236,7 +236,7 @@ func (r *Reactable) sswContributors() [info.MaxChars]bool {
 }
 
 func (r *Reactable) addSSwStack() {
-	r.core.Flags.Custom[sswStackKey] += min(r.core.Flags.Custom[sswStackKey]+1, sswMaxStacks)
+	r.core.Flags.Custom[sswStackKey] = min(r.core.Flags.Custom[sswStackKey]+1, sswMaxStacks)
 }
 
 func (r *Reactable) sswStacks() int {
