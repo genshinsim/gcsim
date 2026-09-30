@@ -1,0 +1,8 @@
+# name	block	warmup	source (copied verbatim)
+# block:  iterations per binary per round in paired mode (~150ms at baseline speed)
+# warmup: iterations per binary before measuring (covers V8 Liftoff -> TurboFan tier-up)
+sucrose_solo	700	1000	ui/packages/e2e/fixtures/sucrose.txt
+raiden_national	20	60	ui/packages/docs/docs/guides/building_a_simulation_basic_tutorial.md (last full config)
+overload_chevreuse	16	60	ui/packages/storybook/src/stories/Editor/sampleConfig.ts
+geo_yelan_albedo	10	60	pkg/simulation/example/main.go
+national_zhongli	8	60	ui/packages/storybook/src/stories/samples/sampleResult.json (config_file)
