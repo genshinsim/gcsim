@@ -72,3 +72,14 @@ export const PrimaryMobile: Story = {
 		},
 	},
 };
+
+export const PrimaryTablet: Story = {
+	args: {
+		onAppearanceChange: fn(),
+	},
+	parameters: {
+		viewport: {
+			defaultViewport: "tablet",
+		},
+	},
+};

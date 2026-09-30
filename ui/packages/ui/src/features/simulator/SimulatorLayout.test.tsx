@@ -98,6 +98,16 @@ describe("SimulatorLayout", () => {
 		});
 	});
 
+	it("stores font size changes in prefs", async () => {
+		const onPrefsChange = vi.fn();
+		renderLayout({ onPrefsChange });
+		await userEvent.type(screen.getByRole("spinbutton"), "6");
+		expect(onPrefsChange).toHaveBeenLastCalledWith({
+			...defaultEditorPrefs,
+			fontSize: 146,
+		});
+	});
+
 	it("disables Run while canRun is false", () => {
 		const { rerender } = renderLayout({ canRun: false });
 		expect(runButton()).toBeDisabled();
