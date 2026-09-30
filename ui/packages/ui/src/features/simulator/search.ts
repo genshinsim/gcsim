@@ -1,5 +1,4 @@
 export type SimulatorSearch = {
-	// base64 of a gzipped JSON SharedConfig; see sharedConfig.ts
 	cfg?: string;
 };
 

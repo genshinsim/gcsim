@@ -27,7 +27,6 @@ function bytesToBase64(bytes: Uint8Array): string {
 }
 
 export function decodeSharedConfig(encoded: string): SharedConfig {
-	// pako.inflate auto-detects gzip and zlib headers
 	const json = Pako.inflate(base64ToBytes(encoded), { to: "string" });
 	const raw: unknown = JSON.parse(json);
 	if (raw === null || typeof raw !== "object") {

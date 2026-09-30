@@ -15,9 +15,9 @@ import { decodeSharedConfig, type SharedConfig } from "./sharedConfig";
 
 const routeApi = getRouteApi("/simulator");
 
-type Pending = { ok: true; shared: SharedConfig } | { ok: false };
+type DecodeResult = { ok: true; shared: SharedConfig } | { ok: false };
 
-function decode(encoded: string): Pending {
+function tryDecodeSharedConfig(encoded: string): DecodeResult {
 	try {
 		return { ok: true, shared: decodeSharedConfig(encoded) };
 	} catch {
@@ -25,25 +25,27 @@ function decode(encoded: string): Pending {
 	}
 }
 
-// Reads `?cfg=` once, strips it from the URL so a refresh can't re-trigger it,
-// and asks before overwriting the draft.
+function useConsumeCfgParamOnce() {
+	const { cfg: encoded } = routeApi.useSearch();
+	const navigate = routeApi.useNavigate();
+	const [result, setResult] = React.useState<DecodeResult | null>(null);
+
+	React.useEffect(() => {
+		if (!encoded) return;
+		setResult(tryDecodeSharedConfig(encoded));
+		void navigate({ to: "/simulator", search: {}, replace: true });
+	}, [encoded, navigate]);
+
+	return [result, () => setResult(null)] as const;
+}
+
 export function SharedConfigDialog({
 	onLoad,
 }: {
 	onLoad: (cfg: string) => void;
 }) {
 	const { t } = useTranslation();
-	const { cfg } = routeApi.useSearch();
-	const navigate = routeApi.useNavigate();
-	const [pending, setPending] = React.useState<Pending | null>(null);
-
-	React.useEffect(() => {
-		if (!cfg) return;
-		setPending(decode(cfg));
-		void navigate({ to: "/simulator", search: {}, replace: true });
-	}, [cfg, navigate]);
-
-	const close = () => setPending(null);
+	const [pending, close] = useConsumeCfgParamOnce();
 
 	if (pending == null) return null;
 
