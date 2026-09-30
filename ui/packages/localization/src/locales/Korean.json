@@ -388,7 +388,10 @@
 		"upgrade": "업그레이드",
 		"upload": "업로드",
 		"upload_failed": "업로드 실패",
-		"verbose": "자세한"
+		"verbose": "자세한",
+		"copy_as_text": "텍스트로 복사",
+		"copy_as_url": "공유 URL로 복사",
+		"copied_url_to_clipboard": "공유 URL이 클립보드에 복사되었습니다"
 	},
 	"warnings": {
 		"incomplete_char_title": "미완성 캐릭터가 사용됨",

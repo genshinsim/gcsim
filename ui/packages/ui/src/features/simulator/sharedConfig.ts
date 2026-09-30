@@ -20,10 +20,13 @@ function base64ToBytes(encoded: string): Uint8Array {
 	return Uint8Array.from(binary, (c) => c.charCodeAt(0));
 }
 
-function bytesToBase64(bytes: Uint8Array): string {
+function bytesToUrlSafeBase64(bytes: Uint8Array): string {
 	let binary = "";
 	for (const b of bytes) binary += String.fromCharCode(b);
-	return btoa(binary);
+	return btoa(binary)
+		.replaceAll("+", "-")
+		.replaceAll("/", "_")
+		.replace(/=+$/, "");
 }
 
 export function decodeSharedConfig(encoded: string): SharedConfig {
@@ -44,5 +47,9 @@ export function decodeSharedConfig(encoded: string): SharedConfig {
 }
 
 export function encodeSharedConfig(payload: SharedConfig): string {
-	return bytesToBase64(Pako.gzip(JSON.stringify(payload)));
+	return bytesToUrlSafeBase64(Pako.gzip(JSON.stringify(payload)));
+}
+
+export function sharedConfigUrl(origin: string, payload: SharedConfig): string {
+	return `${origin}/simulator?cfg=${encodeSharedConfig(payload)}`;
 }

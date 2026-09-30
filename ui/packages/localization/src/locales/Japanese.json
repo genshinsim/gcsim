@@ -388,7 +388,10 @@
 		"upgrade": "アップグレード",
 		"upload": "アップロード",
 		"upload_failed": "アップロード失敗",
-		"verbose": "詳細"
+		"verbose": "詳細",
+		"copy_as_text": "テキストとしてコピー",
+		"copy_as_url": "共有URLとしてコピー",
+		"copied_url_to_clipboard": "共有URLをクリップボードにコピーしました"
 	},
 	"warnings": {
 		"incomplete_char_title": "使用されている不完全なキャラクター",

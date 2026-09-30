@@ -51,9 +51,11 @@ export function SharedConfigDialog({
 
 	return (
 		<Dialog open onOpenChange={(open) => !open && close()}>
-			<DialogContent>
+			<DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto">
 				<DialogHeader>
-					<DialogTitle>{t("simple.shared_config_heading")}</DialogTitle>
+					<DialogTitle className="pr-6">
+						{t("simple.shared_config_heading")}
+					</DialogTitle>
 				</DialogHeader>
 				{pending.ok ? (
 					<>
@@ -61,13 +63,13 @@ export function SharedConfigDialog({
 							<dt className="text-g-ink-mute">
 								{t("simple.shared_config_title")}
 							</dt>
-							<dd className="break-words">
+							<dd className="min-w-0 [overflow-wrap:anywhere]">
 								{pending.shared.title ?? t("simple.shared_config_unknown")}
 							</dd>
 							<dt className="text-g-ink-mute">
 								{t("simple.shared_config_source")}
 							</dt>
-							<dd className="break-words">
+							<dd className="min-w-0 [overflow-wrap:anywhere]">
 								{pending.shared.source ?? t("simple.shared_config_unknown")}
 							</dd>
 						</dl>

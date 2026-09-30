@@ -388,7 +388,10 @@
 		"upgrade": "Actualizar",
 		"upload": "Cargar",
 		"upload_failed": "carga fallida",
-		"verbose": "Detallado"
+		"verbose": "Detallado",
+		"copy_as_text": "Copiar como texto",
+		"copy_as_url": "Copiar como enlace para compartir",
+		"copied_url_to_clipboard": "Enlace para compartir copiado al portapapeles"
 	},
 	"warnings": {
 		"incomplete_char_title": "Personajes Incompletos Utilizados",

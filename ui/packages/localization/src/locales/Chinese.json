@@ -388,7 +388,10 @@
 		"upgrade": "升级",
 		"upload": "上传",
 		"upload_failed": "上传失败",
-		"verbose": "冗长"
+		"verbose": "冗长",
+		"copy_as_text": "复制为文本",
+		"copy_as_url": "复制为分享链接",
+		"copied_url_to_clipboard": "分享链接已复制到剪贴板"
 	},
 	"warnings": {
 		"incomplete_char_title": "使用的角色不完整",

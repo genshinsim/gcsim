@@ -388,7 +388,10 @@
 		"upgrade": "Обновить",
 		"upload": "Загрузить",
 		"upload_failed": "Неудачная загрузка",
-		"verbose": "Подробный"
+		"verbose": "Подробный",
+		"copy_as_text": "Копировать как текст",
+		"copy_as_url": "Копировать как ссылку",
+		"copied_url_to_clipboard": "Ссылка скопирована в буфер обмена"
 	},
 	"warnings": {
 		"incomplete_char_title": "Использованные неполные персонажи",

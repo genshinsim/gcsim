@@ -388,7 +388,10 @@
 		"upgrade": "Upgrade",
 		"upload": "Upload",
 		"upload_failed": "upload failed",
-		"verbose": "Verbose"
+		"verbose": "Verbose",
+		"copy_as_text": "Copy as Text",
+		"copy_as_url": "Copy as Shareable URL",
+		"copied_url_to_clipboard": "Shareable URL copied to clipboard"
 	},
 	"warnings": {
 		"incomplete_char_title": "Incomplete Characters Used",
