@@ -17,7 +17,7 @@ async function simResult(app: AppHarness, page: Page): Promise<string> {
 }
 
 async function leaveToSaveLastRun(page: Page): Promise<string | null> {
-	await page.goto("/account");
+	await page.goto("/sample/upload");
 	return page.evaluate(() => localStorage.getItem("redux-local-results"));
 }
 

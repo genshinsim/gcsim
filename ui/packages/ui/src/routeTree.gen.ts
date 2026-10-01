@@ -10,13 +10,11 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AccountRouteImport } from './routes/account'
 import { Route as AdvancedRouteImport } from './routes/advanced'
 import { Route as LocalRouteImport } from './routes/local'
 import { Route as SimpleRouteImport } from './routes/simple'
 import { Route as SimulatorRouteImport } from './routes/simulator'
 import { Route as WebRouteImport } from './routes/web'
-import { Route as AuthDiscordRouteImport } from './routes/auth/discord'
 import { Route as DbIdRouteImport } from './routes/db/$id'
 import { Route as SIdRouteImport } from './routes/s/$id'
 import { Route as SampleLocalRouteImport } from './routes/sample/local'
@@ -31,11 +29,6 @@ import { Route as V3ViewerShareIdRouteImport } from './routes/v3/viewer/share/$i
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AccountRoute = AccountRouteImport.update({
-  id: '/account',
-  path: '/account',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdvancedRoute = AdvancedRouteImport.update({
@@ -61,11 +54,6 @@ const SimulatorRoute = SimulatorRouteImport.update({
 const WebRoute = WebRouteImport.update({
   id: '/web',
   path: '/web',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthDiscordRoute = AuthDiscordRouteImport.update({
-  id: '/auth/discord',
-  path: '/auth/discord',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DbIdRoute = DbIdRouteImport.update({
@@ -121,13 +109,11 @@ const V3ViewerShareIdRoute = V3ViewerShareIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/account': typeof AccountRoute
   '/advanced': typeof AdvancedRoute
   '/local': typeof LocalRoute
   '/simple': typeof SimpleRoute
   '/simulator': typeof SimulatorRoute
   '/web': typeof WebRoute
-  '/auth/discord': typeof AuthDiscordRoute
   '/db/$id': typeof DbIdRoute
   '/s/$id': typeof SIdRoute
   '/sample/local': typeof SampleLocalRoute
@@ -141,13 +127,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/account': typeof AccountRoute
   '/advanced': typeof AdvancedRoute
   '/local': typeof LocalRoute
   '/simple': typeof SimpleRoute
   '/simulator': typeof SimulatorRoute
   '/web': typeof WebRoute
-  '/auth/discord': typeof AuthDiscordRoute
   '/db/$id': typeof DbIdRoute
   '/s/$id': typeof SIdRoute
   '/sample/local': typeof SampleLocalRoute
@@ -162,13 +146,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/account': typeof AccountRoute
   '/advanced': typeof AdvancedRoute
   '/local': typeof LocalRoute
   '/simple': typeof SimpleRoute
   '/simulator': typeof SimulatorRoute
   '/web': typeof WebRoute
-  '/auth/discord': typeof AuthDiscordRoute
   '/db/$id': typeof DbIdRoute
   '/s/$id': typeof SIdRoute
   '/sample/local': typeof SampleLocalRoute
@@ -184,13 +166,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/account'
     | '/advanced'
     | '/local'
     | '/simple'
     | '/simulator'
     | '/web'
-    | '/auth/discord'
     | '/db/$id'
     | '/s/$id'
     | '/sample/local'
@@ -204,13 +184,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/account'
     | '/advanced'
     | '/local'
     | '/simple'
     | '/simulator'
     | '/web'
-    | '/auth/discord'
     | '/db/$id'
     | '/s/$id'
     | '/sample/local'
@@ -224,13 +202,11 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/account'
     | '/advanced'
     | '/local'
     | '/simple'
     | '/simulator'
     | '/web'
-    | '/auth/discord'
     | '/db/$id'
     | '/s/$id'
     | '/sample/local'
@@ -245,13 +221,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AccountRoute: typeof AccountRoute
   AdvancedRoute: typeof AdvancedRoute
   LocalRoute: typeof LocalRoute
   SimpleRoute: typeof SimpleRoute
   SimulatorRoute: typeof SimulatorRoute
   WebRoute: typeof WebRoute
-  AuthDiscordRoute: typeof AuthDiscordRoute
   DbIdRoute: typeof DbIdRoute
   SIdRoute: typeof SIdRoute
   SampleLocalRoute: typeof SampleLocalRoute
@@ -271,13 +245,6 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/account': {
-      id: '/account'
-      path: '/account'
-      fullPath: '/account'
-      preLoaderRoute: typeof AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/advanced': {
@@ -313,13 +280,6 @@ declare module '@tanstack/react-router' {
       path: '/web'
       fullPath: '/web'
       preLoaderRoute: typeof WebRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth/discord': {
-      id: '/auth/discord'
-      path: '/auth/discord'
-      fullPath: '/auth/discord'
-      preLoaderRoute: typeof AuthDiscordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/db/$id': {
@@ -397,13 +357,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AccountRoute: AccountRoute,
   AdvancedRoute: AdvancedRoute,
   LocalRoute: LocalRoute,
   SimpleRoute: SimpleRoute,
   SimulatorRoute: SimulatorRoute,
   WebRoute: WebRoute,
-  AuthDiscordRoute: AuthDiscordRoute,
   DbIdRoute: DbIdRoute,
   SIdRoute: SIdRoute,
   SampleLocalRoute: SampleLocalRoute,

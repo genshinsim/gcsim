@@ -2,7 +2,6 @@ export * from "./executor";
 export * from "./generated";
 // export * from "./protos";
 export * from "./sim";
-export * from "./user";
 
 export type ICharacter = string;
 export type IArtifact = string;

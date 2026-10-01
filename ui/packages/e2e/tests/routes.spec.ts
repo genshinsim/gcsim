@@ -5,7 +5,6 @@ test.describe("routes", () => {
 		["/simulator", "gcsim - simulator"],
 		["/web", "gcsim - viewer"],
 		["/sample/upload", "gcsim - sample"],
-		["/account", "gcsim - account"],
 		["/no-such-page", "gcsim - simulation impact"],
 	];
 	for (const [path, title] of pages) {
