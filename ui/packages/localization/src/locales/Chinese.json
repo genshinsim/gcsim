@@ -206,6 +206,8 @@
 		"decrease_font_size": "减小字号",
 		"increase_font_size": "增大字号",
 		"shortcut_search": "简写搜索",
+		"imported_characters": "已导入角色",
+		"no_imported_characters": "没有已导入的角色。请先通过「导入」菜单导入。",
 		"editor_theme": "编辑器主题",
 		"enemies": "敌人",
 		"font_size": "字体大小",

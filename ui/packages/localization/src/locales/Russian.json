@@ -206,6 +206,8 @@
 		"decrease_font_size": "Уменьшить шрифт",
 		"increase_font_size": "Увеличить шрифт",
 		"shortcut_search": "Поиск сокращений",
+		"imported_characters": "Импортированные персонажи",
+		"no_imported_characters": "Нет импортированных персонажей. Сначала импортируйте их через меню «Импортировать».",
 		"editor_theme": "Тема редактора",
 		"enemies": "Противники",
 		"font_size": "Размер шрифта",

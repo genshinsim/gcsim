@@ -26,6 +26,7 @@ export interface EditorProps {
 	onAppearanceChange?: (next: EditorAppearance) => void;
 	maxLines?: number;
 	error?: string | null;
+	importedCharacters?: ImportedCharacterOption[];
 }
 
 export interface EditorToggles {

@@ -80,6 +80,7 @@ export function SimulatorLayout({
 				error={error}
 				theme={prefs.theme}
 				fontSize={prefs.fontSize}
+				importedCharacters={teamCharacters?.imported}
 				onAppearanceChange={(appearance) =>
 					onPrefsChange({ ...prefs, ...appearance })
 				}

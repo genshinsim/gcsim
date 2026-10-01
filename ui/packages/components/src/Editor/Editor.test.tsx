@@ -1,5 +1,6 @@
 import { diagnosticCount } from "@codemirror/lint";
 import { EditorView } from "@codemirror/view";
+import type { model } from "@gcsim/types";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type React from "react";
@@ -118,5 +119,35 @@ describe("Editor", () => {
 		await user.click(screen.getByRole("option", { name: /^hutao ht/ }));
 		expect(writeText).toHaveBeenCalledWith("hutao");
 		expect(screen.queryByRole("dialog")).toBeNull();
+	});
+
+	it("inserts an imported character block at the top", async () => {
+		const user = userEvent.setup();
+		const onChange = vi.fn();
+		const character = {
+			name: "hutao",
+			level: 90,
+			max_level: 90,
+			cons: 1,
+			talents: { attack: 10, skill: 10, burst: 10 },
+			weapon: { name: "homa", refine: 1, level: 90, max_level: 90 },
+			sets: {},
+			stats: [],
+		} as unknown as model.Character;
+		render(
+			<Editor
+				{...baseProps}
+				value="active hutao;"
+				onChange={onChange}
+				importedCharacters={[{ key: "hutao", character }]}
+			/>,
+		);
+		await user.click(
+			screen.getByRole("button", { name: "simple.imported_characters" }),
+		);
+		await user.click(screen.getByRole("option", { name: /hutao/ }));
+		expect(onChange).toHaveBeenCalledWith(
+			'hutao char lvl=90/90 cons=1 talent=10,10,10;\nhutao add weapon="homa" refine=1 lvl=90/90;\n\nactive hutao;',
+		);
 	});
 });
