@@ -214,7 +214,7 @@
 		"team": "팀",
 		"tools_sample_upload": "샘플 업로드",
 		"tools_import": "{{src}}에서 가져오기",
-		"tools_import_after": "캐릭터 데이터를 가져온 후에는 팀 섹션에서 +를 클릭하고 캐릭터의 이름을 검색하여 가져온 캐릭터를 추가할 수 있습니다.",
+		"tools_import_after": "캐릭터 데이터를 가져온 후에는 편집기 위의 '가져온 캐릭터'를 클릭하고 캐릭터의 이름을 검색하여 가져온 캐릭터를 설정에 추가할 수 있습니다.",
 		"tools_paste_uid": "여기에 UID 붙여넣기",
 		"tools_import_pre_go": "아래 텍스트 상자에 가져오기 데이터를 GOOD 형식으로 붙여넣습니다. Genshin Optimizer에서 가져오는 경우 데이터베이스를 <0>여기</0>에서 GOOD 형식으로 내보낼 수 있습니다.",
 		"tools_import_pre_enka": "당신의 UID가 <0>Enka.Network</0>에서 문제가 없는지 확인하세요.",

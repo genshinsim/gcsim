@@ -214,7 +214,7 @@
 		"team": "Equipo",
 		"tools_sample_upload": "Cargar Muestra",
 		"tools_import": "Importar desde {{src}}",
-		"tools_import_after": "Una vez que se haya importado tu información de personajes, puedes agregar tu personaje importado haciendo clic en el \"+\" en la sección \"Equipo\" y buscando el nombre del personaje.",
+		"tools_import_after": "Una vez que se haya importado tu información de personajes, puedes agregar un personaje a tu configuración haciendo clic en \"Personajes importados\" encima del editor y buscando el nombre del personaje.",
 		"tools_paste_uid": "Pegue aquí el UID",
 		"tools_import_pre_go": "Pega los datos de importación en formato GOOD en el cuadro de texto a continuación. Si vienes de Genshin Optimizer, puedes exportar tu base de datos en formato GOOD <0>aquí</0>.",
 		"tools_import_pre_enka": "Asegúrate de que tu UID no tenga problemas en <0>Enka.Network</0>.",

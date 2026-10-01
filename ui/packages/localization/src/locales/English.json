@@ -214,7 +214,7 @@
 		"team": "Team",
 		"tools_sample_upload": "Sample Upload",
 		"tools_import": "Import from {{src}}",
-		"tools_import_after": "Once your character data has been imported, you can add your imported character by clicking on the \"+\" in the \"Team\" section and searching for the character's name.",
+		"tools_import_after": "Once your character data has been imported, add a character to your config by clicking \"Imported Characters\" above the editor and searching for the character's name.",
 		"tools_paste_uid": "Paste UID here",
 		"tools_import_pre_go": "Paste import data in GOOD format in the textbox below. If you are coming from Genshin Optimizer, you can export your database in GOOD format <0>here</0>.",
 		"tools_import_pre_enka": "Ensure that your UID has no problems on <0>Enka.Network</0>.",

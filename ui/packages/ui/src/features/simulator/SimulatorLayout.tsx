@@ -1,9 +1,9 @@
 import {
 	Editor,
 	type EditorPrefs,
+	type ImportedCharacterOption,
 	SectionDivider,
-	TeamComposer,
-	type TeamComposerCharacterSource,
+	TeamCard,
 } from "@gcsim/components";
 import { Button, Spinner } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
@@ -16,7 +16,7 @@ export interface SimulatorLayoutProps {
 	setConfig: (v: string) => void;
 	error: string | null;
 	parsedTeam: model.Character[];
-	teamCharacters?: TeamComposerCharacterSource;
+	importedCharacters?: ImportedCharacterOption[];
 	settings?: React.ReactNode;
 	onRun: () => void;
 	canRun: boolean;
@@ -30,7 +30,7 @@ export function SimulatorLayout({
 	setConfig,
 	error,
 	parsedTeam,
-	teamCharacters,
+	importedCharacters,
 	settings,
 	onRun,
 	canRun,
@@ -43,12 +43,9 @@ export function SimulatorLayout({
 	return (
 		<div className="flex flex-col">
 			<SectionDivider>{t("simple.team")}</SectionDivider>
-			<TeamComposer
-				parsedTeam={parsedTeam}
-				config={config}
-				setConfig={setConfig}
-				characters={teamCharacters}
-			/>
+			<div data-testid="editor-team-composer">
+				<TeamCard team={parsedTeam} />
+			</div>
 
 			<SectionDivider>{t("simple.action_list")}</SectionDivider>
 
@@ -58,7 +55,7 @@ export function SimulatorLayout({
 				error={error}
 				theme={prefs.theme}
 				fontSize={prefs.fontSize}
-				importedCharacters={teamCharacters?.imported}
+				importedCharacters={importedCharacters}
 				onAppearanceChange={(appearance) =>
 					onPrefsChange({ ...prefs, ...appearance })
 				}

@@ -10,7 +10,6 @@ import {
 	ChevronDownIcon,
 	ChevronUpIcon,
 	SearchIcon,
-	XIcon,
 	ZoomInIcon,
 } from "lucide-react";
 import type { JSX } from "react";
@@ -61,9 +60,8 @@ type Props = {
 	className?: string;
 	showDetails?: boolean;
 	showSnapshot?: boolean;
-	viewerMode?: boolean;
+	showSnapshotToggle?: boolean;
 	isSkeleton?: boolean;
-	handleDelete?: () => void;
 	handleToggleDetail?: () => void;
 	handleToggleSnapshot?: () => void;
 };
@@ -121,9 +119,8 @@ export function CharacterCard({
 	weaponName,
 	showDetails = true,
 	showSnapshot = true,
-	viewerMode = false,
+	showSnapshotToggle = false,
 	isSkeleton,
-	handleDelete,
 	handleToggleDetail,
 	handleToggleSnapshot,
 	className = "",
@@ -157,7 +154,7 @@ export function CharacterCard({
 	const rows: JSX.Element[] = [];
 
 	let statsHeader = artifactStatsLabel;
-	if (showSnapshot && viewerMode) {
+	if (showSnapshot && showSnapshotToggle) {
 		stats = snapshot;
 		statsHeader = totalStatsLabel;
 	}
@@ -244,7 +241,7 @@ export function CharacterCard({
 							>
 								{showDetails ? <ChevronUpIcon /> : <ChevronDownIcon />}
 							</Button>
-							{showDetails && viewerMode ? (
+							{showDetails && showSnapshotToggle ? (
 								<Button
 									variant="secondary"
 									size="icon-xs"
@@ -254,15 +251,6 @@ export function CharacterCard({
 								</Button>
 							) : null}
 						</div>
-						{viewerMode ? null : (
-							<Button
-								variant="destructive"
-								size="icon-xs"
-								onClick={handleDelete}
-							>
-								<XIcon />
-							</Button>
-						)}
 					</div>
 					<div
 						className="character-header absolute inset-0 -z-10 !bg-cover !bg-center mix-blend-luminosity opacity-75"

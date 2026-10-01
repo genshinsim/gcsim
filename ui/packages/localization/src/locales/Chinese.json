@@ -213,7 +213,7 @@
 		"stats": "属性",
 		"tools_sample_upload": "上传样本",
 		"tools_import": "从 {{src}} 导入",
-		"tools_import_after": "导入角色数据后，点击 \"配队 \"部分的 \"+\"并搜索角色名称，即可添加导入的角色。",
+		"tools_import_after": "导入角色数据后，点击编辑器上方的「已导入角色」并搜索角色名称，即可将导入的角色添加到配置中。",
 		"tools_paste_uid": "在此粘贴 UID",
 		"tools_import_pre_go": "在下面的文本框中粘贴 GOOD 格式的导入数据。如果您来自 Genshin Optimizer，可以<0>在此</0>导出 GOOD 格式的数据库。",
 		"tools_import_pre_enka": "确保您的 UID 在 <0>Enka.Network</0> 上没有问题。",

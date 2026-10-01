@@ -213,7 +213,7 @@
 		"stats": "Attribute",
 		"tools_sample_upload": "Beispiel-Upload",
 		"tools_import": "Aus {{src}} importieren",
-		"tools_import_after": "Sobald deine Figurdaten importiert wurden, kannst du deine importierte Figur hinzufügen, indem du auf das \"+\" im \"Team\"-Bereich klickst und nach dem Namen der Figur suchst.",
+		"tools_import_after": "Sobald deine Figurdaten importiert wurden, kannst du eine Figur zu deiner Konfiguration hinzufügen, indem du über dem Editor auf „Importierte Charaktere“ klickst und nach dem Namen der Figur suchst.",
 		"tools_paste_uid": "UID hier einfügen",
 		"tools_import_pre_go": "Fügen Sie die Importdaten im GOOD-Format in das Textfeld unten ein. Wenn Sie von Genshin Optimizer kommen, können Sie Ihre Datenbank im GOOD-Format <0>hier</0> exportieren.",
 		"tools_import_pre_enka": "Stellen Sie sicher, dass Ihre UID keine Probleme auf <0>Enka.Network</0> hat.",

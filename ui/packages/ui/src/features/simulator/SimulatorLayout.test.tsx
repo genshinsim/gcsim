@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import "@gcsim/components/vitest.setup";
 import { defaultEditorPrefs } from "@gcsim/components";
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -39,6 +39,28 @@ describe("SimulatorLayout", () => {
 		expect(screen.getByTestId("editor-team-composer")).toBeInTheDocument();
 		expect(screen.getByText("simple.action_list")).toBeInTheDocument();
 		expect(screen.queryByTestId("editor-helper-tools")).toBeNull();
+	});
+
+	it("shows the parsed team with no add or remove controls", () => {
+		renderLayout({
+			parsedTeam: [
+				{
+					name: "amber",
+					level: 80,
+					max_level: 90,
+					element: "pyro",
+					cons: 0,
+					weapon: { name: "dullblade", refine: 1, level: 1, max_level: 20 },
+					talents: { attack: 6, skill: 6, burst: 6 },
+					sets: {},
+					stats: [],
+					snapshot: [],
+				},
+			],
+		});
+		const team = within(screen.getByTestId("editor-team-composer"));
+		expect(team.getByText(/game:character_names.amber/)).toBeInTheDocument();
+		expect(team.getAllByRole("button")).toHaveLength(1);
 	});
 
 	it("shows the config error once, under the editor", () => {

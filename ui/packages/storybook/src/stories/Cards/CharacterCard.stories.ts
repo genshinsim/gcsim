@@ -45,7 +45,6 @@ const meta: Meta<typeof CharacterCard> = {
 		totalStatsLabel: "Total Stats (at 0 seconds, best effort basis)",
 		weaponName: "Tome of the Eternal Flow",
 		className: "max-w-sm",
-		handleDelete: fn(),
 		handleToggleDetail: fn(),
 		handleToggleSnapshot: fn(),
 	},
@@ -64,9 +63,9 @@ export const Skeleton: Story = {
 	},
 };
 
-export const ViewerMode: Story = {
+export const SnapshotToggle: Story = {
 	args: {
-		viewerMode: true,
+		showSnapshotToggle: true,
 		showSnapshot: true,
 	},
 };
