@@ -1,5 +1,10 @@
-export { ConfigError } from "./ConfigError";
+export { type EditorThemeId, isEditorThemeId } from "@gcsim/editor";
 export { Editor } from "./Editor";
+export {
+	clampFontSize,
+	EditorSettings,
+	type EditorSettingsProps,
+} from "./EditorSettings";
 export {
 	type ExecutorContextValue,
 	ExecutorProvider,
@@ -11,9 +16,15 @@ export {
 	useRunResult,
 } from "./ExecutorProvider";
 export { HelperTools, type HelperToolsProps } from "./HelperTools";
+export {
+	ImportedCharacterInsert,
+	type ImportedCharacterInsertProps,
+	insertCharacterBlock,
+} from "./ImportedCharacterInsert";
 export { NameSearch } from "./NameSearch";
 export { toParsedTeam } from "./parsedTeam";
 export { SectionDivider, type SectionDividerProps } from "./SectionDivider";
+export { ShortcutSearch } from "./ShortcutSearch";
 export { TeamComposer, type TeamComposerProps } from "./TeamComposer";
 export { ActionListTip, TeamTip, type TipProps } from "./Tips";
 export {
@@ -24,6 +35,5 @@ export {
 	type EditorToggles,
 	type ImportedCharacterOption,
 	type TeamComposerCharacterSource,
-	type Theme,
 } from "./types";
 export { useValidation, type Validation } from "./useValidation";

@@ -1,6 +1,5 @@
 import {
 	ActionListTip,
-	ConfigError,
 	Editor,
 	type EditorPrefs,
 	type EditorToggles,
@@ -58,15 +57,12 @@ export function SimulatorLayout({
 					{toggles.tips ? <TeamTip onHide={hideTips} /> : null}
 					<TeamComposer
 						parsedTeam={parsedTeam}
-						error={error}
 						config={config}
 						setConfig={setConfig}
 						characters={teamCharacters}
 					/>
 				</>
-			) : (
-				<ConfigError error={error} />
-			)}
+			) : null}
 
 			{toggles.nameSearch ? (
 				<>
@@ -81,8 +77,10 @@ export function SimulatorLayout({
 			<Editor
 				value={config}
 				onChange={setConfig}
+				error={error}
 				theme={prefs.theme}
 				fontSize={prefs.fontSize}
+				importedCharacters={teamCharacters?.imported}
 				onAppearanceChange={(appearance) =>
 					onPrefsChange({ ...prefs, ...appearance })
 				}

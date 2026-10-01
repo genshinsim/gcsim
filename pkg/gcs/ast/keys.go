@@ -1,6 +1,9 @@
 package ast
 
 import (
+	"maps"
+	"slices"
+
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 )
@@ -101,4 +104,24 @@ var actionKeys = map[string]action.Action{
 	"jump":        action.ActionJump,
 	"walk":        action.ActionWalk,
 	"swap":        action.ActionSwap,
+}
+
+// Keywords returns the reserved words of the config language, sorted.
+func Keywords() []string {
+	out := make([]string, 0, len(key))
+	for k := range key {
+		if k == "." {
+			continue
+		}
+		out = append(out, k)
+	}
+	slices.Sort(out)
+	return out
+}
+
+// ActionNames returns the character action names (attack, skill, ...), sorted.
+func ActionNames() []string {
+	out := slices.Collect(maps.Keys(actionKeys))
+	slices.Sort(out)
+	return out
 }

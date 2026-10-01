@@ -1,0 +1,46 @@
+@top Program { token* }
+
+token {
+  Number |
+  StringLiteral |
+  LineComment |
+  Keyword |
+  Bool |
+  StatName |
+  ElementName |
+  CharacterName |
+  ActionName |
+  Identifier |
+  Operator |
+  Punctuation
+}
+
+@skip { whitespace }
+
+@tokens {
+  whitespace { @whitespace+ }
+
+  LineComment { ("//" | "#") ![\n]* }
+
+  Identifier { $[a-zA-Z_] $[a-zA-Z0-9_\-%]* }
+
+  Number { @digit+ ("." @digit*)? }
+
+  StringLiteral { "\"" (![\\\"\n] | "\\" _)* "\"" }
+
+  Operator { "==" | "!=" | "<=" | ">=" | "&&" | "||" | "+" | "-" | "*" | "/" | "%" | "<" | ">" | "!" | "=" }
+  Punctuation { "(" | ")" | "{" | "}" | "[" | "]" | "," | ";" | ":" | "." }
+
+  @precedence { Number, Identifier }
+  @precedence { LineComment, Operator }
+  @precedence { Operator, Punctuation }
+}
+
+@external specialize {Identifier} specializeIdentifier from "./tokens" {
+  Keyword,
+  Bool,
+  StatName,
+  ElementName,
+  CharacterName,
+  ActionName
+}

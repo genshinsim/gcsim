@@ -20,7 +20,7 @@
 			"!packages/types/src/generated",
 			"!**/wasm_exec.js",
 			"!**/*.dm.*",
-			"!**/routeTree.gen.ts"
+			"!**/*.gen.*"
 		]
 	},
 	"formatter": {

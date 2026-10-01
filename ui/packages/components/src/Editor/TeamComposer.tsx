@@ -4,13 +4,11 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { TeamCard } from "../Cards";
 import { characterLabel, characters, OmniSelect } from "../common/gcsim";
-import { ConfigError } from "./ConfigError";
 import { cfgFromTeam } from "./teamConfig";
 import type { TeamComposerCharacterSource } from "./types";
 
 export interface TeamComposerProps {
 	parsedTeam: model.Character[];
-	error: string | null;
 	config: string;
 	setConfig: (v: string) => void;
 	characters?: TeamComposerCharacterSource;
@@ -37,7 +35,6 @@ const itemPredicate = (item: PickerItem, query: string) => {
 
 export function TeamComposer({
 	parsedTeam,
-	error,
 	config,
 	setConfig,
 	characters: source,
@@ -97,8 +94,6 @@ export function TeamComposer({
 
 	return (
 		<div data-testid="editor-team-composer" className="flex flex-col gap-2">
-			<ConfigError error={error} />
-
 			<TeamCard
 				team={parsedTeam}
 				handleRemove={handleRemove}

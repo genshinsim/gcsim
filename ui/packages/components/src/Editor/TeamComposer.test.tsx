@@ -100,7 +100,6 @@ describe("TeamComposer", () => {
 		render(
 			<TeamComposer
 				parsedTeam={[char("amber"), char("bennett")]}
-				error={null}
 				config=""
 				setConfig={() => {}}
 			/>,
@@ -109,24 +108,11 @@ describe("TeamComposer", () => {
 		expect(screen.getByText("delete-bennett")).toBeTruthy();
 	});
 
-	it("surfaces the validation error through a destructive alert", () => {
-		render(
-			<TeamComposer
-				parsedTeam={[]}
-				error="bad action list"
-				config=""
-				setConfig={() => {}}
-			/>,
-		);
-		expect(screen.getByText("bad action list")).toBeTruthy();
-	});
-
 	it("removes a card by rewriting the config", async () => {
 		const setConfig = vi.fn();
 		render(
 			<TeamComposer
 				parsedTeam={[char("amber"), char("bennett")]}
-				error={null}
 				config="amber char lvl=1/1 cons=0 talent=1,1,1;\ntarget lvl=100;"
 				setConfig={setConfig}
 				characters={source}
@@ -144,7 +130,6 @@ describe("TeamComposer", () => {
 		render(
 			<TeamComposer
 				parsedTeam={[char("amber")]}
-				error={null}
 				config=""
 				setConfig={setConfig}
 				characters={source}
@@ -161,7 +146,6 @@ describe("TeamComposer", () => {
 		render(
 			<TeamComposer
 				parsedTeam={[char("amber")]}
-				error={null}
 				config=""
 				setConfig={() => {}}
 			/>,

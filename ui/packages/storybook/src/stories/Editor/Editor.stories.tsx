@@ -50,9 +50,16 @@ export const WithToolbar: Story = {
 	},
 };
 
-export const LightTheme: Story = {
+export const ClassicTheme: Story = {
 	args: {
-		theme: "github",
+		theme: "monokai",
+	},
+};
+
+export const WithErrors: Story = {
+	args: {
+		error:
+			"ln4:9: unexpected token\nln12: invalid action\n\tconfig does not contain any targets",
 	},
 };
 

@@ -478,7 +478,6 @@ func run(ctx context.Context, cmd *cli.Command) error {
 		c.GenerateElementCoeff,
 		c.GenerateICDGroup,
 		c.GenerateICDTag,
-		c.GenerateEditorJS,
 		c.GenerateLocalization,
 	} {
 		name := runtime.FuncForPC(reflect.ValueOf(fn).Pointer()).Name()

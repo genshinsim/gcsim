@@ -109,11 +109,11 @@ console monitor.
 - `waitForReady()` — wait for the **Run** button (accessible name "Run") to drop
   its loading spinner (`role="status"`). That transition is wasm + workers
   becoming ready (console: `aggregator loaded okay`, `loading N workers`).
-- `setConfig(cfg)` — replace the Ace editor (`#config_editor`) contents by
-  dispatching a native **paste** on its proxy textarea. Typing key-by-key would
-  trip Ace's auto-indent/bracket-matching and corrupt the config.
+- `setConfig(cfg)` — replace the CodeMirror editor (`#config_editor`) contents
+  by selecting all and inserting the text as one input event. Typing
+  key-by-key would trip auto-indent/bracket-closing and corrupt the config.
 - `waitForConfigValid()` — wait for Run to become enabled with no "Invalid
-  Config" callout (console: `all is good`).
+  Config" panel under the editor (console: `all is good`).
 - `run()` — click Run and wait for the app to navigate to `/web`.
 - `openImportDialog("GO" | "Enka")` — open the editor-settings **Import**
   dropdown (exact name match: the dialogs also carry an "Import" button), click

@@ -189,6 +189,19 @@ func (t *ShortcutTmpl) Write() {
 	data, err := dumpJSON(input)
 	assert(err)
 	writeFile(fmt.Sprintf("ui/packages/docs/src/components/Names/%s.dm.json", t.Kind), data)
+
+	if t.Kind == KindMonster {
+		return
+	}
+	names := make(map[string]string)
+	for _, alt := range t.Names {
+		for _, name := range alt {
+			names[name] = alt[0]
+		}
+	}
+	data, err = dumpJSON(names)
+	assert(err)
+	writeFile(fmt.Sprintf("ui/packages/editor/src/language/names/%s.dm.json", t.Kind), data)
 }
 
 type AssetsTmpl struct {

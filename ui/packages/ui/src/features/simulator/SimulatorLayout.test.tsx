@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-import "@testing-library/jest-dom/vitest";
+import "@gcsim/components/vitest.setup";
 import { defaultEditorPrefs } from "@gcsim/components";
 import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
@@ -7,7 +7,7 @@ import type React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("react-i18next", () => ({
-	useTranslation: () => ({ t: (k: string) => k }),
+	useTranslation: () => ({ t: (k: string) => k, i18n: { language: "en" } }),
 	Trans: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
@@ -60,21 +60,22 @@ describe("SimulatorLayout", () => {
 		expect(screen.getByTestId("editor-helper-tools")).toBeInTheDocument();
 	});
 
-	it("shows the config error when the team is hidden", () => {
-		renderLayout({
-			error: "bad line 3",
-			prefs: {
-				...defaultEditorPrefs,
-				toggles: { ...defaultEditorPrefs.toggles, team: false },
-			},
-		});
-		expect(screen.getByText("bad line 3")).toBeInTheDocument();
-	});
-
-	it("shows the config error once when the team is visible", () => {
-		renderLayout({ error: "bad line 3" });
-		expect(screen.getAllByText("bad line 3")).toHaveLength(1);
-	});
+	it.each([true, false])(
+		"shows the config error once, under the editor (team shown: %s)",
+		(team) => {
+			const { container } = renderLayout({
+				error: "bad line 3",
+				prefs: {
+					...defaultEditorPrefs,
+					toggles: { ...defaultEditorPrefs.toggles, team },
+				},
+			});
+			expect(screen.getAllByText("bad line 3")).toHaveLength(1);
+			expect(
+				container.querySelector("#config_editor [role=alert]"),
+			).toHaveTextContent("bad line 3");
+		},
+	);
 
 	it("reports hidden tips through onPrefsChange", async () => {
 		const onPrefsChange = vi.fn();
@@ -88,23 +89,23 @@ describe("SimulatorLayout", () => {
 		});
 	});
 
-	it("shows the editor toolbar and stores theme changes in prefs", async () => {
+	it("stores editor settings changes in prefs", async () => {
 		const onPrefsChange = vi.fn();
 		renderLayout({ onPrefsChange });
-		await userEvent.selectOptions(screen.getByRole("combobox"), "github");
+		await userEvent.click(
+			screen.getByRole("button", { name: "simple.editor_settings" }),
+		);
+		await userEvent.click(
+			screen.getByRole("button", { name: "simple.increase_font_size" }),
+		);
 		expect(onPrefsChange).toHaveBeenLastCalledWith({
 			...defaultEditorPrefs,
-			theme: "github",
+			fontSize: 15,
 		});
-	});
-
-	it("stores font size changes in prefs", async () => {
-		const onPrefsChange = vi.fn();
-		renderLayout({ onPrefsChange });
-		await userEvent.type(screen.getByRole("spinbutton"), "6");
+		await userEvent.click(screen.getByRole("radio", { name: /Monokai/ }));
 		expect(onPrefsChange).toHaveBeenLastCalledWith({
 			...defaultEditorPrefs,
-			fontSize: 146,
+			theme: "monokai",
 		});
 	});
 

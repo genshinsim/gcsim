@@ -124,20 +124,3 @@ func (c *Compiled) GenerateLocalization() error {
 	writeFile("ui/packages/localization/src/locales/names.dm.json", data)
 	return nil
 }
-
-func (c *Compiled) GenerateEditorJS() error {
-	var chars []string
-	for _, config := range c.Configuration {
-		if config.Kind != KindCharacter {
-			continue
-		}
-		chars = append(chars, config.Character.Model.Key)
-		chars = append(chars, config.Shortcuts...)
-	}
-	input := struct{ Characters []string }{
-		Characters: chars,
-	}
-	data := useTemplate("ui_editor.js.templ", input)
-	writeFile("ui/packages/components/src/Editor/mode-gcsim.dm.js", data)
-	return nil
-}
