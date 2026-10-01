@@ -63,9 +63,9 @@ export const Skeleton: Story = {
 	},
 };
 
-export const ViewerMode: Story = {
+export const SnapshotToggle: Story = {
 	args: {
-		viewerMode: true,
+		showSnapshotToggle: true,
 		showSnapshot: true,
 	},
 };

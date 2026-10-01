@@ -60,7 +60,7 @@ type Props = {
 	className?: string;
 	showDetails?: boolean;
 	showSnapshot?: boolean;
-	viewerMode?: boolean;
+	showSnapshotToggle?: boolean;
 	isSkeleton?: boolean;
 	handleToggleDetail?: () => void;
 	handleToggleSnapshot?: () => void;
@@ -119,7 +119,7 @@ export function CharacterCard({
 	weaponName,
 	showDetails = true,
 	showSnapshot = true,
-	viewerMode = false,
+	showSnapshotToggle = false,
 	isSkeleton,
 	handleToggleDetail,
 	handleToggleSnapshot,
@@ -154,7 +154,7 @@ export function CharacterCard({
 	const rows: JSX.Element[] = [];
 
 	let statsHeader = artifactStatsLabel;
-	if (showSnapshot && viewerMode) {
+	if (showSnapshot && showSnapshotToggle) {
 		stats = snapshot;
 		statsHeader = totalStatsLabel;
 	}
@@ -241,7 +241,7 @@ export function CharacterCard({
 							>
 								{showDetails ? <ChevronUpIcon /> : <ChevronDownIcon />}
 							</Button>
-							{showDetails && viewerMode ? (
+							{showDetails && showSnapshotToggle ? (
 								<Button
 									variant="secondary"
 									size="icon-xs"

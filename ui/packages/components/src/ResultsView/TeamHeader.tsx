@@ -65,7 +65,7 @@ const CharacterCards = ({ characters }: Props) => {
 					showSnapshot={showSnapshot}
 					handleToggleDetail={handleToggleDetail}
 					handleToggleSnapshot={handleToggleSnapshot}
-					viewerMode
+					showSnapshotToggle
 					stats={statBlock.stats[c.name ?? ""] ?? []}
 					snapshot={statBlock.snapshot[c.name ?? ""] ?? []}
 					statsRows={statBlock.maxRows ? statBlock.maxRows : 0}
@@ -110,7 +110,7 @@ export const FakeCard = ({ className }: { className: string }) => (
 			sets: {},
 		}}
 		showDetails={false}
-		viewerMode
+		showSnapshotToggle
 		stats={[]}
 		snapshot={[]}
 		statsRows={0}
