@@ -11,7 +11,6 @@ export * from "./GraphComponents/colors";
 export * from "./GraphComponents/DataColors";
 export * from "./GraphComponents/Grids";
 export * from "./GraphComponents/OuterLabelPie/OuterLabels";
-export * from "./GraphComponents/OuterLabelPie/Tooltip";
 export * from "./GraphComponents/ParentWidth";
 export * from "./GraphComponents/PathDataPoint";
 export * from "./GraphComponents/TooltipRows";

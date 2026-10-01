@@ -1,9 +1,9 @@
 import { Group } from "@visx/group";
 import { Pie } from "@visx/shape";
-import { useTooltip } from "@visx/tooltip";
 import type { JSX } from "react";
+import { ChartTooltip } from "../ChartTooltip/ChartTooltip";
+import { useChartTooltip } from "../ChartTooltip/useChartTooltip";
 import { OuterLabels } from "./OuterLabels";
-import { RenderTooltip, type TooltipData, useTooltipHandles } from "./Tooltip";
 
 type Props<Datum> = {
 	width: number;
@@ -43,11 +43,7 @@ export default <Datum,>({
 	margin = 150,
 	outlineWidth = 1,
 }: Props<Datum>) => {
-	const tooltip = useTooltip<TooltipData>();
-	const tooltipHandles = useTooltipHandles(
-		tooltip.showTooltip,
-		tooltip.hideTooltip,
-	);
+	const tooltip = useChartTooltip<number>();
 
 	const radius = Math.min(width - margin, height) / 2;
 	return (
@@ -70,8 +66,8 @@ export default <Datum,>({
 									labelColor={labelColor}
 									labelText={labelText}
 									labelValue={labelValue}
-									mouseHover={tooltipHandles.mouseHover}
-									mouseLeave={tooltipHandles.mouseLeave}
+									mouseHover={tooltip.show}
+									mouseLeave={tooltip.scheduleHide}
 									tail={tail}
 								/>
 							)}
@@ -86,7 +82,7 @@ export default <Datum,>({
 					>
 						{(pie) => {
 							return pie.arcs.map((arc, index) => {
-								if (tooltip.tooltipData?.index !== index) {
+								if (tooltip.data !== index) {
 									return null;
 								}
 
@@ -114,8 +110,8 @@ export default <Datum,>({
 										fill={color(arc.data)}
 										stroke={outline}
 										strokeWidth={outlineWidth}
-										onMouseMove={(e) => tooltipHandles.mouseHover(e, index)}
-										onMouseLeave={() => tooltipHandles.mouseLeave()}
+										onMouseMove={(e) => tooltip.show(e, index)}
+										onMouseLeave={tooltip.scheduleHide}
 									/>
 								);
 							});
@@ -123,16 +119,11 @@ export default <Datum,>({
 					</Pie>
 				</Group>
 			</svg>
-			<RenderTooltip
-				data={data}
-				tooltipOpen={tooltip.tooltipOpen}
-				tooltipData={tooltip.tooltipData}
-				tooltipLeft={tooltip.tooltipLeft}
-				tooltipTop={tooltip.tooltipTop}
-				content={tooltipContent}
-				handles={tooltipHandles}
-				showTooltip={tooltip.showTooltip}
-			/>
+			{tooltipContent != null && (
+				<ChartTooltip tooltip={tooltip}>
+					{(index) => tooltipContent(data[index])}
+				</ChartTooltip>
+			)}
 		</div>
 	);
 };

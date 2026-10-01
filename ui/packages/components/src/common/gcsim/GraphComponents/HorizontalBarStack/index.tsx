@@ -2,13 +2,13 @@ import type { model } from "@gcsim/types";
 import { Group } from "@visx/group";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { BarStackHorizontal, type StackKey } from "@visx/shape";
-import { useTooltip } from "@visx/tooltip";
 import type { JSX } from "react";
 import { useTranslation } from "react-i18next";
 import { GraphAxisBottom, GraphAxisLeft } from "../Axes";
+import { ChartTooltip } from "../ChartTooltip/ChartTooltip";
+import { useChartTooltip } from "../ChartTooltip/useChartTooltip";
 import { GraphGridColumns } from "../Grids";
-import { HoverBoxPlot } from "./HoverBoxPlot";
-import { RenderTooltip, type TooltipData, useTooltipHandles } from "./Tooltip";
+import { HoverBoxPlot, type HoverData } from "./HoverBoxPlot";
 
 type Props<Datum, Key extends StackKey> = {
 	width: number;
@@ -49,11 +49,7 @@ export default <Datum, Key extends StackKey>({
 	tooltipContent,
 	bottomLabel,
 }: Props<Datum, Key>) => {
-	const tooltip = useTooltip<TooltipData<Key>>();
-	const tooltipHandles = useTooltipHandles(
-		tooltip.showTooltip,
-		tooltip.hideTooltip,
-	);
+	const tooltip = useChartTooltip<HoverData<Key>>();
 
 	const { i18n } = useTranslation();
 	const xMax = width - margin.left - margin.right;
@@ -117,7 +113,7 @@ export default <Datum, Key extends StackKey>({
 										return null;
 									}
 
-									const hoverData: TooltipData<Key> = {
+									const hoverData: HoverData<Key> = {
 										index: bar.index,
 										key: bar.key,
 										x: bar.x,
@@ -127,8 +123,8 @@ export default <Datum, Key extends StackKey>({
 									};
 
 									const hover =
-										bar.index === tooltip.tooltipData?.index &&
-										bar.key === tooltip.tooltipData?.key;
+										bar.index === tooltip.data?.index &&
+										bar.key === tooltip.data?.key;
 									return (
 										<Group
 											key={"barstack-" + barStack.index + "-" + bar.index}
@@ -143,10 +139,8 @@ export default <Datum, Key extends StackKey>({
 												stroke="var(--g-surface)"
 												strokeWidth={0.25}
 												strokeOpacity={1}
-												onMouseLeave={() => tooltipHandles.mouseLeave()}
-												onMouseMove={(e) =>
-													tooltipHandles.mouseHover(e, hoverData)
-												}
+												onMouseLeave={tooltip.scheduleHide}
+												onMouseMove={(e) => tooltip.show(e, hoverData)}
 											/>
 										</Group>
 									);
@@ -156,25 +150,18 @@ export default <Datum, Key extends StackKey>({
 					</BarStackHorizontal>
 					<HoverBoxPlot
 						data={data}
-						tooltip={tooltip.tooltipData}
-						open={tooltip.tooltipOpen}
+						tooltip={tooltip}
 						scale={xScale}
 						color={hoverColor}
-						handles={tooltipHandles}
 						stat={stat}
 					/>
 				</Group>
 			</svg>
-			<RenderTooltip
-				data={data}
-				tooltipOpen={tooltip.tooltipOpen}
-				tooltipData={tooltip.tooltipData}
-				tooltipLeft={tooltip.tooltipLeft}
-				tooltipTop={tooltip.tooltipTop}
-				handles={tooltipHandles}
-				showTooltip={tooltip.showTooltip}
-				content={tooltipContent}
-			/>
+			{tooltipContent != null && (
+				<ChartTooltip tooltip={tooltip}>
+					{(hover) => tooltipContent(data[hover.index], hover.key)}
+				</ChartTooltip>
+			)}
 		</div>
 	);
 };

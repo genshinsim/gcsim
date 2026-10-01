@@ -26,7 +26,7 @@ export const TooltipTitle = ({ title, color, percent }: TitleProps) => {
 			<span className="whitespace-nowrap" style={{ color: color }}>
 				{title}
 			</span>
-			{value != null && <span>{"(" + value + ")"}</span>}
+			{value != null && <span>{`(${value})`}</span>}
 		</div>
 	);
 };
@@ -45,7 +45,13 @@ type RowProps = {
 	suffix?: string;
 };
 
-export const TooltipRow = ({ name, value, color, format, suffix }: RowProps) => {
+export const TooltipRow = ({
+	name,
+	value,
+	color,
+	format,
+	suffix,
+}: RowProps) => {
 	const { i18n } = useTranslation();
 	const num =
 		format == null
