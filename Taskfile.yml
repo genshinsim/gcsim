@@ -5,6 +5,7 @@ tasks:
     cmds:
       - task: protos
       - task: pipeline
+      - task: editor-keys
   # Generate protobuf code with buf (uses hosted remote plugins, so no local
   # protoc / protoc-gen-* toolchain is required). Config: buf.gen.yaml.
   protos:
@@ -31,7 +32,9 @@ tasks:
     cmds:
       - go generate ./pipeline
       - go run ./pipeline {{.CLI_ARGS}}
-      - go run ./cmd/editorkeys
+  editor-keys:
+    desc: Generate the config editor's keyword tables from pkg/gcs/ast
+    cmd: go run ./cmd/editorkeys
   pipeline-add:
     cmds:
       - git add -v 'ui/packages/docs/docs/reference/*/*.md' > /dev/null

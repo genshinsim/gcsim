@@ -170,5 +170,5 @@ Install the following:
 The config editor (`ui/packages/editor`) highlights and completes names from generated files, so they never need editing by hand:
 
 - Character, weapon and artifact names and their shortcuts (`src/language/names/*.dm.json`) come from `task pipeline`.
-- Keywords, stats, elements and actions (`src/language/keys.dm.json`) come from `pkg/gcs/ast`; `task pipeline` regenerates them, or run `go run ./cmd/editorkeys` on its own.
+- Keywords, stats, elements and actions (`src/language/keys.gen.json`) come from `pkg/gcs/ast`. After changing them, run `task editor-keys`; a Go test fails if the committed file is out of date.
 - The parser (`src/language/parser.gen.ts`) is built from `src/language/gcsim.grammar`. After changing the grammar, run `pnpm --filter @gcsim/editor build:grammar` from `ui/`; a test fails if the committed parser is out of date.

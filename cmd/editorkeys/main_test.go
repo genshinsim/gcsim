@@ -17,6 +17,6 @@ func TestGeneratedFileUpToDate(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !bytes.Equal(got, want) {
-		t.Fatalf("%v is stale; run `go run ./cmd/editorkeys` from the repo root", outPath)
+		t.Fatalf("%v is stale; run `task editor-keys`", outPath)
 	}
 }

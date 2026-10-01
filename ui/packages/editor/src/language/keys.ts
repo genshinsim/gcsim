@@ -1,4 +1,4 @@
-import data from "./keys.dm.json";
+import data from "./keys.gen.json";
 import artifacts from "./names/artifact.dm.json";
 import characters from "./names/character.dm.json";
 import weapons from "./names/weapon.dm.json";

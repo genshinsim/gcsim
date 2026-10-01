@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/gcs/ast"
 )
 
-const outPath = "ui/packages/editor/src/language/keys.dm.json"
+const outPath = "ui/packages/editor/src/language/keys.gen.json"
 
 type editorKeys struct {
 	Keywords []string `json:"keywords"`
