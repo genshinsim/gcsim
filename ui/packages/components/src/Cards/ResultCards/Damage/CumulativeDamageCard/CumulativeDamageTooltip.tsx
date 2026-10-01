@@ -1,69 +1,16 @@
-import { Popover, PopoverAnchor, PopoverContent } from "@gcsim/primitives";
-import { localPoint } from "@visx/event";
 import { Group } from "@visx/group";
 import { Line } from "@visx/shape";
 import type { ScaleLinear } from "d3-scale";
 import type { MutableRefObject } from "react";
 import { useTranslation } from "react-i18next";
-import { DataColorsConst, PathDataPoint } from "../../../../common/gcsim";
+import {
+	type ChartTooltipState,
+	DataColorsConst,
+	PathDataPoint,
+	TooltipList,
+	TooltipRow,
+} from "../../../../common/gcsim";
 import type { Point } from "./CumulativeDamageData";
-
-export interface TooltipData {
-	index: number;
-}
-
-export interface TooltipHandles {
-	mouseLeave: () => void;
-	mouseHover: (e: React.MouseEvent) => void;
-	clearTimeout: () => void;
-}
-
-export function useTooltipHandles(
-	showTooltip: (args: ShowTooltipArgs<TooltipData>) => void,
-	hideTooltip: () => void,
-	xScale: ScaleLinear<number, number>,
-	margin: { left: number; right: number; top: number; bottom: number },
-	bucketSize: number,
-): TooltipHandles {
-	let tooltipTimeout: number;
-	const mouseLeave = () => {
-		tooltipTimeout = window.setTimeout(() => {
-			hideTooltip();
-		}, 150);
-	};
-
-	const clearTimeout = () => {
-		if (tooltipTimeout) {
-			window.clearTimeout(tooltipTimeout);
-		}
-	};
-
-	const mouseHover = (e: React.MouseEvent) => {
-		const { x } = localPoint(e) || { x: 0 };
-		const index = Math.round(
-			(60 * xScale.invert(x - margin.left)) / bucketSize,
-		);
-
-		clearTimeout();
-		showTooltip({
-			tooltipData: { index: index },
-			tooltipLeft: x,
-			tooltipTop: e.nativeEvent.offsetY - 50,
-		});
-	};
-
-	return {
-		mouseLeave: mouseLeave,
-		mouseHover: mouseHover,
-		clearTimeout: clearTimeout,
-	};
-}
-
-type ShowTooltipArgs<Datum> = {
-	tooltipData?: Datum;
-	tooltipLeft?: number;
-	tooltipTop?: number;
-};
 
 type HoverLineProps = {
 	data: Point[];
@@ -75,17 +22,18 @@ type HoverLineProps = {
 	q1Ref: MutableRefObject<SVGPathElement | null>;
 	q2Ref: MutableRefObject<SVGPathElement | null>;
 	q3Ref: MutableRefObject<SVGPathElement | null>;
-	tooltipData?: TooltipData;
-	tooltipOpen?: boolean;
-	tooltipLeft?: number;
+	tooltip: ChartTooltipState<number>;
 	margin: { left: number; right: number; top: number; bottom: number };
 };
 
 export const HoverLine = (props: HoverLineProps) => {
+	const point =
+		props.tooltip.data === undefined
+			? undefined
+			: props.data[props.tooltip.data];
 	if (
-		!props.tooltipOpen ||
-		!props.tooltipLeft ||
-		!props.tooltipData ||
+		!props.tooltip.open ||
+		point === undefined ||
 		!props.minRef.current ||
 		!props.maxRef.current ||
 		!props.q1Ref.current ||
@@ -95,8 +43,7 @@ export const HoverLine = (props: HoverLineProps) => {
 		return null;
 	}
 
-	const x = props.tooltipLeft;
-	const point = props.data[props.tooltipData.index];
+	const x = props.tooltip.left;
 
 	return (
 		<Group left={-props.margin.left}>
@@ -143,125 +90,43 @@ export const HoverLine = (props: HoverLineProps) => {
 	);
 };
 
-type TooltipProps = {
-	data: Point[];
-	names?: string[];
-	tooltipOpen: boolean;
-	tooltipData?: TooltipData;
-	tooltipTop?: number;
-	tooltipLeft?: number;
-	handles: TooltipHandles;
-	showTooltip: (args: ShowTooltipArgs<TooltipData>) => void;
-	margin: { left: number; right: number; top: number; bottom: number };
-};
-
-export const RenderTooltip = (props: TooltipProps) => {
+export const CumulativeDamageTooltipContent = ({ point }: { point: Point }) => {
 	const { t } = useTranslation();
-	if (
-		!props.tooltipOpen ||
-		!props.tooltipData ||
-		!props.tooltipLeft ||
-		!props.names
-	) {
-		return null;
-	}
-
-	const point = props.data[props.tooltipData.index];
-
-	const content = (
-		// biome-ignore lint/a11y/noStaticElementInteractions: mouse-only chart tooltip hover region, no interactive semantics
-		<div
-			onMouseMove={() => {
-				props.handles.clearTimeout();
-				props.showTooltip({
-					tooltipData: props.tooltipData,
-					tooltipLeft: props.tooltipLeft,
-					tooltipTop: props.tooltipTop,
-				});
-			}}
-			onMouseLeave={() => props.handles.mouseLeave()}
-		>
-			<div className="flex flex-col px-2 py-1 font-g-mono text-g-xs">
-				<ul className="grid grid-cols-[repeat(2,_max-content)] gap-x-2 justify-start">
-					<Item
-						color="var(--g-text-mute)"
-						name={t("result.time")}
-						value={point.x}
-						suffix={t("result.seconds_short")}
-					/>
-					<Item
-						color={DataColorsConst.qualitative2(3)}
-						name="min"
-						value={point.y.min}
-					/>
-					<Item
-						color={DataColorsConst.qualitative2(1)}
-						name="max"
-						value={point.y.max}
-					/>
-					<Item
-						color={DataColorsConst.qualitative2(4)}
-						name="p25"
-						value={point.y.q1}
-					/>
-					<Item
-						color={DataColorsConst.qualitative3(8)}
-						name="p50"
-						value={point.y.q2}
-					/>
-					<Item
-						color={DataColorsConst.qualitative2(5)}
-						name="p75"
-						value={point.y.q3}
-					/>
-				</ul>
-			</div>
-		</div>
-	);
-
 	return (
-		<div
-			className="pointer-events-none absolute"
-			style={{ top: props.tooltipTop, left: props.tooltipLeft }}
-		>
-			<Popover open={true}>
-				<PopoverAnchor />
-				<PopoverContent
-					side="top"
-					sideOffset={8}
-					onOpenAutoFocus={(e) => e.preventDefault()}
-					className="pointer-events-auto w-auto p-0"
-				>
-					{content}
-				</PopoverContent>
-			</Popover>
+		<div className="flex flex-col font-g-mono text-g-xs">
+			<TooltipList>
+				<TooltipRow
+					color="var(--g-text-mute)"
+					name={t("result.time")}
+					value={point.x}
+					suffix={t("result.seconds_short")}
+				/>
+				<TooltipRow
+					color={DataColorsConst.qualitative2(3)}
+					name={t("result.stat_min")}
+					value={point.y.min}
+				/>
+				<TooltipRow
+					color={DataColorsConst.qualitative2(1)}
+					name={t("result.stat_max")}
+					value={point.y.max}
+				/>
+				<TooltipRow
+					color={DataColorsConst.qualitative2(4)}
+					name={t("result.stat_p25")}
+					value={point.y.q1}
+				/>
+				<TooltipRow
+					color={DataColorsConst.qualitative3(8)}
+					name={t("result.stat_p50")}
+					value={point.y.q2}
+				/>
+				<TooltipRow
+					color={DataColorsConst.qualitative2(5)}
+					name={t("result.stat_p75")}
+					value={point.y.q3}
+				/>
+			</TooltipList>
 		</div>
-	);
-};
-
-type ItemProps = {
-	name: string;
-	value?: number;
-	color?: string;
-	suffix?: string;
-};
-
-const Item = ({ name, value, color, suffix }: ItemProps) => {
-	const { i18n } = useTranslation();
-	const num = value?.toLocaleString(i18n.language, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2,
-	});
-
-	return (
-		<>
-			<span className="text-g-ink-mute list-item" style={{ color: color }}>
-				{name}
-			</span>
-			<span>
-				{num}
-				{suffix}
-			</span>
-		</>
 	);
 };

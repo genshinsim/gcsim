@@ -146,7 +146,6 @@ const Graph = memo((props: GraphProps) => {
 					<DamageOverTimeGraph
 						width={width}
 						height={height}
-						names={props.glyphNames}
 						input={props.data.dps}
 					/>
 				)}

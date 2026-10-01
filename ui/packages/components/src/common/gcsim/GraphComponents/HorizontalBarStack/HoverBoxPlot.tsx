@@ -2,15 +2,22 @@ import type { model } from "@gcsim/types";
 import { Group } from "@visx/group";
 import { BoxPlot } from "@visx/stats";
 import type { ScaleLinear } from "d3-scale";
-import type { TooltipData, TooltipHandles } from "./Tooltip";
+import type { ChartTooltipState } from "../ChartTooltip/useChartTooltip";
+
+export type HoverData<Key> = {
+	key: Key;
+	index: number;
+	x: number;
+	y: number;
+	height: number;
+	width: number;
+};
 
 type Props<Datum, Key> = {
 	data: Datum[];
-	tooltip?: TooltipData<Key>;
-	open: boolean;
+	tooltip: ChartTooltipState<HoverData<Key>>;
 	scale: ScaleLinear<number, number>;
 	color: (k: Key) => string;
-	handles: TooltipHandles<Key>;
 	stat: (d: Datum, k: Key) => model.DescriptiveStats;
 };
 
@@ -18,28 +25,27 @@ export const HoverBoxPlot = <Datum, Key>({
 	data,
 	tooltip,
 	scale,
-	open,
 	color,
-	handles,
 	stat,
 }: Props<Datum, Key>) => {
-	if (!tooltip || !open) {
+	const hover = tooltip.data;
+	if (!tooltip.open || hover === undefined) {
 		return null;
 	}
 
-	const box = meanSdBox(stat(data[tooltip.index], tooltip.key));
+	const box = meanSdBox(stat(data[hover.index], hover.key));
 
 	return (
 		<Group
-			left={tooltip.x}
-			top={tooltip.y}
-			onMouseLeave={() => handles.mouseLeave()}
-			onMouseMove={(e) => handles.mouseHover(e, tooltip)}
+			left={hover.x}
+			top={hover.y}
+			onMouseLeave={tooltip.scheduleHide}
+			onMouseMove={(e) => tooltip.show(e, hover)}
 		>
 			<BoxPlot
 				horizontal
 				top={10}
-				boxWidth={tooltip.height - 20}
+				boxWidth={hover.height - 20}
 				valueScale={scale}
 				min={box.min}
 				max={box.max}
@@ -47,7 +53,7 @@ export const HoverBoxPlot = <Datum, Key>({
 				median={box.median}
 				thirdQuartile={box.thirdQuartile}
 				stroke={"var(--g-text)"}
-				fill={color(tooltip.key)}
+				fill={color(hover.key)}
 			/>
 		</Group>
 	);

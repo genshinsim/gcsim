@@ -2,13 +2,14 @@ import type { model } from "@gcsim/types";
 import { Group } from "@visx/group";
 import { scaleLinear } from "@visx/scale";
 import { Circle } from "@visx/shape";
-import { useTooltip } from "@visx/tooltip";
 import { useMemo } from "react";
 import { NoData } from "../../NoData";
 import { GraphAxisBottom, GraphAxisLeft, GraphAxisRight } from "../Axes";
+import { ChartTooltip } from "../ChartTooltip/ChartTooltip";
+import { useChartTooltip } from "../ChartTooltip/useChartTooltip";
 import { DataColorsConst } from "../DataColors";
 import { GraphGrid } from "../Grids";
-import { RenderTooltip, type TooltipData, useTooltipHandles } from "./Tooltip";
+import { PositionTooltipContent, type TooltipData } from "./Tooltip";
 
 type Props = {
 	width: number;
@@ -50,11 +51,7 @@ export default ({
 
 	const sizeScale = (size: number) => size / gridSize;
 
-	const tooltip = useTooltip<TooltipData>();
-	const tooltipHandles = useTooltipHandles(
-		tooltip.showTooltip,
-		tooltip.hideTooltip,
-	);
+	const tooltip = useChartTooltip<TooltipData>();
 
 	if (enemies == null || data.length === 0) {
 		return <NoData />;
@@ -108,9 +105,7 @@ export default ({
 					/>
 					{data.map((e, i) => {
 						const opacity =
-							tooltip.tooltipData?.index === i && !tooltip.tooltipData.player
-								? 0.75
-								: 0.25;
+							tooltip.data?.index === i && !tooltip.data.player ? 0.75 : 0.25;
 						return (
 							<Circle
 								// biome-ignore lint/suspicious/noArrayIndexKey: name may be absent/duplicated so index completes the composite; enemy order is stable (built once in Go, never reordered)
@@ -123,7 +118,7 @@ export default ({
 								stroke={DataColorsConst.qualitative3(i)}
 								strokeWidth={1}
 								onMouseMove={(ev) =>
-									tooltipHandles.mouseHover(ev, {
+									tooltip.show(ev, {
 										player: false,
 										index: i,
 										x: e.x,
@@ -131,7 +126,7 @@ export default ({
 										r: e.r,
 									})
 								}
-								onMouseLeave={() => tooltipHandles.mouseLeave()}
+								onMouseLeave={tooltip.scheduleHide}
 							/>
 						);
 					})}
@@ -140,12 +135,12 @@ export default ({
 							cx={xScale(player.x ?? 0)}
 							cy={yScale(player.y ?? 0)}
 							r={sizeScale(player.r ?? 0.3)}
-							fillOpacity={tooltip.tooltipData?.player ? 0.75 : 0}
+							fillOpacity={tooltip.data?.player ? 0.75 : 0}
 							fill={DataColorsConst.gray}
 							stroke={DataColorsConst.gray}
 							strokeWidth={2}
 							onMouseMove={(ev) =>
-								tooltipHandles.mouseHover(ev, {
+								tooltip.show(ev, {
 									player: true,
 									index: 0,
 									x: player.x ?? 0,
@@ -153,19 +148,14 @@ export default ({
 									r: player.r ?? 0.3,
 								})
 							}
-							onMouseLeave={() => tooltipHandles.mouseLeave()}
+							onMouseLeave={tooltip.scheduleHide}
 						/>
 					)}
 				</Group>
 			</svg>
-			<RenderTooltip
-				tooltipOpen={tooltip.tooltipOpen}
-				tooltipData={tooltip.tooltipData}
-				tooltipLeft={tooltip.tooltipLeft}
-				tooltipTop={tooltip.tooltipTop}
-				handles={tooltipHandles}
-				showTooltip={tooltip.showTooltip}
-			/>
+			<ChartTooltip tooltip={tooltip}>
+				{(d) => <PositionTooltipContent data={d} />}
+			</ChartTooltip>
 		</div>
 	);
 };

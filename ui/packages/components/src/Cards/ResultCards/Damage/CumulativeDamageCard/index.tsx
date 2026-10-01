@@ -62,7 +62,6 @@ export default ({ data }: Props) => {
 						height={height}
 						graph={graph}
 						target={target}
-						names={names}
 						input={cumu}
 					/>
 				)}

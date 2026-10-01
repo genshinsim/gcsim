@@ -1,26 +1,23 @@
 import { specialLocales } from "@gcsim/localization";
 import type { model } from "@gcsim/types";
+import { localPoint } from "@visx/event";
 import { Group } from "@visx/group";
 import { LegendItem, LegendLabel, LegendOrdinal } from "@visx/legend";
 import { scaleLinear, scaleOrdinal } from "@visx/scale";
 import { AreaStack, Bar, LinePath } from "@visx/shape";
-import { useTooltip } from "@visx/tooltip";
 import { useTranslation } from "react-i18next";
 import {
+	ChartTooltip,
 	DataColorsConst,
 	GraphAxisBottom,
 	GraphAxisLeft,
 	GraphGrid,
 	NoData,
+	useChartTooltip,
 	useDataColors,
 } from "../../../../common/gcsim";
 import { useData } from "./CumulativeData";
-import {
-	HoverLine,
-	RenderTooltip,
-	type TooltipData,
-	useTooltipHandles,
-} from "./CumulativeTooltip";
+import { CumulativeTooltipContent, HoverLine } from "./CumulativeTooltip";
 
 const defaultMargin = { top: 10, left: 100, right: 20, bottom: 40 };
 
@@ -109,15 +106,14 @@ export const CumulativeGraph = ({
 		domain: [0, 1],
 	});
 
-	const tooltip = useTooltip<TooltipData>();
-	const tooltipHandles = useTooltipHandles(
-		tooltip.showTooltip,
-		tooltip.hideTooltip,
-		xScale,
-		yMax,
-		margin,
-		bucketSize,
-	);
+	const tooltip = useChartTooltip<number>();
+	const onMouseMove = (e: React.MouseEvent) => {
+		const { x } = localPoint(e) ?? { x: 0 };
+		tooltip.show(
+			e,
+			Math.round((60 * xScale.invert(x - margin.left)) / bucketSize),
+		);
+	};
 
 	if (names == null || input == null || data.length === 0) {
 		return <NoData />;
@@ -173,8 +169,8 @@ export const CumulativeGraph = ({
 						width={xMax}
 						height={yMax}
 						fill="transparent"
-						onMouseMove={tooltipHandles.mouseHover}
-						onMouseLeave={() => tooltipHandles.mouseLeave()}
+						onMouseMove={onMouseMove}
+						onMouseLeave={tooltip.scheduleHide}
 					/>
 					<GraphAxisLeft
 						hideTicks
@@ -211,24 +207,18 @@ export const CumulativeGraph = ({
 						names={names}
 						yScale={yScale}
 						yMax={yMax}
-						tooltipData={tooltip.tooltipData}
-						tooltipOpen={tooltip.tooltipOpen}
-						tooltipLeft={tooltip.tooltipLeft}
+						tooltip={tooltip}
 						margin={margin}
 					/>
 				</Group>
 			</svg>
-			<RenderTooltip
-				names={names}
-				data={data}
-				tooltipOpen={tooltip.tooltipOpen}
-				tooltipData={tooltip.tooltipData}
-				tooltipLeft={tooltip.tooltipLeft}
-				tooltipTop={tooltip.tooltipTop}
-				handles={tooltipHandles}
-				showTooltip={tooltip.showTooltip}
-				margin={margin}
-			/>
+			<ChartTooltip tooltip={tooltip}>
+				{(index) =>
+					data[index] && (
+						<CumulativeTooltipContent point={data[index]} names={names} />
+					)
+				}
+			</ChartTooltip>
 		</div>
 	);
 };
