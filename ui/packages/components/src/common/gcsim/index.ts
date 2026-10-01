@@ -5,6 +5,8 @@ import OuterLabelPie from "./GraphComponents/OuterLabelPie";
 import PositionGraph from "./GraphComponents/PositionGraph";
 
 export * from "./GraphComponents/Axes";
+export * from "./GraphComponents/ChartTooltip/ChartTooltip";
+export * from "./GraphComponents/ChartTooltip/useChartTooltip";
 export * from "./GraphComponents/colors";
 export * from "./GraphComponents/DataColors";
 export * from "./GraphComponents/Grids";
@@ -12,6 +14,7 @@ export * from "./GraphComponents/OuterLabelPie/OuterLabels";
 export * from "./GraphComponents/OuterLabelPie/Tooltip";
 export * from "./GraphComponents/ParentWidth";
 export * from "./GraphComponents/PathDataPoint";
+export * from "./GraphComponents/TooltipRows";
 export * from "./LatestVersion";
 export * from "./Navbar";
 export * from "./NoData";
