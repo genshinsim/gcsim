@@ -17,7 +17,7 @@ export type ChartTooltipState<TData> = {
 	cancelHide: () => void;
 };
 
-type Position<TData> = Pick<
+type VisibleState<TData> = Pick<
 	ChartTooltipState<TData>,
 	"open" | "data" | "left" | "top"
 >;
@@ -26,7 +26,7 @@ export function useChartTooltip<TData>({
 	hideDelay = 150,
 	offsetY = -50,
 }: ChartTooltipOptions = {}): ChartTooltipState<TData> {
-	const [position, setPosition] = useState<Position<TData>>({
+	const [visible, setVisible] = useState<VisibleState<TData>>({
 		open: false,
 		left: 0,
 		top: 0,
@@ -42,7 +42,7 @@ export function useChartTooltip<TData>({
 		cancelHide();
 		hideTimer.current = window.setTimeout(() => {
 			hideTimer.current = undefined;
-			setPosition((p) => ({ ...p, open: false, data: undefined }));
+			setVisible((p) => ({ ...p, open: false, data: undefined }));
 		}, hideDelay);
 	}, [cancelHide, hideDelay]);
 
@@ -50,12 +50,12 @@ export function useChartTooltip<TData>({
 		(e: React.MouseEvent, data: TData) => {
 			cancelHide();
 			const { x, y } = localPoint(e) ?? { x: 0, y: 0 };
-			setPosition({ open: true, data: data, left: x, top: y + offsetY });
+			setVisible({ open: true, data: data, left: x, top: y + offsetY });
 		},
 		[cancelHide, offsetY],
 	);
 
 	useEffect(() => cancelHide, [cancelHide]);
 
-	return { ...position, show, scheduleHide, cancelHide };
+	return { ...visible, show, scheduleHide, cancelHide };
 }
