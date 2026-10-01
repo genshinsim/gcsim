@@ -252,7 +252,13 @@ function build({ palette: p, dark }: EditorTheme): Extension {
 				isolation: "isolate",
 			},
 			"&.cm-focused": { outline: `1px solid ${p.cursor}` },
-			".cm-scroller": { fontFamily: "var(--g-font-mono)", lineHeight: "1.5" },
+			// Chrome keeps a stale "//" ligature glyph (blank first slash) when
+			// CodeMirror edits a text node in place.
+			".cm-scroller": {
+				fontFamily: "var(--g-font-mono)",
+				fontVariantLigatures: "none",
+				lineHeight: "1.5",
+			},
 			// scrollbar-color covers Firefox and Chromium; the pseudo-elements
 			// cover Safari.
 			".cm-scroller, .cm-tooltip-autocomplete > ul, .cm-gcsim-errors": {
