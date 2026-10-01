@@ -27,9 +27,6 @@ const statKeys = [
 	"dmg%",
 ];
 
-export const charLinesRegEx =
-	/^(\w+) (?:char|add) (?:lvl|weapon|set|stats).+$(?:\r\n|\r|\n)?/gm;
-
 export function charToCfg(char: model.Character): string {
 	const name = char.name ?? "";
 	const talents = char.talents ?? {};
@@ -58,17 +55,4 @@ export function charToCfg(char: model.Character): string {
 	}
 
 	return str;
-}
-
-export function cfgFromTeam(team: model.Character[], cfg: string): string {
-	let next = "";
-	team.forEach((c) => {
-		next += `${charToCfg(c)}\n`;
-	});
-
-	let out = cfg.replace(charLinesRegEx, "");
-	out = next + out;
-	out = out.replace(/(\r\n|\r|\n){2,}/g, "$1\n");
-
-	return out;
 }

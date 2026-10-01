@@ -23,13 +23,11 @@ export {
 export { toParsedTeam } from "./parsedTeam";
 export { SectionDivider, type SectionDividerProps } from "./SectionDivider";
 export { ShortcutSearch } from "./ShortcutSearch";
-export { TeamComposer, type TeamComposerProps } from "./TeamComposer";
 export {
 	defaultEditorPrefs,
 	type EditorAppearance,
 	type EditorPrefs,
 	type EditorProps,
 	type ImportedCharacterOption,
-	type TeamComposerCharacterSource,
 } from "./types";
 export { useValidation, type Validation } from "./useValidation";

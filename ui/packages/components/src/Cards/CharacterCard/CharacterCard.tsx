@@ -10,7 +10,6 @@ import {
 	ChevronDownIcon,
 	ChevronUpIcon,
 	SearchIcon,
-	XIcon,
 	ZoomInIcon,
 } from "lucide-react";
 import type { JSX } from "react";
@@ -63,7 +62,6 @@ type Props = {
 	showSnapshot?: boolean;
 	viewerMode?: boolean;
 	isSkeleton?: boolean;
-	handleDelete?: () => void;
 	handleToggleDetail?: () => void;
 	handleToggleSnapshot?: () => void;
 };
@@ -123,7 +121,6 @@ export function CharacterCard({
 	showSnapshot = true,
 	viewerMode = false,
 	isSkeleton,
-	handleDelete,
 	handleToggleDetail,
 	handleToggleSnapshot,
 	className = "",
@@ -254,15 +251,6 @@ export function CharacterCard({
 								</Button>
 							) : null}
 						</div>
-						{viewerMode ? null : (
-							<Button
-								variant="destructive"
-								size="icon-xs"
-								onClick={handleDelete}
-							>
-								<XIcon />
-							</Button>
-						)}
 					</div>
 					<div
 						className="character-header absolute inset-0 -z-10 !bg-cover !bg-center mix-blend-luminosity opacity-75"

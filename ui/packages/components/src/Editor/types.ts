@@ -1,16 +1,10 @@
 import { DEFAULT_EDITOR_THEME, type EditorThemeId } from "@gcsim/editor";
 import type { model } from "@gcsim/types";
 
-// TEMPORARY: types for the TeamComposer add/remove crutch.
 export interface ImportedCharacterOption {
 	key: string;
 	label?: string;
 	character: model.Character;
-}
-
-export interface TeamComposerCharacterSource {
-	createCharacter: (key: string) => model.Character;
-	imported?: ImportedCharacterOption[];
 }
 
 export interface EditorAppearance {

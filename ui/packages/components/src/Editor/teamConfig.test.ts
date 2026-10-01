@@ -1,7 +1,7 @@
 import type { model } from "@gcsim/types";
 import { describe, expect, it } from "vitest";
 import { StatToIndexMap } from "../Cards";
-import { cfgFromTeam, charToCfg } from "./teamConfig";
+import { charToCfg } from "./teamConfig";
 
 function amber(): model.Character {
 	const stats = new Array(22).fill(0);
@@ -29,24 +29,5 @@ describe("charToCfg", () => {
 				'amber add set="gladiatorsfinale" count=4;\n' +
 				"amber add stats atk=311 cr=0.5;\n",
 		);
-	});
-});
-
-describe("cfgFromTeam", () => {
-	it("purges existing character lines and prepends the regenerated team", () => {
-		const cfg = [
-			"options iteration=1000;",
-			"oldchar char lvl=1/1 cons=0 talent=1,1,1;",
-			'oldchar add weapon="dullblade" refine=1 lvl=1/20;',
-			"target lvl=100 hp=1000;",
-		].join("\n");
-
-		const out = cfgFromTeam([amber()], cfg);
-
-		expect(out).toContain("amber char lvl=80/90");
-		expect(out).not.toContain("oldchar");
-		expect(out).toContain("options iteration=1000;");
-		expect(out).toContain("target lvl=100 hp=1000;");
-		expect(out.startsWith("amber char")).toBe(true);
 	});
 });
