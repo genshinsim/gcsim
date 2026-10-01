@@ -8,6 +8,7 @@ import (
 	"path"
 	"reflect"
 	"slices"
+	"strconv"
 	"strings"
 
 	"github.com/genshinsim/gcsim/pkg/model"
@@ -164,6 +165,8 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 		"skill":  skill.ProudSkillGroupId,
 		"burst":  burst.ProudSkillGroupId,
 	}
+
+	var passive int
 	for _, v := range spec.depot.InherentProudSkillOpens {
 		if v.ProudSkillGroupId == 0 {
 			continue
@@ -171,9 +174,31 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 		if v.NeedAvatarPromoteLevel > 0 {
 			typ := fmt.Sprintf("a%d", v.NeedAvatarPromoteLevel)
 			skills[typ] = v.ProudSkillGroupId
+		} else {
+			passive++
+			typ := fmt.Sprintf("passive%d", passive)
+			skills[typ] = v.ProudSkillGroupId
 		}
 	}
+	passive = 0
+	for _, v := range spec.depot.SpecialProudSkillOpens {
+		if v.ProudSkillGroupId == 0 {
+			continue
+		}
+		typ := "upgrade"
+		if passive > 0 {
+			typ += strconv.Itoa(passive)
+		}
+		passive++
+		skills[typ] = v.ProudSkillGroupId
+	}
+
 	var links []uint32
+	for typ := range skills {
+		if !slices.Contains(abilities, typ) {
+			return nil, fmt.Errorf("unknown ability type: %v", typ)
+		}
+	}
 	for _, typ := range abilities {
 		if _, ok := skills[typ]; !ok {
 			continue
@@ -192,10 +217,11 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 		skill := pd.FindSkill()
 		if skill != nil {
 			attr := &AttributeSpec{
-				Type:   typ,
-				Name:   skill.Name(),
-				Desc:   skill.DescTextMapHash.String(),
-				Config: pd.OpenConfig,
+				Type:    typ,
+				Name:    skill.Name(),
+				Desc:    skill.DescTextMapHash.String(),
+				AltDesc: skill.UpgradedDescTextMapHash.String(),
+				Config:  pd.OpenConfig,
 			}
 			links = append(links, ExtractLinks(attr.Desc)...)
 			attr.SetValues(0, nil)
@@ -222,11 +248,12 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 		}
 		if !hasParamDesc {
 			attr := &AttributeSpec{
-				Type:   typ,
-				Name:   pd.NameTextMapHash.String(),
-				Desc:   pd.DescTextMapHash.String(),
-				Config: pd.OpenConfig,
-				Index:  NewTalentIndex(pd.ParamList),
+				Type:    typ,
+				Name:    pd.NameTextMapHash.String(),
+				Desc:    pd.DescTextMapHash.String(),
+				AltDesc: pd.UpgradedDescTextMapHash.String(),
+				Config:  pd.OpenConfig,
+				Index:   NewTalentIndex(pd.ParamList),
 			}
 			links = append(links, ExtractLinks(attr.Desc)...)
 			attr.SetValues(len(pds), func(i int) []float64 { return pds[i].ParamList })
@@ -237,11 +264,12 @@ func buildCharacterSpec(cfg *Config) (*CharacterSpec, error) {
 		con := con + 1
 		t := excel.FindTalent(id)
 		attr := &AttributeSpec{
-			Type:   fmt.Sprintf("c%d", con),
-			Name:   t.NameTextMapHash.String(),
-			Desc:   t.DescTextMapHash.String(),
-			Config: t.OpenConfig,
-			Index:  NewTalentIndex(t.ParamList),
+			Type:    fmt.Sprintf("c%d", con),
+			Name:    t.NameTextMapHash.String(),
+			Desc:    t.DescTextMapHash.String(),
+			AltDesc: t.UpgradedDescTextMapHash.String(),
+			Config:  t.OpenConfig,
+			Index:   NewTalentIndex(t.ParamList),
 		}
 		links = append(links, ExtractLinks(attr.Desc)...)
 		attr.SetValues(1, func(i int) []float64 { return t.ParamList })
@@ -341,7 +369,10 @@ func (c *Compiled) GenerateCharacters() error {
 		// 		continue
 		// 	}
 		// 	seen[attr.Type] = struct{}{}
-		// 	b.WriteString(attr.EmitDesc("// "))
+		// 	b.WriteString(attr.EmitDesc("// ", attr.Desc, ""))
+		// 	if attr.AltDesc != "" && attr.AltDesc != attr.Desc {
+		// 		b.WriteString(attr.EmitDesc("// ", attr.AltDesc, "Upgraded"))
+		// 	}
 		// }
 		fmt.Fprintf(b, "package %s\n", path.Base(config.Dir()))
 		b.WriteString("import (\n")

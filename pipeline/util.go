@@ -54,7 +54,7 @@ func cleanText(s string) string {
 	s = regexp.MustCompile(`{/?LINK[^}]*}`).ReplaceAllString(s, "")
 	s = regexp.MustCompile(`</?color[^>]*>`).ReplaceAllString(s, "")
 	s = regexp.MustCompile(`{[^}]*}`).ReplaceAllString(s, "")
-	s = regexp.MustCompile(`<i>[^<]*</i>`).ReplaceAllString(s, "")
+	s = regexp.MustCompile(`<i>[^<]*</i>\.?`).ReplaceAllString(s, "")
 	return strings.TrimSpace(s)
 }
 
