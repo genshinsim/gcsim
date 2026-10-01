@@ -6,7 +6,7 @@ import { TooltipWithBounds } from "@visx/tooltip";
 import type { ScaleLinear } from "d3-scale";
 import type { MutableRefObject } from "react";
 import { useTranslation } from "react-i18next";
-import { DataColorsConst } from "../../../../common/gcsim";
+import { DataColorsConst, PathDataPoint } from "../../../../common/gcsim";
 import type { Point } from "./DamageOverTimeData";
 
 export interface TooltipData {
@@ -90,6 +90,7 @@ export const HoverLine = (props: HoverLineProps) => {
 	}
 
 	const x = props.tooltipLeft;
+	const pathX = x - props.margin.left;
 
 	return (
 		<Group left={-props.margin.left}>
@@ -101,6 +102,27 @@ export const HoverLine = (props: HoverLineProps) => {
 				strokeWidth={2}
 				pointerEvents="none"
 				strokeDasharray="5 2"
+			/>
+			<PathDataPoint
+				cx={x}
+				x={pathX}
+				fill={DataColorsConst.qualitative2(3)}
+				path={props.minRef}
+				name="dps-min"
+			/>
+			<PathDataPoint
+				cx={x}
+				x={pathX}
+				fill={DataColorsConst.qualitative2(1)}
+				path={props.maxRef}
+				name="dps-max"
+			/>
+			<PathDataPoint
+				cx={x}
+				x={pathX}
+				fill={DataColorsConst.qualitative3(8)}
+				path={props.meanRef}
+				name="dps-mean"
 			/>
 		</Group>
 	);
