@@ -1,7 +1,7 @@
 import type { model } from "@gcsim/types";
 import { describe, expect, it } from "vitest";
 import { StatToIndexMap } from "../Cards";
-import { charToCfg } from "./teamConfig";
+import { insertCharacterBlock } from "./ImportedCharacterInsert";
 
 function amber(): model.Character {
 	const stats = new Array(22).fill(0);
@@ -21,13 +21,18 @@ function amber(): model.Character {
 	};
 }
 
-describe("charToCfg", () => {
-	it("serializes a character's lvl/weapon/sets/nonzero-stats", () => {
-		expect(charToCfg(amber())).toBe(
+describe("insertCharacterBlock", () => {
+	it("puts the character's lvl/weapon/sets/nonzero-stats above the config", () => {
+		const config = "options iteration=1000;\n";
+		expect(
+			insertCharacterBlock(config, { key: "amber", character: amber() }),
+		).toBe(
 			"amber char lvl=80/90 cons=2 talent=6,6,6;\n" +
 				'amber add weapon="dullblade" refine=1 lvl=1/20;\n' +
 				'amber add set="gladiatorsfinale" count=4;\n' +
-				"amber add stats atk=311 cr=0.5;\n",
+				"amber add stats atk=311 cr=0.5;\n" +
+				"\n" +
+				config,
 		);
 	});
 });
