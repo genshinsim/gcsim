@@ -46,7 +46,7 @@ type PieProps = {
 };
 
 const DPSPie = memo(({ dps }: PieProps) => {
-	const { i18n } = useTranslation();
+	const { i18n, t } = useTranslation();
 	const { data } = useData(dps);
 	const { DataColors } = useDataColors();
 
@@ -73,7 +73,7 @@ const DPSPie = memo(({ dps }: PieProps) => {
 					}}
 					tooltipContent={(d) => (
 						<FloatStatTooltipContent
-							title={d.label + " DPS"}
+							title={t("result.dps_title", { name: d.label })}
 							data={d.value}
 							color={DataColors.elementLabel(d.label)}
 							percent={d.pct}

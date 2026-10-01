@@ -60,7 +60,9 @@ const DPSPie = memo(({ dps }: PieProps) => {
 					}}
 					tooltipContent={(d) => (
 						<FloatStatTooltipContent
-							title={t("viewer.target") + " " + d.label + " DPS"}
+							title={t("result.dps_title", {
+								name: `${t("viewer.target")} ${d.label}`,
+							})}
 							data={d.value}
 							color={DataColors.targetLabel(d.label)}
 							percent={d.pct}
