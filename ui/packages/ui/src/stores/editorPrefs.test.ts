@@ -18,7 +18,7 @@ describe("editorPrefs", () => {
 		expect(loadEditorPrefs(fakeStorage())).toEqual(defaultEditorPrefs);
 	});
 
-	it("loads prefs saved under the pre-existing keys", () => {
+	it("loads prefs saved under the pre-existing keys and ignores the old tools key", () => {
 		const storage = fakeStorage({
 			"gcsim-config-editor-color-theme": "dracula",
 			"gcsim-config-editor-font-size": "18",
