@@ -29,20 +29,12 @@ export interface EditorProps {
 	importedCharacters?: ImportedCharacterOption[];
 }
 
-export interface EditorToggles {
-	team: boolean;
-	nameSearch: boolean;
-	tips: boolean;
-}
-
 export interface EditorPrefs {
-	toggles: EditorToggles;
 	theme: EditorThemeId;
 	fontSize: number;
 }
 
 export const defaultEditorPrefs: EditorPrefs = {
-	toggles: { team: true, nameSearch: true, tips: true },
 	theme: DEFAULT_EDITOR_THEME,
 	fontSize: 14,
 };

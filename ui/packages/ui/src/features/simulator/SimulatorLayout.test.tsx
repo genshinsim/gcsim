@@ -34,59 +34,19 @@ const runButton = () => screen.getByRole("button", { name: "simple.run" });
 afterEach(cleanup);
 
 describe("SimulatorLayout", () => {
-	it("reveals the team, name search, tips and tools by default", () => {
+	it("always shows the team and action list, with no tools menu", () => {
 		renderLayout();
 		expect(screen.getByTestId("editor-team-composer")).toBeInTheDocument();
-		expect(screen.getByText("simple.name_search")).toBeInTheDocument();
-		expect(
-			screen.getAllByRole("button", { name: "simple.hide_all_tips" }),
-		).toHaveLength(2);
-		expect(screen.getByTestId("editor-helper-tools")).toBeInTheDocument();
 		expect(screen.getByText("simple.action_list")).toBeInTheDocument();
+		expect(screen.queryByTestId("editor-helper-tools")).toBeNull();
 	});
 
-	it("hides gated content when its toggle pref is off", () => {
-		renderLayout({
-			prefs: {
-				...defaultEditorPrefs,
-				toggles: { team: false, nameSearch: false, tips: false },
-			},
-		});
-		expect(screen.queryByTestId("editor-team-composer")).toBeNull();
-		expect(screen.queryByText("simple.name_search")).toBeNull();
+	it("shows the config error once, under the editor", () => {
+		const { container } = renderLayout({ error: "bad line 3" });
+		expect(screen.getAllByText("bad line 3")).toHaveLength(1);
 		expect(
-			screen.queryByRole("button", { name: "simple.hide_all_tips" }),
-		).toBeNull();
-		expect(screen.getByTestId("editor-helper-tools")).toBeInTheDocument();
-	});
-
-	it.each([true, false])(
-		"shows the config error once, under the editor (team shown: %s)",
-		(team) => {
-			const { container } = renderLayout({
-				error: "bad line 3",
-				prefs: {
-					...defaultEditorPrefs,
-					toggles: { ...defaultEditorPrefs.toggles, team },
-				},
-			});
-			expect(screen.getAllByText("bad line 3")).toHaveLength(1);
-			expect(
-				container.querySelector("#config_editor [role=alert]"),
-			).toHaveTextContent("bad line 3");
-		},
-	);
-
-	it("reports hidden tips through onPrefsChange", async () => {
-		const onPrefsChange = vi.fn();
-		renderLayout({ onPrefsChange });
-		await userEvent.click(
-			screen.getAllByRole("button", { name: "simple.hide_all_tips" })[0],
-		);
-		expect(onPrefsChange).toHaveBeenCalledWith({
-			...defaultEditorPrefs,
-			toggles: { ...defaultEditorPrefs.toggles, tips: false },
-		});
+			container.querySelector("#config_editor [role=alert]"),
+		).toHaveTextContent("bad line 3");
 	});
 
 	it("stores editor settings changes in prefs", async () => {
