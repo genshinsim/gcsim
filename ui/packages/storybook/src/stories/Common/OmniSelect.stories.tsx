@@ -1,4 +1,4 @@
-import { CharacterSelect, OmniSelect } from "@gcsim/components";
+import { OmniSelect } from "@gcsim/components";
 import { Button, CommandItem } from "@gcsim/primitives";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useState } from "react";
@@ -54,27 +54,4 @@ function DemoOmniSelect() {
 
 export const Default: Story = {
 	render: () => <DemoOmniSelect />,
-};
-
-function DemoCharacterSelect() {
-	const [isOpen, setIsOpen] = useState(false);
-	const [value, setValue] = useState<string>();
-
-	return (
-		<div className="flex flex-col items-start gap-2">
-			<Button onClick={() => setIsOpen(true)}>
-				{value ? `Selected: ${value}` : "Pick a character"}
-			</Button>
-			<CharacterSelect
-				isOpen={isOpen}
-				onClose={() => setIsOpen(false)}
-				value={value}
-				onSelect={(character) => setValue(character)}
-			/>
-		</div>
-	);
-}
-
-export const TypedCharacterSelect: Story = {
-	render: () => <DemoCharacterSelect />,
 };
