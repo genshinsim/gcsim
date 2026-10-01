@@ -12,14 +12,10 @@ type Props = {
 export const TeamCard = (props: Props) => {
 	const { t } = useTranslation();
 	const [showDetails, setShowDetails] = React.useState(false);
-	const [showSnapshot, setShowSnapshot] = React.useState(false);
 	const teamStats = ConsolidateCharStats(t, props.team);
 
 	const handleToggleDetail = () => {
 		setShowDetails(!showDetails);
-	};
-	const handleToggleSnapshot = () => {
-		setShowSnapshot(!showSnapshot);
 	};
 
 	const cards = props.team.map((c, index) => {
@@ -39,9 +35,7 @@ export const TeamCard = (props: Props) => {
 				totalStatsLabel={t("character.total_stats")}
 				weaponName={t(dynamicKey(`game:weapon_names.${c.weapon?.name ?? ""}`))}
 				handleToggleDetail={handleToggleDetail}
-				handleToggleSnapshot={handleToggleSnapshot}
 				showDetails={showDetails}
-				showSnapshot={showSnapshot}
 				className="basis-full sm:basis-1/2 hd:basis-1/4 pt-2 pr-2 pb-2"
 			/>
 		);
