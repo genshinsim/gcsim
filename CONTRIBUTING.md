@@ -18,9 +18,8 @@ Character PR checklist:
 
 - [ ] New character package
 - [ ] Generate config in character package with pipeline
-- [ ] Run pipeline with added config (generates character curve, talent stats, `.dm.json` files)
+- [ ] Run pipeline with added config (generates character curve, talent stats, `.dm.json` files, and the config editor's highlighting and completion of the name and its shortcuts)
 - [ ] Shortcuts for character
-- [ ] Update `mode_gcsim.js` with shortcuts for syntax highlighting
 - [ ] Normal Attack
 - [ ] Charge Attack / Aimed Shot
 - [ ] Skill
@@ -50,7 +49,7 @@ Weapon PR checklist:
 
 - [ ] New weapon package
 - [ ] Generate config in weapon package with pipeline
-- [ ] Run pipeline with added config (generates weapon curve, `.dm.json` files)
+- [ ] Run pipeline with added config (generates weapon curve, `.dm.json` files, and the config editor's highlighting and completion of the name and its shortcuts)
 - [ ] Shortcuts for weapon
 - [ ] Weapon passive (might include an attack)
 - [ ] Update documentation
@@ -59,7 +58,7 @@ Artifact PR checklist:
 
 - [ ] New artifact package
 - [ ] Generate config in artifacts package with pipeline
-- [ ] Run pipeline with added config (generates `.dm.json` files)
+- [ ] Run pipeline with added config (generates `.dm.json` files, and the config editor's highlighting and completion of the name and its shortcuts)
 - [ ] Shortcuts for artifact
 - [ ] 2pc
 - [ ] 4pc
@@ -76,8 +75,7 @@ Character PR checklist:
 
 - [ ] New character package
 - [ ] Generate config in character package with pipeline
-- [ ] Run pipeline with added config (generates character curve, talent stats, `.dm.json` files)
-- [ ] Update `mode_gcsim.js` with shortcuts for syntax highlighting
+- [ ] Run pipeline with added config (generates character curve, talent stats, `.dm.json` files, and the config editor's highlighting and completion of the name and its shortcuts)
 - [ ] Normal Attack
 - [ ] Charge Attack / Aimed Shot
 - [ ] Skill
@@ -107,7 +105,7 @@ Weapon PR checklist:
 
 - [ ] New weapon package
 - [ ] Generate config in weapon package with pipeline
-- [ ] Run pipeline with added config (generates weapon curve, `.dm.json` files)
+- [ ] Run pipeline with added config (generates weapon curve, `.dm.json` files, and the config editor's highlighting and completion of the name and its shortcuts)
 - [ ] Weapon passive (might include an attack)
 - [ ] Update documentation
 
@@ -115,7 +113,7 @@ Artifact PR checklist:
 
 - [ ] New artifact package
 - [ ] Generate config in artifacts package with pipeline
-- [ ] Run pipeline with added config (generates `.dm.json` files)
+- [ ] Run pipeline with added config (generates `.dm.json` files, and the config editor's highlighting and completion of the name and its shortcuts)
 - [ ] 2pc
 - [ ] 4pc
 - [ ] Update documentation
@@ -166,3 +164,11 @@ Install the following:
 1. Navigate to `./gcsim/cmd/gcsim`
 2. Run `go build` to build the executable and then feed your config file in e.g. `./gcsim.exe -c config.txt -sample config -gz` OR run `go run . --c config.txt -sample config -gz`
 3. Upload the generated sample file to the [Sample page](https://gcsim.app/sample/upload) to confirm everything is working accordingly, and optionally share the sample file in discord for debugging help.
+
+# Config Editor
+
+The config editor (`ui/packages/editor`) highlights and completes names from generated files, so they never need editing by hand:
+
+- Character, weapon and artifact names and their shortcuts (`src/language/names/*.dm.json`) come from `task pipeline`.
+- Keywords, stats, elements and actions (`src/language/keys.dm.json`) come from `pkg/gcs/ast`; `task pipeline` regenerates them, or run `go run ./cmd/editorkeys` on its own.
+- The parser (`src/language/parser.gen.ts`) is built from `src/language/gcsim.grammar`. After changing the grammar, run `pnpm --filter @gcsim/editor build:grammar` from `ui/`; a test fails if the committed parser is out of date.

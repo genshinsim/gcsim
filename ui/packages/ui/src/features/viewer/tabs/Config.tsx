@@ -1,4 +1,4 @@
-import { ConfigError, Editor } from "@gcsim/components";
+import { Editor, type EditorThemeId } from "@gcsim/components";
 import { Button, NonIdealState, Spinner } from "@gcsim/primitives";
 import { Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -10,8 +10,8 @@ export type ViewerEditorState = {
 	error: string | null;
 	canRun: boolean;
 	busy: boolean;
-	theme: string;
 	fontSize: number;
+	theme: EditorThemeId;
 };
 
 type Props = ViewerEditorState & {
@@ -25,8 +25,8 @@ export default ({
 	error,
 	canRun,
 	busy,
-	theme,
 	fontSize,
+	theme,
 	loading,
 	onRerun,
 }: Props) => {
@@ -43,12 +43,12 @@ export default ({
 					{t("viewer.rerun")}
 				</Button>
 			</div>
-			<ConfigError error={error} />
 			<Editor
 				value={config}
 				onChange={setConfig}
-				theme={theme}
+				error={error}
 				fontSize={fontSize}
+				theme={theme}
 				maxLines={Infinity}
 			/>
 		</div>

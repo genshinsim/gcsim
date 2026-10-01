@@ -1,3 +1,5 @@
+import { diagnosticCount } from "@codemirror/lint";
+import { EditorView } from "@codemirror/view";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type React from "react";
@@ -7,94 +9,99 @@ vi.mock("react-i18next", () => ({
 	useTranslation: () => ({ t: (k: string) => k }),
 }));
 
-vi.mock("./AceEditorWrapper", () => ({
-	themes: ["github", "tomorrow_night"],
-	AceEditorWrapper: ({
-		value,
-		onChange,
-		theme,
-		fontSize,
-		maxLines,
-	}: {
-		value: string;
-		onChange: (v: string) => void;
-		theme?: string;
-		fontSize?: number;
-		maxLines?: number;
-	}) => (
-		<textarea
-			data-testid="ace"
-			data-theme={theme}
-			data-font-size={fontSize}
-			data-max-lines={maxLines}
-			value={value}
-			onChange={(e) => onChange(e.currentTarget.value)}
-		/>
-	),
-}));
-
 import { Editor } from "./Editor";
+import { MAX_FONT_SIZE } from "./EditorSettings";
 
 const baseProps: React.ComponentProps<typeof Editor> = {
 	value: "cfg text",
 	onChange: () => {},
-	theme: "tomorrow_night",
 	fontSize: 14,
+	theme: "app",
 };
 
-const ace = () => screen.getByTestId<HTMLTextAreaElement>("ace");
+function view(container: HTMLElement) {
+	const dom = container.querySelector<HTMLElement>(".cm-editor");
+	const v = dom && EditorView.findFromDOM(dom);
+	if (!v) throw new Error("no editor");
+	return v;
+}
+
+const openSettings = () =>
+	userEvent.click(
+		screen.getByRole("button", { name: "simple.editor_settings" }),
+	);
 
 describe("Editor", () => {
-	it("renders the controlled value and calls onChange on edits, holding no state", async () => {
+	it("renders the controlled value and calls onChange on edits", () => {
 		const onChange = vi.fn();
-		const { rerender } = render(
+		const { container, rerender } = render(
 			<Editor {...baseProps} value="one" onChange={onChange} />,
 		);
-		expect(ace().value).toBe("one");
+		expect(view(container).state.doc.toString()).toBe("one");
 
-		await userEvent.type(ace(), "!");
+		view(container).dispatch({ changes: { from: 3, insert: "!" } });
 		expect(onChange).toHaveBeenCalledWith("one!");
-		expect(ace().value).toBe("one");
 
 		rerender(<Editor {...baseProps} value="two" onChange={onChange} />);
-		expect(ace().value).toBe("two");
+		expect(view(container).state.doc.toString()).toBe("two");
 	});
 
-	it("applies the theme and font size to the text area", () => {
-		render(<Editor {...baseProps} theme="github" fontSize={18} />);
-		expect(ace().dataset.theme).toBe("github");
-		expect(ace().dataset.fontSize).toBe("18");
+	it("marks positioned validation errors in the editor", () => {
+		const { container, rerender } = render(
+			<Editor
+				{...baseProps}
+				value={"a\nb\nc"}
+				error={"ln2:1: bad\n\tconfig does not contain any targets"}
+			/>,
+		);
+		expect(diagnosticCount(view(container).state)).toBe(1);
+
+		rerender(<Editor {...baseProps} value={"a\nb\nc"} error={null} />);
+		expect(diagnosticCount(view(container).state)).toBe(0);
 	});
 
-	it("passes the line limit to the text area", () => {
-		render(<Editor {...baseProps} maxLines={Infinity} />);
-		expect(ace().dataset.maxLines).toBe("Infinity");
-	});
-
-	it("hides the appearance toolbar without a change handler", () => {
+	it("hides the settings menu without a change handler", () => {
 		render(<Editor {...baseProps} />);
-		expect(screen.queryByRole("combobox")).toBeNull();
-		expect(screen.queryByRole("spinbutton")).toBeNull();
+		expect(
+			screen.queryByRole("button", { name: "simple.editor_settings" }),
+		).toBeNull();
 	});
 
-	it("reports theme changes through onAppearanceChange", async () => {
+	it("steps the font size within bounds", async () => {
 		const onAppearanceChange = vi.fn();
-		render(<Editor {...baseProps} onAppearanceChange={onAppearanceChange} />);
-		await userEvent.selectOptions(screen.getByRole("combobox"), "github");
+		const { rerender } = render(
+			<Editor {...baseProps} onAppearanceChange={onAppearanceChange} />,
+		);
+		await openSettings();
+		await userEvent.click(
+			screen.getByRole("button", { name: "simple.decrease_font_size" }),
+		);
 		expect(onAppearanceChange).toHaveBeenLastCalledWith({
-			theme: "github",
-			fontSize: 14,
+			fontSize: 13,
+			theme: "app",
 		});
+
+		rerender(
+			<Editor
+				{...baseProps}
+				fontSize={MAX_FONT_SIZE}
+				onAppearanceChange={onAppearanceChange}
+			/>,
+		);
+		expect(
+			screen.getByRole("button", { name: "simple.increase_font_size" }),
+		).toBeDisabled();
 	});
 
-	it("reports font size changes through onAppearanceChange", async () => {
+	it("picks a theme from the menu", async () => {
 		const onAppearanceChange = vi.fn();
 		render(<Editor {...baseProps} onAppearanceChange={onAppearanceChange} />);
-		const input = screen.getByRole("spinbutton");
-		await userEvent.type(input, "6");
+		await openSettings();
+		expect(screen.getByRole("radio", { name: "gcsim" })).toBeChecked();
+		await userEvent.click(screen.getByRole("radio", { name: "Dracula" }));
 		expect(onAppearanceChange).toHaveBeenLastCalledWith({
-			theme: "tomorrow_night",
-			fontSize: 146,
+			fontSize: 14,
+			theme: "dracula",
 		});
 	});
 });

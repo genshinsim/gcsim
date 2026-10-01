@@ -20,15 +20,32 @@ describe("editorPrefs", () => {
 
 	it("loads prefs saved under the pre-existing keys", () => {
 		const storage = fakeStorage({
-			"gcsim-config-editor-theme": "github",
+			"gcsim-config-editor-color-theme": "dracula",
 			"gcsim-config-editor-font-size": "18",
 			"gcsim-config-editor-tools": JSON.stringify({ tips: false }),
 		});
 		expect(loadEditorPrefs(storage)).toEqual({
-			theme: "github",
+			theme: "dracula",
 			fontSize: 18,
 			toggles: { team: true, nameSearch: true, tips: false },
 		});
+	});
+
+	it("ignores unknown themes, including old Ace theme names", () => {
+		const storage = fakeStorage({
+			"gcsim-config-editor-theme": "monokai",
+			"gcsim-config-editor-color-theme": "xcode",
+		});
+		expect(loadEditorPrefs(storage).theme).toBe(defaultEditorPrefs.theme);
+	});
+
+	it.each([
+		["abc", defaultEditorPrefs.fontSize],
+		["146", 28],
+		["2", 10],
+	])("keeps a stored font size of %s within bounds", (stored, expected) => {
+		const storage = fakeStorage({ "gcsim-config-editor-font-size": stored });
+		expect(loadEditorPrefs(storage).fontSize).toBe(expected);
 	});
 
 	it("ignores unparseable toggles", () => {
@@ -41,12 +58,12 @@ describe("editorPrefs", () => {
 	it("round-trips through the same keys", () => {
 		const storage = fakeStorage();
 		const prefs = {
-			theme: "xcode",
+			theme: "solarized_light" as const,
 			fontSize: 12,
 			toggles: { team: false, nameSearch: true, tips: false },
 		};
 		saveEditorPrefs(storage, prefs);
-		expect(storage.data.get("gcsim-config-editor-theme")).toBe("xcode");
+		expect(storage.data.get("gcsim-config-editor-font-size")).toBe("12");
 		expect(loadEditorPrefs(storage)).toEqual(prefs);
 	});
 });

@@ -16,7 +16,6 @@ export class ViewerPage {
 	readonly cards: Locator;
 	/** Inline visx charts on the Results tab (each svg is `role="img"`). */
 	readonly charts: Locator;
-	/** Ace editor container (`#config_editor`) shown on the Config tab. */
 	readonly configEditor: Locator;
 	/** The Sample tab's "Generate" button (shown before a sample is generated). */
 	readonly generateButton: Locator;

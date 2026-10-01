@@ -1,5 +1,10 @@
-export { ConfigError } from "./ConfigError";
+export { type EditorThemeId, isEditorThemeId } from "@gcsim/editor";
 export { Editor } from "./Editor";
+export {
+	clampFontSize,
+	EditorSettings,
+	type EditorSettingsProps,
+} from "./EditorSettings";
 export {
 	type ExecutorContextValue,
 	ExecutorProvider,
@@ -24,6 +29,5 @@ export {
 	type EditorToggles,
 	type ImportedCharacterOption,
 	type TeamComposerCharacterSource,
-	type Theme,
 } from "./types";
 export { useValidation, type Validation } from "./useValidation";

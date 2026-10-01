@@ -3,7 +3,10 @@ import { expect, test } from "../src";
 test.describe("settings dialog", () => {
 	test("keeps URL edits in server mode", async ({ app, page }) => {
 		await app.simulator.goto();
-		const settings = page.getByRole("button", { name: "Settings" });
+		const settings = page.getByRole("button", {
+			name: "Settings",
+			exact: true,
+		});
 		await settings.click();
 		await page.locator("#server-mode-switch").click();
 		await settings.click();

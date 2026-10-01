@@ -1,7 +1,12 @@
-import { defaultEditorPrefs, type EditorPrefs } from "@gcsim/components";
+import {
+	clampFontSize,
+	defaultEditorPrefs,
+	type EditorPrefs,
+	isEditorThemeId,
+} from "@gcsim/components";
 import React from "react";
 
-const THEME_KEY = "gcsim-config-editor-theme";
+const THEME_KEY = "gcsim-config-editor-color-theme";
 const FONT_SIZE_KEY = "gcsim-config-editor-font-size";
 const TOGGLES_KEY = "gcsim-config-editor-tools";
 
@@ -20,9 +25,12 @@ function loadToggles(storage: PrefsStorage): EditorPrefs["toggles"] {
 
 export function loadEditorPrefs(storage: PrefsStorage): EditorPrefs {
 	const fontSize = storage.getItem(FONT_SIZE_KEY);
+	const theme = storage.getItem(THEME_KEY);
 	return {
-		theme: storage.getItem(THEME_KEY) ?? defaultEditorPrefs.theme,
-		fontSize: fontSize ? Number(fontSize) : defaultEditorPrefs.fontSize,
+		theme: isEditorThemeId(theme) ? theme : defaultEditorPrefs.theme,
+		fontSize: fontSize
+			? clampFontSize(Number(fontSize))
+			: defaultEditorPrefs.fontSize,
 		toggles: loadToggles(storage),
 	};
 }

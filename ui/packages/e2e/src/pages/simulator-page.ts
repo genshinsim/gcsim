@@ -11,7 +11,6 @@ export class SimulatorPage {
 	readonly page: Page;
 	/** The Run button, accessible name "Run". */
 	readonly runButton: Locator;
-	/** Ace editor container (`#config_editor`) holding the config text. */
 	readonly editor: Locator;
 	readonly importButton: Locator;
 
@@ -44,55 +43,15 @@ export class SimulatorPage {
 		).toHaveCount(0, { timeout: 60_000 });
 	}
 
-	/**
-	 * Replace the editor contents with `cfg`. Dispatches a native paste event on
-	 * Ace's proxy textarea rather than typing key-by-key — typing would trip
-	 * Ace's auto-indent and bracket matching and corrupt the config. Firefox
-	 * ignores the clipboardData of a synthetic paste event, so there it sets the
-	 * text through the Ace editor that `ace.edit` attaches to the container.
-	 */
 	async setConfig(cfg: string): Promise<void> {
-		const textarea = this.editor.locator("textarea.ace_text-input");
-		await textarea.focus();
-		const firefox =
-			this.page.context().browser()?.browserType().name() === "firefox";
-		await this.page.evaluate(
-			({ text, firefox }) => {
-				if (firefox) {
-					const container = document.querySelector("#config_editor") as {
-						env?: { editor?: { setValue(text: string, cursor: number): void } };
-					} | null;
-					const editor = container?.env?.editor;
-					if (editor == null) {
-						throw new Error("config editor not found");
-					}
-					editor.setValue(text, 1);
-					return;
-				}
-				const ta = document.querySelector<HTMLTextAreaElement>(
-					"#config_editor textarea.ace_text-input",
-				);
-				if (ta == null) {
-					throw new Error("config editor textarea not found");
-				}
-				ta.focus();
-				const data = new DataTransfer();
-				data.setData("text/plain", text);
-				ta.dispatchEvent(
-					new ClipboardEvent("paste", {
-						clipboardData: data,
-						bubbles: true,
-						cancelable: true,
-					}),
-				);
-			},
-			{ text: cfg, firefox },
-		);
+		await this.editor.locator(".cm-content").click();
+		await this.page.keyboard.press("ControlOrMeta+a");
+		await this.page.keyboard.insertText(cfg);
 	}
 
 	/**
 	 * Wait for the config to validate: the Run button becomes enabled and no
-	 * "Invalid Config" error callout is present. Validation logs "all is good".
+	 * "Invalid Config" panel is shown under the editor. Validation logs "all is good".
 	 */
 	async waitForConfigValid(): Promise<void> {
 		await expect(this.runButton).toBeEnabled({ timeout: 30_000 });

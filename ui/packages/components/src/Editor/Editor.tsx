@@ -1,56 +1,38 @@
+import { Editor as ConfigEditor, DEFAULT_EDITOR_THEME } from "@gcsim/editor";
 import { useTranslation } from "react-i18next";
-import { AceEditorWrapper, themes } from "./AceEditorWrapper";
-import type { EditorAppearance, EditorProps } from "./types";
+import { EditorSettings } from "./EditorSettings";
+import type { EditorProps } from "./types";
 
 export const Editor = ({
 	value,
 	onChange,
-	theme = "tomorrow_night",
 	fontSize = 14,
+	theme = DEFAULT_EDITOR_THEME,
 	onAppearanceChange,
 	maxLines,
+	error,
 }: EditorProps) => {
 	const { t } = useTranslation();
-	const updateAppearance = (patch: Partial<EditorAppearance>) =>
-		onAppearanceChange?.({ theme, fontSize, ...patch });
 
 	return (
-		<div className="flex flex-col">
+		<div className="flex flex-col gap-1">
 			{onAppearanceChange ? (
-				<div className="flex flex-wrap items-center justify-end gap-4">
-					<label className="flex items-center gap-2">
-						{t("simple.font_size")}
-						<input
-							type="number"
-							value={fontSize}
-							onChange={(e) =>
-								updateAppearance({ fontSize: Number(e.currentTarget.value) })
-							}
-						/>
-					</label>
-					<label className="flex items-center gap-2">
-						{t("simple.editor_theme")}
-						<select
-							value={theme}
-							onChange={(e) =>
-								updateAppearance({ theme: e.currentTarget.value })
-							}
-						>
-							{themes.map((th) => (
-								<option key={th} value={th}>
-									{th}
-								</option>
-							))}
-						</select>
-					</label>
+				<div className="flex justify-end gap-1">
+					<EditorSettings
+						appearance={{ fontSize, theme }}
+						onChange={onAppearanceChange}
+					/>
 				</div>
 			) : null}
-			<AceEditorWrapper
+			<ConfigEditor
+				id="config_editor"
 				value={value}
 				onChange={onChange}
-				theme={theme}
 				fontSize={fontSize}
+				theme={theme}
 				maxLines={maxLines}
+				error={error}
+				errorTitle={t("viewer.config_invalid")}
 			/>
 		</div>
 	);
