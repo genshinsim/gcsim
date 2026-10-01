@@ -40,7 +40,10 @@ export const ByCharacterLegend = ({ names }: { names?: string[] }) => {
 
 export const ByCharacterChart = ({ width, height, names, dps }: Props) => {
 	const { DataColors } = useDataColors();
-	const { data, keys, xMax } = useData(dps, names);
+	const { data, keys, xMax, total } = useMemo(
+		() => characterChartData(dps, names),
+		[dps, names],
+	);
 
 	if (dps == null || names == null || keys.length === 0) {
 		return <NoData />;
@@ -64,7 +67,7 @@ export const ByCharacterChart = ({ width, height, names, dps }: Props) => {
 					title={`${d.name} DPS`}
 					data={d.data}
 					color={DataColors.characterLabel(k)}
-					percent={1}
+					percent={(d.data.mean ?? 0) / total}
 				/>
 			)}
 		/>
@@ -81,21 +84,25 @@ type ChartData = {
 	data: CharacterData[];
 	keys: number[];
 	xMax: number;
+	total: number;
 };
 
-function useData(dps?: model.DescriptiveStats[], names?: string[]): ChartData {
-	return useMemo(() => {
-		if (dps == null || names == null) {
-			return { data: [], keys: [], xMax: 0 };
-		}
+export function characterChartData(
+	dps?: model.DescriptiveStats[],
+	names?: string[],
+): ChartData {
+	if (dps == null || names == null) {
+		return { data: [], keys: [], xMax: 0, total: 0 };
+	}
 
-		let maxDPS = 0;
-		const data: CharacterData[] = dps.map((v, i) => {
-			const charMax = Math.max(v.max ?? 0, (v.mean ?? 0) + (v.sd ?? 0));
-			maxDPS = Math.max(maxDPS, charMax);
-			return { name: names[i], data: v, index: i };
-		});
+	let maxDPS = 0;
+	let total = 0;
+	const data: CharacterData[] = dps.map((v, i) => {
+		const charMax = Math.max(v.max ?? 0, (v.mean ?? 0) + (v.sd ?? 0));
+		maxDPS = Math.max(maxDPS, charMax);
+		total += v.mean ?? 0;
+		return { name: names[i], data: v, index: i };
+	});
 
-		return { data: data, keys: range(names.length), xMax: maxDPS };
-	}, [dps, names]);
+	return { data: data, keys: range(names.length), xMax: maxDPS, total: total };
 }
