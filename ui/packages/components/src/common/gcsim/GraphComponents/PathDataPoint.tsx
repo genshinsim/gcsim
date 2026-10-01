@@ -1,14 +1,13 @@
 import type { MutableRefObject } from "react";
 
-type DataPointProps = {
+type PathDataPointProps = {
 	cx: number;
 	x: number;
 	fill: string;
 	path: MutableRefObject<SVGPathElement | null>;
-	name: string;
 };
 
-export const PathDataPoint = (props: DataPointProps) => {
+export const PathDataPoint = (props: PathDataPointProps) => {
 	if (!props.path.current) {
 		return null;
 	}

@@ -114,35 +114,30 @@ export const HoverLine = (props: HoverLineProps) => {
 				x={props.xScale(point.x)}
 				fill={DataColorsConst.qualitative2(3)}
 				path={props.minRef}
-				name={"dps-min"}
 			/>
 			<PathDataPoint
 				cx={x}
 				x={props.xScale(point.x)}
 				fill={DataColorsConst.qualitative2(1)}
 				path={props.maxRef}
-				name={"dps-max"}
 			/>
 			<PathDataPoint
 				cx={x}
 				x={props.xScale(point.x)}
 				fill={DataColorsConst.qualitative2(4)}
 				path={props.q1Ref}
-				name={"dps-q1"}
 			/>
 			<PathDataPoint
 				cx={x}
 				x={props.xScale(point.x)}
 				fill={DataColorsConst.qualitative3(8)}
 				path={props.q2Ref}
-				name={"dps-q2"}
 			/>
 			<PathDataPoint
 				cx={x}
 				x={props.xScale(point.x)}
 				fill={DataColorsConst.qualitative2(5)}
 				path={props.q3Ref}
-				name={"dps-q3"}
 			/>
 		</Group>
 	);

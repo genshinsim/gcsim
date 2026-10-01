@@ -108,21 +108,18 @@ export const HoverLine = (props: HoverLineProps) => {
 				x={pathX}
 				fill={DataColorsConst.qualitative2(3)}
 				path={props.minRef}
-				name="dps-min"
 			/>
 			<PathDataPoint
 				cx={x}
 				x={pathX}
 				fill={DataColorsConst.qualitative2(1)}
 				path={props.maxRef}
-				name="dps-max"
 			/>
 			<PathDataPoint
 				cx={x}
 				x={pathX}
 				fill={DataColorsConst.qualitative3(8)}
 				path={props.meanRef}
-				name="dps-mean"
 			/>
 		</Group>
 	);
