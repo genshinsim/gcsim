@@ -19,6 +19,7 @@ export { HelperTools, type HelperToolsProps } from "./HelperTools";
 export { NameSearch } from "./NameSearch";
 export { toParsedTeam } from "./parsedTeam";
 export { SectionDivider, type SectionDividerProps } from "./SectionDivider";
+export { ShortcutSearch } from "./ShortcutSearch";
 export { TeamComposer, type TeamComposerProps } from "./TeamComposer";
 export { ActionListTip, TeamTip, type TipProps } from "./Tips";
 export {

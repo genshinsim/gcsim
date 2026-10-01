@@ -6,7 +6,7 @@ import type React from "react";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("react-i18next", () => ({
-	useTranslation: () => ({ t: (k: string) => k }),
+	useTranslation: () => ({ t: (k: string) => k, i18n: { language: "en" } }),
 }));
 
 import { Editor } from "./Editor";
@@ -103,5 +103,20 @@ describe("Editor", () => {
 			fontSize: 14,
 			theme: "dracula",
 		});
+	});
+
+	it("searches every name by shortcut and copies the key", async () => {
+		const user = userEvent.setup();
+		const writeText = vi
+			.spyOn(navigator.clipboard, "writeText")
+			.mockResolvedValue();
+		render(<Editor {...baseProps} />);
+		await user.click(
+			screen.getByRole("button", { name: "simple.shortcut_search" }),
+		);
+		await user.type(screen.getByRole("combobox"), "ht");
+		await user.click(screen.getByRole("option", { name: /^hutao ht/ }));
+		expect(writeText).toHaveBeenCalledWith("hutao");
+		expect(screen.queryByRole("dialog")).toBeNull();
 	});
 });

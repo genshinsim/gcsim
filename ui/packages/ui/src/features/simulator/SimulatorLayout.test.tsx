@@ -7,7 +7,7 @@ import type React from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("react-i18next", () => ({
-	useTranslation: () => ({ t: (k: string) => k }),
+	useTranslation: () => ({ t: (k: string) => k, i18n: { language: "en" } }),
 	Trans: ({ children }: { children: React.ReactNode }) => <>{children}</>,
 }));
 
