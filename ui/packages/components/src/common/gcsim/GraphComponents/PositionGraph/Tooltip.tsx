@@ -77,7 +77,7 @@ export const RenderTooltip = (props: Props) => {
 		: `${t("viewer.target")} ${data.index + 1}`;
 	const titleColor = data.player
 		? DataColorsConst.gray
-		: DataColorsConst.qualitative5(data.index);
+		: DataColorsConst.qualitative3(data.index);
 
 	const content = (
 		// biome-ignore lint/a11y/noStaticElementInteractions: mouse-only chart tooltip hover region, no interactive semantics
