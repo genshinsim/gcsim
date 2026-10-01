@@ -5,7 +5,7 @@ import { Line } from "@visx/shape";
 import type { ScaleLinear } from "d3-scale";
 import type { MutableRefObject } from "react";
 import { useTranslation } from "react-i18next";
-import { DataColorsConst } from "../../../../common/gcsim";
+import { DataColorsConst, PathDataPoint } from "../../../../common/gcsim";
 import type { Point } from "./CumulativeDamageData";
 
 export interface TooltipData {
@@ -109,117 +109,39 @@ export const HoverLine = (props: HoverLineProps) => {
 				pointerEvents="none"
 				strokeDasharray="5 2"
 			/>
-			<DataPoint
+			<PathDataPoint
 				cx={x}
 				x={props.xScale(point.x)}
 				fill={DataColorsConst.qualitative2(3)}
 				path={props.minRef}
-				name={"dps-min"}
 			/>
-			<DataPoint
+			<PathDataPoint
 				cx={x}
 				x={props.xScale(point.x)}
 				fill={DataColorsConst.qualitative2(1)}
 				path={props.maxRef}
-				name={"dps-max"}
 			/>
-			<DataPoint
+			<PathDataPoint
 				cx={x}
 				x={props.xScale(point.x)}
 				fill={DataColorsConst.qualitative2(4)}
 				path={props.q1Ref}
-				name={"dps-q1"}
 			/>
-			<DataPoint
+			<PathDataPoint
 				cx={x}
 				x={props.xScale(point.x)}
 				fill={DataColorsConst.qualitative3(8)}
 				path={props.q2Ref}
-				name={"dps-q2"}
 			/>
-			<DataPoint
+			<PathDataPoint
 				cx={x}
 				x={props.xScale(point.x)}
 				fill={DataColorsConst.qualitative2(5)}
 				path={props.q3Ref}
-				name={"dps-q3"}
 			/>
 		</Group>
 	);
 };
-
-type DataPointProps = {
-	cx: number;
-	x: number;
-	fill: string;
-	path: MutableRefObject<SVGPathElement | null>;
-	name: string;
-};
-
-const DataPoint = (props: DataPointProps) => {
-	if (!props.path.current) {
-		return null;
-	}
-
-	const y = getPathYFromX(props.x, props.path.current);
-
-	return (
-		<g>
-			<circle
-				cx={props.cx}
-				cy={y + 1}
-				r={4}
-				fill="var(--g-bg)"
-				fillOpacity={0.1}
-				stroke="var(--g-bg)"
-				strokeOpacity={0.1}
-				strokeWidth={2}
-				pointerEvents="none"
-			/>
-			<circle
-				cx={props.cx}
-				cy={y}
-				r={4}
-				fill={props.fill}
-				pointerEvents="none"
-				stroke="var(--g-surface)"
-				strokeWidth={2}
-			/>
-		</g>
-	);
-};
-
-function getPathYFromX(
-	x: number,
-	path: SVGPathElement,
-	error?: number,
-): number {
-	error = error || 0.01;
-	const maxIterations = 10;
-
-	let lengthStart = 0;
-	let lengthEnd = path.getTotalLength();
-	let point = path.getPointAtLength((lengthEnd + lengthStart) / 2);
-	let iterations = 0;
-
-	while (x < point.x - error || x > point.x + error) {
-		const midpoint = (lengthStart + lengthEnd) / 2;
-
-		point = path.getPointAtLength(midpoint);
-
-		if (x < point.x) {
-			lengthEnd = midpoint;
-		} else {
-			lengthStart = midpoint;
-		}
-
-		iterations += 1;
-		if (maxIterations < iterations) {
-			break;
-		}
-	}
-	return point.y;
-}
 
 type TooltipProps = {
 	data: Point[];
