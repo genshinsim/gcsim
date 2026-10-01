@@ -1,14 +1,9 @@
 import {
-	ActionListTip,
 	Editor,
 	type EditorPrefs,
-	type EditorToggles,
-	HelperTools,
-	NameSearch,
 	SectionDivider,
 	TeamComposer,
 	type TeamComposerCharacterSource,
-	TeamTip,
 } from "@gcsim/components";
 import { Button, Spinner } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
@@ -44,35 +39,18 @@ export function SimulatorLayout({
 	onPrefsChange,
 }: SimulatorLayoutProps) {
 	const { t } = useTranslation();
-	const { toggles } = prefs;
-	const toggle = (key: keyof EditorToggles) =>
-		onPrefsChange({ ...prefs, toggles: { ...toggles, [key]: !toggles[key] } });
-	const hideTips = () => toggle("tips");
 
 	return (
 		<div className="flex flex-col">
-			{toggles.team ? (
-				<>
-					<SectionDivider>{t("simple.team")}</SectionDivider>
-					{toggles.tips ? <TeamTip onHide={hideTips} /> : null}
-					<TeamComposer
-						parsedTeam={parsedTeam}
-						config={config}
-						setConfig={setConfig}
-						characters={teamCharacters}
-					/>
-				</>
-			) : null}
-
-			{toggles.nameSearch ? (
-				<>
-					<SectionDivider>{t("simple.name_search")}</SectionDivider>
-					<NameSearch />
-				</>
-			) : null}
+			<SectionDivider>{t("simple.team")}</SectionDivider>
+			<TeamComposer
+				parsedTeam={parsedTeam}
+				config={config}
+				setConfig={setConfig}
+				characters={teamCharacters}
+			/>
 
 			<SectionDivider>{t("simple.action_list")}</SectionDivider>
-			{toggles.tips ? <ActionListTip onHide={hideTips} /> : null}
 
 			<Editor
 				value={config}
@@ -91,7 +69,6 @@ export function SimulatorLayout({
 					{settings}
 				</div>
 				<div className="flex basis-full flex-row flex-wrap gap-1 p-1 sm:basis-2/3">
-					<HelperTools toggles={toggles} onToggle={toggle} className="flex-1" />
 					<Button className="flex-1" onClick={onRun} disabled={!canRun}>
 						{busy ? <Spinner /> : <Play />}
 						{t("simple.run")}

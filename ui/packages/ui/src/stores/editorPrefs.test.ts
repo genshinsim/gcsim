@@ -18,7 +18,7 @@ describe("editorPrefs", () => {
 		expect(loadEditorPrefs(fakeStorage())).toEqual(defaultEditorPrefs);
 	});
 
-	it("loads prefs saved under the pre-existing keys", () => {
+	it("loads prefs saved under the pre-existing keys and ignores the old tools key", () => {
 		const storage = fakeStorage({
 			"gcsim-config-editor-color-theme": "dracula",
 			"gcsim-config-editor-font-size": "18",
@@ -27,7 +27,6 @@ describe("editorPrefs", () => {
 		expect(loadEditorPrefs(storage)).toEqual({
 			theme: "dracula",
 			fontSize: 18,
-			toggles: { team: true, nameSearch: true, tips: false },
 		});
 	});
 
@@ -48,19 +47,11 @@ describe("editorPrefs", () => {
 		expect(loadEditorPrefs(storage).fontSize).toBe(expected);
 	});
 
-	it("ignores unparseable toggles", () => {
-		const storage = fakeStorage({ "gcsim-config-editor-tools": "{nope" });
-		expect(loadEditorPrefs(storage).toggles).toEqual(
-			defaultEditorPrefs.toggles,
-		);
-	});
-
 	it("round-trips through the same keys", () => {
 		const storage = fakeStorage();
 		const prefs = {
 			theme: "solarized_light" as const,
 			fontSize: 12,
-			toggles: { team: false, nameSearch: true, tips: false },
 		};
 		saveEditorPrefs(storage, prefs);
 		expect(storage.data.get("gcsim-config-editor-font-size")).toBe("12");

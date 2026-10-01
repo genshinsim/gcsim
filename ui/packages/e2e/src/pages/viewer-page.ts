@@ -59,7 +59,6 @@ export class ViewerPage {
 		await expect(this.configEditor).toBeVisible();
 		await expect(this.configEditor).not.toBeEmpty();
 		await expect(this.page.getByTestId("editor-team-composer")).toHaveCount(0);
-		await expect(this.page.getByTestId("editor-helper-tools")).toHaveCount(0);
 	}
 
 	/**

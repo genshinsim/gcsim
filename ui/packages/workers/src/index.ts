@@ -14,8 +14,6 @@ import { handleWasm } from "./wasm";
 const router = Router();
 
 //passthrough
-router.get("/api/login", proxyRequest);
-router.post("/api/user/save", proxyRequest);
 router.get("/api/share/random", proxyRequest);
 router.get("/api/db/compute/work", proxyRequest);
 router.post("/api/db/compute/work", proxyRequest);
