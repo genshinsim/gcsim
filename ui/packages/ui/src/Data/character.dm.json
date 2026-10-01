@@ -1090,6 +1090,7 @@
     },
     "linnea": {
       "id": 10000130,
+      "sub_id": 13001,
       "key": "linnea",
       "rarity": "QUALITY_ORANGE",
       "body": "BODY_GIRL",
@@ -1102,8 +1103,7 @@
         "burst": 11305,
         "attack": 11301,
         "burst_energy_cost": 60
-      },
-      "name_text_hash_map ": "1961019898"
+      }
     },
     "lisa": {
       "id": 10000006,

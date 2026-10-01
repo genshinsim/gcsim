@@ -107,8 +107,8 @@ const (
 	LanYan                        // lanyan
 	Lauma                         // lauma
 	Layla                         // layla
-	Lisa                          // lisa
 	Linnea                        // linnea
+	Lisa                          // lisa
 	LumineAnemo                   // lumineanemo
 	LumineDendro                  // luminedendro
 	LumineElectro                 // lumineelectro
@@ -233,8 +233,8 @@ var _CharNames = [...]string{
 	"lanyan",
 	"lauma",
 	"layla",
-	"lisa",
 	"linnea",
+	"lisa",
 	"lumineanemo",
 	"luminedendro",
 	"lumineelectro",
@@ -359,8 +359,8 @@ var _CharValues = [...]Char{
 	LanYan,
 	Lauma,
 	Layla,
-	Lisa,
 	Linnea,
+	Lisa,
 	LumineAnemo,
 	LumineDendro,
 	LumineElectro,
