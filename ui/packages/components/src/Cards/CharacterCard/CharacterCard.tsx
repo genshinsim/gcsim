@@ -2,7 +2,6 @@ import {
 	Button,
 	Tooltip,
 	TooltipContent,
-	TooltipProvider,
 	TooltipTrigger,
 } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
@@ -273,9 +272,7 @@ export function CharacterCard({
 								{talentsLabel} {char.talents?.attack}/{char.talents?.skill}/
 								{char.talents?.burst}
 							</div>
-							<TooltipProvider>
-								<div className="mt-1 mr-2 grid grid-cols-5">{arts}</div>
-							</TooltipProvider>
+							<div className="mt-1 mr-2 grid grid-cols-5">{arts}</div>
 						</div>
 					</div>
 					<div className="w-1/2 h-32">
