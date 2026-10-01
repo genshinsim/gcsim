@@ -1,93 +1,36 @@
-import { Popover, PopoverAnchor, PopoverContent } from "@gcsim/primitives";
-import { localPoint } from "@visx/event";
 import { Group } from "@visx/group";
 import { Line } from "@visx/shape";
-import { TooltipWithBounds } from "@visx/tooltip";
 import type { ScaleLinear } from "d3-scale";
 import { useTranslation } from "react-i18next";
 import {
+	type ChartTooltipState,
 	DataColorsConst,
 	FloatStatTooltipContent,
+	TooltipList,
+	TooltipRow,
 	useDataColors,
 } from "../../../../common/gcsim";
 import type { CumulativePoint } from "./CumulativeData";
-
-export interface TooltipData {
-	index: number;
-}
-
-export interface TooltipHandles {
-	mouseLeave: () => void;
-	mouseHover: (e: React.MouseEvent) => void;
-	clearTimeout: () => void;
-}
-
-type ShowTooltipArgs<Datum> = {
-	tooltipData?: Datum;
-	tooltipLeft?: number;
-	tooltipTop?: number;
-};
-
-export function useTooltipHandles(
-	showTooltip: (args: ShowTooltipArgs<TooltipData>) => void,
-	hideTooltip: () => void,
-	xScale: ScaleLinear<number, number>,
-	yMax: number,
-	margin: { left: number; right: number; top: number; bottom: number },
-	bucketSize: number,
-): TooltipHandles {
-	let tooltipTimeout: number;
-	const mouseLeave = () => {
-		tooltipTimeout = window.setTimeout(() => {
-			hideTooltip();
-		}, 150);
-	};
-
-	const clearTimeout = () => {
-		if (tooltipTimeout) {
-			window.clearTimeout(tooltipTimeout);
-		}
-	};
-
-	const mouseHover = (e: React.MouseEvent) => {
-		const { x } = localPoint(e) || { x: 0 };
-		const index = Math.round(
-			(60 * xScale.invert(x - margin.left)) / bucketSize,
-		);
-
-		clearTimeout();
-		showTooltip({
-			tooltipData: { index: index },
-			tooltipLeft: x,
-			tooltipTop: yMax,
-		});
-	};
-
-	return {
-		mouseLeave: mouseLeave,
-		mouseHover: mouseHover,
-		clearTimeout: clearTimeout,
-	};
-}
 
 type HoverLineProps = {
 	data: CumulativePoint[];
 	names: string[];
 	yScale: ScaleLinear<number, number>;
 	yMax: number;
-	tooltipData?: TooltipData;
-	tooltipOpen?: boolean;
-	tooltipLeft?: number;
+	tooltip: ChartTooltipState<number>;
 	margin: { left: number; right: number; top: number; bottom: number };
 };
 
 export const HoverLine = (props: HoverLineProps) => {
-	if (!props.tooltipOpen || !props.tooltipLeft || !props.tooltipData) {
+	const point =
+		props.tooltip.data === undefined
+			? undefined
+			: props.data[props.tooltip.data];
+	if (!props.tooltip.open || point === undefined) {
 		return null;
 	}
 
-	const x = props.tooltipLeft;
-	const point = props.data[props.tooltipData.index];
+	const x = props.tooltip.left;
 
 	let total = 0;
 	const circles = point.y.map((val, char) => {
@@ -135,66 +78,40 @@ export const HoverLine = (props: HoverLineProps) => {
 	);
 };
 
-type TooltipProps = {
-	data: CumulativePoint[];
-	names?: string[];
-	tooltipOpen: boolean;
-	tooltipData?: TooltipData;
-	tooltipTop?: number;
-	tooltipLeft?: number;
-	handles: TooltipHandles;
-	showTooltip: (args: ShowTooltipArgs<TooltipData>) => void;
-	margin: { left: number; right: number; top: number; bottom: number };
+type ContentProps = {
+	point: CumulativePoint;
+	names: string[];
 };
 
-export const RenderTooltip = (props: TooltipProps) => {
+export const CumulativeTooltipContent = ({ point, names }: ContentProps) => {
 	const { DataColors } = useDataColors();
 	const { i18n, t } = useTranslation();
 
-	if (
-		!props.tooltipOpen ||
-		!props.tooltipData ||
-		!props.tooltipLeft ||
-		!props.names
-	) {
-		return null;
-	}
-
-	const point = props.data[props.tooltipData.index];
-
-	const content = (
-		// biome-ignore lint/a11y/noStaticElementInteractions: mouse-only chart tooltip hover region, no interactive semantics
-		<div
-			onMouseMove={() => {
-				props.handles.clearTimeout();
-				props.showTooltip({
-					tooltipData: props.tooltipData,
-					tooltipLeft: props.tooltipLeft,
-					tooltipTop: props.tooltipTop,
-				});
-			}}
-			onMouseLeave={() => props.handles.mouseLeave()}
-		>
-			<div className="flex flex-row px-2 py-1 font-g-mono text-g-xs gap-2 whitespace-nowrap">
-				<span style={{ color: "var(--g-text-mute)" }}>
-					{t("result.time")}:{" "}
-				</span>
-				<span>{point.x + t("result.seconds_short")}</span>
-			</div>
+	return (
+		<div className="flex flex-col font-g-mono text-g-xs">
+			<TooltipList>
+				<TooltipRow
+					color="var(--g-text-mute)"
+					name={t("result.time")}
+					value={point.x}
+					suffix={t("result.seconds_short")}
+				/>
+			</TooltipList>
 			{point.y
 				.slice(0)
 				.reverse()
 				.map((val, char) => {
-					const i = (props.names?.length ?? 0) - char - 1;
+					const i = names.length - char - 1;
 					return (
 						<FloatStatTooltipContent
-							key={"tooltip-" + i}
-							title={props.names?.[i] + " " + t("result.contribution")}
+							key={names[i]}
+							title={`${names[i]} ${t("result.contribution")}`}
 							data={val}
 							color={DataColors.characterLabel(i)}
 							format={(s) =>
 								s?.toLocaleString(i18n.language, {
 									style: "percent",
+									minimumFractionDigits: 2,
 									maximumFractionDigits: 2,
 								})
 							}
@@ -202,25 +119,5 @@ export const RenderTooltip = (props: TooltipProps) => {
 					);
 				})}
 		</div>
-	);
-
-	return (
-		<TooltipWithBounds
-			style={{ position: "absolute" }}
-			offsetLeft={props.margin.left + 50}
-			left={props.tooltipLeft}
-			top={props.tooltipTop}
-		>
-			<Popover open>
-				<PopoverAnchor />
-				<PopoverContent
-					side="top"
-					onOpenAutoFocus={(e) => e.preventDefault()}
-					className="w-auto max-w-none p-0"
-				>
-					{content}
-				</PopoverContent>
-			</Popover>
-		</TooltipWithBounds>
 	);
 };

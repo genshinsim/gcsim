@@ -1,20 +1,22 @@
 import { specialLocales } from "@gcsim/localization";
 import type { model } from "@gcsim/types";
+import { localPoint } from "@visx/event";
 import { Group } from "@visx/group";
 import { scaleBand, scaleLinear } from "@visx/scale";
 import { BoxPlot } from "@visx/stats";
-import { useTooltip } from "@visx/tooltip";
 import { range } from "lodash-es";
 import { memo, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import {
+	ChartTooltip,
 	Colors,
 	GraphAxisBottom,
 	GraphAxisLeft,
 	GraphGridRows,
 	NoData,
+	useChartTooltip,
 } from "../../common/gcsim";
-import { RenderTooltip, type TooltipData, useTooltipHandles } from "./Tooltip";
+import { HistogramTooltipContent } from "./Tooltip";
 import { VerticalLine } from "./VerticalLine";
 
 type Props = {
@@ -47,17 +49,26 @@ const Graph = ({
 
 	const { i18n, t } = useTranslation();
 	const { xScale, yScale, xLin, delta } = useScales(data, xMax, yMax);
-	const tooltip = useTooltip<TooltipData>();
-	const tooltipHandles = useTooltipHandles(
-		tooltip.showTooltip,
-		tooltip.hideTooltip,
-		delta,
-		margin,
-	);
+	const tooltip = useChartTooltip<number>();
 
-	if (data?.histogram == null || delta == null) {
+	if (data?.histogram == null || data.min == null || delta == null) {
 		return <NoData />;
 	}
+
+	const histogram = data.histogram;
+	const min = data.min;
+	const onMouseMove = (e: React.MouseEvent) => {
+		const { x } = localPoint(e) ?? { x: 0 };
+		const idx = Math.max(
+			Math.floor(delta * (xLin.invert(x - margin.left) - min)),
+			0,
+		);
+		if (x <= margin.left || !(histogram[idx] > 0)) {
+			tooltip.scheduleHide();
+			return;
+		}
+		tooltip.show(e, idx);
+	};
 
 	return (
 		<div className="relative">
@@ -66,8 +77,8 @@ const Graph = ({
 				height={height}
 				role="img"
 				aria-label="Damage distribution histogram"
-				onMouseMove={(e) => tooltipHandles.mouseHover(e, data)}
-				onMouseLeave={() => tooltipHandles.mouseLeave()}
+				onMouseMove={onMouseMove}
+				onMouseLeave={tooltip.scheduleHide}
 			>
 				<Group left={margin.left} top={margin.top}>
 					<GraphGridRows
@@ -155,15 +166,11 @@ const Graph = ({
 							return null;
 						}
 
-						const x = tooltip.tooltipData?.x ?? 0;
-						const temp = xLin.invert(x - margin.left);
-						const idx = Math.max(Math.floor(delta * (temp - data.min)), 0);
-
 						let fill = barColor;
 						if (i === Math.floor(delta * (data.mean - data.min))) {
 							fill = accentColor;
 						}
-						if (tooltip.tooltipData != null && i === idx) {
+						if (tooltip.data === i) {
 							fill = hoverColor;
 						}
 
@@ -181,20 +188,11 @@ const Graph = ({
 					})}
 				</Group>
 			</svg>
-			<RenderTooltip
-				data={data}
-				tooltipOpen={tooltip.tooltipOpen}
-				tooltipData={tooltip.tooltipData}
-				tooltipLeft={tooltip.tooltipLeft}
-				tooltipTop={tooltip.tooltipTop}
-				handles={tooltipHandles}
-				showTooltip={tooltip.showTooltip}
-				delta={delta}
-				xLin={xLin}
-				xScale={xScale}
-				yScale={yScale}
-				margin={margin}
-			/>
+			<ChartTooltip tooltip={tooltip}>
+				{(idx) => (
+					<HistogramTooltipContent idx={idx} delta={delta} data={data} />
+				)}
+			</ChartTooltip>
 		</div>
 	);
 };

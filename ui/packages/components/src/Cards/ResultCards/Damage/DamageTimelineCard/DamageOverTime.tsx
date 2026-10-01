@@ -1,28 +1,28 @@
 import { specialLocales } from "@gcsim/localization";
 import type { model } from "@gcsim/types";
 import { curveBasis } from "@visx/curve";
+import { localPoint } from "@visx/event";
 import { Group } from "@visx/group";
 import { LegendItem, LegendLabel, LegendOrdinal } from "@visx/legend";
 import { scaleLinear, scaleOrdinal } from "@visx/scale";
 import { Bar, LinePath } from "@visx/shape";
 import { Threshold } from "@visx/threshold";
-import { useTooltip } from "@visx/tooltip";
 import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
+	ChartTooltip,
 	DataColorsConst,
 	GraphAxisBottom,
 	GraphAxisLeft,
 	GraphGrid,
 	NoData,
+	useChartTooltip,
 } from "../../../../common/gcsim";
 import type { LegendGlyph } from ".";
 import { useData } from "./DamageOverTimeData";
 import {
+	DamageOverTimeTooltipContent,
 	HoverLine,
-	RenderTooltip,
-	type TooltipData,
-	useTooltipHandles,
 } from "./DamageOverTimeTooltip";
 
 const defaultMargin = { top: 10, left: 100, right: 20, bottom: 40 };
@@ -79,7 +79,6 @@ export const DamageOverTimeLegend = ({ names, glyphs }: LegendProps) => {
 type GraphProps = {
 	width: number;
 	height: number;
-	names: string[];
 	input?: model.BucketStats;
 	margin?: { left: number; right: number; top: number; bottom: number };
 };
@@ -87,7 +86,6 @@ type GraphProps = {
 export const DamageOverTimeGraph = ({
 	width,
 	height,
-	names,
 	input,
 	margin = defaultMargin,
 }: GraphProps) => {
@@ -115,14 +113,14 @@ export const DamageOverTimeGraph = ({
 		nice: true,
 	});
 
-	const tooltip = useTooltip<TooltipData>();
-	const tooltipHandles = useTooltipHandles(
-		tooltip.showTooltip,
-		tooltip.hideTooltip,
-		xScale,
-		margin,
-		bucketSize,
-	);
+	const tooltip = useChartTooltip<number>();
+	const onMouseMove = (e: React.MouseEvent) => {
+		const { x } = localPoint(e) ?? { x: 0 };
+		tooltip.show(
+			e,
+			Math.round((60 * xScale.invert(x - margin.left)) / bucketSize),
+		);
+	};
 
 	if (input == null || data.length === 0) {
 		return <NoData />;
@@ -214,8 +212,8 @@ export const DamageOverTimeGraph = ({
 						width={xMax}
 						height={yMax}
 						fill="transparent"
-						onMouseMove={tooltipHandles.mouseHover}
-						onMouseLeave={() => tooltipHandles.mouseLeave()}
+						onMouseMove={onMouseMove}
+						onMouseLeave={tooltip.scheduleHide}
 					/>
 					<GraphAxisLeft
 						hideTicks
@@ -255,24 +253,16 @@ export const DamageOverTimeGraph = ({
 						minRef={minRef}
 						meanRef={meanRef}
 						maxRef={maxRef}
-						tooltipData={tooltip.tooltipData}
-						tooltipOpen={tooltip.tooltipOpen}
-						tooltipLeft={tooltip.tooltipLeft}
+						tooltip={tooltip}
 						margin={margin}
 					/>
 				</Group>
 			</svg>
-			<RenderTooltip
-				names={names}
-				data={data}
-				tooltipOpen={tooltip.tooltipOpen}
-				tooltipData={tooltip.tooltipData}
-				tooltipLeft={tooltip.tooltipLeft}
-				tooltipTop={tooltip.tooltipTop}
-				handles={tooltipHandles}
-				showTooltip={tooltip.showTooltip}
-				margin={margin}
-			/>
+			<ChartTooltip tooltip={tooltip}>
+				{(index) =>
+					data[index] && <DamageOverTimeTooltipContent point={data[index]} />
+				}
+			</ChartTooltip>
 		</div>
 	);
 };

@@ -1,26 +1,26 @@
 import { specialLocales } from "@gcsim/localization";
 import type { model } from "@gcsim/types";
+import { localPoint } from "@visx/event";
 import { Group } from "@visx/group";
 import { LegendItem, LegendLabel, LegendOrdinal } from "@visx/legend";
 import { scaleLinear, scaleOrdinal } from "@visx/scale";
 import { Bar, LinePath } from "@visx/shape";
-import { useTooltip } from "@visx/tooltip";
 import { memo, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import {
+	ChartTooltip,
 	DataColorsConst,
 	GraphAxisBottom,
 	GraphAxisLeft,
 	GraphGrid,
 	NoData,
+	useChartTooltip,
 } from "../../../../common/gcsim";
 import type { LegendGlyph } from ".";
 import { useData } from "./CumulativeDamageData";
 import {
+	CumulativeDamageTooltipContent,
 	HoverLine,
-	RenderTooltip,
-	type TooltipData,
-	useTooltipHandles,
 } from "./CumulativeDamageTooltip";
 
 const defaultMargin = { top: 10, left: 100, right: 20, bottom: 40 };
@@ -79,7 +79,6 @@ type GraphProps = {
 	height: number;
 	graph: string;
 	target: string;
-	names: string[];
 	input?: model.TargetBucketStats;
 	margin?: { left: number; right: number; top: number; bottom: number };
 };
@@ -89,7 +88,6 @@ const Graph = ({
 	height,
 	graph,
 	target,
-	names,
 	input,
 	margin = defaultMargin,
 }: GraphProps) => {
@@ -119,14 +117,14 @@ const Graph = ({
 		nice: true,
 	});
 
-	const tooltip = useTooltip<TooltipData>();
-	const tooltipHandles = useTooltipHandles(
-		tooltip.showTooltip,
-		tooltip.hideTooltip,
-		xScale,
-		margin,
-		bucketSize,
-	);
+	const tooltip = useChartTooltip<number>();
+	const onMouseMove = (e: React.MouseEvent) => {
+		const { x } = localPoint(e) ?? { x: 0 };
+		tooltip.show(
+			e,
+			Math.round((60 * xScale.invert(x - margin.left)) / bucketSize),
+		);
+	};
 
 	if (input == null || data.length === 0) {
 		return <NoData />;
@@ -199,8 +197,8 @@ const Graph = ({
 						width={xMax}
 						height={yMax}
 						fill="transparent"
-						onMouseMove={tooltipHandles.mouseHover}
-						onMouseLeave={() => tooltipHandles.mouseLeave()}
+						onMouseMove={onMouseMove}
+						onMouseLeave={tooltip.scheduleHide}
 					/>
 					<GraphAxisLeft
 						hideTicks
@@ -245,24 +243,16 @@ const Graph = ({
 						q1Ref={q1Ref}
 						q2Ref={q2Ref}
 						q3Ref={q3Ref}
-						tooltipData={tooltip.tooltipData}
-						tooltipOpen={tooltip.tooltipOpen}
-						tooltipLeft={tooltip.tooltipLeft}
+						tooltip={tooltip}
 						margin={margin}
 					/>
 				</Group>
 			</svg>
-			<RenderTooltip
-				names={names}
-				data={data}
-				tooltipOpen={tooltip.tooltipOpen}
-				tooltipData={tooltip.tooltipData}
-				tooltipLeft={tooltip.tooltipLeft}
-				tooltipTop={tooltip.tooltipTop}
-				handles={tooltipHandles}
-				showTooltip={tooltip.showTooltip}
-				margin={margin}
-			/>
+			<ChartTooltip tooltip={tooltip}>
+				{(index) =>
+					data[index] && <CumulativeDamageTooltipContent point={data[index]} />
+				}
+			</ChartTooltip>
 		</div>
 	);
 };

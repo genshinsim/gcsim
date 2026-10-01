@@ -1,254 +1,45 @@
-import { Popover, PopoverAnchor, PopoverContent } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
-import type { ScaleBand, ScaleLinear } from "d3-scale";
 import { useTranslation } from "react-i18next";
-
-export interface TooltipData {
-	x: number;
-}
-
-export interface TooltipHandles {
-	mouseLeave: () => void;
-	mouseHover: (e: React.MouseEvent, data?: model.OverviewStats) => void;
-	clearTimeout: () => void;
-}
-
-type ShowTooltipArgs<Datum> = {
-	tooltipData?: Datum;
-	tooltipLeft?: number;
-	tooltipTop?: number;
-};
-
-export function useTooltipHandles(
-	showTooltip: (args: ShowTooltipArgs<TooltipData>) => void,
-	hideTooltip: () => void,
-	delta: number | null,
-	margin: { left: number; right: number; top: number; bottom: number },
-): TooltipHandles {
-	let tooltipTimeout: number;
-	const mouseLeave = () => {
-		tooltipTimeout = window.setTimeout(() => {
-			hideTooltip();
-		}, 750);
-	};
-
-	const clearTimeout = () => {
-		if (tooltipTimeout) {
-			window.clearTimeout(tooltipTimeout);
-		}
-	};
-
-	const mouseHover = (e: React.MouseEvent, data?: model.OverviewStats) => {
-		if (
-			delta == null ||
-			data?.min == null ||
-			data?.max == null ||
-			data.histogram?.length == null
-		) {
-			return null;
-		}
-
-		if (e.nativeEvent.offsetX <= margin.left) {
-			return null;
-		}
-
-		clearTimeout();
-		showTooltip({
-			tooltipData: { x: e.nativeEvent.offsetX },
-		});
-	};
-
-	return {
-		mouseLeave: mouseLeave,
-		mouseHover: mouseHover,
-		clearTimeout: clearTimeout,
-	};
-}
+import { TooltipList, TooltipRow } from "../../common/gcsim";
 
 type Props = {
-	data?: model.OverviewStats;
-	tooltipOpen: boolean;
-	tooltipData?: TooltipData;
-	tooltipTop?: number;
-	tooltipLeft?: number;
-	handles: TooltipHandles;
-	showTooltip: (args: ShowTooltipArgs<TooltipData>) => void;
-	delta: number | null;
-	xLin: ScaleLinear<number, number>;
-	xScale: ScaleBand<number>;
-	yScale: ScaleLinear<number, number>;
-	margin: { left: number; right: number; top: number; bottom: number };
-};
-
-export const RenderTooltip = (props: Props) => {
-	if (
-		!props.tooltipOpen ||
-		!props.tooltipData ||
-		props.delta == null ||
-		props.data?.min == null ||
-		props.data?.max == null ||
-		props.data.histogram?.length == null
-	) {
-		return null;
-	}
-
-	const temp = props.xLin.invert(props.tooltipData.x - props.margin.left);
-	const idx = Math.max(Math.floor(props.delta * (temp - props.data.min)), 0);
-	const lower =
-		props.delta === 0 ? props.data.min : props.data.min + idx / props.delta;
-	const upper =
-		props.delta === 0
-			? props.data.max
-			: props.data.min + (idx + 1) / props.delta;
-	const count = props.data.histogram[idx];
-
-	if (count <= 0 || idx >= props.data.histogram.length) {
-		return null;
-	}
-
-	const tooltipLeft =
-		(props.xScale(idx) ?? 0) + props.margin.left + props.xScale.bandwidth() / 2;
-	const tooltipTop = props.yScale(count) - 10;
-
-	const content = (
-		// biome-ignore lint/a11y/noStaticElementInteractions: mouse-only chart tooltip hover region, no interactive semantics
-		<div
-			onMouseMove={() => {
-				props.handles.clearTimeout();
-				props.showTooltip({ tooltipData: props.tooltipData });
-			}}
-			onMouseLeave={() => props.handles.mouseLeave()}
-		>
-			<TooltipContent
-				idx={idx}
-				lower={lower}
-				upper={upper}
-				count={count}
-				stat={props.data}
-			/>
-		</div>
-	);
-
-	return (
-		<Popover open={true}>
-			<PopoverAnchor asChild>
-				<div
-					style={{ top: tooltipTop, left: tooltipLeft, position: "absolute" }}
-				/>
-			</PopoverAnchor>
-			<PopoverContent
-				side="top"
-				className="w-auto p-0"
-				onOpenAutoFocus={(e) => e.preventDefault()}
-			>
-				{content}
-			</PopoverContent>
-		</Popover>
-	);
-};
-
-type TooltipContentProps = {
 	idx: number;
-	lower: number;
-	upper: number;
-	count: number;
-	stat?: model.OverviewStats;
+	delta: number;
+	data: model.OverviewStats;
 };
 
-const TooltipContent = ({
-	idx,
-	lower,
-	upper,
-	count,
-	stat,
-}: TooltipContentProps) => {
+export const HistogramTooltipContent = ({ idx, delta, data }: Props) => {
 	const { i18n, t } = useTranslation();
+	const min = data.min ?? 0;
+	const max = data.max ?? 0;
+	const count = data.histogram?.[idx] ?? 0;
 
-	const lowerVal = lower?.toLocaleString(i18n.language, {
-		maximumFractionDigits: 2,
-	});
-	const upperVal = upper?.toLocaleString(i18n.language, {
-		maximumFractionDigits: 2,
-	});
-	const countVal = count?.toLocaleString(i18n.language, {
-		maximumFractionDigits: 2,
-	});
-	const mean = stat?.mean?.toLocaleString(i18n.language, {
-		maximumFractionDigits: 2,
-	});
-	const p25 = stat?.q1?.toLocaleString(i18n.language, {
-		maximumFractionDigits: 2,
-	});
-	const p50 = stat?.q2?.toLocaleString(i18n.language, {
-		maximumFractionDigits: 2,
-	});
-	const p75 = stat?.q3?.toLocaleString(i18n.language, {
-		maximumFractionDigits: 2,
-	});
+	const lower = delta === 0 ? min : min + idx / delta;
+	const upper = delta === 0 ? max : min + (idx + 1) / delta;
+	const binOf = (v?: number) =>
+		v == null ? null : Math.floor(delta * (v - min));
 
-	if (
-		stat?.histogram?.length == null ||
-		stat?.max == null ||
-		stat?.min == null
-	) {
-		return null;
-	}
-
-	const delta =
-		stat.histogram.length <= 1
-			? 0
-			: stat.histogram.length / (stat.max - stat.min);
-	const muIndex =
-		stat.mean == null ? null : Math.floor(delta * (stat.mean - stat.min));
-	const p25Index =
-		stat.q1 == null ? null : Math.floor(delta * (stat.q1 - stat.min));
-	const p50Index =
-		stat.q2 == null ? null : Math.floor(delta * (stat.q2 - stat.min));
-	const p75Index =
-		stat.q3 == null ? null : Math.floor(delta * (stat.q3 - stat.min));
+	const stats = [
+		{ name: t("result.stat_mean"), value: data.mean },
+		{ name: t("result.stat_p25"), value: data.q1 },
+		{ name: t("result.stat_p50"), value: data.q2 },
+		{ name: t("result.stat_p75"), value: data.q3 },
+	].filter((s) => binOf(s.value) === idx);
 
 	return (
-		<div className="px-5 py-2 font-mono text-xs grid grid-cols-[repeat(2,_max-content)] gap-x-2 justify-center">
-			{(muIndex && muIndex === idx && (
-				<>
-					<span className="justify-self-end text-gray-400">mean</span>
-					<span>{mean}</span>
-				</>
-			)) ||
-				null}
-			{(p25Index && p25Index === idx && (
-				<>
-					<span className="justify-self-end text-gray-400">p25</span>
-					<span>{p25}</span>
-				</>
-			)) ||
-				null}
-			{(p50Index && p50Index === idx && (
-				<>
-					<span className="justify-self-end text-gray-400">p50</span>
-					<span>{p50}</span>
-				</>
-			)) ||
-				null}
-			{(p75Index && p75Index === idx && (
-				<>
-					<span className="justify-self-end text-gray-400">p75</span>
-					<span>{p75}</span>
-				</>
-			)) ||
-				null}
-			<span className="justify-self-end text-gray-400">
-				{t("result.lower")}
-			</span>
-			<span>{lowerVal}</span>
-			<span className="justify-self-end text-gray-400">
-				{t("result.upper")}
-			</span>
-			<span>{upperVal}</span>
-			<span className="justify-self-end text-gray-400">
-				{t("result.iterations_short")}
-			</span>
-			<span>{countVal}</span>
+		<div className="flex flex-col font-g-mono text-g-xs">
+			<TooltipList>
+				{stats.map((s) => (
+					<TooltipRow key={s.name} name={s.name} value={s.value} />
+				))}
+				<TooltipRow name={t("result.lower")} value={lower} />
+				<TooltipRow name={t("result.upper")} value={upper} />
+				<TooltipRow
+					name={t("result.iterations_short")}
+					value={count}
+					format={(n) => n?.toLocaleString(i18n.language)}
+				/>
+			</TooltipList>
 		</div>
 	);
 };
