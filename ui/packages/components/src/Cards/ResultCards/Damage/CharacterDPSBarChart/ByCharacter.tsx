@@ -3,6 +3,7 @@ import { LegendOrdinal } from "@visx/legend";
 import { scaleOrdinal } from "@visx/scale";
 import { range } from "lodash-es";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import {
 	FloatStatTooltipContent,
 	HorizontalBarStack,
@@ -40,6 +41,7 @@ export const ByCharacterLegend = ({ names }: { names?: string[] }) => {
 
 export const ByCharacterChart = ({ width, height, names, dps }: Props) => {
 	const { DataColors } = useDataColors();
+	const { t } = useTranslation();
 	const { data, keys, xMax } = useMemo(
 		() => characterChartData(dps, names),
 		[dps, names],
@@ -64,7 +66,7 @@ export const ByCharacterChart = ({ width, height, names, dps }: Props) => {
 			hoverColor={(k) => DataColors.characterLabel(k)}
 			tooltipContent={(d, k) => (
 				<FloatStatTooltipContent
-					title={`${d.name} DPS`}
+					title={t("result.dps_title", { name: d.name })}
 					data={d.data}
 					color={DataColors.characterLabel(k)}
 					percent={d.share}
