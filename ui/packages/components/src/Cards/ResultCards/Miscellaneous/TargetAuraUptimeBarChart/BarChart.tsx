@@ -7,6 +7,7 @@ import {
 	NoData,
 	useDataColors,
 } from "../../../../common/gcsim";
+import { uptimeFormat } from "./uptimeFormat";
 
 type Props = {
 	width: number;
@@ -18,7 +19,7 @@ type Props = {
 
 const Graph = ({ width, height, auras, auraUptime, target }: Props) => {
 	const { DataColors } = useDataColors();
-	const { t } = useTranslation();
+	const { t, i18n } = useTranslation();
 	const { data, sources, xMax } = useData(target, auraUptime);
 
 	const sourceNames = sources.map((s) => s.name);
@@ -51,6 +52,7 @@ const Graph = ({ width, height, auras, auraUptime, target }: Props) => {
 					title={k + " " + t("result.uptime")}
 					data={d.data[k].data}
 					color={DataColors.reactableModifierLabel(k)}
+					format={uptimeFormat(i18n.language)}
 				/>
 			)}
 			bottomLabel={t("result.p_of_total_dur")}
