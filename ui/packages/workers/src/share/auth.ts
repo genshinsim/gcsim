@@ -18,7 +18,6 @@ function base64Bytes(s: string): Uint8Array | null {
 	}
 }
 
-// Returns the class of the key that signed body, or null if the header does not verify.
 export async function verifyShare(
 	keysJSON: string,
 	id: string,

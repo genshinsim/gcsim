@@ -10,13 +10,12 @@ export function shareKeyPrefix(names: string[]): string {
 		.join("-");
 }
 
-export function shareKeySuffix(): string {
-	// largest multiple of the alphabet size that fits in a byte, so every char is equally likely
-	const limit = 256 - (256 % SUFFIX_CHARS.length);
+function shareKeySuffix(): string {
+	const unbiasedLimit = 256 - (256 % SUFFIX_CHARS.length);
 	let out = "";
 	while (out.length < SUFFIX_LEN) {
 		for (const b of crypto.getRandomValues(new Uint8Array(SUFFIX_LEN))) {
-			if (b < limit && out.length < SUFFIX_LEN) {
+			if (b < unbiasedLimit && out.length < SUFFIX_LEN) {
 				out += SUFFIX_CHARS[b % SUFFIX_CHARS.length];
 			}
 		}

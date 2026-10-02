@@ -10,7 +10,6 @@ async function gzip(data: ArrayBuffer): Promise<ArrayBuffer> {
 	return new Response(stream).arrayBuffer();
 }
 
-// Stores data gzipped under a new key built from prefix and returns the key.
 export async function storeShare(
 	env: Env,
 	prefix: string,
@@ -33,7 +32,6 @@ export async function storeShare(
 	throw new Error("no free share key");
 }
 
-// Looks a share up in R2, falling back to the backend on a miss.
 async function findShare(
 	env: Env,
 	key: string,
@@ -42,7 +40,6 @@ async function findShare(
 	return obj ?? fetch(new Request(`${env.API_ENDPOINT}/api/share/${key}`));
 }
 
-// Response for a client: a stored share is sent as its gzip bytes, a backend share is gzipped on the way out.
 export async function shareResponse(env: Env, key: string): Promise<Response> {
 	const found = await findShare(env, key);
 	if (found instanceof Response) {
@@ -59,8 +56,10 @@ export async function shareResponse(env: Env, key: string): Promise<Response> {
 	});
 }
 
-// Decoded share JSON as a Response, for reading inside the worker.
-export async function shareJSON(env: Env, key: string): Promise<Response> {
+export async function decodedShareResponse(
+	env: Env,
+	key: string,
+): Promise<Response> {
 	const found = await findShare(env, key);
 	if (found instanceof Response) {
 		return found;

@@ -8,7 +8,7 @@ import type { model } from "@gcsim/types";
 import type { IRequest } from "itty-router";
 import { ImageResponse } from "workers-og";
 import type { Env } from "../bindings";
-import { shareJSON } from "../share/storage";
+import { decodedShareResponse } from "../share/storage";
 import { cardFonts } from "./cardFonts";
 import { fetchCardAssets } from "./fetchCardAssets";
 
@@ -110,10 +110,9 @@ export async function handleOgPreview(
 		return cached;
 	}
 
-	// Same data source as the live preview/share path.
 	const resp =
 		dbStr === ""
-			? await shareJSON(env, key)
+			? await decodedShareResponse(env, key)
 			: await fetch(
 					new Request(env.API_ENDPOINT + "/api/share/" + dbStr + key),
 				);

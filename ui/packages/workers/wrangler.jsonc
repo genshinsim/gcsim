@@ -21,8 +21,6 @@
 	// dashboard-managed and preserved via --keep-vars; bump it to force cards to
 	// re-render (e.g. after changing OG_PREVIEW_SCALE). If unset/invalid the
 	// worker falls back to a default of 1.
-	// SHARE_KEYS (share signing keys, JSON) is a secret set with
-	// `wrangler secret put`, for both the default and staging environments.
 	"r2_buckets": [
 		{
 			"binding": "GCSIM_WASM",
