@@ -30,6 +30,7 @@ pipeline/_cache/
 pipeline/_compiled.spec.yml
 pipeline/data/
 keys.json
+pkg/sharekey/key_embedded.go
 tagger_mapping.json
 /app/*
 cmd/gcsim/run_optimizer_full.bat
