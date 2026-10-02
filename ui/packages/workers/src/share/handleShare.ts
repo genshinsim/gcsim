@@ -27,6 +27,10 @@ export async function handleShare(
 	if (!auth) {
 		return reject(403, "Forbidden");
 	}
+	const [id, sig] = splitAuth(auth);
+	if (id === "prod" || id === "dev") {
+		return reject(403, "Forbidden");
+	}
 
 	const ip = request.headers.get("CF-Connecting-IP") ?? "anon";
 	const { success } = await env.SHARE_LIMITER.limit({ key: ip });
@@ -37,15 +41,6 @@ export async function handleShare(
 	const body = await request.arrayBuffer();
 	if (body.byteLength > MAX_SHARE_BYTES) {
 		return reject(413, "Payload Too Large");
-	}
-
-	const [id, sig] = splitAuth(auth);
-	if (id === "prod" || id === "dev") {
-		return fetch(`${env.API_ENDPOINT}/api/share`, {
-			method: "POST",
-			body,
-			headers: request.headers,
-		});
 	}
 
 	const keyClass = await verifyShare(env.SHARE_KEYS, id, sig, body);
