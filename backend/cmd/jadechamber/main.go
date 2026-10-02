@@ -8,7 +8,6 @@ import (
 	"runtime/debug"
 
 	"github.com/genshinsim/gcsim/backend/pkg/api"
-	sharemongo "github.com/genshinsim/gcsim/backend/pkg/services/share/mongo"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
@@ -31,8 +30,8 @@ func main() {
 
 	db := connectMongo().Database(os.Getenv("MONGODB_DATABASE"))
 	s, err := api.New(api.Config{
-		ShareStore:  sharemongo.New(db.Collection(mustGetenv("MONGODB_SHARE_COLLECTION"))),
-		DBShareKeys: &dbShareKeys{col: db.Collection(os.Getenv("MONGODB_COLLECTION"))},
+		ShareStore:  api.NewMongoShareStore(db.Collection(mustGetenv("MONGODB_SHARE_COLLECTION"))),
+		DBShareKeys: api.NewMongoDBShareKeys(db.Collection(os.Getenv("MONGODB_COLLECTION"))),
 	}, func(s *api.Server) error {
 		s.Log = sugar
 		return nil

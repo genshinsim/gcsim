@@ -1,4 +1,4 @@
-package mongo
+package api
 
 import (
 	"encoding/json"
@@ -7,7 +7,6 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/genshinsim/gcsim/backend/pkg/api"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -47,7 +46,7 @@ func TestDecodeShareMatchesGoldenResponse(t *testing.T) {
 
 func TestDecodeShareMissingKey(t *testing.T) {
 	_, _, err := decodeShare(mongo.NewSingleResultFromDocument(bson.D{}, mongo.ErrNoDocuments, nil))
-	if !errors.Is(err, api.ErrKeyNotFound) {
-		t.Errorf("err = %v, want api.ErrKeyNotFound", err)
+	if !errors.Is(err, ErrKeyNotFound) {
+		t.Errorf("err = %v, want ErrKeyNotFound", err)
 	}
 }
