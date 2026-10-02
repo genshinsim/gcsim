@@ -232,6 +232,19 @@ describe("GET /api/share/:key", () => {
 		expect(fetchSpy).not.toHaveBeenCalled();
 	});
 
+	it("serves the same bytes from the cache on a repeat GET", async () => {
+		const key = await (await post(body, header)).text();
+		const url = `https://gcsim.test/api/share/${key}`;
+		const init = { headers: { "Accept-Encoding": "gzip" } };
+		await (await get(`/api/share/${key}`, init)).arrayBuffer();
+		await vi.waitFor(async () => {
+			expect(await caches.default.match(url)).toBeDefined();
+		});
+		const res = await get(`/api/share/${key}`, init);
+		expect(res.headers.get("Content-Encoding")).toBe("gzip");
+		expect(await gunzip(res.body!)).toBe(body);
+	});
+
 	it.each(["V1StGXR8_Z5j", "0b5bd9a6-8a3e-4b3c-9f1e-2d4c6b8a0e1f"])(
 		"falls back to the backend for legacy key %s",
 		async (key) => {

@@ -43,13 +43,15 @@ export async function shareResponse(env: Env, key: string): Promise<Response> {
 		res.headers.append("Content-Encoding", "gzip");
 		return res;
 	}
-	return new Response(found.body, {
-		headers: {
-			"Content-Type": "application/json",
-			"Content-Encoding": "gzip",
+	return new Response(
+		found.body.pipeThrough(new DecompressionStream("gzip")),
+		{
+			headers: {
+				"Content-Type": "application/json",
+				"Content-Encoding": "gzip",
+			},
 		},
-		encodeBody: "manual",
-	});
+	);
 }
 
 export async function decodedShareResponse(
