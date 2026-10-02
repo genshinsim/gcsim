@@ -9,6 +9,8 @@ import (
 	"github.com/go-chi/chi"
 )
 
+var ErrKeyNotFound = errors.New("key does not exist")
+
 type DBShareKeyStore interface {
 	// ShareKeyByDBID returns ErrKeyNotFound if no db entry has this id.
 	ShareKeyByDBID(ctx context.Context, id string) (string, error)
