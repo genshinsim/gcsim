@@ -31,10 +31,10 @@ services:
       context: .
       dockerfile: ./jadechamber.Dockerfile
     environment:
-      - SHARE_STORE_URL=share:3000
       - MONGODB_URL=mongodb://mongo:27017
       - MONGODB_DATABASE=gcsim-database
       - MONGODB_COLLECTION=data
+      - MONGODB_SHARE_COLLECTION=shares
       - MONGODB_USERNAME=root
       - MONOGDB_PASSWORD=root-password
     restart: unless-stopped

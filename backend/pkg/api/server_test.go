@@ -8,8 +8,6 @@ import (
 
 	"github.com/genshinsim/gcsim/pkg/model"
 	"go.uber.org/zap"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type fakeShareStore map[string]*model.SimulationResult
@@ -17,7 +15,7 @@ type fakeShareStore map[string]*model.SimulationResult
 func (f fakeShareStore) Read(_ context.Context, id string) (*model.SimulationResult, uint64, error) {
 	res, ok := f[id]
 	if !ok {
-		return nil, 0, status.Error(codes.NotFound, "not found")
+		return nil, 0, ErrKeyNotFound
 	}
 	return res, 42, nil
 }

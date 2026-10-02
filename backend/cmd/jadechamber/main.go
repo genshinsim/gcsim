@@ -1,13 +1,16 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
 	"runtime/debug"
 
 	"github.com/genshinsim/gcsim/backend/pkg/api"
-	"github.com/genshinsim/gcsim/backend/pkg/services/share"
+	sharemongo "github.com/genshinsim/gcsim/backend/pkg/services/share/mongo"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -26,9 +29,10 @@ func main() {
 	sugar := logger.Sugar()
 	sugar.Debugw("jadechamber started", "sha1ver", sha1ver)
 
+	db := connectMongo().Database(os.Getenv("MONGODB_DATABASE"))
 	s, err := api.New(api.Config{
-		ShareStore:  makeShareStore(),
-		DBShareKeys: makeDBShareKeys(),
+		ShareStore:  sharemongo.New(db.Collection(os.Getenv("MONGODB_SHARE_COLLECTION"))),
+		DBShareKeys: &dbShareKeys{col: db.Collection(os.Getenv("MONGODB_COLLECTION"))},
 	}, func(s *api.Server) error {
 		s.Log = sugar
 		return nil
@@ -50,12 +54,21 @@ func setHash() {
 	}
 }
 
-func makeShareStore() api.ShareStore {
-	shareStore, err := share.NewClient(share.ClientCfg{
-		Addr: os.Getenv("SHARE_STORE_URL"),
-	})
+func connectMongo() *mongo.Client {
+	client, err := mongo.Connect(
+		context.Background(),
+		options.Client().
+			ApplyURI(os.Getenv("MONGODB_URL")).
+			SetAuth(options.Credential{
+				Username: os.Getenv("MONGODB_USERNAME"),
+				Password: os.Getenv("MONOGDB_PASSWORD"),
+			}),
+	)
 	if err != nil {
 		panic(err)
 	}
-	return shareStore
+	if err := client.Ping(context.Background(), nil); err != nil {
+		panic(err)
+	}
+	return client
 }

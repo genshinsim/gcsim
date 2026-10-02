@@ -2,16 +2,16 @@ package api
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"strconv"
 
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/go-chi/chi"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type ShareStore interface {
+	// Read returns ErrKeyNotFound if no share has this key.
 	Read(ctx context.Context, id string) (*model.SimulationResult, uint64, error)
 }
 
@@ -20,7 +20,7 @@ func (s *Server) GetShare() http.HandlerFunc {
 		key := chi.URLParam(r, "share-key")
 		share, ttl, err := s.cfg.ShareStore.Read(r.Context(), key)
 		if err != nil {
-			if st, ok := status.FromError(err); st.Code() == codes.NotFound && ok {
+			if errors.Is(err, ErrKeyNotFound) {
 				http.Error(w, "not found", http.StatusNotFound)
 				return
 			}
