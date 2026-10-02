@@ -1,8 +1,10 @@
+import { undo } from "@codemirror/commands";
 import { diagnosticCount } from "@codemirror/lint";
 import { EditorView } from "@codemirror/view";
-import { fireEvent, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
+import { createRef } from "react";
 import { expect, test, vi } from "vitest";
-import { Editor } from "./Editor";
+import { Editor, type EditorHandle } from "./Editor";
 
 function viewOf(container: HTMLElement) {
 	const dom = container.querySelector<HTMLElement>(".cm-editor");
@@ -87,4 +89,23 @@ test("switches theme in place", () => {
 	rerender(<Editor value="a" theme="github_light" />);
 	expect(viewOf(container)).toBe(view);
 	expect(view.dom.className).not.toBe(before);
+});
+
+test("format tidies the config in one undoable edit, keeping the cursor on its word", () => {
+	const ref = createRef<EditorHandle>();
+	const onChange = vi.fn();
+	const messy = "while true {\nhutao burst;\n}";
+	const { container } = render(
+		<Editor ref={ref} value={messy} onChange={onChange} />,
+	);
+	const view = viewOf(container);
+	view.dispatch({ selection: { anchor: messy.indexOf("burst") + 1 } });
+
+	act(() => ref.current?.format());
+	const tidy = "while true {\n\thutao burst;\n}\n";
+	expect(onChange).toHaveBeenLastCalledWith(tidy);
+	expect(view.state.selection.main.head).toBe(tidy.indexOf("burst") + 1);
+
+	undo(view);
+	expect(view.state.doc.toString()).toBe(messy);
 });

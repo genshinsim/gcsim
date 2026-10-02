@@ -1,4 +1,4 @@
-export { Editor, type EditorProps } from "./Editor";
+export { Editor, type EditorHandle, type EditorProps } from "./Editor";
 export { CHARACTERS, SETS, WEAPONS } from "./language/keys";
 export { gcsim } from "./language/language";
 export {
