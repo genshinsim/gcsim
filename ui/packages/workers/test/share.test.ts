@@ -274,6 +274,22 @@ describe("GET /api/share/:key", () => {
 	});
 });
 
+describe("/api/db", () => {
+	it.each([
+		["GET", "/api/db"],
+		["GET", "/api/db?q=1"],
+		["GET", "/api/db/abc"],
+		["GET", "/api/db/compute/work"],
+		["POST", "/api/db/compute/work"],
+		["POST", "/api/db/submit"],
+	])("%s %s returns 404 without calling the backend", async (method, path) => {
+		const fetchSpy = mockBackend(() => new Response("{}", { status: 200 }));
+		const res = await get(path, { method });
+		expect(res.status).toBe(404);
+		expect(fetchSpy).not.toHaveBeenCalled();
+	});
+});
+
 function padTo(size: number): string {
 	const base = JSON.stringify({ sim_version: "x", key_type: "prod", pad: "" });
 	return base.replace('"pad":""', `"pad":"${"a".repeat(size - base.length)}"`);

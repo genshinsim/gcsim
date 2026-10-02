@@ -7,18 +7,13 @@ import {
 	handleInjectHeadDB,
 	handleOgPreview,
 } from "./preview";
-import { proxyRequest } from "./proxy";
 import { handleLegacy, handleShare, handleView } from "./share";
 import { handleWasm } from "./wasm";
 
 const router = Router();
 
-//passthrough
-router.get("/api/db/compute/work", proxyRequest);
-router.post("/api/db/compute/work", proxyRequest);
-router.post("/api/db/submit", proxyRequest);
-router.get("/api/db", proxyRequest);
-router.get("/api/db/*", proxyRequest);
+router.all("/api/db", () => new Response(null, { status: 404 }));
+router.all("/api/db/*", () => new Response(null, { status: 404 }));
 // viewer files
 router.post("/api/share", handleShare);
 router.get("/api/share/random", () => new Response(null, { status: 404 }));
