@@ -42,7 +42,7 @@ export const Editor = ({
 					<TextAlignStart />
 					<span className="hidden sm:inline">{t("simple.format_config")}</span>
 				</Button>
-				<EditorSettings appearance={prefs} onChange={setPrefs} />
+				<EditorSettings prefs={prefs} onChange={setPrefs} />
 			</div>
 			<ConfigEditor
 				ref={editorRef}

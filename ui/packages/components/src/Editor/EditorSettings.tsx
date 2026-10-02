@@ -16,15 +16,15 @@ import {
 } from "./editorPrefs";
 
 export interface EditorSettingsProps {
-	appearance: EditorPrefs;
+	prefs: EditorPrefs;
 	onChange: (next: EditorPrefs) => void;
 }
 
-export function EditorSettings({ appearance, onChange }: EditorSettingsProps) {
+export function EditorSettings({ prefs, onChange }: EditorSettingsProps) {
 	const { t } = useTranslation();
-	const { fontSize, theme } = appearance;
+	const { fontSize, theme } = prefs;
 	const setFontSize = (next: number) =>
-		onChange({ ...appearance, fontSize: clampFontSize(next) });
+		onChange({ ...prefs, fontSize: clampFontSize(next) });
 
 	return (
 		<Popover>
@@ -96,7 +96,7 @@ export function EditorSettings({ appearance, onChange }: EditorSettingsProps) {
 										name="editor-theme"
 										value={id}
 										checked={selected}
-										onChange={() => onChange({ ...appearance, theme: id })}
+										onChange={() => onChange({ ...prefs, theme: id })}
 										className="sr-only"
 									/>
 									<span
