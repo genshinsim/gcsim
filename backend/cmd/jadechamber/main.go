@@ -31,7 +31,7 @@ func main() {
 
 	db := connectMongo().Database(os.Getenv("MONGODB_DATABASE"))
 	s, err := api.New(api.Config{
-		ShareStore:  sharemongo.New(db.Collection(os.Getenv("MONGODB_SHARE_COLLECTION"))),
+		ShareStore:  sharemongo.New(db.Collection(mustGetenv("MONGODB_SHARE_COLLECTION"))),
 		DBShareKeys: &dbShareKeys{col: db.Collection(os.Getenv("MONGODB_COLLECTION"))},
 	}, func(s *api.Server) error {
 		s.Log = sugar
@@ -71,4 +71,12 @@ func connectMongo() *mongo.Client {
 		panic(err)
 	}
 	return client
+}
+
+func mustGetenv(key string) string {
+	v := os.Getenv(key)
+	if v == "" {
+		panic(key + " is not set")
+	}
+	return v
 }

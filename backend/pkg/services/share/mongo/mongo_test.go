@@ -12,7 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func TestDecodeShareMatchesOldReadPath(t *testing.T) {
+func TestDecodeShareMatchesGoldenResponse(t *testing.T) {
 	doc, err := os.ReadFile("testdata/share_entry.bson")
 	if err != nil {
 		t.Fatal(err)
@@ -41,7 +41,7 @@ func TestDecodeShareMatchesOldReadPath(t *testing.T) {
 		t.Fatal(err)
 	}
 	if !reflect.DeepEqual(gotV, wantV) {
-		t.Error("response body differs from the old read path")
+		t.Error("response body differs from testdata/share_entry.response.json")
 	}
 }
 
