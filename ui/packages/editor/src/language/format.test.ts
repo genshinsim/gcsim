@@ -39,6 +39,24 @@ test("puts each case body on its own line, one level under the case", () => {
 	);
 });
 
+test("lines a comment above a case label up with the label", () => {
+	expect(
+		formatGcsim(
+			"switch n {\ncase 1:\nhutao skill;\n# fallback\ndefault:\nhutao attack;\n}",
+		),
+	).toBe(
+		lines(
+			"switch n {",
+			"\tcase 1:",
+			"\t\thutao skill;",
+			"\t# fallback",
+			"\tdefault:",
+			"\t\thutao attack;",
+			"}",
+		),
+	);
+});
+
 test("keeps a for header on one line", () => {
 	expect(formatGcsim("for let i=0;i<3;i=i+1 {\nhutao attack;\n}")).toBe(
 		lines("for let i = 0; i < 3; i = i + 1 {", "\thutao attack;", "}"),

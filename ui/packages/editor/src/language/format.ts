@@ -105,6 +105,8 @@ const CONFIG_STARTERS = new Set([
 	"active",
 ]);
 const CONFIG_VERBS = new Set(["char", "add"]);
+const isCaseLabel = (t: Token | undefined) =>
+	t?.text === "case" || t?.text === "default";
 const plusStartsKey = (prev: Token) => prev.text !== "=" && prev.text !== ",";
 const keywords = new Set(KEYWORDS);
 const JOINS_CLOSE_BRACE = new Set(["else", ";", ")", ",", "]"]);
@@ -216,7 +218,13 @@ export function formatGcsim(
 			} else {
 				breakLine();
 				if (t.newlinesBefore > 1 && !atBlockStart) blankLine();
-				line = pad(depth + (stmtStart ? 0 : 1)) + t.text;
+				const labelNext =
+					stmtStart &&
+					frame.inCase &&
+					isCaseLabel(
+						tokens.slice(index + 1).find((n) => n.kind !== "comment"),
+					);
+				line = pad(depth + (stmtStart ? 0 : 1) - (labelNext ? 1 : 0)) + t.text;
 			}
 			breakLine();
 			atBlockStart = false;
@@ -231,12 +239,7 @@ export function formatGcsim(
 				frames.pop();
 				frame = frames[frames.length - 1];
 			}
-		} else if (
-			stmtStart &&
-			(t.text === "case" || t.text === "default") &&
-			frame.isSwitch &&
-			frame.inCase
-		) {
+		} else if (stmtStart && isCaseLabel(t) && frame.isSwitch && frame.inCase) {
 			depth--;
 			frame.inCase = false;
 		}
@@ -287,8 +290,7 @@ export function formatGcsim(
 					(t.kind === "ident" && CONFIG_VERBS.has(verb))
 						? "config"
 						: "script";
-				caseHeader =
-					frame.isSwitch && (t.text === "case" || t.text === "default");
+				caseHeader = frame.isSwitch && isCaseLabel(t);
 			}
 			if (t.text === "for") forHeader = true;
 			if (t.text === "switch") switchHeader = true;
