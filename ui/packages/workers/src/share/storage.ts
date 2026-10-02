@@ -28,6 +28,10 @@ export async function storeShare(env: Env, data: ArrayBuffer): Promise<string> {
 	throw new Error("no free share key");
 }
 
+function gunzip(obj: R2ObjectBody): ReadableStream {
+	return obj.body.pipeThrough(new DecompressionStream("gzip"));
+}
+
 async function findShare(
 	env: Env,
 	key: string,
@@ -43,15 +47,13 @@ export async function shareResponse(env: Env, key: string): Promise<Response> {
 		res.headers.append("Content-Encoding", "gzip");
 		return res;
 	}
-	return new Response(
-		found.body.pipeThrough(new DecompressionStream("gzip")),
-		{
-			headers: {
-				"Content-Type": "application/json",
-				"Content-Encoding": "gzip",
-			},
+	// encodeBody "auto" gzips this; a "manual" body is gzipped again by cache.put after clone()
+	return new Response(gunzip(found), {
+		headers: {
+			"Content-Type": "application/json",
+			"Content-Encoding": "gzip",
 		},
-	);
+	});
 }
 
 export async function decodedShareResponse(
@@ -62,5 +64,5 @@ export async function decodedShareResponse(
 	if (found instanceof Response) {
 		return found;
 	}
-	return new Response(found.body.pipeThrough(new DecompressionStream("gzip")));
+	return new Response(gunzip(found));
 }
