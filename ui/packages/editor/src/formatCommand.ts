@@ -3,6 +3,26 @@ import type { ChangeSpec } from "@codemirror/state";
 import type { EditorView } from "@codemirror/view";
 import { formatGcsim, isSpace, sameTokens } from "./language/format";
 
+function changedPart(gap: string, next: string, from: number): ChangeSpec[] {
+	if (gap === next) return [];
+	let head = 0;
+	while (head < gap.length && gap[head] === next[head]) head++;
+	let tail = 0;
+	while (
+		tail < gap.length - head &&
+		tail < next.length - head &&
+		gap[gap.length - 1 - tail] === next[next.length - 1 - tail]
+	)
+		tail++;
+	return [
+		{
+			from: from + head,
+			to: from + gap.length - tail,
+			insert: next.slice(head, next.length - tail),
+		},
+	];
+}
+
 function changesPerWhitespaceGap(src: string, out: string): ChangeSpec[] {
 	const changes: ChangeSpec[] = [];
 	let i = 0;
@@ -12,8 +32,7 @@ function changesPerWhitespaceGap(src: string, out: string): ChangeSpec[] {
 		const start = j;
 		while (isSpace(src[i])) i++;
 		while (isSpace(out[j])) j++;
-		const insert = out.slice(start, j);
-		if (src.slice(from, i) !== insert) changes.push({ from, to: i, insert });
+		changes.push(...changedPart(src.slice(from, i), out.slice(start, j), from));
 		i++;
 		j++;
 	}

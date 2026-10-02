@@ -109,3 +109,14 @@ test("format tidies the config in one undoable edit, keeping the cursor on its w
 	undo(view);
 	expect(view.state.doc.toString()).toBe(messy);
 });
+
+test("format keeps a cursor at the start of an indented line on that line", () => {
+	const ref = createRef<EditorHandle>();
+	const messy = "while true {\n    hutao burst;\n}";
+	const { container } = render(<Editor ref={ref} value={messy} />);
+	const view = viewOf(container);
+	view.dispatch({ selection: { anchor: messy.indexOf("    ") } });
+
+	act(() => ref.current?.format());
+	expect(view.state.doc.lineAt(view.state.selection.main.head).number).toBe(2);
+});
