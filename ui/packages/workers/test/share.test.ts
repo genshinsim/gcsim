@@ -209,6 +209,13 @@ describe("GET /api/share/:key", () => {
 		const res = await get("/api/share/raiden-k3j9xq");
 		expect(res.status).toBe(404);
 	});
+
+	it("no longer serves /api/share/random", async () => {
+		const fetchSpy = mockBackend(() => new Response("{}", { status: 200 }));
+		const res = await get("/api/share/random");
+		expect(res.status).toBe(404);
+		expect(fetchSpy).not.toHaveBeenCalled();
+	});
 });
 
 function padTo(size: number): string {
