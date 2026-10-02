@@ -2,31 +2,50 @@ package api
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/genshinsim/gcsim/pkg/model"
 	"go.uber.org/zap"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
-type fakeShareStore map[string]*model.SimulationResult
+type fakeStore struct {
+	shares map[string]*model.SimulationResult
+	dbKeys map[string]string
+	err    error
+}
 
-func (f fakeShareStore) Read(_ context.Context, id string) (*model.SimulationResult, uint64, error) {
-	res, ok := f[id]
+func (f fakeStore) ReadShare(_ context.Context, key string) (*model.SimulationResult, uint64, error) {
+	if f.err != nil {
+		return nil, 0, f.err
+	}
+	res, ok := f.shares[key]
 	if !ok {
-		return nil, 0, status.Error(codes.NotFound, "not found")
+		return nil, 0, ErrKeyNotFound
 	}
 	return res, 42, nil
+}
+
+func (f fakeStore) ShareKeyByDBID(_ context.Context, id string) (string, error) {
+	if f.err != nil {
+		return "", f.err
+	}
+	key, ok := f.dbKeys[id]
+	if !ok {
+		return "", ErrKeyNotFound
+	}
+	return key, nil
 }
 
 func newTestServer(t *testing.T) *Server {
 	t.Helper()
 	s, err := New(Config{
-		ShareStore:  fakeShareStore{"abc": {}},
-		DBShareKeys: fakeDBShareKeys{"computed": "abc"},
+		Store: fakeStore{
+			shares: map[string]*model.SimulationResult{"abc": {}},
+			dbKeys: map[string]string{"computed": "abc"},
+		},
 	}, func(s *Server) error {
 		s.Log = zap.NewNop().Sugar()
 		return nil
@@ -70,5 +89,18 @@ func TestGetShareSetsTTL(t *testing.T) {
 	w := serve(newTestServer(t), http.MethodGet, "/api/share/abc")
 	if got := w.Header().Get("x-gcsim-ttl"); got != "42" {
 		t.Errorf("x-gcsim-ttl = %q, want 42", got)
+	}
+}
+
+func TestGetShareStoreError(t *testing.T) {
+	s, err := New(Config{Store: fakeStore{err: errors.New("mongo down")}}, func(s *Server) error {
+		s.Log = zap.NewNop().Sugar()
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if w := serve(s, http.MethodGet, "/api/share/abc"); w.Code != http.StatusInternalServerError {
+		t.Errorf("status = %d, want 500", w.Code)
 	}
 }

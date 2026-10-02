@@ -1,26 +1,19 @@
 package api
 
 import (
-	"context"
+	"errors"
 	"net/http"
 	"strconv"
 
-	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/go-chi/chi"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
-
-type ShareStore interface {
-	Read(ctx context.Context, id string) (*model.SimulationResult, uint64, error)
-}
 
 func (s *Server) GetShare() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		key := chi.URLParam(r, "share-key")
-		share, ttl, err := s.cfg.ShareStore.Read(r.Context(), key)
+		share, expiresAt, err := s.cfg.Store.ReadShare(r.Context(), key)
 		if err != nil {
-			if st, ok := status.FromError(err); st.Code() == codes.NotFound && ok {
+			if errors.Is(err, ErrKeyNotFound) {
 				http.Error(w, "not found", http.StatusNotFound)
 				return
 			}
@@ -35,7 +28,7 @@ func (s *Server) GetShare() http.HandlerFunc {
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("x-gcsim-ttl", strconv.FormatUint(ttl, 10))
+		w.Header().Set("x-gcsim-ttl", strconv.FormatUint(expiresAt, 10))
 		w.WriteHeader(http.StatusOK)
 		w.Write(d)
 	}
