@@ -10,21 +10,38 @@ import (
 	"go.uber.org/zap"
 )
 
-type fakeShareStore map[string]*model.SimulationResult
+type fakeStore struct {
+	shares map[string]*model.SimulationResult
+	dbKeys map[string]string
+	err    error
+}
 
-func (f fakeShareStore) Read(_ context.Context, id string) (*model.SimulationResult, uint64, error) {
-	res, ok := f[id]
+func (f fakeStore) ReadShare(_ context.Context, key string) (*model.SimulationResult, uint64, error) {
+	res, ok := f.shares[key]
 	if !ok {
 		return nil, 0, ErrKeyNotFound
 	}
 	return res, 42, nil
 }
 
+func (f fakeStore) ShareKeyByDBID(_ context.Context, id string) (string, error) {
+	if f.err != nil {
+		return "", f.err
+	}
+	key, ok := f.dbKeys[id]
+	if !ok {
+		return "", ErrKeyNotFound
+	}
+	return key, nil
+}
+
 func newTestServer(t *testing.T) *Server {
 	t.Helper()
 	s, err := New(Config{
-		ShareStore:  fakeShareStore{"abc": {}},
-		DBShareKeys: fakeDBShareKeys{"computed": "abc"},
+		Store: fakeStore{
+			shares: map[string]*model.SimulationResult{"abc": {}},
+			dbKeys: map[string]string{"computed": "abc"},
+		},
 	}, func(s *Server) error {
 		s.Log = zap.NewNop().Sugar()
 		return nil

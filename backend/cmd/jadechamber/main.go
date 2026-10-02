@@ -30,8 +30,10 @@ func main() {
 
 	db := connectMongo().Database(os.Getenv("MONGODB_DATABASE"))
 	s, err := api.New(api.Config{
-		ShareStore:  api.NewMongoShareStore(db.Collection(mustGetenv("MONGODB_SHARE_COLLECTION"))),
-		DBShareKeys: api.NewMongoDBShareKeys(db.Collection(os.Getenv("MONGODB_COLLECTION"))),
+		Store: api.NewMongoStore(
+			db.Collection(mustGetenv("MONGODB_SHARE_COLLECTION")),
+			db.Collection(os.Getenv("MONGODB_COLLECTION")),
+		),
 	}, func(s *api.Server) error {
 		s.Log = sugar
 		return nil

@@ -1,7 +1,6 @@
 package api
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -12,26 +11,10 @@ import (
 	"go.uber.org/zap"
 )
 
-type fakeDBShareKeys map[string]string
-
-func (f fakeDBShareKeys) ShareKeyByDBID(_ context.Context, id string) (string, error) {
-	key, ok := f[id]
-	if !ok {
-		return "", ErrKeyNotFound
-	}
-	return key, nil
-}
-
-type failingDBShareKeys struct{}
-
-func (failingDBShareKeys) ShareKeyByDBID(context.Context, string) (string, error) {
-	return "", errors.New("mongo down")
-}
-
-func getDBShare(store DBShareKeyStore, id string) *httptest.ResponseRecorder {
+func getDBShare(store Store, id string) *httptest.ResponseRecorder {
 	s := &Server{
 		Log: zap.NewNop().Sugar(),
-		cfg: Config{DBShareKeys: store},
+		cfg: Config{Store: store},
 	}
 	r := chi.NewRouter()
 	r.Get("/api/dbshare/{id}", s.GetDBShareKey())
@@ -41,7 +24,7 @@ func getDBShare(store DBShareKeyStore, id string) *httptest.ResponseRecorder {
 }
 
 func TestGetDBShareKey(t *testing.T) {
-	store := fakeDBShareKeys{"computed": "abc123", "pending": ""}
+	store := fakeStore{dbKeys: map[string]string{"computed": "abc123", "pending": ""}}
 
 	t.Run("found", func(t *testing.T) {
 		w := getDBShare(store, "computed")
@@ -72,7 +55,7 @@ func TestGetDBShareKey(t *testing.T) {
 	})
 
 	t.Run("store error", func(t *testing.T) {
-		if w := getDBShare(failingDBShareKeys{}, "computed"); w.Code != http.StatusInternalServerError {
+		if w := getDBShare(fakeStore{err: errors.New("mongo down")}, "computed"); w.Code != http.StatusInternalServerError {
 			t.Errorf("status = %d, want 500", w.Code)
 		}
 	})

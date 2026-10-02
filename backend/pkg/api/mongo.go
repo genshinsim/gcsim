@@ -10,16 +10,17 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-type MongoShareStore struct {
-	col *mongo.Collection
+type MongoStore struct {
+	shares *mongo.Collection
+	data   *mongo.Collection
 }
 
-func NewMongoShareStore(col *mongo.Collection) *MongoShareStore {
-	return &MongoShareStore{col: col}
+func NewMongoStore(shares, data *mongo.Collection) *MongoStore {
+	return &MongoStore{shares: shares, data: data}
 }
 
-func (s *MongoShareStore) Read(ctx context.Context, key string) (*model.SimulationResult, uint64, error) {
-	return decodeShare(s.col.FindOne(ctx, bson.M{"_id": key}))
+func (s *MongoStore) ReadShare(ctx context.Context, key string) (*model.SimulationResult, uint64, error) {
+	return decodeShare(s.shares.FindOne(ctx, bson.M{"_id": key}))
 }
 
 func decodeShare(r *mongo.SingleResult) (*model.SimulationResult, uint64, error) {
@@ -37,19 +38,11 @@ func decodeShare(r *mongo.SingleResult) (*model.SimulationResult, uint64, error)
 	return entry.Result, entry.ExpiresAt, nil
 }
 
-type MongoDBShareKeys struct {
-	col *mongo.Collection
-}
-
-func NewMongoDBShareKeys(col *mongo.Collection) *MongoDBShareKeys {
-	return &MongoDBShareKeys{col: col}
-}
-
-func (d *MongoDBShareKeys) ShareKeyByDBID(ctx context.Context, id string) (string, error) {
+func (s *MongoStore) ShareKeyByDBID(ctx context.Context, id string) (string, error) {
 	var entry struct {
 		ShareKey string `bson:"share_key"`
 	}
-	err := d.col.FindOne(
+	err := s.data.FindOne(
 		ctx,
 		bson.M{"_id": id},
 		options.FindOne().SetProjection(bson.M{"share_key": 1}),

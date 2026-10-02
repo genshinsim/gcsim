@@ -1,8 +1,11 @@
 package api
 
 import (
+	"context"
+	"errors"
 	"fmt"
 
+	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"go.uber.org/zap"
@@ -15,9 +18,17 @@ type Server struct {
 	cfg    Config
 }
 
+var ErrKeyNotFound = errors.New("key does not exist")
+
+type Store interface {
+	// ReadShare returns ErrKeyNotFound if no share has this key.
+	ReadShare(ctx context.Context, key string) (*model.SimulationResult, uint64, error)
+	// ShareKeyByDBID returns ErrKeyNotFound if no db entry has this id.
+	ShareKeyByDBID(ctx context.Context, id string) (string, error)
+}
+
 type Config struct {
-	ShareStore  ShareStore
-	DBShareKeys DBShareKeyStore
+	Store Store
 }
 
 func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
@@ -49,11 +60,8 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	s.routes()
 
 	// sanity checks
-	if s.cfg.ShareStore == nil {
-		return nil, fmt.Errorf("no result store provided")
-	}
-	if s.cfg.DBShareKeys == nil {
-		return nil, fmt.Errorf("no db share key store provided")
+	if s.cfg.Store == nil {
+		return nil, fmt.Errorf("no store provided")
 	}
 
 	s.Log.Info("server is ready")

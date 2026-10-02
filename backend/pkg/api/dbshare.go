@@ -1,7 +1,6 @@
 package api
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -9,18 +8,11 @@ import (
 	"github.com/go-chi/chi"
 )
 
-var ErrKeyNotFound = errors.New("key does not exist")
-
-type DBShareKeyStore interface {
-	// ShareKeyByDBID returns ErrKeyNotFound if no db entry has this id.
-	ShareKeyByDBID(ctx context.Context, id string) (string, error)
-}
-
 func (s *Server) GetDBShareKey() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		id := chi.URLParam(r, "id")
 
-		key, err := s.cfg.DBShareKeys.ShareKeyByDBID(r.Context(), id)
+		key, err := s.cfg.Store.ShareKeyByDBID(r.Context(), id)
 		switch {
 		case errors.Is(err, ErrKeyNotFound) || (err == nil && key == ""):
 			http.Error(w, "not found", http.StatusNotFound)
