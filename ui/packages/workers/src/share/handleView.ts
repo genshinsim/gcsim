@@ -50,9 +50,10 @@ export async function handleView(
 		} else {
 			response = await shareResponse(env, key);
 		}
-		response.headers.append("Cache-Control", "s-maxage=1800");
-
-		ctx.waitUntil(cache.put(cacheKey, response.clone()));
+		if (response.status === 200) {
+			response.headers.set("Cache-Control", "max-age=14400, s-maxage=31536000");
+			ctx.waitUntil(cache.put(cacheKey, response.clone()));
+		}
 	} else {
 		console.log(`cache hit for: ${request.url}`);
 	}

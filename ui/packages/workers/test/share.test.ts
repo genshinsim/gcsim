@@ -245,6 +245,31 @@ describe("GET /api/share/:key", () => {
 		expect(await gunzip(res.body!)).toBe(body);
 	});
 
+	it("caches a found share at the edge for a year", async () => {
+		const key = await (await post(body, header)).text();
+		const res = await get(`/api/share/${key}`);
+		expect(res.headers.get("Cache-Control")).toBe(
+			"max-age=14400, s-maxage=31536000",
+		);
+	});
+
+	it.each([404, 500])(
+		"does not cache a backend %i for a legacy key",
+		async (status) => {
+			const key = "V1StGXR8_Z5j";
+			const fetchSpy = mockBackend(() => new Response("err", { status }));
+			const res = await get(`/api/share/${key}`);
+			expect(res.status).toBe(status);
+			await res.arrayBuffer();
+			await new Promise((r) => setTimeout(r, 50));
+			expect(
+				await caches.default.match(`https://gcsim.test/api/share/${key}`),
+			).toBeUndefined();
+			await get(`/api/share/${key}`);
+			expect(fetchSpy).toHaveBeenCalledTimes(2);
+		},
+	);
+
 	it.each(["V1StGXR8_Z5j", "0b5bd9a6-8a3e-4b3c-9f1e-2d4c6b8a0e1f"])(
 		"falls back to the backend for legacy key %s",
 		async (key) => {
