@@ -2,10 +2,13 @@
 
 set -eu
 
-# shellcheck disable=SC2154
-: "${GCSIM_SHARE_KEY}"
-
 release_tag="$(git tag --sort=-version:refname | head -n 1)"
+
+tags=()
+if [ -n "${GCSIM_SHARE_KEY:-}" ]; then
+	go run ./cmd/sharekeygen
+	tags=(-tags sharekey)
+fi
 
 for name in gcsim server; do
 	for os in darwin linux windows; do
@@ -16,7 +19,8 @@ for name in gcsim server; do
 			echo "building ${out}"
 			CGO_ENABLED=0 GOOS="${os}" GOARCH="${arch}" go build \
 				-trimpath \
-				-ldflags "-X 'main.shareKey=${GCSIM_SHARE_KEY}' -X 'main.version=${release_tag}'" \
+				${tags[@]+"${tags[@]}"} \
+				-ldflags "-X 'main.version=${release_tag}'" \
 				-o "${out}" "./cmd/${name}"
 		done
 	done
