@@ -73,30 +73,14 @@ jobs:
           branch: ${{ steps.branch-name.outputs.base_ref_branch == 'mainline' && 'main' || steps.branch-name.outputs.base_ref_branch }}
 
       # build backend artifacts
-      - name: build db
-        uses: ./.github/actions/build-backend-binary
-        with:
-          cmd: db
       - name: build api gateway
         uses: ./.github/actions/build-backend-binary
         with:
           cmd: jadechamber
-      - name: build discord bot 
-        uses: ./.github/actions/build-backend-binary
-        with:
-          cmd: managerchan
       - name: build share store
         uses: ./.github/actions/build-backend-binary
         with:
           cmd: share
-      - name: build notification binary
-        uses: ./.github/actions/build-backend-binary
-        with:
-          cmd: notification
-      - name: build compute binary 
-        uses: ./.github/actions/build-compute-binary
-        with:
-          cmd: compute
       # add a file with the hash
       - name: save hash to file
         working-directory: ./backend/docker
@@ -105,23 +89,11 @@ jobs:
           echo "${LAST_COMMIT_SHA}" >> hash.txt
           ls -la
       # upload artifacts
-      - name: upload db artifacts
+      - name: upload backend artifacts
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: backend-artifacts
           path: ./backend/docker
-      # organize compute artifacts
-      - name: organize compute artifacts
-        shell: bash
-        run: |
-          mkdir -p ./computebin
-          cp ./backend/docker/hash.txt ./computebin/hash.txt
-          cp ./backend/cmd/compute/compute ./computebin/compute
-      - name: upload compute artifacts
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-        with:
-          name: compute-artifacts
-          path: ./computebin 
       - name: git
         run: |
           git status

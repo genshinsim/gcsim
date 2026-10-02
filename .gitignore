@@ -34,10 +34,8 @@ pkg/sharekey/key_embedded.go
 tagger_mapping.json
 /app/*
 cmd/gcsim/run_optimizer_full.bat
-backend/cmd/compute/compute
 backend/docker/hash.txt
 backend/docker/binary
-computebin
 .cache
 .npm
 .pnpm-store
