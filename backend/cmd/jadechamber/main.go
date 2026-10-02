@@ -28,11 +28,11 @@ func main() {
 	sugar := logger.Sugar()
 	sugar.Debugw("jadechamber started", "sha1ver", sha1ver)
 
-	db := connectMongo().Database(os.Getenv("MONGODB_DATABASE"))
+	db := connectMongo().Database(mustGetenv("MONGODB_DATABASE"))
 	s, err := api.New(api.Config{
 		Store: api.NewMongoStore(
 			db.Collection(mustGetenv("MONGODB_SHARE_COLLECTION")),
-			db.Collection(os.Getenv("MONGODB_COLLECTION")),
+			db.Collection(mustGetenv("MONGODB_COLLECTION")),
 		),
 	}, func(s *api.Server) error {
 		s.Log = sugar
@@ -59,7 +59,7 @@ func connectMongo() *mongo.Client {
 	client, err := mongo.Connect(
 		context.Background(),
 		options.Client().
-			ApplyURI(os.Getenv("MONGODB_URL")).
+			ApplyURI(mustGetenv("MONGODB_URL")).
 			SetAuth(options.Credential{
 				Username: os.Getenv("MONGODB_USERNAME"),
 				Password: os.Getenv("MONOGDB_PASSWORD"),

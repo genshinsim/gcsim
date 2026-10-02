@@ -22,7 +22,7 @@ var ErrKeyNotFound = errors.New("key does not exist")
 
 type Store interface {
 	// ReadShare returns ErrKeyNotFound if no share has this key.
-	ReadShare(ctx context.Context, key string) (*model.SimulationResult, uint64, error)
+	ReadShare(ctx context.Context, key string) (result *model.SimulationResult, expiresAt uint64, err error)
 	// ShareKeyByDBID returns ErrKeyNotFound if no db entry has this id.
 	ShareKeyByDBID(ctx context.Context, id string) (string, error)
 }

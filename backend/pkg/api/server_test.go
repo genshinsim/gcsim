@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -17,6 +18,9 @@ type fakeStore struct {
 }
 
 func (f fakeStore) ReadShare(_ context.Context, key string) (*model.SimulationResult, uint64, error) {
+	if f.err != nil {
+		return nil, 0, f.err
+	}
 	res, ok := f.shares[key]
 	if !ok {
 		return nil, 0, ErrKeyNotFound
@@ -85,5 +89,18 @@ func TestGetShareSetsTTL(t *testing.T) {
 	w := serve(newTestServer(t), http.MethodGet, "/api/share/abc")
 	if got := w.Header().Get("x-gcsim-ttl"); got != "42" {
 		t.Errorf("x-gcsim-ttl = %q, want 42", got)
+	}
+}
+
+func TestGetShareStoreError(t *testing.T) {
+	s, err := New(Config{Store: fakeStore{err: errors.New("mongo down")}}, func(s *Server) error {
+		s.Log = zap.NewNop().Sugar()
+		return nil
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if w := serve(s, http.MethodGet, "/api/share/abc"); w.Code != http.StatusInternalServerError {
+		t.Errorf("status = %d, want 500", w.Code)
 	}
 }

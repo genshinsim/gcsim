@@ -11,7 +11,7 @@ import (
 func (s *Server) GetShare() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		key := chi.URLParam(r, "share-key")
-		share, ttl, err := s.cfg.Store.ReadShare(r.Context(), key)
+		share, expiresAt, err := s.cfg.Store.ReadShare(r.Context(), key)
 		if err != nil {
 			if errors.Is(err, ErrKeyNotFound) {
 				http.Error(w, "not found", http.StatusNotFound)
@@ -28,7 +28,7 @@ func (s *Server) GetShare() http.HandlerFunc {
 			return
 		}
 		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("x-gcsim-ttl", strconv.FormatUint(ttl, 10))
+		w.Header().Set("x-gcsim-ttl", strconv.FormatUint(expiresAt, 10))
 		w.WriteHeader(http.StatusOK)
 		w.Write(d)
 	}
