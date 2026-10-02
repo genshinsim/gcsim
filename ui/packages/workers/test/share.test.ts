@@ -8,9 +8,17 @@ const TEST_KEY =
 const KEY_RE = /^[6789BCDFGHJKLMNPQRTWbcdfghjkmnpqrtwz]{12}$/;
 const MiB = 1024 * 1024;
 
-function post(data: BodyInit, auth?: string): Promise<Response> {
+let nextIP = 0;
+
+// The rate-limiter's window is keyed by IP and persists across tests, so each
+// post defaults to a fresh IP; rate-limit tests pass a fixed one to accumulate.
+function post(data: BodyInit, auth?: string, ip?: string): Promise<Response> {
 	const headers = new Headers();
 	if (auth != null) headers.set("X-GCSIM-SHARE-AUTH", auth);
+	headers.set(
+		"CF-Connecting-IP",
+		ip ?? `10.0.${nextIP >> 8}.${nextIP++ & 255}`,
+	);
 	return exports.default.fetch(
 		new Request("https://gcsim.test/api/share", {
 			method: "POST",
@@ -173,6 +181,38 @@ describe("POST /api/share", () => {
 		expect(key).not.toBe(taken);
 		expect(key).toMatch(KEY_RE);
 		expect(await (await env.GCSIM_SHARES.get(taken))!.text()).toBe("existing");
+	});
+});
+
+describe("POST /api/share rate limiting", () => {
+	const LIMIT = 10;
+
+	it("returns 429 once an IP exceeds the limit", async () => {
+		for (let i = 0; i < LIMIT; i++) {
+			const res = await post(body, "k3:bad", "1.2.3.4");
+			expect(res.status).not.toBe(429);
+		}
+		const res = await post(body, "k3:bad", "1.2.3.4");
+		expect(res.status).toBe(429);
+		expect(await storedKeys()).toEqual([]);
+	});
+
+	it("counts each IP separately", async () => {
+		for (let i = 0; i <= LIMIT; i++) {
+			await post(body, "k3:bad", "1.2.3.4");
+		}
+		const res = await post(body, header, "9.9.9.9");
+		expect(res.status).toBe(202);
+	});
+
+	it("rate-limits the prod/dev legacy path too", async () => {
+		mockBackend(() => new Response("abc123", { status: 202 }));
+		for (let i = 0; i < LIMIT; i++) {
+			const res = await post(body, "prod:legacyhash", "5.5.5.5");
+			expect(res.status).not.toBe(429);
+		}
+		const res = await post(body, "prod:legacyhash", "5.5.5.5");
+		expect(res.status).toBe(429);
 	});
 });
 
