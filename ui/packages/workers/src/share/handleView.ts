@@ -31,9 +31,6 @@ export async function handleView(
 	console.log(`checking for cache key: ${cacheUrl}`);
 	const cache = caches.default;
 
-	//check if this is db route
-	const isDB = request.url.includes("/db/");
-
 	let response = await cache.match(cacheKey);
 
 	if (!response) {
@@ -41,15 +38,7 @@ export async function handleView(
 			`Response for request url: ${request.url} not present in cache. Fetching and caching request.`,
 		);
 
-		if (isDB) {
-			response = await fetch(
-				new Request(`${env.API_ENDPOINT}/api/share/db/${key}`),
-			);
-			response = new Response(response.body, response);
-			response.headers.append("Content-Encoding", "gzip");
-		} else {
-			response = await shareResponse(env, key);
-		}
+		response = await shareResponse(env, key);
 		if (response.status === 200) {
 			response.headers.set("Cache-Control", "max-age=14400, s-maxage=31536000");
 			ctx.waitUntil(cache.put(cacheKey, response.clone()));

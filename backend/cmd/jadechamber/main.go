@@ -33,9 +33,10 @@ func main() {
 	keys := getKeys()
 
 	s, err := api.New(api.Config{
-		ShareStore: makeShareStore(),
-		UserStore:  makeUserStore(sugar),
-		DBAddr:     os.Getenv("DB_STORE_URL"),
+		ShareStore:  makeShareStore(),
+		UserStore:   makeUserStore(sugar),
+		DBShareKeys: makeDBShareKeys(),
+		DBAddr:      os.Getenv("DB_STORE_URL"),
 		Discord: api.DiscordConfig{
 			RedirectURL:  os.Getenv("REDIRECT_URL"),
 			ClientID:     os.Getenv("DISCORD_ID"),

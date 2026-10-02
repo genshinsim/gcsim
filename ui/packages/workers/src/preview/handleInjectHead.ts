@@ -4,12 +4,10 @@ import type { Env } from "../bindings";
 class ElementHandler {
 	private key;
 	private host;
-	private prefix;
 
-	constructor(host, key, prefix) {
+	constructor(host, key) {
 		this.key = key;
 		this.host = host;
-		this.prefix = prefix;
 	}
 
 	element(element) {
@@ -36,7 +34,7 @@ class ElementHandler {
 			{ html: true },
 		);
 		element.append(
-			`<meta property="og:image" content="${this.host}/api/preview/${this.prefix !== "" ? this.prefix + "/" : ""}${this.key}.png" />`,
+			`<meta property="og:image" content="${this.host}/api/preview/${this.key}.png" />`,
 			{ html: true },
 		);
 		element.append(`<meta property="og:image:width" content="540" />`, {
@@ -80,24 +78,6 @@ export async function handleInjectHead(
 	console.log("received share request: " + key);
 
 	return new HTMLRewriter()
-		.on("head", new ElementHandler(host, key, ""))
-		.transform(res);
-}
-
-export async function handleInjectHeadDB(
-	request: IRequest,
-	env: Env,
-): Promise<Response> {
-	// See handleInjectHead: fetch the base HTML via the ASSETS binding so the
-	// SPA index.html is rewritten, not the Worker's own 404 page.
-	const res = await env.ASSETS.fetch(request);
-	const url = new URL(request.url);
-	const segments = url.pathname.split("/");
-	const key = segments.pop() || segments.pop();
-	const host = url.protocol + "//" + url.host;
-	console.log("received share request: " + key);
-
-	return new HTMLRewriter()
-		.on("head", new ElementHandler(host, key, "db"))
+		.on("head", new ElementHandler(host, key))
 		.transform(res);
 }
