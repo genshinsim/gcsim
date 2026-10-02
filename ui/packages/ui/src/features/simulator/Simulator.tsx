@@ -1,5 +1,6 @@
 import {
 	type ImportedCharacterOption,
+	useEditorPrefs,
 	useExecutor,
 	useValidation,
 } from "@gcsim/components";
@@ -7,7 +8,6 @@ import type { model } from "@gcsim/types";
 import React from "react";
 import { Viewport } from "../../components";
 import { useDraft } from "../../stores/AppState";
-import { useEditorPrefs } from "../../stores/editorPrefs";
 import { EditorSettings } from "./EditorSettings";
 import {
 	ImportedCharactersProvider,

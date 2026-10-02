@@ -8,19 +8,16 @@ import {
 } from "@gcsim/primitives";
 import { Check, Minus, Plus, SlidersHorizontal } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { defaultEditorPrefs, type EditorAppearance } from "./types";
-
-export const MIN_FONT_SIZE = 10;
-export const MAX_FONT_SIZE = 28;
-
-export function clampFontSize(size: number) {
-	if (!Number.isFinite(size)) return defaultEditorPrefs.fontSize;
-	return Math.min(MAX_FONT_SIZE, Math.max(MIN_FONT_SIZE, Math.round(size)));
-}
+import {
+	clampFontSize,
+	type EditorPrefs,
+	MAX_FONT_SIZE,
+	MIN_FONT_SIZE,
+} from "./editorPrefs";
 
 export interface EditorSettingsProps {
-	appearance: EditorAppearance;
-	onChange: (next: EditorAppearance) => void;
+	appearance: EditorPrefs;
+	onChange: (next: EditorPrefs) => void;
 }
 
 export function EditorSettings({ appearance, onChange }: EditorSettingsProps) {

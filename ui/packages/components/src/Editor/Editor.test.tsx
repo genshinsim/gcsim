@@ -11,7 +11,7 @@ vi.mock("react-i18next", () => ({
 }));
 
 import { Editor } from "./Editor";
-import { MAX_FONT_SIZE } from "./EditorSettings";
+import { MAX_FONT_SIZE } from "./editorPrefs";
 
 const baseProps: React.ComponentProps<typeof Editor> = {
 	value: "cfg text",

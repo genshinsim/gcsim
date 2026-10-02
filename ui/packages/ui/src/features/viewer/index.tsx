@@ -1,4 +1,9 @@
-import { useExecutor, useRunResult, useValidation } from "@gcsim/components";
+import {
+	useEditorPrefs,
+	useExecutor,
+	useRunResult,
+	useValidation,
+} from "@gcsim/components";
 import type { model } from "@gcsim/types";
 import {
 	type LinkProps,
@@ -11,7 +16,6 @@ import { usePrefs } from "@ui/stores/AppState";
 import axios from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSendToSimulator } from "../../components/buttons/useSendToSimulator";
-import { useEditorPrefs } from "../../stores/editorPrefs";
 import { autoSampleSeed, useSample } from "../sample/useSample";
 import { ResultSource } from "./components/LoadingToast";
 import type { SignedResult } from "./components/Share";
