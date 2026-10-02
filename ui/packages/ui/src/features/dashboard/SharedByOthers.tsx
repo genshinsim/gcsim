@@ -1,8 +1,7 @@
 import { cn } from "@gcsim/primitives";
-import { db } from "@gcsim/types";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { KQM_DB_URL } from "./kqm";
+import { KQM_DB_URL, type KqmEntry, parseKqmEntries } from "./kqm";
 import { TeamCard } from "./TeamCard";
 
 const sharedQuery = encodeURIComponent(JSON.stringify({ limit: 3 }));
@@ -14,7 +13,7 @@ type SharedByOthersProps = {
 export function SharedByOthers({ className }: SharedByOthersProps) {
 	const { t } = useTranslation();
 
-	const [entries, setEntries] = useState<db.Entry[]>([]);
+	const [entries, setEntries] = useState<KqmEntry[]>([]);
 	const [isLoaded, setIsLoaded] = useState(false);
 
 	useEffect(() => {
@@ -23,7 +22,7 @@ export function SharedByOthers({ className }: SharedByOthersProps) {
 				if (!resp.ok) throw new Error("Could not load simulations");
 				return resp.json();
 			})
-			.then((json) => setEntries(db.Entries.fromJSON(json).data ?? []))
+			.then((json) => setEntries(parseKqmEntries(json)))
 			.catch((err) => console.log(err))
 			.finally(() => setIsLoaded(true));
 	}, []);
