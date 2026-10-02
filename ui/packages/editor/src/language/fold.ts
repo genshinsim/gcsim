@@ -5,7 +5,7 @@ export const gcsimFoldService = foldService.of((state, lineStart) => {
 	if (!line.text.trimEnd().endsWith("{")) return null;
 
 	const doc = state.doc.sliceString(line.to);
-	let depth = 0;
+	let depth = 1;
 	for (let i = 0; i < doc.length; i++) {
 		if (doc[i] === "{") depth++;
 		if (doc[i] === "}" && --depth === 0) {
