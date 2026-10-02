@@ -66,8 +66,8 @@ function resolveCacheRev(env: Env): number {
 // Matches the retired handlePreview proxy's TTL (60 days).
 const CACHE_TTL_SECONDS = 60 * 24 * 60 * 60;
 
-// Renders SatoriPreviewCard to PNG (or SVG for debugging) from a share/db key.
-// This is the live OG path: `/api/preview/:key` and `/api/preview/db/:key`, hit
+// Renders SatoriPreviewCard to PNG (or SVG for debugging) from a share key.
+// This is the live OG path: `/api/preview/:key`, hit
 // by crawlers via the og:image meta (`.../api/preview/<key>.png`). Renders once
 // and serves the result from caches.default thereafter.
 export async function handleOgPreview(
@@ -85,11 +85,6 @@ export async function handleOgPreview(
 	}
 
 	const url = new URL(request.url);
-
-	// Match handleView's db-variant detection: /api/preview/db/:key resolves
-	// against the backend's /api/share/db/ path. Test the pathname (not the whole
-	// URL) so a `?...=/db/` query string can't flip the variant.
-	const dbStr = url.pathname.includes("/db/") ? "db/" : "";
 
 	// PNG is the default and only OG-valid output; ?format=svg is a browser-only
 	// debug aid (unfurlers ignore SVG).
@@ -110,12 +105,7 @@ export async function handleOgPreview(
 		return cached;
 	}
 
-	const resp =
-		dbStr === ""
-			? await decodedShareResponse(env, key)
-			: await fetch(
-					new Request(env.API_ENDPOINT + "/api/share/" + dbStr + key),
-				);
+	const resp = await decodedShareResponse(env, key);
 	if (!resp.ok) {
 		// Unknown/invalid key must be a 4xx, not a 500. Pass through the backend's
 		// 4xx (e.g. 404 not found); collapse any 5xx to 502 Bad Gateway.

@@ -288,6 +288,48 @@ describe("/api/db", () => {
 	});
 });
 
+describe("/db/:id", () => {
+	it("301s to the entry's share, keeping the query string", async () => {
+		const fetchSpy = mockBackend(() => Response.json({ share_key: "abc123" }));
+		const res = await get("/db/some-id?tab=1", { redirect: "manual" });
+		expect(res.status).toBe(301);
+		expect(res.headers.get("Location")).toBe(
+			"https://gcsim.test/sh/abc123?tab=1",
+		);
+		expect(new Request(fetchSpy.mock.calls[0][0]).url).toBe(
+			"https://backend.test/api/dbshare/some-id",
+		);
+	});
+
+	it.each([
+		["no mapping", () => new Response("not found", { status: 404 })],
+		["a backend error", () => new Response(null, { status: 500 })],
+		["an empty share key", () => Response.json({ share_key: "" })],
+	])("falls through to the SPA on %s", async (_, backend) => {
+		mockBackend(backend);
+		const res = await get("/db/some-id", { redirect: "manual" });
+		expect(res.status).toBe(200);
+		expect(await res.text()).toContain("<title>gcsim</title>");
+	});
+
+	it("falls through to the SPA when the backend is unreachable", async () => {
+		vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("down"));
+		const res = await get("/db/some-id", { redirect: "manual" });
+		expect(res.status).toBe(200);
+		expect(await res.text()).toContain("<title>gcsim</title>");
+	});
+
+	it.each(["/api/share/db/some-id", "/api/preview/db/some-id.png"])(
+		"GET %s returns 404 without calling the backend",
+		async (path) => {
+			const fetchSpy = mockBackend(() => new Response("{}", { status: 200 }));
+			const res = await get(path);
+			expect(res.status).toBe(404);
+			expect(fetchSpy).not.toHaveBeenCalled();
+		},
+	);
+});
+
 function padTo(size: number): string {
 	const base = JSON.stringify({ sim_version: "x", key_type: "prod", pad: "" });
 	return base.replace('"pad":""', `"pad":"${"a".repeat(size - base.length)}"`);

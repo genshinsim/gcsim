@@ -83,21 +83,3 @@ export async function handleInjectHead(
 		.on("head", new ElementHandler(host, key, ""))
 		.transform(res);
 }
-
-export async function handleInjectHeadDB(
-	request: IRequest,
-	env: Env,
-): Promise<Response> {
-	// See handleInjectHead: fetch the base HTML via the ASSETS binding so the
-	// SPA index.html is rewritten, not the Worker's own 404 page.
-	const res = await env.ASSETS.fetch(request);
-	const url = new URL(request.url);
-	const segments = url.pathname.split("/");
-	const key = segments.pop() || segments.pop();
-	const host = url.protocol + "//" + url.host;
-	console.log("received share request: " + key);
-
-	return new HTMLRewriter()
-		.on("head", new ElementHandler(host, key, "db"))
-		.transform(res);
-}
