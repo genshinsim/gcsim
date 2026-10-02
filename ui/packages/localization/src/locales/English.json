@@ -201,6 +201,7 @@
 		"decrease_font_size": "Decrease font size",
 		"increase_font_size": "Increase font size",
 		"shortcut_search": "Shortcut Search",
+		"format_config": "Format Config",
 		"imported_characters": "Imported Characters",
 		"no_imported_characters": "No imported characters. Import them from the Import menu first.",
 		"editor_theme": "Editor Theme",

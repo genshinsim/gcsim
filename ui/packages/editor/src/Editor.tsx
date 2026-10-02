@@ -32,9 +32,10 @@ import {
 	keymap,
 	lineNumbers,
 } from "@codemirror/view";
-import { useEffect, useRef } from "react";
+import { type Ref, useEffect, useImperativeHandle, useRef } from "react";
 import { diagnosticsTransaction, parseErrors } from "./diagnostics";
 import { errorPanelField, setErrorPanel } from "./errorPanel";
+import { formatDocument } from "./formatCommand";
 import { gcsimFoldService } from "./language/fold";
 import { gcsim } from "./language/language";
 import {
@@ -43,7 +44,12 @@ import {
 	editorTheme,
 } from "./themes";
 
+export interface EditorHandle {
+	format: () => void;
+}
+
 export interface EditorProps {
+	ref?: Ref<EditorHandle>;
 	value: string;
 	onChange?: (value: string) => void;
 	readOnly?: boolean;
@@ -93,6 +99,7 @@ function editable(readOnly: boolean): Extension {
 }
 
 export function Editor({
+	ref,
 	value,
 	onChange,
 	readOnly = false,
@@ -115,6 +122,16 @@ export function Editor({
 	}).current;
 	const initial = useRef({ value, theme, fontSize, maxLines, readOnly });
 
+	useImperativeHandle(
+		ref,
+		() => ({
+			format: () => {
+				if (viewRef.current) formatDocument(viewRef.current);
+			},
+		}),
+		[],
+	);
+
 	useEffect(() => {
 		const { value, theme, fontSize, maxLines, readOnly } = initial.current;
 		const view = new EditorView({
@@ -130,8 +147,8 @@ export function Editor({
 					history(),
 					drawSelection(),
 					indentOnInput(),
-					indentUnit.of("  "),
-					EditorState.tabSize.of(2),
+					indentUnit.of("\t"),
+					EditorState.tabSize.of(4),
 					bracketMatching(),
 					closeBrackets(),
 					highlightSelectionMatches(),

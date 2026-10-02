@@ -201,6 +201,7 @@
 		"decrease_font_size": "Schrift verkleinern",
 		"increase_font_size": "Schrift vergrößern",
 		"shortcut_search": "Kürzel-Suche",
+		"format_config": "Konfiguration formatieren",
 		"imported_characters": "Importierte Charaktere",
 		"no_imported_characters": "Keine importierten Charaktere. Importiere sie zuerst über das Menü „Importieren“.",
 		"editor_theme": "Editor-Theme",
