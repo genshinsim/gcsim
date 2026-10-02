@@ -1,5 +1,6 @@
 import type { IRequest } from "itty-router";
 import type { Env } from "../bindings";
+import { shareResponse } from "./storage";
 
 export async function handleView(
 	request: IRequest,
@@ -31,10 +32,7 @@ export async function handleView(
 	const cache = caches.default;
 
 	//check if this is db route
-	let dbStr = "";
-	if (request.url.includes("/db/")) {
-		dbStr = "db/";
-	}
+	const isDB = request.url.includes("/db/");
 
 	let response = await cache.match(cacheKey);
 
@@ -43,13 +41,16 @@ export async function handleView(
 			`Response for request url: ${request.url} not present in cache. Fetching and caching request.`,
 		);
 
-		response = await fetch(
-			new Request(env.API_ENDPOINT + "/api/share/" + dbStr + key),
-		);
-
-		response = new Response(response.body, response);
+		if (isDB) {
+			response = await fetch(
+				new Request(`${env.API_ENDPOINT}/api/share/db/${key}`),
+			);
+			response = new Response(response.body, response);
+			response.headers.append("Content-Encoding", "gzip");
+		} else {
+			response = await shareResponse(env, key);
+		}
 		response.headers.append("Cache-Control", "s-maxage=1800");
-		response.headers.append("Content-Encoding", "gzip");
 
 		ctx.waitUntil(cache.put(cacheKey, response.clone()));
 	} else {

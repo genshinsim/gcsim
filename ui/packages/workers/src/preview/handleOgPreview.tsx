@@ -8,6 +8,7 @@ import type { model } from "@gcsim/types";
 import type { IRequest } from "itty-router";
 import { ImageResponse } from "workers-og";
 import type { Env } from "../bindings";
+import { shareJSON } from "../share/storage";
 import { cardFonts } from "./cardFonts";
 import { fetchCardAssets } from "./fetchCardAssets";
 
@@ -109,10 +110,13 @@ export async function handleOgPreview(
 		return cached;
 	}
 
-	// Same data source as the live preview/share path: the backend share JSON.
-	const resp = await fetch(
-		new Request(env.API_ENDPOINT + "/api/share/" + dbStr + key),
-	);
+	// Same data source as the live preview/share path.
+	const resp =
+		dbStr === ""
+			? await shareJSON(env, key)
+			: await fetch(
+					new Request(env.API_ENDPOINT + "/api/share/" + dbStr + key),
+				);
 	if (!resp.ok) {
 		// Unknown/invalid key must be a 4xx, not a 500. Pass through the backend's
 		// 4xx (e.g. 404 not found); collapse any 5xx to 502 Bad Gateway.
