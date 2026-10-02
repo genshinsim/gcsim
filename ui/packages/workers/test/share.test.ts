@@ -128,9 +128,7 @@ describe("POST /api/share", () => {
 	it.each(["prod", "dev"])(
 		"rejects a legacy %s header without calling the backend",
 		async (id) => {
-			const fetchSpy = mockBackend(
-				() => new Response("abc123", { status: 202 }),
-			);
+			const fetchSpy = mockBackend(() => new Response("{}", { status: 200 }));
 			const res = await post(body, `${id}:legacyhash`);
 			expect(res.status).toBe(403);
 			expect(fetchSpy).not.toHaveBeenCalled();
