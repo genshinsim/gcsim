@@ -92,8 +92,11 @@ describe("POST /api/share", () => {
 		expect(await storedKeys()).toEqual([]);
 	});
 
-	it("rejects a missing header with 403 and writes nothing", async () => {
-		const res = await post(body);
+	it.each([
+		["a missing header", undefined],
+		["an empty header", ""],
+	])("rejects %s with 403 and writes nothing", async (_, auth) => {
+		const res = await post(body, auth);
 		expect(res.status).toBe(403);
 		expect(await storedKeys()).toEqual([]);
 	});

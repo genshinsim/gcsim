@@ -30,7 +30,7 @@ export async function handleShare(
 	}
 
 	const auth = request.headers.get(AUTH_HEADER);
-	if (auth == null) {
+	if (!auth) {
 		return reject(403, "Forbidden");
 	}
 	const [id, sig] = splitAuth(auth);
