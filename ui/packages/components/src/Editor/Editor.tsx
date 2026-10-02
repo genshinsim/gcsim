@@ -1,4 +1,11 @@
-import { Editor as ConfigEditor, DEFAULT_EDITOR_THEME } from "@gcsim/editor";
+import {
+	Editor as ConfigEditor,
+	DEFAULT_EDITOR_THEME,
+	type EditorHandle,
+} from "@gcsim/editor";
+import { Button } from "@gcsim/primitives";
+import { TextAlignStart } from "lucide-react";
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { EditorSettings } from "./EditorSettings";
 import {
@@ -19,6 +26,7 @@ export const Editor = ({
 	importedCharacters,
 }: EditorProps) => {
 	const { t } = useTranslation();
+	const editorRef = useRef<EditorHandle>(null);
 
 	return (
 		<div className="flex flex-col gap-1">
@@ -30,6 +38,15 @@ export const Editor = ({
 					/>
 				) : null}
 				<ShortcutSearch />
+				<Button
+					variant="ghost"
+					size="sm"
+					aria-label={t("simple.format_config")}
+					onClick={() => editorRef.current?.format()}
+				>
+					<TextAlignStart />
+					<span className="hidden sm:inline">{t("simple.format_config")}</span>
+				</Button>
 				{onAppearanceChange ? (
 					<EditorSettings
 						appearance={{ fontSize, theme }}
@@ -38,6 +55,7 @@ export const Editor = ({
 				) : null}
 			</div>
 			<ConfigEditor
+				ref={editorRef}
 				id="config_editor"
 				value={value}
 				onChange={onChange}

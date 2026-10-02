@@ -201,6 +201,7 @@
 		"decrease_font_size": "フォントサイズを小さく",
 		"increase_font_size": "フォントサイズを大きく",
 		"shortcut_search": "略称検索",
+		"format_config": "設定を整形",
 		"imported_characters": "インポート済みキャラクター",
 		"no_imported_characters": "インポート済みのキャラクターがありません。先に「インポート」メニューからインポートしてください。",
 		"editor_theme": "エディターのテーマ",

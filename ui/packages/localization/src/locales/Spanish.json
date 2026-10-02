@@ -201,6 +201,7 @@
 		"decrease_font_size": "Reducir tamaño de fuente",
 		"increase_font_size": "Aumentar tamaño de fuente",
 		"shortcut_search": "Buscar atajos",
+		"format_config": "Formatear configuración",
 		"imported_characters": "Personajes importados",
 		"no_imported_characters": "No hay personajes importados. Impórtalos primero desde el menú Importar.",
 		"editor_theme": "Tema del Editor",

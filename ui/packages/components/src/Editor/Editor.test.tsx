@@ -106,6 +106,24 @@ describe("Editor", () => {
 		});
 	});
 
+	it("formats the config from the toolbar", async () => {
+		const user = userEvent.setup();
+		const onChange = vi.fn();
+		render(
+			<Editor
+				{...baseProps}
+				value={"while true {\nhutao burst;\n}"}
+				onChange={onChange}
+			/>,
+		);
+		await user.click(
+			screen.getByRole("button", { name: "simple.format_config" }),
+		);
+		expect(onChange).toHaveBeenLastCalledWith(
+			"while true {\n\thutao burst;\n}\n",
+		);
+	});
+
 	it("searches every name by shortcut and copies the key", async () => {
 		const user = userEvent.setup();
 		const writeText = vi
