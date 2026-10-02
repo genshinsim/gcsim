@@ -7,21 +7,17 @@ import {
 	handleInjectHeadDB,
 	handleOgPreview,
 } from "./preview";
-import { proxyRequest } from "./proxy";
 import { handleLegacy, handleShare, handleView } from "./share";
 import { handleWasm } from "./wasm";
 
 const router = Router();
+const notFound = () => new Response(null, { status: 404 });
 
-//passthrough
-router.get("/api/db/compute/work", proxyRequest);
-router.post("/api/db/compute/work", proxyRequest);
-router.post("/api/db/submit", proxyRequest);
-router.get("/api/db", proxyRequest);
-router.get("/api/db/*", proxyRequest);
+router.all("/api/db", notFound);
+router.all("/api/db/*", notFound);
 // viewer files
 router.post("/api/share", handleShare);
-router.get("/api/share/random", () => new Response(null, { status: 404 }));
+router.get("/api/share/random", notFound);
 router.get("/api/share/:key", handleView);
 router.get("/api/share/db/:key", handleView);
 router.get("/api/legacy-share/:key", handleLegacy); //TODO: this endpoint should be deleted once we convert over to new

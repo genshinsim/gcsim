@@ -126,31 +126,15 @@ describe("POST /api/share", () => {
 	});
 
 	it.each(["prod", "dev"])(
-		"forwards a %s header to the backend unchanged",
+		"rejects a legacy %s header without calling the backend",
 		async (id) => {
-			const auth = `${id}:legacyhash`;
-			const fetchSpy = mockBackend(
-				() => new Response("abc123", { status: 202 }),
-			);
-			const res = await post(body, auth);
-			expect(res.status).toBe(202);
-			expect(await res.text()).toBe("abc123");
-			const sent = new Request(
-				...(fetchSpy.mock.calls[0] as [RequestInfo, RequestInit]),
-			);
-			expect(sent.url).toBe("https://backend.test/api/share");
-			expect(sent.method).toBe("POST");
-			expect(sent.headers.get("X-GCSIM-SHARE-AUTH")).toBe(auth);
-			expect(await sent.text()).toBe(body);
+			const fetchSpy = mockBackend(() => new Response("{}", { status: 200 }));
+			const res = await post(body, `${id}:legacyhash`);
+			expect(res.status).toBe(403);
+			expect(fetchSpy).not.toHaveBeenCalled();
 			expect(await storedKeys()).toEqual([]);
 		},
 	);
-
-	it("passes the backend's error through for a legacy header", async () => {
-		mockBackend(() => new Response("Bad Request", { status: 400 }));
-		const res = await post(body, "prod:legacyhash");
-		expect(res.status).toBe(400);
-	});
 
 	it("accepts exactly 1 MiB", async () => {
 		const data = padTo(MiB);
@@ -203,16 +187,6 @@ describe("POST /api/share rate limiting", () => {
 		}
 		const res = await post(body, header, "9.9.9.9");
 		expect(res.status).toBe(202);
-	});
-
-	it("rate-limits the prod/dev legacy path too", async () => {
-		mockBackend(() => new Response("abc123", { status: 202 }));
-		for (let i = 0; i < LIMIT; i++) {
-			const res = await post(body, "prod:legacyhash", "5.5.5.5");
-			expect(res.status).not.toBe(429);
-		}
-		const res = await post(body, "prod:legacyhash", "5.5.5.5");
-		expect(res.status).toBe(429);
 	});
 });
 
@@ -293,6 +267,22 @@ describe("GET /api/share/:key", () => {
 	it("no longer serves /api/share/random", async () => {
 		const fetchSpy = mockBackend(() => new Response("{}", { status: 200 }));
 		const res = await get("/api/share/random");
+		expect(res.status).toBe(404);
+		expect(fetchSpy).not.toHaveBeenCalled();
+	});
+});
+
+describe("/api/db", () => {
+	it.each([
+		["GET", "/api/db"],
+		["GET", "/api/db?q=1"],
+		["GET", "/api/db/abc"],
+		["GET", "/api/db/compute/work"],
+		["POST", "/api/db/compute/work"],
+		["POST", "/api/db/submit"],
+	])("%s %s returns 404 without calling the backend", async (method, path) => {
+		const fetchSpy = mockBackend(() => new Response("{}", { status: 200 }));
+		const res = await get(path, { method });
 		expect(res.status).toBe(404);
 		expect(fetchSpy).not.toHaveBeenCalled();
 	});
