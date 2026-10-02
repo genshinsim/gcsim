@@ -1,9 +1,6 @@
 package main
 
 import (
-	"encoding/hex"
-	"encoding/json"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -11,7 +8,6 @@ import (
 
 	"github.com/genshinsim/gcsim/backend/pkg/api"
 	"github.com/genshinsim/gcsim/backend/pkg/services/share"
-	"github.com/genshinsim/gcsim/backend/pkg/user"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -30,25 +26,9 @@ func main() {
 	sugar := logger.Sugar()
 	sugar.Debugw("jadechamber started", "sha1ver", sha1ver)
 
-	keys := getKeys()
-
 	s, err := api.New(api.Config{
 		ShareStore:  makeShareStore(),
-		UserStore:   makeUserStore(sugar),
 		DBShareKeys: makeDBShareKeys(),
-		DBAddr:      os.Getenv("DB_STORE_URL"),
-		Discord: api.DiscordConfig{
-			RedirectURL:  os.Getenv("REDIRECT_URL"),
-			ClientID:     os.Getenv("DISCORD_ID"),
-			ClientSecret: os.Getenv("DISCORD_SECRET"),
-			JWTKey:       os.Getenv("JWT_KEY"),
-		},
-		AESDecryptionKeys: keys,
-		MQTTConfig: api.MQTTConfig{
-			MQTTUser: os.Getenv("MQTT_USERNAME"),
-			MQTTPass: os.Getenv("MQTT_PASSWORD"),
-			MQTTHost: os.Getenv("MQTT_URL"),
-		},
 	}, func(s *api.Server) error {
 		s.Log = sugar
 		return nil
@@ -78,49 +58,4 @@ func makeShareStore() api.ShareStore {
 		panic(err)
 	}
 	return shareStore
-}
-
-func makeUserStore(sugar *zap.SugaredLogger) api.UserStore {
-	store, err := user.New(user.Config{
-		DBPath: os.Getenv("USER_DATA_PATH"),
-	}, func(s *user.Store) error {
-		s.Log = sugar
-		return nil
-	})
-	if err != nil {
-		panic(err)
-	}
-
-	return store
-}
-
-func getKeys() map[string][]byte {
-	// read from key file
-	var hexKeys map[string]string
-	f, err := os.Open(os.Getenv("SHARE_KEY_FILE"))
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-	fv, err := io.ReadAll(f)
-	if err != nil {
-		panic(err)
-	}
-	err = json.Unmarshal(fv, &hexKeys)
-	if err != nil {
-		panic(err)
-	}
-
-	keys := make(map[string][]byte)
-	// convert key from hex string into []byte
-	for k, v := range hexKeys {
-		key, err := hex.DecodeString(v)
-		if err != nil {
-			panic("invalid key provided - cannot decode hex to string")
-		}
-		keys[k] = key
-	}
-
-	log.Println("keys read sucessfully: ", hexKeys)
-	return keys
 }
