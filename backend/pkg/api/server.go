@@ -38,6 +38,7 @@ type MQTTConfig struct {
 type Config struct {
 	ShareStore        ShareStore
 	UserStore         UserStore
+	DBShareKeys       DBShareKeyStore
 	Discord           DiscordConfig
 	DBAddr            string
 	RoleCheck         RoleChecker
@@ -89,6 +90,9 @@ func New(cfg Config, cust ...func(*Server) error) (*Server, error) {
 	}
 	if s.cfg.UserStore == nil {
 		return nil, fmt.Errorf("no user store provided")
+	}
+	if s.cfg.DBShareKeys == nil {
+		return nil, fmt.Errorf("no db share key store provided")
 	}
 
 	// connect to db
@@ -149,6 +153,8 @@ func (s *Server) routes() {
 			r.Get("/random", s.GetRandomShare())
 			r.Get("/db/{db-key}", s.GetShareByDBID())
 		})
+
+		r.Get("/dbshare/{id}", s.GetDBShareKey())
 
 		r.Get("/login", s.Login())
 
