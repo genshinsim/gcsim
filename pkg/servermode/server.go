@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/genshinsim/gcsim/pkg/sharekey"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
@@ -16,7 +17,7 @@ import (
 type ConfigOpt func(cfg *Config) error
 
 type Config struct {
-	ShareKey      string
+	ShareKey      *sharekey.Key
 	Timeout       time.Duration
 	WorkerCount   int
 	FlushInterval int
@@ -61,7 +62,7 @@ func WithDefaults() ConfigOpt {
 	}
 }
 
-func WithShareKey(key string) ConfigOpt {
+func WithShareKey(key *sharekey.Key) ConfigOpt {
 	return func(cfg *Config) error {
 		cfg.ShareKey = key
 		return nil

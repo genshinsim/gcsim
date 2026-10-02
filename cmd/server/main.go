@@ -14,12 +14,10 @@ import (
 
 	selfupdate "github.com/creativeprojects/go-selfupdate"
 	"github.com/genshinsim/gcsim/pkg/servermode"
+	"github.com/genshinsim/gcsim/pkg/sharekey"
 )
 
-var (
-	shareKey string
-	version  string
-)
+var version string
 
 type opts struct {
 	host        string
@@ -32,14 +30,10 @@ type opts struct {
 }
 
 func main() {
-	if shareKey == "" {
-		shareKey = os.Getenv("GCSIM_SHARE_KEY")
-	}
-
 	var opt opts
 	flag.StringVar(&opt.host, "host", "localhost", "host to listen to (default: localhost)")
 	flag.StringVar(&opt.port, "port", "54321", "port to listen on (default: 54321)")
-	flag.StringVar(&opt.shareKey, "sharekey", "", "share key to use (default: build flag OR GCSIM_SHARE_KEY env variable if not available)")
+	flag.StringVar(&opt.shareKey, "sharekey", "", "share key to use as <id>:<class>:<hex> (default: embedded key OR GCSIM_SHARE_KEY env variable if not available)")
 	flag.IntVar(&opt.timeout, "timeout", 5*60, "how long to run each sim for in seconds before timing out (default: 300s)")
 	flag.IntVar(&opt.workers, "workers", 10, "how many workers to use (default: 10)")
 	flag.BoolVar(&opt.update, "update", false, "run autoupdater (default: false)")
@@ -62,13 +56,21 @@ func main() {
 		return
 	}
 
+	key := sharekey.Embedded()
+	if opt.shareKey == "" && key == nil {
+		opt.shareKey = os.Getenv("GCSIM_SHARE_KEY")
+	}
 	if opt.shareKey != "" {
-		shareKey = opt.shareKey
+		var err error
+		key, err = sharekey.Parse(opt.shareKey)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	server, err := servermode.New(
 		servermode.WithDefaults(),
-		servermode.WithShareKey(shareKey),
+		servermode.WithShareKey(key),
 		servermode.WithWorkers(opt.workers),
 		servermode.WithTimeout(time.Duration(opt.timeout)*time.Second),
 	)
