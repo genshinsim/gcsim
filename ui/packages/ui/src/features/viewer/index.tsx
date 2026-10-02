@@ -14,6 +14,7 @@ import { useSendToSimulator } from "../../components/buttons/useSendToSimulator"
 import { useEditorPrefs } from "../../stores/editorPrefs";
 import { autoSampleSeed, useSample } from "../sample/useSample";
 import { ResultSource } from "./components/LoadingToast";
+import type { SignedResult } from "./components/Share";
 import type { ViewerTab } from "./search";
 import type { ViewerEditorState } from "./tabs/Config";
 import UpgradeDialog from "./UpgradeDialog";
@@ -26,21 +27,46 @@ type ViewerProps = {
 
 export type LoadedResult = {
 	data: model.SimulationResult;
-	hash: string | null;
+	signed: SignedResult;
 };
 
 export async function loadResult(url: string): Promise<LoadedResult> {
-	const resp = await axios.get(url, { timeout: 30000 });
-	return { data: resp.data, hash: resp.headers["x-gcsim-share-auth"] ?? null };
+	const resp = await axios.get<string>(url, {
+		timeout: 30000,
+		responseType: "text",
+	});
+	return {
+		data: JSON.parse(resp.data),
+		signed: {
+			raw: resp.data,
+			hash: resp.headers["x-gcsim-share-auth"] ?? null,
+		},
+	};
+}
+
+function shareResult({ raw, hash }: SignedResult): Promise<string> {
+	return axios
+		.post("/api/share", raw, {
+			headers: {
+				"Content-Type": "application/json",
+				"X-GCSIM-SHARE-AUTH": hash ?? "",
+			},
+			transformRequest: (data) => data,
+		})
+		.then((resp) => link("sh", resp.data));
 }
 
 export const WebViewer = ({ mode, gitCommit }: ViewerProps) => {
 	const { busy } = useExecutor();
-	const { result, hash, config, error } = useRunResult();
+	const { result, raw, hash, config, error } = useRunResult();
+	const signed = useMemo(
+		() => (raw == null ? null : { raw, hash }),
+		[raw, hash],
+	);
 	return (
 		<UpgradableViewer
 			data={result}
-			hash={hash}
+			signed={signed}
 			recoveryConfig={config}
 			error={error}
 			src={ResultSource.Generated}
@@ -67,7 +93,7 @@ export const LoadedViewer = ({
 	return (
 		<UpgradableViewer
 			data={result?.data ?? null}
-			hash={result?.hash ?? null}
+			signed={result?.signed ?? null}
 			recoveryConfig={null}
 			error={error ?? null}
 			src={ResultSource.Loaded}
@@ -82,7 +108,7 @@ export const LoadedViewer = ({
 
 type UpgradableViewerProps = {
 	data: model.SimulationResult | null;
-	hash: string | null;
+	signed: SignedResult | null;
 	recoveryConfig: string | null;
 	error: string | null;
 	src: ResultSource;
@@ -115,12 +141,7 @@ const UpgradableViewer = (props: UpgradableViewerProps) => {
 		() => ({
 			onRun: run,
 			onSendToSimulator,
-			onShare: (data: model.SimulationResult, hash: string | null) =>
-				axios
-					.post("/api/share", data, {
-						headers: { "X-GCSIM-SHARE-AUTH": hash ?? "" },
-					})
-					.then((resp) => link("sh", resp.data)),
+			onShare: shareResult,
 		}),
 		[run, onSendToSimulator],
 	);
@@ -141,7 +162,7 @@ const UpgradableViewer = (props: UpgradableViewerProps) => {
 		<>
 			<Viewer
 				result={data}
-				hash={props.hash}
+				signed={props.signed}
 				running={running}
 				src={props.src}
 				error={props.error}

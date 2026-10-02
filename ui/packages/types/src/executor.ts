@@ -8,7 +8,11 @@ export interface Executor {
 	sample(cfg: string, seed: string): Promise<Sample>;
 	run(
 		cfg: string,
-		updateResult: (result: model.SimulationResult, hash: string) => void,
+		updateResult: (
+			result: model.SimulationResult,
+			raw: string,
+			hash: string,
+		) => void,
 	): Promise<boolean | void>;
 	cancel(): void;
 	buildInfo(): { hash: string; date: string };

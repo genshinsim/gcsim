@@ -18,7 +18,20 @@ async function simResult(app: AppHarness, page: Page): Promise<string> {
 
 async function leaveToSaveLastRun(page: Page): Promise<string | null> {
 	await page.goto("/sample/upload");
-	return page.evaluate(() => localStorage.getItem("redux-local-results"));
+	return page.evaluate(() => localStorage.getItem("local-results-raw"));
+}
+
+function capturePost(page: Page): Promise<string | null> {
+	return new Promise((resolve) =>
+		page.route("**/api/share", (route) => {
+			resolve(route.request().postData());
+			return route.fulfill({ status: 200, body: JSON.stringify("xyz") });
+		}),
+	);
+}
+
+function savedRaw(page: Page): Promise<string | null> {
+	return page.evaluate(() => localStorage.getItem("local-results-raw"));
 }
 
 function fulfillShare(body: string) {
@@ -107,23 +120,62 @@ test.describe("share viewer", () => {
 		await app.viewer.waitForResults();
 	});
 
-	test("sharing a local result sends its loaded auth hash", async ({
+	test("sharing a local result sends the served bytes and auth hash", async ({
 		app,
 		page,
 	}) => {
-		await page.route(
-			"http://127.0.0.1:8381/data",
-			fulfillShare(await simResult(app, page)),
-		);
-		const posted = new Promise<string | undefined>((resolve) =>
-			page.route("**/api/share", (route) => {
-				resolve(route.request().headers()["x-gcsim-share-auth"]);
-				return route.fulfill({ status: 200, body: JSON.stringify("xyz") });
-			}),
+		const served = ` ${await simResult(app, page)}\n`;
+		await page.route("http://127.0.0.1:8381/data", fulfillShare(served));
+		const posted = new Promise<{ auth?: string; body: string | null }>(
+			(resolve) =>
+				page.route("**/api/share", (route) => {
+					resolve({
+						auth: route.request().headers()["x-gcsim-share-auth"],
+						body: route.request().postData(),
+					});
+					return route.fulfill({ status: 200, body: JSON.stringify("xyz") });
+				}),
 		);
 		await page.goto("/local");
 		await app.viewer.waitForResults();
 		await page.getByRole("button", { name: "Share" }).click();
-		expect(await posted).toBe(AUTH);
+		expect(await posted).toEqual({ auth: AUTH, body: served });
+	});
+
+	test("sharing a web run sends the bytes of its last flush", async ({
+		app,
+		page,
+	}) => {
+		await app.boot();
+		await app.run(sucroseConfig);
+		await app.viewer.waitForResults();
+		const posted = capturePost(page);
+		await page.getByRole("button", { name: "Share" }).click();
+		const saved = await savedRaw(page);
+		expect(saved).toBeTruthy();
+		expect(await posted).toBe(saved);
+	});
+
+	test("sharing a cancelled web run sends the bytes of its last snapshot", async ({
+		app,
+		page,
+	}) => {
+		await app.boot();
+		await app.simulator.setConfig(
+			sucroseConfig.replace("iteration=1;", "iteration=100000;"),
+		);
+		await app.simulator.waitForConfigValid();
+		await app.simulator.run();
+		const cancel = page.getByRole("button", { name: "Cancel" });
+		await cancel.click();
+		await expect(cancel).toBeHidden();
+		const posted = capturePost(page);
+		await page.getByRole("button", { name: "Share" }).click();
+		const saved = await savedRaw(page);
+		expect(saved).toBeTruthy();
+		expect(JSON.parse(saved as string).statistics.iterations).toBeLessThan(
+			100000,
+		);
+		expect(await posted).toBe(saved);
 	});
 });

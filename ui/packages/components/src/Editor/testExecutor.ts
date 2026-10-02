@@ -54,7 +54,7 @@ export function makeExecutor(opts: FakeExecutorOptions = {}) {
 	const run = vi.fn(
 		(
 			_cfg: string,
-			_sink: (r: model.SimulationResult, hash: string) => void,
+			_sink: (r: model.SimulationResult, raw: string, hash: string) => void,
 		) => {
 			isRunning = true;
 			return Promise.resolve(true);
