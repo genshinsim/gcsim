@@ -16,16 +16,11 @@ require (
 	github.com/aclements/go-moremath v0.0.0-20210112150236-f10218a38794
 	github.com/adrg/xdg v0.5.3
 	github.com/caarlos0/env/v10 v10.0.0
-	github.com/containrrr/shoutrrr v0.8.0
 	github.com/creativeprojects/go-selfupdate v1.1.3
 	github.com/davecgh/go-spew v1.1.1
-	github.com/dgraph-io/badger/v3 v3.2103.5
-	github.com/diamondburned/arikawa/v3 v3.3.3
-	github.com/eclipse/paho.mqtt.golang v1.4.3
 	github.com/fatih/color v1.15.0
 	github.com/go-chi/chi v1.5.5
 	github.com/go-chi/cors v1.2.1
-	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/jaevor/go-nanoid v1.3.0
 	github.com/mailru/easyjson v0.7.7
 	github.com/ory/dockertest/v3 v3.10.0
@@ -37,7 +32,6 @@ require (
 	go.mongodb.org/mongo-driver v1.12.1
 	go.uber.org/zap v1.26.0
 	go.yaml.in/yaml/v4 v4.0.0-rc.6
-	golang.org/x/oauth2 v0.22.0
 	golang.org/x/tools v0.44.0
 	google.golang.org/grpc v1.67.1
 	google.golang.org/protobuf v1.36.12
@@ -51,29 +45,19 @@ require (
 	github.com/Microsoft/go-winio v0.6.1 // indirect
 	github.com/Nvveen/Gotty v0.0.0-20120604004816-cd527374f1e5 // indirect
 	github.com/cenkalti/backoff/v4 v4.2.1 // indirect
-	github.com/cespare/xxhash v1.1.0 // indirect
-	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/containerd/continuity v0.4.2 // indirect
 	github.com/davidmz/go-pageant v1.0.2 // indirect
-	github.com/dgraph-io/ristretto v0.1.1 // indirect
 	github.com/dmarkham/enumer v1.6.3 // indirect
 	github.com/docker/cli v24.0.6+incompatible // indirect
 	github.com/docker/docker v24.0.6+incompatible // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
-	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/go-fed/httpsig v1.1.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang/glog v1.2.2 // indirect
-	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
-	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/google/flatbuffers v23.5.26+incompatible // indirect
 	github.com/google/go-github/v30 v30.1.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
-	github.com/gorilla/schema v1.2.0 // indirect
-	github.com/gorilla/websocket v1.5.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-retryablehttp v0.7.4 // indirect
 	github.com/hashicorp/go-version v1.6.0 // indirect
@@ -103,17 +87,18 @@ require (
 	github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 // indirect
 	github.com/xeipuuv/gojsonschema v1.2.0 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect
-	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	golang.org/x/crypto v0.50.0 // indirect
 	golang.org/x/mod v0.35.0 // indirect
 	golang.org/x/net v0.53.0 // indirect
+	golang.org/x/oauth2 v0.22.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
 	golang.org/x/sys v0.43.0 // indirect
 	golang.org/x/term v0.42.0 // indirect
 	golang.org/x/text v0.36.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240814211410-ddb44dafa142 // indirect
+	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
