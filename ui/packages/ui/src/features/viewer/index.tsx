@@ -1,9 +1,4 @@
-import {
-	useEditorPrefs,
-	useExecutor,
-	useRunResult,
-	useValidation,
-} from "@gcsim/components";
+import { useExecutor, useRunResult, useValidation } from "@gcsim/components";
 import type { model } from "@gcsim/types";
 import {
 	type LinkProps,
@@ -197,7 +192,6 @@ function useViewerEditor(
 ): ViewerEditorState {
 	const { isReady } = useExecutor();
 	const [config, setConfig] = useState(resultConfig ?? "");
-	const [{ theme, fontSize }] = useEditorPrefs();
 	const { isValid, error } = useValidation(config);
 
 	useEffect(() => {
@@ -210,8 +204,6 @@ function useViewerEditor(
 		error,
 		canRun: isReady && isValid && !running,
 		busy: !isReady || running,
-		theme,
-		fontSize,
 	};
 }
 

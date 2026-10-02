@@ -1,4 +1,3 @@
-export { type EditorThemeId, isEditorThemeId } from "@gcsim/editor";
 export { Editor } from "./Editor";
 export { EditorSettings, type EditorSettingsProps } from "./EditorSettings";
 export {
@@ -12,11 +11,9 @@ export {
 	useRunResult,
 } from "./ExecutorProvider";
 export {
-	defaultEditorPrefs,
 	type EditorPrefs,
 	loadEditorPrefs,
 	saveEditorPrefs,
-	useEditorPrefs,
 } from "./editorPrefs";
 export {
 	ImportedCharacterInsert,

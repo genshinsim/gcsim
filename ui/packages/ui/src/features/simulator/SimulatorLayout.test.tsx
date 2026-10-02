@@ -1,6 +1,5 @@
 // @vitest-environment jsdom
 import "@gcsim/components/vitest.setup";
-import { defaultEditorPrefs } from "@gcsim/components";
 import { cleanup, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type React from "react";
@@ -21,8 +20,6 @@ const baseProps: SimulatorLayoutProps = {
 	onRun: () => {},
 	canRun: true,
 	busy: false,
-	prefs: defaultEditorPrefs,
-	onPrefsChange: () => {},
 };
 
 function renderLayout(props: Partial<SimulatorLayoutProps> = {}) {
@@ -69,26 +66,6 @@ describe("SimulatorLayout", () => {
 		expect(
 			container.querySelector("#config_editor [role=alert]"),
 		).toHaveTextContent("bad line 3");
-	});
-
-	it("stores editor settings changes in prefs", async () => {
-		const onPrefsChange = vi.fn();
-		renderLayout({ onPrefsChange });
-		await userEvent.click(
-			screen.getByRole("button", { name: "simple.editor_settings" }),
-		);
-		await userEvent.click(
-			screen.getByRole("button", { name: "simple.increase_font_size" }),
-		);
-		expect(onPrefsChange).toHaveBeenLastCalledWith({
-			...defaultEditorPrefs,
-			fontSize: 15,
-		});
-		await userEvent.click(screen.getByRole("radio", { name: /Monokai/ }));
-		expect(onPrefsChange).toHaveBeenLastCalledWith({
-			...defaultEditorPrefs,
-			theme: "monokai",
-		});
 	});
 
 	it("disables Run while canRun is false", () => {

@@ -1,4 +1,9 @@
-import { defaultEditorPrefs, Editor } from "@gcsim/components";
+import {
+	Editor,
+	type EditorPrefs,
+	loadEditorPrefs,
+	saveEditorPrefs,
+} from "@gcsim/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useArgs } from "storybook/preview-api";
 import { fn } from "storybook/test";
@@ -20,40 +25,28 @@ const meta: Meta<typeof Editor> = {
 					args.onChange(value);
 					updateArgs({ value });
 				}}
-				onAppearanceChange={
-					args.onAppearanceChange
-						? (appearance) => {
-								args.onAppearanceChange?.(appearance);
-								updateArgs(appearance);
-							}
-						: undefined
-				}
 			/>
 		);
 	},
 	args: {
 		value: sampleConfig,
 		onChange: fn(),
-		theme: defaultEditorPrefs.theme,
-		fontSize: defaultEditorPrefs.fontSize,
 	},
 };
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {};
-
-export const WithToolbar: Story = {
-	args: {
-		onAppearanceChange: fn(),
-	},
+const seedPrefs = (prefs: Partial<EditorPrefs>) => () => {
+	const saved = loadEditorPrefs(localStorage);
+	saveEditorPrefs(localStorage, { ...saved, ...prefs });
+	return () => saveEditorPrefs(localStorage, saved);
 };
 
+export const Primary: Story = {};
+
 export const ClassicTheme: Story = {
-	args: {
-		theme: "monokai",
-	},
+	beforeEach: seedPrefs({ theme: "monokai" }),
 };
 
 export const WithErrors: Story = {
@@ -64,9 +57,7 @@ export const WithErrors: Story = {
 };
 
 export const LargeFont: Story = {
-	args: {
-		fontSize: 20,
-	},
+	beforeEach: seedPrefs({ fontSize: 20 }),
 };
 
 export const GrowToFit: Story = {
@@ -76,9 +67,6 @@ export const GrowToFit: Story = {
 };
 
 export const PrimaryMobile: Story = {
-	args: {
-		onAppearanceChange: fn(),
-	},
 	parameters: {
 		viewport: {
 			defaultViewport: "mobile1",
@@ -87,9 +75,6 @@ export const PrimaryMobile: Story = {
 };
 
 export const PrimaryTablet: Story = {
-	args: {
-		onAppearanceChange: fn(),
-	},
 	parameters: {
 		viewport: {
 			defaultViewport: "tablet",
