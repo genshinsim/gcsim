@@ -22,9 +22,6 @@ router.get("/api/share/random", notFound);
 router.get("/api/share/:key", handleView);
 router.get("/api/share/db/:key", notFound);
 router.get("/api/legacy-share/:key", handleLegacy); //TODO: this endpoint should be deleted once we convert over to new
-// Live OG path: Satori-rendered preview card. Crawlers hit this via the
-// og:image meta (`/api/preview/<key>.png`); the handler strips `.png` and
-// caches the render. See handleOgPreview.
 router.get("/api/preview/:key", handleOgPreview);
 router.get("/api/preview/db/:key", notFound);
 

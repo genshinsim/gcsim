@@ -66,10 +66,6 @@ function resolveCacheRev(env: Env): number {
 // Matches the retired handlePreview proxy's TTL (60 days).
 const CACHE_TTL_SECONDS = 60 * 24 * 60 * 60;
 
-// Renders SatoriPreviewCard to PNG (or SVG for debugging) from a share key.
-// This is the live OG path: `/api/preview/:key`, hit
-// by crawlers via the og:image meta (`.../api/preview/<key>.png`). Renders once
-// and serves the result from caches.default thereafter.
 export async function handleOgPreview(
 	request: IRequest,
 	env: Env,
