@@ -93,6 +93,8 @@ services:
     restart: unless-stopped
     ports:
       - 9010:3000
+    depends_on:
+      - mongo
   # discord bot
   managerchan:
     container_name: managerchan
