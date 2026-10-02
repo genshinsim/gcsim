@@ -1,7 +1,6 @@
 import type { IRequest } from "itty-router";
 import type { Env } from "../bindings";
 import { verifyShare } from "./auth";
-import { shareKeyPrefix } from "./shareKey";
 import { storeShare } from "./storage";
 import { validator } from "./validation";
 
@@ -10,7 +9,6 @@ const AUTH_HEADER = "X-GCSIM-SHARE-AUTH";
 
 type ShareBody = {
 	key_type?: unknown;
-	character_details?: ({ name?: unknown } | null)[];
 };
 
 function reject(status: number, statusText: string): Response {
@@ -57,10 +55,7 @@ export async function handleShare(
 		return reject(400, "Bad Request");
 	}
 
-	const names = Array.isArray(content.character_details)
-		? content.character_details.map((c) => String(c?.name ?? ""))
-		: [];
-	const key = await storeShare(env, shareKeyPrefix(names), body);
+	const key = await storeShare(env, body);
 	return new Response(key, { status: 202 });
 }
 

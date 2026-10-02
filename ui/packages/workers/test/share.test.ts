@@ -5,8 +5,7 @@ import header from "./fixtures/k3.header?raw";
 
 const TEST_KEY =
 	"000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f";
-const SUFFIX = "[6789BCDFGHJKLMNPQRTWbcdfghjkmnpqrtwz]{8}";
-const KEY_RE = new RegExp(`^raiden-kazuha-kokomi-furina-${SUFFIX}$`);
+const KEY_RE = /^[6789BCDFGHJKLMNPQRTWbcdfghjkmnpqrtwz]{12}$/;
 const MiB = 1024 * 1024;
 
 function post(data: BodyInit, auth?: string): Promise<Response> {
@@ -158,8 +157,8 @@ describe("POST /api/share", () => {
 		expect(await storedKeys()).toEqual([]);
 	});
 
-	it("retries with a new suffix when the key is taken", async () => {
-		const taken = "raiden-kazuha-kokomi-furina-66666666";
+	it("retries with a new key when the key is taken", async () => {
+		const taken = "666666666666";
 		await env.GCSIM_SHARES.put(taken, "existing");
 		const real = crypto.getRandomValues.bind(crypto);
 		vi.spyOn(crypto, "getRandomValues")
@@ -209,7 +208,7 @@ describe("GET /api/share/:key", () => {
 
 	it("returns 404 for an unknown new-format key", async () => {
 		mockBackend(() => new Response("not found", { status: 404 }));
-		const res = await get("/api/share/raiden-k3j9xqbd");
+		const res = await get("/api/share/k3j9xqbdHT7w");
 		expect(res.status).toBe(404);
 	});
 

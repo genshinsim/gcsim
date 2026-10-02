@@ -10,14 +10,10 @@ async function gzip(data: ArrayBuffer): Promise<ArrayBuffer> {
 	return new Response(stream).arrayBuffer();
 }
 
-export async function storeShare(
-	env: Env,
-	prefix: string,
-	data: ArrayBuffer,
-): Promise<string> {
+export async function storeShare(env: Env, data: ArrayBuffer): Promise<string> {
 	const gz = await gzip(data);
 	for (let i = 0; i < MAX_ATTEMPTS; i++) {
-		const key = newShareKey(prefix);
+		const key = newShareKey();
 		const obj = await env.GCSIM_SHARES.put(key, gz, {
 			onlyIf: new Headers({ "If-None-Match": "*" }),
 			httpMetadata: {
