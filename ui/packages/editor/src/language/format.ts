@@ -1,6 +1,4 @@
-// The formatter only rewrites whitespace between tokens, and sameTokens()
-// checks that, so a formatter bug can make a config ugly but never change
-// what it means.
+import { KEYWORDS } from "./keys";
 
 type TokenKind =
 	| "ident"
@@ -15,16 +13,11 @@ type TokenKind =
 interface Token {
 	kind: TokenKind;
 	text: string;
-	// newlines in the whitespace before this token
-	newlines: number;
-	// whether any whitespace precedes this token
-	spaced: boolean;
+	newlinesBefore: number;
+	spacedBefore: boolean;
 }
 
-// The tokenizer mirrors pkg/gcs/ast/lex.go rather than the Lezer grammar so
-// token boundaries match the real lexer: identifiers may contain "-" and "%"
-// (`i-1` is one identifier), ".foo" is a single field token, "<>" means !=.
-const isSpace = (c: string | undefined) =>
+export const isSpace = (c: string | undefined) =>
 	c === " " || c === "\t" || c === "\n" || c === "\r";
 const isDigit = (c: string | undefined) =>
 	c !== undefined && c >= "0" && c <= "9";
@@ -34,8 +27,7 @@ const isIdentChar = (c: string | undefined) =>
 const TWO_CHAR_OPS = new Set(["==", "!=", "<=", ">=", "<>", "&&", "||"]);
 const ONE_CHAR_OPS = new Set(["=", "<", ">", "!", "+", "-", "*", "/"]);
 const PUNCT = new Set([";", ":", ",", "(", ")", "[", "]", "{", "}", "."]);
-// characters the Go lexer accepts directly after an identifier or field
-const TERMINATORS = new Set(".,|:)(+=><&!;[]{}/*");
+const IDENT_TERMINATORS = new Set(".,|:)(+=><&!;[]{}/*");
 
 function tokenize(src: string): Token[] {
 	const tokens: Token[] = [];
@@ -90,8 +82,8 @@ function tokenize(src: string): Token[] {
 		tokens.push({
 			kind,
 			text: src.slice(from, i),
-			newlines,
-			spaced: from > gap,
+			newlinesBefore: newlines,
+			spacedBefore: from > gap,
 		});
 	}
 }
@@ -105,8 +97,6 @@ export function sameTokens(a: string, b: string): boolean {
 	);
 }
 
-// Statements made of `key=value` pairs that the Go parser reads into the
-// ActionList rather than the AST. They print tight: `lvl=90/90 talent=9,9,9`.
 const CONFIG_STARTERS = new Set([
 	"options",
 	"target",
@@ -115,24 +105,9 @@ const CONFIG_STARTERS = new Set([
 	"active",
 ]);
 const CONFIG_VERBS = new Set(["char", "add"]);
-const KEYWORDS = new Set([
-	"if",
-	"else",
-	"while",
-	"for",
-	"switch",
-	"case",
-	"default",
-	"return",
-	"let",
-	"fn",
-	"break",
-	"continue",
-	"fallthrough",
-]);
-// tokens that stay on the `}` line instead of starting a new one
+const plusStartsKey = (prev: Token) => prev.text !== "=" && prev.text !== ",";
+const keywords = new Set(KEYWORDS);
 const JOINS_CLOSE_BRACE = new Set(["else", ";", ")", ",", "]"]);
-// tokens that never start a continuation line
 const NO_BREAK_BEFORE = new Set(["{", ";", ",", ")", "]", ":"]);
 
 interface Frame {
@@ -158,8 +133,7 @@ export function formatGcsim(
 	let mode: "config" | "script" = "script";
 	let stmtStart = true;
 	let pendingBreak = false;
-	// no blank line directly after `{` or `case x:`
-	let justOpened = false;
+	let atBlockStart = false;
 	let forHeader = false;
 	let switchHeader = false;
 	let caseHeader = false;
@@ -181,11 +155,10 @@ export function formatGcsim(
 			(!p ||
 				p.kind === "op" ||
 				(p.kind === "punct" && !")]}".includes(p.text)) ||
-				(p.kind === "ident" && KEYWORDS.has(p.text))));
+				(p.kind === "ident" && keywords.has(p.text))));
 
 	const configSpace = (p: Token, t: Token) => {
-		// `+params=[...]` reads as a prefixed key
-		if (t.text === "+") return p.text !== "=" && p.text !== ",";
+		if (t.text === "+") return plusStartsKey(p);
 		if (p.kind === "op" || t.kind === "op") return false;
 		if (p.text === "," || t.text === "[" || t.text === "(") return false;
 		return true;
@@ -194,16 +167,14 @@ export function formatGcsim(
 	const scriptSpace = (p: Token, t: Token) => {
 		if (prevUnary) return false;
 		const callee =
-			(p.kind === "ident" && (!KEYWORDS.has(p.text) || p.text === "fn")) ||
+			(p.kind === "ident" && (!keywords.has(p.text) || p.text === "fn")) ||
 			p.kind === "field" ||
 			p.text === ")";
 		if (t.text === "(") return !callee;
-		// action params `skill[hold=1]`, map literals `= [a=1]`
 		if (t.text === "[") return !callee && p.text !== "]";
 		if (t.kind === "field" && p.kind === "field") return false;
 		const inSquare = frame.brackets[frame.brackets.length - 1] === "[";
 		if (inSquare && (t.text === "=" || p.text === "=")) return false;
-		// repeat counts `attack:3`
 		if (p.text === ":") return t.kind !== "number";
 		return true;
 	};
@@ -218,19 +189,19 @@ export function formatGcsim(
 			return true;
 		if (
 			(p.kind === "ident" || p.kind === "field") &&
-			!TERMINATORS.has(t.text[0])
+			!IDENT_TERMINATORS.has(t.text[0])
 		)
 			return true;
-		if (p.kind === "error" || t.kind === "error") return t.spaced;
-		if (p.text === "." || t.text === ".") return t.spaced;
+		if (p.kind === "error" || t.kind === "error") return t.spacedBefore;
+		if (p.text === "." || t.text === ".") return t.spacedBefore;
 		if (",;)]:".includes(t.text) || p.text === "(" || p.text === "[")
 			return false;
 		return mode === "config" ? configSpace(p, t) : scriptSpace(p, t);
 	};
 
-	for (const [k, t] of tokens.entries()) {
+	for (const [index, t] of tokens.entries()) {
 		const trailingComment =
-			t.kind === "comment" && t.newlines === 0 && line !== null;
+			t.kind === "comment" && t.newlinesBefore === 0 && line !== null;
 		if (
 			pendingBreak &&
 			!trailingComment &&
@@ -244,16 +215,14 @@ export function formatGcsim(
 				line = `${line} ${t.text}`;
 			} else {
 				breakLine();
-				if (t.newlines > 1 && !justOpened) blankLine();
+				if (t.newlinesBefore > 1 && !atBlockStart) blankLine();
 				line = pad(depth + (stmtStart ? 0 : 1)) + t.text;
 			}
-			// a comment runs to end of line, so the next token must start a new one
 			breakLine();
-			justOpened = false;
+			atBlockStart = false;
 			continue;
 		}
 
-		// leaving a block or a case body dedents before the token is placed
 		if (t.text === "}") {
 			breakLine();
 			if (frames.length > 1) {
@@ -273,43 +242,46 @@ export function formatGcsim(
 		}
 
 		const unary = isUnary(prev, t);
-		let head: string;
+		let prefix: string;
 		if (line === null) {
-			if (stmtStart && t.newlines > 1 && !justOpened && t.text !== "}")
+			if (stmtStart && t.newlinesBefore > 1 && !atBlockStart && t.text !== "}")
 				blankLine();
-			head = pad(depth + (stmtStart || t.text === "}" ? 0 : 1));
-		} else if (t.newlines > 0 && !stmtStart && !NO_BREAK_BEFORE.has(t.text)) {
-			// keep the author's line breaks inside a long statement
+			prefix = pad(depth + (stmtStart || t.text === "}" ? 0 : 1));
+		} else if (
+			t.newlinesBefore > 0 &&
+			!stmtStart &&
+			!NO_BREAK_BEFORE.has(t.text)
+		) {
 			breakLine();
-			head = pad(depth + 1);
+			prefix = pad(depth + 1);
 		} else {
-			head = prev && needsSpace(prev, t) ? `${line} ` : line;
+			prefix = prev && needsSpace(prev, t) ? `${line} ` : line;
 		}
-		line = head + t.text;
-		justOpened = false;
+		line = prefix + t.text;
+		atBlockStart = false;
 
-		const atTop = frame.brackets.length === 0;
+		const outsideBrackets = frame.brackets.length === 0;
 		if (t.text === "{") {
 			frames.push({ isSwitch: switchHeader, inCase: false, brackets: [] });
 			frame = frames[frames.length - 1];
 			depth++;
 			forHeader = switchHeader = false;
-			stmtStart = pendingBreak = justOpened = true;
+			stmtStart = pendingBreak = atBlockStart = true;
 		} else if (t.text === "}") {
 			stmtStart = pendingBreak = true;
-		} else if (t.text === ";" && atTop && !forHeader) {
+		} else if (t.text === ";" && outsideBrackets && !forHeader) {
 			stmtStart = pendingBreak = true;
 			caseHeader = false;
-		} else if (t.text === ":" && atTop && caseHeader) {
+		} else if (t.text === ":" && outsideBrackets && caseHeader) {
 			caseHeader = false;
 			frame.inCase = true;
 			depth++;
-			stmtStart = pendingBreak = justOpened = true;
+			stmtStart = pendingBreak = atBlockStart = true;
 		} else {
 			if (t.text === "(" || t.text === "[") frame.brackets.push(t.text);
 			if (t.text === ")" || t.text === "]") frame.brackets.pop();
 			if (stmtStart) {
-				const verb = tokens[k + 1]?.text ?? "";
+				const verb = tokens[index + 1]?.text ?? "";
 				mode =
 					CONFIG_STARTERS.has(t.text) ||
 					(t.kind === "ident" && CONFIG_VERBS.has(verb))
