@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { newShareKey, shareKeyPrefix } from "../src/share/shareKey";
 
-const SUFFIX = /^[6789BCDFGHJKLMNPQRTWbcdfghjkmnpqrtwz]{6}$/;
+const SUFFIX = /^[6789BCDFGHJKLMNPQRTWbcdfghjkmnpqrtwz]{8}$/;
 
 describe("shareKeyPrefix", () => {
 	it.each([
@@ -25,7 +25,7 @@ describe("shareKeyPrefix", () => {
 });
 
 describe("newShareKey", () => {
-	it("appends a 6-character suffix to the prefix", () => {
+	it("appends an 8-character suffix to the prefix", () => {
 		const key = newShareKey("nahida");
 		expect(key.startsWith("nahida-")).toBe(true);
 		expect(key.slice("nahida-".length)).toMatch(SUFFIX);

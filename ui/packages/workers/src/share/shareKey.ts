@@ -1,5 +1,5 @@
 const SUFFIX_CHARS = "6789BCDFGHJKLMNPQRTWbcdfghjkmnpqrtwz";
-const SUFFIX_LEN = 6;
+const SUFFIX_LEN = 8;
 const MAX_NAMES = 4;
 
 export function shareKeyPrefix(names: string[]): string {
