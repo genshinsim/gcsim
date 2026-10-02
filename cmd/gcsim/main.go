@@ -17,13 +17,11 @@ import (
 	selfupdate "github.com/creativeprojects/go-selfupdate"
 	"github.com/genshinsim/gcsim/pkg/model"
 	"github.com/genshinsim/gcsim/pkg/optimization"
+	"github.com/genshinsim/gcsim/pkg/sharekey"
 	"github.com/genshinsim/gcsim/pkg/simulator"
 )
 
-var (
-	shareKey      string
-	updateVersion string
-)
+var updateVersion string
 
 type opts struct {
 	config           string
@@ -131,8 +129,12 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 		return nil
 	}
 
-	if shareKey == "" {
-		shareKey = os.Getenv("GCSIM_SHARE_KEY")
+	key := sharekey.Embedded()
+	if env := os.Getenv("GCSIM_SHARE_KEY"); key == nil && env != "" {
+		key, err = sharekey.Parse(env)
+		if err != nil {
+			return err
+		}
 	}
 
 	var secondOutput string
@@ -181,15 +183,19 @@ can be viewed in the browser via "go tool pprof -http=localhost:3000 mem.prof" (
 		if err != nil {
 			return err
 		}
-		hash, _ = res.Sign(shareKey)
+		var data []byte
+		data, hash, err = res.SignedJSON(key)
+		if err != nil {
+			return err
+		}
 		fmt.Println(res.PrettyPrint())
 
-		err = saveResult(res, simopt.ResultSaveToPath, simopt.GZIPResult)
+		err = saveResult(data, simopt.ResultSaveToPath, simopt.GZIPResult)
 		if err != nil {
 			return err
 		}
 
-		err = saveResult(res, secondOutput, secondOutputGZ)
+		err = saveResult(data, secondOutput, secondOutputGZ)
 		if err != nil {
 			return err
 		}
@@ -337,12 +343,12 @@ func writeSample(seed uint64, outputPath, config string, gz bool, simopt simulat
 	return nil
 }
 
-func saveResult(res *model.SimulationResult, path string, gz bool) error {
+func saveResult(data []byte, path string, gz bool) error {
 	if path == "" {
 		return nil
 	}
 
-	return res.Save(path, gz)
+	return model.WriteJSON(path, data, gz)
 }
 
 func update(version string) error {

@@ -17,6 +17,7 @@ export interface ExecutorContextValue {
 
 export interface RunResult {
 	result: model.SimulationResult | null;
+	raw: string | null;
 	hash: string | null;
 	config: string | null;
 	error: string | null;
@@ -24,6 +25,7 @@ export interface RunResult {
 
 const emptyRunResult: RunResult = {
 	result: null,
+	raw: null,
 	hash: null,
 	config: null,
 	error: null,
@@ -31,6 +33,7 @@ const emptyRunResult: RunResult = {
 
 export interface SavedRun {
 	result: model.SimulationResult;
+	raw: string | null;
 	hash: string | null;
 }
 
@@ -131,18 +134,22 @@ export function ExecutorProvider({
 				}
 				let armed = true;
 				const apply = throttle(
-					(result: model.SimulationResult, hash: string) => {
+					(run: SavedRun) => {
 						React.startTransition(() =>
-							setRunResult((prev) => ({ ...prev, result, hash })),
+							setRunResult((prev) => ({ ...prev, ...run })),
 						);
 					},
 					RESULT_THROTTLE_MS,
 					{ leading: true, trailing: true },
 				);
-				const sink = (result: model.SimulationResult, hash: string) => {
+				const sink = (
+					result: model.SimulationResult,
+					raw: string,
+					hash: string,
+				) => {
 					if (armed) {
-						unsavedRef.current = { result, hash };
-						apply(result, hash);
+						unsavedRef.current = { result, raw, hash };
+						apply(unsavedRef.current);
 					}
 				};
 				disarmRef.current = () => {

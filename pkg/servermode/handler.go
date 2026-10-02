@@ -218,7 +218,7 @@ func (s *Server) latest() http.HandlerFunc {
 				w.Write([]byte("unexpected result is blank"))
 				return
 			}
-			b, err := wk.result.MarshalJSON()
+			b, hash, err := wk.result.SignedJSON(s.ShareKey)
 			if err != nil {
 				s.Log.Info("error marshalling result to json", "id", id, "err", err)
 				w.WriteHeader(http.StatusInternalServerError)
@@ -226,13 +226,7 @@ func (s *Server) latest() http.HandlerFunc {
 				return
 			}
 			res.Result = string(b)
-			res.Hash, err = wk.result.Sign(s.ShareKey)
-			if err != nil {
-				s.Log.Info("error signing result", "id", id, "err", err)
-				w.WriteHeader(http.StatusInternalServerError)
-				w.Write([]byte(err.Error()))
-				return
-			}
+			res.Hash = hash
 		} else {
 			res.Error = wk.err.Error()
 		}

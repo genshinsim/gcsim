@@ -9,27 +9,26 @@ import {
 	NonIdealState,
 	toast,
 } from "@gcsim/primitives";
-import type { model } from "@gcsim/types";
 import { Copy, Link } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
+export type SignedResult = {
+	raw: string;
+	hash: string | null;
+};
+
 type ShareProps = {
 	running: boolean;
-	data: model.SimulationResult | null;
-	hash: string | null;
+	signed: SignedResult | null;
 	shareState: [string | null, (link: string | null) => void];
-	onShare?: (
-		data: model.SimulationResult,
-		hash: string | null,
-	) => Promise<string>;
+	onShare?: (signed: SignedResult) => Promise<string>;
 	className?: string;
 };
 
 export default ({
 	running,
-	data,
-	hash,
+	signed,
 	className,
 	shareState,
 	onShare,
@@ -44,11 +43,11 @@ export default ({
 	}
 
 	const handleShare = () => {
-		if (data === null || shareLink != null) {
+		if (signed == null || shareLink != null) {
 			return;
 		}
 
-		onShare(data, hash)
+		onShare(signed)
 			.then((url) => {
 				setShareLink(url);
 			})
@@ -66,7 +65,7 @@ export default ({
 	return (
 		<>
 			<Button
-				disabled={running || data == null}
+				disabled={running || signed == null}
 				onClick={() => {
 					handleShare();
 					setOpen(true);

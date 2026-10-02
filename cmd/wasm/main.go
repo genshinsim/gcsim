@@ -15,6 +15,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/gcs/eval"
 	"github.com/genshinsim/gcsim/pkg/gcs/parser"
 	"github.com/genshinsim/gcsim/pkg/model"
+	"github.com/genshinsim/gcsim/pkg/sharekey"
 	"github.com/genshinsim/gcsim/pkg/simulation"
 	"github.com/genshinsim/gcsim/pkg/simulator"
 )
@@ -22,9 +23,6 @@ import (
 const DefaultBufferLength = 1024 * 10
 
 var (
-	// assigned by compiler
-	shareKey string
-
 	// shared variables
 	cfg    string
 	simcfg *info.ActionList
@@ -199,12 +197,6 @@ func initializeAggregator(this js.Value, args []js.Value) (out interface{}) {
 		return marshal(err)
 	}
 
-	// test signing (which will also add the sign key to the data)
-	if _, err := result.Sign(shareKey); err != nil {
-		return marshal(err)
-	}
-
-	// // store the result for reuse
 	cachedResult = result
 
 	marshalled, err := result.MarshalJSON()
@@ -252,7 +244,6 @@ func aggregate(this js.Value, args []js.Value) (out interface{}) {
 	return nil
 }
 
-// flush() -> string
 func flush(this js.Value, args []js.Value) (out interface{}) {
 	defer func() {
 		if r := recover(); r != nil {
@@ -265,20 +256,15 @@ func flush(this js.Value, args []js.Value) (out interface{}) {
 		a.Flush(stats)
 	}
 
-	// build full result from cache and sign
 	cachedResult.Statistics = stats
-	hash, _ := cachedResult.Sign(shareKey)
-
-	signedResults := &model.SignedSimulationStatistics{
-		Stats: stats,
-		Hash:  hash,
-	}
-
-	marshalled, err := signedResults.MarshalJSON()
+	data, hash, err := cachedResult.SignedJSON(sharekey.Embedded())
 	if err != nil {
 		return marshal(err)
 	}
-	return string(marshalled)
+	return map[string]any{
+		"result": string(data),
+		"hash":   hash,
+	}
 }
 
 // internal helper functions

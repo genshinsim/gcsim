@@ -40,7 +40,7 @@ jobs:
         with:
           rcloneConfig: ${{ secrets.CF_RCLONE }}
           branch: ${{ steps.branch-name.outputs.base_ref_branch }}
-          shareKey: ${{ secrets.AES_KEY }}
+          shareKey: ${{ secrets.SHARE_KEY }}
 
       # build the UI before deploying the Worker: the consolidated Worker
       # uploads ui/packages/web/dist as its static assets
@@ -134,7 +134,7 @@ jobs:
           # run the script
           "${GITHUB_WORKSPACE}/scripts/build.sh"
         env:
-          GCSIM_SHARE_KEY: ${{ secrets.AES_KEY }}
+          GCSIM_SHARE_KEY: ${{ secrets.SHARE_KEY }}
 
       - name: Release Binary
         uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3.0.3

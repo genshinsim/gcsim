@@ -93,7 +93,11 @@ export class WasmExecutor implements Executor {
 
 	public run(
 		cfg: string,
-		updateResult: (result: model.SimulationResult, hash: string) => void,
+		updateResult: (
+			result: model.SimulationResult,
+			raw: string,
+			hash: string,
+		) => void,
 	): Promise<boolean | void> {
 		this.isRunning = true;
 		this.runStarted = performance.now();
@@ -133,7 +137,6 @@ export class WasmExecutor implements Executor {
 				}
 				let { aggregator, workers } = this.pool();
 
-				let result: model.SimulationResult | null = null;
 				let maxIterations = 0;
 				// the aggregator and the workers yet to answer the initialize request
 				let initializing = workers.length + 1;
@@ -209,17 +212,15 @@ export class WasmExecutor implements Executor {
 						}
 						switch (ev.data.type as Aggregator.Response) {
 							case Aggregator.Response.Initialized:
-								result = (ev.data as Aggregator.InitializeResponse).result;
-								maxIterations = result?.simulator_settings?.iterations ?? 1000;
+								maxIterations =
+									(ev.data as Aggregator.InitializeResponse).result
+										?.simulator_settings?.iterations ?? 1000;
 								initialized();
 								return;
 							case Aggregator.Response.Result: {
 								const resp = ev.data as Aggregator.ResultResponse;
-								const { hash, stats } = resp.result;
-
-								const out = Object.assign({}, result);
-								out.statistics = stats;
-								updateResult(out, hash);
+								const { signedJSON: raw, hash } = resp.result;
+								updateResult(JSON.parse(raw), raw, hash);
 
 								if (resp.final) {
 									stop();

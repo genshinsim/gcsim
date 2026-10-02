@@ -114,8 +114,8 @@ export namespace Aggregator {
 		// time the aggregator spent on the flush, in ms
 		ms: number;
 		result: {
+			signedJSON: string;
 			hash: string;
-			stats: any;
 		};
 	}
 

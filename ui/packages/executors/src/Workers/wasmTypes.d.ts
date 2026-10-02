@@ -18,7 +18,8 @@ declare global {
 	// Aggregator functions
 	declare function initializeAggregator(cfg: string): string;
 	declare function aggregate(result: Uint8Array): string | null;
-	declare function flush(): string;
+	type ErrorJSON = string;
+	declare function flush(): { result: string; hash: string } | ErrorJSON;
 
 	// Worker functions
 	declare function initializeWorker(cfg: string): string | null;

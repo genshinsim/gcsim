@@ -188,8 +188,11 @@ class FakeWorker {
 					final: msg.final,
 					ms: 1,
 					result: {
+						signedJSON: JSON.stringify({
+							simulator_settings: { iterations: this.iterations },
+							statistics: { iterations: this.added },
+						}),
 						hash: `hash-${this.added}`,
-						stats: { iterations: this.added },
 					},
 				};
 			case "worker:initialize":
@@ -242,9 +245,13 @@ afterEach(() => {
 
 // The fake aggregator reads the iteration count from the config string.
 function start(exec: WasmExecutor, iterations: number) {
-	const updates: { result: model.SimulationResult; hash: string }[] = [];
-	const done = exec.run(String(iterations), (result, hash) =>
-		updates.push({ result, hash }),
+	const updates: {
+		result: model.SimulationResult;
+		raw: string;
+		hash: string;
+	}[] = [];
+	const done = exec.run(String(iterations), (result, raw, hash) =>
+		updates.push({ result, raw, hash }),
 	);
 	return { updates, done };
 }
@@ -263,11 +270,13 @@ describe("WasmExecutor", () => {
 		const flushes = sent("aggregator", "flush");
 		expect(flushes.filter((m) => m.final)).toHaveLength(1);
 		expect(flushes.at(-1)?.final).toBe(true);
+		const raw = JSON.stringify({
+			simulator_settings: { iterations: 25 },
+			statistics: { iterations: 25 },
+		});
 		expect(updates.at(-1)).toEqual({
-			result: {
-				simulator_settings: { iterations: 25 },
-				statistics: { iterations: 25 },
-			},
+			result: JSON.parse(raw),
+			raw,
 			hash: "hash-25",
 		});
 	});

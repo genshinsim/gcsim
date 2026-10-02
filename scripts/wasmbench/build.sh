@@ -3,7 +3,7 @@
 #
 # Mirrors cmd/wasm/build.sh (used by .github/actions/deploy-wasm) and the Taskfile `wasm`
 # task (used by `pnpm build:wasm`):
-#   GOOS=js GOARCH=wasm go build -trimpath -ldflags="-X 'main.shareKey=$GCSIM_SHARE_KEY'"
+#   GOOS=js GOARCH=wasm go build -trimpath [-tags sharekey]
 # CI additionally runs binaryen version_133's wasm-opt with the flags in CI_WASM_OPT below on the
 # result; set WASM_OPT=ci to do the same here.
 #
@@ -15,7 +15,8 @@
 #   GOWASM             passed through to the toolchain (e.g. satconv,signext)
 #   EXTRA_BUILD_FLAGS  extra args appended to `go build` (word-split), e.g. '-gcflags=all=-B'
 #   BASE_BUILD_FLAGS   replaces the default '-trimpath' (e.g. empty for toolchains without it)
-#   GCSIM_SHARE_KEY    baked into main.shareKey (default: empty, same as a local UI build)
+#   GCSIM_SHARE_KEY    embedded with cmd/sharekeygen and -tags sharekey (default: empty, same as a
+#                      local UI build)
 #   WASM_OPT           if set, run wasm-opt with these args after building; `ci` means the
 #                      flags CI deploys with (CI_WASM_OPT). Fails if wasm-opt fails.
 #   WASM_OPT_BIN       wasm-opt binary (default: wasm-opt; CI uses binaryen version_133)
@@ -47,12 +48,17 @@ if [[ -n "${GOWASM:-}" ]]; then
 	envs+=("GOWASM=$GOWASM")
 fi
 
+tags=()
+if [[ -n "${GCSIM_SHARE_KEY:-}" ]]; then
+	(cd "$repo" && go run ./cmd/sharekeygen)
+	tags=(-tags sharekey)
+fi
+
 # shellcheck disable=SC2086 # flag strings are intentionally word-split
 (
 	cd "$repo"
 	set -x
-	env "${envs[@]}" "$GO" build $BASE_BUILD_FLAGS \
-		-ldflags="-X 'main.shareKey=${GCSIM_SHARE_KEY:-}'" \
+	env "${envs[@]}" "$GO" build $BASE_BUILD_FLAGS ${tags[@]+"${tags[@]}"} \
 		$EXTRA_BUILD_FLAGS -o "$out" "$PKG"
 )
 

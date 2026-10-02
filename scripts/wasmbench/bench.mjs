@@ -4,7 +4,8 @@
 // Drives cmd/wasm through the same JS API and call sequence as the web UI
 // (ui/packages/executors/src/WasmExecutor.ts + Workers/{worker,aggregator}.ts):
 //   sim worker:  go.run(instance); initializeWorker(cfg); simulate() -> Uint8Array (msgpack), repeat
-//   aggregator:  go.run(instance); initializeAggregator(cfg) -> JSON; aggregate(Uint8Array); flush() -> JSON
+//   aggregator:  go.run(instance); initializeAggregator(cfg) -> JSON; aggregate(Uint8Array);
+//                flush() -> {result: JSON, hash} (older binaries: JSON {stats, hash})
 //
 // Each wasm instance gets its own JS realm (a vm context, or the worker_thread's own global in
 // pool mode), like each browser Worker has its own global scope. Results passed from a sim
@@ -268,8 +269,9 @@ async function runSingle(o) {
 	const tRun = performance.now();
 
 	const f0 = performance.now();
-	const flushed = JSON.parse(p.agg.api.flush());
+	const out = p.agg.api.flush();
 	const flushMs = performance.now() - f0;
+	const flushed = normalizeFlush(out);
 	if (flushed.error) throw new Error(`flush failed: ${flushed.error}`);
 
 	const s = sortNum(simMs);
@@ -489,7 +491,7 @@ async function workerMain() {
 					return parentPort.postMessage({ type: "done" });
 				}
 				case "flush": {
-					const resp = JSON.parse(go.api.flush());
+					const resp = normalizeFlush(go.api.flush());
 					if (resp.error) return parentPort.postMessage({ type: "failed", reason: resp.error });
 					return parentPort.postMessage({ type: "result", result: resp });
 				}
@@ -650,8 +652,13 @@ function payloadSeed(decoded) {
 	return Array.isArray(decoded) ? decoded[0] : decoded.seed;
 }
 
+function normalizeFlush(out) {
+	if (typeof out === "string") return JSON.parse(out);
+	return { stats: JSON.parse(out.result).statistics, hash: out.hash };
+}
+
 function flushStats(agg) {
-	const flushed = JSON.parse(agg.api.flush());
+	const flushed = normalizeFlush(agg.api.flush());
 	if (flushed.error) throw new Error(`flush failed: ${flushed.error}`);
 	return JSON.parse(canon(flushed.stats));
 }

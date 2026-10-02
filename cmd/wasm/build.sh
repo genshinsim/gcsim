@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# TODO: get from file or env
-SHARE_KEY=$GCSIM_SHARE_KEY
+set -e
 
-LDFLAGS=(
-  # "-w -s" # reduces binary size at cost of performance
-  "-X 'main.shareKey=${SHARE_KEY}'"
-)
+TAGS=()
+if [ -n "$GCSIM_SHARE_KEY" ]; then
+  go run ../sharekeygen
+  TAGS=(-tags sharekey)
+fi
 
 # reduces by ~2MB but makes really slow: -gcflags=all="-l -B -C -std"
-GOOS=js GOARCH=wasm go build -trimpath -o main.wasm -ldflags="${LDFLAGS[*]}" $@
+GOOS=js GOARCH=wasm go build -trimpath "${TAGS[@]}" -o main.wasm $@

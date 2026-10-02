@@ -7,13 +7,13 @@ import { useTranslation } from "react-i18next";
 import { CopyToClipboard, SendToSimulator } from "../../../components/buttons";
 import { VIEWER_TABS, type ViewerTab } from "../search";
 import type { ViewerActions } from "../Viewer";
-import Share from "./Share";
+import Share, { type SignedResult } from "./Share";
 
 const btnClass = classNames("hidden ml-[7px] sm:flex");
 
 type NavProps = {
 	data: model.SimulationResult | null;
-	hash: string | null;
+	signed: SignedResult | null;
 	tabState: [ViewerTab, (tab: ViewerTab) => void];
 	running: boolean;
 	actions?: ViewerActions;
@@ -23,7 +23,7 @@ type NavProps = {
 export default ({
 	tabState,
 	data,
-	hash,
+	signed,
 	running,
 	actions,
 	existingShareLink,
@@ -62,8 +62,7 @@ export default ({
 					/>
 					<Share
 						shareState={shareState}
-						data={data}
-						hash={hash}
+						signed={signed}
 						running={running}
 						className={btnClass}
 						onShare={actions?.onShare}

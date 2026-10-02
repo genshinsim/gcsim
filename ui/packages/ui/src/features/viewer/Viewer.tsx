@@ -18,6 +18,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import type { SampleState } from "../sample/useSample";
 import LoadingToast, { type ResultSource } from "./components/LoadingToast";
+import type { SignedResult } from "./components/Share";
 import ViewerNav from "./components/ViewerNav";
 import Warnings from "./components/Warnings";
 import type { ViewerTab } from "./search";
@@ -27,15 +28,12 @@ import SampleUI from "./tabs/Sample";
 export type ViewerActions = {
 	onRun?: (cfg: string) => void;
 	onSendToSimulator?: (cfg: string, opts: { keepTeam: boolean }) => void;
-	onShare?: (
-		data: model.SimulationResult,
-		hash: string | null,
-	) => Promise<string>;
+	onShare?: (signed: SignedResult) => Promise<string>;
 };
 
 type ViewerProps = {
 	result: model.SimulationResult | null;
-	hash: string | null;
+	signed: SignedResult | null;
 	running: boolean;
 	src: ResultSource;
 	error: string | null;
@@ -57,7 +55,7 @@ type ViewerProps = {
 // only exist as long as the page is loaded.
 export default ({
 	result,
-	hash,
+	signed,
 	running,
 	src,
 	error,
@@ -106,7 +104,7 @@ export default ({
 			<Warnings data={result} />
 			<div className="px-2 py-4 w-full 2xl:mx-auto 2xl:container">
 				<ViewerNav
-					hash={hash}
+					signed={signed}
 					tabState={[tab, onTabChange]}
 					data={result}
 					running={running}

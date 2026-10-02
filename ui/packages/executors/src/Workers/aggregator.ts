@@ -87,16 +87,15 @@ function add(req: { result: Uint8Array }) {
 
 function doFlush(req: { final: boolean }) {
 	const start = performance.now();
-	// TODO: have a specific result response type to enforce (protos?)
-	const resp = JSON.parse(flush());
-	if (resp.error) {
-		return { type: AggResponse.Failed, reason: resp.error };
+	const resp = flush();
+	if (typeof resp === "string") {
+		return { type: AggResponse.Failed, reason: JSON.parse(resp).error };
 	}
 	return {
 		type: AggResponse.Result,
 		final: req.final,
 		ms: performance.now() - start,
-		result: resp,
+		result: { signedJSON: resp.result, hash: resp.hash },
 	};
 }
 

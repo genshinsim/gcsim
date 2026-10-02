@@ -124,6 +124,10 @@ function simResult(n: number): model.SimulationResult {
 	return { sim_version: String(n) };
 }
 
+function raw(n: number): string {
+	return JSON.stringify(simResult(n));
+}
+
 function useBoth() {
 	return { executor: useExecutor(), run: useRunResult() };
 }
@@ -156,7 +160,7 @@ describe("useRunResult", () => {
 	it("updates result and hash from streamed callbacks", async () => {
 		const { hook, sink } = await startRun();
 
-		act(() => sink(simResult(1), "hash-1"));
+		act(() => sink(simResult(1), raw(1), "hash-1"));
 		await waitFor(() =>
 			expect(hook.result.current.run.result).toEqual(simResult(1)),
 		);
@@ -168,7 +172,7 @@ describe("useRunResult", () => {
 
 		act(() => {
 			for (let i = 1; i <= 20; i++) {
-				sink(simResult(i), `hash-${i}`);
+				sink(simResult(i), raw(i), `hash-${i}`);
 			}
 		});
 
@@ -192,7 +196,7 @@ describe("useRunResult", () => {
 
 	it("clears the previous result and error on a new run", async () => {
 		const { fake, hook, sink } = await startRun();
-		act(() => sink(simResult(1), "hash-1"));
+		act(() => sink(simResult(1), raw(1), "hash-1"));
 		await waitFor(() => expect(hook.result.current.run.result).not.toBeNull());
 
 		fake.setRunning(false);
@@ -211,7 +215,7 @@ describe("useRunResult", () => {
 
 	it("keeps the live result when run is called while busy", async () => {
 		const { fake, hook, sink } = await startRun();
-		act(() => sink(simResult(1), "hash-1"));
+		act(() => sink(simResult(1), raw(1), "hash-1"));
 		await waitFor(() => expect(hook.result.current.run.result).not.toBeNull());
 
 		act(() => hook.result.current.executor.run("config 2"));
@@ -259,7 +263,7 @@ describe("useRunResult", () => {
 		const before = executorRenders;
 
 		for (let i = 1; i <= 3; i++) {
-			act(() => sink(simResult(i), `hash-${i}`));
+			act(() => sink(simResult(i), raw(i), `hash-${i}`));
 			await act(() => new Promise((r) => setTimeout(r, 150)));
 		}
 
@@ -277,7 +281,11 @@ function memoryStore(saved: SavedRun | null = null) {
 
 describe("ExecutorProvider store", () => {
 	it("restores the saved run on mount, reading it once", () => {
-		const store = memoryStore({ result: simResult(7), hash: "hash-7" });
+		const store = memoryStore({
+			result: simResult(7),
+			raw: raw(7),
+			hash: "hash-7",
+		});
 		const { result, rerender } = renderHook(() => useRunResult(), {
 			wrapper: wrapper({ exec: makeExecutor().supplier, store }),
 		});
@@ -293,8 +301,8 @@ describe("ExecutorProvider store", () => {
 		const fake = makeExecutor();
 		let finish: (v: boolean) => void = () => {};
 		fake.run.mockImplementation((_cfg, sink) => {
-			sink(simResult(1), "hash-1");
-			sink(simResult(2), "hash-2");
+			sink(simResult(1), raw(1), "hash-1");
+			sink(simResult(2), raw(2), "hash-2");
 			return new Promise((r) => {
 				finish = r;
 			});
@@ -311,6 +319,7 @@ describe("ExecutorProvider store", () => {
 		expect(store.save).toHaveBeenCalledTimes(1);
 		expect(store.save).toHaveBeenCalledWith({
 			result: simResult(2),
+			raw: raw(2),
 			hash: "hash-2",
 		});
 	});
@@ -319,7 +328,7 @@ describe("ExecutorProvider store", () => {
 		const store = memoryStore();
 		const fake = makeExecutor();
 		fake.run.mockImplementation((_cfg, sink) => {
-			sink(simResult(1), "hash-1");
+			sink(simResult(1), raw(1), "hash-1");
 			return Promise.reject("boom");
 		});
 		const { result } = renderHook(() => useBoth(), {
@@ -331,6 +340,7 @@ describe("ExecutorProvider store", () => {
 		expect(store.save).toHaveBeenCalledTimes(1);
 		expect(store.save).toHaveBeenCalledWith({
 			result: simResult(1),
+			raw: raw(1),
 			hash: "hash-1",
 		});
 	});
@@ -338,8 +348,8 @@ describe("ExecutorProvider store", () => {
 	it("saves the latest result on pagehide mid-run", async () => {
 		const store = memoryStore();
 		const { hook, sink } = await startRun({ store });
-		act(() => sink(simResult(1), "hash-1"));
-		act(() => sink(simResult(2), "hash-2"));
+		act(() => sink(simResult(1), raw(1), "hash-1"));
+		act(() => sink(simResult(2), raw(2), "hash-2"));
 		expect(store.save).not.toHaveBeenCalled();
 
 		window.dispatchEvent(new Event("pagehide"));
@@ -347,13 +357,18 @@ describe("ExecutorProvider store", () => {
 		expect(store.save).toHaveBeenCalledTimes(1);
 		expect(store.save).toHaveBeenCalledWith({
 			result: simResult(2),
+			raw: raw(2),
 			hash: "hash-2",
 		});
 		hook.unmount();
 	});
 
 	it("does not rewrite on pagehide when nothing new arrived", async () => {
-		const store = memoryStore({ result: simResult(7), hash: "hash-7" });
+		const store = memoryStore({
+			result: simResult(7),
+			raw: raw(7),
+			hash: "hash-7",
+		});
 		const { unmount } = renderHook(() => useRunResult(), {
 			wrapper: wrapper({ exec: makeExecutor().supplier, store }),
 		});
@@ -370,7 +385,8 @@ describe("ExecutorProvider cancel()", () => {
 		const store = memoryStore();
 		const fake = makeExecutor();
 		const cancel = vi.spyOn(fake.executor, "cancel");
-		let sink: (r: model.SimulationResult, hash: string) => void = () => {};
+		let sink: (r: model.SimulationResult, raw: string, hash: string) => void =
+			() => {};
 		let finish: (v: boolean) => void = () => {};
 		fake.run.mockImplementation((_cfg, s) => {
 			sink = s;
@@ -384,13 +400,13 @@ describe("ExecutorProvider cancel()", () => {
 		});
 		act(() => result.current.executor.run("config"));
 		await waitFor(() => expect(fake.run).toHaveBeenCalled());
-		act(() => sink(simResult(1), "hash-1"));
+		act(() => sink(simResult(1), raw(1), "hash-1"));
 		await waitFor(() =>
 			expect(result.current.run.result).toEqual(simResult(1)),
 		);
 
 		act(() => result.current.executor.cancel());
-		act(() => sink(simResult(2), "hash-2"));
+		act(() => sink(simResult(2), raw(2), "hash-2"));
 		await act(async () => finish(true));
 		await act(() => new Promise((r) => setTimeout(r, 150)));
 
@@ -399,6 +415,7 @@ describe("ExecutorProvider cancel()", () => {
 		expect(store.save).toHaveBeenCalledTimes(1);
 		expect(store.save).toHaveBeenCalledWith({
 			result: simResult(1),
+			raw: raw(1),
 			hash: "hash-1",
 		});
 	});
