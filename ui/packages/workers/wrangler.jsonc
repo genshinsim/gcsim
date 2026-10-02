@@ -35,6 +35,13 @@
 			"bucket_name": "gcsim-shares"
 		}
 	],
+	"ratelimits": [
+		{
+			"name": "SHARE_LIMITER",
+			"namespace_id": "1",
+			"simple": { "limit": 10, "period": 60 }
+		}
+	],
 	"env": {
 		"staging": {
 			"workers_dev": true,
@@ -58,6 +65,13 @@
 				{
 					"binding": "GCSIM_SHARES",
 					"bucket_name": "gcsim-shares"
+				}
+			],
+			"ratelimits": [
+				{
+					"name": "SHARE_LIMITER",
+					"namespace_id": "1",
+					"simple": { "limit": 10, "period": 60 }
 				}
 			]
 		}

@@ -22,15 +22,23 @@ export async function handleShare(
 	if (Number(request.headers.get("Content-Length")) > MAX_SHARE_BYTES) {
 		return reject(413, "Payload Too Large");
 	}
-	const body = await request.arrayBuffer();
-	if (body.byteLength > MAX_SHARE_BYTES) {
-		return reject(413, "Payload Too Large");
-	}
 
 	const auth = request.headers.get(AUTH_HEADER);
 	if (!auth) {
 		return reject(403, "Forbidden");
 	}
+
+	const ip = request.headers.get("CF-Connecting-IP") ?? "anon";
+	const { success } = await env.SHARE_LIMITER.limit({ key: ip });
+	if (!success) {
+		return reject(429, "Too Many Requests");
+	}
+
+	const body = await request.arrayBuffer();
+	if (body.byteLength > MAX_SHARE_BYTES) {
+		return reject(413, "Payload Too Large");
+	}
+
 	const [id, sig] = splitAuth(auth);
 	if (id === "prod" || id === "dev") {
 		return fetch(`${env.API_ENDPOINT}/api/share`, {
