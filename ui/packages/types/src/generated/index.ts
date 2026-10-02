@@ -6,5 +6,4 @@
 /* eslint-disable */
 
 export * as model from "./index.model";
-export * as share from "./index.share";
 export * as google from "./index.google";

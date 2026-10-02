@@ -19,7 +19,6 @@ tasks:
     internal: true
     cmds:
       - go run scripts/bsontags/main.go -dir ./pkg/model -verbose
-      - go run scripts/bsontags/main.go -dir ./backend/pkg/services/share -verbose
       - task: msgp
   msgp:
     cmd: go generate ./pkg/stats

@@ -1,17 +1,12 @@
 version: v2
 # Uses buf's hosted remote plugins, so no local protoc / protoc-gen-go /
-# protoc-gen-go-grpc / ts-proto binaries need to be installed to generate.
+# ts-proto binaries need to be installed to generate.
 # Versions are pinned to match what last generated the committed output.
 plugins:
   # Go messages. `module=` strips the module prefix from each file's go_package
-  # so output lands at pkg/model, backend/pkg/services/*, matching the old
+  # so output lands at pkg/model, matching the old
   # `--go_out=module=github.com/genshinsim/gcsim:.` behaviour.
   - remote: buf.build/protocolbuffers/go:v1.36.11
-    out: .
-    opt:
-      - module=github.com/genshinsim/gcsim
-
-  - remote: buf.build/grpc/go:v1.6.2
     out: .
     opt:
       - module=github.com/genshinsim/gcsim
