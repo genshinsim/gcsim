@@ -1,8 +1,8 @@
 import { cn } from "@gcsim/primitives";
-import { type db, model } from "@gcsim/types";
+import { model } from "@gcsim/types";
 import type { CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
-import { KQM_DB_URL } from "./kqm";
+import { KQM_DB_URL, type KqmEntry } from "./kqm";
 
 // KQM DB lavender mixed into the active theme's own tokens, so it holds in
 // light and dark themes alike.
@@ -16,7 +16,7 @@ const kqmStyle = {
 } as CSSProperties;
 
 type TeamCardProps = {
-	entry: db.Entry;
+	entry: KqmEntry;
 	className?: string;
 };
 
@@ -29,9 +29,7 @@ export function TeamCard({ entry, className }: TeamCardProps) {
 		return { key: char?.name ?? `empty-${i}`, char };
 	});
 
-	const names = roster
-		.filter((c): c is model.Character => c != null)
-		.map((c) => c.name);
+	const names = roster.filter((c) => c != null).map((c) => c.name);
 	const title =
 		entry.description ||
 		(names.length ? names.join(", ") : t("dash.team_fallback"));
