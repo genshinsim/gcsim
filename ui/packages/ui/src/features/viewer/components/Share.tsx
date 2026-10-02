@@ -9,7 +9,8 @@ import {
 	NonIdealState,
 	toast,
 } from "@gcsim/primitives";
-import { Copy, Link } from "lucide-react";
+import axios from "axios";
+import { Copy, Link, TriangleAlert } from "lucide-react";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -17,6 +18,8 @@ export type SignedResult = {
 	raw: string;
 	hash: string | null;
 };
+
+type ShareErrorKey = "viewer.share_rate_limited" | "viewer.share_failed";
 
 type ShareProps = {
 	running: boolean;
@@ -37,6 +40,7 @@ export default ({
 
 	const [isOpen, setOpen] = useState(false);
 	const [shareLink, setShareLink] = shareState;
+	const [error, setError] = useState<ShareErrorKey | null>(null);
 
 	if (onShare == null) {
 		return null;
@@ -47,12 +51,17 @@ export default ({
 			return;
 		}
 
+		setError(null);
 		onShare(signed)
 			.then((url) => {
 				setShareLink(url);
 			})
 			.catch((err) => {
-				console.log(err);
+				setError(
+					axios.isAxiosError(err) && err.response?.status === 429
+						? "viewer.share_rate_limited"
+						: "viewer.share_failed",
+				);
 			});
 	};
 
@@ -80,7 +89,12 @@ export default ({
 						<DialogTitle>{t("viewer.create_a_shareable")}</DialogTitle>
 					</DialogHeader>
 					<div className="flex flex-col justify-center gap-2">
-						<DialogBody shareLink={shareLink} copy={copy} />
+						<DialogBody
+							shareLink={shareLink}
+							error={error}
+							copy={copy}
+							retry={handleShare}
+						/>
 					</div>
 				</DialogContent>
 			</Dialog>
@@ -90,11 +104,26 @@ export default ({
 
 type DialogProps = {
 	shareLink: string | null;
+	error: ShareErrorKey | null;
 	copy: () => void;
+	retry: () => void;
 };
 
-const DialogBody = ({ shareLink, copy }: DialogProps) => {
+const DialogBody = ({ shareLink, error, copy, retry }: DialogProps) => {
 	const { t } = useTranslation();
+	if (error != null) {
+		return (
+			<NonIdealState
+				icon={<TriangleAlert />}
+				description={t(error)}
+				action={
+					<Button variant="secondary" onClick={retry}>
+						{t("viewer.share_retry")}
+					</Button>
+				}
+			/>
+		);
+	}
 	if (shareLink == null) {
 		return <NonIdealState loading />;
 	}
