@@ -4,20 +4,18 @@ import type { model } from "@gcsim/types";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type React from "react";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("react-i18next", () => ({
 	useTranslation: () => ({ t: (k: string) => k, i18n: { language: "en" } }),
 }));
 
 import { Editor } from "./Editor";
-import { MAX_FONT_SIZE } from "./EditorSettings";
+import { MAX_FONT_SIZE, saveEditorPrefs } from "./editorPrefs";
 
 const baseProps: React.ComponentProps<typeof Editor> = {
 	value: "cfg text",
 	onChange: () => {},
-	fontSize: 14,
-	theme: "app",
 };
 
 function view(container: HTMLElement) {
@@ -33,6 +31,8 @@ const openSettings = () =>
 	);
 
 describe("Editor", () => {
+	beforeEach(() => localStorage.clear());
+
 	it("renders the controlled value and calls onChange on edits", () => {
 		const onChange = vi.fn();
 		const { container, rerender } = render(
@@ -61,49 +61,53 @@ describe("Editor", () => {
 		expect(diagnosticCount(view(container).state)).toBe(0);
 	});
 
-	it("hides the settings menu without a change handler", () => {
+	it("shows the settings menu with the saved prefs", async () => {
+		saveEditorPrefs(localStorage, { theme: "dracula", fontSize: 18 });
 		render(<Editor {...baseProps} />);
-		expect(
-			screen.queryByRole("button", { name: "simple.editor_settings" }),
-		).toBeNull();
+		await openSettings();
+		expect(screen.getByRole("radio", { name: "Dracula" })).toBeChecked();
+		expect(screen.getByRole("status")).toHaveTextContent("18");
 	});
 
 	it("steps the font size within bounds", async () => {
-		const onAppearanceChange = vi.fn();
-		const { rerender } = render(
-			<Editor {...baseProps} onAppearanceChange={onAppearanceChange} />,
-		);
+		render(<Editor {...baseProps} />);
 		await openSettings();
 		await userEvent.click(
 			screen.getByRole("button", { name: "simple.decrease_font_size" }),
 		);
-		expect(onAppearanceChange).toHaveBeenLastCalledWith({
-			fontSize: 13,
-			theme: "app",
-		});
+		expect(screen.getByRole("status")).toHaveTextContent("13");
+	});
 
-		rerender(
-			<Editor
-				{...baseProps}
-				fontSize={MAX_FONT_SIZE}
-				onAppearanceChange={onAppearanceChange}
-			/>,
-		);
+	it("disables increasing past the largest font size", async () => {
+		saveEditorPrefs(localStorage, { theme: "app", fontSize: MAX_FONT_SIZE });
+		render(<Editor {...baseProps} />);
+		await openSettings();
 		expect(
 			screen.getByRole("button", { name: "simple.increase_font_size" }),
 		).toBeDisabled();
 	});
 
 	it("picks a theme from the menu", async () => {
-		const onAppearanceChange = vi.fn();
-		render(<Editor {...baseProps} onAppearanceChange={onAppearanceChange} />);
+		render(<Editor {...baseProps} />);
 		await openSettings();
 		expect(screen.getByRole("radio", { name: "gcsim" })).toBeChecked();
 		await userEvent.click(screen.getByRole("radio", { name: "Dracula" }));
-		expect(onAppearanceChange).toHaveBeenLastCalledWith({
-			fontSize: 14,
-			theme: "dracula",
-		});
+		expect(screen.getByRole("radio", { name: "Dracula" })).toBeChecked();
+	});
+
+	it("keeps settings for an editor mounted later", async () => {
+		const { unmount } = render(<Editor {...baseProps} />);
+		await openSettings();
+		await userEvent.click(screen.getByRole("radio", { name: "Dracula" }));
+		await userEvent.click(
+			screen.getByRole("button", { name: "simple.increase_font_size" }),
+		);
+		unmount();
+
+		render(<Editor {...baseProps} />);
+		await openSettings();
+		expect(screen.getByRole("radio", { name: "Dracula" })).toBeChecked();
+		expect(screen.getByRole("status")).toHaveTextContent("15");
 	});
 
 	it("formats the config from the toolbar", async () => {

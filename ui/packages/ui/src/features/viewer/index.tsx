@@ -11,7 +11,6 @@ import { usePrefs } from "@ui/stores/AppState";
 import axios from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useSendToSimulator } from "../../components/buttons/useSendToSimulator";
-import { useEditorPrefs } from "../../stores/editorPrefs";
 import { autoSampleSeed, useSample } from "../sample/useSample";
 import { ResultSource } from "./components/LoadingToast";
 import type { SignedResult } from "./components/Share";
@@ -193,7 +192,6 @@ function useViewerEditor(
 ): ViewerEditorState {
 	const { isReady } = useExecutor();
 	const [config, setConfig] = useState(resultConfig ?? "");
-	const [{ theme, fontSize }] = useEditorPrefs();
 	const { isValid, error } = useValidation(config);
 
 	useEffect(() => {
@@ -206,8 +204,6 @@ function useViewerEditor(
 		error,
 		canRun: isReady && isValid && !running,
 		busy: !isReady || running,
-		theme,
-		fontSize,
 	};
 }
 

@@ -1,6 +1,5 @@
 import {
 	Editor,
-	type EditorPrefs,
 	type ImportedCharacterOption,
 	SectionDivider,
 	TeamCard,
@@ -21,8 +20,6 @@ export interface SimulatorLayoutProps {
 	onRun: () => void;
 	canRun: boolean;
 	busy: boolean;
-	prefs: EditorPrefs;
-	onPrefsChange: (next: EditorPrefs) => void;
 }
 
 export function SimulatorLayout({
@@ -35,8 +32,6 @@ export function SimulatorLayout({
 	onRun,
 	canRun,
 	busy,
-	prefs,
-	onPrefsChange,
 }: SimulatorLayoutProps) {
 	const { t } = useTranslation();
 
@@ -53,12 +48,7 @@ export function SimulatorLayout({
 				value={config}
 				onChange={setConfig}
 				error={error}
-				theme={prefs.theme}
-				fontSize={prefs.fontSize}
 				importedCharacters={importedCharacters}
-				onAppearanceChange={(appearance) =>
-					onPrefsChange({ ...prefs, ...appearance })
-				}
 			/>
 
 			<div className="sticky bottom-0 z-10 mt-1 flex flex-row flex-wrap place-items-center gap-1 bg-g-canvas p-2">

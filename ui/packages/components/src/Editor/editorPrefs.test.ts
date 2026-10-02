@@ -1,6 +1,9 @@
-import { defaultEditorPrefs } from "@gcsim/components";
 import { describe, expect, it } from "vitest";
-import { loadEditorPrefs, saveEditorPrefs } from "./editorPrefs";
+import {
+	defaultEditorPrefs,
+	loadEditorPrefs,
+	saveEditorPrefs,
+} from "./editorPrefs";
 
 function fakeStorage(init: Record<string, string> = {}) {
 	const data = new Map(Object.entries(init));

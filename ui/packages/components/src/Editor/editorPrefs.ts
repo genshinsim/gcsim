@@ -1,13 +1,30 @@
 import {
-	clampFontSize,
-	defaultEditorPrefs,
-	type EditorPrefs,
+	DEFAULT_EDITOR_THEME,
+	type EditorThemeId,
 	isEditorThemeId,
-} from "@gcsim/components";
+} from "@gcsim/editor";
 import React from "react";
 
 const THEME_KEY = "gcsim-config-editor-color-theme";
 const FONT_SIZE_KEY = "gcsim-config-editor-font-size";
+
+export const MIN_FONT_SIZE = 10;
+export const MAX_FONT_SIZE = 28;
+
+export interface EditorPrefs {
+	theme: EditorThemeId;
+	fontSize: number;
+}
+
+export const defaultEditorPrefs: EditorPrefs = {
+	theme: DEFAULT_EDITOR_THEME,
+	fontSize: 14,
+};
+
+export function clampFontSize(size: number) {
+	if (!Number.isFinite(size)) return defaultEditorPrefs.fontSize;
+	return Math.min(MAX_FONT_SIZE, Math.max(MIN_FONT_SIZE, Math.round(size)));
+}
 
 type PrefsStorage = Pick<Storage, "getItem" | "setItem">;
 

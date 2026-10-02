@@ -7,7 +7,6 @@ import type { model } from "@gcsim/types";
 import React from "react";
 import { Viewport } from "../../components";
 import { useDraft } from "../../stores/AppState";
-import { useEditorPrefs } from "../../stores/editorPrefs";
 import { EditorSettings } from "./EditorSettings";
 import {
 	ImportedCharactersProvider,
@@ -21,7 +20,6 @@ function SimulatorEditor() {
 	const { imported } = useImportedCharacters();
 	const { isValid, error, parsedTeam } = useValidation(cfg);
 	const { run, isReady } = useExecutor();
-	const [prefs, setPrefs] = useEditorPrefs();
 
 	const importedCharacters: ImportedCharacterOption[] = React.useMemo(
 		() =>
@@ -46,8 +44,6 @@ function SimulatorEditor() {
 				onRun={() => run(cfg)}
 				canRun={isReady && isValid}
 				busy={!isReady}
-				prefs={prefs}
-				onPrefsChange={setPrefs}
 			/>
 		</>
 	);
