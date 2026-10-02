@@ -13,18 +13,6 @@ services:
   #   depends_on:
   #     - jadechamber
   #   restart: unless-stopped
-  share:
-    container_name: share
-    build:
-      context: .
-      dockerfile: ./share.Dockerfile
-    restart: unless-stopped
-    environment:
-      - MONGODB_URL=mongodb://mongo:27017
-      - MONGODB_DATABASE=gcsim-database
-      - MONGODB_COLLECTION=shares
-      - MONGODB_USERNAME=root
-      - MONOGDB_PASSWORD=root-password
   jadechamber:
     container_name: jadechamber
     build:
