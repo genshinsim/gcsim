@@ -155,6 +155,7 @@ func (c *char) c4OnFieldExit() {
 	}
 
 	c.DeleteStatus(c4Key)
+	c.Character.ResetNormalCounter()
 }
 
 // While Zibai is in the Lunar Phase Shift mode, her Phase Shift Radiance gain rate is increased by

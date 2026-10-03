@@ -137,7 +137,7 @@ func (c *char) skillAttack() (action.Info, error) {
 				)
 			}
 
-			c.Core.QueueAttack(ai, ap, 0, 0, c.radianceCB)
+			c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB, c.radianceCB)
 
 			if counter == 3 && c.Core.Player.GetMoonsignLevel() >= 2 {
 				c.skillLastAttack()
