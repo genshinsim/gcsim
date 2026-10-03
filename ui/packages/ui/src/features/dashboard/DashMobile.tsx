@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { CommunityCta } from "./CommunityCta";
 import "./dashMobile.css";
 import { WhatsNew } from "../../components/WhatsNew";
+import { usePrefs } from "../../stores/AppState";
 import { HeroArt } from "./HeroArt";
 import { getHero } from "./heroImages";
 import { KQM_DB_URL } from "./kqm";
@@ -13,12 +14,13 @@ import { SharedByOthers } from "./SharedByOthers";
 
 export function DashMobile() {
 	const { t } = useTranslation();
+	const { hero } = usePrefs();
 
 	return (
 		<main className="w-full flex-grow bg-g-canvas text-g-ink">
 			<div className="g-m-home">
 				<div className="g-m-art">
-					<HeroArt src={getHero().src} />
+					<HeroArt src={getHero(hero).src} />
 				</div>
 				<div className="g-m-over">
 					<div className="g-m-body mx-auto w-full max-w-[520px] px-4">

@@ -212,6 +212,21 @@
 		"since_last": "+{{count}}f since last",
 		"to_end": "to end"
 	},
+	"settings": {
+		"dark": "Dark",
+		"executor": "Executor",
+		"executor_server": "Server",
+		"executor_sub": "Where your simulations run.",
+		"executor_wasm": "WASM",
+		"hero": "Dashboard image",
+		"hero_sub": "Shown at the top of the dashboard.",
+		"language": "Language",
+		"language_sub": "Language used across the site.",
+		"light": "Light",
+		"subtitle": "Saved in this browser only.",
+		"theme": "Theme",
+		"theme_sub": "Colours for the whole site."
+	},
 	"sim": {
 		"loaded": "Loaded {{i}} iterations!",
 		"loading": "Loading...",

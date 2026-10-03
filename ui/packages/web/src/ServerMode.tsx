@@ -1,11 +1,5 @@
 import { type ExecutorSupplier, ServerExecutor } from "@gcsim/executors";
-import {
-	Field,
-	FieldDescription,
-	FieldLabel,
-	FieldTitle,
-	Input,
-} from "@gcsim/primitives";
+import { Field, FieldDescription, FieldLabel, Input } from "@gcsim/primitives";
 import { UI } from "@gcsim/ui";
 import React, { type ReactNode, useRef } from "react";
 import { useTranslation } from "react-i18next";
@@ -46,30 +40,31 @@ const ServerMode = ({ children }: { children: ReactNode }) => {
 			exec={supplier.current}
 			gitCommit={import.meta.env.VITE_GIT_COMMIT_HASH}
 			mode={import.meta.env.MODE}
-		>
-			<Field>
-				<FieldTitle>{t("simple.workers")}</FieldTitle>
-				{children}
-				<Field>
-					<FieldLabel htmlFor="server-mode-url">
-						{t("simple.server_mode_url")}
-						<span className="text-g-ink-mute">
-							{t("simple.server_mode_required")}
-						</span>
-					</FieldLabel>
-					<Input
-						id="server-mode-url"
-						value={url}
-						onChange={(e) => {
-							setURL(e.target.value);
-						}}
-					/>
-					<FieldDescription>
-						{t("simple.server_mode_default") + defaultURL}
-					</FieldDescription>
-				</Field>
-			</Field>
-		</UI>
+			executorKind="server"
+			executorSettings={
+				<>
+					{children}
+					<Field>
+						<FieldLabel htmlFor="server-mode-url">
+							{t("simple.server_mode_url")}
+							<span className="text-g-ink-mute">
+								{t("simple.server_mode_required")}
+							</span>
+						</FieldLabel>
+						<Input
+							id="server-mode-url"
+							value={url}
+							onChange={(e) => {
+								setURL(e.target.value);
+							}}
+						/>
+						<FieldDescription>
+							{t("simple.server_mode_default") + defaultURL}
+						</FieldDescription>
+					</Field>
+				</>
+			}
+		/>
 	);
 };
 

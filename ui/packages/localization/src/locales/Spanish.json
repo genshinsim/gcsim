@@ -212,6 +212,21 @@
 		"since_last": "+{{count}}f desde el anterior",
 		"to_end": "hasta el final"
 	},
+	"settings": {
+		"dark": "Oscuro",
+		"executor": "Ejecutor",
+		"executor_server": "Servidor",
+		"executor_sub": "Dónde se ejecutan tus simulaciones.",
+		"executor_wasm": "WASM",
+		"hero": "Imagen del panel",
+		"hero_sub": "Se muestra en la parte superior del panel.",
+		"language": "Idioma",
+		"language_sub": "Idioma de todo el sitio.",
+		"light": "Claro",
+		"subtitle": "Se guarda solo en este navegador.",
+		"theme": "Tema",
+		"theme_sub": "Colores de todo el sitio."
+	},
 	"sim": {
 		"loaded": "¡Se han cargado {{i}} iteraciones!",
 		"loading": "Cargando...",

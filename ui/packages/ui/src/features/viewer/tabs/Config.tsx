@@ -2,7 +2,6 @@ import { Editor } from "@gcsim/components";
 import { Button, NonIdealState, Spinner } from "@gcsim/primitives";
 import { Play } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import ExecutorSettingsButton from "../../../components/buttons/ExecutorSettingsButton";
 
 export type ViewerEditorState = {
 	config: string;
@@ -33,7 +32,6 @@ export default ({
 	return (
 		<div className="w-full 2xl:mx-auto 2xl:container px-2 flex flex-col gap-2">
 			<div className="flex flex-row flex-wrap items-center gap-1">
-				<ExecutorSettingsButton />
 				<Button className="flex-1" onClick={onRerun} disabled={!canRun}>
 					{busy ? <Spinner /> : <Play />}
 					{t("viewer.rerun")}

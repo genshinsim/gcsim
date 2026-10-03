@@ -11,7 +11,9 @@ import {
 import { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Footer, Nav } from "../features/layout";
+import { usePrefs } from "../stores/AppState";
 import { lastRunStore } from "../stores/lastRun";
+import { getTheme } from "../stores/themes";
 
 export type AppContext = {
 	exec: ExecutorSupplier<Executor>;
@@ -54,6 +56,7 @@ function Layout() {
 		[router],
 	);
 
+	const { theme } = usePrefs();
 	const { cancel } = useExecutor();
 	const prevPathname = useRef(pathname);
 	useEffect(() => {
@@ -67,7 +70,7 @@ function Layout() {
 		<div className="h-dvh flex flex-col pt-[env(safe-area-inset-top)] pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)]">
 			<Toaster
 				position="top-right"
-				theme="dark"
+				theme={getTheme(theme).light ? "light" : "dark"}
 				offset={{
 					top: "calc(24px + env(safe-area-inset-top))",
 					right: "calc(24px + env(safe-area-inset-right))",

@@ -212,6 +212,21 @@
 		"since_last": "이전부터 +{{count}}F",
 		"to_end": "끝까지"
 	},
+	"settings": {
+		"dark": "다크",
+		"executor": "실행기",
+		"executor_server": "서버",
+		"executor_sub": "시뮬레이션이 실행되는 곳.",
+		"executor_wasm": "WASM",
+		"hero": "대시보드 이미지",
+		"hero_sub": "대시보드 상단에 표시됩니다.",
+		"language": "언어",
+		"language_sub": "사이트 전체에서 사용할 언어.",
+		"light": "라이트",
+		"subtitle": "이 브라우저에만 저장됩니다.",
+		"theme": "테마",
+		"theme_sub": "사이트 전체 색상."
+	},
 	"sim": {
 		"loaded": "{{i}}회의 이터레이션을 로드했습니다!",
 		"loading": "로딩 중...",

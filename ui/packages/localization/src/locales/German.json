@@ -212,6 +212,21 @@
 		"since_last": "+{{count}}F seit dem letzten",
 		"to_end": "bis Ende"
 	},
+	"settings": {
+		"dark": "Dunkel",
+		"executor": "Ausführung",
+		"executor_server": "Server",
+		"executor_sub": "Wo deine Simulationen laufen.",
+		"executor_wasm": "WASM",
+		"hero": "Dashboard-Bild",
+		"hero_sub": "Wird oben im Dashboard angezeigt.",
+		"language": "Sprache",
+		"language_sub": "Sprache der gesamten Website.",
+		"light": "Hell",
+		"subtitle": "Nur in diesem Browser gespeichert.",
+		"theme": "Design",
+		"theme_sub": "Farben der gesamten Website."
+	},
 	"sim": {
 		"loaded": "{{i}} Iterationen geladen!",
 		"loading": "Wird geladen...",

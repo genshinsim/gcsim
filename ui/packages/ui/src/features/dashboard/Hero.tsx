@@ -3,13 +3,14 @@ import { Link } from "@tanstack/react-router";
 import { BookOpen, Play } from "lucide-react";
 import type { CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
+import { usePrefs } from "../../stores/AppState";
 import { HeroArt } from "./HeroArt";
 import { getHero } from "./heroImages";
 import "./hero.css";
 
 export function Hero() {
 	const { t } = useTranslation();
-	const hero = getHero();
+	const hero = getHero(usePrefs().hero);
 
 	return (
 		<section

@@ -212,6 +212,21 @@
 		"since_last": "前回から +{{count}}F",
 		"to_end": "終了まで"
 	},
+	"settings": {
+		"dark": "ダーク",
+		"executor": "実行環境",
+		"executor_server": "サーバー",
+		"executor_sub": "シミュレーションを実行する場所。",
+		"executor_wasm": "WASM",
+		"hero": "ダッシュボード画像",
+		"hero_sub": "ダッシュボード上部に表示されます。",
+		"language": "言語",
+		"language_sub": "サイト全体で使用する言語。",
+		"light": "ライト",
+		"subtitle": "このブラウザにのみ保存されます。",
+		"theme": "テーマ",
+		"theme_sub": "サイト全体の配色。"
+	},
 	"sim": {
 		"loaded": "{{i}}回の反復がロードされました！",
 		"loading": "読み込み中...",
