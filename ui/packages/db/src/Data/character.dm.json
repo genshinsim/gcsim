@@ -2122,6 +2122,23 @@
         "attack": 10301,
         "burst_energy_cost": 40
       }
+    },
+    "zibai": {
+      "id": 10000126,
+      "sub_id": 12601,
+      "key": "zibai",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_LADY",
+      "region": "ASSOC_TYPE_NODKRAI_ZIBAI",
+      "element": "Rock",
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "icon_name": "UI_AvatarIcon_Zibai",
+      "skill_details": {
+        "skill": 11262,
+        "burst": 11265,
+        "attack": 11261,
+        "burst_energy_cost": 60
+      }
     }
   }
 }

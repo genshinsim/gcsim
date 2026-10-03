@@ -128,4 +128,5 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/yoimiya"
 	_ "github.com/genshinsim/gcsim/internal/characters/yunjin"
 	_ "github.com/genshinsim/gcsim/internal/characters/zhongli"
+	_ "github.com/genshinsim/gcsim/internal/characters/zibai"
 )
