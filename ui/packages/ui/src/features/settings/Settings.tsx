@@ -1,25 +1,20 @@
 import {
 	cn,
-	Label,
 	Select,
 	SelectContent,
 	SelectItem,
 	SelectTrigger,
 	SelectValue,
-	Switch,
 } from "@gcsim/primitives";
 import type { ComponentProps, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { usePrefs } from "../../stores/AppState";
-import { useHost } from "../../stores/host";
 import { THEMES } from "../../stores/themes";
 import { HERO_IMAGES } from "../dashboard/heroImages";
 import { SectionHead } from "../dashboard/SectionHead";
 
 export function Settings() {
 	const { t } = useTranslation();
-	const { executorSettings } = useHost();
-	const { sampleOnLoad, setSampleOnLoad } = usePrefs();
 
 	return (
 		<main className="w-full flex-grow bg-g-canvas text-g-ink">
@@ -36,25 +31,6 @@ export function Settings() {
 					subtitle={t("settings.language_sub")}
 				>
 					<LanguageSelect />
-				</Section>
-
-				<Section
-					title={t("settings.executor")}
-					subtitle={t("settings.executor_sub")}
-				>
-					<div className="flex flex-col gap-6 rounded-g-lg border border-g-line bg-g-surface p-g-card sm:p-6">
-						{executorSettings}
-						<div className="flex items-center gap-2">
-							<Switch
-								id="sample-on-load"
-								checked={sampleOnLoad}
-								onCheckedChange={() => setSampleOnLoad(!sampleOnLoad)}
-							/>
-							<Label htmlFor="sample-on-load">
-								{t("simple.generate_sample")}
-							</Label>
-						</div>
-					</div>
 				</Section>
 
 				<Section title={t("settings.theme")} subtitle={t("settings.theme_sub")}>

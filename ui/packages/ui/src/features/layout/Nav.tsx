@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import { FaCalculator, FaDiscord } from "react-icons/fa";
 import { IoIosDocument, IoIosMenu } from "react-icons/io";
 import { MdOutlineUpdate } from "react-icons/md";
-import { type ExecutorKind, useHost } from "../../stores/host";
+import { ExecutorDialog } from "./ExecutorDialog";
 import logo from "./logo.png";
 
 type NavLink = {
@@ -97,23 +97,6 @@ const MobileMenu = () => {
 	);
 };
 
-const EXECUTOR_PILL = {
-	wasm: { fixedBg: "bg-violet-700", labelKey: "settings.executor_wasm" },
-	server: { fixedBg: "bg-amber-700", labelKey: "settings.executor_server" },
-} as const satisfies Record<ExecutorKind, unknown>;
-
-const ExecutorPill = () => {
-	const { t } = useTranslation();
-	const { fixedBg, labelKey } = EXECUTOR_PILL[useHost().executorKind];
-	return (
-		<span
-			className={`${fixedBg} rounded-full px-2 py-0.5 font-g-mono text-g-xs font-medium text-white`}
-		>
-			{t(labelKey)}
-		</span>
-	);
-};
-
 const SettingsButton = () => {
 	const { t } = useTranslation();
 	return (
@@ -152,7 +135,7 @@ export default () => {
 					</div>
 
 					<div className="ml-auto flex items-center gap-1">
-						<ExecutorPill />
+						<ExecutorDialog />
 						<SettingsButton />
 						<div className="min-[902px]:hidden">
 							<MobileMenu />
