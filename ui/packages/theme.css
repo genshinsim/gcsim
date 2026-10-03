@@ -157,6 +157,19 @@
 	--g-dendro: #6e9020;
 }
 
+/* The shared series palette washes out on light canvases: darker, same order. */
+[data-theme="abyss-l"],
+[data-theme="ember-l"],
+[data-theme="pulse-l"],
+[data-theme="frostfall"],
+[data-theme="blossom"],
+[data-theme="lantern"] {
+	--g-s1: #ad678e;
+	--g-s2: #a8a02e;
+	--g-s4: #4590ba;
+	--g-s5: #c48700;
+}
+
 [data-theme="ember-d"] {
 	color-scheme: dark;
 	--g-bg: #141109;
