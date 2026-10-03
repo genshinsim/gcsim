@@ -50,7 +50,7 @@ export function modelFromSample(sample: Sample): TimelineModel {
 		fromLegacySample(sample),
 		sample.character_details?.map((c) => ({
 			key: c.name,
-			element: c.element ?? null,
+			element: c.element,
 		})) ?? [],
 	);
 }
@@ -100,6 +100,7 @@ export function modelFromEvents(
 		}
 	}
 	chips.sort((a, b) => a.frame - b.frame || a.id - b.id);
+	onField.sort((a, b) => a.start - b.start);
 
 	return { lanes, chips, onField, maxFrame, counts };
 }

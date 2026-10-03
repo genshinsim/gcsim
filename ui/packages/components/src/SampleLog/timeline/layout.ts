@@ -1,18 +1,12 @@
-import {
-	type Chip,
-	onFieldLaneAt,
-	SIM_LANE,
-	type Stint,
-	type TimelineModel,
-} from "./model";
+import { type Chip, SIM_LANE, type TimelineModel } from "./model";
 
 export const COL_W = 168;
 export const GAP_SMALL = 3;
 export const GAP_BIG = 22;
-export const CHIP_H = 18;
-export const CHIP_GAP = 2;
+const CHIP_H = 18;
+const CHIP_GAP = 2;
 export const MIN_CAP = 4;
-export const MAX_PORTRAIT = 120;
+const MAX_PORTRAIT = 120;
 export const HEAD_H = 34;
 export const CELL_PAD = 8;
 const SIM_LANE_MIN_H = 30;
@@ -66,11 +60,12 @@ export function columns(model: TimelineModel, enabled: Set<string>): Column[] {
 
 export type OnFieldRun = { lane: number; x0: number; x1: number };
 
-export function onFieldRuns(cols: Column[], onField: Stint[]): OnFieldRun[] {
+/** `onField[i]` is the lane on field at `cols[i]`, or -1 for none */
+export function onFieldRuns(cols: Column[], onField: number[]): OnFieldRun[] {
 	const out: OnFieldRun[] = [];
 	let prev = -1;
-	for (const c of cols) {
-		const lane = onFieldLaneAt(onField, c.frame);
+	for (const [i, c] of cols.entries()) {
+		const lane = onField[i];
 		if (lane >= 0 && lane === prev) {
 			out[out.length - 1].x1 = c.x + COL_W;
 		} else if (lane >= 0) {
@@ -110,7 +105,7 @@ export function laneHeights(rows: number[], portrait: number): number[] {
 }
 
 export function visibleWindow(left: number, width: number) {
-	const step = RENDER_STEP_PX;
-	const start = Math.floor(left / step) * step - step;
-	return [start, start + width + 3 * step] as const;
+	const start =
+		Math.floor(left / RENDER_STEP_PX) * RENDER_STEP_PX - RENDER_STEP_PX;
+	return [start, start + width + 3 * RENDER_STEP_PX] as const;
 }

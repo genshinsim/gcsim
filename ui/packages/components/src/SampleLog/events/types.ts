@@ -1,7 +1,7 @@
 export interface SimEvent {
 	type: string;
 	frame: number;
-	/** absent for an instant event; Infinity when it outlasts the sample */
+	/** absent for an instant event; Infinity when it never ends */
 	end?: number;
 	characterIndex: number;
 	message: string;

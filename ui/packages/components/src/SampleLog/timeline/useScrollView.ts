@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export type View = { left: number; width: number };
+type View = { left: number; width: number };
 
 export function useScrollView() {
 	const [el, setEl] = useState<HTMLDivElement | null>(null);

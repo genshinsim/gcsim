@@ -83,13 +83,13 @@ export function Strip({
 	const [expanded, setExpanded] = useState<Set<number>>(new Set());
 
 	const cols = useMemo(() => columns(model, enabled), [model, enabled]);
-	const runs = useMemo(
-		() => onFieldRuns(cols, model.onField),
-		[cols, model.onField],
-	);
 	const onFieldByCol = useMemo(
 		() => cols.map((c) => onFieldLaneAt(model.onField, c.frame)),
 		[cols, model.onField],
+	);
+	const runs = useMemo(
+		() => onFieldRuns(cols, onFieldByCol),
+		[cols, onFieldByCol],
 	);
 
 	const wholeLogRows = useMemo(

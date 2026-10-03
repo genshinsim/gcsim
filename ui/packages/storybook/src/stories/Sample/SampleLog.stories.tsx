@@ -3,6 +3,7 @@ import {
 	SampleLog,
 	saveSampleFilter,
 } from "@gcsim/components";
+import { AllSampleOptions } from "@gcsim/components/src/SampleLog/SampleOptions";
 import { sampleFixture } from "@gcsim/components/src/SampleLog/testdata";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
@@ -32,7 +33,9 @@ const seedFilter = (filter: string[]) => () => {
 	return () => saveSampleFilter(localStorage, saved);
 };
 
-export const Default: Story = {};
+export const Default: Story = {
+	beforeEach: seedFilter(AllSampleOptions),
+};
 
 export const DamageOnly: Story = {
 	beforeEach: seedFilter(["damage"]),
@@ -40,4 +43,5 @@ export const DamageOnly: Story = {
 
 export const WithoutDownload: Story = {
 	args: { onDownload: undefined },
+	beforeEach: seedFilter(AllSampleOptions),
 };

@@ -118,6 +118,20 @@ describe("fromLegacySample", () => {
 					.map((e) => [e.characterIndex, e.frame, e.end]),
 			).toEqual([[0, 0, 50]]);
 		});
+		it("skips a character outside the team", () => {
+			const swap = line({
+				event: "action",
+				msg: "executed swap",
+				char_index: 0,
+				frame: 10,
+				logs: { action: "swap" },
+			});
+			const out = fromLegacySample({
+				...sampleOf([swap, line({ frame: 50 })]),
+				character_details: undefined,
+			});
+			expect(out.filter((e) => isEvent(e, "stint"))).toEqual([]);
+		});
 	});
 
 	describe("typed fields", () => {
@@ -217,6 +231,9 @@ describe("fromLegacySample", () => {
 		expect(fromLegacySample({ ...sampleFixture, logs: undefined })).toEqual([]);
 		expect(
 			fromLegacySample({ ...sampleFixture, logs: "{" } as unknown as Sample),
+		).toEqual([]);
+		expect(
+			fromLegacySample({ ...sampleFixture, logs: "null" } as unknown as Sample),
 		).toEqual([]);
 	});
 });

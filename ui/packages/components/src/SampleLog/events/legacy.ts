@@ -1,10 +1,10 @@
 import type { LogDetails, Sample } from "@gcsim/types";
-import type { EventFields, SimEvent } from "./types";
+import type { EventFields, EventOf, SimEvent } from "./types";
 
 type Logs = LogDetails["logs"];
 
 export function fromLegacySample(sample: Sample): SimEvent[] {
-	const lines = parseLines(sample.logs as LogDetails[] | string | undefined);
+	const lines = parseLines(sample.logs);
 	if (lines.length === 0) {
 		return [];
 	}
@@ -15,18 +15,17 @@ export function fromLegacySample(sample: Sample): SimEvent[] {
 	].sort((a, b) => a.frame - b.frame);
 }
 
-function parseLines(logs: LogDetails[] | string | undefined): LogDetails[] {
-	if (logs == null) {
-		return [];
+/** older samples store the log as a JSON string */
+function parseLines(logs: unknown): LogDetails[] {
+	let parsed = logs;
+	if (typeof logs === "string") {
+		try {
+			parsed = JSON.parse(logs);
+		} catch {
+			return [];
+		}
 	}
-	if (typeof logs !== "string") {
-		return logs;
-	}
-	try {
-		return JSON.parse(logs);
-	} catch {
-		return [];
-	}
+	return Array.isArray(parsed) ? parsed : [];
 }
 
 function toEvent(line: LogDetails): SimEvent {
@@ -58,7 +57,7 @@ function isSwap(line: LogDetails): boolean {
 	);
 }
 
-const damageOf = (logs: Logs) => Number(logs.damage) || 0;
+const damageIn = (logs: Logs) => Number(logs.damage) || 0;
 
 function ordered(line: LogDetails): Logs {
 	const ordering = line.ordering;
@@ -71,20 +70,20 @@ function ordered(line: LogDetails): Logs {
 	return Object.fromEntries(keys.map((k) => [k, line.logs[k]]));
 }
 
-function fields(type: string, logs: Logs): object {
+type LineFields =
+	| EventFields["action"]
+	| EventFields["damage"]
+	| EventFields["status"]
+	| Record<string, never>;
+
+function fields(type: string, logs: Logs): LineFields {
 	switch (type) {
 		case "action":
-			return {
-				action: typeof logs.action === "string" ? logs.action : "",
-			} satisfies EventFields["action"];
+			return { action: typeof logs.action === "string" ? logs.action : "" };
 		case "damage":
-			return {
-				damage: damageOf(logs),
-			} satisfies EventFields["damage"];
+			return { damage: damageIn(logs) };
 		case "status":
-			return {
-				key: typeof logs.key === "string" ? logs.key : "",
-			} satisfies EventFields["status"];
+			return { key: typeof logs.key === "string" ? logs.key : "" };
 		default:
 			return {};
 	}
@@ -98,15 +97,15 @@ function onFieldStints(
 	const last = lines.reduce((m, l) => Math.max(m, l.frame), 0);
 	const stints: SimEvent[] = [];
 	const addStint = (char: number, start: number, end: number) => {
-		if (char < 0) {
+		if (char < 0 || char >= team.length) {
 			return;
 		}
-		const stint: SimEvent & EventFields["stint"] = {
+		const stint: EventOf<"stint"> = {
 			type: "stint",
 			frame: start,
 			end,
 			characterIndex: char,
-			message: team[char] ?? "",
+			message: team[char],
 			raw: null,
 		};
 		stints.push(stint);
@@ -124,6 +123,29 @@ function onFieldStints(
 	return stints;
 }
 
+/** types whose message reads fine as logged */
+const PLAIN = new Set([
+	"cooldown",
+	"hitlag",
+	"enemy",
+	"user",
+	"calc",
+	"character",
+	"snapshot",
+	"pre_damage_mods",
+	"heal",
+	"hurt",
+	"shield",
+	"icd",
+	"construct",
+	"player",
+	"weapon",
+	"artifact",
+	"warning",
+	"debug",
+	"sim",
+]);
+
 function message(line: LogDetails, d: Logs): string {
 	switch (line.event) {
 		case "damage":
@@ -138,33 +160,13 @@ function message(line: LogDetails, d: Logs): string {
 			return energyMessage(line.msg, d);
 		case "status":
 			return `${d.key} ${line.msg}`;
-		case "cooldown":
-		case "hitlag":
-		case "enemy":
-		case "user":
-		case "calc":
-		case "character":
-		case "snapshot":
-		case "pre_damage_mods":
-		case "heal":
-		case "hurt":
-		case "shield":
-		case "icd":
-		case "construct":
-		case "player":
-		case "weapon":
-		case "artifact":
-		case "warning":
-		case "debug":
-		case "sim":
-			return line.msg;
 		default:
-			return `${line.event}: ${line.msg}`;
+			return PLAIN.has(line.event) ? line.msg : `${line.event}: ${line.msg}`;
 	}
 }
 
 function damageMessage(msg: string, d: Logs): string {
-	const dmg = Math.round(damageOf(d)).toLocaleString("en-US");
+	const dmg = Math.round(damageIn(d)).toLocaleString("en-US");
 	const extra = [d.amp, d.cata, d.crit ? "crit" : ""]
 		.filter((x) => typeof x === "string" && x !== "")
 		.join(" ");

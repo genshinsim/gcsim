@@ -12,7 +12,7 @@ import {
 	onFieldRuns,
 	rowsH,
 } from "./layout";
-import { modelFromEvents } from "./model";
+import { modelFromEvents, onFieldLaneAt } from "./model";
 
 const team = [
 	{ key: "bennett", element: "pyro" },
@@ -76,7 +76,8 @@ describe("onFieldRuns", () => {
 
 	it("joins neighbouring columns where the same lane is on field", () => {
 		const cols = columns(model, new Set(["action"]));
-		expect(onFieldRuns(cols, model.onField)).toEqual([
+		const onField = cols.map((c) => onFieldLaneAt(model.onField, c.frame));
+		expect(onFieldRuns(cols, onField)).toEqual([
 			{ lane: 1, x0: cols[0].x, x1: cols[1].x + COL_W },
 			{ lane: 2, x0: cols[2].x, x1: cols[3].x + COL_W },
 		]);
