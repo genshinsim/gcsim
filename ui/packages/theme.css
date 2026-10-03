@@ -157,7 +157,6 @@
 	--g-dendro: #6e9020;
 }
 
-/* The shared series palette washes out on light canvases: darker, same order. */
 [data-theme="abyss-l"],
 [data-theme="ember-l"],
 [data-theme="pulse-l"],

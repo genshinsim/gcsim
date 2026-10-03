@@ -3,7 +3,6 @@ import { type KeyStorage, LEGACY_APP_DATA_KEY, readJSON } from "./storage";
 import { DEFAULT_THEME_ID, THEMES } from "./themes";
 
 const PREFS_KEY = "gcsim-prefs";
-// web/index.html reads this key before first paint
 export const THEME_KEY = "gcsim-theme";
 export const HERO_KEY = "gcsim-hero";
 
@@ -17,11 +16,18 @@ export function saveSampleOnLoad(storage: KeyStorage, sampleOnLoad: boolean) {
 	storage.setItem(PREFS_KEY, JSON.stringify({ sampleOnLoad }));
 }
 
+function loadId(
+	storage: KeyStorage,
+	key: string,
+	options: { id: string }[],
+	fallback: string,
+): string {
+	const saved = storage.getItem(key);
+	return options.find((o) => o.id === saved)?.id ?? fallback;
+}
+
 export function loadTheme(storage: KeyStorage): string {
-	const saved = storage.getItem(THEME_KEY);
-	return THEMES.some((t) => t.id === saved)
-		? (saved as string)
-		: DEFAULT_THEME_ID;
+	return loadId(storage, THEME_KEY, THEMES, DEFAULT_THEME_ID);
 }
 
 export function saveTheme(storage: KeyStorage, theme: string) {
@@ -29,10 +35,7 @@ export function saveTheme(storage: KeyStorage, theme: string) {
 }
 
 export function loadHero(storage: KeyStorage): string {
-	const saved = storage.getItem(HERO_KEY);
-	return HERO_IMAGES.some((h) => h.id === saved)
-		? (saved as string)
-		: DEFAULT_HERO_ID;
+	return loadId(storage, HERO_KEY, HERO_IMAGES, DEFAULT_HERO_ID);
 }
 
 export function saveHero(storage: KeyStorage, hero: string) {

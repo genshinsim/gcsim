@@ -4,7 +4,6 @@ export type Theme = {
 	light: boolean;
 };
 
-// Must match the palettes in packages/theme.css. Cryo is bare :root there.
 export const THEMES: Theme[] = [
 	{ id: "cryo", name: "Cryo", light: false },
 	{ id: "abyss-d", name: "Abyss", light: false },

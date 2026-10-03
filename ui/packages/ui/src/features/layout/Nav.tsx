@@ -97,25 +97,19 @@ const MobileMenu = () => {
 	);
 };
 
-// Fixed colours, not the palette: white on a saturated fill reads on every
-// theme's nav background.
-const PILL_CLASS: Record<ExecutorKind, string> = {
-	wasm: "bg-violet-700",
-	server: "bg-amber-700",
-};
+const EXECUTOR_PILL = {
+	wasm: { fixedBg: "bg-violet-700", labelKey: "settings.executor_wasm" },
+	server: { fixedBg: "bg-amber-700", labelKey: "settings.executor_server" },
+} as const satisfies Record<ExecutorKind, unknown>;
 
 const ExecutorPill = () => {
 	const { t } = useTranslation();
-	const { executorKind } = useHost();
+	const { fixedBg, labelKey } = EXECUTOR_PILL[useHost().executorKind];
 	return (
 		<span
-			className={`${PILL_CLASS[executorKind]} rounded-full px-2 py-0.5 font-g-mono text-g-xs font-medium text-white`}
+			className={`${fixedBg} rounded-full px-2 py-0.5 font-g-mono text-g-xs font-medium text-white`}
 		>
-			{t(
-				executorKind === "wasm"
-					? "settings.executor_wasm"
-					: "settings.executor_server",
-			)}
+			{t(labelKey)}
 		</span>
 	);
 };
