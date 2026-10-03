@@ -172,9 +172,11 @@ const modsIn = (d: Logs) =>
 
 function damageMessage(msg: string, d: Logs): string {
 	const dmg = Math.round(damageIn(d)).toLocaleString("en-US");
-	const mods = modsIn(d);
-	return `${msg} [${dmg}]${mods === "" ? "" : ` (${mods})`}`;
+	return withMods(`${msg} [${dmg}]`, modsIn(d));
 }
+
+export const withMods = (text: string, mods: string) =>
+	mods === "" ? text : `${text} (${mods})`;
 
 const auras = (xs: string[]) =>
 	xs.map((x) => x.replace(/: (.+)/, " ($1)")).join(" ");

@@ -1,8 +1,9 @@
+import i18next from "i18next";
 import { describe, expect, it } from "vitest";
 import type { SimEvent } from "../events/types";
 import { sampleFixture } from "../testdata";
 import {
-	chipLabel,
+	chipShortText,
 	chipText,
 	compactDamage,
 	damageOf,
@@ -121,9 +122,14 @@ describe("compactDamage", () => {
 	])("shows %d as %s", (n, want) => {
 		expect(compactDamage(n)).toBe(want);
 	});
+
+	it("ignores the UI language", async () => {
+		await i18next.init({ lng: "de", resources: {} });
+		expect(compactDamage(12345.6)).toBe("12.3K");
+	});
 });
 
-describe("chipLabel", () => {
+describe("chipShortText", () => {
 	const chipOf = (over: Partial<SimEvent> & Record<string, unknown>) =>
 		modelFromEvents([ev(over)], team).chips[0];
 
@@ -135,7 +141,7 @@ describe("chipLabel", () => {
 			mods: "vaporize crit",
 			message: "Pyronado [12,346] (vaporize crit)",
 		});
-		expect(chipLabel(c)).toBe("12.3K Pyronado (vaporize crit)");
+		expect(chipShortText(c)).toBe("12.3K Pyronado (vaporize crit)");
 		expect(chipText(c)).toBe("Pyronado [12,346] (vaporize crit)");
 	});
 
@@ -146,12 +152,23 @@ describe("chipLabel", () => {
 			attack: "Normal 1",
 			mods: "",
 		});
-		expect(chipLabel(c)).toBe("999 Normal 1");
+		expect(chipShortText(c)).toBe("999 Normal 1");
+	});
+
+	it("labels an expiry chip with its text", () => {
+		const [, expiry] = modelFromEvents(
+			[
+				ev({ type: "status", key: "a", message: "a added", end: 50 }),
+				ev({ frame: 100 }),
+			],
+			team,
+		).chips;
+		expect(chipShortText(expiry)).toBe("a expired");
 	});
 
 	it("labels any other chip with its text", () => {
 		const c = chipOf({ type: "action", message: "burst" });
-		expect(chipLabel(c)).toBe("burst");
+		expect(chipShortText(c)).toBe("burst");
 	});
 });
 

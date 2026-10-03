@@ -20,11 +20,16 @@ const scrolls: number[] = [];
 beforeEach(() => {
 	localStorage.clear();
 	scrolls.length = 0;
-	Element.prototype.scrollTo = ((opts?: ScrollToOptions | number) => {
+	Element.prototype.scrollTo = function (
+		this: Element,
+		opts?: ScrollToOptions | number,
+	) {
 		if (typeof opts === "object") {
 			scrolls.push(opts.left ?? 0);
+			this.scrollLeft = opts.left ?? 0;
+			this.dispatchEvent(new Event("scroll"));
 		}
-	}) as typeof Element.prototype.scrollTo;
+	} as typeof Element.prototype.scrollTo;
 });
 
 function renderLog(
@@ -162,15 +167,6 @@ describe("SampleLog", () => {
 	});
 
 	it("leads a damage chip with the compact amount and keeps the exact one in its title", async () => {
-		Element.prototype.scrollTo = function (
-			this: Element,
-			opts?: ScrollToOptions | number,
-		) {
-			if (typeof opts === "object") {
-				this.scrollLeft = opts.left ?? 0;
-				this.dispatchEvent(new Event("scroll"));
-			}
-		} as typeof Element.prototype.scrollTo;
 		renderLog();
 		await userEvent.type(
 			screen.getByPlaceholderText("sample.search_placeholder"),
