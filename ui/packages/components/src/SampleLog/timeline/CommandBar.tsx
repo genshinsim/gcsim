@@ -12,7 +12,6 @@ import {
 	AdvancedPreset,
 	AllSampleOptions,
 	DebugPreset,
-	DefaultSampleOptions,
 	SimplePreset,
 	VerbosePreset,
 } from "../SampleOptions";
@@ -31,7 +30,6 @@ type Props = {
 };
 
 const PRESETS = [
-	["sample.default", DefaultSampleOptions],
 	["viewer.simple", SimplePreset],
 	["viewer.advanced", AdvancedPreset],
 	["viewer.verbose", VerbosePreset],

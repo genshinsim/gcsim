@@ -186,7 +186,6 @@
 	"sample": {
 		"all": "すべて",
 		"clear_duration": "{{label}}：{{start}} → {{end}} · クリックまたは Esc で解除",
-		"default": "デフォルト",
 		"drop_text": "読み込むにはzip化されたgcsimのサンプルJSONファイルをドラッグアンドドロップするかボタンをクリックしてアップロードしてください。",
 		"empty_frames": "空のフレーム {{count}} 個",
 		"end": "終了",

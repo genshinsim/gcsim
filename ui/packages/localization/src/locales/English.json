@@ -186,7 +186,6 @@
 	"sample": {
 		"all": "All",
 		"clear_duration": "{{label}}: {{start}} → {{end}} · click or Esc to clear",
-		"default": "Default",
 		"drop_text": "Drop sample file (.gz) from gcsim here, or click to select file.",
 		"empty_frames": "{{count}} empty frames",
 		"end": "end",

@@ -186,7 +186,6 @@
 	"sample": {
 		"all": "Todo",
 		"clear_duration": "{{label}}: {{start}} → {{end}} · haz clic o pulsa Esc para quitar",
-		"default": "Predeterminado",
 		"drop_text": "Suelta el archivo de muestra (.gz) de gcsim aquí, o haz clic para seleccionar el archivo.",
 		"empty_frames": "{{count}} fotogramas vacíos",
 		"end": "fin",

@@ -1,13 +1,3 @@
-export const DefaultSampleOptions = [
-	"damage",
-	"element",
-	"action",
-	"energy",
-	"pre_damage_mods",
-	"status",
-	"user",
-];
-
 export const AllSampleOptions = [
 	//basic stuff
 	"action", //character actions
