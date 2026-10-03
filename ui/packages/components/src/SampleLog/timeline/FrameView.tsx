@@ -1,6 +1,14 @@
-import { Dialog, DialogContent, DialogTitle } from "@gcsim/primitives";
+import {
+	Button,
+	Checkbox,
+	Dialog,
+	DialogContent,
+	DialogTitle,
+	Label,
+} from "@gcsim/primitives";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import type React from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { AllSampleOptions } from "../SampleOptions";
 import { EventChip } from "./EventChip";
@@ -35,26 +43,9 @@ export function FrameView({
 	const { t } = useTranslation();
 	const laneName = useLaneName();
 	const [byCat, setByCat] = useState(false);
+	const byCatId = useId();
 	const body = useRef<HTMLDivElement>(null);
 	const col = index != null ? cols[index] : undefined;
-
-	useEffect(() => {
-		if (index == null) {
-			return;
-		}
-		const onKey = (e: KeyboardEvent) => {
-			if (e.key !== "ArrowLeft" && e.key !== "ArrowRight") {
-				return;
-			}
-			if (e.key === "ArrowLeft" && index > 0) {
-				onIndex(index - 1);
-			} else if (e.key === "ArrowRight" && index < cols.length - 1) {
-				onIndex(index + 1);
-			}
-		};
-		window.addEventListener("keydown", onKey);
-		return () => window.removeEventListener("keydown", onKey);
-	}, [index, cols.length, onIndex]);
 
 	useEffect(() => {
 		if (body.current != null && col != null) {
@@ -67,6 +58,13 @@ export function FrameView({
 	const prev = cols[i - 1];
 	const next = cols[i + 1];
 	const total = col?.cells.reduce((a, c) => a + c.length, 0) ?? 0;
+	const onKeyDown = (e: React.KeyboardEvent) => {
+		if (e.key === "ArrowLeft" && prev != null) {
+			onIndex(i - 1);
+		} else if (e.key === "ArrowRight" && next != null) {
+			onIndex(i + 1);
+		}
+	};
 
 	return (
 		<Dialog
@@ -77,49 +75,58 @@ export function FrameView({
 				}
 			}}
 		>
-			<DialogContent className="flex h-[92vh] w-[96vw] max-w-none flex-col gap-0 overflow-hidden p-0 sm:max-w-none">
+			<DialogContent
+				className="flex h-[92vh] w-[96vw] max-w-none flex-col gap-0 overflow-hidden p-0 sm:max-w-none"
+				aria-describedby={undefined}
+				onKeyDown={onKeyDown}
+			>
 				{col != null && (
 					<>
 						<div className="flex shrink-0 items-center gap-3 border-b border-g-line px-4 py-2.5 pr-12">
-							<button
-								type="button"
+							<Button
+								variant="ghost"
+								size="icon-xs"
 								disabled={prev == null}
 								onClick={() => onIndex(i - 1)}
-								className="flex items-center rounded-g-sm p-1 text-g-ink-mute hover:bg-g-surface-2 hover:text-g-ink disabled:opacity-30"
 								aria-label={t("sample.previous_frame")}
 								title={t("sample.previous_frame")}
 							>
 								<ChevronLeft className="size-4" />
-							</button>
+							</Button>
 							<DialogTitle className="font-g-mono text-g-base">
 								{t("sample.frame_title", { frame: col.frame })}
 								<span className="ml-2 text-g-ink-mute">
 									{secondsLabel(col.frame, 3)}
 								</span>
 							</DialogTitle>
-							<button
-								type="button"
+							<Button
+								variant="ghost"
+								size="icon-xs"
 								disabled={next == null}
 								onClick={() => onIndex(i + 1)}
-								className="flex items-center rounded-g-sm p-1 text-g-ink-mute hover:bg-g-surface-2 hover:text-g-ink disabled:opacity-30"
 								aria-label={t("sample.next_frame")}
 								title={t("sample.next_frame")}
 							>
 								<ChevronRight className="size-4" />
-							</button>
+							</Button>
 							<span className="font-g-mono text-[11px] text-g-ink-mute">
 								{t("sample.events_in_frame", { count: total })}
 								{prev != null &&
 									` · ${t("sample.since_last", { count: col.frame - prev.frame })}`}
 							</span>
-							<label className="ml-auto flex cursor-pointer items-center gap-1.5 text-[11px] text-g-ink-dim">
-								<input
-									type="checkbox"
+							<div className="ml-auto flex items-center gap-1.5">
+								<Checkbox
+									id={byCatId}
 									checked={byCat}
-									onChange={(e) => setByCat(e.target.checked)}
+									onCheckedChange={(v) => setByCat(v === true)}
 								/>
-								{t("sample.group_by_category")}
-							</label>
+								<Label
+									htmlFor={byCatId}
+									className="text-[11px] font-normal text-g-ink-dim"
+								>
+									{t("sample.group_by_category")}
+								</Label>
+							</div>
 						</div>
 						<div ref={body} className="relative min-h-0 flex-1 overflow-y-auto">
 							<div

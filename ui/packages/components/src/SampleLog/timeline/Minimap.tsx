@@ -1,5 +1,5 @@
 import type React from "react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { isEvent } from "../events/types";
 import { laneColorVar } from "./lane";
 import { type Chip, damageOf, type TimelineModel } from "./model";
@@ -271,11 +271,10 @@ export function Minimap({
 		drag.current = null;
 	};
 
-	const wheelPan = useRef((_: WheelEvent) => {});
-	wheelPan.current = (e: WheelEvent) => {
+	const wheelPan = useEffectEvent((e: WheelEvent) => {
 		const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
 		onPan(range[0] + (delta / Math.max(1, width)) * frames * 0.5);
-	};
+	});
 	useEffect(() => {
 		const el = wrap.current;
 		if (el == null) {
@@ -283,7 +282,7 @@ export function Minimap({
 		}
 		const onWheel = (e: WheelEvent) => {
 			e.preventDefault();
-			wheelPan.current(e);
+			wheelPan(e);
 		};
 		el.addEventListener("wheel", onWheel, { passive: false });
 		return () => el.removeEventListener("wheel", onWheel);

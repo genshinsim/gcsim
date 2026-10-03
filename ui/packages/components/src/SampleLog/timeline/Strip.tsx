@@ -19,6 +19,7 @@ import {
 	chipCap,
 	chipsShown,
 	columns,
+	frameOfX,
 	GAP_BIG,
 	gutterWidth,
 	HEAD_H,
@@ -27,6 +28,7 @@ import {
 	portraitSize,
 	secondsLabel,
 	visibleWindow,
+	xOfFrame,
 } from "./layout";
 import { Minimap } from "./Minimap";
 import {
@@ -43,8 +45,6 @@ import { useScrollView } from "./useScrollView";
 export type StripHandle = { centerOn: (frame: number) => void };
 
 export type SearchHits = { ids: Set<number>; frames: number[] };
-
-type Highlight = { event: SimEvent; start: number; end: number; label: string };
 
 export function Strip({
 	ref,
@@ -119,48 +119,37 @@ export function Strip({
 		lowerBound(cols, px[1], (c) => c.x),
 	);
 
-	const firstIdx = lowerBound(cols, view.left, (c) => c.x);
-	const lastIdx = Math.max(
-		firstIdx,
-		lowerBound(cols, view.left + view.width - gutter - COL_W, (c) => c.x),
-	);
 	const range: [number, number] =
 		cols.length === 0
 			? [0, model.maxFrame]
 			: [
-					cols[Math.min(firstIdx, cols.length - 1)].frame,
-					cols[Math.min(lastIdx, cols.length - 1)].frame + 1,
+					frameOfX(cols, view.left),
+					frameOfX(cols, view.left + view.width - gutter),
 				];
 
 	const scrollToFrame = (frame: number, center: boolean) => {
 		if (el == null || cols.length === 0) {
 			return;
 		}
-		const i = Math.min(
-			cols.length - 1,
-			lowerBound(cols, frame, (c) => c.frame),
-		);
-		const left = center
-			? cols[i].x - (el.clientWidth - gutter) / 2 + COL_W / 2
-			: cols[i].x;
+		const x = xOfFrame(cols, frame);
+		const left = center ? x - (el.clientWidth - gutter) / 2 + COL_W / 2 : x;
 		el.scrollTo({ left, behavior: center ? "smooth" : "auto" });
 	};
 	useImperativeHandle(ref, () => ({
 		centerOn: (frame) => scrollToFrame(frame, true),
 	}));
 
-	const [hl, setHl] = useState<Highlight | null>(null);
+	const [hlEvent, setHl] = useState<SimEvent | null>(null);
 	const showDuration = (c: Chip) =>
-		setHl((h) =>
-			h?.event === c.event
-				? null
-				: {
-						event: c.event,
-						start: c.event.frame,
-						end: c.event.end ?? c.event.frame,
-						label: spanLabel(c.event),
-					},
-		);
+		setHl((h) => (h === c.event ? null : c.event));
+	const hl =
+		hlEvent == null
+			? null
+			: {
+					start: hlEvent.frame,
+					end: hlEvent.end ?? hlEvent.frame,
+					label: spanLabel(hlEvent),
+				};
 	const [zoomed, setZoomed] = useState<number | null>(null);
 	const [shownModel, setShownModel] = useState(model);
 	if (model !== shownModel) {
@@ -170,17 +159,18 @@ export function Strip({
 		setExpanded(new Set());
 	}
 	useEffect(() => {
-		if (hl == null || zoomed != null) {
+		if (hlEvent == null || zoomed != null) {
 			return;
 		}
 		const onKey = (e: KeyboardEvent) => {
-			if (e.key === "Escape") {
+			// a dialog or popover closing on Escape marks it handled
+			if (e.key === "Escape" && !e.defaultPrevented) {
 				setHl(null);
 			}
 		};
 		window.addEventListener("keydown", onKey);
 		return () => window.removeEventListener("keydown", onKey);
-	}, [hl, zoomed]);
+	}, [hlEvent, zoomed]);
 	const hlI0 = hl == null ? 0 : lowerBound(cols, hl.start, (c) => c.frame);
 	const hlI1 =
 		hl == null ? -1 : lowerBound(cols, hl.end + 1, (c) => c.frame) - 1;
@@ -192,7 +182,7 @@ export function Strip({
 			: t("sample.clear_duration", {
 					label: hl.label,
 					start: hl.start,
-					end: hl.end > model.maxFrame ? t("sample.end") : hl.end,
+					end: Number.isFinite(hl.end) ? hl.end : t("sample.end"),
 				});
 
 	const toggle = (i: number) =>
@@ -256,9 +246,9 @@ export function Strip({
 										<span className="flex min-w-0 flex-1 flex-col">
 											<span className="truncate">{hl.label}</span>
 											<span>
-												{hl.end > model.maxFrame
-													? t("sample.to_end")
-													: secondsLabel(hl.end - hl.start)}
+												{Number.isFinite(hl.end)
+													? secondsLabel(hl.end - hl.start)
+													: t("sample.to_end")}
 											</span>
 										</span>
 										<X className="size-3 shrink-0" />
@@ -385,17 +375,20 @@ export function Strip({
 										const items = c.cells[lane.index];
 										const active = onFieldByCol[from + k] === lane.index;
 										const fit = chipsShown(items.length, rows, isExpanded);
+										const hidesMatch = items
+											.slice(fit)
+											.some((e) => hits.ids.has(e.id));
 										return (
 											<div
 												key={c.frame}
-												className="absolute top-0 flex h-full flex-col gap-[2px] overflow-hidden"
+												className={cn(
+													"absolute top-0 flex h-full flex-col gap-[2px] overflow-hidden",
+													!active && "border-l border-g-line-soft",
+												)}
 												style={{
 													left: gutter + c.x,
 													width: COL_W,
 													padding: CELL_PAD,
-													borderLeft: active
-														? undefined
-														: "1px solid var(--g-border-soft)",
 												}}
 											>
 												{items.slice(0, fit).map((e) => (
@@ -405,14 +398,18 @@ export function Strip({
 														onOpen={onOpen}
 														onDurationIcon={showDuration}
 														matched={hits.ids.has(e.id)}
-														inDuration={hl?.event === e.event}
+														inDuration={hlEvent === e.event}
 														className="w-full shrink-0"
 													/>
 												))}
 												{fit < items.length && (
 													<button
 														type="button"
-														className="h-[18px] shrink-0 rounded-[3px] border border-dashed border-g-line text-[10px] text-g-ink-dim hover:text-g-ink"
+														className={cn(
+															"h-[18px] shrink-0 rounded-[3px] border border-dashed border-g-line text-[10px] text-g-ink-dim hover:text-g-ink",
+															hidesMatch &&
+																"border-solid border-g-warning text-g-warning",
+														)}
 														aria-expanded={false}
 														onClick={() => toggle(lane.index)}
 													>

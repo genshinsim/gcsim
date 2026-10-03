@@ -116,4 +116,22 @@ describe("SampleLog", () => {
 			}),
 		).toBeInTheDocument();
 	});
+
+	it("keeps a duration highlight when Escape closes the details dialog", async () => {
+		renderLog();
+		const durations = screen.getAllByRole("button", {
+			name: /^sample\.show_duration /,
+		});
+		await userEvent.click(durations[0]);
+		const clear = () => screen.queryAllByLabelText(/^sample\.clear_duration /);
+		expect(clear()).toHaveLength(1);
+
+		await userEvent.click(chipsOfType("action")[0]);
+		await userEvent.keyboard("{Escape}");
+		expect(screen.queryByRole("dialog")).toBeNull();
+		expect(clear()).toHaveLength(1);
+
+		await userEvent.keyboard("{Escape}");
+		expect(clear()).toHaveLength(0);
+	});
 });

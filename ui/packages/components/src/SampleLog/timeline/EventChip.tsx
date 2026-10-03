@@ -14,7 +14,7 @@ export function EventChip({
 }: {
 	chip: Chip;
 	onOpen: (c: Chip) => void;
-	onDurationIcon?: (c: Chip) => void;
+	onDurationIcon: (c: Chip) => void;
 	matched?: boolean;
 	inDuration?: boolean;
 	className?: string;
@@ -30,7 +30,7 @@ export function EventChip({
 	const text = chipText(chip);
 	const title = `${chip.frame} · ${chip.event.type}: ${text}`;
 	const style: React.CSSProperties = { backgroundColor: color };
-	if (onDurationIcon != null && hasDuration(chip)) {
+	if (hasDuration(chip)) {
 		const durationLabel = t("sample.show_duration", {
 			start: chip.event.frame,
 			end: Number.isFinite(chip.event.end) ? chip.event.end : t("sample.end"),

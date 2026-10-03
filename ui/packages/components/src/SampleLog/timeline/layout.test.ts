@@ -5,12 +5,14 @@ import {
 	chipCap,
 	chipsShown,
 	columns,
+	frameOfX,
 	GAP_BIG,
 	GAP_SMALL,
 	laneHeights,
 	MIN_CAP,
 	onFieldRuns,
 	rowsH,
+	xOfFrame,
 } from "./layout";
 import { modelFromEvents, onFieldLaneAt } from "./model";
 
@@ -58,6 +60,43 @@ describe("columns", () => {
 	it("leaves out filtered types, and frames left empty by them", () => {
 		const cols = columns(model, new Set(["action"]));
 		expect(cols.map((c) => c.frame)).toEqual([0, 10]);
+	});
+});
+
+describe("xOfFrame / frameOfX", () => {
+	const cols = columns(
+		modelFromEvents(
+			[ev({ frame: 0 }), ev({ frame: 10 }), ev({ frame: 11 })],
+			team,
+		),
+		new Set(["action"]),
+	);
+
+	it("lands on a column's x at its frame", () => {
+		expect(cols.map((c) => xOfFrame(cols, c.frame))).toEqual(
+			cols.map((c) => c.x),
+		);
+	});
+
+	it("moves smoothly between columns, so a small pan always moves", () => {
+		const x4 = xOfFrame(cols, 4);
+		const x5 = xOfFrame(cols, 5);
+		expect(x4).toBeGreaterThan(cols[0].x);
+		expect(x5).toBeGreaterThan(x4);
+		expect(x5).toBeLessThan(cols[1].x);
+	});
+
+	it("inverts", () => {
+		for (const f of [0, 2.5, 10, 10.5, 11]) {
+			expect(frameOfX(cols, xOfFrame(cols, f))).toBeCloseTo(f);
+		}
+	});
+
+	it("clamps outside the columns", () => {
+		expect(xOfFrame(cols, -5)).toBe(0);
+		expect(xOfFrame(cols, 99)).toBe(cols[2].x);
+		expect(frameOfX(cols, -5)).toBe(0);
+		expect(frameOfX(cols, 1e6)).toBe(11);
 	});
 });
 

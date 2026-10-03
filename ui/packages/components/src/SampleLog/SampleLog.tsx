@@ -2,9 +2,9 @@ import type { Sample } from "@gcsim/types";
 import React, { useMemo, useRef, useState } from "react";
 import { useSampleFilter } from "./sampleFilter";
 import { CommandBar } from "./timeline/CommandBar";
-import { chipText, modelFromSample } from "./timeline/model";
+import { EventDetailsDialog } from "./timeline/EventDetailsDialog";
+import { type Chip, chipText, modelFromSample } from "./timeline/model";
 import { type SearchHits, Strip, type StripHandle } from "./timeline/Strip";
-import { useEventDetails } from "./timeline/useEventDetails";
 import { useFitViewport } from "./timeline/useFitViewport";
 
 export type SampleLogProps = {
@@ -16,7 +16,7 @@ function SampleLogUI({ sample, onDownload }: SampleLogProps) {
 	const [filter, setFilter] = useSampleFilter();
 	const model = useMemo(() => modelFromSample(sample), [sample]);
 	const enabled = useMemo(() => new Set(filter), [filter]);
-	const details = useEventDetails();
+	const [detail, setDetail] = useState<Chip | null>(null);
 	const [search, setSearch] = useState("");
 	const strip = useRef<StripHandle>(null);
 	const fit = useFitViewport();
@@ -57,7 +57,7 @@ function SampleLogUI({ sample, onDownload }: SampleLogProps) {
 				model={model}
 				enabled={enabled}
 				hits={hits}
-				onOpen={details.open}
+				onOpen={setDetail}
 				commandBar={
 					<CommandBar
 						model={model}
@@ -75,7 +75,7 @@ function SampleLogUI({ sample, onDownload }: SampleLogProps) {
 					/>
 				}
 			/>
-			{details.dialog}
+			<EventDetailsDialog chip={detail} onClose={() => setDetail(null)} />
 		</div>
 	);
 }

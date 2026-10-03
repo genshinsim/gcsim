@@ -26,7 +26,7 @@ export function useLaneName() {
 	);
 }
 
-/** the character's portrait, or crossed swords for the sim lane */
+/** the character's portrait, or crossed swords for the sim lane; `className` and `style` size the portrait only */
 export function LaneIcon({
 	lane,
 	name,

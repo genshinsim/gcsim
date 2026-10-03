@@ -1,4 +1,4 @@
-import { type Chip, SIM_LANE, type TimelineModel } from "./model";
+import { type Chip, lowerBound, SIM_LANE, type TimelineModel } from "./model";
 
 export const COL_W = 168;
 export const GAP_SMALL = 3;
@@ -56,6 +56,26 @@ export function columns(model: TimelineModel, enabled: Set<string>): Column[] {
 		col.cells[chip.lane].push(chip);
 	}
 	return out;
+}
+
+/** strip x of a frame, interpolated between the columns around it */
+export function xOfFrame(cols: Column[], frame: number): number {
+	const i = lowerBound(cols, frame, (c) => c.frame);
+	if (i === 0 || i === cols.length) {
+		return cols[Math.min(i, cols.length - 1)]?.x ?? 0;
+	}
+	const [a, b] = [cols[i - 1], cols[i]];
+	return a.x + ((frame - a.frame) / (b.frame - a.frame)) * (b.x - a.x);
+}
+
+/** the inverse of {@link xOfFrame} */
+export function frameOfX(cols: Column[], x: number): number {
+	const i = lowerBound(cols, x, (c) => c.x);
+	if (i === 0 || i === cols.length) {
+		return cols[Math.min(i, cols.length - 1)]?.frame ?? 0;
+	}
+	const [a, b] = [cols[i - 1], cols[i]];
+	return a.frame + ((x - a.x) / (b.x - a.x)) * (b.frame - a.frame);
 }
 
 export type OnFieldRun = { lane: number; x0: number; x1: number };

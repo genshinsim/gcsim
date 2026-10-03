@@ -49,24 +49,21 @@ export function CommandBar({
 	onDownload,
 }: Props) {
 	const { t } = useTranslation();
-	const searchBox = (
-		<Input
-			className="h-7 min-w-0 flex-1 text-[12px]"
-			placeholder={t("sample.search_placeholder")}
-			aria-label={t("viewer.search")}
-			value={search}
-			onChange={(e) => onSearch(e.target.value)}
-			onKeyDown={(e) => {
-				if (e.key === "Enter") {
-					onSearchNext();
-				}
-			}}
-		/>
-	);
 	return (
 		<div className="flex h-full flex-col justify-center gap-1.5 px-2">
 			<div className="flex items-center gap-1">
-				{searchBox}
+				<Input
+					className="h-7 min-w-0 flex-1 text-[12px]"
+					placeholder={t("sample.search_placeholder")}
+					aria-label={t("viewer.search")}
+					value={search}
+					onChange={(e) => onSearch(e.target.value)}
+					onKeyDown={(e) => {
+						if (e.key === "Enter") {
+							onSearchNext();
+						}
+					}}
+				/>
 				<Button
 					variant="secondary"
 					size="icon"
@@ -119,7 +116,7 @@ function CategoryFilter({
 		onFilterChange(
 			filter.includes(c) ? filter.filter((s) => s !== c) : [...filter, c],
 		);
-	const on = cats.filter((c) => filter.includes(c)).length;
+	const shownCount = cats.filter((c) => filter.includes(c)).length;
 	return (
 		<Popover>
 			<PopoverTrigger asChild>
@@ -132,7 +129,7 @@ function CategoryFilter({
 				>
 					<ListFilter />
 					<span className="font-g-mono text-[11px] text-g-ink-mute">
-						{on}/{cats.length}
+						{shownCount}/{cats.length}
 					</span>
 				</Button>
 			</PopoverTrigger>
@@ -159,6 +156,7 @@ function CategoryFilter({
 				<div className="flex flex-wrap gap-1">
 					{cats.map((c) => {
 						const on = filter.includes(c);
+						const { color } = display(c);
 						return (
 							<button
 								type="button"
@@ -175,8 +173,8 @@ function CategoryFilter({
 								<span
 									className="size-2 rounded-full"
 									style={{
-										background: on ? display(c).color : "transparent",
-										outline: `1px solid ${display(c).color}`,
+										background: on ? color : "transparent",
+										outline: `1px solid ${color}`,
 									}}
 								/>
 								{c}
