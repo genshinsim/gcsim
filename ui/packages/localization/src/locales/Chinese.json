@@ -186,6 +186,7 @@
 	"sample": {
 		"all": "全部",
 		"clear_duration": "{{label}}：{{start}} → {{end}} · 点击或按 Esc 清除",
+		"default": "默认",
 		"drop_text": "拖动gcsim的gzip-JSON样本文件到此处，或者点击以选择。",
 		"empty_frames": "{{count}} 个空帧",
 		"end": "结束",

@@ -186,6 +186,7 @@
 	"sample": {
 		"all": "Alle",
 		"clear_duration": "{{label}}: {{start}} → {{end}} · Klicken oder Esc zum Entfernen",
+		"default": "Standard",
 		"drop_text": "Beispiel-Datei (.gz) aus gcsim per Drag-and-drop hochladen oder per Klick Dateien auswählen.",
 		"empty_frames": "{{count}} leere Frames",
 		"end": "Ende",

@@ -1,6 +1,7 @@
 import {
 	type Chip,
 	onFieldLaneAt,
+	SIM_LANE,
 	type Stint,
 	type TimelineModel,
 } from "./model";
@@ -16,7 +17,16 @@ export const HEAD_H = 34;
 export const CELL_PAD = 8;
 const SIM_LANE_MIN_H = 30;
 const PORTRAIT_PAD = 8;
+const LABEL_PAD_X = 12;
 const STRIP_BORDERS_AND_SCROLLBAR = 14;
+const MORE_BUTTON_ROWS = 1;
+const RENDER_STEP_PX = 400;
+
+/** width of the sticky lane-label column for a portrait of this size */
+export const gutterWidth = (portrait: number) => portrait + LABEL_PAD_X;
+
+export const secondsLabel = (frame: number, digits = 2) =>
+	`${(frame / 60).toFixed(digits)}s`;
 
 export const rowsH = (n: number) =>
 	2 * CELL_PAD + n * (CHIP_H + CHIP_GAP) - CHIP_GAP;
@@ -24,9 +34,7 @@ export const rowsH = (n: number) =>
 export type Column = {
 	frame: number;
 	x: number;
-	/** frames since the previous column */
-	gap: number;
-	/** chips per lane */
+	framesSincePrev: number;
 	cells: Chip[][];
 };
 
@@ -38,10 +46,17 @@ export function columns(model: TimelineModel, enabled: Set<string>): Column[] {
 		}
 		let col = out[out.length - 1];
 		if (col == null || col.frame !== chip.frame) {
-			const gap = col == null ? 0 : chip.frame - col.frame;
+			const framesSincePrev = col == null ? 0 : chip.frame - col.frame;
 			const x =
-				col == null ? 0 : col.x + COL_W + (gap > 1 ? GAP_BIG : GAP_SMALL);
-			col = { frame: chip.frame, x, gap, cells: model.lanes.map(() => []) };
+				col == null
+					? 0
+					: col.x + COL_W + (framesSincePrev > 1 ? GAP_BIG : GAP_SMALL);
+			col = {
+				frame: chip.frame,
+				x,
+				framesSincePrev,
+				cells: model.lanes.map(() => []),
+			};
 			out.push(col);
 		}
 		col.cells[chip.lane].push(chip);
@@ -66,7 +81,6 @@ export function onFieldRuns(cols: Column[], onField: Stint[]): OnFieldRun[] {
 	return out;
 }
 
-/** chips a collapsed cell shows so that every lane fits in `height` */
 export function chipCap(height: number, lanes: number): number {
 	const perLane = (height - HEAD_H - STRIP_BORDERS_AND_SCROLLBAR) / lanes;
 	return Math.max(
@@ -78,24 +92,25 @@ export function chipCap(height: number, lanes: number): number {
 export const portraitSize = (cap: number) =>
 	Math.min(MAX_PORTRAIT, rowsH(cap) - PORTRAIT_PAD);
 
-/** chips drawn in a cell; a collapsed cell that overflows keeps its last row for "+N more" */
 export function chipsShown(
 	count: number,
 	rows: number,
 	expanded: boolean,
 ): number {
-	return !expanded && count > rows ? rows - 1 : count;
+	return !expanded && count > rows ? rows - MORE_BUTTON_ROWS : count;
 }
 
 export function laneHeights(rows: number[], portrait: number): number[] {
 	return rows.map((r, i) =>
-		Math.max(i === 0 ? SIM_LANE_MIN_H : portrait + PORTRAIT_PAD, rowsH(r)),
+		Math.max(
+			i === SIM_LANE ? SIM_LANE_MIN_H : portrait + PORTRAIT_PAD,
+			rowsH(r),
+		),
 	);
 }
 
-/** pixel range to render, padded and quantized so scrolling doesn't re-render per pixel */
 export function visibleWindow(left: number, width: number) {
-	const q = 400;
-	const start = Math.floor(left / q) * q - q;
-	return [start, start + width + 3 * q] as const;
+	const step = RENDER_STEP_PX;
+	const start = Math.floor(left / step) * step - step;
+	return [start, start + width + 3 * step] as const;
 }

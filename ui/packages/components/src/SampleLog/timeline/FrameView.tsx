@@ -1,12 +1,11 @@
 import { Dialog, DialogContent, DialogTitle } from "@gcsim/primitives";
-import { ChevronLeft, ChevronRight, Swords } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Avatar } from "../../Cards/Avatar/Avatar";
 import { AllSampleOptions } from "../SampleOptions";
 import { EventChip } from "./EventChip";
-import { laneColor, useLaneName } from "./lane";
-import type { Column } from "./layout";
+import { LaneIcon, laneColor, laneTint, useLaneName } from "./lane";
+import { type Column, secondsLabel } from "./layout";
 import { type Chip, onFieldLaneAt, type TimelineModel } from "./model";
 
 const catRank = (c: string) => {
@@ -14,7 +13,6 @@ const catRank = (c: string) => {
 	return i === -1 ? AllSampleOptions.length : i;
 };
 
-/** one frame in a near-full-screen dialog: a column per lane, every chip, nothing capped */
 export function FrameView({
 	model,
 	cols,
@@ -23,17 +21,16 @@ export function FrameView({
 	onClose,
 	matches,
 	onOpen,
-	onDuration,
+	onDurationIcon,
 }: {
 	model: TimelineModel;
 	cols: Column[];
-	/** column shown, null when closed */
 	index: number | null;
 	onIndex: (i: number) => void;
 	onClose: () => void;
 	matches: Set<number>;
 	onOpen: (c: Chip) => void;
-	onDuration: (c: Chip) => void;
+	onDurationIcon: (c: Chip) => void;
 }) {
 	const { t } = useTranslation();
 	const laneName = useLaneName();
@@ -97,7 +94,7 @@ export function FrameView({
 							<DialogTitle className="font-g-mono text-g-base">
 								{t("sample.frame_title", { frame: col.frame })}
 								<span className="ml-2 text-g-ink-mute">
-									{(col.frame / 60).toFixed(3)}s
+									{secondsLabel(col.frame, 3)}
 								</span>
 							</DialogTitle>
 							<button
@@ -148,7 +145,7 @@ export function FrameView({
 											style={
 												onField
 													? {
-															background: `color-mix(in srgb, ${laneColor(lane)} 6%, transparent)`,
+															background: laneTint(lane, 6),
 														}
 													: undefined
 											}
@@ -162,19 +159,11 @@ export function FrameView({
 												}}
 												title={laneName(lane)}
 											>
-												{lane.index === 0 ? (
-													<Swords className="size-4 text-g-ink-mute" />
-												) : (
-													<div className="size-7 shrink-0">
-														<Avatar
-															name={lane.key}
-															element={lane.element ?? ""}
-															className="size-full overflow-hidden rounded-g-sm"
-															imageClassName="size-full object-contain"
-															imageWrapClassName="flex size-full"
-														/>
-													</div>
-												)}
+												<LaneIcon
+													lane={lane}
+													name={laneName(lane)}
+													className="size-7"
+												/>
 												{onField && (
 													<span className="rounded-g-sm bg-g-surface-3 px-1 text-[10px] text-g-ink-dim">
 														{t("sample.on_field")}
@@ -201,7 +190,7 @@ export function FrameView({
 														<EventChip
 															chip={e}
 															onOpen={onOpen}
-															onDuration={onDuration}
+															onDurationIcon={onDurationIcon}
 															matched={matches.has(e.id)}
 															className="w-full"
 														/>

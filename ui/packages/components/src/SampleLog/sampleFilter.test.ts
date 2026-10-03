@@ -30,6 +30,11 @@ describe("sample filter", () => {
 		expect(loadSampleFilter(storage)).toEqual(DefaultSampleOptions);
 	});
 
+	it("ignores a saved value that isn't a list of categories", () => {
+		const storage = fakeStorage({ "gcsim-sample-settings": '"damage"' });
+		expect(loadSampleFilter(storage)).toEqual(DefaultSampleOptions);
+	});
+
 	it("round-trips a saved filter", () => {
 		const storage = fakeStorage();
 		saveSampleFilter(storage, ["energy", "hitlag"]);

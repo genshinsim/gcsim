@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 export type View = { left: number; width: number };
 
-/** Tracks a scroll container's horizontal viewport. */
 export function useScrollView() {
 	const [el, setEl] = useState<HTMLDivElement | null>(null);
 	const [view, setView] = useState<View>({ left: 0, width: 1000 });

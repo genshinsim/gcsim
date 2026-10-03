@@ -186,6 +186,7 @@
 	"sample": {
 		"all": "전체",
 		"clear_duration": "{{label}}: {{start}} → {{end}} · 클릭하거나 Esc로 해제",
+		"default": "기본값",
 		"drop_text": "gcsim으로부터 gzip 압축된 JSON 샘플 파일을 드래그 앤 드롭하거나, 클릭하여 선택하세요.",
 		"empty_frames": "빈 프레임 {{count}}개",
 		"end": "끝",

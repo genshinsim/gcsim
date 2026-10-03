@@ -3,6 +3,7 @@ import type { SimEvent } from "../events/types";
 import { sampleFixture } from "../testdata";
 import {
 	chipText,
+	damageOf,
 	lowerBound,
 	modelFromEvents,
 	modelFromSample,
@@ -35,8 +36,8 @@ describe("modelFromEvents", () => {
 	it("turns field stints into on-field segments, not chips", () => {
 		const m = modelFromEvents(
 			[
-				ev({ type: "field", characterIndex: 0, frame: 0, end: 60 }),
-				ev({ type: "field", characterIndex: 1, frame: 60, end: 90 }),
+				ev({ type: "stint", characterIndex: 0, frame: 0, end: 60 }),
+				ev({ type: "stint", characterIndex: 1, frame: 60, end: 90 }),
 				ev({ frame: 90 }),
 			],
 			team,
@@ -74,7 +75,12 @@ describe("modelFromEvents", () => {
 		const m = modelFromEvents(
 			[
 				ev({ type: "status", key: "a", frame: 10, end: 500 }),
-				ev({ type: "status", key: "b", frame: 10, end: null }),
+				ev({
+					type: "status",
+					key: "b",
+					frame: 10,
+					end: Number.POSITIVE_INFINITY,
+				}),
 				ev({ frame: 100 }),
 			],
 			team,
@@ -95,7 +101,7 @@ describe("modelFromEvents", () => {
 			[ev({ type: "damage", characterIndex: 0, damage: 1000 })],
 			team,
 		);
-		expect(m.chips.map((c) => c.dmg)).toEqual([1000]);
+		expect(m.chips.map(damageOf)).toEqual([1000]);
 	});
 });
 

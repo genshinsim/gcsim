@@ -5,10 +5,13 @@ const FILTER_KEY = "gcsim-sample-settings";
 
 type FilterStorage = Pick<Storage, "getItem" | "setItem">;
 
+const isFilter = (v: unknown): v is string[] =>
+	Array.isArray(v) && v.every((x) => typeof x === "string");
+
 export function loadSampleFilter(storage: FilterStorage): string[] {
 	try {
-		const raw = storage.getItem(FILTER_KEY);
-		return (raw && JSON.parse(raw)) || DefaultSampleOptions;
+		const saved: unknown = JSON.parse(storage.getItem(FILTER_KEY) ?? "null");
+		return isFilter(saved) ? saved : DefaultSampleOptions;
 	} catch {
 		return DefaultSampleOptions;
 	}
@@ -19,9 +22,12 @@ export function saveSampleFilter(storage: FilterStorage, val: string[]) {
 }
 
 export function useSampleFilter() {
-	const [filter, setFilter] = React.useState(() =>
+	const [filter, setFilterState] = React.useState(() =>
 		loadSampleFilter(localStorage),
 	);
-	React.useEffect(() => saveSampleFilter(localStorage, filter), [filter]);
+	const setFilter = React.useCallback((val: string[]) => {
+		setFilterState(val);
+		saveSampleFilter(localStorage, val);
+	}, []);
 	return [filter, setFilter] as const;
 }

@@ -3,7 +3,7 @@ import React, { useMemo, useRef, useState } from "react";
 import { useSampleFilter } from "./sampleFilter";
 import { CommandBar } from "./timeline/CommandBar";
 import { chipText, modelFromSample } from "./timeline/model";
-import { Strip, type StripHandle } from "./timeline/Strip";
+import { type SearchHits, Strip, type StripHandle } from "./timeline/Strip";
 import { useEventDetails } from "./timeline/useEventDetails";
 import { useFitViewport } from "./timeline/useFitViewport";
 
@@ -18,7 +18,6 @@ function SampleLogUI({ sample, onDownload }: SampleLogProps) {
 	const enabled = useMemo(() => new Set(filter), [filter]);
 	const details = useEventDetails();
 	const [search, setSearch] = useState("");
-	const [cursor, setCursor] = useState(-1);
 	const strip = useRef<StripHandle>(null);
 	const fit = useFitViewport();
 
@@ -32,33 +31,32 @@ function SampleLogUI({ sample, onDownload }: SampleLogProps) {
 				enabled.has(c.event.type) && chipText(c).toLowerCase().includes(needle),
 		);
 	}, [model, enabled, search]);
-	const matches = useMemo(
-		() => new Set(matchList.map((c) => c.id)),
+	const hits = useMemo<SearchHits>(
+		() => ({
+			ids: new Set(matchList.map((c) => c.id)),
+			frames: matchList.map((c) => c.frame),
+		}),
 		[matchList],
 	);
-	const matchFrames = useMemo(() => matchList.map((c) => c.frame), [matchList]);
+	const [cursor, setCursor] = useState({ list: matchList, at: -1 });
+	const at = cursor.list === matchList ? cursor.at : -1;
 
 	const next = () => {
 		if (matchList.length === 0) {
 			return;
 		}
-		const i = (cursor + 1) % matchList.length;
-		setCursor(i);
+		const i = (at + 1) % matchList.length;
+		setCursor({ list: matchList, at: i });
 		strip.current?.centerOn(matchList[i].frame);
 	};
 
 	return (
-		<div
-			ref={fit.ref}
-			className="flex flex-col gap-2"
-			style={{ height: fit.height ?? "80vh" }}
-		>
+		<div ref={fit} className="flex h-[80vh] flex-col gap-2">
 			<Strip
 				ref={strip}
 				model={model}
 				enabled={enabled}
-				matches={matches}
-				matchFrames={matchFrames}
+				hits={hits}
 				onOpen={details.open}
 				commandBar={
 					<CommandBar
@@ -66,15 +64,10 @@ function SampleLogUI({ sample, onDownload }: SampleLogProps) {
 						filter={filter}
 						onFilterChange={setFilter}
 						search={search}
-						onSearch={(v) => {
-							setSearch(v);
-							setCursor(-1);
-						}}
+						onSearch={setSearch}
 						onSearchNext={next}
 						matchLabel={
-							search.trim() === ""
-								? ""
-								: `${cursor >= 0 ? cursor + 1 : 0}/${matchList.length}`
+							search.trim() === "" ? "" : `${at + 1}/${matchList.length}`
 						}
 						onDownload={
 							onDownload != null ? () => onDownload(sample) : undefined

@@ -12,6 +12,7 @@ import {
 	AdvancedPreset,
 	AllSampleOptions,
 	DebugPreset,
+	DefaultSampleOptions,
 	SimplePreset,
 	VerbosePreset,
 } from "../SampleOptions";
@@ -30,11 +31,13 @@ type Props = {
 };
 
 const PRESETS = [
+	["sample.default", DefaultSampleOptions],
 	["viewer.simple", SimplePreset],
 	["viewer.advanced", AdvancedPreset],
 	["viewer.verbose", VerbosePreset],
 	["viewer.debug", DebugPreset],
 	["sample.all", AllSampleOptions],
+	["viewer.clear", []],
 ] as const;
 
 export function CommandBar({

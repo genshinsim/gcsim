@@ -10,7 +10,7 @@ export function fromLegacySample(sample: Sample): SimEvent[] {
 	}
 	const team = sample.character_details?.map((c) => c.name) ?? [];
 	return [
-		...fieldStints(lines, team, sample.initial_character),
+		...onFieldStints(lines, team, sample.initial_character),
 		...lines.map(toEvent),
 	].sort((a, b) => a.frame - b.frame);
 }
@@ -39,15 +39,15 @@ function toEvent(line: LogDetails): SimEvent {
 		message: message(line, logs),
 		raw,
 	};
-	return { ...e, ...endOf(line), ...fields(line.event, logs) };
+	return { ...e, ...endOfLine(line), ...fields(line.event, logs) };
 }
 
-function endOf(line: LogDetails): Pick<SimEvent, "end"> {
+function endOfLine(line: LogDetails): Pick<SimEvent, "end"> {
 	if (line.ended > line.frame) {
 		return { end: line.ended };
 	}
 	const neverEnds = line.ended < line.frame;
-	return neverEnds ? { end: null } : {};
+	return neverEnds ? { end: Number.POSITIVE_INFINITY } : {};
 }
 
 function isSwap(line: LogDetails): boolean {
@@ -90,7 +90,7 @@ function fields(type: string, logs: Logs): object {
 	}
 }
 
-function fieldStints(
+function onFieldStints(
 	lines: LogDetails[],
 	team: string[],
 	initial: string | undefined,
@@ -101,8 +101,8 @@ function fieldStints(
 		if (char < 0) {
 			return;
 		}
-		const stint: SimEvent & EventFields["field"] = {
-			type: "field",
+		const stint: SimEvent & EventFields["stint"] = {
+			type: "stint",
 			frame: start,
 			end,
 			characterIndex: char,

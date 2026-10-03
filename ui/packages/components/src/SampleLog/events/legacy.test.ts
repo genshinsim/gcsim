@@ -76,11 +76,11 @@ describe("fromLegacySample", () => {
 			expect(anim.end).toBe(38);
 		});
 
-		it("is null for a line that never ends", () => {
+		it("is Infinity for a line that never ends", () => {
 			const stam = find(
 				(e) => isEvent(e, "status") && e.key === "utility-dash",
 			);
-			expect(stam.end).toBeNull();
+			expect(stam.end).toBe(Number.POSITIVE_INFINITY);
 		});
 
 		it("is absent for an instant", () => {
@@ -89,8 +89,8 @@ describe("fromLegacySample", () => {
 		});
 	});
 
-	describe("field", () => {
-		const field = events.filter((e) => isEvent(e, "field"));
+	describe("stint", () => {
+		const field = events.filter((e) => isEvent(e, "stint"));
 
 		it("follows the initial character then each executed swap", () => {
 			expect(field.map((e) => [e.characterIndex, e.frame, e.end])).toEqual([
@@ -114,7 +114,7 @@ describe("fromLegacySample", () => {
 			);
 			expect(
 				out
-					.filter((e) => isEvent(e, "field"))
+					.filter((e) => isEvent(e, "stint"))
 					.map((e) => [e.characterIndex, e.frame, e.end]),
 			).toEqual([[0, 0, 50]]);
 		});
@@ -159,7 +159,7 @@ describe("fromLegacySample", () => {
 				if (isEvent(e, "status")) {
 					expect(typeof e.key).toBe("string");
 				}
-				if (isEvent(e, "field")) {
+				if (isEvent(e, "stint")) {
 					expect(Number.isFinite(e.end)).toBe(true);
 				}
 			}

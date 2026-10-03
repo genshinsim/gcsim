@@ -60,6 +60,24 @@ describe("SampleLog", () => {
 		expect(screen.getByText(/^2\/\d+$/)).toBeInTheDocument();
 	});
 
+	it("restarts the match count when the filter changes the matches", async () => {
+		renderLog();
+		await userEvent.type(
+			screen.getByPlaceholderText("sample.search_placeholder"),
+			"Sesshou",
+		);
+		const next = screen.getByRole("button", { name: "sample.next_match" });
+		await userEvent.click(next);
+		await userEvent.click(next);
+		await userEvent.click(
+			screen.getByRole("button", { name: "viewer.log_options" }),
+		);
+		await userEvent.click(
+			within(screen.getByRole("dialog")).getByText("viewer.clear"),
+		);
+		expect(screen.getByText("0/0")).toBeInTheDocument();
+	});
+
 	it("offers download only when a handler is given", async () => {
 		const { unmount } = renderLog();
 		expect(

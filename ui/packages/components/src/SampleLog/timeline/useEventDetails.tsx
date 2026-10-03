@@ -8,7 +8,6 @@ import { useCallback, useMemo, useState } from "react";
 import { SampleEventDetails } from "../../SampleEventDetails";
 import { type Chip, chipText } from "./model";
 
-/** the event details dialog, and a function that opens it on a chip */
 export function useEventDetails() {
 	const [chip, setChip] = useState<Chip | null>(null);
 	const open = useCallback((c: Chip) => setChip(c), []);

@@ -1,5 +1,5 @@
 import { cn } from "@gcsim/primitives";
-import { ChevronsDown, ChevronsUp, Search, Swords, X } from "lucide-react";
+import { ChevronsDown, ChevronsUp, Search, X } from "lucide-react";
 import {
 	type ReactNode,
 	type Ref,
@@ -9,11 +9,10 @@ import {
 	useState,
 } from "react";
 import { useTranslation } from "react-i18next";
-import { Avatar } from "../../Cards/Avatar/Avatar";
 import type { SimEvent } from "../events/types";
-import { EventChip, endOf } from "./EventChip";
+import { EventChip } from "./EventChip";
 import { FrameView } from "./FrameView";
-import { laneColor, useLaneName } from "./lane";
+import { LaneIcon, laneColor, laneTint, useLaneName } from "./lane";
 import {
 	CELL_PAD,
 	COL_W,
@@ -21,15 +20,18 @@ import {
 	chipsShown,
 	columns,
 	GAP_BIG,
+	gutterWidth,
 	HEAD_H,
 	laneHeights,
 	onFieldRuns,
 	portraitSize,
+	secondsLabel,
 	visibleWindow,
 } from "./layout";
 import { Minimap } from "./Minimap";
 import {
 	type Chip,
+	isSimLane,
 	type Lane,
 	lowerBound,
 	onFieldLaneAt,
@@ -38,34 +40,25 @@ import {
 } from "./model";
 import { useScrollView } from "./useScrollView";
 
-const ASIDE_W = 232;
-
 export type StripHandle = { centerOn: (frame: number) => void };
+
+export type SearchHits = { ids: Set<number>; frames: number[] };
 
 type Highlight = { event: SimEvent; start: number; end: number; label: string };
 
-/**
- * The sample log turned sideways: one column per frame that has events, one
- * lane per character plus the sim, one chip per event. Collapsed cells show as
- * many chips as the height allows; "+N more" expands the lane.
- */
 export function Strip({
 	ref,
 	model,
 	enabled,
-	matches,
-	matchFrames,
+	hits,
 	onOpen,
 	commandBar,
 }: {
 	ref?: Ref<StripHandle>;
 	model: TimelineModel;
 	enabled: Set<string>;
-	/** chip ids that match the search */
-	matches: Set<number>;
-	matchFrames: number[];
+	hits: SearchHits;
 	onOpen: (c: Chip) => void;
-	/** search, filter and download; sits beside the minimap */
 	commandBar: ReactNode;
 }) {
 	const { t } = useTranslation();
@@ -86,7 +79,7 @@ export function Strip({
 	}, [slot]);
 	const cap = chipCap(avail, model.lanes.length);
 	const portrait = portraitSize(cap);
-	const gutter = portrait + 12;
+	const gutter = gutterWidth(portrait);
 	const [expanded, setExpanded] = useState<Set<number>>(new Set());
 
 	const cols = useMemo(() => columns(model, enabled), [model, enabled]);
@@ -99,9 +92,7 @@ export function Strip({
 		[cols, model.onField],
 	);
 
-	// collapsed lanes are sized by the whole log so they don't jump while
-	// scrolling; an expanded lane fits the frames on screen
-	const fullRows = useMemo(
+	const wholeLogRows = useMemo(
 		() =>
 			model.lanes.map((l) =>
 				cols.reduce((a, c) => Math.max(a, c.cells[l.index].length), 0),
@@ -115,7 +106,7 @@ export function Strip({
 	const laneRows = model.lanes.map((l) =>
 		expanded.has(l.index)
 			? onScreen.reduce((a, c) => Math.max(a, c.cells[l.index].length), 0)
-			: Math.min(fullRows[l.index], cap),
+			: Math.min(wholeLogRows[l.index], cap),
 	);
 	const laneH = laneHeights(laneRows, portrait);
 	const contentWidth = gutter + (cols[cols.length - 1]?.x ?? 0) + COL_W + 40;
@@ -166,11 +157,18 @@ export function Strip({
 				: {
 						event: c.event,
 						start: c.event.frame,
-						end: endOf(c),
+						end: c.event.end ?? c.event.frame,
 						label: spanLabel(c.event),
 					},
 		);
 	const [zoomed, setZoomed] = useState<number | null>(null);
+	const [shownModel, setShownModel] = useState(model);
+	if (model !== shownModel) {
+		setShownModel(model);
+		setHl(null);
+		setZoomed(null);
+		setExpanded(new Set());
+	}
 	useEffect(() => {
 		if (hl == null || zoomed != null) {
 			return;
@@ -220,9 +218,8 @@ export function Strip({
 					enabled={enabled}
 					range={range}
 					onPan={(f) => scrollToFrame(f, false)}
-					matchFrames={matchFrames}
+					matchFrames={hits.frames}
 					aside={commandBar}
-					asideWidth={ASIDE_W}
 					selection={hl == null ? null : [hl.start, hl.end]}
 				/>
 			)}
@@ -261,7 +258,7 @@ export function Strip({
 											<span>
 												{hl.end > model.maxFrame
 													? t("sample.to_end")
-													: `${((hl.end - hl.start) / 60).toFixed(2)}s`}
+													: secondsLabel(hl.end - hl.start)}
 											</span>
 										</span>
 										<X className="size-3 shrink-0" />
@@ -293,14 +290,16 @@ export function Strip({
 							)}
 							{shown.map((c, k) => (
 								<div key={c.frame}>
-									{c.gap > 1 && (
+									{c.framesSincePrev > 1 && (
 										<div
 											className="absolute top-0 flex h-full items-center justify-center font-g-mono text-[9px] text-g-ink-mute"
 											style={{ left: gutter + c.x - GAP_BIG, width: GAP_BIG }}
-											title={t("sample.empty_frames", { count: c.gap - 1 })}
+											title={t("sample.empty_frames", {
+												count: c.framesSincePrev - 1,
+											})}
 										>
 											<span className="-rotate-90 whitespace-nowrap">
-												+{c.gap}f
+												+{c.framesSincePrev}f
 											</span>
 										</div>
 									)}
@@ -310,7 +309,7 @@ export function Strip({
 									>
 										<span className="flex min-w-0 flex-1 flex-col">
 											<span className="text-[11px] text-g-ink">
-												{(c.frame / 60).toFixed(2)}s
+												{secondsLabel(c.frame)}
 											</span>
 											<span className="text-[10px] text-g-ink-mute">
 												{t("sample.frame_short", { frame: c.frame })}
@@ -377,7 +376,7 @@ export function Strip({
 														left: gutter + r.x0 + 2,
 														width: r.x1 - r.x0 - 4,
 														borderColor: laneColor(lane),
-														background: `color-mix(in srgb, ${laneColor(lane)} 9%, transparent)`,
+														background: laneTint(lane, 9),
 													}}
 												/>
 											),
@@ -404,9 +403,9 @@ export function Strip({
 														key={e.id}
 														chip={e}
 														onOpen={onOpen}
-														onDuration={showDuration}
-														matched={matches.has(e.id)}
-														lit={hl?.event === e.event}
+														onDurationIcon={showDuration}
+														matched={hits.ids.has(e.id)}
+														inDuration={hl?.event === e.event}
 														className="w-full shrink-0"
 													/>
 												))}
@@ -438,9 +437,9 @@ export function Strip({
 					scrollToFrame(cols[i].frame, true);
 				}}
 				onClose={() => setZoomed(null)}
-				matches={matches}
+				matches={hits.ids}
 				onOpen={onOpen}
-				onDuration={(c) => {
+				onDurationIcon={(c) => {
 					setZoomed(null);
 					showDuration(c);
 				}}
@@ -449,7 +448,6 @@ export function Strip({
 	);
 }
 
-/** sticky lane label: the character portrait, crossed swords for the sim lane */
 function PortraitLabel({
 	lane,
 	name,
@@ -465,26 +463,12 @@ function PortraitLabel({
 		<div
 			className={cn(
 				"sticky left-0 z-10 flex h-full flex-col items-center gap-1 border-r border-g-line bg-g-surface-2 px-1.5",
-				lane.index === 0 ? "justify-center" : "pt-1",
+				isSimLane(lane) ? "justify-center" : "pt-1",
 			)}
-			style={{ width: size + 12 }}
+			style={{ width: gutterWidth(size) }}
 			title={name}
 		>
-			{lane.index === 0 ? (
-				<span className="flex w-14 justify-center text-g-ink-mute">
-					<Swords className="size-4" aria-label={name} />
-				</span>
-			) : (
-				<div className="shrink-0" style={{ width: size, height: size }}>
-					<Avatar
-						name={lane.key}
-						element={lane.element ?? ""}
-						className="size-full overflow-hidden rounded-g-md"
-						imageClassName="size-full object-contain"
-						imageWrapClassName="flex size-full"
-					/>
-				</div>
-			)}
+			<LaneIcon lane={lane} name={name} style={{ width: size, height: size }} />
 			{children}
 		</div>
 	);

@@ -52,7 +52,7 @@ describe("columns", () => {
 			COL_W + GAP_SMALL,
 			2 * COL_W + GAP_SMALL + GAP_BIG,
 		]);
-		expect(cols.map((c) => c.gap)).toEqual([0, 1, 9]);
+		expect(cols.map((c) => c.framesSincePrev)).toEqual([0, 1, 9]);
 	});
 
 	it("leaves out filtered types, and frames left empty by them", () => {
@@ -64,8 +64,8 @@ describe("columns", () => {
 describe("onFieldRuns", () => {
 	const model = modelFromEvents(
 		[
-			ev({ type: "field", characterIndex: 0, frame: 0, end: 20 }),
-			ev({ type: "field", characterIndex: 1, frame: 20, end: 40 }),
+			ev({ type: "stint", characterIndex: 0, frame: 0, end: 20 }),
+			ev({ type: "stint", characterIndex: 1, frame: 20, end: 40 }),
 			ev({ frame: 0 }),
 			ev({ frame: 10 }),
 			ev({ frame: 20 }),

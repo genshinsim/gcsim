@@ -1,6 +1,5 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef } from "react";
 
-/** low enough that the strip still fits a landscape phone */
 const MIN_HEIGHT = 280;
 
 function scrollParent(el: HTMLElement): HTMLElement {
@@ -12,14 +11,8 @@ function scrollParent(el: HTMLElement): HTMLElement {
 	return document.documentElement;
 }
 
-/**
- * Sizes the element to end at the bottom of its scroll container, so the page
- * doesn't scroll. When what's above leaves too little room, it takes the full
- * visible height instead, and scrolling down to it shows all of it.
- */
 export function useFitViewport() {
 	const ref = useRef<HTMLDivElement>(null);
-	const [height, setHeight] = useState<number | null>(null);
 	useLayoutEffect(() => {
 		const el = ref.current;
 		if (el == null) {
@@ -43,7 +36,6 @@ export function useFitViewport() {
 					: page.clientHeight - below,
 			);
 			el.style.height = `${h}px`;
-			setHeight(h);
 		};
 		resize();
 		window.addEventListener("resize", resize);
@@ -55,5 +47,5 @@ export function useFitViewport() {
 			ro.disconnect();
 		};
 	}, []);
-	return { ref, height };
+	return ref;
 }
