@@ -65,7 +65,9 @@ export function Strip({
 	const laneName = useLaneName();
 	const { el, ref: scrollRef, view } = useScrollView();
 	const [topOpen, setTopOpen] = useState(
-		() => window.matchMedia?.("(min-width: 640px)").matches ?? true,
+		() =>
+			window.matchMedia?.("(min-width: 640px) and (min-height: 640px)")
+				.matches ?? true,
 	);
 	const [slot, setSlot] = useState<HTMLDivElement | null>(null);
 	const [avail, setAvail] = useState(0);
