@@ -1,4 +1,8 @@
-import { DefaultSampleOptions, SampleLog } from "@gcsim/components";
+import {
+	loadSampleFilter,
+	SampleLog,
+	saveSampleFilter,
+} from "@gcsim/components";
 import { sampleFixture } from "@gcsim/components/src/SampleLog/testdata";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { fn } from "storybook/test";
@@ -15,8 +19,6 @@ const meta: Meta<typeof SampleLog> = {
 	],
 	args: {
 		sample: sampleFixture,
-		settings: DefaultSampleOptions,
-		onSettingsChange: fn(),
 		onDownload: fn(),
 	},
 };
@@ -24,10 +26,16 @@ const meta: Meta<typeof SampleLog> = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const seedFilter = (filter: string[]) => () => {
+	const saved = loadSampleFilter(localStorage);
+	saveSampleFilter(localStorage, filter);
+	return () => saveSampleFilter(localStorage, saved);
+};
+
 export const Default: Story = {};
 
 export const DamageOnly: Story = {
-	args: { settings: ["damage"] },
+	beforeEach: seedFilter(["damage"]),
 };
 
 export const WithoutDownload: Story = {

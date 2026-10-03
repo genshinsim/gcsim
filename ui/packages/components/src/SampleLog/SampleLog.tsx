@@ -1,349 +1,89 @@
-import { Button, ButtonGroup, Card, Input, Label } from "@gcsim/primitives";
 import type { Sample } from "@gcsim/types";
-import { useVirtualizer } from "@tanstack/react-virtual";
-import { ArrowDown, Download, RotateCcw, Settings } from "lucide-react";
-import React, { useMemo, useState } from "react";
-import { useTranslation } from "react-i18next";
-import AutoSizer from "react-virtualized-auto-sizer";
-import { Options } from "./Options";
-import type { SampleItem, SampleRow } from "./parse";
-import { parseLogV2 } from "./parsev2";
-import { SampleItemView } from "./SampleItemView";
-import {
-	AdvancedPreset,
-	AllSampleOptions,
-	DebugPreset,
-	DefaultSampleOptions,
-	SimplePreset,
-	VerbosePreset,
-} from "./SampleOptions";
-
-type buffSetting = {
-	start: number;
-	end: number;
-	show: boolean;
-};
-
-const Row = ({
-	row,
-	highlight,
-	showBuffDuration,
-}: {
-	row: SampleRow;
-	highlight: buffSetting;
-	showBuffDuration: (e: SampleItem) => void;
-}) => {
-	const cols = row.slots.map((slot, ci) => {
-		const events = slot.map((e, ei) => {
-			return (
-				// biome-ignore lint/suspicious/noArrayIndexKey: parsed sample row cells, static once parsed, no unique field
-				<SampleItemView item={e} key={ei} showBuffDuration={showBuffDuration} />
-			);
-		});
-
-		return (
-			<div
-				// biome-ignore lint/suspicious/noArrayIndexKey: fixed positional team slot (0–4)
-				key={ci}
-				className={
-					row.active === ci
-						? "border-l-2 border-g-accent bg-g-accent/25"
-						: "border-l-2 border-g-line"
-				}
-			>
-				{events}
-			</div>
-		);
-	});
-
-	const hl =
-		highlight.show && row.f >= highlight.start && row.f <= highlight.end;
-
-	//map out each col
-	return (
-		<div className="flex flex-row" key={row.key}>
-			<div
-				className={
-					hl
-						? "text-right text-g-ink border-b-2 border-g-line bg-g-accent"
-						: "text-right text-g-ink border-b-2 border-g-line"
-				}
-				style={{ minWidth: "100px" }}
-			>
-				<div>{`${row.f} | ${(row.f / 60).toFixed(2)}s`}</div>
-			</div>
-			<div className="grid grid-cols-5 flex-grow border-b-2 border-g-line">
-				{cols}
-			</div>
-			<div style={{ width: "20px", minWidth: "20px" }} />
-		</div>
-	);
-};
-
-type SampleOptionsProps = {
-	settings: string[];
-	setSettings: (val: string[]) => void;
-};
-
-const SampleOptions = ({ settings, setSettings }: SampleOptionsProps) => {
-	const { t } = useTranslation();
-	const [isOpen, setOpen] = useState(false);
-
-	const toggle = (t: string) => {
-		const i = settings.indexOf(t);
-		const next = [...settings];
-		if (i === -1) {
-			next.push(t);
-		} else {
-			next.splice(i, 1);
-		}
-		setSettings(next);
-	};
-
-	const presets = (opt: "simple" | "advanced" | "verbose" | "debug") => {
-		switch (opt) {
-			case "simple":
-				setSettings(SimplePreset);
-				return;
-			case "advanced":
-				setSettings(AdvancedPreset);
-				return;
-			case "verbose":
-				setSettings(VerbosePreset);
-				return;
-			case "debug":
-				setSettings(DebugPreset);
-				return;
-		}
-	};
-
-	return (
-		<>
-			<Button variant="secondary" onClick={() => setOpen(true)}>
-				<Settings />
-				{t("simple.settings")}
-			</Button>
-			<Options
-				isOpen={isOpen}
-				handleClose={() => setOpen(false)}
-				handleClear={() => setSettings([])}
-				handleResetDefault={() => setSettings(DefaultSampleOptions)}
-				handleToggle={toggle}
-				handleSetPresets={presets}
-				selected={settings}
-				options={AllSampleOptions}
-			/>
-		</>
-	);
-};
+import React, { useMemo, useRef, useState } from "react";
+import { useSampleFilter } from "./sampleFilter";
+import { CommandBar } from "./timeline/CommandBar";
+import { chipText, modelFromSample } from "./timeline/model";
+import { Strip, type StripHandle } from "./timeline/Strip";
+import { useEventDetails } from "./timeline/useEventDetails";
+import { useFitViewport } from "./timeline/useFitViewport";
 
 export type SampleLogProps = {
 	sample: Sample;
-	settings: string[];
-	onSettingsChange: (val: string[]) => void;
 	onDownload?: (sample: Sample) => void;
 };
 
-function SampleLogUI({
-	sample,
-	settings,
-	onSettingsChange,
-	onDownload,
-}: SampleLogProps) {
-	const { t } = useTranslation();
-	const team = useMemo(
-		() => sample.character_details?.map((c) => c.name) ?? [],
-		[sample.character_details],
-	);
-	const data = useMemo(() => {
-		if (sample.initial_character == null || sample.character_details == null) {
+function SampleLogUI({ sample, onDownload }: SampleLogProps) {
+	const [filter, setFilter] = useSampleFilter();
+	const model = useMemo(() => modelFromSample(sample), [sample]);
+	const enabled = useMemo(() => new Set(filter), [filter]);
+	const details = useEventDetails();
+	const [search, setSearch] = useState("");
+	const [cursor, setCursor] = useState(-1);
+	const strip = useRef<StripHandle>(null);
+	const fit = useFitViewport();
+
+	const matchList = useMemo(() => {
+		const needle = search.trim().toLowerCase();
+		if (needle === "") {
 			return [];
 		}
-		return parseLogV2(sample.initial_character, team, sample.logs, settings);
-	}, [
-		sample.initial_character,
-		sample.character_details,
-		sample.logs,
-		team,
-		settings,
-	]);
-	const searchable = useMemo(
-		() =>
-			data.map((row) => row.slots.flatMap((slot) => slot.map((e) => e.msg))),
-		[data],
-	);
-	const [searchFrom, setSearchFrom] = useState(0);
-	// State-backed ref (not useRef) so the virtualizer re-measures once AutoSizer
-	// mounts the scroll element — AutoSizer defers rendering its child until it has
-	// a non-zero size, so a plain ref is still null on the virtualizer's first pass.
-	const [scrollParent, setScrollParent] = React.useState<HTMLDivElement | null>(
-		null,
-	);
-	const searchRef = React.useRef<HTMLInputElement>(null);
-	const [hl, sethl] = React.useState<buffSetting>({
-		start: 0,
-		end: 0,
-		show: false,
-	});
-
-	const handleShowBuffDuration = (e: SampleItem) => {
-		// const show = hl.show;
-		const next = {
-			show: true,
-			start: e.added,
-			end: e.ended,
-		};
-		sethl(next);
-	};
-
-	const rowVirtualizer = useVirtualizer({
-		count: data.length,
-		getScrollElement: () => scrollParent,
-		estimateSize: () => 30,
-		getItemKey: React.useCallback(
-			(index: number) => {
-				return data[index].f;
-			},
-			[data],
-		),
-	});
-
-	const char = team.map((c) => {
-		return (
-			<div
-				key={c}
-				className="capitalize text-g-lg font-medium text-g-ink border-l-2 border-b-2 border-g-line"
-			>
-				{c}
-			</div>
+		return model.chips.filter(
+			(c) =>
+				enabled.has(c.event.type) && chipText(c).toLowerCase().includes(needle),
 		);
-	});
+	}, [model, enabled, search]);
+	const matches = useMemo(
+		() => new Set(matchList.map((c) => c.id)),
+		[matchList],
+	);
+	const matchFrames = useMemo(() => matchList.map((c) => c.frame), [matchList]);
 
-	const searchAndScroll = (val: string) => {
-		const needle = val.toLowerCase();
-		for (let index = searchFrom; index < searchable.length; index++) {
-			if (searchable[index].some((msg) => msg.toLowerCase().includes(needle))) {
-				setSearchFrom(index + 1);
-				rowVirtualizer.scrollToIndex(index, { align: "start" });
-				return;
-			}
+	const next = () => {
+		if (matchList.length === 0) {
+			return;
 		}
+		const i = (cursor + 1) % matchList.length;
+		setCursor(i);
+		strip.current?.centerOn(matchList[i].frame);
 	};
 
 	return (
-		<>
-			<div className="flex flex-col sm:flex-row justify-between">
-				<div className="flex flex-row items-center gap-2">
-					<Label>{t("viewer.search")}</Label>
-					<div className="flex flex-row gap-1">
-						<Input type="text" ref={searchRef} />
-						<Button
-							variant="secondary"
-							size="icon"
-							aria-label="search next"
-							onClick={() => {
-								if (searchRef.current != null) {
-									searchAndScroll(searchRef.current.value);
-								}
-							}}
-						>
-							<ArrowDown />
-						</Button>
-						<Button
-							variant="secondary"
-							size="icon"
-							aria-label="reset search"
-							onClick={() => {
-								if (searchRef.current != null) {
-									searchRef.current.value = "";
-								}
-								setSearchFrom(0);
-								rowVirtualizer.scrollToIndex(0);
-							}}
-						>
-							<RotateCcw />
-						</Button>
-					</div>
-				</div>
-				<ButtonGroup className="mb-[15px]">
-					<SampleOptions settings={settings} setSettings={onSettingsChange} />
-					{onDownload != null && (
-						<Button variant="secondary" onClick={() => onDownload(sample)}>
-							<Download />
-							{t("viewer.download")}
-						</Button>
-					)}
-				</ButtonGroup>
-			</div>
-			<div className="flex flex-col overflow-x-auto h-[80vh]">
-				<Card className="flex-auto gap-0 p-2 !bg-g-surface-2 !text-g-xs min-w-[60rem] ">
-					<AutoSizer disableWidth={true}>
-						{({ height }) => (
-							<div
-								ref={setScrollParent}
-								style={{
-									minHeight: "100px",
-									height: height,
-									overflow: "auto",
-									position: "relative",
-								}}
-								id="resize-inner"
-							>
-								<div className="flex flex-row sample-header">
-									<div
-										className={
-											"font-medium text-g-lg text-g-ink border-b-2 border-g-line text-right "
-										}
-										style={{ minWidth: "100px" }}
-									>
-										F | Sec
-									</div>
-									<div className="grid grid-cols-5 flex-grow">
-										<div className="font-medium text-g-lg text-g-ink border-l-2 border-b-2 border-g-line">
-											Sim
-										</div>
-										{char}
-									</div>
-									<div style={{ width: "20px", minWidth: "20px" }} />
-								</div>
-								<div
-									className="ListInner"
-									style={{
-										height: `${rowVirtualizer.getTotalSize()}px`,
-										width: "100%",
-										position: "relative",
-									}}
-								>
-									{rowVirtualizer.getVirtualItems().map((virtualRow) => (
-										<div
-											key={virtualRow.index}
-											ref={rowVirtualizer.measureElement}
-											data-index={virtualRow.index}
-											style={{
-												position: "absolute",
-												top: 0,
-												left: 0,
-												width: "100%",
-												// Positions the virtual elements at the right place in container.
-												// minHeight: `${virtualRow.size - 10}px`,
-												transform: `translateY(${virtualRow.start}px)`,
-											}}
-											// id={"virtual-row-"+virtualRow.key}
-										>
-											<Row
-												row={data[virtualRow.index]}
-												highlight={hl}
-												showBuffDuration={handleShowBuffDuration}
-											/>
-										</div>
-									))}
-								</div>
-							</div>
-						)}
-					</AutoSizer>
-				</Card>
-			</div>
-		</>
+		<div
+			ref={fit.ref}
+			className="flex flex-col gap-2"
+			style={{ height: fit.height ?? "80vh" }}
+		>
+			<Strip
+				ref={strip}
+				model={model}
+				enabled={enabled}
+				matches={matches}
+				matchFrames={matchFrames}
+				onOpen={details.open}
+				commandBar={
+					<CommandBar
+						model={model}
+						filter={filter}
+						onFilterChange={setFilter}
+						search={search}
+						onSearch={(v) => {
+							setSearch(v);
+							setCursor(-1);
+						}}
+						onSearchNext={next}
+						matchLabel={
+							search.trim() === ""
+								? ""
+								: `${cursor >= 0 ? cursor + 1 : 0}/${matchList.length}`
+						}
+						onDownload={
+							onDownload != null ? () => onDownload(sample) : undefined
+						}
+					/>
+				}
+			/>
+			{details.dialog}
+		</div>
 	);
 }
 

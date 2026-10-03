@@ -1,23 +1,6 @@
-import { DefaultSampleOptions, useExecutor } from "@gcsim/components";
+import { useExecutor } from "@gcsim/components";
 import type { Sample } from "@gcsim/types";
 import { useCallback, useEffect, useRef, useState } from "react";
-
-const SETTINGS_KEY = "gcsim-sample-settings";
-
-type SettingsStorage = Pick<Storage, "getItem" | "setItem">;
-
-export function loadSampleSettings(storage: SettingsStorage): string[] {
-	try {
-		const raw = storage.getItem(SETTINGS_KEY);
-		return (raw && JSON.parse(raw)) || DefaultSampleOptions;
-	} catch {
-		return DefaultSampleOptions;
-	}
-}
-
-export function saveSampleSettings(storage: SettingsStorage, val: string[]) {
-	storage.setItem(SETTINGS_KEY, JSON.stringify(val));
-}
 
 export function autoSampleSeed(
 	linkSeed: string | null,
@@ -35,8 +18,6 @@ export type SampleState = {
 	seed: string | null;
 	generating: boolean;
 	generate: (seed: string) => void;
-	settings: string[];
-	setSettings: (val: string[]) => void;
 };
 
 type SampleSource = {
@@ -51,18 +32,10 @@ export function useSample({
 	running = false,
 }: SampleSource = {}): SampleState {
 	const { exec } = useExecutor();
-	const [settings, setSettingsState] = useState(() =>
-		loadSampleSettings(localStorage),
-	);
 	const [sample, setSample] = useState<Sample | null>(null);
 	const [seed, setSeed] = useState<string | null>(null);
 	const [generating, setGenerating] = useState(false);
 	const autoSampled = useRef(false);
-
-	const setSettings = useCallback((val: string[]) => {
-		setSettingsState(val);
-		saveSampleSettings(localStorage, val);
-	}, []);
 
 	const generate = useCallback(
 		(next: string) => {
@@ -94,5 +67,5 @@ export function useSample({
 		generate(autoSeed);
 	}, [autoSeed, config, running, generate]);
 
-	return { sample, seed, generating, generate, settings, setSettings };
+	return { sample, seed, generating, generate };
 }

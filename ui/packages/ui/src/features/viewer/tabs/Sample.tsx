@@ -42,12 +42,7 @@ export default ({ data, sample, running }: Props) => {
 	return (
 		<div className="w-full 2xl:mx-auto 2xl:container flex flex-grow flex-col gap-[15px] px-2">
 			{picker}
-			<SampleLog
-				sample={sample.sample}
-				settings={sample.settings}
-				onSettingsChange={sample.setSettings}
-				onDownload={downloadSample}
-			/>
+			<SampleLog sample={sample.sample} onDownload={downloadSample} />
 		</div>
 	);
 };
