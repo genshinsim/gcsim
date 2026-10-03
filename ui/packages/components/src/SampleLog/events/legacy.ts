@@ -38,7 +38,7 @@ function toEvent(line: LogDetails): SimEvent {
 		message: message(line, logs),
 		raw,
 	};
-	return { ...e, ...endOfLine(line), ...fields(line.event, logs) };
+	return { ...e, ...endOfLine(line), ...fields(line, logs) };
 }
 
 function endOfLine(line: LogDetails): Pick<SimEvent, "end"> {
@@ -76,12 +76,12 @@ type LineFields =
 	| EventFields["status"]
 	| Record<string, never>;
 
-function fields(type: string, logs: Logs): LineFields {
-	switch (type) {
+function fields(line: LogDetails, logs: Logs): LineFields {
+	switch (line.event) {
 		case "action":
 			return { action: typeof logs.action === "string" ? logs.action : "" };
 		case "damage":
-			return { damage: damageIn(logs) };
+			return { damage: damageIn(logs), attack: line.msg, mods: modsIn(logs) };
 		case "status":
 			return { key: typeof logs.key === "string" ? logs.key : "" };
 		default:
@@ -165,12 +165,15 @@ function message(line: LogDetails, d: Logs): string {
 	}
 }
 
-function damageMessage(msg: string, d: Logs): string {
-	const dmg = Math.round(damageIn(d)).toLocaleString("en-US");
-	const extra = [d.amp, d.cata, d.crit ? "crit" : ""]
+const modsIn = (d: Logs) =>
+	[d.amp, d.cata, d.crit ? "crit" : ""]
 		.filter((x) => typeof x === "string" && x !== "")
 		.join(" ");
-	return `${msg} [${dmg}]${extra === "" ? "" : ` (${extra})`}`;
+
+function damageMessage(msg: string, d: Logs): string {
+	const dmg = Math.round(damageIn(d)).toLocaleString("en-US");
+	const mods = modsIn(d);
+	return `${msg} [${dmg}]${mods === "" ? "" : ` (${mods})`}`;
 }
 
 const auras = (xs: string[]) =>

@@ -140,6 +140,23 @@ describe("fromLegacySample", () => {
 			expect(isEvent(e, "damage") && e.damage).toBeCloseTo(8815.17, 1);
 		});
 
+		it("gives damage its attack and modifiers apart from the amount", () => {
+			const out = fromLegacySample(
+				sampleOf([
+					line({
+						event: "damage",
+						msg: "Pyronado",
+						logs: { damage: 12345.6, amp: "vaporize", crit: true },
+					}),
+				]),
+			);
+			const e = out.find((e) => e.type === "damage");
+			expect(e && isEvent(e, "damage") && [e.attack, e.mods]).toEqual([
+				"Pyronado",
+				"vaporize crit",
+			]);
+		});
+
 		it("gives actions their kind", () => {
 			const bursts = events.filter(
 				(e) => isEvent(e, "action") && e.action === "burst",
@@ -169,6 +186,8 @@ describe("fromLegacySample", () => {
 				}
 				if (isEvent(e, "damage")) {
 					expect(Number.isFinite(e.damage)).toBe(true);
+					expect(typeof e.attack).toBe("string");
+					expect(typeof e.mods).toBe("string");
 				}
 				if (isEvent(e, "status")) {
 					expect(typeof e.key).toBe("string");

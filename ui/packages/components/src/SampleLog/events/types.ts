@@ -10,7 +10,7 @@ export interface SimEvent {
 
 export interface EventFields {
 	action: { action: string };
-	damage: { damage: number };
+	damage: { damage: number; attack: string; mods: string };
 	status: { key: string };
 	stint: { end: number };
 }
