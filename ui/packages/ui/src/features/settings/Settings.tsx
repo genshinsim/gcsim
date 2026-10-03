@@ -8,7 +8,7 @@ import {
 	SelectValue,
 	Switch,
 } from "@gcsim/primitives";
-import type { ReactNode } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { usePrefs } from "../../stores/AppState";
 import { useHost } from "../../stores/host";
@@ -38,14 +38,6 @@ export function Settings() {
 					<LanguageSelect />
 				</Section>
 
-				<Section title={t("settings.theme")} subtitle={t("settings.theme_sub")}>
-					<ThemePicker />
-				</Section>
-
-				<Section title={t("settings.hero")} subtitle={t("settings.hero_sub")}>
-					<HeroPicker />
-				</Section>
-
 				<Section
 					title={t("settings.executor")}
 					subtitle={t("settings.executor_sub")}
@@ -63,6 +55,14 @@ export function Settings() {
 							</Label>
 						</div>
 					</div>
+				</Section>
+
+				<Section title={t("settings.theme")} subtitle={t("settings.theme_sub")}>
+					<ThemePicker />
+				</Section>
+
+				<Section title={t("settings.hero")} subtitle={t("settings.hero_sub")}>
+					<HeroPicker />
 				</Section>
 			</div>
 		</main>
@@ -124,13 +124,10 @@ function Choice({
 	className,
 	children,
 	...rest
-}: {
+}: ComponentProps<"label"> & {
 	name: string;
 	checked: boolean;
 	onSelect: () => void;
-	className?: string;
-	children: ReactNode;
-	"data-theme"?: string;
 }) {
 	return (
 		<label
