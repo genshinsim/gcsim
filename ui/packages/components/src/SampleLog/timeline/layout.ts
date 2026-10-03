@@ -1,15 +1,15 @@
-import { type Chip, lowerBound, SIM_LANE, type TimelineModel } from "./model";
+import { type Chip, lowerBound, type TimelineModel } from "./model";
 
 export const COL_W = 168;
 export const GAP_SMALL = 3;
 export const GAP_BIG = 22;
 const CHIP_H = 18;
 const CHIP_GAP = 2;
+const ROW_H = CHIP_H + CHIP_GAP;
 export const MIN_CAP = 4;
 const MAX_PORTRAIT = 120;
 export const HEAD_H = 34;
 export const CELL_PAD = 8;
-const SIM_LANE_MIN_H = 30;
 const PORTRAIT_PAD = 8;
 const LABEL_PAD_X = 12;
 const STRIP_BORDERS_AND_SCROLLBAR = 14;
@@ -22,8 +22,7 @@ export const gutterWidth = (portrait: number) => portrait + LABEL_PAD_X;
 export const secondsLabel = (frame: number, digits = 2) =>
 	`${(frame / 60).toFixed(digits)}s`;
 
-export const rowsH = (n: number) =>
-	2 * CELL_PAD + n * (CHIP_H + CHIP_GAP) - CHIP_GAP;
+export const rowsH = (n: number) => 2 * CELL_PAD + n * ROW_H - CHIP_GAP;
 
 export type Column = {
 	frame: number;
@@ -96,12 +95,24 @@ export function onFieldRuns(cols: Column[], onField: number[]): OnFieldRun[] {
 	return out;
 }
 
-export function chipCap(height: number, lanes: number): number {
-	const perLane = (height - HEAD_H - STRIP_BORDERS_AND_SCROLLBAR) / lanes;
-	return Math.max(
-		MIN_CAP,
-		Math.floor((perLane - rowsH(0)) / (CHIP_H + CHIP_GAP)),
+/**
+ * Splits the strip's height evenly into whole chip rows per lane, at least
+ * MIN_CAP each. The rows left over go one each to the lanes with the busiest cells.
+ */
+export function splitRows(height: number, busiest: number[]): number[] {
+	const n = busiest.length;
+	const total = Math.floor(
+		(height - HEAD_H - STRIP_BORDERS_AND_SCROLLBAR - n * rowsH(0)) / ROW_H,
 	);
+	const base = Math.max(MIN_CAP, Math.floor(total / n));
+	const rows = busiest.map(() => base);
+	const byBusiest = busiest
+		.map((b, i) => [b, i])
+		.sort((a, b) => b[0] - a[0] || a[1] - b[1]);
+	for (const [, i] of byBusiest.slice(0, Math.max(0, total - base * n))) {
+		rows[i]++;
+	}
+	return rows;
 }
 
 export const portraitSize = (cap: number) =>
@@ -113,15 +124,6 @@ export function chipsShown(
 	expanded: boolean,
 ): number {
 	return !expanded && count > rows ? rows - MORE_BUTTON_ROWS : count;
-}
-
-export function laneHeights(rows: number[], portrait: number): number[] {
-	return rows.map((r, i) =>
-		Math.max(
-			i === SIM_LANE ? SIM_LANE_MIN_H : portrait + PORTRAIT_PAD,
-			rowsH(r),
-		),
-	);
 }
 
 export function visibleWindow(left: number, width: number) {

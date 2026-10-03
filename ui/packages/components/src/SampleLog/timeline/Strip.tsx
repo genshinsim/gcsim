@@ -17,17 +17,17 @@ import { LaneIcon, laneColor, laneTint, useLaneName } from "./lane";
 import {
 	CELL_PAD,
 	COL_W,
-	chipCap,
 	chipsShown,
 	columns,
 	frameOfX,
 	GAP_BIG,
 	gutterWidth,
 	HEAD_H,
-	laneHeights,
 	onFieldRuns,
 	portraitSize,
+	rowsH,
 	secondsLabel,
+	splitRows,
 	visibleWindow,
 	xOfFrame,
 } from "./layout";
@@ -93,9 +93,6 @@ export function Strip({
 		ro.observe(slot);
 		return () => ro.disconnect();
 	}, [slot]);
-	const cap = chipCap(avail, model.lanes.length);
-	const portrait = portraitSize(cap);
-	const gutter = gutterWidth(portrait);
 	const [expanded, setExpanded] = useState<Set<number>>(new Set());
 
 	const cols = useMemo(() => columns(model, enabled), [model, enabled]);
@@ -108,23 +105,31 @@ export function Strip({
 		[cols, onFieldByCol],
 	);
 
-	const wholeLogRows = useMemo(
+	const fitRows = useMemo(
 		() =>
-			model.lanes.map((l) =>
-				cols.reduce((a, c) => Math.max(a, c.cells[l.index].length), 0),
+			splitRows(
+				avail,
+				model.lanes.map((l) =>
+					cols.reduce((a, c) => Math.max(a, c.cells[l.index].length), 0),
+				),
 			),
-		[cols, model.lanes],
+		[avail, cols, model.lanes],
 	);
+	const portrait = portraitSize(Math.min(...fitRows));
+	const gutter = gutterWidth(portrait);
 	const onScreen = cols.slice(
 		lowerBound(cols, view.left - COL_W + 1, (c) => c.x),
 		lowerBound(cols, view.left + view.width - gutter, (c) => c.x),
 	);
 	const laneRows = model.lanes.map((l) =>
 		expanded.has(l.index)
-			? onScreen.reduce((a, c) => Math.max(a, c.cells[l.index].length), 0)
-			: Math.min(wholeLogRows[l.index], cap),
+			? onScreen.reduce(
+					(a, c) => Math.max(a, c.cells[l.index].length),
+					fitRows[l.index],
+				)
+			: fitRows[l.index],
 	);
-	const laneH = laneHeights(laneRows, portrait);
+	const laneH = laneRows.map(rowsH);
 	const contentWidth = gutter + (cols[cols.length - 1]?.x ?? 0) + COL_W + 40;
 	const totalH = HEAD_H + laneH.reduce((a, b) => a + b, 0);
 

@@ -2,16 +2,16 @@ import { describe, expect, it } from "vitest";
 import type { SimEvent } from "../events/types";
 import {
 	COL_W,
-	chipCap,
 	chipsShown,
 	columns,
 	frameOfX,
 	GAP_BIG,
 	GAP_SMALL,
-	laneHeights,
+	HEAD_H,
 	MIN_CAP,
 	onFieldRuns,
 	rowsH,
+	splitRows,
 	xOfFrame,
 } from "./layout";
 import { modelFromEvents, onFieldLaneAt } from "./model";
@@ -123,15 +123,29 @@ describe("onFieldRuns", () => {
 	});
 });
 
-describe("chipCap", () => {
-	it("fits every lane in the available height", () => {
-		const cap = chipCap(2000, 5);
-		expect(cap).toBeGreaterThan(MIN_CAP);
-		expect(5 * rowsH(cap)).toBeLessThanOrEqual(2000);
+describe("splitRows", () => {
+	const used = (rows: number[]) =>
+		HEAD_H + 14 + rows.reduce((a, r) => a + rowsH(r), 0);
+
+	it("fills the height evenly, to within a chip row", () => {
+		const rows = splitRows(1000, [3, 3, 3, 3, 3]);
+		expect(Math.max(...rows) - Math.min(...rows)).toBeLessThanOrEqual(1);
+		expect(used(rows)).toBeLessThanOrEqual(1000);
+		expect(used(rows)).toBeGreaterThan(1000 - 20);
+	});
+
+	it("gives the rows left over to the busiest lanes", () => {
+		const even = splitRows(1000, [0, 0, 0, 0, 0]);
+		const base = Math.min(...even);
+		const spare = even.reduce((a, r) => a + r - base, 0);
+		expect(spare).toBeGreaterThan(0);
+		const rows = splitRows(1000, [0, 2, 9, 1, 12]);
+		expect(rows[4]).toBe(base + 1);
+		expect(rows[0]).toBe(base);
 	});
 
 	it("never drops below the minimum", () => {
-		expect(chipCap(0, 5)).toBe(MIN_CAP);
+		expect(splitRows(0, [9, 9, 9])).toEqual([MIN_CAP, MIN_CAP, MIN_CAP]);
 	});
 });
 
@@ -143,15 +157,5 @@ describe("chipsShown", () => {
 
 	it("leaves the last row for the +N more button", () => {
 		expect(chipsShown(9, 4, false)).toBe(3);
-	});
-});
-
-describe("laneHeights", () => {
-	it("fits chip rows, keeping character lanes tall enough for the portrait", () => {
-		const portrait = 60;
-		const [sim, char, busy] = laneHeights([0, 0, 10], portrait);
-		expect(sim).toBeLessThan(portrait);
-		expect(char).toBe(portrait + 8);
-		expect(busy).toBe(rowsH(10));
 	});
 });
