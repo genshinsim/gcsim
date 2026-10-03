@@ -5,7 +5,7 @@ import {
 	RouterProvider,
 	stringifySearchWith,
 } from "@tanstack/react-router";
-import { type ReactNode, useEffect, useMemo } from "react";
+import { type ReactNode, useEffect, useMemo, useRef } from "react";
 import type { AppContext } from "./routes/__root";
 import { routeTree } from "./routeTree.gen";
 import { AppStateProvider } from "./stores/AppState";
@@ -58,7 +58,10 @@ export const UI = ({
 		() => ({ exec, mode, gitCommit }),
 		[exec, mode, gitCommit],
 	);
+	const lastContext = useRef(context);
 	useEffect(() => {
+		if (lastContext.current === context) return;
+		lastContext.current = context;
 		router.update({ ...router.options, context });
 		router.invalidate();
 	}, [context]);
