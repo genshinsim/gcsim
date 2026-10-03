@@ -12,7 +12,6 @@
 		"@gcsim/types": "workspace:^",
 		"@gcsim/utils": "workspace:^",
 		"@tanstack/react-router": "^1.170.40",
-		"@tanstack/react-virtual": "^3.14.13",
 		"@visx/annotation": "^4.0.0",
 		"@visx/axis": "^4.0.0",
 		"@visx/curve": "^4.0.0",
@@ -45,7 +44,6 @@
 		"react-icons": "^4.6.0",
 		"react-markdown": "^9.0.1",
 		"react-player": "^2.11.0",
-		"react-virtualized-auto-sizer": "^1.0.7",
 		"remark-gfm": "^4.0.0",
 		"uuid": "^9.0.0"
 	},
@@ -56,7 +54,6 @@
 		"@types/d3-scale": "^4",
 		"@types/file-saver": "^2",
 		"@types/pako": "^2.0.0",
-		"@types/react-virtualized-auto-sizer": "^1",
 		"@types/uuid": "^9.0.0",
 		"jsdom": "^25.0.1",
 		"tailwindcss": "^4.3.3",

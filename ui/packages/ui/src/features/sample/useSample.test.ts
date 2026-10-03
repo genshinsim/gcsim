@@ -1,48 +1,5 @@
-import { DefaultSampleOptions } from "@gcsim/components";
 import { describe, expect, it } from "vitest";
-import {
-	autoSampleSeed,
-	loadSampleSettings,
-	saveSampleSettings,
-} from "./useSample";
-
-function fakeStorage(init: Record<string, string> = {}) {
-	const data = new Map(Object.entries(init));
-	return {
-		data,
-		getItem: (k: string) => data.get(k) ?? null,
-		setItem: (k: string, v: string) => {
-			data.set(k, v);
-		},
-	};
-}
-
-describe("sample settings", () => {
-	it("falls back to defaults when nothing is stored", () => {
-		expect(loadSampleSettings(fakeStorage())).toEqual(DefaultSampleOptions);
-	});
-
-	it("loads settings saved under the pre-existing key", () => {
-		const storage = fakeStorage({
-			"gcsim-sample-settings": JSON.stringify(["damage"]),
-		});
-		expect(loadSampleSettings(storage)).toEqual(["damage"]);
-	});
-
-	it("ignores unparseable settings", () => {
-		const storage = fakeStorage({ "gcsim-sample-settings": "[nope" });
-		expect(loadSampleSettings(storage)).toEqual(DefaultSampleOptions);
-	});
-
-	it("round-trips saved settings", () => {
-		const storage = fakeStorage();
-		saveSampleSettings(storage, ["energy", "hitlag"]);
-		expect(storage.data.get("gcsim-sample-settings")).toBe(
-			JSON.stringify(["energy", "hitlag"]),
-		);
-		expect(loadSampleSettings(storage)).toEqual(["energy", "hitlag"]);
-	});
-});
+import { autoSampleSeed } from "./useSample";
 
 describe("autoSampleSeed", () => {
 	it("prefers the linked seed", () => {

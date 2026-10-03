@@ -80,6 +80,10 @@ export class ViewerPage {
 
 	async generateSample(): Promise<void> {
 		await this.generateButton.click();
+		await this.page
+			.getByRole("dialog")
+			.getByRole("button", { name: "Generate" })
+			.click();
 		await expect(this.page).toHaveURL(/[?&]seed=\d+/);
 		await expect(this.generateButton).toBeVisible({ timeout: 30_000 });
 		await expect(
