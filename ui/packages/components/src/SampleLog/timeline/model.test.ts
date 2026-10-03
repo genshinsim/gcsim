@@ -1,8 +1,11 @@
+import i18next from "i18next";
 import { describe, expect, it } from "vitest";
 import type { SimEvent } from "../events/types";
 import { sampleFixture } from "../testdata";
 import {
+	chipShortText,
 	chipText,
+	compactDamage,
 	damageOf,
 	lowerBound,
 	modelFromEvents,
@@ -102,6 +105,70 @@ describe("modelFromEvents", () => {
 			team,
 		);
 		expect(m.chips.map(damageOf)).toEqual([1000]);
+	});
+});
+
+describe("compactDamage", () => {
+	it.each([
+		[8, "8"],
+		[999, "999"],
+		[1234, "1.23K"],
+		[12345, "12.3K"],
+		[999_400, "999K"],
+		[999_600, "1M"],
+		[1_234_567, "1.23M"],
+		[8815.17, "8.82K"],
+		[2_345_678_901, "2.35B"],
+	])("shows %d as %s", (n, want) => {
+		expect(compactDamage(n)).toBe(want);
+	});
+
+	it("ignores the UI language", async () => {
+		await i18next.init({ lng: "de", resources: {} });
+		expect(compactDamage(12345.6)).toBe("12.3K");
+	});
+});
+
+describe("chipShortText", () => {
+	const chipOf = (over: Partial<SimEvent> & Record<string, unknown>) =>
+		modelFromEvents([ev(over)], team).chips[0];
+
+	it("leads a damage chip with the compact amount", () => {
+		const c = chipOf({
+			type: "damage",
+			damage: 12345.6,
+			attack: "Pyronado",
+			mods: "vaporize crit",
+			message: "Pyronado [12,346] (vaporize crit)",
+		});
+		expect(chipShortText(c)).toBe("12.3K Pyronado (vaporize crit)");
+		expect(chipText(c)).toBe("Pyronado [12,346] (vaporize crit)");
+	});
+
+	it("leaves out the brackets when a hit has no modifiers", () => {
+		const c = chipOf({
+			type: "damage",
+			damage: 999,
+			attack: "Normal 1",
+			mods: "",
+		});
+		expect(chipShortText(c)).toBe("999 Normal 1");
+	});
+
+	it("labels an expiry chip with its text", () => {
+		const [, expiry] = modelFromEvents(
+			[
+				ev({ type: "status", key: "a", message: "a added", end: 50 }),
+				ev({ frame: 100 }),
+			],
+			team,
+		).chips;
+		expect(chipShortText(expiry)).toBe("a expired");
+	});
+
+	it("labels any other chip with its text", () => {
+		const c = chipOf({ type: "action", message: "burst" });
+		expect(chipShortText(c)).toBe("burst");
 	});
 });
 

@@ -1,5 +1,5 @@
 import type { Sample } from "@gcsim/types";
-import { fromLegacySample } from "../events/legacy";
+import { fromLegacySample, withMods } from "../events/legacy";
 import { isEvent, type SimEvent } from "../events/types";
 
 export type TeamMember = { key: string; element: string | null };
@@ -33,6 +33,21 @@ export function chipText(c: Chip): string {
 		return c.event.message;
 	}
 	return `${spanLabel(c.event)} expired`;
+}
+
+const englishCompact = new Intl.NumberFormat("en", {
+	notation: "compact",
+	maximumSignificantDigits: 3,
+});
+
+export const compactDamage = (n: number) => englishCompact.format(n);
+
+export function chipShortText(c: Chip): string {
+	if (c.expired || !isEvent(c.event, "damage")) {
+		return chipText(c);
+	}
+	const { damage, attack, mods } = c.event;
+	return withMods(`${compactDamage(damage)} ${attack}`, mods);
 }
 
 export const hasDuration = (c: Chip) => c.event.end !== undefined;
