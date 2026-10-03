@@ -35,6 +35,23 @@ export function chipText(c: Chip): string {
 	return `${spanLabel(c.event)} expired`;
 }
 
+const compact = new Intl.NumberFormat("en", {
+	notation: "compact",
+	maximumSignificantDigits: 3,
+});
+
+/** fixed English whatever the UI language: chip space is tight */
+export const compactDamage = (n: number) => compact.format(n);
+
+/** the chip's visible text; chipText stays the full text */
+export function chipLabel(c: Chip): string {
+	if (c.expired || !isEvent(c.event, "damage")) {
+		return chipText(c);
+	}
+	const { damage, attack, mods } = c.event;
+	return `${compactDamage(damage)} ${attack}${mods === "" ? "" : ` (${mods})`}`;
+}
+
 export const hasDuration = (c: Chip) => c.event.end !== undefined;
 
 /** damage this chip adds to the total; an expiry chip adds none */

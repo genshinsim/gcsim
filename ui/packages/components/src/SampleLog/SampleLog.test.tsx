@@ -161,6 +161,30 @@ describe("SampleLog", () => {
 		expect(chipsOfType("action")).toEqual([]);
 	});
 
+	it("leads a damage chip with the compact amount and keeps the exact one in its title", async () => {
+		Element.prototype.scrollTo = function (
+			this: Element,
+			opts?: ScrollToOptions | number,
+		) {
+			if (typeof opts === "object") {
+				this.scrollLeft = opts.left ?? 0;
+				this.dispatchEvent(new Event("scroll"));
+			}
+		} as typeof Element.prototype.scrollTo;
+		renderLog();
+		await userEvent.type(
+			screen.getByPlaceholderText("sample.search_placeholder"),
+			"Sesshou",
+		);
+		await userEvent.click(
+			screen.getByRole("button", { name: "sample.next_match" }),
+		);
+		const chip = screen.getByTitle(
+			"122 · damage: Sesshou Sakura Tick [8,815] (crit)",
+		);
+		expect(chip).toHaveTextContent(/8\.82K Sesshou Sakura Tick \(crit\)$/);
+	});
+
 	it("opens an event's details from its chip", async () => {
 		renderLog();
 		const chip = chipsOfType("action")[0];

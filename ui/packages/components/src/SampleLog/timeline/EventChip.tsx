@@ -2,7 +2,7 @@ import { cn } from "@gcsim/primitives";
 import type React from "react";
 import { useTranslation } from "react-i18next";
 import { display } from "./display";
-import { type Chip, chipText, hasDuration } from "./model";
+import { type Chip, chipLabel, chipText, hasDuration } from "./model";
 
 export function EventChip({
 	chip,
@@ -27,8 +27,8 @@ export function EventChip({
 		className,
 	);
 	const { color, icon } = display(chip.event.type);
-	const text = chipText(chip);
-	const title = `${chip.frame} · ${chip.event.type}: ${text}`;
+	const text = chipLabel(chip);
+	const title = `${chip.frame} · ${chip.event.type}: ${chipText(chip)}`;
 	const style: React.CSSProperties = { backgroundColor: color };
 	if (hasDuration(chip)) {
 		const durationLabel = t("sample.show_duration", {
