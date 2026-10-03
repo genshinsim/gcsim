@@ -15,7 +15,7 @@ const App = () => {
 		localStorage.setItem(serverModeKey, serverMode.toString());
 	}, [serverMode]);
 
-	const children = (
+	const serverSwitch = (
 		<div className="flex items-center gap-2">
 			<Switch
 				id="server-mode-switch"
@@ -35,9 +35,9 @@ const App = () => {
 	return (
 		<>
 			{serverMode ? (
-				<ServerMode>{children}</ServerMode>
+				<ServerMode>{serverSwitch}</ServerMode>
 			) : (
-				<WasmMode>{children}</WasmMode>
+				<WasmMode>{serverSwitch}</WasmMode>
 			)}
 		</>
 	);

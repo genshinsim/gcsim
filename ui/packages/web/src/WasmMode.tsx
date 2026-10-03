@@ -3,7 +3,7 @@ import {
 	type ExecutorSupplier,
 	WasmExecutor,
 } from "@gcsim/executors";
-import { Field, FieldTitle, NumberInput } from "@gcsim/primitives";
+import { Field, FieldLabel, NumberInput } from "@gcsim/primitives";
 import { UI } from "@gcsim/ui";
 import { useLocalStorage } from "@gcsim/utils";
 import { type ReactNode, useRef } from "react";
@@ -54,18 +54,25 @@ const WasmMode = ({ children }: { children: ReactNode }) => {
 			exec={supplier.current}
 			gitCommit={import.meta.env.VITE_GIT_COMMIT_HASH}
 			mode={import.meta.env.MODE}
-		>
-			<Field>
-				<FieldTitle>{t("simple.workers")}</FieldTitle>
-				{children}
-				<NumberInput
-					value={workers}
-					onValueChange={updateWorkers}
-					min={minWorkers}
-					max={maxWorkers}
-				/>
-			</Field>
-		</UI>
+			executorKind="wasm"
+			executorSettings={
+				<>
+					{children}
+					<Field>
+						<FieldLabel htmlFor="wasm-workers">
+							{t("simple.workers")}
+						</FieldLabel>
+						<NumberInput
+							id="wasm-workers"
+							value={workers}
+							onValueChange={updateWorkers}
+							min={minWorkers}
+							max={maxWorkers}
+						/>
+					</Field>
+				</>
+			}
+		/>
 	);
 };
 

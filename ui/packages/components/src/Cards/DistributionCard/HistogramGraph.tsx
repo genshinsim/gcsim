@@ -50,6 +50,7 @@ const Graph = ({
 	const { i18n, t } = useTranslation();
 	const { xScale, yScale, xLin, delta } = useScales(data, xMax, yMax);
 	const tooltip = useChartTooltip<number>();
+	const boxColor = `light-dark(${accentColor}, ${hoverColor})`;
 
 	if (data?.histogram == null || data.min == null || delta == null) {
 		return <NoData />;
@@ -92,7 +93,7 @@ const Graph = ({
 						xScale={xLin}
 						yMax={yMax}
 						color={accentColor}
-						className="opacity-75 fill-gray-400 font-mono"
+						className="opacity-75 fill-g-ink-mute font-mono"
 					/>
 					<BoxPlot
 						valueScale={xLin}
@@ -104,11 +105,11 @@ const Graph = ({
 						thirdQuartile={data.q3}
 						horizontal={true}
 						boxWidth={10}
-						fill={hoverColor}
+						fill={boxColor}
 						fillOpacity={0.1}
-						stroke={hoverColor}
+						stroke={boxColor}
 						strokeWidth={1}
-						medianProps={{ style: { stroke: hoverColor } }}
+						medianProps={{ style: { stroke: boxColor } }}
 					/>
 					<GraphAxisLeft
 						hideAxisLine

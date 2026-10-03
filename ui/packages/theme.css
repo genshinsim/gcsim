@@ -66,7 +66,9 @@
 }
 
 /* Palettes. Default = Cryo on bare :root; the other 14 under [data-theme]. */
-:root {
+:root,
+[data-theme="cryo"] {
+	color-scheme: dark;
 	--g-bg: #080c14;
 	--g-surface: #0f1622;
 	--g-surface-2: #172234;
@@ -102,6 +104,7 @@
 }
 
 [data-theme="abyss-d"] {
+	color-scheme: dark;
 	--g-bg: #0b0d12;
 	--g-surface: #13161d;
 	--g-surface-2: #1a1e27;
@@ -128,6 +131,7 @@
 }
 
 [data-theme="abyss-l"] {
+	color-scheme: light;
 	--g-bg: #f6f7fa;
 	--g-surface: #ffffff;
 	--g-surface-2: #f0f2f6;
@@ -153,7 +157,20 @@
 	--g-dendro: #6e9020;
 }
 
+[data-theme="abyss-l"],
+[data-theme="ember-l"],
+[data-theme="pulse-l"],
+[data-theme="frostfall"],
+[data-theme="blossom"],
+[data-theme="lantern"] {
+	--g-s1: #ad678e;
+	--g-s2: #a8a02e;
+	--g-s4: #4590ba;
+	--g-s5: #c48700;
+}
+
 [data-theme="ember-d"] {
+	color-scheme: dark;
 	--g-bg: #141109;
 	--g-surface: #1d1810;
 	--g-surface-2: #261f15;
@@ -180,6 +197,7 @@
 }
 
 [data-theme="ember-l"] {
+	color-scheme: light;
 	--g-bg: #f6f1e6;
 	--g-surface: #fffdf7;
 	--g-surface-2: #f0e9da;
@@ -206,6 +224,7 @@
 }
 
 [data-theme="pulse-d"] {
+	color-scheme: dark;
 	--g-bg: #080b11;
 	--g-surface: #0f141d;
 	--g-surface-2: #151c27;
@@ -232,6 +251,7 @@
 }
 
 [data-theme="pulse-l"] {
+	color-scheme: light;
 	--g-bg: #edf3f4;
 	--g-surface: #ffffff;
 	--g-surface-2: #e4edef;
@@ -258,6 +278,7 @@
 }
 
 [data-theme="twilight"] {
+	color-scheme: dark;
 	--g-bg: #090913;
 	--g-surface: #13122a;
 	--g-surface-2: #1c1b3a;
@@ -284,6 +305,7 @@
 }
 
 [data-theme="qilin"] {
+	color-scheme: dark;
 	--g-bg: #0b0e16;
 	--g-surface: #121926;
 	--g-surface-2: #1a2334;
@@ -310,6 +332,7 @@
 }
 
 [data-theme="glacier"] {
+	color-scheme: dark;
 	--g-bg: #070c15;
 	--g-surface: #0e1724;
 	--g-surface-2: #162537;
@@ -336,6 +359,7 @@
 }
 
 [data-theme="azure"] {
+	color-scheme: dark;
 	--g-bg: #080b16;
 	--g-surface: #0f1628;
 	--g-surface-2: #17203a;
@@ -362,6 +386,7 @@
 }
 
 [data-theme="aqua"] {
+	color-scheme: dark;
 	--g-bg: #061013;
 	--g-surface: #0c1a1e;
 	--g-surface-2: #12262c;
@@ -388,6 +413,7 @@
 }
 
 [data-theme="frostfall"] {
+	color-scheme: light;
 	--g-bg: #cddbe9;
 	--g-surface: #e4edf6;
 	--g-surface-2: #c2d4e5;
@@ -414,6 +440,7 @@
 }
 
 [data-theme="blossom"] {
+	color-scheme: light;
 	--g-bg: #d5d2e4;
 	--g-surface: #e6e3f1;
 	--g-surface-2: #c7c2dd;
@@ -440,6 +467,7 @@
 }
 
 [data-theme="lantern"] {
+	color-scheme: light;
 	--g-bg: #dcd2bf;
 	--g-surface: #ebe4d5;
 	--g-surface-2: #d0c4ac;

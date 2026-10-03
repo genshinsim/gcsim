@@ -1,6 +1,13 @@
 import React from "react";
 import { loadDraft, type SendOptions, saveDraft, sendDraft } from "./draft";
-import { loadSampleOnLoad, saveSampleOnLoad } from "./prefs";
+import {
+	loadHero,
+	loadSampleOnLoad,
+	loadTheme,
+	saveHero,
+	saveSampleOnLoad,
+	saveTheme,
+} from "./prefs";
 
 interface DraftValue {
 	cfg: string;
@@ -11,8 +18,10 @@ interface DraftValue {
 interface PrefsValue {
 	sampleOnLoad: boolean;
 	setSampleOnLoad: (sampleOnLoad: boolean) => void;
-	settingsOpen: boolean;
-	setSettingsOpen: (open: boolean) => void;
+	theme: string;
+	setTheme: (theme: string) => void;
+	hero: string;
+	setHero: (hero: string) => void;
 }
 
 const DraftContext = React.createContext<DraftValue | null>(null);
@@ -38,16 +47,22 @@ function PrefsProvider({ children }: { children: React.ReactNode }) {
 	const [sampleOnLoad, setSampleOnLoad] = React.useState(() =>
 		loadSampleOnLoad(localStorage),
 	);
-	const [settingsOpen, setSettingsOpen] = React.useState(false);
+	const [theme, setTheme] = React.useState(() => loadTheme(localStorage));
+	const [hero, setHero] = React.useState(() => loadHero(localStorage));
 
 	React.useEffect(
 		() => saveSampleOnLoad(localStorage, sampleOnLoad),
 		[sampleOnLoad],
 	);
+	React.useEffect(() => {
+		saveTheme(localStorage, theme);
+		document.documentElement.dataset.theme = theme;
+	}, [theme]);
+	React.useEffect(() => saveHero(localStorage, hero), [hero]);
 
 	const value = React.useMemo(
-		() => ({ sampleOnLoad, setSampleOnLoad, settingsOpen, setSettingsOpen }),
-		[sampleOnLoad, settingsOpen],
+		() => ({ sampleOnLoad, setSampleOnLoad, theme, setTheme, hero, setHero }),
+		[sampleOnLoad, theme, hero],
 	);
 	return (
 		<PrefsContext.Provider value={value}>{children}</PrefsContext.Provider>

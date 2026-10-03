@@ -212,6 +212,21 @@
 		"since_last": "距上次 +{{count}} 帧",
 		"to_end": "至结束"
 	},
+	"settings": {
+		"dark": "深色",
+		"executor": "执行器",
+		"executor_server": "服务器",
+		"executor_sub": "模拟运行的位置。",
+		"executor_wasm": "WASM",
+		"hero": "主页图片",
+		"hero_sub": "显示在主页顶部。",
+		"language": "语言",
+		"language_sub": "整个网站使用的语言。",
+		"light": "浅色",
+		"subtitle": "仅保存在此浏览器中。",
+		"theme": "主题",
+		"theme_sub": "整个网站的配色。"
+	},
 	"sim": {
 		"loaded": "已加载 {{i}} 次迭代！",
 		"loading": "加载中…",

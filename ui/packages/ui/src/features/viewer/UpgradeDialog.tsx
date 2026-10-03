@@ -21,7 +21,6 @@ import classNames from "classnames";
 import { History } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import ExecutorSettingsButton from "../../components/buttons/ExecutorSettingsButton";
 
 // THIS MUST ALWAYS BE IN SYNC WITH THE GCSIM BINARY
 const MAJOR = "4"; // Make sure the gcsim binary has also been updated
@@ -101,18 +100,13 @@ export default ({ data, redirect, mode, commit }: Props) => {
 					</DialogTitle>
 				</DialogHeader>
 				<DialogBody mismatch={mismatch} data={data} latestCommit={commit} />
-				<div className="flex justify-between items-end gap-16 mx-4">
-					<div className="max-w-[196px] min-w-[120px] flex-auto">
-						<ExecutorSettingsButton />
-					</div>
-					<div className="flex justify-end gap-[10px]">
-						<UpgradeButton cfg={data.config_file} />
-						<CancelButton
-							mismatch={mismatch}
-							setOpen={setOpen}
-							redirect={redirect}
-						/>
-					</div>
+				<div className="flex justify-end gap-[10px] mx-4">
+					<UpgradeButton cfg={data.config_file} />
+					<CancelButton
+						mismatch={mismatch}
+						setOpen={setOpen}
+						redirect={redirect}
+					/>
 				</div>
 			</DialogContent>
 		</Dialog>

@@ -3,23 +3,17 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuRadioGroup,
-	DropdownMenuRadioItem,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
 	Separator,
 } from "@gcsim/primitives";
 import { Link, type LinkProps } from "@tanstack/react-router";
+import { Settings } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { FaCalculator, FaDiscord } from "react-icons/fa";
 import { IoIosDocument, IoIosMenu } from "react-icons/io";
 import { MdOutlineUpdate } from "react-icons/md";
+import { ExecutorDialog } from "./ExecutorDialog";
 import logo from "./logo.png";
 
 type NavLink = {
@@ -58,16 +52,6 @@ function useNavLinks(): NavLink[] {
 	];
 }
 
-const LANGUAGES = [
-	{ value: "en", key: "nav.english" },
-	{ value: "zh", key: "nav.chinese" },
-	{ value: "ja", key: "nav.japanese" },
-	{ value: "ko", key: "nav.korean" },
-	{ value: "es", key: "nav.spanish" },
-	{ value: "ru", key: "nav.russian" },
-	{ value: "de", key: "nav.german" },
-] as const;
-
 // Returns the bare <Link>/<a> element (internal vs external) so it can be the
 // single child of any radix `asChild` slot. Kept as a function, not a
 // component, so the slot's ref/props reach the real anchor.
@@ -93,29 +77,7 @@ const NavItem = ({ link }: { link: NavLink }) => (
 	</Button>
 );
 
-const LanguageSelect = ({ className }: { className?: string }) => {
-	const { t, i18n } = useTranslation();
-	return (
-		<Select
-			value={i18n.resolvedLanguage}
-			onValueChange={(value) => i18n.changeLanguage(value)}
-		>
-			<SelectTrigger className={className}>
-				<SelectValue />
-			</SelectTrigger>
-			<SelectContent>
-				{LANGUAGES.map(({ value, key }) => (
-					<SelectItem key={value} value={value}>
-						{t(key)}
-					</SelectItem>
-				))}
-			</SelectContent>
-		</Select>
-	);
-};
-
 const MobileMenu = () => {
-	const { t, i18n } = useTranslation();
 	const links = useNavLinks();
 	return (
 		<DropdownMenu>
@@ -130,19 +92,19 @@ const MobileMenu = () => {
 						{renderNavLink(link)}
 					</DropdownMenuItem>
 				))}
-				<DropdownMenuSeparator />
-				<DropdownMenuRadioGroup
-					value={i18n.resolvedLanguage}
-					onValueChange={(value) => i18n.changeLanguage(value)}
-				>
-					{LANGUAGES.map(({ value, key }) => (
-						<DropdownMenuRadioItem key={value} value={value}>
-							{t(key)}
-						</DropdownMenuRadioItem>
-					))}
-				</DropdownMenuRadioGroup>
 			</DropdownMenuContent>
 		</DropdownMenu>
+	);
+};
+
+const SettingsButton = () => {
+	const { t } = useTranslation();
+	return (
+		<Button asChild variant="ghost" size="icon">
+			<Link to="/settings" aria-label={t("simple.settings")}>
+				<Settings />
+			</Link>
+		</Button>
 	);
 };
 
@@ -172,8 +134,9 @@ export default () => {
 						))}
 					</div>
 
-					<div className="ml-auto flex items-center">
-						<LanguageSelect className="hidden min-[902px]:flex" />
+					<div className="ml-auto flex items-center gap-1">
+						<ExecutorDialog />
+						<SettingsButton />
 						<div className="min-[902px]:hidden">
 							<MobileMenu />
 						</div>

@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdvancedRouteImport } from './routes/advanced'
 import { Route as LocalRouteImport } from './routes/local'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SimpleRouteImport } from './routes/simple'
 import { Route as SimulatorRouteImport } from './routes/simulator'
 import { Route as WebRouteImport } from './routes/web'
@@ -39,6 +40,11 @@ const AdvancedRoute = AdvancedRouteImport.update({
 const LocalRoute = LocalRouteImport.update({
   id: '/local',
   path: '/local',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SimpleRoute = SimpleRouteImport.update({
@@ -111,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/advanced': typeof AdvancedRoute
   '/local': typeof LocalRoute
+  '/settings': typeof SettingsRoute
   '/simple': typeof SimpleRoute
   '/simulator': typeof SimulatorRoute
   '/web': typeof WebRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/advanced': typeof AdvancedRoute
   '/local': typeof LocalRoute
+  '/settings': typeof SettingsRoute
   '/simple': typeof SimpleRoute
   '/simulator': typeof SimulatorRoute
   '/web': typeof WebRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/advanced': typeof AdvancedRoute
   '/local': typeof LocalRoute
+  '/settings': typeof SettingsRoute
   '/simple': typeof SimpleRoute
   '/simulator': typeof SimulatorRoute
   '/web': typeof WebRoute
@@ -168,6 +177,7 @@ export interface FileRouteTypes {
     | '/'
     | '/advanced'
     | '/local'
+    | '/settings'
     | '/simple'
     | '/simulator'
     | '/web'
@@ -186,6 +196,7 @@ export interface FileRouteTypes {
     | '/'
     | '/advanced'
     | '/local'
+    | '/settings'
     | '/simple'
     | '/simulator'
     | '/web'
@@ -204,6 +215,7 @@ export interface FileRouteTypes {
     | '/'
     | '/advanced'
     | '/local'
+    | '/settings'
     | '/simple'
     | '/simulator'
     | '/web'
@@ -223,6 +235,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdvancedRoute: typeof AdvancedRoute
   LocalRoute: typeof LocalRoute
+  SettingsRoute: typeof SettingsRoute
   SimpleRoute: typeof SimpleRoute
   SimulatorRoute: typeof SimulatorRoute
   WebRoute: typeof WebRoute
@@ -259,6 +272,13 @@ declare module '@tanstack/react-router' {
       path: '/local'
       fullPath: '/local'
       preLoaderRoute: typeof LocalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/simple': {
@@ -359,6 +379,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdvancedRoute: AdvancedRoute,
   LocalRoute: LocalRoute,
+  SettingsRoute: SettingsRoute,
   SimpleRoute: SimpleRoute,
   SimulatorRoute: SimulatorRoute,
   WebRoute: WebRoute,

@@ -227,7 +227,7 @@ export function CharacterCard({
 			<div className="min-h-24 bg-g-surface text-g-ink shadow text-g-sm flex flex-col justify-center gap-2 border border-g-line">
 				<div
 					className={
-						"character-parent flex flex-row pt-4 pl-4 pr-2 relative z-0 " +
+						"character-parent flex flex-row pt-4 pl-4 pr-2 relative z-0 text-white " +
 						charCardBG(char.element ?? "")
 					}
 				>
