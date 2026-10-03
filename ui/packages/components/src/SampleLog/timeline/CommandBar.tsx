@@ -80,6 +80,11 @@ export function CommandBar({
 				<span className="min-w-0 flex-1 truncate font-g-mono text-[11px] text-g-ink-mute">
 					{matchLabel}
 				</span>
+				<CategoryFilter
+					model={model}
+					filter={filter}
+					onFilterChange={onFilterChange}
+				/>
 				{onGenerate != null && (
 					<Button
 						variant="secondary"
@@ -91,11 +96,6 @@ export function CommandBar({
 						<RefreshCw />
 					</Button>
 				)}
-				<CategoryFilter
-					model={model}
-					filter={filter}
-					onFilterChange={onFilterChange}
-				/>
 				{onDownload != null && (
 					<Button
 						variant="secondary"
