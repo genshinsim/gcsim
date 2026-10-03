@@ -6,7 +6,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "@gcsim/primitives";
-import { ArrowRight, Download, ListFilter } from "lucide-react";
+import { ArrowRight, Download, ListFilter, RefreshCw } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import {
 	AdvancedPreset,
@@ -27,6 +27,7 @@ type Props = {
 	onSearchNext: () => void;
 	matchLabel: string;
 	onDownload?: () => void;
+	onGenerate?: () => void;
 };
 
 const PRESETS = [
@@ -47,13 +48,14 @@ export function CommandBar({
 	onSearchNext,
 	matchLabel,
 	onDownload,
+	onGenerate,
 }: Props) {
 	const { t } = useTranslation();
 	return (
 		<div className="flex h-full flex-col justify-center gap-1.5 px-2">
 			<div className="flex items-center gap-1">
 				<Input
-					className="h-7 min-w-0 flex-1 text-[12px]"
+					className="min-w-0 flex-1 text-[12px]"
 					placeholder={t("sample.search_placeholder")}
 					aria-label={t("viewer.search")}
 					value={search}
@@ -67,7 +69,6 @@ export function CommandBar({
 				<Button
 					variant="secondary"
 					size="icon"
-					className="size-7"
 					aria-label={t("sample.next_match")}
 					title={t("sample.next_match")}
 					onClick={onSearchNext}
@@ -79,6 +80,17 @@ export function CommandBar({
 				<span className="min-w-0 flex-1 truncate font-g-mono text-[11px] text-g-ink-mute">
 					{matchLabel}
 				</span>
+				{onGenerate != null && (
+					<Button
+						variant="secondary"
+						size="icon"
+						aria-label={t("viewer.generate")}
+						title={t("viewer.generate")}
+						onClick={onGenerate}
+					>
+						<RefreshCw />
+					</Button>
+				)}
 				<CategoryFilter
 					model={model}
 					filter={filter}
@@ -88,7 +100,6 @@ export function CommandBar({
 					<Button
 						variant="secondary"
 						size="icon"
-						className="size-7"
 						aria-label={t("viewer.download")}
 						title={t("viewer.download")}
 						onClick={onDownload}
@@ -122,8 +133,7 @@ function CategoryFilter({
 			<PopoverTrigger asChild>
 				<Button
 					variant="secondary"
-					size="sm"
-					className="h-7 gap-1 px-2"
+					className="gap-1"
 					title={t("viewer.log_options")}
 					aria-label={t("viewer.log_options")}
 				>

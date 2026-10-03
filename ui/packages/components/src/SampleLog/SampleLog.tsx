@@ -1,5 +1,8 @@
+import { Button, NonIdealState } from "@gcsim/primitives";
 import type { Sample } from "@gcsim/types";
+import { FlaskConical, RefreshCw } from "lucide-react";
 import React, { useMemo, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useSampleFilter } from "./sampleFilter";
 import { CommandBar } from "./timeline/CommandBar";
 import { EventDetailsDialog } from "./timeline/EventDetailsDialog";
@@ -8,11 +11,42 @@ import { type SearchHits, Strip, type StripHandle } from "./timeline/Strip";
 import { useFitViewport } from "./timeline/useFitViewport";
 
 export type SampleLogProps = {
-	sample: Sample;
+	sample: Sample | null;
 	onDownload?: (sample: Sample) => void;
+	/** adds a Generate button; the caller decides what it opens */
+	onGenerate?: () => void;
 };
 
-function SampleLogUI({ sample, onDownload }: SampleLogProps) {
+function SampleLogUI({ sample, ...props }: SampleLogProps) {
+	if (sample == null) {
+		return <EmptyLog onGenerate={props.onGenerate} />;
+	}
+	return <Timeline sample={sample} {...props} />;
+}
+
+function EmptyLog({ onGenerate }: { onGenerate?: () => void }) {
+	const { t } = useTranslation();
+	return (
+		<NonIdealState
+			className="h-[50vh]"
+			icon={<FlaskConical />}
+			action={
+				onGenerate != null && (
+					<Button onClick={onGenerate}>
+						<RefreshCw />
+						{t("viewer.generate")}
+					</Button>
+				)
+			}
+		/>
+	);
+}
+
+function Timeline({
+	sample,
+	onDownload,
+	onGenerate,
+}: SampleLogProps & { sample: Sample }) {
 	const [filter, setFilter] = useSampleFilter();
 	const model = useMemo(() => modelFromSample(sample), [sample]);
 	const enabled = useMemo(() => new Set(filter), [filter]);
@@ -72,6 +106,7 @@ function SampleLogUI({ sample, onDownload }: SampleLogProps) {
 						onDownload={
 							onDownload != null ? () => onDownload(sample) : undefined
 						}
+						onGenerate={onGenerate}
 					/>
 				}
 			/>

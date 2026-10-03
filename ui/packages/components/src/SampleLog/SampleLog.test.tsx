@@ -93,6 +93,31 @@ describe("SampleLog", () => {
 		expect(onDownload).toHaveBeenCalledExactlyOnceWith(sample);
 	});
 
+	it("offers generate beside the filter only when a handler is given", async () => {
+		const { unmount } = renderLog();
+		expect(
+			screen.queryByRole("button", { name: "viewer.generate" }),
+		).toBeNull();
+		unmount();
+
+		const onGenerate = vi.fn();
+		renderLog({ onGenerate });
+		await userEvent.click(
+			screen.getByRole("button", { name: "viewer.generate" }),
+		);
+		expect(onGenerate).toHaveBeenCalledOnce();
+	});
+
+	it("offers only generate when there is no sample", async () => {
+		const onGenerate = vi.fn();
+		renderLog({ sample: null, onGenerate });
+		expect(screen.queryByTitle("sample.sim_lane")).toBeNull();
+		await userEvent.click(
+			screen.getByRole("button", { name: "viewer.generate" }),
+		);
+		expect(onGenerate).toHaveBeenCalledOnce();
+	});
+
 	it("saves the filter and hides the types it leaves out", async () => {
 		renderLog();
 		expect(chipsOfType("action").length).toBeGreaterThan(0);

@@ -21,6 +21,7 @@ const meta: Meta<typeof SampleLog> = {
 	args: {
 		sample: sampleFixture,
 		onDownload: fn(),
+		onGenerate: fn(),
 	},
 };
 
@@ -44,4 +45,8 @@ export const DamageOnly: Story = {
 export const WithoutDownload: Story = {
 	args: { onDownload: undefined },
 	beforeEach: seedFilter(AllSampleOptions),
+};
+
+export const NoSample: Story = {
+	args: { sample: null },
 };
