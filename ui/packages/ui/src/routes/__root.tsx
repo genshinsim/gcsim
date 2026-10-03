@@ -1,5 +1,4 @@
 import { ExecutorProvider, useExecutor } from "@gcsim/components";
-import type { Executor, ExecutorSupplier } from "@gcsim/executors";
 import { Toaster } from "@gcsim/primitives";
 import {
 	createRootRouteWithContext,
@@ -12,11 +11,11 @@ import { useCallback, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { Footer, Nav } from "../features/layout";
 import { usePrefs } from "../stores/AppState";
+import { useHost } from "../stores/host";
 import { lastRunStore } from "../stores/lastRun";
 import { getTheme } from "../stores/themes";
 
 export type AppContext = {
-	exec: ExecutorSupplier<Executor>;
 	mode: string;
 	gitCommit: string;
 };
@@ -29,7 +28,7 @@ export const Route = createRootRouteWithContext<AppContext>()({
 const runStore = lastRunStore(localStorage);
 
 function Root() {
-	const { exec } = Route.useRouteContext();
+	const { exec } = useHost();
 	const navigate = useNavigate();
 	const navigateOnRun = useCallback(() => navigate({ to: "/web" }), [navigate]);
 	return (

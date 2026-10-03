@@ -1,8 +1,10 @@
+import type { Executor, ExecutorSupplier } from "@gcsim/executors";
 import React, { type ReactNode } from "react";
 
 export type ExecutorKind = "wasm" | "server";
 
 type HostValue = {
+	exec: ExecutorSupplier<Executor>;
 	executorSettings: ReactNode;
 	executorKind: ExecutorKind;
 };
