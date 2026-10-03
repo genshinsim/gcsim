@@ -4,6 +4,7 @@ import {
 	type ReactNode,
 	type Ref,
 	useEffect,
+	useEffectEvent,
 	useImperativeHandle,
 	useMemo,
 	useState,
@@ -43,6 +44,19 @@ import {
 import { useScrollView } from "./useScrollView";
 
 export type StripHandle = { centerOn: (frame: number) => void };
+
+/** a field, dialog or widget already has a use for this key */
+function keyClaimed(e: KeyboardEvent) {
+	if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) {
+		return true;
+	}
+	return (
+		e.target instanceof Element &&
+		e.target.closest(
+			"input, textarea, select, [contenteditable], [role=dialog], [role=menu], [role=listbox], [role=tablist]",
+		) != null
+	);
+}
 
 export type SearchHits = { ids: Set<number>; frames: number[] };
 
@@ -140,6 +154,27 @@ export function Strip({
 	useImperativeHandle(ref, () => ({
 		centerOn: (frame) => scrollToFrame(frame, true),
 	}));
+
+	const stepColumn = useEffectEvent((dir: 1 | -1) => {
+		if (el == null) {
+			return;
+		}
+		const i = lowerBound(cols, el.scrollLeft + (dir > 0 ? 1 : 0), (c) => c.x);
+		const x = dir > 0 ? cols[i]?.x : (cols[i - 1]?.x ?? 0);
+		if (x != null) {
+			el.scrollTo({ left: x });
+		}
+	});
+	useEffect(() => {
+		const onKey = (e: KeyboardEvent) => {
+			if ((e.key === "ArrowLeft" || e.key === "ArrowRight") && !keyClaimed(e)) {
+				e.preventDefault();
+				stepColumn(e.key === "ArrowRight" ? 1 : -1);
+			}
+		};
+		window.addEventListener("keydown", onKey);
+		return () => window.removeEventListener("keydown", onKey);
+	}, []);
 
 	const [hlEvent, setHl] = useState<SimEvent | null>(null);
 	const showDuration = (c: Chip) =>

@@ -60,6 +60,37 @@ describe("SampleLog", () => {
 		expect(screen.getByText(/^2\/\d+$/)).toBeInTheDocument();
 	});
 
+	it("steps the strip a column with the arrow keys from anywhere on the page", async () => {
+		renderLog();
+		await userEvent.keyboard("{ArrowRight}");
+		expect(scrolls).toHaveLength(1);
+		expect(scrolls[0]).toBeGreaterThan(0);
+		await userEvent.keyboard("{ArrowLeft}");
+		expect(scrolls).toEqual([scrolls[0], 0]);
+	});
+
+	it("leaves arrow keys to the search box", async () => {
+		renderLog();
+		await userEvent.click(
+			screen.getByPlaceholderText("sample.search_placeholder"),
+		);
+		await userEvent.keyboard("{ArrowRight}{ArrowLeft}");
+		expect(scrolls).toEqual([]);
+	});
+
+	it("leaves arrow keys to an open frame view", async () => {
+		renderLog();
+		await userEvent.click(
+			screen.getAllByRole("button", { name: /^sample\.open_frame / })[0],
+		);
+		await userEvent.keyboard("{ArrowRight}");
+		// the frame view centres the strip on its new frame, and nothing else scrolls it
+		expect(
+			within(screen.getByRole("dialog")).getByText(/sample\.frame_title/),
+		).toBeInTheDocument();
+		expect(scrolls).toHaveLength(1);
+	});
+
 	it("restarts the match count when the filter changes the matches", async () => {
 		renderLog();
 		await userEvent.type(
