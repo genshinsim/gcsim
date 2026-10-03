@@ -3,10 +3,10 @@ import { expect, sucroseConfig, test } from "../src";
 
 const SERVER = "http://127.0.0.1:54321";
 
-async function toggleExecutor(page: Page, from: "WASM" | "Server") {
+async function toggleExecutor(page: Page, chip: "WASM" | "Server") {
 	await page
 		.getByRole("navigation")
-		.getByRole("button", { name: from, exact: true })
+		.getByRole("button", { name: chip, exact: true })
 		.click();
 	await page.locator("#server-mode-switch").click();
 	await page.keyboard.press("Escape");
