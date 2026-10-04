@@ -10,8 +10,10 @@ import {
 	HEAD_H,
 	MIN_CAP,
 	onFieldRuns,
+	panColumns,
 	rowsH,
 	splitRows,
+	wheelColumns,
 	xOfFrame,
 } from "./layout";
 import { modelFromEvents, onFieldLaneAt } from "./model";
@@ -97,6 +99,57 @@ describe("xOfFrame / frameOfX", () => {
 		expect(xOfFrame(cols, 99)).toBe(cols[2].x);
 		expect(frameOfX(cols, -5)).toBe(0);
 		expect(frameOfX(cols, 1e6)).toBe(11);
+	});
+});
+
+describe("wheelColumns", () => {
+	it("pans two columns a line, taking a 100px notch as three lines", () => {
+		expect(wheelColumns(100, WheelEvent.DOM_DELTA_PIXEL, 10)).toBe(6);
+		expect(wheelColumns(3, WheelEvent.DOM_DELTA_LINE, 10)).toBe(6);
+		expect(wheelColumns(-1, WheelEvent.DOM_DELTA_LINE, 10)).toBe(-2);
+	});
+
+	it("pans a page as the columns in view", () => {
+		expect(wheelColumns(1, WheelEvent.DOM_DELTA_PAGE, 7)).toBe(7);
+	});
+
+	it("pans part of a column for a small trackpad delta", () => {
+		const n = wheelColumns(4, WheelEvent.DOM_DELTA_PIXEL, 10);
+		expect(n).toBeGreaterThan(0);
+		expect(n).toBeLessThan(1);
+	});
+});
+
+describe("panColumns", () => {
+	// a long quiet gap between the second and third columns
+	const cols = columns(
+		modelFromEvents(
+			[
+				ev({ frame: 0 }),
+				ev({ frame: 1 }),
+				ev({ frame: 200 }),
+				ev({ frame: 201 }),
+			],
+			team,
+		),
+		new Set(["action"]),
+	);
+
+	it("steps by columns whatever the frames between them", () => {
+		expect(panColumns(cols, cols[0].x, 1)).toBe(cols[1].x);
+		expect(panColumns(cols, cols[1].x, 1)).toBe(cols[2].x);
+		expect(panColumns(cols, cols[3].x, -2)).toBe(cols[1].x);
+	});
+
+	it("keeps a part-column offset", () => {
+		const mid = (cols[0].x + cols[1].x) / 2;
+		expect(panColumns(cols, mid, 1)).toBeCloseTo((cols[1].x + cols[2].x) / 2);
+		expect(panColumns(cols, cols[0].x, 0.5)).toBeCloseTo(mid);
+	});
+
+	it("clamps to the first and last columns", () => {
+		expect(panColumns(cols, cols[1].x, -5)).toBe(0);
+		expect(panColumns(cols, cols[1].x, 99)).toBe(cols[3].x);
 	});
 });
 
