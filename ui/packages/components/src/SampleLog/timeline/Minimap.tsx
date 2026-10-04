@@ -17,6 +17,7 @@ type Props = {
 	/** frames in view on the strip */
 	range: [number, number];
 	onPan: (start: number) => void;
+	onWheel: (delta: number, mode: number) => void;
 	matchFrames: number[];
 	/** a highlighted status duration */
 	selection: [number, number] | null;
@@ -166,6 +167,7 @@ export function Minimap({
 	enabled,
 	range,
 	onPan,
+	onWheel,
 	matchFrames,
 	selection,
 	aside,
@@ -271,21 +273,23 @@ export function Minimap({
 		drag.current = null;
 	};
 
-	const wheelPan = useEffectEvent((e: WheelEvent) => {
+	const forwardWheel = useEffectEvent((e: WheelEvent) => {
+		// Firefox reports lines only when deltaMode is read before the deltas
+		const mode = e.deltaMode;
 		const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-		onPan(range[0] + (delta / Math.max(1, width)) * frames * 0.5);
+		onWheel(delta, mode);
 	});
 	useEffect(() => {
 		const el = wrap.current;
 		if (el == null) {
 			return;
 		}
-		const onWheel = (e: WheelEvent) => {
+		const listener = (e: WheelEvent) => {
 			e.preventDefault();
-			wheelPan(e);
+			forwardWheel(e);
 		};
-		el.addEventListener("wheel", onWheel, { passive: false });
-		return () => el.removeEventListener("wheel", onWheel);
+		el.addEventListener("wheel", listener, { passive: false });
+		return () => el.removeEventListener("wheel", listener);
 	}, []);
 
 	return (

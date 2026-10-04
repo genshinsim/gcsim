@@ -77,6 +77,45 @@ export function frameOfX(cols: Column[], x: number): number {
 	return a.frame + ((x - a.x) / (b.x - a.x)) * (b.frame - a.frame);
 }
 
+const COLS_PER_LINE = 2;
+// a pixel-mode wheel notch is 100px for 3 lines (Chrome's default)
+const LINES_PER_NOTCH = 3;
+const PX_PER_NOTCH = 100;
+
+export function wheelColumns(
+	delta: number,
+	mode: number,
+	pageColumns: number,
+): number {
+	if (mode === WheelEvent.DOM_DELTA_PAGE) {
+		return delta * pageColumns;
+	}
+	const lines =
+		mode === WheelEvent.DOM_DELTA_LINE
+			? delta
+			: (delta * LINES_PER_NOTCH) / PX_PER_NOTCH;
+	return lines * COLS_PER_LINE;
+}
+
+function colIndexOfX(cols: Column[], x: number): number {
+	const i = lowerBound(cols, x, (c) => c.x);
+	if (i === 0 || i === cols.length) {
+		return Math.min(i, cols.length - 1);
+	}
+	const [a, b] = [cols[i - 1], cols[i]];
+	return i - 1 + (x - a.x) / (b.x - a.x);
+}
+
+export function panColumns(cols: Column[], x: number, n: number): number {
+	if (cols.length === 0) {
+		return 0;
+	}
+	const to = Math.max(0, Math.min(cols.length - 1, colIndexOfX(cols, x) + n));
+	const k = Math.floor(to);
+	const next = cols[k + 1];
+	return next == null ? cols[k].x : cols[k].x + (to - k) * (next.x - cols[k].x);
+}
+
 export type OnFieldRun = { lane: number; x0: number; x1: number };
 
 /** `onField[i]` is the lane on field at `cols[i]`, or -1 for none */

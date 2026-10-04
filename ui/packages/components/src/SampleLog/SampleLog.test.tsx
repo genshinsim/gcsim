@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import type React from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -12,8 +12,11 @@ vi.mock("react-i18next", () => ({
 }));
 
 import { SampleLog } from "./SampleLog";
+import { AllSampleOptions } from "./SampleOptions";
 import { loadSampleFilter } from "./sampleFilter";
 import { sampleFixture as sample } from "./testdata";
+import { columns } from "./timeline/layout";
+import { modelFromSample } from "./timeline/model";
 
 const scrolls: number[] = [];
 
@@ -72,6 +75,19 @@ describe("SampleLog", () => {
 		expect(scrolls[0]).toBeGreaterThan(0);
 		await userEvent.keyboard("{ArrowLeft}");
 		expect(scrolls).toEqual([scrolls[0], 0]);
+	});
+
+	it("pans the strip six columns for each wheel notch on the overview", () => {
+		const { container } = renderLog();
+		const overview = container.querySelector("canvas")?.parentElement;
+		if (overview == null) {
+			throw new Error("no overview");
+		}
+		for (let i = 0; i < 4; i++) {
+			fireEvent.wheel(overview, { deltaY: 100 });
+		}
+		const cols = columns(modelFromSample(sample), new Set(AllSampleOptions));
+		expect(scrolls).toEqual([6, 12, 18, 24].map((i) => cols[i].x));
 	});
 
 	it("leaves arrow keys to the search box", async () => {
