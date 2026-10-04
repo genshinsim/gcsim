@@ -17,6 +17,7 @@ type Props = {
 	/** frames in view on the strip */
 	range: [number, number];
 	onPan: (start: number) => void;
+	onWheel: (delta: number, mode: number) => void;
 	matchFrames: number[];
 	/** a highlighted status duration */
 	selection: [number, number] | null;
@@ -166,6 +167,7 @@ export function Minimap({
 	enabled,
 	range,
 	onPan,
+	onWheel,
 	matchFrames,
 	selection,
 	aside,
@@ -273,7 +275,7 @@ export function Minimap({
 
 	const wheelPan = useEffectEvent((e: WheelEvent) => {
 		const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-		onPan(range[0] + (delta / Math.max(1, width)) * frames * 0.5);
+		onWheel(delta, e.deltaMode);
 	});
 	useEffect(() => {
 		const el = wrap.current;
