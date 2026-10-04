@@ -48,18 +48,44 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	for i, mult := range attack[c.NormalCounter] {
 		ai.Mult = mult[c.TalentLvlAttack()]
-		c.Core.QueueAttack(
-			ai,
-			combat.NewBoxHit(
+
+		if c.IsHexerei && c.Core.Player.GetHexereiCount() > 1 && c.StatusIsActive(burstKey) {
+			deltaPos := c.Core.Combat.Player().Pos().Sub(c.Core.Combat.PrimaryTarget().Pos())
+			dist := deltaPos.Magnitude()
+
+			ai.Element = attributes.Anemo
+
+			ap := combat.NewBoxHit(
 				c.Core.Combat.Player(),
 				c.Core.Combat.PrimaryTarget(),
-				info.Point{Y: -0.5},
+				info.Point{Y: -dist},
 				0.1,
-				1,
-			),
-			attackHitmarks[c.NormalCounter][i],
-			attackHitmarks[c.NormalCounter][i]+travel,
-		)
+				15,
+			)
+
+			c.Core.QueueAttack(
+				ai,
+				ap,
+				attackHitmarks[c.NormalCounter][i],
+				attackHitmarks[c.NormalCounter][i]+travel,
+				c.hexAttackCB,
+			)
+
+			c.c1(ai, attackHitmarks[c.NormalCounter][i], travel)
+		} else {
+			c.Core.QueueAttack(
+				ai,
+				combat.NewBoxHit(
+					c.Core.Combat.Player(),
+					c.Core.Combat.PrimaryTarget(),
+					info.Point{Y: -0.5},
+					0.1,
+					1,
+				),
+				attackHitmarks[c.NormalCounter][i],
+				attackHitmarks[c.NormalCounter][i]+travel,
+			)
+		}
 	}
 
 	defer c.AdvanceNormalIndex()

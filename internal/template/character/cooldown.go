@@ -127,9 +127,15 @@ func (c *Character) ReduceActionCooldown(a action.Action, v int) {
 		c.ResetActionCooldown(a)
 		return
 	}
+
+	modifyStr := "reduced"
+	if v <= 0 {
+		modifyStr = "increased"
+	}
+
 	// otherwise reduce remain and restart queue
 	c.cdQueue[a][0] = remain - v
-	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), a.String(), " cooldown forcefully reduced").
+	c.Core.Log.NewEventBuildMsg(glog.LogCooldownEvent, c.Index(), a.String(), " cooldown forcefully"+modifyStr).
 		Write("type", a.String()).
 		Write("expiry", c.Cooldown(a)).
 		Write("charges_remain", c.AvailableCDCharge[a]).
