@@ -24,11 +24,13 @@ import {
 	gutterWidth,
 	HEAD_H,
 	onFieldRuns,
+	panColumns,
 	portraitSize,
 	rowsH,
 	secondsLabel,
 	splitRows,
 	visibleWindow,
+	wheelColumns,
 	xOfFrame,
 } from "./layout";
 import { Minimap } from "./Minimap";
@@ -250,6 +252,12 @@ export function Strip({
 					enabled={enabled}
 					range={range}
 					onPan={(f) => scrollToFrame(f, false)}
+					onWheel={(delta, mode) => {
+						if (el != null) {
+							const n = wheelColumns(delta, mode, onScreen.length);
+							el.scrollTo({ left: panColumns(cols, el.scrollLeft, n) });
+						}
+					}}
 					matchFrames={hits.frames}
 					aside={commandBar}
 					selection={hl == null ? null : [hl.start, hl.end]}
