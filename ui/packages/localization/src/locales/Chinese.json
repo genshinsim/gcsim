@@ -235,7 +235,7 @@
 	"simple": {
 		"action_list": "动作列表",
 		"actions": "动作",
-		"artifacts": "聖遺物",
+		"artifacts": "圣遗物",
 		"copied_to_clipboard": "{{item}} 复制到剪贴板",
 		"copy_failed": "无法复制 {{item}}",
 		"editor_settings": "编辑器设置",
