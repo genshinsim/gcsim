@@ -273,21 +273,23 @@ export function Minimap({
 		drag.current = null;
 	};
 
-	const wheelPan = useEffectEvent((e: WheelEvent) => {
+	const forwardWheel = useEffectEvent((e: WheelEvent) => {
+		// Firefox reports lines only when deltaMode is read before the deltas
+		const mode = e.deltaMode;
 		const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
-		onWheel(delta, e.deltaMode);
+		onWheel(delta, mode);
 	});
 	useEffect(() => {
 		const el = wrap.current;
 		if (el == null) {
 			return;
 		}
-		const onWheel = (e: WheelEvent) => {
+		const listener = (e: WheelEvent) => {
 			e.preventDefault();
-			wheelPan(e);
+			forwardWheel(e);
 		};
-		el.addEventListener("wheel", onWheel, { passive: false });
-		return () => el.removeEventListener("wheel", onWheel);
+		el.addEventListener("wheel", listener, { passive: false });
+		return () => el.removeEventListener("wheel", listener);
 	}, []);
 
 	return (

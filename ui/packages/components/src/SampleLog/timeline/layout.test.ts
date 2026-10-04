@@ -121,7 +121,6 @@ describe("wheelColumns", () => {
 });
 
 describe("panColumns", () => {
-	// a long quiet gap between the second and third columns
 	const cols = columns(
 		modelFromEvents(
 			[
