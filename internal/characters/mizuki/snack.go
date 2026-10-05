@@ -58,7 +58,7 @@ func newSnack(c *char, pos info.Point) *snack {
 	p.Duration = snackDuration
 	c.Core.Combat.AddGadget(p)
 
-	p.CollidableTypes[info.TargettablePlayer] = true
+	p.SetCollidableWith(info.TargettablePlayer, true)
 	p.OnExpiry = func() {
 		p.explode()
 		p.Core.Log.NewEvent("Snack exploded by itself", glog.LogCharacterEvent, c.Index())

@@ -174,6 +174,11 @@ func (h *Handler) Unsubscribe(e Event, key string) {
 	}
 }
 
+// HasHooks reports whether anything subscribed to e. Without hooks Emit(e, ...) does nothing.
+func (h *Handler) HasHooks(e Event) bool {
+	return len(h.events[e]) > 0
+}
+
 func (h *Handler) Emit(e Event, args ...any) {
 	hooks := h.events[e]
 	if len(hooks) == 0 {
