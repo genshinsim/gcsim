@@ -50,6 +50,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.AddStatus(burstKey, 20*60, true)
 
 		c.c2Reset()
+
+		// TODO: Does this apply before or after the damage?
 		c.c4(c.Core.F)
 
 		c.nightingalesSong = 21
