@@ -138,7 +138,7 @@ func (c *char) c4Ticker(src int) {
 	})
 
 	c.QueueCharTask(func() {
-		c.c4(src)
+		c.c4Ticker(src)
 	}, 1*60)
 }
 

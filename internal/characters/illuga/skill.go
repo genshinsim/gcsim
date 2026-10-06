@@ -62,7 +62,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			ai,
 			snap,
 			ap,
-			skillTapHitmark,
+			0,
 			c.particleCB,
 		)
 	}, skillTapHitmark)
@@ -102,7 +102,7 @@ func (c *char) skillHold() (action.Info, error) {
 			ai,
 			snap,
 			ap,
-			skillHoldHitmark,
+			0,
 			c.particleCB,
 		)
 	}, skillHoldHitmark)
