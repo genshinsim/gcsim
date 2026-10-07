@@ -131,7 +131,6 @@ const UpgradableViewer = (props: UpgradableViewerProps) => {
 	const sample = useSample({
 		config: data?.config_file,
 		autoSeed: autoSampleSeed(linkSeed, sampleOnLoad, data?.sample_seed),
-		running,
 	});
 	const editor = useViewerEditor(data?.config_file, running);
 	useScrollToLocation();

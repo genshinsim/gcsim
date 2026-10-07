@@ -13,6 +13,16 @@ export function autoSampleSeed(
 	return sampleOnLoad ? (resultSeed ?? null) : null;
 }
 
+export function autoSampleKey(
+	config: string | undefined,
+	autoSeed: string | null,
+): string | null {
+	if (config == null || autoSeed == null) {
+		return null;
+	}
+	return `${autoSeed}:${config}`;
+}
+
 export type SampleState = {
 	sample: Sample | null;
 	seed: string | null;
@@ -23,49 +33,58 @@ export type SampleState = {
 type SampleSource = {
 	config?: string;
 	autoSeed?: string | null;
-	running?: boolean;
 };
 
 export function useSample({
 	config,
 	autoSeed = null,
-	running = false,
 }: SampleSource = {}): SampleState {
 	const { exec } = useExecutor();
 	const [sample, setSample] = useState<Sample | null>(null);
 	const [seed, setSeed] = useState<string | null>(null);
 	const [generating, setGenerating] = useState(false);
-	const autoSampled = useRef(false);
+	const autoSampled = useRef<string | null>(null);
+	const request = useRef(0);
 
 	const generate = useCallback(
 		(next: string) => {
 			if (config == null) {
 				return;
 			}
+			const id = ++request.current;
 			setGenerating(true);
 			setSeed(next);
 			exec()
 				.sample(config, next)
-				.then(setSample)
-				.finally(() => setGenerating(false));
+				.then((result) => {
+					if (id === request.current) {
+						setSample(result);
+					}
+				})
+				.finally(() => {
+					if (id === request.current) {
+						setGenerating(false);
+					}
+				});
 		},
 		[exec, config],
 	);
 
 	useEffect(() => {
-		if (running) {
+		const key = autoSampleKey(config, autoSeed);
+		if (key == null) {
+			request.current++;
+			autoSampled.current = null;
 			setSample(null);
-			autoSampled.current = false;
-		}
-	}, [running]);
-
-	useEffect(() => {
-		if (autoSampled.current || running || autoSeed == null || config == null) {
+			setGenerating(false);
 			return;
 		}
-		autoSampled.current = true;
+		if (autoSampled.current === key || autoSeed == null) {
+			return;
+		}
+		autoSampled.current = key;
 		generate(autoSeed);
-	}, [autoSeed, config, running, generate]);
+	}, [autoSeed, config, generate]);
 
 	return { sample, seed, generating, generate };
 }
