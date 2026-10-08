@@ -1,0 +1,6 @@
+use: pipeline
+kind: weapon
+name: whitelakefrostfeather
+
+shortcuts:
+  - frostfeather
