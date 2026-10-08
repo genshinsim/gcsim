@@ -43,13 +43,13 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 6.5)
 
 	c.Core.Tasks.Add(func() {
-		ai.FlatDmg += burstEM[c.TalentLvlBurst()] * c.Stat(attributes.EM)
-		ai.FlatDmg += burstDef[c.TalentLvlBurst()] * c.TotalDef(false)
+		snap := c.Snapshot(&ai)
+		ai.FlatDmg += burstEM[c.TalentLvlBurst()] * snap.Stats[attributes.EM]
+		ai.FlatDmg += burstDef[c.TalentLvlBurst()] * snap.Stats.TotalDEF()
 
 		c.AddStatus(burstKey, 20*60, true)
 
 		c.c2Reset()
-		c.c4(c.Core.F)()
 
 		c.nightingalesSong = 21
 
@@ -73,12 +73,15 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			c.nightingalesSong += 5
 		}
 
-		c.Core.QueueAttack(
+		c.Core.QueueAttackWithSnap(
 			ai,
+			snap,
 			ap,
 			0,
-			0,
 		)
+
+		// c4 buff applies after damage
+		c.c4(c.Core.F)
 	}, burstHitmark)
 
 	c.a1()
