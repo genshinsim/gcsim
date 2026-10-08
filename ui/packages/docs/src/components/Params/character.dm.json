@@ -279,6 +279,13 @@
       "desc": "Projectile travel time. Default 5 frames."
     }
   ],
+  "alyosha": [
+    {
+      "ability": "skill",
+      "param": "hold",
+      "desc": "0 for Tap (default), 1 for Hold."
+    }
+  ],
   "amber": [
     {
       "ability": "attack",
