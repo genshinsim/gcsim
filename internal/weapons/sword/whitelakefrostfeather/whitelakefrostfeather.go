@@ -48,6 +48,10 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 
+		if atk.Info.ActorIndex != char.Index() {
+			return
+		}
+
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagElementalArt:
 		case attacks.AttackTagElementalArtHold:
