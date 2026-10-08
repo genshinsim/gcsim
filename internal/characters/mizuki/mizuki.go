@@ -15,14 +15,17 @@ type char struct {
 	cloudAttack                     info.AttackInfo
 	cloudSnap                       info.Snapshot
 	cloudSrc                        int
+	cloudTravel                     int
+	cloudSkipTicks                  int
 	a4Buff                          []float64
 	c1EM                            float64
 	c2Buff                          []float64
 	c4EnergyGenerationsRemaining    int
 	c6Buff                          []float64
+	revelation                      bool
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -33,16 +36,24 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	w.Character = &c
 
+	revelation, ok := p.Params["revelation"]
+	if !ok {
+		revelation = 1
+	}
+	c.revelation = revelation > 0
+
 	return nil
 }
 
 func (c *char) Init() error {
+	c.revelationInit()
 	c.skillInit()
 	c.a1()
 	c.a4()
 	c.c1()
 	c.c2()
 	c.c6()
+	c.c6RevelationInit()
 	return nil
 }
 

@@ -2136,6 +2136,16 @@
     },
     {
       "ability": "skill",
+      "param": "adjust_travel",
+      "desc": "Allows adjusting travel time in the middle of using skill."
+    },
+    {
+      "ability": "skill",
+      "param": "skip_ticks",
+      "desc": "Allows skipping skill ticks in the middle of using skill. 1 tick = 15 frames."
+    },
+    {
+      "ability": "skill",
       "param": "travel",
       "desc": "Projectile travel time for Continuous Attack. Default 30 frames."
     }

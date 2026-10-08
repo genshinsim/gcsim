@@ -54,19 +54,19 @@ abilities:
         shape: Circle
         center: PrimaryTarget
         radius: 4
-        hitlag: {scale: 0.05, deployable: true}
+        hitlag: { scale: 0.05, deployable: true }
 
       - name: N2
         shape: Circle
         center: PrimaryTarget
         radius: 4
-        hitlag: {scale: 0.05, deployable: true}
+        hitlag: { scale: 0.05, deployable: true }
 
       - name: N3
         shape: Circle
         center: PrimaryTarget
         radius: 4
-        hitlag: {scale: 0.05, deployable: true}
+        hitlag: { scale: 0.05, deployable: true }
 
   - name: charge
     hitbox:
@@ -78,6 +78,8 @@ abilities:
   - name: skill
     params:
       travel: Projectile travel time for Continuous Attack. Default 30 frames.
+      adjust_travel: Allows adjusting travel time in the middle of using skill.
+      skip_ticks: Allows skipping skill ticks in the middle of using skill. 1 tick = 15 frames.
     hitbox:
       - name: E-Init
         shape: Circle

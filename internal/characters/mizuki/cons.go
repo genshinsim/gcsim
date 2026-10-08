@@ -21,6 +21,7 @@ const (
 	c2Key               = "mizuki-c2"
 	c2EMMultiplier      = 0.0004
 	c2Interval          = 0.5 * 60
+	c2ShredInterval     = 0.7 * 60
 	c4EnergyGenerations = 4
 	c4Key               = "mizuki-c4"
 	c4Energy            = 5
@@ -79,7 +80,56 @@ func (c *char) c1() {
 
 		// Cancel the effect
 		e.DeleteStatus(c1Key)
+
+		if c.StatusIsActive(radianceSwirlKey) {
+			c.c1StellarHit(e)
+		} else {
+			c.c1AnemoHit(e)
+		}
 	}, c1Key)
+}
+
+func (c *char) c1AnemoHit(e *enemy.Enemy) {
+	ai := info.AttackInfo{
+		ActorIndex:   c.Index(),
+		Abil:         "Mizuki C1 Anemo Hit",
+		AttackTag:    attacks.AttackTagNone,
+		ICDTag:       attacks.ICDTagNone,
+		ICDGroup:     attacks.ICDGroupDefault,
+		StrikeType:   attacks.StrikeTypeDefault,
+		PoiseDMG:     skillActivatePoise,
+		Element:      attributes.Anemo,
+		Durability:   25,
+		UseEM:        true,
+		Mult:         10,
+		HitlagFactor: 0.01,
+	}
+
+	ap := combat.NewSingleTargetHit(e.Key())
+
+	c.Core.QueueAttack(ai, ap, 0, 0)
+}
+
+func (c *char) c1StellarHit(e *enemy.Enemy) {
+	ai := info.AttackInfo{
+		ActorIndex:       c.Index(),
+		Abil:             "Mizuki C1 Stellar Swirl Hit",
+		AttackTag:        attacks.AttackTagDirectStellarSwirl,
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
+		StrikeType:       attacks.StrikeTypeDefault,
+		PoiseDMG:         skillActivatePoise,
+		Element:          attributes.Anemo,
+		Durability:       25,
+		UseEM:            true,
+		Mult:             4,
+		IgnoreDefPercent: 1,
+		HitlagFactor:     0.05,
+	}
+
+	ap := combat.NewSingleTargetHit(e.Key())
+
+	c.Core.QueueAttack(ai, ap, 0, 0)
 }
 
 func (c *char) c1Task(src, hitmark int) {
@@ -113,6 +163,10 @@ func (c *char) c2() {
 	c.c2Buff = make([]float64, attributes.EndStatType)
 	c.c2UpdateTask()
 
+	if c.revelation {
+		c.c2UpdateShredTask()
+	}
+
 	for _, char := range c.Core.Player.Chars() {
 		if char.Index() == c.Index() {
 			continue
@@ -144,6 +198,55 @@ func (c *char) c2UpdateTask() {
 
 		c.c2UpdateTask()
 	}, c2Interval)
+}
+
+func (c *char) c2UpdateShredTask() {
+	if c.Base.Cons < 2 {
+		return
+	}
+
+	c.QueueCharTask(func() {
+		if !c.StatusIsActive(dreamDrifterStateKey) {
+			c.c2UpdateShredTask()
+			return
+		}
+
+		ae := combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 20)
+
+		for _, e := range c.Core.Combat.EnemiesWithinArea(ae, nil) {
+			e.AddResistMod(info.ResistMod{
+				Base:  modifier.NewBaseWithHitlag("mizuki-c2-pyro-shred", 1*60),
+				Ele:   attributes.Pyro,
+				Value: -0.2,
+			})
+
+			e.AddResistMod(info.ResistMod{
+				Base:  modifier.NewBaseWithHitlag("mizuki-c2-hydro-shred", 1*60),
+				Ele:   attributes.Hydro,
+				Value: -0.2,
+			})
+
+			e.AddResistMod(info.ResistMod{
+				Base:  modifier.NewBaseWithHitlag("mizuki-c2-electro-shred", 1*60),
+				Ele:   attributes.Electro,
+				Value: -0.2,
+			})
+
+			e.AddResistMod(info.ResistMod{
+				Base:  modifier.NewBaseWithHitlag("mizuki-c2-cryo-shred", 1*60),
+				Ele:   attributes.Cryo,
+				Value: -0.2,
+			})
+
+			e.AddResistMod(info.ResistMod{
+				Base:  modifier.NewBaseWithHitlag("mizuki-c2-anemo-shred", 1*60),
+				Ele:   attributes.Anemo,
+				Value: -0.2,
+			})
+		}
+
+		c.c2UpdateShredTask()
+	}, c2ShredInterval)
 }
 
 // Picking up a Yumemi Style Special Snack from the Elemental Burst Anraku Secret Spring Therapy will both deal DMG
@@ -235,4 +338,28 @@ func (c *char) c6() {
 			},
 		})
 	}
+}
+
+func (c *char) c6RevelationInit() {
+	if c.Base.Cons < 6 {
+		return
+	}
+
+	if !c.revelation {
+		return
+	}
+
+	excessEM := c.Stat(attributes.EM) - 500
+	excessEM = max(excessEM, 0)
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.CD] = max(excessEM*0.0016, 0.8)
+	m[attributes.CR] = max(excessEM*0.0004, 0.2)
+
+	c.AddStatMod(character.StatMod{
+		Base: modifier.NewBase("mizuki-c6-revelation", -1),
+		Amount: func() []float64 {
+			return m
+		},
+	})
 }
