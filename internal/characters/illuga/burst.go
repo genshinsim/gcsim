@@ -51,9 +51,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 
 		c.c2Reset()
 
-		// TODO: Does this apply before or after the damage?
-		c.c4(c.Core.F)
-
 		c.nightingalesSong = 21
 
 		c.nightingalesSongExtraConstruct = 15
@@ -82,6 +79,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			ap,
 			0,
 		)
+
+		// c4 buff applies after damage
+		c.c4(c.Core.F)
 	}, burstHitmark)
 
 	c.a1()
