@@ -31,7 +31,8 @@ func init() {
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	src := c.Core.F
 	c.burstSrc = src
-	c.Core.Tasks.Add(func() { c.burstTicker(src) }, fieldFirstTick)
+	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6)
+	c.Core.Tasks.Add(func() { c.burstTicker(src, &ap) }, fieldFirstTick)
 	c.AddStatus(burstKey, 14*60+c.c2BurstDur(), true)
 
 	c.SetCDWithDelay(action.ActionBurst, 18*60, 1)
@@ -53,7 +54,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 // · If there are any opponents nearby, Tugarin will quickly move close to an opponent and maul them every 2s, dealing Electro DMG.
 // · If an opponent affected by the Hunter's Mark effect is hit, the Hunter's Mark will also be activated.
 // · Where there are multiple opponents, Tugarin will attack those affected by the Hunter's Mark effect first.
-func (c *char) burstTicker(src int) {
+func (c *char) burstTicker(src int, ap *info.AttackPattern) {
 	if c.burstSrc != src {
 		return
 	}
@@ -73,8 +74,7 @@ func (c *char) burstTicker(src int) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 6)
-	c.Core.QueueAttack(ai, ap, 0, 0)
+	c.Core.QueueAttack(ai, *ap, 0, 0, c.c2MakeBurstCB())
 
 	aiDog := info.AttackInfo{
 		ActorIndex: c.Index(),
@@ -90,10 +90,10 @@ func (c *char) burstTicker(src int) {
 	c.Core.Tasks.Add(func() {
 		// TODO: should prioritize enemies with hunters mark, but currently just hit the primary target
 		apDog := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 1)
-		c.Core.QueueAttack(aiDog, apDog, 0, 0, c.c2MakeTugarinCB())
+		c.Core.QueueAttack(aiDog, apDog, 0, 0, c.triggerSkillMarkCB(false))
 		c.a1OnTugarin()
 		c.c4OnTugarin()
 	}, 39)
 
-	c.Core.Tasks.Add(func() { c.burstTicker(src) }, fieldInterval)
+	c.Core.Tasks.Add(func() { c.burstTicker(src, ap) }, fieldInterval)
 }

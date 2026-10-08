@@ -56,12 +56,20 @@ func (c *char) c2BurstDur() int {
 	return 6 * 60
 }
 
-func (c *char) c2MakeTugarinCB() info.AttackCBFunc {
+// Contrary to the description, in game testing shows that C2 applies on the burst field tick
+// and not on Tugarin's attacks,
+func (c *char) c2MakeBurstCB() info.AttackCBFunc {
 	if c.Base.Cons < 2 {
-		return c.triggerSkillMarkCB(false)
+		return nil
 	}
 
-	return c.triggerSkillMarkCB(true)
+	return func(ac info.AttackCB) {
+		e, ok := ac.Target.(*enemy.Enemy)
+		if !ok {
+			return
+		}
+		e.AddStatus(skillMarkKey, skillBuffDur, true)
+	}
 }
 
 // When Tugarin attacks, he will also restore 60% of Alyosha's ATK as HP to the nearby party member
