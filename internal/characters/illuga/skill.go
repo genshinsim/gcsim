@@ -41,31 +41,31 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		return c.skillHold()
 	}
 
-	ai := info.AttackInfo{
-		ActorIndex: c.Index(),
-		Abil:       "Dawnbearing Songbird (Tap)",
-		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   75,
-		Element:    attributes.Geo,
-		Durability: 25,
-	}
-	c.Core.Tasks.Add(func() {
-		ai.FlatDmg += skillTapEM[c.TalentLvlSkill()] * c.Stat(attributes.EM)
-		ai.FlatDmg += skillTapDef[c.TalentLvlSkill()] * c.TotalDef(false)
+	c.QueueCharTask(func() {
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
+			Abil:       "Dawnbearing Songbird (Tap)",
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeBlunt,
+			PoiseDMG:   75,
+			Element:    attributes.Geo,
+			Durability: 25,
+		}
+		snap := c.Snapshot(&ai)
+		ai.FlatDmg = skillTapEM[c.TalentLvlSkill()]*snap.Stats[attributes.EM] + skillTapDef[c.TalentLvlSkill()]*snap.Stats.TotalDEF()
+
+		ap := combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.3}, 2, 12) // measured in science lab, miliastra stage
+
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			ap,
+			0,
+			c.particleCB,
+		)
 	}, skillTapHitmark)
-
-	ap := combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.3}, 2, 12) // measured in science lab, miliastra stage
-
-	c.Core.QueueAttack(
-		ai,
-		ap,
-		skillTapHitmark,
-		skillTapHitmark,
-		c.particleCB,
-	)
 
 	c.Core.Tasks.Add(c.a1, 24)
 
@@ -80,31 +80,32 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) skillHold() (action.Info, error) {
-	ai := info.AttackInfo{
-		ActorIndex: c.Index(),
-		Abil:       "Dawnbearing Songbird (Hold)",
-		AttackTag:  attacks.AttackTagElementalArt,
-		ICDTag:     attacks.ICDTagNone,
-		ICDGroup:   attacks.ICDGroupDefault,
-		StrikeType: attacks.StrikeTypeBlunt,
-		PoiseDMG:   100,
-		Element:    attributes.Geo,
-		Durability: 25,
-	}
 	c.Core.Tasks.Add(func() {
-		ai.FlatDmg += skillHoldEM[c.TalentLvlSkill()] * c.Stat(attributes.EM)
-		ai.FlatDmg += skillHoldDef[c.TalentLvlSkill()] * c.TotalDef(false)
+		ai := info.AttackInfo{
+			ActorIndex: c.Index(),
+			Abil:       "Dawnbearing Songbird (Hold)",
+			AttackTag:  attacks.AttackTagElementalArt,
+			ICDTag:     attacks.ICDTagNone,
+			ICDGroup:   attacks.ICDGroupDefault,
+			StrikeType: attacks.StrikeTypeBlunt,
+			PoiseDMG:   100,
+			Element:    attributes.Geo,
+			Durability: 25,
+		}
+		snap := c.Snapshot(&ai)
+
+		ai.FlatDmg = skillHoldEM[c.TalentLvlSkill()]*snap.Stats[attributes.EM] + skillHoldDef[c.TalentLvlSkill()]*snap.Stats.TotalDEF()
+
+		ap := combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.3}, 2, 35) // measured in science lab, miliastra stage
+
+		c.Core.QueueAttackWithSnap(
+			ai,
+			snap,
+			ap,
+			0,
+			c.particleCB,
+		)
 	}, skillHoldHitmark)
-
-	ap := combat.NewBoxHitOnTarget(c.Core.Combat.PrimaryTarget(), info.Point{Y: -0.3}, 2, 35) // measured in science lab, miliastra stage
-
-	c.Core.QueueAttack(
-		ai,
-		ap,
-		skillHoldHitmark,
-		skillHoldHitmark,
-		c.particleCB,
-	)
 
 	c.Core.Tasks.Add(c.a1, 33)
 

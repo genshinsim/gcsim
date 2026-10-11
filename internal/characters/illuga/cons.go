@@ -103,38 +103,43 @@ func (c *char) c2Hit() {
 	)
 }
 
-func (c *char) c4(src int) func() {
+func (c *char) c4Init() {
 	if c.Base.Cons < 4 {
-		return func() {}
+		return
+	}
+	c.c4Buff = make([]float64, attributes.EndStatType)
+	c.c4Buff[attributes.DEF] = 200
+}
+
+func (c *char) c4(src int) {
+	if c.Base.Cons < 4 {
+		return
 	}
 
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.DEF] = 200
+	c.c4Src = src
+	c.c4Ticker(src)
+}
 
-	return func() {
-		if src < c.c4Src {
-			return
-		}
-
-		// new source will alway be higher than the previous one
-		if src > c.c4Src {
-			c.c4Src = src
-		}
-
-		if !c.StatusIsActive(burstKey) {
-			return
-		}
-
-		char := c.Core.Player.ActiveChar()
-		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag("illuga-c4", 1.1*60),
-			Amount: func() []float64 {
-				return m
-			},
-		})
-
-		c.QueueCharTask(c.c4(src), 1*60)
+func (c *char) c4Ticker(src int) {
+	if src != c.c4Src {
+		return
 	}
+
+	if !c.StatusIsActive(burstKey) {
+		return
+	}
+
+	char := c.Core.Player.ActiveChar()
+	char.AddStatMod(character.StatMod{
+		Base: modifier.NewBaseWithHitlag("illuga-c4", 1.1*60),
+		Amount: func() []float64 {
+			return c.c4Buff
+		},
+	})
+
+	c.QueueCharTask(func() {
+		c.c4Ticker(src)
+	}, 1*60)
 }
 
 func (c *char) c6CR() float64 {
