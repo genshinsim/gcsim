@@ -31,16 +31,15 @@ func init() {
 
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	ai := info.AttackInfo{
-		ActorIndex:   c.Index(),
-		Abil:         "Skyward Sonnett (Press)",
-		AttackTag:    attacks.AttackTagElementalArt,
-		ICDTag:       attacks.ICDTagNone,
-		ICDGroup:     attacks.ICDGroupDefault,
-		StrikeType:   attacks.StrikeTypePierce,
-		Element:      attributes.Anemo,
-		Durability:   50,
-		Mult:         skillPress[c.TalentLvlSkill()],
-		HitWeakPoint: true,
+		ActorIndex: c.Index(),
+		Abil:       "Skyward Sonnett (Press)",
+		AttackTag:  attacks.AttackTagElementalArt,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypePierce,
+		Element:    attributes.Anemo,
+		Durability: 50,
+		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
 	act := action.Info{
