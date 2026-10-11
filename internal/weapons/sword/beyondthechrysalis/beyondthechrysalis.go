@@ -34,7 +34,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	energy := 4.5 + 0.5*float64(r)
 
-	onSkillOrBurstHit := func(args ...any) {
+	onSkillOrBurst := func(args ...any) {
 		if c.Player.Active() != char.Index() {
 			return
 		}
@@ -70,8 +70,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		w.buffCount = (w.buffCount + 1) % 3
 	}
 
-	c.Events.Subscribe(event.OnSkill, onSkillOrBurstHit, "beyond-the-chrysalis-skill")
-	c.Events.Subscribe(event.OnBurst, onSkillOrBurstHit, "beyond-the-chrysalis-burst")
+	c.Events.Subscribe(event.OnSkill, onSkillOrBurst, "beyond-the-chrysalis-on-skill")
+	c.Events.Subscribe(event.OnBurst, onSkillOrBurst, "beyond-the-chrysalis-on-burst")
 
 	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)

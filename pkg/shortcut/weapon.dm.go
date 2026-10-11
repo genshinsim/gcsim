@@ -50,6 +50,7 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"beginner":                        keys.BeginnersProtector,
 	"beginners":                       keys.BeginnersProtector,
 	"beyondthechrysalis":              keys.BeyondTheChrysalis,
+	"chrysalis":                       keys.BeyondTheChrysalis,
 	"blackcliffagate":                 keys.BlackcliffAgate,
 	"blackclifflongsword":             keys.BlackcliffLongsword,
 	"blackcliffpole":                  keys.BlackcliffPole,
