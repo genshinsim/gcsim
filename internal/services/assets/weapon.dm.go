@@ -33,6 +33,7 @@ var weaponMap = map[string]string{
 	"bladeofatonement":                "UI_EquipIcon_Claymore_GlintstoneClaymore_Awaken",
 	"bloodsoakedruins":                "UI_EquipIcon_Pole_TummaLyhty_Awaken",
 	"bloodtaintedgreatsword":          "UI_EquipIcon_Claymore_Siegfry_Awaken",
+	"breezebornerefrain":              "UI_EquipIcon_Bow_Windtalker_Awaken",
 	"calamityofeshu":                  "UI_EquipIcon_Sword_SacrificialNgombe_Awaken",
 	"calamityqueller":                 "UI_EquipIcon_Pole_Santika_Awaken",
 	"cashflowsupervision":             "UI_EquipIcon_Catalyst_Wheatley_Awaken",
