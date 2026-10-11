@@ -1,0 +1,104 @@
+use: pipeline
+kind: character
+name: alyosha
+
+override:
+  icd_group:
+    AlyoshaBurst:
+      name: Alyosha_ElementalBurst
+
+combat:
+  icd_groups:
+    - AlyoshaBurst
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - - attack(3-Hit DMG) # {}+{}
+        - attack(3-Hit DMG|1) # {}+{}
+      - attack(4-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+
+  - skillTap: skill(Press DMG)
+  - skillHold: skill(Hold DMG)
+  - skillBuff: skill(Hunter's Precision ATK Bonus)
+
+  - burst: burst(Fulgurite Hunting Field DMG)
+  - burstTick: burst(Tugarin DMG)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1UWavwdGOIy1jmfrIHgKLekIe23OKbxY18Pt2KewA1_Q/edit?usp=sharing
+      count_credit: caramielle.
+      video: https://youtu.be/VUiIhcBM9v4
+      video_credit: caramielle.
+
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.6]
+        radius: 2
+        hitlag: { time: 0.06, scale: 0.01, defense_halt: true }
+
+      - name: N2
+        shape: Box
+        center: Player
+        offset: [0.2, 0]
+        box: [2, 4]
+        hitlag: { time: 0.06, scale: 0.01, defense_halt: true }
+
+      - name: N3-1
+        shape: Circle
+        center: Player
+        offset: [0, 0.8]
+        radius: 1.8
+
+      - name: N3-2
+        shape: Box
+        center: Player
+        offset: [0, -0.5]
+        box: [2, 4]
+
+      - name: N4
+        shape: Box
+        center: Player
+        offset: [0, 0.5]
+        box: [2.4, 6]
+
+  - name: charge
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: Player
+        radius: 0.8
+        hitlag: { time: 0, scale: 0.01, defense_halt: true, deployable: true }
+
+  - name: skill
+    params:
+      hold: 0 for Tap (default), 1 for Hold.
+    hitbox:
+      - name: E-Tap
+        shape: Box
+        center: Player
+        box: [2.5, 10]
+
+      - name: E-Hold
+        shape: Circle
+        center: Player
+        radius: 15
+        fan_angle: 150
+
+  - name: burst
+    hitbox:
+      - name: Q-Field
+        shape: Circle
+        center: PrimaryTarget
+        radius: 6
+
+      - name: Q-Tugarin
+        shape: Circle
+        center: PrimaryTarget
+        radius: 1

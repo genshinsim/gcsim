@@ -187,6 +187,23 @@
         "burst_energy_cost": 40
       }
     },
+    "alyosha": {
+      "id": 10000148,
+      "sub_id": 14801,
+      "key": "alyosha",
+      "rarity": "QUALITY_PURPLE",
+      "body": "BODY_BOY",
+      "region": "ASSOC_TYPE_SNEZHNAYA",
+      "element": "Electric",
+      "weapon_class": "WEAPON_POLE",
+      "icon_name": "UI_AvatarIcon_Alyosha",
+      "skill_details": {
+        "skill": 11482,
+        "burst": 11485,
+        "attack": 11481,
+        "burst_energy_cost": 70
+      }
+    },
     "amber": {
       "id": 10000021,
       "sub_id": 2101,
