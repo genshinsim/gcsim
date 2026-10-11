@@ -200,6 +200,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/aquila"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/athameartis"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/azurelight"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/beyondthechrysalis"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/blackcliff"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/blacksword"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/calamityofeshu"

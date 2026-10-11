@@ -23,6 +23,7 @@ var weaponMap = map[string]string{
 	"balladofthefjords":               "UI_EquipIcon_Pole_Shanty_Awaken",
 	"beaconofthereedsea":              "UI_EquipIcon_Claymore_Deshret_Awaken",
 	"beginnersprotector":              "UI_EquipIcon_Pole_Gewalt_Awaken",
+	"beyondthechrysalis":              "UI_EquipIcon_Sword_Samosvist_Awaken",
 	"blackcliffagate":                 "UI_EquipIcon_Catalyst_Blackrock_Awaken",
 	"blackclifflongsword":             "UI_EquipIcon_Sword_Blackrock_Awaken",
 	"blackcliffpole":                  "UI_EquipIcon_Pole_Blackrock_Awaken",
