@@ -68,17 +68,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		char.AddStatus(stackGainICDKey, 0.1*60, true)
 
-		prevStatModKey := fmt.Sprintf("whitelake-frostfeather-atk-%v", (w.stackCounter-1)%3+1)
+		oldestStatModKey := fmt.Sprintf("whitelake-frostfeather-atk-%v", (w.stackCounter+1)%3+1)
 
 		w.stackCounter++
 		w.stackCounter %= 3
 
-		if !char.StatModIsActive(prevStatModKey) {
+		if !char.StatModIsActive(oldestStatModKey) {
 			return
 		}
 
 		char.AddAttackMod(character.AttackMod{
-			Base: modifier.NewBaseWithHitlag(stellarBuffKey, char.StatusDuration(prevStatModKey)),
+			Base: modifier.NewBaseWithHitlag(stellarBuffKey, char.StatusDuration(oldestStatModKey)),
 			Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 				if atk.Info.AttackTag.IsStellarDirect() {
 					return critBuff
