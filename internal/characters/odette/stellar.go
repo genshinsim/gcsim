@@ -10,8 +10,7 @@ import (
 )
 
 const (
-	stellarBonusKey  = "odette-stellar-bonus"
-	radianceSwirlKey = "radiance-stellar-swirl"
+	stellarBonusKey = "odette-stellar-bonus"
 
 	stellarConductText = " (Stellar-Conduct)"
 	stellarSwirlText   = " (Stellar Swirl)"
@@ -30,7 +29,7 @@ func (c *char) getRadiance() radianceState {
 		return radianceStellarConduct
 	}
 
-	if c.StatusIsActive(radianceSwirlKey) {
+	if c.StatusIsActive(reactable.RadianceSwirlKey) {
 		return radianceStellarSwirl
 	}
 
@@ -86,6 +85,6 @@ func (c *char) stellarInit() {
 			return
 		}
 
-		c.AddStatus(radianceSwirlKey, 8*60, false)
+		c.AddStatus(reactable.RadianceSwirlKey, 8*60, false)
 	}, stellarBonusKey)
 }

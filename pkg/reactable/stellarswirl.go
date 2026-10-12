@@ -20,6 +20,7 @@ const (
 	sswMaxStacks       = 6
 	sswContributionKey = "stellar-swirl-contribution"
 	sswOwnerKey        = "stellar-swirl-owner"
+	RadianceSwirlKey   = "radiance-stellar-swirl"
 )
 
 type sswContribution = struct {

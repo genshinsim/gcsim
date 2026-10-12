@@ -17,8 +17,7 @@ const (
 )
 
 const (
-	stellarBonusKey  = "travelercryo-stellar-bonus"
-	radianceSwirlKey = "radiance-stellar-swirl"
+	stellarBonusKey = "travelercryo-stellar-bonus"
 )
 
 func (c *Traveler) getRadiance() radianceState {
@@ -26,7 +25,7 @@ func (c *Traveler) getRadiance() radianceState {
 		return radianceStellarConduct
 	}
 
-	if c.StatusIsActive(radianceSwirlKey) {
+	if c.StatusIsActive(reactable.RadianceSwirlKey) {
 		return radianceStellarSwirl
 	}
 
@@ -82,6 +81,6 @@ func (c *Traveler) stellarInit() {
 			return
 		}
 
-		c.AddStatus(radianceSwirlKey, 8*60, false)
+		c.AddStatus(reactable.RadianceSwirlKey, 8*60, false)
 	}, stellarBonusKey)
 }

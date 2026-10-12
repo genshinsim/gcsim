@@ -13,7 +13,6 @@ import (
 
 const (
 	stellarConductText = " (Stellar-Conduct)"
-	radianceSwirlKey   = "radiance-stellar-swirl"
 )
 
 type radianceState int
@@ -33,7 +32,7 @@ func (c *char) getRadiance() radianceState {
 		return radianceStellarConduct
 	}
 
-	if c.StatusIsActive(radianceSwirlKey) {
+	if c.StatusIsActive(reactable.RadianceSwirlKey) {
 		return radianceStellarSwirl
 	}
 
@@ -97,7 +96,7 @@ func (c *char) revelationInit() {
 			return
 		}
 
-		c.AddStatus(radianceSwirlKey, 8*60, false)
+		c.AddStatus(reactable.RadianceSwirlKey, 8*60, false)
 	}, "qiqi-ssw")
 }
 
