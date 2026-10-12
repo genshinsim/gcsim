@@ -24,6 +24,10 @@ func init() {
 }
 
 func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
+	if c.a1StellarCAReady() {
+		return c.a1StellarCA(), nil
+	}
+
 	ai := info.AttackInfo{
 		ActorIndex:       c.Index(),
 		Abil:             "Charge Attack",
@@ -59,6 +63,8 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 			ap = combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -1.2}, 2.8, 3.6)
 		}
 	}
+
+	ai.Mult *= 1 + c.c2RevelationCAMult()
 
 	c.Core.QueueAttackWithSnap(ai, snap, ap, chargeHitmark, rebukeCB, particleCB)
 	// When released, it will also unleash an icicle that deals 100% of Rebuke: Vaulting Fist's Base

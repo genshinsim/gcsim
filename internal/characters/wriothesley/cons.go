@@ -1,6 +1,9 @@
 package wriothesley
 
 import (
+	"slices"
+
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
@@ -65,18 +68,14 @@ func (c *char) c1(ai *info.AttackInfo, snap *info.Snapshot) (info.AttackCBFunc, 
 		c.AddStatus(c1ICDKey, c1ICD, true)
 
 		// E extension
-		if !c.c1SkillExtensionProc && c.StatusIsActive(skillKey) {
-			c.ExtendStatus(skillKey, c1SkillExtension)
-			c.c1SkillExtensionProc = true
-			c.Core.Log.NewEvent("c1: skill duration is extended", glog.LogCharacterEvent, c.Index())
-		}
+		c.c1SkillExtension()
 
 		// heal
 		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index(),
 			Target:  c.Index(),
 			Message: "There Shall Be a Plea for Justice",
-			Src:     c.caHeal * c.MaxHP(),
+			Src:     c.rebukeHeal * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
 		})
 	}, c.Base.Cons >= 6
@@ -90,6 +89,21 @@ func (c *char) makeC1N5CB() info.AttackCBFunc {
 		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
+		if c.a1StellarEnabled() {
+			c.AddReactBonusMod(character.ReactBonusMod{
+				Base: modifier.NewBase(c1Status+"-revelation-ca", -1),
+				Amount: func(ai info.AttackInfo) float64 {
+					if slices.Contains(ai.AdditionalTags, attacks.AttackTagWrioSSCCA) {
+						c.Core.Tasks.Add(func() {
+							c.DeleteReactBonusMod(c1Status + "-revelation-ca")
+						}, 0)
+						return 0.5
+					}
+					return 0
+				},
+			})
+			return
+		}
 		// check if E active
 		if !c.StatusIsActive(skillKey) {
 			return
@@ -100,6 +114,48 @@ func (c *char) makeC1N5CB() info.AttackCBFunc {
 		}
 		c.c1N5Proc = true
 		c.Core.Log.NewEvent("gained Gracious Rebuke from C1 N5", glog.LogCharacterEvent, c.Index())
+	}
+}
+
+// Radiance: Stellar-Conduct:
+// After a Luster: Vaulting Fist attack hits an opponent, the next fifth attack of Repelling Fist
+// enhanced by Chilling Penalty that hits within the next 5s deals 50% increased Stellar-Conduct DMG.
+// After the fifth attack of Repelling Fist enhanced by Chilling Penalty hits an opponent, Luster:
+// Vaulting Fists that hit within the next 5s deal 50% increased DMG.
+// If Luster: Vaulting Fist hits an opponent while Wriothesley is in the Chilling Penalty state,
+// that state's duration is extended by 4s.
+func (c *char) c1StellarCACB(a info.AttackCB) {
+	if c.Base.Cons < 1 {
+		return
+	}
+	if a.Target.Type() != info.TargettableEnemy {
+		return
+	}
+	if !c.a1StellarEnabled() {
+		return
+	}
+
+	c.AddReactBonusMod(character.ReactBonusMod{
+		Base: modifier.NewBase(c1Status+"-revelation-n5", -1),
+		Amount: func(ai info.AttackInfo) float64 {
+			if slices.Contains(ai.AdditionalTags, attacks.AttackTagWrioSSCN5) {
+				c.Core.Tasks.Add(func() {
+					c.DeleteReactBonusMod(c1Status + "-revelation-n5")
+				}, 0)
+				return 0.5
+			}
+			return 0
+		},
+	})
+
+	c.c1SkillExtension()
+}
+
+func (c *char) c1SkillExtension() {
+	if !c.c1SkillExtensionProc && c.StatusIsActive(skillKey) {
+		c.ExtendStatus(skillKey, c1SkillExtension)
+		c.c1SkillExtensionProc = true
+		c.Core.Log.NewEvent("c1: skill duration is extended", glog.LogCharacterEvent, c.Index())
 	}
 }
 
@@ -129,6 +185,82 @@ func (c *char) c2(snap *info.Snapshot) {
 	c.Core.Log.NewEvent("adding c2", glog.LogCharacterEvent, c.Index()).Write("dmg%", dmg)
 }
 
+func (c *char) c2RevelationSSCMult() float64 {
+	if c.Base.Cons < 2 {
+		return 0
+	}
+
+	if !c.revelation {
+		return 0
+	}
+
+	if c.Base.Ascension < 4 {
+		return 0
+	}
+
+	if c.a4Stack < 5 {
+		return 0
+	}
+
+	if !c.skillBuffActive() {
+		return 0
+	}
+
+	if !c.isStellarRadiance() {
+		return 0
+	}
+
+	return 0.5
+}
+
+func (c *char) c2RevelationNAMult() float64 {
+	if c.Base.Cons < 2 {
+		return 0
+	}
+
+	if !c.revelation {
+		return 0
+	}
+
+	if c.Base.Ascension < 4 {
+		return 0
+	}
+
+	if !c.skillBuffActive() {
+		return 0
+	}
+
+	if c.isStellarRadiance() {
+		return 0
+	}
+
+	return 0.25
+}
+
+func (c *char) c2RevelationCAMult() float64 {
+	if c.Base.Cons < 2 {
+		return 0
+	}
+
+	if !c.revelation {
+		return 0
+	}
+
+	if c.Base.Ascension < 4 {
+		return 0
+	}
+
+	if !c.skillBuffActive() {
+		return 0
+	}
+
+	if c.isStellarRadiance() {
+		return 0
+	}
+
+	return 0.3
+}
+
 // The HP restored to Wriothesley through Rebuke: Vaulting Fist will be increased to 50%
 // of his Max HP. You must first unlock the Passive Talent "There Shall Be a Plea for Justice."
 // Additionally, when Wriothesley is healed, if the amount of healing overflows, the following
@@ -137,12 +269,16 @@ func (c *char) c2(snap *info.Snapshot) {
 // will be increased by 10% for 6s. These two ATK SPD increasing methods cannot stack.
 func (c *char) c4() {
 	if c.Base.Cons < 4 {
-		c.caHeal = 0.3
+		c.rebukeHeal = 0.3
 		return
 	}
-	c.caHeal = 0.5
+	c.rebukeHeal = 0.5
 
+	m := make([]float64, attributes.EndStatType)
 	c.Core.Events.Subscribe(event.OnHeal, func(args ...any) {
+		if c.revelation && c.isStellarRadiance() {
+			return
+		}
 		index := args[1].(int)
 		amount := args[2].(float64)
 		overheal := args[3].(float64)
@@ -157,7 +293,6 @@ func (c *char) c4() {
 		}
 
 		chars := c.Core.Player.Chars()
-		m := make([]float64, attributes.EndStatType)
 
 		// remove old buffs
 		for _, char := range chars {
@@ -165,30 +300,64 @@ func (c *char) c4() {
 		}
 
 		if c.Core.Player.Active() == c.Index() {
-			m[attributes.AtkSpd] = 0.2
 			c.AddStatMod(character.StatMod{
 				Base:         modifier.NewBaseWithHitlag(c4Status, 4*60),
 				AffectedStat: attributes.AtkSpd,
 				Amount: func() []float64 {
+					m[attributes.AtkSpd] = 0.2
 					return m
 				},
 			})
 		} else {
-			m[attributes.AtkSpd] = 0.1
 			for _, char := range chars {
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag(c4Status, 6*60),
 					AffectedStat: attributes.AtkSpd,
 					Amount: func() []float64 {
+						m[attributes.AtkSpd] = 0.1
 						return m
 					},
 				})
 			}
 		}
 	}, "wriothesley-c4-heal")
+
+	if !c.revelation {
+		return
+	}
+
+	for _, ch := range c.Core.Player.Chars() {
+		amt := 0.1
+		if ch.Index() == c.Index() {
+			amt = 0.2
+		}
+
+		ch.AddStatMod(character.StatMod{
+			Base:         modifier.NewBase(c4Status+"-revelation", -1),
+			AffectedStat: attributes.AtkSpd,
+			Amount: func() []float64 {
+				if c.StatusIsActive(c4Status) {
+					return nil
+				}
+				if !c.isStellarRadiance() {
+					return nil
+				}
+				m[attributes.AtkSpd] = amt
+				return m
+			},
+		})
+	}
 }
 
-// The CRIT Rate of Rebuke: Vaulting Fist will be increased by 10%, and its CRIT DMG by 80%.
+// The CRIT Rate of Rebuke: Vaulting Fist will be increased by 10%, and its CRIT DMG by 80%. When
+// unleashed, it will also create an additional icicle that deals 100% of Rebuke: Vaulting Fist's
+// original DMG as Cryo DMG. DMG dealt this way is regarded as Charged Attack DMG.
+//
+// Radiance: Stellar-Conduct: The aforementioned effect is changed to:
+// The Repelling Fist enhanced by Chilling Penalty, as well as Luster: Vaulting Fist, gain a 10%
+// CRIT Rate and 80% CRIT DMG boost. In addition, the fifth attack of Repelling Fists enhanced by
+// Chilling Penalty, as well as Luster: Vaulting Fist, will each generate an additional icicle that
+// deals Cryo DMG at 60% of its original DMG. This DMG will be considered Stellar-Conduct DMG.
 func (c *char) addC6Buff(snap *info.Snapshot) {
 	if c.Base.Cons < 6 {
 		return
@@ -198,4 +367,44 @@ func (c *char) addC6Buff(snap *info.Snapshot) {
 	snap.Stats[attributes.CR] += cr
 	snap.Stats[attributes.CD] += cd
 	c.Core.Log.NewEvent("adding c6", glog.LogCharacterEvent, c.Index()).Write("cr", cr).Write("cd", cd)
+}
+
+func (c *char) c6OnN5(ai *info.AttackInfo, snap *info.Snapshot, ap *info.AttackPattern) {
+	if c.Base.Cons < 6 {
+		return
+	}
+	if !c.revelation {
+		return
+	}
+	if !c.skillBuffActive() {
+		return
+	}
+	if !c.a1StellarEnabled() {
+		return
+	}
+
+	ai.Abil = "Normal 5 (Enhanced) (C6)" + stellarConductText
+	ai.Mult *= 0.6
+	ai.IsDeployable = true
+	c.Core.QueueAttackWithSnap(*ai, *snap, *ap, 0, c.particleCB)
+}
+
+func (c *char) c6OnStellarCA(ai *info.AttackInfo, snap *info.Snapshot, ap *info.AttackPattern) {
+	if c.Base.Cons < 6 {
+		return
+	}
+	if !c.revelation {
+		return
+	}
+	if !c.skillBuffActive() {
+		return
+	}
+	if !c.a1StellarEnabled() {
+		return
+	}
+
+	ai.Abil = "Luster: Vaulting Fist (C6)" + stellarConductText
+	ai.Mult *= 0.6
+	ai.IsDeployable = true
+	c.Core.QueueAttackWithSnap(*ai, *snap, *ap, 0)
 }

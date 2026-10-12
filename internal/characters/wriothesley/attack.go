@@ -52,11 +52,11 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 	case action.DashState, action.SkillState:
 		c.NormalCounter = c.savedNormalCounter
 	}
-
+	n := c.NormalCounter
 	for i, mult := range attack[c.NormalCounter] {
 		ai := info.AttackInfo{
 			ActorIndex:         c.Index(),
-			Abil:               fmt.Sprintf("Normal %v", c.NormalCounter),
+			Abil:               fmt.Sprintf("Normal %v", n+1),
 			AttackTag:          attacks.AttackTagNormal,
 			ICDTag:             attacks.ICDTagNormalAttack,
 			ICDGroup:           attacks.ICDGroupDefault,
@@ -69,33 +69,63 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			CanBeDefenseHalted: true,
 		}
 		c1N5CB := c.makeC1N5CB() // here so that the normalcounter check is correct
-		n := c.NormalCounter
+
 		c.QueueCharTask(func() {
 			// TODO: when should this check happen?
 			skillIndex := 0
 			var particleCB info.AttackCBFunc
 			var chillingPenalty info.AttackCBFunc
+			var snap info.Snapshot
 			if c.skillBuffActive() {
 				skillIndex = 1
 				particleCB = c.particleCB
 				chillingPenalty = c.chillingPenalty
-				ai.Abil = fmt.Sprintf("Normal %v (Enhanced)", n)
+				ai.Abil = fmt.Sprintf("Normal %v (Enhanced)", n+1)
+				ai.Mult *= skill[c.TalentLvlSkill()]
+				ai.Mult *= 1 + c.c2RevelationNAMult()
 			}
-			c.Core.QueueAttack(
+
+			if c.skillBuffActive() && c.a1StellarEnabled() && (n == 2 || n == 4) {
+				ai.Abil += stellarConductText
+				ai.AttackTag = attacks.AttackTagDirectStellarConduct
+				ai.IgnoreDefPercent = 1
+				if n == 2 {
+					ai.Mult *= 0.6
+				} else {
+					ai.AdditionalTags = []attacks.AttackTag{attacks.AttackTagWrioSSCN5}
+					ai.Mult *= 0.8
+				}
+				// this won't overlap with the NA mult because the NA mult only get applied when the stellar field isn't enabled
+				ai.Mult *= 1 + c.c2RevelationSSCMult()
+			}
+
+			ap := combat.NewBoxHitOnTarget(
+				c.Core.Combat.Player(),
+				info.Point{Y: attackOffsets[skillIndex]},
+				attackHitboxes[skillIndex][c.NormalCounter][0],
+				attackHitboxes[skillIndex][c.NormalCounter][1],
+			)
+
+			snap = c.Snapshot(&ai)
+
+			if c.skillBuffActive() && c.a1StellarEnabled() {
+				c.addC6Buff(&snap)
+			}
+
+			c.Core.QueueAttackWithSnap(
 				ai,
-				combat.NewBoxHitOnTarget(
-					c.Core.Combat.Player(),
-					info.Point{Y: attackOffsets[skillIndex]},
-					attackHitboxes[skillIndex][c.NormalCounter][0],
-					attackHitboxes[skillIndex][c.NormalCounter][1],
-				),
-				0,
+				snap,
+				ap,
 				0,
 				c1N5CB,
 				particleCB,
 				chillingPenalty,
 			)
-		}, attackHitmarks[c.NormalCounter][i])
+
+			if n == 4 {
+				c.c6OnN5(&ai, &snap, &ap)
+			}
+		}, attackHitmarks[n][i])
 	}
 
 	defer func() {
@@ -105,8 +135,8 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	return action.Info{
 		Frames:          frames.NewAttackFunc(c.Character, attackFrames),
-		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
-		CanQueueAfter:   attackHitmarks[c.NormalCounter][len(attackHitmarks[c.NormalCounter])-1],
+		AnimationLength: attackFrames[n][action.InvalidAction],
+		CanQueueAfter:   attackHitmarks[n][len(attackHitmarks[n])-1],
 		State:           action.NormalAttackState,
 	}, nil
 }

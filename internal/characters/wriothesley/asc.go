@@ -61,7 +61,7 @@ func (c *char) a1(ai *info.AttackInfo, snap *info.Snapshot) info.AttackCBFunc {
 			Caller:  c.Index(),
 			Target:  c.Index(),
 			Message: "There Shall Be a Plea for Justice",
-			Src:     c.caHeal * c.MaxHP(),
+			Src:     c.rebukeHeal * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
 		})
 	}
