@@ -140,7 +140,8 @@ func (c *char) c6() {
 		}
 
 		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag(c6Key, 20*60),
+			Base:  modifier.NewBaseWithHitlag(c6Key, 20*60),
+			Extra: true,
 			Amount: func() []float64 {
 				return c.c6Buff
 			},
