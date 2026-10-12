@@ -62,27 +62,6 @@ func init() {
 func (c *char) Skill(p map[string]int) (action.Info, error) {
 	// if used while in dreamDrifter state, cancel the state.
 	if c.StatusIsActive(dreamDrifterStateKey) {
-		adjustTravel, ok := p["adjust_travel"]
-		if !ok {
-			adjustTravel = 0
-		}
-
-		if adjustTravel != 0 {
-			travel, _ := p["travel"]
-			c.cloudTravel = travel
-			c.cloudTravel = max(c.cloudTravel, 0)
-			c.cloudTravel = min(c.cloudTravel, 120)
-			skipTicks, _ := p["skip_ticks"]
-			c.cloudSkipTicks = skipTicks
-
-			return action.Info{
-				Frames:          frames.NewAbilFunc(skillFrames),
-				AnimationLength: skillFrames[action.InvalidAction],
-				CanQueueAfter:   skillFrames[action.ActionSwap], // earliest cancel is swap
-				State:           action.SkillState,
-			}, nil
-		}
-
 		c.cancelDreamDrifterState()
 		return action.Info{
 			Frames:          frames.NewAbilFunc(skillFrames),
@@ -158,11 +137,7 @@ func (c *char) applyDreamDrifterEffect() {
 
 	c.startCloudAttacks()
 
-	if c.Base.Cons >= 1 {
-		// Debuff does not take 3.5s to apply but does not trigger on initial skill activation swirl according to testing.
-		// First cloud (0.45s after skill activation) can trigger it so queue it a few frames later
-		c.c1Task(c.cloudSrc, skillHitmark+2)
-	}
+	c.c1Task(c.cloudSrc, skillHitmark+2)
 }
 
 func (c *char) skillInit() {
@@ -252,6 +227,11 @@ func (c *char) cancelDreamDrifterState() {
 }
 
 func (c *char) cloudTask(src, hitmark int) {
+	if c.Core.Combat.Debug {
+		c.Core.Log.NewEvent("cloud task", glog.LogCharacterEvent, c.Index()).
+			Write("travel", c.cloudTravel).
+			Write("skip_ticks", c.cloudSkipTicks)
+	}
 	c.QueueCharTask(func() {
 		if c.cloudSrc != src {
 			return
@@ -260,7 +240,7 @@ func (c *char) cloudTask(src, hitmark int) {
 			return
 		}
 		if c.cloudSkipTicks > 0 {
-			c.cloudTask(src, 15*c.cloudSkipTicks+hitmark)
+			c.cloudTask(src, 15*c.cloudSkipTicks)
 			c.cloudSkipTicks = 0
 			return
 		}

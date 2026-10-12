@@ -5275,32 +5275,6 @@
       "deployable": true
     }
   ],
-  "yumemizukimizuki": [
-    {
-      "ability": "attack",
-      "name": "N1",
-      "time": 0,
-      "scale": 0,
-      "defense_halt": false,
-      "deployable": true
-    },
-    {
-      "ability": "attack",
-      "name": "N2",
-      "time": 0,
-      "scale": 0,
-      "defense_halt": false,
-      "deployable": true
-    },
-    {
-      "ability": "attack",
-      "name": "N3",
-      "time": 0,
-      "scale": 0,
-      "defense_halt": false,
-      "deployable": true
-    }
-  ],
   "yunjin": [
     {
       "ability": "attack",

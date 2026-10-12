@@ -16,7 +16,8 @@ func init() {
 	core.RegisterCharFunc(keys.YumemizukiMizuki, NewChar)
 	paramsFor := map[action.Action][]string{
 		action.ActionAttack: {"travel"},
-		action.ActionSkill:  {"adjust_travel", "skip_ticks", "travel"},
+		action.ActionSkill:  {"skip_ticks", "travel"},
+		action.ActionWalk:   {"skip_ticks", "travel"},
 	}
 	validation.RegisterCharParamValidationFunc(keys.YumemizukiMizuki, func(a action.Action, keys []string) error {
 		valid, ok := paramsFor[a]

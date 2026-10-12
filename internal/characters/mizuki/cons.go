@@ -28,6 +28,8 @@ const (
 	c6Key               = "mizuki-c6"
 	c6CR                = 0.3
 	c6CD                = 1.0
+	c6StellarCR         = 0.1
+	c6StellarCD         = 0.2
 )
 
 // When Yumemizuki Mizuki is in the Dreamdrifter state, she will continuously apply the "Twenty-Three Nights' Awaiting"
@@ -91,18 +93,16 @@ func (c *char) c1() {
 
 func (c *char) c1AnemoHit(e *enemy.Enemy) {
 	ai := info.AttackInfo{
-		ActorIndex:   c.Index(),
-		Abil:         "Mizuki C1 Anemo Hit",
-		AttackTag:    attacks.AttackTagNone,
-		ICDTag:       attacks.ICDTagNone,
-		ICDGroup:     attacks.ICDGroupDefault,
-		StrikeType:   attacks.StrikeTypeDefault,
-		PoiseDMG:     skillActivatePoise,
-		Element:      attributes.Anemo,
-		Durability:   25,
-		UseEM:        true,
-		Mult:         10,
-		HitlagFactor: 0.01,
+		ActorIndex: c.Index(),
+		Abil:       "Mizuki C1 (Anemo)",
+		AttackTag:  attacks.AttackTagNone,
+		ICDTag:     attacks.ICDTagNone,
+		ICDGroup:   attacks.ICDGroupDefault,
+		StrikeType: attacks.StrikeTypeDefault,
+		Element:    attributes.Anemo,
+		Durability: 25,
+		UseEM:      true,
+		Mult:       10,
 	}
 
 	ap := combat.NewSingleTargetHit(e.Key())
@@ -113,18 +113,16 @@ func (c *char) c1AnemoHit(e *enemy.Enemy) {
 func (c *char) c1StellarHit(e *enemy.Enemy) {
 	ai := info.AttackInfo{
 		ActorIndex:       c.Index(),
-		Abil:             "Mizuki C1 Stellar Swirl Hit",
+		Abil:             "Mizuki C1 (Stellar Swirl)",
 		AttackTag:        attacks.AttackTagDirectStellarSwirl,
 		ICDTag:           attacks.ICDTagNone,
 		ICDGroup:         attacks.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeDefault,
-		PoiseDMG:         skillActivatePoise,
 		Element:          attributes.Anemo,
 		Durability:       25,
 		UseEM:            true,
 		Mult:             4,
 		IgnoreDefPercent: 1,
-		HitlagFactor:     0.05,
 	}
 
 	ap := combat.NewSingleTargetHit(e.Key())
@@ -133,6 +131,10 @@ func (c *char) c1StellarHit(e *enemy.Enemy) {
 }
 
 func (c *char) c1Task(src, hitmark int) {
+	if c.Base.Cons < 1 {
+		return
+	}
+
 	c.QueueCharTask(func() {
 		if c.cloudSrc != src {
 			return
@@ -263,6 +265,33 @@ func (c *char) c4() {
 	}
 }
 
+func (c *char) c4SnackSetup(dmg, heal *bool) {
+	if c.Base.Cons < 4 {
+		return
+	}
+
+	*dmg = true
+	*heal = true
+	if c.revelation {
+		c.c4RevelationHeal()
+	}
+}
+
+func (c *char) c4RevelationHeal() {
+	char := c.lowestHPChar()
+	if char == c.Index() {
+		return
+	}
+
+	c.Core.Player.Heal(info.HealInfo{
+		Caller:  c.Index(),
+		Target:  char,
+		Message: snackHealNameLowest,
+		Src:     c.Stat(attributes.EM) * 2.66,
+		Bonus:   c.Stat(attributes.Heal),
+	})
+}
+
 // While Yumemizuki Mizuki is in the Dreamdrifter state, Swirl DMG dealt by nearby party members
 // can score CRIT Hits, with CRIT Rate fixed at 30%, and CRIT DMG fixed at 100%. The CRIT Rate of
 // any Stellar Swirl DMG dealt by these party members is also increased by 10%, while CRIT DMG is
@@ -305,8 +334,8 @@ func (c *char) c6() {
 	}, c6Key)
 
 	c.c6Buff = make([]float64, attributes.EndStatType)
-	c.c6Buff[attributes.CR] = 0.1
-	c.c6Buff[attributes.CD] = 0.2
+	c.c6Buff[attributes.CR] = c6StellarCR
+	c.c6Buff[attributes.CD] = c6StellarCD
 
 	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
 		ae, ok := args[1].(*info.AttackEvent)
@@ -323,14 +352,14 @@ func (c *char) c6() {
 			return
 		}
 
-		ae.Snapshot.Stats[attributes.CR] += 0.1
-		ae.Snapshot.Stats[attributes.CD] += 0.2
+		ae.Snapshot.Stats[attributes.CR] += c6StellarCR
+		ae.Snapshot.Stats[attributes.CD] += c6StellarCD
 	}, c6Key+"-stellarswirl")
 
 	for _, char := range c.Core.Player.Chars() {
 		char.AddAttackMod(character.AttackMod{
 			Base: modifier.NewBase(c6Key, -1),
-			Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
+			Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
 				if atk.Info.AttackTag != attacks.AttackTagDirectStellarSwirl {
 					return nil
 				}
@@ -349,7 +378,7 @@ func (c *char) c6RevelationInit() {
 		return
 	}
 
-	excessEM := c.Stat(attributes.EM) - 500
+	excessEM := c.NonExtraStat(attributes.EM) - 500
 	excessEM = max(excessEM, 0)
 
 	m := make([]float64, attributes.EndStatType)
@@ -357,7 +386,8 @@ func (c *char) c6RevelationInit() {
 	m[attributes.CR] = max(excessEM*0.0004, 0.2)
 
 	c.AddStatMod(character.StatMod{
-		Base: modifier.NewBase("mizuki-c6-revelation", -1),
+		Base:  modifier.NewBase("mizuki-c6-revelation", -1),
+		Extra: true,
 		Amount: func() []float64 {
 			return m
 		},

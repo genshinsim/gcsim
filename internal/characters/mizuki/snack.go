@@ -94,27 +94,17 @@ func (p *snack) collidesWithActiveCharacterDefaultSize() bool {
 func (p *snack) onPickedUp() {
 	var heal bool
 	var dmg bool
-	var healLowest bool
 
 	mizuki := p.char
 	activeChar := p.Core.Player.ActiveChar()
 
-	// C4 triggers both DMG and Heal
-	if mizuki.Base.Cons >= 4 {
-		dmg = true
-		heal = true
-		if mizuki.revelation {
-			healLowest = true
-		}
-	} else {
-		// Heals active char if is bellow 70% hp otherwise deals DMG
-		dmg = activeChar.CurrentHP() > (activeChar.MaxHP() * snackHealTriggerHpRatio)
-		heal = !dmg
-	}
+	dmg = activeChar.CurrentHP() > (activeChar.MaxHP() * snackHealTriggerHpRatio)
+	heal = !dmg
+
+	mizuki.c4SnackSetup(&dmg, &heal)
 
 	p.Core.Log.NewEvent("Picked up snack", glog.LogCharacterEvent, activeChar.Index()).
 		Write("heal", heal).
-		Write("heal_lowest", healLowest).
 		Write("dmg", dmg)
 
 	if dmg {
@@ -136,48 +126,10 @@ func (p *snack) onPickedUp() {
 		})
 	}
 
-	if healLowest {
-		p.healLowestHPChar(mizuki)
-	}
-
 	// C4 restores 5 energy to mizuki up to 4 times
 	mizuki.c4()
 
 	p.Kill()
-}
-
-func (p *snack) lowestHPChar() int {
-	lowestIdx := -1
-	lowestPct := 2.0 // > 1
-
-	for i := 0; i < len(p.Core.Player.Chars()); i++ {
-		ch := p.Core.Player.Chars()[i]
-		if ch.CurrentHP() <= 0 {
-			continue
-		}
-
-		if ch.CurrentHPRatio() < lowestPct {
-			lowestPct = ch.CurrentHPRatio()
-			lowestIdx = i
-		}
-	}
-
-	return lowestIdx
-}
-
-func (p *snack) healLowestHPChar(mizuki *char) {
-	char := p.lowestHPChar()
-	if char == mizuki.Index() {
-		return
-	}
-
-	mizuki.Core.Player.Heal(info.HealInfo{
-		Caller:  mizuki.Index(),
-		Target:  char,
-		Message: snackHealNameLowest,
-		Src:     mizuki.Stat(attributes.EM) * 2.66,
-		Bonus:   mizuki.Stat(attributes.Heal),
-	})
 }
 
 func (p *snack) explode() {

@@ -17,30 +17,6 @@ const (
 	dreamDrifterBuffICDKey = "dreamdrifter-buff-icd"
 )
 
-// type radianceState int
-
-// const (
-// 	radianceNone radianceState = iota
-// 	radianceStellarConduct
-// 	radianceStellarSwirl
-// )
-
-// func (c *char) getRadiance() radianceState {
-// 	if !c.revelation {
-// 		return radianceNone
-// 	}
-
-// 	if c.StatusIsActive(reactable.PolestarFieldKey) {
-// 		return radianceStellarConduct
-// 	}
-
-// 	if c.StatusIsActive(radianceSwirlKey) {
-// 		return radianceStellarSwirl
-// 	}
-
-// 	return radianceNone
-// }
-
 func (c *char) revelationInit() {
 	if !c.revelation {
 		return
@@ -118,7 +94,7 @@ func (c *char) revelationInit() {
 func (c *char) stellarHit(t info.Target) {
 	ai := info.AttackInfo{
 		ActorIndex:       c.Index(),
-		Abil:             "Dreamdrifter Stellar Swirl",
+		Abil:             "Dreamdrifter (Stellar Swirl)",
 		AttackTag:        attacks.AttackTagDirectStellarSwirl,
 		ICDTag:           attacks.ICDTagNone,
 		ICDGroup:         attacks.ICDGroupDefault,

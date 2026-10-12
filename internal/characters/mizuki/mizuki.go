@@ -57,6 +57,25 @@ func (c *char) Init() error {
 	return nil
 }
 
+func (c *char) lowestHPChar() int {
+	lowestIdx := -1
+	lowestPct := 2.0 // > 1
+
+	for i := 0; i < len(c.Core.Player.Chars()); i++ {
+		ch := c.Core.Player.Chars()[i]
+		if ch.CurrentHP() <= 0 {
+			continue
+		}
+
+		if ch.CurrentHPRatio() < lowestPct {
+			lowestPct = ch.CurrentHPRatio()
+			lowestIdx = i
+		}
+	}
+
+	return lowestIdx
+}
+
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
 	if !c.StatusIsActive(dreamDrifterStateKey) {
 		return c.Character.ActionReady(a, p)
