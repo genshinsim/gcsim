@@ -32,7 +32,7 @@ const (
 	cloudExplosionRadius          = 4
 	cloudTravelTime               = 30
 	cloudFirstHit                 = 18
-	cloudHitInterval              = 45
+	cloudHitInterval              = 44
 	dreamDrifterStateKey          = "dreamdrifter-state"
 	dreamDrifterBaseDuration      = 5 * 60
 	dreamDrifterSwirlBuffKey      = "mizuki-swirl-buff"
