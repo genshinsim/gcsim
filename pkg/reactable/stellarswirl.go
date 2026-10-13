@@ -31,6 +31,10 @@ type sswContribution = struct {
 }
 
 func (r *Reactable) queueStellarSwirl(charIndex int) {
+	for _, c := range r.core.Player.Chars() {
+		c.AddStatus(RadianceSwirlKey, 8*60, false)
+	}
+
 	// stellar swirl triggers an aoe attack
 	ai := info.AttackInfo{
 		ActorIndex:       charIndex,
@@ -91,10 +95,6 @@ func (r *Reactable) queueStellarSwirl(charIndex int) {
 
 	if r.sswStacks() >= sswMaxStacks {
 		vortex.Kill()
-	}
-
-	for _, c := range r.core.Player.Chars() {
-		c.AddStatus(RadianceSwirlKey, 8*60, false)
 	}
 }
 
