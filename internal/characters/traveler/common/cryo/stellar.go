@@ -4,7 +4,6 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
@@ -17,8 +16,7 @@ const (
 )
 
 const (
-	stellarBonusKey  = "travelercryo-stellar-bonus"
-	radianceSwirlKey = "radiance-stellar-swirl"
+	stellarBonusKey = "travelercryo-stellar-bonus"
 )
 
 func (c *Traveler) getRadiance() radianceState {
@@ -26,7 +24,7 @@ func (c *Traveler) getRadiance() radianceState {
 		return radianceStellarConduct
 	}
 
-	if c.StatusIsActive(radianceSwirlKey) {
+	if c.StatusIsActive(reactable.RadianceSwirlKey) {
 		return radianceStellarSwirl
 	}
 
@@ -76,12 +74,4 @@ func (c *Traveler) stellarInit() {
 
 		atk.Info.BaseDmgBonus += bonus
 	}, stellarBonusKey+"-reaction")
-
-	c.Core.Events.Subscribe(event.OnStellarSwirl, func(args ...any) {
-		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return
-		}
-
-		c.AddStatus(radianceSwirlKey, 8*60, false)
-	}, stellarBonusKey)
 }

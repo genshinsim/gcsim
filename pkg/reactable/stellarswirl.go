@@ -20,6 +20,7 @@ const (
 	sswMaxStacks       = 6
 	sswContributionKey = "stellar-swirl-contribution"
 	sswOwnerKey        = "stellar-swirl-owner"
+	RadianceSwirlKey   = "radiance-stellar-swirl"
 )
 
 type sswContribution = struct {
@@ -30,6 +31,10 @@ type sswContribution = struct {
 }
 
 func (r *Reactable) queueStellarSwirl(charIndex int) {
+	for _, c := range r.core.Player.Chars() {
+		c.AddStatus(RadianceSwirlKey, 8*60, false)
+	}
+
 	// stellar swirl triggers an aoe attack
 	ai := info.AttackInfo{
 		ActorIndex:       charIndex,
