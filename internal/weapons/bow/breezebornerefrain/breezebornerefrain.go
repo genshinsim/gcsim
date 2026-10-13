@@ -31,6 +31,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	erBuff := make([]float64, attributes.EndStatType)
 	erBuff[attributes.ER] = 0.15 + float64(r)*0.05
 
+	stellarBuff := 0.18 + 0.06*float64(r)
+
 	char.AddStatMod(character.StatMod{
 		Base: modifier.NewBase(erBufffKey, -1),
 		Amount: func() []float64 {
@@ -56,7 +58,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 
-		if char.StatusIsActive(viberKey) {
+		if char.StatusIsActive(viperKey) {
 			return
 		}
 
@@ -72,18 +74,18 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		w.stackCounter = 0
-		char.AddStatus(viberKey, 12*60, true)
+		char.AddStatus(viperKey, 12*60, true)
 
 		for _, ch := range c.Player.Chars() {
 			ch.AddReactBonusMod(character.ReactBonusMod{
-				Base: modifier.NewBaseWithHitlag(viberKey, 12*60),
+				Base: modifier.NewBase(viperKey, 12*60),
 				Amount: func(ai info.AttackInfo) float64 {
 					switch ai.AttackTag {
 					case
 						attacks.AttackTagDirectStellarConduct,
 						attacks.AttackTagDirectStellarSwirl,
 						attacks.AttackTagReactionStellarSwirl:
-						return 0.18 + 0.06*float64(r)
+						return stellarBuff
 					default:
 						return 0
 					}
