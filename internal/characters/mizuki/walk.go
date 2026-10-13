@@ -13,5 +13,5 @@ func (c *char) Walk(p map[string]int) (action.Info, error) {
 		skipTicks, _ := p["skip_ticks"]
 		c.cloudSkipTicks = skipTicks
 	}
-	return c.Walk(p)
+	return c.Character.Walk(p)
 }
