@@ -16,20 +16,30 @@ func (r *Reactable) TryFreeze(a *info.AttackEvent) bool {
 	// 1. src exists but no other coexisting -> attach
 	// 2. src does not exist but opposite coexists -> add to freeze durability
 	var consumed info.Durability
+	// contributions = append(contributions, sswContribution{flatdmg, isCrit, charInd, ae})
 	switch a.Info.Element {
 	case attributes.Hydro:
 		// if cryo exists we'll trigger freeze regardless if frozen already coexists
-		if r.GetAuraDurability(info.ReactionModKeyCryo) < info.ZeroDur {
+		cryoContributors := []int{}
+		cryoPresent := false
+		for charInd, dur := range r.Durability[info.ReactionModKeyCryo] {
+			if dur <= info.ZeroDur {
+				continue
+			}
+			cryoContributors = append(cryoContributors, charInd)
+			cryoPresent = true
+		}
+		if !cryoPresent {
 			return false
 		}
-		consumed = r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyCryo), a.Info.Durability, a.Info.ActorIndex)
+		consumed = r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyCryo), a.Info.Durability, cryoContributors)
 		r.reduceMod(info.ReactionModKeyCryo, consumed)
 
 	case attributes.Cryo:
 		if r.GetAuraDurability(info.ReactionModKeyHydro) < info.ZeroDur {
 			return false
 		}
-		consumed := r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyHydro), a.Info.Durability, a.Info.ActorIndex)
+		consumed := r.triggerFreeze(r.GetAuraDurability(info.ReactionModKeyHydro), a.Info.Durability, []int{a.Info.ActorIndex})
 		r.reduceMod(info.ReactionModKeyHydro, consumed)
 	default:
 		// should be here
@@ -100,13 +110,13 @@ func (r *Reactable) ShatterCheck(a *info.AttackEvent) bool {
 }
 
 // add to freeze durability and return amount of durability consumed
-func (r *Reactable) triggerFreeze(a, b info.Durability, src int) info.Durability {
+func (r *Reactable) triggerFreeze(a, b info.Durability, srcs []int) info.Durability {
 	d := min(a, b)
 	if r.FreezeResist >= 1 {
 		return d
 	}
 	// trigger freeze should only addDurability and should not touch decay rate
-	r.attachOverlap(info.ReactionModKeyFrozen, 2*d, info.ZeroDur, src)
+	r.attachOverlapSrcs(info.ReactionModKeyFrozen, 2*d, info.ZeroDur, srcs)
 	return d
 }
 
