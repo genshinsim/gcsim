@@ -12,9 +12,10 @@ import (
 )
 
 const (
-	a1Status = "wriothesley-a1"
-	a1ICD    = 5 * 60
-	a1ICDKey = "wriothesley-a1-icd"
+	a1Status   = "wriothesley-a1"
+	a1ICD      = 5 * 60
+	a1ICDKey   = "wriothesley-a1-icd"
+	a1HealName = "There Shall Be a Plea for Justice"
 )
 
 func (c *char) a1Ready() bool {
@@ -60,7 +61,7 @@ func (c *char) a1(ai *info.AttackInfo, snap *info.Snapshot) info.AttackCBFunc {
 		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index(),
 			Target:  c.Index(),
-			Message: "There Shall Be a Plea for Justice",
+			Message: a1HealName,
 			Src:     c.rebukeHeal * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
 		})

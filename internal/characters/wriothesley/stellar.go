@@ -124,7 +124,7 @@ func (c *char) a1StellarCACB(a info.AttackCB) {
 	c.Core.Player.Heal(info.HealInfo{
 		Caller:  c.Index(),
 		Target:  c.Index(),
-		Message: "There Shall Be a Plea for Justice",
+		Message: a1HealName,
 		Src:     0.3 * c.MaxHP(),
 		Bonus:   c.Stat(attributes.Heal),
 	})

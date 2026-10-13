@@ -74,7 +74,7 @@ func (c *char) c1(ai *info.AttackInfo, snap *info.Snapshot) (info.AttackCBFunc, 
 		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index(),
 			Target:  c.Index(),
-			Message: "There Shall Be a Plea for Justice",
+			Message: a1HealName,
 			Src:     c.rebukeHeal * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
 		})
