@@ -14927,14 +14927,14 @@
     },
     {
       "ability": "cons",
-      "name": "Mizuki C1 (Anemo)",
+      "name": "C1-Anemo",
       "note": "Spawns on target that C1 enhanced swirl hits when not in radiance state.",
       "shape": "Single",
       "center": "GlobalValue"
     },
     {
       "ability": "cons",
-      "name": "Mizuki C1 (Stellar Swirl)",
+      "name": "C1-Stellar-Swirl",
       "note": "Spawns on target that C1 enhanced swirl hits when in radiance state.",
       "shape": "Single",
       "center": "GlobalValue"

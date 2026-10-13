@@ -23,6 +23,7 @@ type char struct {
 	c4EnergyGenerationsRemaining    int
 	c6Buff                          []float64
 	revelation                      bool
+	revelationBuff                  []float64
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {

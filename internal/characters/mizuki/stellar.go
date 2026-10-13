@@ -10,15 +10,19 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 const (
-	stellarConductText     = " (Stellar-Conduct)"
-	radianceSwirlKey       = "radiance-stellar-swirl"
+	stellarSwirlText       = " (Stellar Swirl)"
 	dreamDrifterBuffKey    = "dreamdrifter-buff"
 	dreamDrifterBuffICDKey = "dreamdrifter-buff-icd"
 	revelationShareEMKey   = "mizuki-revelation-share-em"
 )
+
+func (c *char) isRadianceSSw() bool {
+	return c.StatusIsActive(reactable.RadianceSwirlKey)
+}
 
 func (c *char) revelationInit() {
 	if !c.revelation {
@@ -45,7 +49,7 @@ func (c *char) revelationInit() {
 
 		atk.Info.FlatDmg += c.Stat(attributes.EM) * 10
 
-		if !c.StatusIsActive(radianceSwirlKey) {
+		if !c.isRadianceSSw() {
 			return
 		}
 
@@ -55,6 +59,10 @@ func (c *char) revelationInit() {
 	}
 
 	onSwirl := func(args ...any) {
+		if _, ok := args[0].(*enemy.Enemy); !ok {
+			return
+		}
+
 		atk, ok := args[1].(*info.AttackEvent)
 		if !ok {
 			return
@@ -74,22 +82,28 @@ func (c *char) revelationInit() {
 		}, 0.25*60)
 	}
 
-	c.Core.Events.Subscribe(event.OnStellarSwirl, func(args ...any) {
-		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return
-		}
-
-		c.AddStatus(radianceSwirlKey, 8*60, false)
-
-		onSwirl(args...)
-	}, "mizuki-ssw")
-
 	c.Core.Events.Subscribe(event.OnSwirlCryo, onSwirl, "mizuki-swirl")
 	c.Core.Events.Subscribe(event.OnSwirlPyro, onSwirl, "mizuki-swirl")
 	c.Core.Events.Subscribe(event.OnSwirlHydro, onSwirl, "mizuki-swirl")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, onSwirl, "mizuki-swirl")
+	c.Core.Events.Subscribe(event.OnStellarSwirl, onSwirl, "mizuki-ssw")
 
 	c.Core.Events.Subscribe(event.OnEnemyHit, onSkillHit, "mizuki-on-skill-hit")
+
+	c.revelationBuff = make([]float64, attributes.EndStatType)
+	c.revelationBuff[attributes.EM] = c.Stat(attributes.EM) * 0.1
+	for _, char := range c.Core.Player.Chars() {
+		char.AddStatMod(character.StatMod{
+			Base:  modifier.NewBase(revelationShareEMKey, -1),
+			Extra: true,
+			Amount: func() []float64 {
+				if c.StatusIsActive(dreamDrifterStateKey) {
+					return c.revelationBuff
+				}
+				return nil
+			},
+		})
+	}
 }
 
 func (c *char) revelationShareEM(src int) {
@@ -101,17 +115,8 @@ func (c *char) revelationShareEM(src int) {
 		return
 	}
 
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.EM] = c.Stat(attributes.EM) * 0.1
-
-	for _, char := range c.Core.Player.Chars() {
-		char.AddStatMod(character.StatMod{
-			Base:  modifier.NewBase(revelationShareEMKey, -1),
-			Extra: true,
-			Amount: func() []float64 {
-				return m
-			},
-		})
+	if !c.StatusIsActive(dreamDrifterStateKey) {
+		return
 	}
 
 	c.QueueCharTask(func() {
@@ -119,16 +124,10 @@ func (c *char) revelationShareEM(src int) {
 	}, 0.5*60)
 }
 
-func (c *char) removeRevelationShareEM() {
-	for _, char := range c.Core.Player.Chars() {
-		char.DeleteStatMod(revelationShareEMKey)
-	}
-}
-
 func (c *char) stellarHit(t info.Target) {
 	ai := info.AttackInfo{
 		ActorIndex:       c.Index(),
-		Abil:             "Dreamdrifter (Stellar Swirl)",
+		Abil:             "Dreamdrifter" + stellarSwirlText,
 		AttackTag:        attacks.AttackTagDirectStellarSwirl,
 		ICDTag:           attacks.ICDTagNone,
 		ICDGroup:         attacks.ICDGroupDefault,

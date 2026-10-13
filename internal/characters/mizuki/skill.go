@@ -222,7 +222,6 @@ func (c *char) particleCB(a info.AttackCB) {
 
 func (c *char) cancelDreamDrifterState() {
 	c.DeleteStatus(dreamDrifterStateKey)
-	c.removeRevelationShareEM()
 	c.cloudSrc = -1
 
 	c.Core.Log.NewEvent("DreamDrifter effect cancelled", glog.LogCharacterEvent, c.Index())

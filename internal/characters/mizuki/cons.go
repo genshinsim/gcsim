@@ -83,7 +83,7 @@ func (c *char) c1() {
 		// Cancel the effect
 		e.DeleteStatus(c1Key)
 
-		if c.StatusIsActive(radianceSwirlKey) {
+		if c.isRadianceSSw() {
 			c.c1StellarHit(e)
 		} else {
 			c.c1AnemoHit(e)
@@ -113,7 +113,7 @@ func (c *char) c1AnemoHit(e *enemy.Enemy) {
 func (c *char) c1StellarHit(e *enemy.Enemy) {
 	ai := info.AttackInfo{
 		ActorIndex:       c.Index(),
-		Abil:             "Mizuki C1 (Stellar Swirl)",
+		Abil:             "Mizuki C1" + stellarSwirlText,
 		AttackTag:        attacks.AttackTagDirectStellarSwirl,
 		ICDTag:           attacks.ICDTagNone,
 		ICDGroup:         attacks.ICDGroupDefault,
@@ -217,31 +217,31 @@ func (c *char) c2UpdateShredTask() {
 
 		for _, e := range c.Core.Combat.EnemiesWithinArea(ae, nil) {
 			e.AddResistMod(info.ResistMod{
-				Base:  modifier.NewBaseWithHitlag("mizuki-c2-pyro-shred", 1*60),
+				Base:  modifier.NewBaseWithHitlag("mizuki-c2-pyro", 1*60),
 				Ele:   attributes.Pyro,
 				Value: -0.2,
 			})
 
 			e.AddResistMod(info.ResistMod{
-				Base:  modifier.NewBaseWithHitlag("mizuki-c2-hydro-shred", 1*60),
+				Base:  modifier.NewBaseWithHitlag("mizuki-c2-hydro", 1*60),
 				Ele:   attributes.Hydro,
 				Value: -0.2,
 			})
 
 			e.AddResistMod(info.ResistMod{
-				Base:  modifier.NewBaseWithHitlag("mizuki-c2-electro-shred", 1*60),
+				Base:  modifier.NewBaseWithHitlag("mizuki-c2-electro", 1*60),
 				Ele:   attributes.Electro,
 				Value: -0.2,
 			})
 
 			e.AddResistMod(info.ResistMod{
-				Base:  modifier.NewBaseWithHitlag("mizuki-c2-cryo-shred", 1*60),
+				Base:  modifier.NewBaseWithHitlag("mizuki-c2-cryo", 1*60),
 				Ele:   attributes.Cryo,
 				Value: -0.2,
 			})
 
 			e.AddResistMod(info.ResistMod{
-				Base:  modifier.NewBaseWithHitlag("mizuki-c2-anemo-shred", 1*60),
+				Base:  modifier.NewBaseWithHitlag("mizuki-c2-anemo", 1*60),
 				Ele:   attributes.Anemo,
 				Value: -0.2,
 			})
