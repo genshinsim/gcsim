@@ -7,7 +7,9 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/enemy"
+	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 const (
@@ -15,14 +17,13 @@ const (
 	radianceSwirlKey       = "radiance-stellar-swirl"
 	dreamDrifterBuffKey    = "dreamdrifter-buff"
 	dreamDrifterBuffICDKey = "dreamdrifter-buff-icd"
+	revelationShareEMKey   = "mizuki-revelation-share-em"
 )
 
 func (c *char) revelationInit() {
 	if !c.revelation {
 		return
 	}
-
-	// empty := make([]float64, attributes.EndStatType)
 
 	onSkillHit := func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
@@ -88,7 +89,40 @@ func (c *char) revelationInit() {
 	c.Core.Events.Subscribe(event.OnSwirlHydro, onSwirl, "mizuki-swirl")
 	c.Core.Events.Subscribe(event.OnSwirlElectro, onSwirl, "mizuki-swirl")
 
-	c.Core.Events.Subscribe(event.OnEnemyHit, onSkillHit, "mizuki-swirl")
+	c.Core.Events.Subscribe(event.OnEnemyHit, onSkillHit, "mizuki-on-skill-hit")
+}
+
+func (c *char) revelationShareEM(src int) {
+	if !c.revelation {
+		return
+	}
+
+	if c.cloudSrc != src {
+		return
+	}
+
+	m := make([]float64, attributes.EndStatType)
+	m[attributes.EM] = c.Stat(attributes.EM) * 0.1
+
+	for _, char := range c.Core.Player.Chars() {
+		char.AddStatMod(character.StatMod{
+			Base:  modifier.NewBase(revelationShareEMKey, -1),
+			Extra: true,
+			Amount: func() []float64 {
+				return m
+			},
+		})
+	}
+
+	c.QueueCharTask(func() {
+		c.revelationShareEM(src)
+	}, 0.5*60)
+}
+
+func (c *char) removeRevelationShareEM() {
+	for _, char := range c.Core.Player.Chars() {
+		char.DeleteStatMod(revelationShareEMKey)
+	}
 }
 
 func (c *char) stellarHit(t info.Target) {
@@ -105,7 +139,6 @@ func (c *char) stellarHit(t info.Target) {
 		UseEM:            true,
 		Mult:             10,
 		IgnoreDefPercent: 1,
-		HitlagFactor:     0.05,
 	}
 
 	ap := combat.NewSingleTargetHit(t.Key())

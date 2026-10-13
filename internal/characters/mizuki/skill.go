@@ -200,6 +200,7 @@ func (c *char) startCloudAttacks() {
 	// First cloud is launched at approximately 20f after skill activation.
 	c.cloudSrc = c.Core.F
 	c.cloudTask(c.cloudSrc, cloudFirstHit)
+	c.revelationShareEM(c.cloudSrc)
 }
 
 // Generates up to 4 particles on each E DMG either on activation or cloud.
@@ -221,6 +222,7 @@ func (c *char) particleCB(a info.AttackCB) {
 
 func (c *char) cancelDreamDrifterState() {
 	c.DeleteStatus(dreamDrifterStateKey)
+	c.removeRevelationShareEM()
 	c.cloudSrc = -1
 
 	c.Core.Log.NewEvent("DreamDrifter effect cancelled", glog.LogCharacterEvent, c.Index())

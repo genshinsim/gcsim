@@ -4,9 +4,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 )
 
-// func init() {}
-
-func (c *char) Jump(p map[string]int) (action.Info, error) {
+func (c *char) Walk(p map[string]int) (action.Info, error) {
 	if c.StatusIsActive(dreamDrifterStateKey) {
 		travel, _ := p["travel"]
 		c.cloudTravel = travel
