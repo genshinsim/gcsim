@@ -12,7 +12,7 @@ import (
 
 const (
 	erBufffKey      = "breezeborne-refrain-er"
-	viberKey        = "thus-lied-the-viper"
+	viperKey        = "thus-lied-the-viper"
 	hymnStackICDKey = "hymn-of-the-pure-stack-icd"
 )
 
@@ -56,7 +56,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 
-		if char.StatusIsActive(viberKey) || char.StatusIsActive(hymnStackICDKey) {
+		if char.StatusIsActive(viberKey) {
+			return
+		}
+
+		if char.StatusIsActive(hymnStackICDKey) {
 			return
 		}
 
@@ -88,7 +92,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 	}
 
-	c.Events.Subscribe(event.OnEnemyHit, onSkillOrBurstHit, "breezeborne-refrain-on-hit")
+	c.Events.Subscribe(event.OnEnemyHit, onSkillOrBurstHit, "breezeborne-refrain-on-hit-"+char.Base.Key.String())
 
 	return w, nil
 }
