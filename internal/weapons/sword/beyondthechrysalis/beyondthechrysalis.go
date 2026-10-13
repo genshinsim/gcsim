@@ -32,6 +32,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	critBuff := make([]float64, attributes.EndStatType)
 	critBuff[attributes.CD] = 0.4 + 0.16*float64(r)
 
+	stellarBuff := 0.27 + 0.09*float64(r)
+
 	energy := 4.5 + 0.5*float64(r)
 
 	onSkillOrBurst := func(args ...any) {
@@ -58,20 +60,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 					default:
 						return 0
 					}
-					return 0.27 + 0.09*float64(r)
+					return stellarBuff
 				},
 			})
 		case 2:
 			if !char.StatusIsActive(energyICDKey) {
 				char.AddEnergy("beyond-the-chrysalis-energy", energy)
-				char.AddStatus(energyICDKey, 4*60, false)
+				char.AddStatus(energyICDKey, 4*60, true)
 			}
 		}
 		w.buffCount = (w.buffCount + 1) % 3
 	}
 
-	c.Events.Subscribe(event.OnSkill, onSkillOrBurst, "beyond-the-chrysalis-on-skill")
-	c.Events.Subscribe(event.OnBurst, onSkillOrBurst, "beyond-the-chrysalis-on-burst")
+	c.Events.Subscribe(event.OnSkill, onSkillOrBurst, "beyond-the-chrysalis-on-skill-"+char.Base.Key.String())
+	c.Events.Subscribe(event.OnBurst, onSkillOrBurst, "beyond-the-chrysalis-on-burst-"+char.Base.Key.String())
 
 	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		prev := args[0].(int)
@@ -83,7 +85,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		w.buffCount = 0
 		char.DeleteStatMod(cdKey)
 		char.DeleteReactBonusMod(stellarBuffKey)
-	}, "beyond-the-chrysalis-swap")
+		char.DeleteStatus(energyICDKey)
+	}, "beyond-the-chrysalis-swap-"+char.Base.Key.String())
 
 	return w, nil
 }
