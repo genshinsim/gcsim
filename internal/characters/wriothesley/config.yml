@@ -81,37 +81,37 @@ abilities:
         shape: Box
         center: Player
         box: [2.4, 3.4]
-        hitlag: {defense_halt: true}
+        hitlag: { defense_halt: true }
 
       - name: E-N2
         shape: Box
         center: Player
         box: [2.4, 3.4]
-        hitlag: {defense_halt: true}
+        hitlag: { defense_halt: true }
 
       - name: E-N3
         shape: Box
         center: Player
         box: [2.8, 3.4]
-        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
 
       - name: E-N4-1
         shape: Box
         center: Player
         box: [2.4, 3.4]
-        hitlag: {defense_halt: true}
+        hitlag: { defense_halt: true }
 
       - name: E-N4-2
         shape: Box
         center: Player
         box: [2.4, 3.4]
-        hitlag: {defense_halt: true}
+        hitlag: { defense_halt: true }
 
       - name: E-N5
         shape: Box
         center: Player
         box: [3.4, 3.4]
-        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.06, scale: 0.01, defense_halt: true }
 
   - name: charge
     note: Need to use attack right before charge.
@@ -121,14 +121,21 @@ abilities:
         center: Player
         offset: [0, -1.2]
         box: [2.8, 3.6]
-        hitlag: {time: 0.09, scale: 0.01}
+        hitlag: { time: 0.09, scale: 0.01 }
 
       - name: CA-Gracious-Rebuke
         shape: Box
         center: Player
         offset: [0, -0.8]
         box: [4, 5]
-        hitlag: {time: 0.12, scale: 0.03}
+        hitlag: { time: 0.12, scale: 0.03 }
+
+      - name: CA-Luster-Vaulting-Fist
+        shape: Box
+        center: Player
+        offset: [0, -0.8]
+        box: [4, 5]
+        hitlag: { time: 0.12, scale: 0.03 }
 
   - name: plunge
     hitbox:
@@ -170,7 +177,7 @@ abilities:
         shape: Box
         center: Player
         box: [10, 16]
-        hitlag: {time: 0.03, scale: 0.01}
+        hitlag: { time: 0.03, scale: 0.01 }
 
   - name: cons
     hitbox:
@@ -179,4 +186,4 @@ abilities:
         center: Player
         offset: [0, -0.8]
         box: [4, 5]
-        hitlag: {time: 0.12, scale: 0.03}
+        hitlag: { time: 0.12, scale: 0.03 }

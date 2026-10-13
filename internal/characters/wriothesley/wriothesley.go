@@ -44,8 +44,8 @@ func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) er
 func (c *char) Init() error {
 	c.onExit()
 	c.stellarInit()
-	c.a4()
-	c.c4()
+	c.a4Init()
+	c.c4Init()
 
 	return nil
 }

@@ -185,7 +185,15 @@ func (c *char) c2(snap *info.Snapshot) {
 	c.Core.Log.NewEvent("adding c2", glog.LogCharacterEvent, c.Index()).Write("dmg%", dmg)
 }
 
+// Additionally, when the Prosecution Edict stack reaches 5, if Wriothesley:
+// · Is in the Radiance: Stellar-Conduct state: The Talent "There Shall Be an Unveiling for
+// Injustice" will be enhanced, so that the third and fifth strikes of Repelling Fist, when enhanced
+// by Chilling Penalty, deal 90% or 120% of their original Cryo DMG respectively, while Luster:
+// Vaulting Fist will deal 150% of its original AoE Cryo DMG. The aforementioned DMG is considered
+// Stellar-Conduct DMG.
+// You must first unlock the Ascension Talent "There Shall Be a Reckoning for Sin."
 func (c *char) c2RevelationSSCMult() float64 {
+	// the math works out that all the SSC stuff just does +0.5x when buffed
 	if c.Base.Cons < 2 {
 		return 0
 	}
@@ -213,6 +221,10 @@ func (c *char) c2RevelationSSCMult() float64 {
 	return 0.5
 }
 
+// Additionally, when the Prosecution Edict stack reaches 5, if Wriothesley:
+// · Is not in the Radiance: Stellar-Conduct state: Normal Attacks and Charged
+// Attacks will deal 125% or 130% of their original DMG respectively.
+// You must first unlock the Ascension Talent "There Shall Be a Reckoning for Sin."
 func (c *char) c2RevelationNAMult() float64 {
 	if c.Base.Cons < 2 {
 		return 0
@@ -267,7 +279,11 @@ func (c *char) c2RevelationCAMult() float64 {
 // effects will occur depending on whether his is on the field or not. If he is on the field,
 // his ATK SPD will be increased by 20% for 4s. If he is off-field, all party members' ATK SPD
 // will be increased by 10% for 6s. These two ATK SPD increasing methods cannot stack.
-func (c *char) c4() {
+//
+// Radiance: Stellar-Conduct: The aforementioned effect is changed to:
+// Wriothesley takes 25% less DMG, and his ATK SPD is increased by 20%. Other nearby party members'
+// ATK SPD is increased by 10%.
+func (c *char) c4Init() {
 	if c.Base.Cons < 4 {
 		c.rebukeHeal = 0.3
 		return
@@ -326,6 +342,8 @@ func (c *char) c4() {
 		return
 	}
 
+	// TODO: take 25% less damage
+
 	for _, ch := range c.Core.Player.Chars() {
 		amt := 0.1
 		if ch.Index() == c.Index() {
@@ -336,7 +354,7 @@ func (c *char) c4() {
 			Base:         modifier.NewBase(c4Status+"-revelation", -1),
 			AffectedStat: attributes.AtkSpd,
 			Amount: func() []float64 {
-				if c.StatusIsActive(c4Status) {
+				if ch.StatusIsActive(c4Status) {
 					return nil
 				}
 				if !c.isStellarRadiance() {

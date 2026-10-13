@@ -70,7 +70,7 @@ func (c *char) a1(ai *info.AttackInfo, snap *info.Snapshot) info.AttackCBFunc {
 
 // When Wriothesley's current HP increases or decreases, if he is in the Chilling Penalty state conferred by Icefang Rush,
 // Chilling Penalty will gain one stack of Prosecution Edict. Max 5 stacks. Each stack will increase Wriothesley's ATK by 6%.
-func (c *char) a4() {
+func (c *char) a4Init() {
 	if c.Base.Ascension < 4 {
 		return
 	}
