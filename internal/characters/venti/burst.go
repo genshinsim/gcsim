@@ -11,7 +11,10 @@ import (
 
 var burstFrames []int
 
-const burstStart = 94
+const (
+	burstStart = 94
+	burstKey   = "venti-stromeye"
+)
 
 func init() {
 	burstFrames = frames.InitAbilSlice(95) // Q -> N1/CA/E/D
@@ -36,7 +39,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		StrikeType: attacks.StrikeTypeDefault,
 		Element:    attributes.Anemo,
 		Durability: 25,
-		Mult:       burstDot[c.TalentLvlBurst()],
+		Mult:       burstDot[c.TalentLvlBurst()] * c.burstHexMult,
 	}
 	ap := combat.NewCircleHitOnTarget(c.qPos, nil, 4)
 
@@ -44,6 +47,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.aiAbsorb.Abil = "Wind's Grand Ode (Absorbed)"
 	c.aiAbsorb.Mult = burstAbsorbDot[c.TalentLvlBurst()]
 	c.aiAbsorb.Element = attributes.NoElement
+
+	c.AddStatus(burstKey, 8*60+81, true)
+	c.burstSrc = c.Core.F
+
+	c.c2SkillBuffInit()
+	c.c4Hexerei()
 
 	// snapshot is around cd frame and 1st tick?
 	var snap info.Snapshot
@@ -58,11 +67,22 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}
 
 	// starts at 106 with 24f interval between ticks. 20 total
-	for i := range 20 {
+	for i := range 19 {
 		c.Core.Tasks.Add(func() {
 			c.Core.QueueAttackWithSnap(ai, snap, ap, 0, cb)
 		}, 106+24*i)
 	}
+	var prolongBurst func()
+
+	prolongBurst = func() {
+		c.Core.QueueAttackWithSnap(ai, snap, ap, 0, cb)
+		if !c.StatusIsActive(burstKey) {
+			return
+		}
+		c.Core.Tasks.Add(prolongBurst, 24)
+	}
+
+	c.Core.Tasks.Add(prolongBurst, 106+24*20)
 	// Infusion usually occurs after 4 ticks of anemo according to KQM library
 	c.Core.Tasks.Add(c.absorbCheckQ(c.Core.F, 0, int((480-24*4)/18)), 106+24*3)
 
