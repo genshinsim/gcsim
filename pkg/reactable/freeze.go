@@ -16,7 +16,6 @@ func (r *Reactable) TryFreeze(a *info.AttackEvent) bool {
 	// 1. src exists but no other coexisting -> attach
 	// 2. src does not exist but opposite coexists -> add to freeze durability
 	var consumed info.Durability
-	// contributions = append(contributions, sswContribution{flatdmg, isCrit, charInd, ae})
 	switch a.Info.Element {
 	case attributes.Hydro:
 		// if cryo exists we'll trigger freeze regardless if frozen already coexists
