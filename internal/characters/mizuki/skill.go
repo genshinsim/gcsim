@@ -32,7 +32,7 @@ const (
 	cloudExplosionRadius          = 4
 	cloudTravelTime               = 30
 	cloudFirstHit                 = 18
-	cloudHitInterval              = 45
+	cloudHitInterval              = 44
 	dreamDrifterStateKey          = "dreamdrifter-state"
 	dreamDrifterBaseDuration      = 5 * 60
 	dreamDrifterSwirlBuffKey      = "mizuki-swirl-buff"
@@ -106,9 +106,21 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	travel, ok := p["travel"]
 	if !ok {
-		travel = cloudTravelTime
+		c.cloudTravel = cloudTravelTime
+	} else {
+		c.cloudTravel = travel
+		c.cloudTravel = max(c.cloudTravel, 0)
+		c.cloudTravel = min(c.cloudTravel, 120)
 	}
-	c.applyDreamDrifterEffect(travel)
+
+	skipTicks, ok := p["skip_ticks"]
+	if ok {
+		c.cloudSkipTicks = skipTicks
+	} else {
+		c.cloudSkipTicks = 0
+	}
+
+	c.applyDreamDrifterEffect()
 
 	c.SetCDWithDelay(action.ActionSkill, skillCd, skillCdDelay)
 
@@ -120,16 +132,12 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) applyDreamDrifterEffect(travel int) {
+func (c *char) applyDreamDrifterEffect() {
 	c.AddStatus(dreamDrifterStateKey, dreamDrifterBaseDuration, true)
 
-	c.startCloudAttacks(travel)
+	c.startCloudAttacks()
 
-	if c.Base.Cons >= 1 {
-		// Debuff does not take 3.5s to apply but does not trigger on initial skill activation swirl according to testing.
-		// First cloud (0.45s after skill activation) can trigger it so queue it a few frames later
-		c.c1Task(c.cloudSrc, skillHitmark+2)
-	}
+	c.c1Task(c.cloudSrc, skillHitmark+2)
 }
 
 func (c *char) skillInit() {
@@ -172,7 +180,7 @@ func (c *char) skillInit() {
 	}, mizukiSwapOutKey)
 }
 
-func (c *char) startCloudAttacks(travel int) {
+func (c *char) startCloudAttacks() {
 	// clouds DMG snapshots on activation
 	c.cloudAttack = info.AttackInfo{
 		ActorIndex:   c.Index(),
@@ -191,7 +199,8 @@ func (c *char) startCloudAttacks(travel int) {
 
 	// First cloud is launched at approximately 20f after skill activation.
 	c.cloudSrc = c.Core.F
-	c.cloudTask(travel, c.cloudSrc, cloudFirstHit)
+	c.cloudTask(c.cloudSrc, cloudFirstHit)
+	c.revelationShareEM(c.cloudSrc)
 }
 
 // Generates up to 4 particles on each E DMG either on activation or cloud.
@@ -218,7 +227,12 @@ func (c *char) cancelDreamDrifterState() {
 	c.Core.Log.NewEvent("DreamDrifter effect cancelled", glog.LogCharacterEvent, c.Index())
 }
 
-func (c *char) cloudTask(travel, src, hitmark int) {
+func (c *char) cloudTask(src, hitmark int) {
+	if c.Core.Combat.Debug {
+		c.Core.Log.NewEvent("cloud task", glog.LogCharacterEvent, c.Index()).
+			Write("travel", c.cloudTravel).
+			Write("skip_ticks", c.cloudSkipTicks)
+	}
 	c.QueueCharTask(func() {
 		if c.cloudSrc != src {
 			return
@@ -226,13 +240,18 @@ func (c *char) cloudTask(travel, src, hitmark int) {
 		if !c.StatusIsActive(dreamDrifterStateKey) {
 			return
 		}
+		if c.cloudSkipTicks > 0 {
+			c.cloudTask(src, 15*c.cloudSkipTicks)
+			c.cloudSkipTicks = 0
+			return
+		}
 		c.Core.QueueAttackWithSnap(
 			c.cloudAttack,
 			c.cloudSnap,
 			combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, cloudExplosionRadius),
-			travel,
+			c.cloudTravel,
 			c.particleCB,
 		)
-		c.cloudTask(travel, src, cloudHitInterval)
+		c.cloudTask(src, cloudHitInterval)
 	}, hitmark)
 }

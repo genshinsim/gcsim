@@ -1,8 +1,6 @@
 package mizuki
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
@@ -12,7 +10,7 @@ import (
 )
 
 const (
-	a1SwirlKey                    = "mizuki-a1-swirl-%v"
+	a1SwirlKey                    = "mizuki-a1-swirl-"
 	a1ICDKey                      = "mizuki-a1-icd"
 	a1ICD                         = 0.3 * 60
 	a4Duration                    = 4 * 60
@@ -65,11 +63,11 @@ func (c *char) a1() {
 		c.dreamDrifterExtensionsRemaining--
 	}
 
-	c.Core.Events.Subscribe(event.OnSwirlPyro, swirlFunc, fmt.Sprintf(a1SwirlKey, attributes.Pyro))
-	c.Core.Events.Subscribe(event.OnSwirlHydro, swirlFunc, fmt.Sprintf(a1SwirlKey, attributes.Hydro))
-	c.Core.Events.Subscribe(event.OnSwirlElectro, swirlFunc, fmt.Sprintf(a1SwirlKey, attributes.Electro))
-	c.Core.Events.Subscribe(event.OnSwirlCryo, swirlFunc, fmt.Sprintf(a1SwirlKey, attributes.Cryo))
-	c.Core.Events.Subscribe(event.OnStellarSwirl, swirlFunc, fmt.Sprintf(a1SwirlKey, attributes.Cryo))
+	c.Core.Events.Subscribe(event.OnSwirlPyro, swirlFunc, a1SwirlKey+attributes.Pyro.String())
+	c.Core.Events.Subscribe(event.OnSwirlHydro, swirlFunc, a1SwirlKey+attributes.Hydro.String())
+	c.Core.Events.Subscribe(event.OnSwirlElectro, swirlFunc, a1SwirlKey+attributes.Electro.String())
+	c.Core.Events.Subscribe(event.OnSwirlCryo, swirlFunc, a1SwirlKey+attributes.Cryo.String())
+	c.Core.Events.Subscribe(event.OnStellarSwirl, swirlFunc, a1SwirlKey+"ssw")
 }
 
 // While Yumemizuki Mizuki is in the Dreamdrifter state, when other nearby party members hit opponents with

@@ -13,6 +13,7 @@ import (
 const (
 	snackDmgName              = "Munen Shockwave"
 	snackHealName             = "Snack Pick-Up"
+	snackHealNameLowest       = "Snack Pick-Up Lowest Heal"
 	snackDurability           = 25
 	snackDmgRadius            = 4
 	snackHealTriggerHpRatio   = 0.7
@@ -97,15 +98,10 @@ func (p *snack) onPickedUp() {
 	mizuki := p.char
 	activeChar := p.Core.Player.ActiveChar()
 
-	// C4 triggers both DMG and Heal
-	if mizuki.Base.Cons >= 4 {
-		dmg = true
-		heal = true
-	} else {
-		// Heals active char if is bellow 70% hp otherwise deals DMG
-		dmg = activeChar.CurrentHP() > (activeChar.MaxHP() * snackHealTriggerHpRatio)
-		heal = !dmg
-	}
+	dmg = activeChar.CurrentHP() > (activeChar.MaxHP() * snackHealTriggerHpRatio)
+	heal = !dmg
+
+	mizuki.c4SnackSetup(&dmg, &heal)
 
 	p.Core.Log.NewEvent("Picked up snack", glog.LogCharacterEvent, activeChar.Index()).
 		Write("heal", heal).
