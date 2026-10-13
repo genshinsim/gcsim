@@ -92,6 +92,10 @@ func (r *Reactable) queueStellarSwirl(charIndex int) {
 	if r.sswStacks() >= sswMaxStacks {
 		vortex.Kill()
 	}
+
+	for _, c := range r.core.Player.Chars() {
+		c.AddStatus(RadianceSwirlKey, 8*60, false)
+	}
 }
 
 func (r *Reactable) nearbySSwVortex() info.Gadget {

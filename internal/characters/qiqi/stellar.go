@@ -3,10 +3,8 @@ package qiqi
 import (
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/enemy"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 	"github.com/genshinsim/gcsim/pkg/reactable"
 )
@@ -90,14 +88,6 @@ func (c *char) revelationInit() {
 			},
 		})
 	}
-
-	c.Core.Events.Subscribe(event.OnStellarSwirl, func(args ...any) {
-		if _, ok := args[0].(*enemy.Enemy); !ok {
-			return
-		}
-
-		c.AddStatus(reactable.RadianceSwirlKey, 8*60, false)
-	}, "qiqi-ssw")
 }
 
 func (c *char) revelationSkillCDReduction() {
