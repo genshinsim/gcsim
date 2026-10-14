@@ -210,6 +210,13 @@
       "weapon_class": "WEAPON_CLAYMORE",
       "image_name": "UI_EquipIcon_Claymore_Siegfry_Awaken"
     },
+    "breezebornerefrain": {
+      "id": 15437,
+      "key": "breezebornerefrain",
+      "rarity": 4,
+      "weapon_class": "WEAPON_BOW",
+      "image_name": "UI_EquipIcon_Bow_Windtalker_Awaken"
+    },
     "calamityofeshu": {
       "id": 11432,
       "key": "calamityofeshu",

@@ -1,0 +1,29 @@
+---
+title: "Breezeborne Refrain"
+---
+
+import AoETable from "@site/src/components/AoE/AoETable";
+import FieldsTable from "@site/src/components/Fields/FieldsTable";
+import IssuesTable from "@site/src/components/Issues/IssuesTable";
+import NamesList from "@site/src/components/Names/NamesList";
+import ParamsTable from "@site/src/components/Params/ParamsTable";
+
+## Known issues
+
+<IssuesTable item_key="breezebornerefrain" data_src="weapon" />
+
+## Names
+
+<NamesList item_key="breezebornerefrain" data_src="weapon" />
+
+## Params
+
+<ParamsTable item_key="breezebornerefrain" data_src="weapon" />
+
+## Fields
+
+<FieldsTable item_key="breezebornerefrain" data_src="weapon" />
+
+## AoE Data
+
+<AoETable item_key="breezebornerefrain" data_src="weapon" />
