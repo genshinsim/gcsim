@@ -4721,6 +4721,14 @@
       "deployable": false
     },
     {
+      "ability": "charge",
+      "name": "CA-Luster-Vaulting-Fist",
+      "time": 0.12,
+      "scale": 0.03,
+      "defense_halt": false,
+      "deployable": false
+    },
+    {
       "ability": "burst",
       "name": "Q-Surging-Blade",
       "time": 0.03,

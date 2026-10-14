@@ -20,6 +20,8 @@ const (
 	AttackTagNightsoul
 	AttackTagKinichCannon
 	AttackTagVarkaSpecial
+	AttackTagWrioSSCN5
+	AttackTagWrioSSCCA
 
 	AttackTagNoneStat // ignore attacker stats delim
 

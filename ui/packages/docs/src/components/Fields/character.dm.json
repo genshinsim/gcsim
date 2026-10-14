@@ -277,6 +277,10 @@
     {
       "field": ".wriothesley.gracious-rebuke",
       "desc": "Whether Wriothesley currently has a Gracious Rebuke or not."
+    },
+    {
+      "field": ".wriothesley.gracious-rebuke-unveiling",
+      "desc": "Whether Wriothesley currently has Gracious Rebuke: Unveiling or not."
     }
   ],
   "xianyun": [
