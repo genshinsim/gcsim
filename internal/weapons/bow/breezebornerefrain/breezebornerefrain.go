@@ -40,6 +40,27 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
+	// TODO: how does this work with multiple holders that are different refine levels?
+	for _, ch := range c.Player.Chars() {
+		ch.AddReactBonusMod(character.ReactBonusMod{
+			Base: modifier.NewBase(viperKey, -1),
+			Amount: func(ai info.AttackInfo) float64 {
+				if !char.StatusIsActive(viperKey) {
+					return 0
+				}
+				switch ai.AttackTag {
+				case
+					attacks.AttackTagDirectStellarConduct,
+					attacks.AttackTagDirectStellarSwirl,
+					attacks.AttackTagReactionStellarSwirl:
+					return stellarBuff
+				default:
+					return 0
+				}
+			},
+		})
+	}
+
 	onSkillOrBurstHit := func(args ...any) {
 		atk, ok := args[1].(*info.AttackEvent)
 		if !ok {
@@ -75,23 +96,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 		w.stackCounter = 0
 		char.AddStatus(viperKey, 12*60, true)
-
-		for _, ch := range c.Player.Chars() {
-			ch.AddReactBonusMod(character.ReactBonusMod{
-				Base: modifier.NewBase(viperKey, 12*60),
-				Amount: func(ai info.AttackInfo) float64 {
-					switch ai.AttackTag {
-					case
-						attacks.AttackTagDirectStellarConduct,
-						attacks.AttackTagDirectStellarSwirl,
-						attacks.AttackTagReactionStellarSwirl:
-						return stellarBuff
-					default:
-						return 0
-					}
-				},
-			})
-		}
 	}
 
 	c.Events.Subscribe(event.OnEnemyHit, onSkillOrBurstHit, "breezeborne-refrain-on-hit-"+char.Base.Key.String())
