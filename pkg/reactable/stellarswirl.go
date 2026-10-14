@@ -30,7 +30,7 @@ type sswContribution = struct {
 	ae      info.AttackEvent
 }
 
-func (r *Reactable) queueStellarSwirl(charIndex int) {
+func (r *Reactable) queueStellarSwirl(charIndex int, mod info.ReactionModKey) {
 	for _, c := range r.core.Player.Chars() {
 		c.AddStatus(RadianceSwirlKey, 8*60, false)
 	}
@@ -52,23 +52,8 @@ func (r *Reactable) queueStellarSwirl(charIndex int) {
 	var contribMap [info.MaxChars]bool
 
 	contribMap[charIndex] = true
-	for charInd, dur := range r.Durability[info.ReactionModKeyCryo] {
+	for charInd, dur := range r.Durability[mod] {
 		if dur <= info.ZeroDur {
-			continue
-		}
-		contribMap[charInd] = true
-	}
-
-	// TODO: Does it use frozen aura when there is cryo?
-	for charInd, dur := range r.Durability[info.ReactionModKeyFrozen] {
-		if dur <= info.ZeroDur {
-			continue
-		}
-
-		// Based on testing, only Cryo characters that trigger frozen can contribute
-		// even if a non Cryo character triggers frozen with a cryo attack via Chongyun,
-		// they won't contribute to the reaction
-		if r.core.Player.Chars()[charInd].Base.Element != attributes.Cryo {
 			continue
 		}
 		contribMap[charInd] = true
@@ -205,9 +190,9 @@ func (r *Reactable) tryStellarSwirl(a *info.AttackEvent, mod info.ReactionModKey
 
 	r.core.Events.Emit(event.OnStellarSwirl, r.self, a)
 
-	r.queueStellarSwirl(a.Info.ActorIndex)
+	r.queueStellarSwirl(a.Info.ActorIndex, mod)
 
-	rd := r.reduce(attributes.Cryo, a.Info.Durability, 0.5)
+	rd := r.reduce(mod.Element(), a.Info.Durability, 0.5)
 	a.Info.Durability -= rd
 
 	return true

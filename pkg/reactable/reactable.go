@@ -269,6 +269,24 @@ func (r *Reactable) attachOverlap(mod info.ReactionModKey, amt, length info.Dura
 	}
 }
 
+func (r *Reactable) attachOverlapSrcs(mod info.ReactionModKey, amt, length info.Durability, srcs []int) {
+	if r.GetAuraDurability(mod) > info.ZeroDur {
+		for _, src := range srcs {
+			add := maxDur(amt-r.Durability[mod][src], 0)
+			if add > 0 {
+				r.addDurability(mod, add, src)
+			}
+		}
+	} else {
+		for _, src := range srcs {
+			r.SetAuraDurability(mod, amt, src)
+		}
+		if length > info.ZeroDur {
+			r.DecayRate[mod] = amt / length
+		}
+	}
+}
+
 func (r *Reactable) attachOverlapRefreshDuration(mod info.ReactionModKey, amt, length info.Durability, src int) {
 	if amt < r.GetAuraDurability(mod) {
 		return
