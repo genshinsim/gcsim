@@ -89,6 +89,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 				ai.Abil += stellarConductText
 				ai.AttackTag = attacks.AttackTagDirectStellarConduct
 				ai.IgnoreDefPercent = 1
+				ai.Durability = 0
 				if n == 2 {
 					ai.Mult *= 0.6
 				} else {

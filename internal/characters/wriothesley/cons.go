@@ -96,7 +96,7 @@ func (c *char) makeC1N5CB(naCounter int) info.AttackCBFunc {
 		}
 		if c.a1StellarEnabled() && c.skillBuffActive() {
 			c.AddReactBonusMod(character.ReactBonusMod{
-				Base: modifier.NewBase(c1Status+"-revelation-ca", -1),
+				Base: modifier.NewBaseWithHitlag(c1Status+"-revelation-ca", 5*60),
 				Amount: func(ai info.AttackInfo) float64 {
 					if slices.Contains(ai.AdditionalTags, attacks.AttackTagWrioSSCCA) {
 						c.Core.Tasks.Add(func() {
@@ -141,7 +141,7 @@ func (c *char) c1StellarCACB(a info.AttackCB) {
 	}
 
 	c.AddReactBonusMod(character.ReactBonusMod{
-		Base: modifier.NewBase(c1Status+"-revelation-n5", -1),
+		Base: modifier.NewBaseWithHitlag(c1Status+"-revelation-n5", 5*60),
 		Amount: func(ai info.AttackInfo) float64 {
 			if slices.Contains(ai.AdditionalTags, attacks.AttackTagWrioSSCN5) {
 				c.Core.Tasks.Add(func() {

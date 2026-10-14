@@ -26,6 +26,7 @@ talents:
 docs:
   fields:
     .wriothesley.gracious-rebuke: Whether Wriothesley currently has a Gracious Rebuke or not.
+    .wriothesley.gracious-rebuke-unveiling: "Whether Wriothesley currently has Gracious Rebuke: Unveiling or not."
   frames:
     - count: https://docs.google.com/spreadsheets/d/1xQsRq1LKoU7Eu_81S4iOFY-kQNTGMWk9NJrjgSWzL6M/edit?usp=sharing
       count_credit: caramielle
