@@ -63,6 +63,7 @@ const (
 	BalladOfTheFjords                             // balladofthefjords
 	BeaconOfTheReedSea                            // beaconofthereedsea
 	BeginnersProtector                            // beginnersprotector
+	BeyondTheChrysalis                            // beyondthechrysalis
 	BlackcliffAgate                               // blackcliffagate
 	BlackcliffLongsword                           // blackclifflongsword
 	BlackcliffPole                                // blackcliffpole
@@ -315,6 +316,7 @@ var _WeaponNames = [...]string{
 	"balladofthefjords",
 	"beaconofthereedsea",
 	"beginnersprotector",
+	"beyondthechrysalis",
 	"blackcliffagate",
 	"blackclifflongsword",
 	"blackcliffpole",
@@ -567,6 +569,7 @@ var _WeaponValues = [...]Weapon{
 	BalladOfTheFjords,
 	BeaconOfTheReedSea,
 	BeginnersProtector,
+	BeyondTheChrysalis,
 	BlackcliffAgate,
 	BlackcliffLongsword,
 	BlackcliffPole,
