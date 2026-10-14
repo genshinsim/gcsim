@@ -68,7 +68,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 			HitlagHaltFrames:   attackHitlagHaltFrame[c.NormalCounter][i] * 60,
 			CanBeDefenseHalted: true,
 		}
-		c1N5CB := c.makeC1N5CB() // here so that the normalcounter check is correct
+		c1N5CB := c.makeC1N5CB(n) // here so that the normalcounter check is correct
 
 		c.QueueCharTask(func() {
 			// TODO: when should this check happen?

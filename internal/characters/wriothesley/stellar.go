@@ -13,9 +13,9 @@ import (
 )
 
 const (
-	stellarConductText = " (Stellar-Conduct)"
-	a1StellarKey       = "wriothesley-a1-stellar"
-	a1StellarICDKey    = "wriothesley-a1-stellar-icd"
+	stellarConductText  = " (Stellar-Conduct)"
+	a1StellarKey        = "wriothesley-a1-stellar"
+	a1StellarHealICDKey = "wriothesley-a1-stellar-icd"
 )
 
 func (c *char) isStellarRadiance() bool {
@@ -85,7 +85,7 @@ func (c *char) a1StellarCA() action.Info {
 		PoiseDMG:         110,
 		Element:          attributes.Cryo,
 		IgnoreDefPercent: 1,
-		Mult:             charge[c.TalentLvlAttack()],
+		Mult:             charge[c.TalentLvlAttack()] * (1 + c.c2RevelationSSCMult()),
 		HitlagFactor:     0.01,
 		HitlagHaltFrames: 0.12 * 60,
 	}
@@ -114,11 +114,11 @@ func (c *char) a1StellarCACB(a info.AttackCB) {
 		return
 	}
 	// do not proc if a1 not active
-	if c.StatusIsActive(a1StellarICDKey) {
+	if c.StatusIsActive(a1StellarHealICDKey) {
 		return
 	}
 
-	c.AddStatus(a1StellarICDKey, 2*60, true)
+	c.AddStatus(a1StellarHealICDKey, 2*60, true)
 
 	// heal
 	c.Core.Player.Heal(info.HealInfo{

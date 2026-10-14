@@ -81,15 +81,20 @@ func (c *char) c1(ai *info.AttackInfo, snap *info.Snapshot) (info.AttackCBFunc, 
 	}, c.Base.Cons >= 6
 }
 
-func (c *char) makeC1N5CB() info.AttackCBFunc {
-	if c.Base.Cons < 1 || c.NormalCounter != 4 {
+func (c *char) makeC1N5CB(naCounter int) info.AttackCBFunc {
+	if c.Base.Cons < 1 {
 		return nil
 	}
+
+	if naCounter != 4 {
+		return nil
+	}
+
 	return func(a info.AttackCB) {
 		if a.Target.Type() != info.TargettableEnemy {
 			return
 		}
-		if c.a1StellarEnabled() {
+		if c.a1StellarEnabled() && c.skillBuffActive() {
 			c.AddReactBonusMod(character.ReactBonusMod{
 				Base: modifier.NewBase(c1Status+"-revelation-ca", -1),
 				Amount: func(ai info.AttackInfo) float64 {
