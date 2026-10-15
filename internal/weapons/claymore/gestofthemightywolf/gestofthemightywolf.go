@@ -50,6 +50,9 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		Base:         modifier.NewBase(gestAttackSpeedKey, -1),
 		AffectedStat: attributes.AtkSpd,
 		Amount: func() []float64 {
+			if c.Player.CurrentState() != action.NormalAttackState {
+				return nil
+			}
 			return m
 		},
 	})
