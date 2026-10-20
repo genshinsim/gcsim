@@ -169,13 +169,13 @@ export function Editor({
 					compartments.sizing.of(sizing(fontSize, maxLines)),
 					compartments.editable.of(editable(readOnly)),
 					keymap.of([
+						...completionKeymapCustom,
 						...closeBracketsKeymap,
 						...defaultKeymap,
 						...searchKeymap,
 						...historyKeymap,
 						...foldKeymap,
 						...completionKeymap,
-						...completionKeymapCustom,
 						indentWithTab,
 					]),
 					EditorView.updateListener.of((update) => {
