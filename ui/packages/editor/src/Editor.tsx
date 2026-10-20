@@ -1,9 +1,9 @@
 import {
+	acceptCompletion,
 	autocompletion,
 	closeBrackets,
 	closeBracketsKeymap,
 	completionKeymap,
-	acceptCompletion,
 	moveCompletionSelection,
 } from "@codemirror/autocomplete";
 import {
@@ -31,8 +31,8 @@ import {
 	drawSelection,
 	EditorView,
 	highlightActiveLineGutter,
-	keymap,
 	type KeyBinding,
+	keymap,
 	lineNumbers,
 } from "@codemirror/view";
 import { type Ref, useEffect, useImperativeHandle, useRef } from "react";
@@ -66,11 +66,11 @@ export interface EditorProps {
 }
 
 const completionKeymapCustom: readonly KeyBinding[] = [
-    {key: "Tab", run: acceptCompletion},
-    {key: "Ctrl-y", run: acceptCompletion},
-    {key: "Ctrl-n", run: moveCompletionSelection(true)},
-    {key: "Ctrl-p", run: moveCompletionSelection(false)}
-]
+	{ key: "Tab", run: acceptCompletion },
+	{ key: "Ctrl-y", run: acceptCompletion },
+	{ key: "Ctrl-n", run: moveCompletionSelection(true) },
+	{ key: "Ctrl-p", run: moveCompletionSelection(false) },
+];
 
 const LINE_HEIGHT = 1.5;
 
