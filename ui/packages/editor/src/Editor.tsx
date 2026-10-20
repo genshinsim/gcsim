@@ -3,6 +3,7 @@ import {
 	closeBrackets,
 	closeBracketsKeymap,
 	completionKeymap,
+	acceptCompletion,
 } from "@codemirror/autocomplete";
 import {
 	defaultKeymap,
@@ -30,6 +31,7 @@ import {
 	EditorView,
 	highlightActiveLineGutter,
 	keymap,
+	KeyBinding,
 	lineNumbers,
 } from "@codemirror/view";
 import { type Ref, useEffect, useImperativeHandle, useRef } from "react";
@@ -61,6 +63,10 @@ export interface EditorProps {
 	id?: string;
 	className?: string;
 }
+
+const completionKeymapNew: KeyBinding[] = completionKeymap;
+
+completionKeymapNew.push({key: "Tab", run: acceptCompletion})
 
 const LINE_HEIGHT = 1.5;
 
@@ -164,7 +170,7 @@ export function Editor({
 						...searchKeymap,
 						...historyKeymap,
 						...foldKeymap,
-						...completionKeymap,
+						...completionKeymapNew,
 						indentWithTab,
 					]),
 					EditorView.updateListener.of((update) => {
