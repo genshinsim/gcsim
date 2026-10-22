@@ -13,7 +13,7 @@ import (
 const (
 	snackDmgName              = "Munen Shockwave"
 	snackHealName             = "Snack Pick-Up"
-	snackHealNameLowest       = "Snack Pick-Up Lowest Heal"
+	snackHealNameLowest       = "Snack Pick-Up Lowest Heal (C4)"
 	snackDurability           = 25
 	snackDmgRadius            = 4
 	snackHealTriggerHpRatio   = 0.7
@@ -112,17 +112,17 @@ func (p *snack) onPickedUp() {
 	}
 
 	if heal {
-		// Heals double the amount on Mizuki
-		healMultiplier := 1.0
+		// Heal bonus increased by 100% on Mizuki
+		bonus := mizuki.Stat(attributes.Heal)
 		if activeChar.Index() == mizuki.Index() {
-			healMultiplier = 2.0
+			bonus += 1.0
 		}
 		mizuki.Core.Player.Heal(info.HealInfo{
 			Caller:  mizuki.Index(),
 			Target:  activeChar.Index(),
 			Message: snackHealName,
-			Src:     ((mizuki.Stat(attributes.EM) * snackHealEM[mizuki.TalentLvlBurst()]) + snackHealFlat[mizuki.TalentLvlBurst()]) * healMultiplier,
-			Bonus:   mizuki.Stat(attributes.Heal),
+			Src:     ((mizuki.Stat(attributes.EM) * snackHealEM[mizuki.TalentLvlBurst()]) + snackHealFlat[mizuki.TalentLvlBurst()]),
+			Bonus:   bonus,
 		})
 	}
 

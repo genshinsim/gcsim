@@ -33,6 +33,7 @@ const (
 	cloudTravelTime               = 30
 	cloudFirstHit                 = 18
 	cloudHitInterval              = 44
+	cloudThinkInterval            = 15
 	dreamDrifterStateKey          = "dreamdrifter-state"
 	dreamDrifterBaseDuration      = 5 * 60
 	dreamDrifterSwirlBuffKey      = "mizuki-swirl-buff"
@@ -241,7 +242,7 @@ func (c *char) cloudTask(src, hitmark int) {
 			return
 		}
 		if c.cloudSkipTicks > 0 {
-			c.cloudTask(src, 15*c.cloudSkipTicks)
+			c.cloudTask(src, cloudThinkInterval*c.cloudSkipTicks)
 			c.cloudSkipTicks = 0
 			return
 		}

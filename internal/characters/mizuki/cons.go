@@ -53,14 +53,20 @@ func (c *char) c1() {
 			return
 		}
 
+		var additionalDmg float64
+
 		// Only on swirls. The swirl source does not matter, it can be either mizuki or another anemo char.
 		switch atk.Info.AttackTag {
-		case attacks.AttackTagSwirlCryo:
-		case attacks.AttackTagSwirlElectro:
-		case attacks.AttackTagSwirlHydro:
-		case attacks.AttackTagSwirlPyro:
-		case attacks.AttackTagDirectStellarSwirl:
+		case attacks.AttackTagSwirlCryo,
+			attacks.AttackTagSwirlElectro,
+			attacks.AttackTagSwirlHydro,
+			attacks.AttackTagSwirlPyro:
+			additionalDmg = c1Multiplier * c.c1EM
 		case attacks.AttackTagReactionStellarSwirl:
+			if atk.Info.Element != attributes.Anemo {
+				return
+			}
+			additionalDmg = c1Multiplier * c.c1EM
 		default:
 			return
 		}
@@ -69,8 +75,6 @@ func (c *char) c1() {
 		if atk.Info.FlatDmg == 0 {
 			return
 		}
-
-		additionalDmg := c1Multiplier * c.c1EM
 
 		c.Core.Log.NewEvent("mizuki c1 proc", glog.LogPreDamageMod, atk.Info.ActorIndex).
 			Write("before", atk.Info.FlatDmg).
@@ -119,7 +123,7 @@ func (c *char) c1StellarHit(e *enemy.Enemy) {
 		ICDGroup:         attacks.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Anemo,
-		Durability:       25,
+		Durability:       0,
 		UseEM:            true,
 		Mult:             4,
 		IgnoreDefPercent: 1,
@@ -207,6 +211,8 @@ func (c *char) c2UpdateShredTask() {
 		return
 	}
 
+	defer c.c2UpdateShredTask()
+
 	c.QueueCharTask(func() {
 		if !c.StatusIsActive(dreamDrifterStateKey) {
 			c.c2UpdateShredTask()
@@ -246,8 +252,6 @@ func (c *char) c2UpdateShredTask() {
 				Value: -0.2,
 			})
 		}
-
-		c.c2UpdateShredTask()
 	}, c2ShredInterval)
 }
 
@@ -378,18 +382,27 @@ func (c *char) c6RevelationInit() {
 		return
 	}
 
-	excessEM := c.NonExtraStat(attributes.EM) - 500
-	excessEM = max(excessEM, 0)
+	c.c6revelationBuff = make([]float64, attributes.EndStatType)
 
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.CD] = max(excessEM*0.0016, 0.8)
-	m[attributes.CR] = max(excessEM*0.0004, 0.2)
+	c.c6RevelationUpdate()
 
 	c.AddStatMod(character.StatMod{
 		Base:  modifier.NewBase("mizuki-c6-revelation", -1),
 		Extra: true,
 		Amount: func() []float64 {
-			return m
+			return c.c6revelationBuff
 		},
 	})
+}
+
+func (c *char) c6RevelationUpdate() {
+	excessEM := c.NonExtraStat(attributes.EM) - 500
+	excessEM = max(excessEM, 0)
+
+	c.c6revelationBuff[attributes.CD] = max(excessEM*0.0016, 0.8)
+	c.c6revelationBuff[attributes.CR] = max(excessEM*0.0004, 0.2)
+
+	c.QueueCharTask(func() {
+		c.c6RevelationUpdate()
+	}, 0.5*60)
 }

@@ -22,6 +22,7 @@ type char struct {
 	c2Buff                          []float64
 	c4EnergyGenerationsRemaining    int
 	c6Buff                          []float64
+	c6revelationBuff                []float64
 	revelation                      bool
 	revelationBuff                  []float64
 }
@@ -65,6 +66,10 @@ func (c *char) lowestHPChar() int {
 	for i := 0; i < len(c.Core.Player.Chars()); i++ {
 		ch := c.Core.Player.Chars()[i]
 		if ch.CurrentHP() <= 0 {
+			continue
+		}
+
+		if ch.Index() == c.Index() {
 			continue
 		}
 
