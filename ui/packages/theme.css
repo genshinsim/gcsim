@@ -493,6 +493,18 @@
 	--g-dendro: #6e9020;
 }
 
+/* Native select popups otherwise fall back to the browser's light default. */
+@layer base {
+	select,
+	option {
+		background-color: var(--g-surface);
+		color: var(--g-text);
+	}
+	option:checked {
+		background-color: var(--g-surface-3);
+	}
+}
+
 @theme inline {
 	--color-g-canvas: var(--g-bg);
 	--color-g-surface: var(--g-surface);
