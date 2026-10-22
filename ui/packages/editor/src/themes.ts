@@ -313,6 +313,29 @@ function build({ palette: p, dark }: EditorTheme): Extension {
 				borderTop: `1px solid ${p.border}`,
 				borderRadius: "0 0 var(--g-r-md) var(--g-r-md)",
 			},
+			".cm-textfield, .cm-button": {
+				color: p.foreground,
+				border: `1px solid ${p.border}`,
+				borderRadius: "var(--g-r-sm)",
+			},
+			".cm-textfield": { backgroundColor: p.background, outline: "none" },
+			".cm-textfield:focus": { borderColor: p.cursor },
+			".cm-textfield::placeholder": { color: p.comment, opacity: "1" },
+			".cm-button, .cm-button:active": {
+				backgroundColor: p.raised,
+				backgroundImage: "none",
+				cursor: "pointer",
+			},
+			".cm-button:hover": {
+				backgroundColor: `color-mix(in srgb, ${p.foreground} 12%, ${p.raised})`,
+			},
+			".cm-button:focus-visible": { outline: `1px solid ${p.cursor}` },
+			".cm-panel.cm-search label": { color: p.foreground },
+			".cm-panel.cm-search input[type=checkbox]": { accentColor: p.cursor },
+			".cm-panel.cm-search [name=close]": {
+				color: p.foreground,
+				cursor: "pointer",
+			},
 			".cm-gcsim-errors": {
 				maxHeight: "9em",
 				overflowY: "auto",
