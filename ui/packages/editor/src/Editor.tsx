@@ -1,8 +1,10 @@
 import {
+	acceptCompletion,
 	autocompletion,
 	closeBrackets,
 	closeBracketsKeymap,
 	completionKeymap,
+	moveCompletionSelection,
 } from "@codemirror/autocomplete";
 import {
 	defaultKeymap,
@@ -29,6 +31,7 @@ import {
 	drawSelection,
 	EditorView,
 	highlightActiveLineGutter,
+	type KeyBinding,
 	keymap,
 	lineNumbers,
 } from "@codemirror/view";
@@ -61,6 +64,13 @@ export interface EditorProps {
 	id?: string;
 	className?: string;
 }
+
+const completionKeymapCustom: readonly KeyBinding[] = [
+	{ key: "Tab", run: acceptCompletion },
+	{ key: "Ctrl-y", run: acceptCompletion },
+	{ key: "Ctrl-n", run: moveCompletionSelection(true) },
+	{ key: "Ctrl-p", run: moveCompletionSelection(false) },
+];
 
 const LINE_HEIGHT = 1.5;
 
@@ -159,6 +169,7 @@ export function Editor({
 					compartments.sizing.of(sizing(fontSize, maxLines)),
 					compartments.editable.of(editable(readOnly)),
 					keymap.of([
+						...completionKeymapCustom,
 						...closeBracketsKeymap,
 						...defaultKeymap,
 						...searchKeymap,
