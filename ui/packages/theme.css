@@ -493,17 +493,6 @@
 	--g-dendro: #6e9020;
 }
 
-@layer base {
-	select,
-	option {
-		background-color: var(--g-surface);
-		color: var(--g-text);
-	}
-	option:checked {
-		background-color: var(--g-surface-3);
-	}
-}
-
 @theme inline {
 	--color-g-canvas: var(--g-bg);
 	--color-g-surface: var(--g-surface);
@@ -573,4 +562,15 @@
 
 	--spacing-g-ctrl: var(--g-ctrl-h);
 	--spacing-g-btn-x: var(--g-btn-pad-x);
+}
+
+@layer base {
+	select,
+	option {
+		background-color: var(--g-surface);
+		color: var(--g-text);
+	}
+	option:checked {
+		background-color: var(--g-surface-3);
+	}
 }
