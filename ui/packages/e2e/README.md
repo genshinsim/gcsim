@@ -99,9 +99,8 @@ console monitor.
 - `goto()` — navigate and wait for React to mount into `#root`.
 - `waitForLoaded()` — assert the title, the nav bar's Simulator link, and the
   "Open Simulator" CTA link. **Structural only.**
-- `waitForSharedByOthers()` — assert the "Shared by others, courtesy of KQM DB"
-  heading and at least one card linking to `db.kqm.gg/db/`. The cards fetch
-  KQM DB's `/api/db`, so a spec calls `installOfflineRoutes` before navigating.
+- `waitForLoadedMobile()` — the same for the mobile layout, minus the nav link
+  (collapsed behind the menu).
 
 ### `SimulatorPage` (`src/pages/simulator-page.ts`) — the `/simulator` route
 
@@ -189,7 +188,6 @@ specs stay offline:
 
 - `/api/assets/**` returns a 1x1 PNG (avatars, art);
 - `api.github.com` (latest-release lookup) returns a fixed payload;
-- `db.kqm.gg/api/db` returns the two `kqmEntries` (Shared by others);
 - any other `/api/**` returns an empty 200.
 
 ## Out of scope
