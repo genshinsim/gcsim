@@ -1,12 +1,20 @@
-import { expect, installOfflineRoutes, test } from "../src";
+import { type DashPage, expect, installOfflineRoutes, test } from "../src";
 
 const layouts = [
-	{ name: "desktop", viewport: { width: 1280, height: 720 } },
-	{ name: "mobile", viewport: { width: 390, height: 844 } },
+	{
+		name: "desktop",
+		viewport: { width: 1280, height: 720 },
+		waitForLoaded: (dash: DashPage) => dash.waitForLoaded(),
+	},
+	{
+		name: "mobile",
+		viewport: { width: 390, height: 844 },
+		waitForLoaded: (dash: DashPage) => dash.waitForLoadedMobile(),
+	},
 ];
 
 test.describe("dash home", () => {
-	for (const { name, viewport } of layouts) {
+	for (const { name, viewport, waitForLoaded } of layouts) {
 		test(`${name}: renders without the KQM DB section`, async ({ app }) => {
 			await app.page.setViewportSize(viewport);
 			await installOfflineRoutes(app.page);
@@ -18,12 +26,7 @@ test.describe("dash home", () => {
 			});
 
 			await app.dash.goto();
-			if (name === "desktop") {
-				await app.dash.waitForLoaded();
-			} else {
-				// The mobile nav collapses its Simulator link behind the menu.
-				await expect(app.dash.openSimulator).toBeVisible();
-			}
+			await waitForLoaded(app.dash);
 
 			await expect(
 				app.page.getByRole("heading", { name: /KQM DB/ }),

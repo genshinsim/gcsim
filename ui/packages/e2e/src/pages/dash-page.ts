@@ -25,4 +25,10 @@ export class DashPage {
 		await expect(this.navSimulator).toBeVisible();
 		await expect(this.openSimulator).toBeVisible();
 	}
+
+	/** {@link waitForLoaded} for the mobile layout, whose nav hides Simulator behind a menu. */
+	async waitForLoadedMobile(): Promise<void> {
+		await expect(this.page).toHaveTitle("gcsim - simulation impact");
+		await expect(this.openSimulator).toBeVisible();
+	}
 }
