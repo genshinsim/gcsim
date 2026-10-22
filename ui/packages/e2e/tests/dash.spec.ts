@@ -1,36 +1,38 @@
-import { expect, installOfflineRoutes, kqmEntries, test } from "../src";
+import { expect, installOfflineRoutes, test } from "../src";
+
+const layouts = [
+	{ name: "desktop", viewport: { width: 1280, height: 720 } },
+	{ name: "mobile", viewport: { width: 390, height: 844 } },
+];
 
 test.describe("dash home", () => {
-	test("renders nav, Open Simulator, and KQM DB's shared-by-others cards", async ({
-		app,
-	}) => {
-		await installOfflineRoutes(app.page);
-		const gcsimDbRequests: string[] = [];
-		app.page.on("request", (req) => {
-			const url = new URL(req.url());
-			if (url.host !== "db.kqm.gg" && url.pathname.startsWith("/api/db")) {
-				gcsimDbRequests.push(req.url());
+	for (const { name, viewport } of layouts) {
+		test(`${name}: renders without the KQM DB section`, async ({ app }) => {
+			await app.page.setViewportSize(viewport);
+			await installOfflineRoutes(app.page);
+			const kqmRequests: string[] = [];
+			app.page.on("request", (req) => {
+				if (new URL(req.url()).host === "db.kqm.gg") {
+					kqmRequests.push(req.url());
+				}
+			});
+
+			await app.dash.goto();
+			if (name === "desktop") {
+				await app.dash.waitForLoaded();
+			} else {
+				// The mobile nav collapses its Simulator link behind the menu.
+				await expect(app.dash.openSimulator).toBeVisible();
 			}
+
+			await expect(
+				app.page.getByRole("heading", { name: /KQM DB/ }),
+			).toHaveCount(0);
+			await expect(
+				app.page.locator("a[href^='https://db.kqm.gg']"),
+			).toHaveCount(0);
+			expect(kqmRequests).toEqual([]);
+			app.console.assertNoErrors();
 		});
-
-		await app.dash.goto();
-		await app.dash.waitForLoaded();
-		await app.dash.waitForSharedByOthers();
-
-		await expect(app.dash.teamCards).toHaveCount(kqmEntries.length);
-		await expect(app.dash.teamCards.first()).toHaveAttribute(
-			"href",
-			`https://db.kqm.gg/db/${kqmEntries[0]._id}`,
-		);
-		await expect(app.dash.teamCards.first()).toContainText("mode TTK");
-		await expect(app.dash.teamCards.nth(1)).toContainText("mode duration");
-		await expect(
-			app.page.getByRole("link", { name: /View all/ }).first(),
-		).toHaveAttribute("href", "https://db.kqm.gg");
-		await expect(app.page.getByRole("link", { name: "Teams DB" })).toHaveCount(
-			0,
-		);
-		expect(gcsimDbRequests).toEqual([]);
-		app.console.assertNoErrors();
-	});
+	}
 });
