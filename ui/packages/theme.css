@@ -493,7 +493,6 @@
 	--g-dendro: #6e9020;
 }
 
-/* Native select popups otherwise fall back to the browser's light default. */
 @layer base {
 	select,
 	option {
