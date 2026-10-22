@@ -40,7 +40,7 @@ func TestPrettyPrintStatsSkipsZero(t *testing.T) {
 	if got := PrettyPrintStatsSlice(stats); !slices.Equal(got, want) {
 		t.Errorf("PrettyPrintStatsSlice = %q, want %q", got, want)
 	}
-	if got := PrettyPrintStats(stats); got != "atk: 311 cr: 0.05" {
-		t.Errorf("PrettyPrintStats = %q, want %q", got, "atk: 311 cr: 0.05")
+	if got, want := PrettyPrintStats(stats), "atk: 311 cr: 0.05"; got != want {
+		t.Errorf("PrettyPrintStats = %q, want %q", got, want)
 	}
 }
