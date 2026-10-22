@@ -50,13 +50,18 @@ func (s Stats) MaxHP() float64    { return s[BaseHP]*(1+s[HPP]) + s[HP] }
 func (s Stats) TotalATK() float64 { return s[BaseATK]*(1+s[ATKP]) + s[ATK] }
 func (s Stats) TotalDEF() float64 { return s[BaseDEF]*(1+s[DEFP]) + s[DEF] }
 
+func formatStat(v float64) string {
+	s := strconv.FormatFloat(v, 'f', 6, 64)
+	return strings.TrimRight(strings.TrimRight(s, "0"), ".")
+}
+
 func PrettyPrintStats(stats []float64) string {
 	var sb strings.Builder
 	for i, v := range stats {
 		if v > 0 {
 			sb.WriteString(StatTypeString[i])
 			sb.WriteString(": ")
-			sb.WriteString(strconv.FormatFloat(v, 'f', 2, 32))
+			sb.WriteString(formatStat(v))
 			sb.WriteString(" ")
 		}
 	}
@@ -72,7 +77,7 @@ func PrettyPrintStatsSlice(stats []float64) []string {
 		}
 		sb.WriteString(StatTypeString[i])
 		sb.WriteString(": ")
-		sb.WriteString(strconv.FormatFloat(v, 'f', 2, 32))
+		sb.WriteString(formatStat(v))
 		r = append(r, sb.String())
 		sb.Reset()
 	}
