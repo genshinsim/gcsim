@@ -49,6 +49,7 @@ jobs:
         with:
           # name needs to be "main" if on mainline
           branch: ${{ steps.branch-name.outputs.base_ref_branch == 'mainline' && 'main' || steps.branch-name.outputs.base_ref_branch }}
+          hide-kqm-db: ${{ vars.HIDE_KQM_DB }}
 
       - name: deploy-workers
         uses: ./.github/actions/deploy-workers

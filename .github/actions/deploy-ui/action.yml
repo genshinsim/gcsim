@@ -4,6 +4,10 @@ inputs:
   branch:
     required: true
     description: name of the branch
+  hide-kqm-db:
+    required: false
+    default: ""
+    description: '"true" hides the KQM DB section on the homepage'
 
 runs:
   using: composite
@@ -14,7 +18,7 @@ runs:
     run: pnpm build:web
     env:
       VITE_BRANCH: ${{ inputs.branch }}
-      VITE_HIDE_KQM_DB: ${{ vars.HIDE_KQM_DB }}
+      VITE_HIDE_KQM_DB: ${{ inputs.hide-kqm-db }}
 
   - name: List UI dist
     working-directory: ./ui/packages/web/dist
