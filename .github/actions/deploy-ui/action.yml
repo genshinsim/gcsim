@@ -14,6 +14,7 @@ runs:
     run: pnpm build:web
     env:
       VITE_BRANCH: ${{ inputs.branch }}
+      VITE_HIDE_KQM_DB: ${{ vars.HIDE_KQM_DB }}
 
   - name: List UI dist
     working-directory: ./ui/packages/web/dist
