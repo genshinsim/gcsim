@@ -98,7 +98,12 @@
 		"dps_per_target": "DPS / target",
 		"mode_label": "mode {{mode}}",
 		"mode_ttk": "TTK",
-		"mode_duration": "duration"
+		"mode_duration": "duration",
+		"kqm_leave_title": "You are leaving gcsim",
+		"kqm_leave_body": "This link goes to KQM DB (db.kqm.gg), a third-party site that is not operated by gcsim. We are not responsible for its content, availability, or privacy practices. Continue at your own discretion.",
+		"kqm_leave_dont_show": "Don't show this again",
+		"kqm_leave_cancel": "Cancel",
+		"kqm_leave_continue": "Continue"
 	},
 	"db": {
 		"author": "Author: ",
