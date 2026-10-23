@@ -83,10 +83,11 @@ function Layout() {
 			<Nav />
 			<div
 				ref={content}
-				className="flex flex-col flex-auto overflow-y-scroll overflow-x-clip"
+				id="app_content"
+				className="flex flex-col flex-auto overflow-y-auto overflow-x-clip [scrollbar-gutter:stable]"
 			>
 				<Outlet />
-				<Footer />
+				{pathname === "/simulator" ? null : <Footer />}
 			</div>
 		</div>
 	);

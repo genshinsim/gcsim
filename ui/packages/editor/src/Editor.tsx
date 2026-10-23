@@ -37,7 +37,12 @@ import {
 } from "@codemirror/view";
 import { type Ref, useEffect, useImperativeHandle, useRef } from "react";
 import { diagnosticsTransaction, parseErrors } from "./diagnostics";
-import { errorPanelField, setErrorPanel } from "./errorPanel";
+import {
+	type ErrorPanelPosition,
+	errorPanelField,
+	errorPanelPosition,
+	setErrorPanel,
+} from "./errorPanel";
 import { formatDocument } from "./formatCommand";
 import { gcsimFoldService } from "./language/fold";
 import { gcsim } from "./language/language";
@@ -59,8 +64,11 @@ export interface EditorProps {
 	fontSize?: number;
 	theme?: EditorThemeId;
 	maxLines?: number;
+	minLines?: number;
 	error?: string | null;
 	errorTitle?: string;
+	errorPanelAt?: ErrorPanelPosition;
+	scrollMargins?: () => { top?: number; bottom?: number };
 	id?: string;
 	className?: string;
 }
@@ -74,10 +82,16 @@ const completionKeymapCustom: readonly KeyBinding[] = [
 
 const LINE_HEIGHT = 1.5;
 
-function sizing(fontSize: number, maxLines: number): Extension {
+function sizing(
+	fontSize: number,
+	maxLines: number,
+	minLines: number,
+): Extension {
 	return EditorView.theme({
-		"&": { fontSize: `${fontSize}px` },
+		"&": { fontSize: `${fontSize}px`, flexGrow: 1 },
 		".cm-scroller": {
+			flexGrow: 1,
+			minHeight: `${minLines * LINE_HEIGHT}em`,
 			maxHeight: Number.isFinite(maxLines)
 				? `${maxLines * LINE_HEIGHT}em`
 				: "none",
@@ -116,8 +130,11 @@ export function Editor({
 	fontSize = 14,
 	theme = DEFAULT_EDITOR_THEME,
 	maxLines = 35,
+	minLines = 0,
 	error,
 	errorTitle = "Invalid config",
+	errorPanelAt = "bottom",
+	scrollMargins,
 	id,
 	className,
 }: EditorProps) {
@@ -125,12 +142,23 @@ export function Editor({
 	const viewRef = useRef<EditorView | null>(null);
 	const onChangeRef = useRef(onChange);
 	onChangeRef.current = onChange;
+	const scrollMarginsRef = useRef(scrollMargins);
+	scrollMarginsRef.current = scrollMargins;
 	const compartments = useRef({
 		sizing: new Compartment(),
 		editable: new Compartment(),
 		theme: new Compartment(),
+		panel: new Compartment(),
 	}).current;
-	const initial = useRef({ value, theme, fontSize, maxLines, readOnly });
+	const initial = useRef({
+		value,
+		theme,
+		fontSize,
+		maxLines,
+		minLines,
+		readOnly,
+		errorPanelAt,
+	});
 
 	useImperativeHandle(
 		ref,
@@ -143,7 +171,15 @@ export function Editor({
 	);
 
 	useEffect(() => {
-		const { value, theme, fontSize, maxLines, readOnly } = initial.current;
+		const {
+			value,
+			theme,
+			fontSize,
+			maxLines,
+			minLines,
+			readOnly,
+			errorPanelAt,
+		} = initial.current;
 		const view = new EditorView({
 			parent: parentRef.current ?? undefined,
 			state: EditorState.create({
@@ -165,8 +201,12 @@ export function Editor({
 					autocompletion(),
 					gcsim(),
 					errorPanelField,
+					compartments.panel.of(errorPanelPosition.of(errorPanelAt)),
+					EditorView.scrollMargins.of(
+						() => scrollMarginsRef.current?.() ?? null,
+					),
 					compartments.theme.of(editorTheme(theme)),
-					compartments.sizing.of(sizing(fontSize, maxLines)),
+					compartments.sizing.of(sizing(fontSize, maxLines, minLines)),
 					compartments.editable.of(editable(readOnly)),
 					keymap.of([
 						...completionKeymapCustom,
@@ -209,9 +249,19 @@ export function Editor({
 
 	useEffect(() => {
 		viewRef.current?.dispatch({
-			effects: compartments.sizing.reconfigure(sizing(fontSize, maxLines)),
+			effects: compartments.sizing.reconfigure(
+				sizing(fontSize, maxLines, minLines),
+			),
 		});
-	}, [compartments, fontSize, maxLines]);
+	}, [compartments, fontSize, maxLines, minLines]);
+
+	useEffect(() => {
+		viewRef.current?.dispatch({
+			effects: compartments.panel.reconfigure(
+				errorPanelPosition.of(errorPanelAt),
+			),
+		});
+	}, [compartments, errorPanelAt]);
 
 	useEffect(() => {
 		viewRef.current?.dispatch({
