@@ -185,6 +185,7 @@
 	},
 	"sample": {
 		"all": "Todo",
+		"chip_cap": "Etiquetas por fila: {{count}}",
 		"clear_duration": "{{label}}: {{start}} → {{end}} · haz clic o pulsa Esc para quitar",
 		"drop_text": "Suelta el archivo de muestra (.gz) de gcsim aquí, o haz clic para seleccionar el archivo.",
 		"empty_frames": "Fotogramas vacíos: {{count}}",
@@ -195,6 +196,9 @@
 		"frame_title": "Fotograma {{frame}}",
 		"group_by_category": "Agrupar por categoría",
 		"hide_overview": "Ocultar resumen y controles",
+		"hide_overview_short": "Ocultar resumen",
+		"horizontal": "Horizontal",
+		"layout": "Diseño",
 		"less": "menos",
 		"more": "+{{count}} más",
 		"next_frame": "Fotograma siguiente",
@@ -208,9 +212,15 @@
 		"seconds": "segundos",
 		"show_duration": "Mostrar duración: {{start}} → {{end}}",
 		"show_overview": "Mostrar resumen y controles",
+		"show_overview_short": "Mostrar resumen",
 		"sim_lane": "Sim / Enemigo",
 		"since_last": "+{{count}}f desde el anterior",
-		"to_end": "hasta el final"
+		"slim_chips": "Etiquetas compactas",
+		"slim_chips_hint": "Las etiquetas compactas ocupan una línea y cada fila muestra hasta el límite. Desactívalo para ajustar el texto y mostrar todas.",
+		"to_end": "hasta el final",
+		"vertical": "Vertical",
+		"vertical_only": "Solo se usa en el diseño vertical.",
+		"view": "Vista"
 	},
 	"settings": {
 		"dark": "Oscuro",

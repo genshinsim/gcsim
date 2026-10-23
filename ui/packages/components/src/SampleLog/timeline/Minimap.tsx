@@ -1,3 +1,4 @@
+import { cn } from "@gcsim/primitives";
 import type React from "react";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
 import { isEvent } from "../events/types";
@@ -9,6 +10,7 @@ const LANES_TOP = DMG_H + 4;
 const LANE_H = 7;
 const LANE_GAP = 2;
 const AXIS_H = 13;
+const V_AXIS_W = 26;
 const BUCKET_PX = 2;
 
 type Props = {
@@ -21,8 +23,8 @@ type Props = {
 	matchFrames: number[];
 	/** a highlighted status duration */
 	selection: [number, number] | null;
-	/** sits beside the overview, or under it on narrow screens */
 	aside: React.ReactNode;
+	vertical?: boolean;
 };
 
 type Palette = {
@@ -35,7 +37,7 @@ type Palette = {
 
 type Scale = {
 	ctx: CanvasRenderingContext2D;
-	width: number;
+	len: number;
 	frames: number;
 	buckets: number;
 	bucketOf: (frame: number) => number;
@@ -46,6 +48,9 @@ function cssVar(el: Element, name: string, fallback: string) {
 	const v = getComputedStyle(el).getPropertyValue(name).trim();
 	return v === "" ? fallback : v;
 }
+
+const drawTimeDownwards = (ctx: CanvasRenderingContext2D, dpr: number) =>
+	ctx.setTransform(0, dpr, dpr, 0, 0, 0);
 
 const laneY = (lane: number) => LANES_TOP + lane * (LANE_H + LANE_GAP);
 
@@ -92,7 +97,7 @@ function drawLanes(
 		const y = laneY(l);
 		ctx.fillStyle = p.line;
 		ctx.globalAlpha = 0.35;
-		ctx.fillRect(0, y, s.width, LANE_H);
+		ctx.fillRect(0, y, s.len, LANE_H);
 		ctx.globalAlpha = 0.45;
 		ctx.fillStyle = p.lanes[l];
 		for (const stint of model.onField) {
@@ -145,18 +150,28 @@ function drawMatches(s: Scale, matchFrames: number[], p: Palette) {
 	}
 }
 
-function drawAxis(s: Scale, top: number, p: Palette) {
+function drawAxis(s: Scale, at: number, vertical: boolean, p: Palette) {
 	const { ctx } = s;
-	const secStep = s.width / (s.frames / 60) > 22 ? 5 : 10;
-	ctx.font = "10px ui-monospace, monospace";
-	ctx.textBaseline = "top";
+	const secStep = s.len / (s.frames / 60) > 22 ? 5 : 10;
+	ctx.font = vertical
+		? "9px ui-monospace, monospace"
+		: "10px ui-monospace, monospace";
+	ctx.textBaseline = vertical ? "middle" : "top";
 	for (let sec = 0; sec * 60 <= s.frames; sec += secStep) {
-		const x = s.x(sec * 60);
+		const t = s.x(sec * 60);
 		ctx.fillStyle = p.line;
-		ctx.fillRect(x, top, 1, 4);
+		if (vertical) {
+			ctx.fillRect(at, t, 4, 1);
+		} else {
+			ctx.fillRect(t, at, 1, 4);
+		}
 		ctx.fillStyle = p.mute;
 		if (sec > 0) {
-			ctx.fillText(`${sec}s`, x + 2, top + 2);
+			if (vertical) {
+				ctx.fillText(`${sec}s`, at + 5, t);
+			} else {
+				ctx.fillText(`${sec}s`, t + 2, at + 2);
+			}
 		}
 	}
 }
@@ -171,13 +186,15 @@ export function Minimap({
 	matchFrames,
 	selection,
 	aside,
+	vertical = false,
 }: Props) {
 	const wrap = useRef<HTMLDivElement>(null);
 	const canvas = useRef<HTMLCanvasElement>(null);
-	const [width, setWidth] = useState(0);
+	const [len, setLen] = useState(0);
 	const drag = useRef<{ anchor: number } | null>(null);
 	const lanesH = model.lanes.length * (LANE_H + LANE_GAP);
-	const height = LANES_TOP + lanesH + AXIS_H;
+	const depth = LANES_TOP + lanesH + (vertical ? V_AXIS_W : AXIS_H);
+	const [width, height] = vertical ? [depth, len] : [len, depth];
 	const frames = model.maxFrame + 1;
 
 	useEffect(() => {
@@ -185,15 +202,16 @@ export function Minimap({
 		if (el == null) {
 			return;
 		}
-		const ro = new ResizeObserver(() => setWidth(el.clientWidth));
+		const measure = () => setLen(vertical ? el.clientHeight : el.clientWidth);
+		const ro = new ResizeObserver(measure);
 		ro.observe(el);
-		setWidth(el.clientWidth);
+		measure();
 		return () => ro.disconnect();
-	}, []);
+	}, [vertical]);
 
 	useEffect(() => {
 		const c = canvas.current;
-		if (c == null || width === 0) {
+		if (c == null || len === 0) {
 			return;
 		}
 		const dpr = window.devicePixelRatio || 1;
@@ -205,6 +223,9 @@ export function Minimap({
 		}
 		ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 		ctx.clearRect(0, 0, width, height);
+		if (vertical) {
+			drawTimeDownwards(ctx, dpr);
+		}
 		const palette: Palette = {
 			lanes: model.lanes.map((l) => cssVar(c, laneColorVar(l), "#888")),
 			ink: cssVar(c, "--g-text", "#eee"),
@@ -212,37 +233,49 @@ export function Minimap({
 			line: cssVar(c, "--g-border", "#333"),
 			warn: cssVar(c, "--g-warning", "#dda857"),
 		};
-		const buckets = Math.ceil(width / BUCKET_PX);
+		const buckets = Math.ceil(len / BUCKET_PX);
 		const scale: Scale = {
 			ctx,
-			width,
+			len,
 			frames,
 			buckets,
 			bucketOf: (f) =>
-				Math.min(buckets - 1, Math.floor(((f / frames) * width) / BUCKET_PX)),
-			x: (f) => (f / frames) * width,
+				Math.min(buckets - 1, Math.floor(((f / frames) * len) / BUCKET_PX)),
+			x: (f) => (f / frames) * len,
 		};
 		drawDamage(scale, model, palette);
 		drawLanes(scale, model, enabled, palette);
 		drawBursts(scale, model, palette);
 		drawMatches(scale, matchFrames, palette);
-		drawAxis(scale, LANES_TOP + lanesH, palette);
-	}, [model, enabled, width, height, lanesH, frames, matchFrames]);
+		ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+		drawAxis(scale, LANES_TOP + lanesH, vertical, palette);
+	}, [
+		model,
+		enabled,
+		len,
+		width,
+		height,
+		lanesH,
+		frames,
+		matchFrames,
+		vertical,
+	]);
 
-	const fx = (f: number) => (f / frames) * width;
+	const fx = (f: number) => (f / frames) * len;
 	const xa = fx(Math.max(0, range[0]));
 	const xb = Math.max(xa + 6, fx(Math.min(frames, range[1])));
 	const viewW = range[1] - range[0];
+	const along = (e: { clientX: number; clientY: number }, rect: DOMRect) =>
+		vertical ? e.clientY - rect.top : e.clientX - rect.left;
+	const span = (start: number, size: number) =>
+		vertical ? { top: start, height: size } : { left: start, width: size };
 
-	const frameAt = (clientX: number) => {
+	const frameAt = (e: React.PointerEvent) => {
 		const rect = wrap.current?.getBoundingClientRect();
-		if (rect == null || width === 0) {
+		if (rect == null || len === 0) {
 			return 0;
 		}
-		return Math.max(
-			0,
-			Math.min(frames, ((clientX - rect.left) / width) * frames),
-		);
+		return Math.max(0, Math.min(frames, (along(e, rect) / len) * frames));
 	};
 
 	const onPointerDown = (e: React.PointerEvent) => {
@@ -250,8 +283,8 @@ export function Minimap({
 		if (rect == null) {
 			return;
 		}
-		const x = e.clientX - rect.left;
-		const f = frameAt(e.clientX);
+		const x = along(e, rect);
+		const f = frameAt(e);
 		if (x >= xa && x <= xb) {
 			drag.current = { anchor: f - range[0] };
 		} else {
@@ -266,7 +299,7 @@ export function Minimap({
 		if (d == null) {
 			return;
 		}
-		onPan(frameAt(e.clientX) - d.anchor);
+		onPan(frameAt(e) - d.anchor);
 	};
 
 	const endDrag = () => {
@@ -293,14 +326,30 @@ export function Minimap({
 	}, []);
 
 	return (
-		<div className="flex shrink-0 flex-col rounded-g-md border border-g-line bg-g-surface sm:flex-row">
-			<div className="order-last shrink-0 border-t border-g-line py-1.5 sm:w-[232px] sm:border-t-0 sm:border-l sm:py-0">
+		<div
+			className={cn(
+				"flex shrink-0 flex-col rounded-g-md border border-g-line bg-g-surface",
+				!vertical && "sm:flex-row",
+			)}
+			style={vertical ? { width: width + 2 } : undefined}
+		>
+			<div
+				className={cn(
+					"shrink-0 border-g-line",
+					vertical
+						? "flex h-8 items-center justify-center border-b"
+						: "order-last border-t py-1.5 sm:w-[232px] sm:border-t-0 sm:border-l sm:py-0",
+				)}
+			>
 				{aside}
 			</div>
 			<div
 				ref={wrap}
-				className="relative min-w-0 cursor-grab sm:flex-1 touch-none select-none active:cursor-grabbing"
-				style={{ height }}
+				className={cn(
+					"relative cursor-grab touch-none select-none active:cursor-grabbing",
+					vertical ? "min-h-0 flex-1" : "min-w-0 sm:flex-1",
+				)}
+				style={vertical ? undefined : { height }}
 				onPointerDown={onPointerDown}
 				onPointerMove={onPointerMove}
 				onPointerUp={endDrag}
@@ -312,28 +361,40 @@ export function Minimap({
 					style={{ width, height }}
 				/>
 				<div
-					className="pointer-events-none absolute inset-y-0 left-0 bg-g-surface/60"
-					style={{ width: xa }}
+					className={cn(
+						"pointer-events-none absolute bg-g-surface/60",
+						vertical ? "inset-x-0 top-0" : "inset-y-0 left-0",
+					)}
+					style={vertical ? { height: xa } : { width: xa }}
 				/>
 				<div
-					className="pointer-events-none absolute inset-y-0 right-0 bg-g-surface/60"
-					style={{ left: xb }}
+					className={cn(
+						"pointer-events-none absolute bg-g-surface/60",
+						vertical ? "inset-x-0 bottom-0" : "inset-y-0 right-0",
+					)}
+					style={vertical ? { top: xb } : { left: xb }}
 				/>
 				<div
-					className="pointer-events-none absolute inset-y-0 rounded-[3px] border-2 border-g-accent bg-g-accent/10"
-					style={{ left: xa, width: xb - xa }}
+					className={cn(
+						"pointer-events-none absolute rounded-[3px] border-2 border-g-accent bg-g-accent/10",
+						vertical ? "inset-x-0" : "inset-y-0",
+					)}
+					style={span(xa, xb - xa)}
 				/>
 				{selection != null && (
 					<div
-						className="pointer-events-none absolute inset-y-0 border-x-2 border-g-warning bg-g-warning/20"
-						style={{
-							left: fx(Math.min(selection[0], frames)),
-							width: Math.max(
+						className={cn(
+							"pointer-events-none absolute border-g-warning bg-g-warning/20",
+							vertical ? "inset-x-0 border-y-2" : "inset-y-0 border-x-2",
+						)}
+						style={span(
+							fx(Math.min(selection[0], frames)),
+							Math.max(
 								2,
 								fx(Math.min(selection[1], frames)) -
 									fx(Math.min(selection[0], frames)),
 							),
-						}}
+						)}
 					/>
 				)}
 			</div>

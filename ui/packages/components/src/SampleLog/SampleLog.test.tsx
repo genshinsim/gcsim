@@ -14,20 +14,27 @@ vi.mock("react-i18next", () => ({
 import { SampleLog } from "./SampleLog";
 import { AllSampleOptions } from "./SampleOptions";
 import { loadSampleFilter } from "./sampleFilter";
+import { loadSampleView, saveSampleView } from "./sampleView";
 import { sampleFixture as sample } from "./testdata";
 import { columns } from "./timeline/layout";
 import { modelFromSample } from "./timeline/model";
 
 const scrolls: number[] = [];
+const vscrolls: number[] = [];
 
 beforeEach(() => {
 	localStorage.clear();
 	scrolls.length = 0;
+	vscrolls.length = 0;
 	Element.prototype.scrollTo = function (
 		this: Element,
 		opts?: ScrollToOptions | number,
 	) {
-		if (typeof opts === "object") {
+		if (typeof opts === "object" && opts.top != null) {
+			vscrolls.push(opts.top);
+			this.scrollTop = opts.top;
+			this.dispatchEvent(new Event("scroll"));
+		} else if (typeof opts === "object") {
 			scrolls.push(opts.left ?? 0);
 			this.scrollLeft = opts.left ?? 0;
 			this.dispatchEvent(new Event("scroll"));
@@ -225,5 +232,95 @@ describe("SampleLog", () => {
 
 		await userEvent.keyboard("{Escape}");
 		expect(clear()).toHaveLength(0);
+	});
+});
+
+describe("SampleLog vertical", () => {
+	const vertical = (over: Partial<ReturnType<typeof loadSampleView>> = {}) =>
+		saveSampleView(localStorage, {
+			...loadSampleView(localStorage, true),
+			orientation: "vertical",
+			...over,
+		});
+
+	const openView = async () => {
+		await userEvent.click(screen.getByRole("button", { name: "sample.view" }));
+		return screen.getByRole("dialog");
+	};
+
+	it("switches to vertical from the view menu and remembers it", async () => {
+		renderLog();
+		const menu = await openView();
+		await userEvent.click(
+			within(menu).getByRole("button", { name: "sample.vertical" }),
+		);
+		expect(loadSampleView(localStorage, true).orientation).toBe("vertical");
+		expect(
+			screen.getByRole("button", { name: "sample.hide_overview_short" }),
+		).toBeInTheDocument();
+	});
+
+	it("caps slim rows and expands one on +N more", async () => {
+		vertical({ slim: true, cap: 3 });
+		renderLog();
+		const more = screen.getAllByRole("button", { name: /^sample\.more / });
+		expect(more.length).toBeGreaterThan(0);
+		await userEvent.click(more[0]);
+		expect(
+			screen.getByRole("button", { name: /sample\.less/ }),
+		).toBeInTheDocument();
+	});
+
+	it("shows every chip, wrapped, when slim chips are off", async () => {
+		vertical({ slim: false });
+		renderLog();
+		expect(screen.queryAllByRole("button", { name: /^sample\.more / })).toEqual(
+			[],
+		);
+		const menu = await openView();
+		expect(within(menu).getByRole("slider")).toBeDisabled();
+	});
+
+	it("only offers the chip options to the vertical layout", async () => {
+		renderLog();
+		const menu = await openView();
+		expect(within(menu).getByRole("switch")).toBeDisabled();
+		expect(within(menu).getByRole("slider")).toBeDisabled();
+	});
+
+	it("saves the chip cap from the slider", async () => {
+		vertical({ slim: true, cap: 4 });
+		renderLog();
+		const menu = await openView();
+		fireEvent.change(within(menu).getByRole("slider"), {
+			target: { value: "8" },
+		});
+		expect(loadSampleView(localStorage, true).cap).toBe(8);
+	});
+
+	it("scrolls down to each search match", async () => {
+		vertical();
+		renderLog();
+		await userEvent.type(
+			screen.getByPlaceholderText("sample.search_placeholder"),
+			"Sesshou",
+		);
+		const next = screen.getByRole("button", { name: "sample.next_match" });
+		await userEvent.click(next);
+		await userEvent.click(next);
+		expect(vscrolls).toHaveLength(2);
+		expect(vscrolls[0]).toBeGreaterThan(0);
+		expect(scrolls).toEqual([]);
+	});
+
+	it("collapses the overview to a rail and remembers it", async () => {
+		vertical({ overview: true });
+		const { container } = renderLog();
+		expect(container.querySelector("canvas")).not.toBeNull();
+		await userEvent.click(
+			screen.getByRole("button", { name: "sample.hide_overview_short" }),
+		);
+		expect(container.querySelector("canvas")).toBeNull();
+		expect(loadSampleView(localStorage, true).overview).toBe(false);
 	});
 });

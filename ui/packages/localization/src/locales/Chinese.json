@@ -185,6 +185,7 @@
 	},
 	"sample": {
 		"all": "全部",
+		"chip_cap": "每行标签数：{{count}}",
 		"clear_duration": "{{label}}：{{start}} → {{end}} · 点击或按 Esc 清除",
 		"drop_text": "拖动gcsim的gzip-JSON样本文件到此处，或者点击以选择。",
 		"empty_frames": "{{count}} 个空帧",
@@ -195,6 +196,9 @@
 		"frame_title": "第 {{frame}} 帧",
 		"group_by_category": "按类别分组",
 		"hide_overview": "隐藏概览和控件",
+		"hide_overview_short": "隐藏概览",
+		"horizontal": "横向",
+		"layout": "布局",
 		"less": "收起",
 		"more": "+{{count}} 更多",
 		"next_frame": "下一帧",
@@ -208,9 +212,15 @@
 		"seconds": "秒",
 		"show_duration": "显示持续时间：{{start}} → {{end}}",
 		"show_overview": "显示概览和控件",
+		"show_overview_short": "显示概览",
 		"sim_lane": "模拟 / 敌人",
 		"since_last": "距上次 +{{count}} 帧",
-		"to_end": "至结束"
+		"slim_chips": "紧凑标签",
+		"slim_chips_hint": "紧凑标签保持单行，每行最多显示上限数量。关闭后标签文字换行并显示全部标签。",
+		"to_end": "至结束",
+		"vertical": "纵向",
+		"vertical_only": "仅用于纵向布局。",
+		"view": "视图"
 	},
 	"settings": {
 		"dark": "深色",
