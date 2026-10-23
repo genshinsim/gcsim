@@ -17,6 +17,7 @@ const (
 	c1Interval          = 3.5 * 60
 	c1Duration          = 3 * 60
 	c1Multiplier        = 11.0
+	c1StellarMultiplier = 5.5
 	c1Range             = 12
 	c2Key               = "mizuki-c2"
 	c2EMMultiplier      = 0.0004
@@ -66,7 +67,7 @@ func (c *char) c1() {
 			if atk.Info.Element != attributes.Anemo {
 				return
 			}
-			additionalDmg = c1Multiplier * c.c1EM
+			additionalDmg = c1StellarMultiplier * c.c1EM
 		default:
 			return
 		}
@@ -211,11 +212,10 @@ func (c *char) c2UpdateShredTask() {
 		return
 	}
 
-	defer c.c2UpdateShredTask()
-
 	c.QueueCharTask(func() {
+		defer c.c2UpdateShredTask()
+
 		if !c.StatusIsActive(dreamDrifterStateKey) {
-			c.c2UpdateShredTask()
 			return
 		}
 
