@@ -3,7 +3,6 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@gcsim/primitives";
 import { useNavigate } from "@tanstack/react-router";
@@ -21,6 +20,13 @@ export function EditorSettings() {
 
 	return (
 		<div className="flex flex-row flex-wrap items-center gap-1">
+			<Button
+				variant="secondary"
+				onClick={() => navigate({ to: "/sample/upload" })}
+			>
+				<Upload />
+				{t("simple.tools_sample_upload")}
+			</Button>
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<Button variant="secondary">
@@ -29,11 +35,6 @@ export function EditorSettings() {
 					</Button>
 				</DropdownMenuTrigger>
 				<DropdownMenuContent side="top">
-					<DropdownMenuItem onClick={() => navigate({ to: "/sample/upload" })}>
-						<Upload />
-						{t("simple.tools_sample_upload")}
-					</DropdownMenuItem>
-					<DropdownMenuSeparator />
 					<DropdownMenuItem onClick={() => setOpenGOODImport(true)}>
 						<Download />
 						{t("simple.tools_import", { src: "GO" })}
