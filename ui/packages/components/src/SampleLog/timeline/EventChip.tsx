@@ -11,6 +11,7 @@ export function EventChip({
 	matched,
 	inDuration,
 	className,
+	wrap = false,
 }: {
 	chip: Chip;
 	onOpen: (c: Chip) => void;
@@ -18,10 +19,15 @@ export function EventChip({
 	matched?: boolean;
 	inDuration?: boolean;
 	className?: string;
+	/** wrap the text onto more lines instead of truncating it */
+	wrap?: boolean;
 }) {
 	const { t } = useTranslation();
 	const cls = cn(
-		"flex h-[18px] items-center gap-1 overflow-hidden whitespace-nowrap rounded-[3px] px-1 text-left text-[11px] leading-[18px] text-white",
+		"flex gap-1 overflow-hidden rounded-[3px] px-1 text-left text-[11px] text-white",
+		wrap
+			? "min-h-[18px] items-start py-0.5 leading-[14px] whitespace-normal [overflow-wrap:anywhere]"
+			: "h-[18px] items-center whitespace-nowrap leading-[18px]",
 		matched && "ring-2 ring-g-warning ring-offset-1 ring-offset-g-surface-2",
 		inDuration && "ring-2 ring-g-ink ring-offset-1 ring-offset-g-surface-2",
 		className,
@@ -44,13 +50,19 @@ export function EventChip({
 					aria-label={durationLabel}
 					onClick={() => onDurationIcon(chip)}
 				>
-					<span className="material-icons !text-[12px]" aria-hidden>
+					<span
+						className={cn("material-icons !text-[12px]", wrap && "mt-px")}
+						aria-hidden
+					>
 						{icon}
 					</span>
 				</button>
 				<button
 					type="button"
-					className="min-w-0 flex-1 truncate text-left hover:brightness-125"
+					className={cn(
+						"min-w-0 flex-1 text-left hover:brightness-125",
+						!wrap && "truncate",
+					)}
 					onClick={() => onOpen(chip)}
 				>
 					{text}
@@ -66,10 +78,13 @@ export function EventChip({
 			className={cn(cls, "hover:brightness-125")}
 			style={style}
 		>
-			<span className="material-icons shrink-0 !text-[12px]" aria-hidden>
+			<span
+				className={cn("material-icons shrink-0 !text-[12px]", wrap && "mt-px")}
+				aria-hidden
+			>
 				{icon}
 			</span>
-			<span className="truncate">{text}</span>
+			<span className={wrap ? "min-w-0" : "truncate"}>{text}</span>
 		</button>
 	);
 }
