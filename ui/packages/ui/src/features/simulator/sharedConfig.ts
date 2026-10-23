@@ -49,7 +49,3 @@ export function decodeSharedConfig(encoded: string): SharedConfig {
 export function encodeSharedConfig(payload: SharedConfig): string {
 	return bytesToUrlSafeBase64(Pako.gzip(JSON.stringify(payload)));
 }
-
-export function sharedConfigUrl(origin: string, payload: SharedConfig): string {
-	return `${origin}/simulator?cfg=${encodeSharedConfig(payload)}`;
-}
