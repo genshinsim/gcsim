@@ -12,7 +12,6 @@ export const spanOf = (e: SimEvent | null): Span | null =>
 		? null
 		: { start: e.frame, end: e.end ?? e.frame, label: spanLabel(e) };
 
-/** Escape clears a highlighted duration, unless a dialog or popover took it */
 export function useClearOnEscape(active: boolean, clear: () => void) {
 	useEffect(() => {
 		if (!active) {
@@ -28,7 +27,6 @@ export function useClearOnEscape(active: boolean, clear: () => void) {
 	}, [active, clear]);
 }
 
-/** the highlighted duration's label and length; clicking clears it */
 export function DurationClear({
 	span,
 	onClear,

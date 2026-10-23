@@ -9,11 +9,8 @@ export type Orientation = "horizontal" | "vertical";
 
 export type SampleView = {
 	orientation: Orientation;
-	/** one-line chips capped per row; otherwise chips wrap and every one shows */
 	slim: boolean;
-	/** chips a vertical row shows before "+N more" when slim */
 	cap: number;
-	/** the vertical layout's overview is open */
 	overview: boolean;
 };
 

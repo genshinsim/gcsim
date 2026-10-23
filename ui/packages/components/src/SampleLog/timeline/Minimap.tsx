@@ -23,9 +23,7 @@ type Props = {
 	matchFrames: number[];
 	/** a highlighted status duration */
 	selection: [number, number] | null;
-	/** sits beside the overview, or under it on narrow screens; above it when vertical */
 	aside: React.ReactNode;
-	/** time runs down instead of across */
 	vertical?: boolean;
 };
 
@@ -39,7 +37,6 @@ type Palette = {
 
 type Scale = {
 	ctx: CanvasRenderingContext2D;
-	/** px along the time axis */
 	len: number;
 	frames: number;
 	buckets: number;
@@ -51,6 +48,9 @@ function cssVar(el: Element, name: string, fallback: string) {
 	const v = getComputedStyle(el).getPropertyValue(name).trim();
 	return v === "" ? fallback : v;
 }
+
+const drawTimeDownwards = (ctx: CanvasRenderingContext2D, dpr: number) =>
+	ctx.setTransform(0, dpr, dpr, 0, 0, 0);
 
 const laneY = (lane: number) => LANES_TOP + lane * (LANE_H + LANE_GAP);
 
@@ -150,7 +150,6 @@ function drawMatches(s: Scale, matchFrames: number[], p: Palette) {
 	}
 }
 
-/** `at` is the axis's distance from the overview's top, or left edge when vertical */
 function drawAxis(s: Scale, at: number, vertical: boolean, p: Palette) {
 	const { ctx } = s;
 	const secStep = s.len / (s.frames / 60) > 22 ? 5 : 10;
@@ -191,11 +190,9 @@ export function Minimap({
 }: Props) {
 	const wrap = useRef<HTMLDivElement>(null);
 	const canvas = useRef<HTMLCanvasElement>(null);
-	/** px along the time axis */
 	const [len, setLen] = useState(0);
 	const drag = useRef<{ anchor: number } | null>(null);
 	const lanesH = model.lanes.length * (LANE_H + LANE_GAP);
-	/** px across the time axis */
 	const depth = LANES_TOP + lanesH + (vertical ? V_AXIS_W : AXIS_H);
 	const [width, height] = vertical ? [depth, len] : [len, depth];
 	const frames = model.maxFrame + 1;
@@ -227,8 +224,7 @@ export function Minimap({
 		ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 		ctx.clearRect(0, 0, width, height);
 		if (vertical) {
-			// draw as if horizontal, mirrored across the diagonal so time runs down
-			ctx.setTransform(0, dpr, dpr, 0, 0, 0);
+			drawTimeDownwards(ctx, dpr);
 		}
 		const palette: Palette = {
 			lanes: model.lanes.map((l) => cssVar(c, laneColorVar(l), "#888")),

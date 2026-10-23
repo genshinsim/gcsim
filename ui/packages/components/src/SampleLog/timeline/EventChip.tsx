@@ -19,7 +19,6 @@ export function EventChip({
 	matched?: boolean;
 	inDuration?: boolean;
 	className?: string;
-	/** wrap the text onto more lines instead of truncating it */
 	wrap?: boolean;
 }) {
 	const { t } = useTranslation();

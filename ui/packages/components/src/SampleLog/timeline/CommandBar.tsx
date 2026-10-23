@@ -46,7 +46,6 @@ type Props = {
 	onGenerate?: () => void;
 	view: SampleView;
 	onViewChange: (v: SampleView) => void;
-	/** one wrapping row, for a bar across the top rather than a panel beside the overview */
 	inline?: boolean;
 };
 

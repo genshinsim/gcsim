@@ -84,7 +84,6 @@ function useScrollBox() {
 	return { el, ref: setEl, view };
 }
 
-/** the sample log with time running down and a column per lane */
 export function VerticalStrip({
 	ref,
 	model,
@@ -357,7 +356,6 @@ function Row({
 }: {
 	row: VRow;
 	model: TimelineModel;
-	/** lane on field per row, -1 for none */
 	onField: number[];
 	cap: number | null;
 	expanded: boolean;

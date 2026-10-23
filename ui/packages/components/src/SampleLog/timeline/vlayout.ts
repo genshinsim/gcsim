@@ -1,11 +1,9 @@
-import { type Column, chipsShown } from "./layout";
+import { CHIP_GAP, CHIP_H, type Column, chipsShown } from "./layout";
 import { type Chip, lowerBound } from "./model";
 
-export const CHIP_H = 18;
-const CHIP_GAP = 2;
 export const V_CELL_PAD_Y = 4;
 export const MIN_ROW_H = 36;
-const RULE = 1;
+export const RULE = 1;
 export const V_GAP_BIG = 16;
 export const V_GUTTER_W = 78;
 export const V_HEAD_H = 40;
@@ -13,16 +11,17 @@ export const V_MIN_COL_W = 128;
 export const V_CELL_PAD_X = 8;
 const WRAP_LINE_H = 14;
 const WRAP_PAD_Y = 2;
-// chip padding, the type icon (wider on duration chips) and its gap, plus rounding slack
-const CHIP_CHROME_X = 8 + 14 + 4 + 3;
+const CHIP_PAD_X = 8;
+const CHIP_ICON_W = 14;
+const CHIP_ICON_GAP = 4;
+const SUBPIXEL_SLACK = 3;
+const CHIP_CHROME_X = CHIP_PAD_X + CHIP_ICON_W + CHIP_ICON_GAP + SUBPIXEL_SLACK;
 
-/** a frame with events, laid out as a row; `y` is its top, gap band included */
 export type VRow = {
 	i: number;
 	col: Column;
 	y: number;
 	h: number;
-	/** height of the "+Nf" band at the top of the row */
 	gap: number;
 };
 
@@ -30,11 +29,9 @@ export type ChipHeight = (c: Chip) => number;
 
 export const slimChip: ChipHeight = () => CHIP_H;
 
-/** lane columns share the width beyond the gutter, but never get narrower than V_MIN_COL_W */
 export const vColumnWidth = (scrollerWidth: number, lanes: number) =>
 	Math.max(V_MIN_COL_W, (scrollerWidth - V_GUTTER_W) / lanes);
 
-/** chips a cell shows before "+N more"; `cap` null shows them all */
 export const vShown = (count: number, cap: number | null, expanded: boolean) =>
 	cap == null ? count : chipsShown(count, cap, expanded);
 
@@ -79,7 +76,6 @@ export const rowsHeight = (rows: VRow[]) => {
 
 const topOf = (r: VRow) => r.y + r.gap;
 
-/** y of a frame, interpolated between the rows around it */
 export function yOfFrame(rows: VRow[], frame: number): number {
 	const i = lowerBound(rows, frame, (r) => r.col.frame);
 	if (i === 0 || i === rows.length) {
@@ -94,7 +90,6 @@ export function yOfFrame(rows: VRow[], frame: number): number {
 	);
 }
 
-/** the inverse of {@link yOfFrame} */
 export function frameOfY(rows: VRow[], y: number): number {
 	const i = lowerBound(rows, y, topOf);
 	if (i === 0 || i === rows.length) {
@@ -141,7 +136,6 @@ export function wrapLines(
 	return lines;
 }
 
-/** heights of wrapping chips laid out `chipW` px wide */
 export function wrappedChip(
 	chipW: number,
 	text: (c: Chip) => string,
@@ -162,7 +156,6 @@ export function wrappedChip(
 let measure: CanvasRenderingContext2D | null = null;
 const measured = new Map<string, number>();
 
-/** text width in the chip font, measured on a canvas */
 export function chipTextWidth(font: string): (s: string) => number {
 	return (s) => {
 		const key = `${font}|${s}`;

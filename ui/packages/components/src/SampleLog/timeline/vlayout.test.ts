@@ -1,12 +1,13 @@
 import { describe, expect, it } from "vitest";
 import type { SimEvent } from "../events/types";
-import { columns } from "./layout";
+import { CHIP_GAP, CHIP_H, columns } from "./layout";
 import { modelFromEvents } from "./model";
 import {
-	CHIP_H,
 	frameOfY,
 	MIN_ROW_H,
+	RULE,
 	slimChip,
+	V_CELL_PAD_Y,
 	V_GAP_BIG,
 	vRows,
 	wrapLines,
@@ -34,8 +35,8 @@ const model = modelFromEvents(
 );
 const cols = columns(model, new Set(["action"]));
 const lanes = [0, 1];
-// 4px padding above and below, a 1px rule under each row
-const rowH = (chips: number) => 8 + chips * CHIP_H + (chips - 1) * 2 + 1;
+const rowH = (chips: number) =>
+	2 * V_CELL_PAD_Y + chips * CHIP_H + (chips - 1) * CHIP_GAP + RULE;
 
 describe("vRows", () => {
 	it("caps slim rows, keeping a slot for the +N more button", () => {
@@ -92,7 +93,9 @@ describe("vRows", () => {
 			expanded: new Set(),
 			chipH: () => 32,
 		});
-		expect(rows[2].h).toBe(V_GAP_BIG + 8 + 32 * 2 + 2 + 1);
+		expect(rows[2].h).toBe(
+			V_GAP_BIG + 2 * V_CELL_PAD_Y + 32 * 2 + CHIP_GAP + RULE,
+		);
 	});
 });
 
