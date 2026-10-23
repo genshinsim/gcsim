@@ -4,16 +4,11 @@ import { cleanup, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-const navigate = vi.fn();
-
 vi.mock("react-i18next", () => ({
 	useTranslation: () => ({
 		t: (k: string, o?: { src?: string }) => (o?.src ? `${k}:${o.src}` : k),
 		i18n: { language: "en" },
 	}),
-}));
-vi.mock("@tanstack/react-router", () => ({
-	useNavigate: () => navigate,
 }));
 vi.mock("./good/ImportFromGOODDialog", () => ({
 	ImportFromGOODDialog: ({ isOpen }: { isOpen: boolean }) =>
@@ -31,22 +26,14 @@ async function openImportMenu() {
 	await userEvent.click(screen.getByRole("button", { name: "simple.import" }));
 }
 
-afterEach(() => {
-	cleanup();
-	navigate.mockReset();
-});
+afterEach(cleanup);
 
 describe("EditorSettings", () => {
-	it("shows Sample Upload as its own button left of Import", async () => {
+	it("shows only the Import button", () => {
 		render(<EditorSettings />);
-		const buttons = screen.getAllByRole("button");
-		expect(buttons.map((b) => b.textContent)).toEqual([
-			"simple.tools_sample_upload",
+		expect(screen.getAllByRole("button").map((b) => b.textContent)).toEqual([
 			"simple.import",
 		]);
-
-		await userEvent.click(buttons[0]);
-		expect(navigate).toHaveBeenCalledWith({ to: "/sample/upload" });
 	});
 
 	it("lists only the GO and Enka imports in the Import dropdown", async () => {

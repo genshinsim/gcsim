@@ -5,8 +5,7 @@ import {
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@gcsim/primitives";
-import { useNavigate } from "@tanstack/react-router";
-import { Download, Upload } from "lucide-react";
+import { Download } from "lucide-react";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { ImportFromEnkaDialog } from "./enka/ImportFromEnkaDialog";
@@ -14,19 +13,11 @@ import { ImportFromGOODDialog } from "./good/ImportFromGOODDialog";
 
 export function EditorSettings() {
 	const { t } = useTranslation();
-	const navigate = useNavigate();
 	const [openGOODImport, setOpenGOODImport] = React.useState(false);
 	const [openEnkaImport, setOpenEnkaImport] = React.useState(false);
 
 	return (
 		<div className="flex flex-row flex-wrap items-center gap-1">
-			<Button
-				variant="secondary"
-				onClick={() => navigate({ to: "/sample/upload" })}
-			>
-				<Upload />
-				{t("simple.tools_sample_upload")}
-			</Button>
 			<DropdownMenu>
 				<DropdownMenuTrigger asChild>
 					<Button variant="secondary">
