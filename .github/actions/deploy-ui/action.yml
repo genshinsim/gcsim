@@ -14,7 +14,8 @@ runs:
     run: pnpm build:web
     env:
       VITE_BRANCH: ${{ inputs.branch }}
-      VITE_HIDE_KQM_DB: ${{ vars.HIDE_KQM_DB }}
+      # Set to "true" to hide the KQM DB section on the homepage.
+      VITE_HIDE_KQM_DB: "false"
 
   - name: List UI dist
     working-directory: ./ui/packages/web/dist
