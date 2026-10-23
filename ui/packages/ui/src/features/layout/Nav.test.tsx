@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import "@gcsim/components/vitest.setup";
 import { cleanup, render, screen } from "@testing-library/react";
-import type { ReactNode } from "react";
+import type { ComponentProps } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("react-i18next", () => ({
@@ -11,7 +11,7 @@ vi.mock("react-i18next", () => ({
 	}),
 }));
 vi.mock("@tanstack/react-router", () => ({
-	Link: ({ to, children, ...props }: { to: string; children: ReactNode }) => (
+	Link: ({ to, children, ...props }: ComponentProps<"a"> & { to: string }) => (
 		<a href={to} {...props}>
 			{children}
 		</a>
@@ -32,7 +32,7 @@ describe("Nav", () => {
 			name: "simple.tools_sample_upload",
 		});
 		expect(upload).toHaveAttribute("href", "/sample/upload");
-		expect(upload).toHaveTextContent("");
+		expect(upload.textContent).toBe("");
 
 		const group = upload.parentElement as HTMLElement;
 		const controls = Array.from(group.querySelectorAll("a, button")).map(
