@@ -7,7 +7,10 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 const navigate = vi.fn();
 
 vi.mock("react-i18next", () => ({
-	useTranslation: () => ({ t: (k: string) => k, i18n: { language: "en" } }),
+	useTranslation: () => ({
+		t: (k: string, o?: { src?: string }) => (o?.src ? `${k}:${o.src}` : k),
+		i18n: { language: "en" },
+	}),
 }));
 vi.mock("@tanstack/react-router", () => ({
 	useNavigate: () => navigate,
@@ -22,6 +25,11 @@ vi.mock("./enka/ImportFromEnkaDialog", () => ({
 }));
 
 import { EditorSettings } from "./EditorSettings";
+
+async function openImportMenu() {
+	render(<EditorSettings />);
+	await userEvent.click(screen.getByRole("button", { name: "simple.import" }));
+}
 
 afterEach(() => {
 	cleanup();
@@ -42,24 +50,22 @@ describe("EditorSettings", () => {
 	});
 
 	it("lists only the GO and Enka imports in the Import dropdown", async () => {
-		render(<EditorSettings />);
-		await userEvent.click(
-			screen.getByRole("button", { name: "simple.import" }),
-		);
-
-		expect(screen.getAllByRole("menuitem")).toHaveLength(2);
+		await openImportMenu();
+		expect(screen.getAllByRole("menuitem").map((m) => m.textContent)).toEqual([
+			"simple.tools_import:GO",
+			"simple.tools_import:Enka",
+		]);
 		expect(screen.queryByRole("separator")).toBeNull();
-
-		await userEvent.click(screen.getAllByRole("menuitem")[0]);
-		expect(screen.getByTestId("good-dialog")).toBeInTheDocument();
 	});
 
-	it("opens the Enka dialog from the dropdown", async () => {
-		render(<EditorSettings />);
+	it.each([
+		["GO", "good-dialog"],
+		["Enka", "enka-dialog"],
+	])("opens the %s import dialog from the dropdown", async (src, testId) => {
+		await openImportMenu();
 		await userEvent.click(
-			screen.getByRole("button", { name: "simple.import" }),
+			screen.getByRole("menuitem", { name: `simple.tools_import:${src}` }),
 		);
-		await userEvent.click(screen.getAllByRole("menuitem")[1]);
-		expect(screen.getByTestId("enka-dialog")).toBeInTheDocument();
+		expect(screen.getByTestId(testId)).toBeInTheDocument();
 	});
 });
