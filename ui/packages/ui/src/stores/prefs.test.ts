@@ -5,9 +5,11 @@ import {
 	HERO_KEY,
 	loadHero,
 	loadSampleOnLoad,
+	loadSkipKqmWarning,
 	loadTheme,
 	saveHero,
 	saveSampleOnLoad,
+	saveSkipKqmWarning,
 	saveTheme,
 	THEME_KEY,
 } from "./prefs";
@@ -63,5 +65,19 @@ describe("hero", () => {
 
 	it("falls back to the default hero for an unknown value", () => {
 		expect(loadHero(fakeStorage({ [HERO_KEY]: "nope" }))).toBe(DEFAULT_HERO_ID);
+	});
+});
+
+describe("skipKqmWarning", () => {
+	it("defaults to showing the warning", () => {
+		expect(loadSkipKqmWarning(fakeStorage())).toBe(false);
+	});
+
+	it("round-trips a saved value", () => {
+		const storage = fakeStorage();
+		saveSkipKqmWarning(storage, true);
+		expect(loadSkipKqmWarning(storage)).toBe(true);
+		saveSkipKqmWarning(storage, false);
+		expect(loadSkipKqmWarning(storage)).toBe(false);
 	});
 });
