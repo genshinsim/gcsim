@@ -2,6 +2,7 @@ import { cn } from "@gcsim/primitives";
 import { model } from "@gcsim/types";
 import type { CSSProperties } from "react";
 import { useTranslation } from "react-i18next";
+import { useKqmLinkClick } from "./KqmLeaveWarning";
 import { KQM_DB_URL, type KqmEntry } from "./kqm";
 
 // KQM DB lavender mixed into the active theme's own tokens, so it holds in
@@ -22,6 +23,7 @@ type TeamCardProps = {
 
 export function TeamCard({ entry, className }: TeamCardProps) {
 	const { t } = useTranslation();
+	const onLinkClick = useKqmLinkClick();
 
 	const roster = entry.summary?.team ?? [];
 	const slots = Array.from({ length: 4 }, (_, i) => {
@@ -49,6 +51,7 @@ export function TeamCard({ entry, className }: TeamCardProps) {
 			href={`${KQM_DB_URL}/db/${entry._id}`}
 			target="_blank"
 			rel="noreferrer"
+			onClick={onLinkClick}
 			style={kqmStyle}
 			className={cn(
 				"block rounded-g-lg border border-(--kqm-line) bg-(--kqm-bg) p-g-card shadow-g-card transition-colors hover:border-(--kqm-line-hover) hover:bg-(--kqm-bg-hover)",

@@ -8,7 +8,7 @@ import { WhatsNew } from "../../components/WhatsNew";
 import { usePrefs } from "../../stores/AppState";
 import { HeroArt } from "./HeroArt";
 import { getHero } from "./heroImages";
-import { KQM_DB_URL, SHOW_KQM_DB } from "./kqm";
+import { SHOW_KQM_DB } from "./kqm";
 import { SectionHead } from "./SectionHead";
 import { SharedByOthers } from "./SharedByOthers";
 
@@ -34,16 +34,7 @@ export function DashMobile() {
 						<WhatsNew className="g-m-fade-card mb-[14px]" />
 						<CommunityCta className="mb-g-section" />
 						{SHOW_KQM_DB && (
-							<>
-								<SectionHead
-									className="mb-4"
-									title={t("dash.shared_title")}
-									subtitle={t("dash.shared_sub")}
-									linkLabel={t("dash.view_all")}
-									linkHref={KQM_DB_URL}
-								/>
-								<SharedByOthers className="pb-4" />
-							</>
+							<SharedByOthers headClassName="mb-4" className="pb-4" />
 						)}
 					</div>
 					<div className="g-m-ctabar">
