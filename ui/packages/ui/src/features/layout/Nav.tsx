@@ -7,7 +7,7 @@ import {
 	Separator,
 } from "@gcsim/primitives";
 import { Link, type LinkProps } from "@tanstack/react-router";
-import { Settings } from "lucide-react";
+import { Settings, Upload } from "lucide-react";
 import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import { FaCalculator, FaDiscord } from "react-icons/fa";
@@ -97,6 +97,17 @@ const MobileMenu = () => {
 	);
 };
 
+const SampleUploadButton = () => {
+	const { t } = useTranslation();
+	return (
+		<Button asChild variant="ghost" size="icon">
+			<Link to="/sample/upload" aria-label={t("simple.tools_sample_upload")}>
+				<Upload />
+			</Link>
+		</Button>
+	);
+};
+
 const SettingsButton = () => {
 	const { t } = useTranslation();
 	return (
@@ -136,6 +147,7 @@ export default () => {
 
 					<div className="ml-auto flex items-center gap-1">
 						<ExecutorDialog />
+						<SampleUploadButton />
 						<SettingsButton />
 						<div className="min-[902px]:hidden">
 							<MobileMenu />
