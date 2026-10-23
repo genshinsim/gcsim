@@ -1,8 +1,9 @@
 import { cn } from "@gcsim/primitives";
-import { ChevronsDown, ChevronsUp, Search, X } from "lucide-react";
+import { ChevronsDown, ChevronsUp, Search } from "lucide-react";
 import {
 	type ReactNode,
 	type Ref,
+	useCallback,
 	useEffect,
 	useEffectEvent,
 	useImperativeHandle,
@@ -11,6 +12,7 @@ import {
 } from "react";
 import { useTranslation } from "react-i18next";
 import type { SimEvent } from "../events/types";
+import { DurationClear, spanOf, useClearOnEscape } from "./duration";
 import { EventChip } from "./EventChip";
 import { FrameView } from "./FrameView";
 import { LaneIcon, laneColor, laneTint, useLaneName } from "./lane";
@@ -40,7 +42,6 @@ import {
 	type Lane,
 	lowerBound,
 	onFieldLaneAt,
-	spanLabel,
 	type TimelineModel,
 } from "./model";
 import { useScrollView } from "./useScrollView";
@@ -186,14 +187,7 @@ export function Strip({
 	const [hlEvent, setHl] = useState<SimEvent | null>(null);
 	const showDuration = (c: Chip) =>
 		setHl((h) => (h === c.event ? null : c.event));
-	const hl =
-		hlEvent == null
-			? null
-			: {
-					start: hlEvent.frame,
-					end: hlEvent.end ?? hlEvent.frame,
-					label: spanLabel(hlEvent),
-				};
+	const hl = spanOf(hlEvent);
 	const [zoomed, setZoomed] = useState<number | null>(null);
 	const [shownModel, setShownModel] = useState(model);
 	if (model !== shownModel) {
@@ -202,32 +196,15 @@ export function Strip({
 		setZoomed(null);
 		setExpanded(new Set());
 	}
-	useEffect(() => {
-		if (hlEvent == null || zoomed != null) {
-			return;
-		}
-		const onKey = (e: KeyboardEvent) => {
-			// a dialog or popover closing on Escape marks it handled
-			if (e.key === "Escape" && !e.defaultPrevented) {
-				setHl(null);
-			}
-		};
-		window.addEventListener("keydown", onKey);
-		return () => window.removeEventListener("keydown", onKey);
-	}, [hlEvent, zoomed]);
+	useClearOnEscape(
+		hlEvent != null && zoomed == null,
+		useCallback(() => setHl(null), []),
+	);
 	const hlI0 = hl == null ? 0 : lowerBound(cols, hl.start, (c) => c.frame);
 	const hlI1 =
 		hl == null ? -1 : lowerBound(cols, hl.end + 1, (c) => c.frame) - 1;
 	const hlBand =
 		hlI1 >= hlI0 ? { x0: cols[hlI0].x, x1: cols[hlI1].x + COL_W } : null;
-	const hlTitle =
-		hl == null
-			? ""
-			: t("sample.clear_duration", {
-					label: hl.label,
-					start: hl.start,
-					end: Number.isFinite(hl.end) ? hl.end : t("sample.end"),
-				});
 
 	const toggle = (i: number) =>
 		setExpanded((s) => {
@@ -286,23 +263,7 @@ export function Strip({
 										<span>{t("sample.frame")}</span>
 									</span>
 								) : (
-									<button
-										type="button"
-										className="mr-1 flex min-w-0 flex-1 items-center gap-1 rounded-g-sm text-left text-g-warning hover:bg-g-surface-3"
-										title={hlTitle}
-										aria-label={hlTitle}
-										onClick={() => setHl(null)}
-									>
-										<span className="flex min-w-0 flex-1 flex-col">
-											<span className="truncate">{hl.label}</span>
-											<span>
-												{Number.isFinite(hl.end)
-													? secondsLabel(hl.end - hl.start)
-													: t("sample.to_end")}
-											</span>
-										</span>
-										<X className="size-3 shrink-0" />
-									</button>
+									<DurationClear span={hl} onClear={() => setHl(null)} />
 								)}
 								<button
 									type="button"
