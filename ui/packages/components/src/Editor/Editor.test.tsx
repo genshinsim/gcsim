@@ -61,6 +61,22 @@ describe("Editor", () => {
 		expect(diagnosticCount(view(container).state)).toBe(0);
 	});
 
+	it("fill puts the error panel above the code", () => {
+		const { container } = render(<Editor {...baseProps} fill error="bad" />);
+		expect(
+			container.querySelector(".cm-panels-top [role=alert]"),
+		).not.toBeNull();
+	});
+
+	it("keeps the cursor clear of a bar pinned below the editor", () => {
+		const { container } = render(
+			<Editor {...baseProps} fill scrollMarginBottom={() => 50} />,
+		);
+		const v = view(container);
+		const margins = v.state.facet(EditorView.scrollMargins).map((f) => f(v));
+		expect(margins).toContainEqual({ top: 0, bottom: 50 });
+	});
+
 	it("shows the settings menu with the saved prefs", async () => {
 		saveEditorPrefs(localStorage, { theme: "dracula", fontSize: 18 });
 		render(<Editor {...baseProps} />);
