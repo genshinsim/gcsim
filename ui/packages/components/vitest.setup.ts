@@ -29,3 +29,9 @@ Element.prototype.matches = function (this: Element, selector: string) {
 	if (selector === ":popover-open" || selector === ":modal") return false;
 	return nativeMatches.call(this, selector);
 } as typeof nativeMatches;
+
+// jsdom has no canvas: getContext returns null after logging a "Not
+// implemented" error. Return null quietly so text measurement takes its
+// fallback without flooding the test output.
+HTMLCanvasElement.prototype.getContext = (() =>
+	null) as typeof HTMLCanvasElement.prototype.getContext;
