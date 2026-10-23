@@ -40,8 +40,7 @@ export function loadSampleView(
 			typeof v.cap === "number"
 				? Math.min(CAP_MAX, Math.max(CAP_MIN, Math.round(v.cap)))
 				: 4,
-		overview:
-			typeof v.overview === "boolean" ? v.overview : overviewByDefault,
+		overview: typeof v.overview === "boolean" ? v.overview : overviewByDefault,
 	};
 }
 
