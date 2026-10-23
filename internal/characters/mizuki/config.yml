@@ -54,19 +54,16 @@ abilities:
         shape: Circle
         center: PrimaryTarget
         radius: 4
-        hitlag: {scale: 0.05, deployable: true}
 
       - name: N2
         shape: Circle
         center: PrimaryTarget
         radius: 4
-        hitlag: {scale: 0.05, deployable: true}
 
       - name: N3
         shape: Circle
         center: PrimaryTarget
         radius: 4
-        hitlag: {scale: 0.05, deployable: true}
 
   - name: charge
     hitbox:
@@ -78,6 +75,7 @@ abilities:
   - name: skill
     params:
       travel: Projectile travel time for Continuous Attack. Default 30 frames.
+      skip_ticks: Allows skipping skill ticks at the start of the skill. 1 tick = 15 frames.
     hitbox:
       - name: E-Init
         shape: Circle
@@ -111,3 +109,19 @@ abilities:
         shape: Circle
         center: GlobalValue
         radius: 2.5
+  - name: cons
+    hitbox:
+      - name: C1-Anemo
+        note: Spawns on target that C1 enhanced swirl hits when not in radiance state.
+        shape: Single
+        center: GlobalValue
+
+      - name: C1-Stellar-Swirl
+        note: Spawns on target that C1 enhanced swirl hits when in radiance state.
+        shape: Single
+        center: GlobalValue
+
+  - name: walk
+    params:
+      travel: Projectile travel time adjustment for skill. Default 30 frames.
+      skip_ticks: Allows skipping skill ticks in the middle of the skill. 1 tick = 15 frames.
