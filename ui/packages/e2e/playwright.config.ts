@@ -51,6 +51,7 @@ export default defineConfig({
 	webServer: {
 		command:
 			"pnpm --filter @gcsim/executors build:wasm:web && pnpm --filter @gcsim/web dev -- --port 5173 --strictPort",
+		env: { VITE_HIDE_KQM_DB: "true" },
 		url: HOST,
 		reuseExistingServer: !process.env.CI,
 		// wasm build (go build) plus the dev server's first compile can be slow.
