@@ -4,11 +4,13 @@ import { FlaskConical, RefreshCw } from "lucide-react";
 import React, { useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSampleFilter } from "./sampleFilter";
+import { useSampleView } from "./sampleView";
 import { CommandBar } from "./timeline/CommandBar";
 import { EventDetailsDialog } from "./timeline/EventDetailsDialog";
 import { type Chip, chipText, modelFromSample } from "./timeline/model";
 import { type SearchHits, Strip, type StripHandle } from "./timeline/Strip";
 import { useFitViewport } from "./timeline/useFitViewport";
+import { VerticalStrip } from "./timeline/VerticalStrip";
 
 export type SampleLogProps = {
 	sample: Sample | null;
@@ -54,6 +56,7 @@ function Timeline({
 	const [search, setSearch] = useState("");
 	const strip = useRef<StripHandle>(null);
 	const fit = useFitViewport();
+	const [view, setView] = useSampleView();
 
 	const matchList = useMemo(() => {
 		const needle = search.trim().toLowerCase();
@@ -84,32 +87,46 @@ function Timeline({
 		strip.current?.centerOn(matchList[i].frame);
 	};
 
+	const commandBar = (inline: boolean) => (
+		<CommandBar
+			model={model}
+			filter={filter}
+			onFilterChange={setFilter}
+			search={search}
+			onSearch={setSearch}
+			onSearchNext={next}
+			matchLabel={search.trim() === "" ? "" : `${at + 1}/${matchList.length}`}
+			onDownload={onDownload != null ? () => onDownload(sample) : undefined}
+			onGenerate={onGenerate}
+			view={view}
+			onViewChange={setView}
+			inline={inline}
+		/>
+	);
+
 	return (
 		<div ref={fit} className="flex h-[80vh] flex-col gap-2">
-			<Strip
-				ref={strip}
-				model={model}
-				enabled={enabled}
-				hits={hits}
-				onOpen={setDetail}
-				commandBar={
-					<CommandBar
-						model={model}
-						filter={filter}
-						onFilterChange={setFilter}
-						search={search}
-						onSearch={setSearch}
-						onSearchNext={next}
-						matchLabel={
-							search.trim() === "" ? "" : `${at + 1}/${matchList.length}`
-						}
-						onDownload={
-							onDownload != null ? () => onDownload(sample) : undefined
-						}
-						onGenerate={onGenerate}
-					/>
-				}
-			/>
+			{view.orientation === "vertical" ? (
+				<VerticalStrip
+					ref={strip}
+					model={model}
+					enabled={enabled}
+					hits={hits}
+					onOpen={setDetail}
+					commandBar={commandBar(true)}
+					view={view}
+					onOverview={(overview) => setView({ ...view, overview })}
+				/>
+			) : (
+				<Strip
+					ref={strip}
+					model={model}
+					enabled={enabled}
+					hits={hits}
+					onOpen={setDetail}
+					commandBar={commandBar(false)}
+				/>
+			)}
 			<EventDetailsDialog chip={detail} onClose={() => setDetail(null)} />
 		</div>
 	);

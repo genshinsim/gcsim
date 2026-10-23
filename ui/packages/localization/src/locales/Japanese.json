@@ -185,6 +185,7 @@
 	},
 	"sample": {
 		"all": "すべて",
+		"chip_cap": "1行のチップ数：{{count}}",
 		"clear_duration": "{{label}}：{{start}} → {{end}} · クリックまたは Esc で解除",
 		"drop_text": "読み込むにはzip化されたgcsimのサンプルJSONファイルをドラッグアンドドロップするかボタンをクリックしてアップロードしてください。",
 		"empty_frames": "空のフレーム {{count}} 個",
@@ -195,6 +196,9 @@
 		"frame_title": "フレーム {{frame}}",
 		"group_by_category": "カテゴリ別にまとめる",
 		"hide_overview": "概要と操作を隠す",
+		"hide_overview_short": "概要を隠す",
+		"horizontal": "横",
+		"layout": "レイアウト",
 		"less": "閉じる",
 		"more": "+{{count}} 件",
 		"next_frame": "次のフレーム",
@@ -208,9 +212,15 @@
 		"seconds": "秒",
 		"show_duration": "持続時間を表示：{{start}} → {{end}}",
 		"show_overview": "概要と操作を表示",
+		"show_overview_short": "概要を表示",
 		"sim_lane": "シム / 敵",
 		"since_last": "前回から +{{count}}F",
-		"to_end": "終了まで"
+		"slim_chips": "細いチップ",
+		"slim_chips_hint": "細いチップは1行に収まり、各行は上限まで表示します。オフにするとチップの文字を折り返し、すべて表示します。",
+		"to_end": "終了まで",
+		"vertical": "縦",
+		"vertical_only": "縦レイアウトでのみ使用します。",
+		"view": "表示"
 	},
 	"settings": {
 		"dark": "ダーク",

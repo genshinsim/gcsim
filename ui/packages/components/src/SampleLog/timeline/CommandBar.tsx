@@ -2,11 +2,21 @@ import {
 	Button,
 	cn,
 	Input,
+	Label,
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
+	Switch,
 } from "@gcsim/primitives";
-import { ArrowRight, Download, ListFilter, RefreshCw } from "lucide-react";
+import {
+	ArrowRight,
+	Columns3,
+	Download,
+	ListFilter,
+	RefreshCw,
+	Rows3,
+} from "lucide-react";
+import { useId } from "react";
 import { useTranslation } from "react-i18next";
 import {
 	AdvancedPreset,
@@ -15,6 +25,12 @@ import {
 	SimplePreset,
 	VerbosePreset,
 } from "../SampleOptions";
+import {
+	CAP_MAX,
+	CAP_MIN,
+	type Orientation,
+	type SampleView,
+} from "../sampleView";
 import { display } from "./display";
 import type { TimelineModel } from "./model";
 
@@ -28,6 +44,10 @@ type Props = {
 	matchLabel: string;
 	onDownload?: () => void;
 	onGenerate?: () => void;
+	view: SampleView;
+	onViewChange: (v: SampleView) => void;
+	/** one wrapping row, for a bar across the top rather than a panel beside the overview */
+	inline?: boolean;
 };
 
 const PRESETS = [
@@ -49,13 +69,26 @@ export function CommandBar({
 	matchLabel,
 	onDownload,
 	onGenerate,
+	view,
+	onViewChange,
+	inline = false,
 }: Props) {
 	const { t } = useTranslation();
+	const group = inline ? "contents" : "flex items-center gap-1";
 	return (
-		<div className="flex h-full flex-col justify-center gap-1.5 px-2">
-			<div className="flex items-center gap-1">
+		<div
+			className={
+				inline
+					? "flex flex-wrap items-center gap-1 p-1.5"
+					: "flex h-full flex-col justify-center gap-1.5 px-2"
+			}
+		>
+			<div className={group}>
 				<Input
-					className="min-w-0 flex-1 text-[12px]"
+					className={cn(
+						"min-w-0 flex-1 text-[12px]",
+						inline && "min-w-[140px] max-w-sm",
+					)}
 					placeholder={t("sample.search_placeholder")}
 					aria-label={t("viewer.search")}
 					value={search}
@@ -76,8 +109,13 @@ export function CommandBar({
 					<ArrowRight />
 				</Button>
 			</div>
-			<div className="flex items-center gap-1">
-				<span className="min-w-0 flex-1 truncate font-g-mono text-[11px] text-g-ink-mute">
+			<div className={group}>
+				<span
+					className={cn(
+						"min-w-0 truncate font-g-mono text-[11px] text-g-ink-mute",
+						inline ? "mr-auto px-1" : "flex-1",
+					)}
+				>
 					{matchLabel}
 				</span>
 				<CategoryFilter
@@ -85,6 +123,7 @@ export function CommandBar({
 					filter={filter}
 					onFilterChange={onFilterChange}
 				/>
+				<ViewMenu view={view} onViewChange={onViewChange} />
 				{onGenerate != null && (
 					<Button
 						variant="secondary"
@@ -195,6 +234,94 @@ function CategoryFilter({
 						);
 					})}
 				</div>
+			</PopoverContent>
+		</Popover>
+	);
+}
+
+const ORIENTATIONS: [Orientation, typeof Rows3][] = [
+	["horizontal", Columns3],
+	["vertical", Rows3],
+];
+
+function ViewMenu({
+	view,
+	onViewChange,
+}: {
+	view: SampleView;
+	onViewChange: (v: SampleView) => void;
+}) {
+	const { t } = useTranslation();
+	const id = useId();
+	const set = (p: Partial<SampleView>) => onViewChange({ ...view, ...p });
+	const vertical = view.orientation === "vertical";
+	const Icon = vertical ? Rows3 : Columns3;
+	return (
+		<Popover>
+			<PopoverTrigger asChild>
+				<Button
+					variant="secondary"
+					size="icon"
+					title={t("sample.view")}
+					aria-label={t("sample.view")}
+				>
+					<Icon />
+				</Button>
+			</PopoverTrigger>
+			<PopoverContent align="end" className="w-64 p-3 text-[12px]">
+				<div className="mb-1 text-[11px] text-g-ink-mute">
+					{t("sample.layout")}
+				</div>
+				<div className="grid grid-cols-2 gap-1">
+					{ORIENTATIONS.map(([o, OIcon]) => (
+						<Button
+							key={o}
+							size="sm"
+							variant={view.orientation === o ? "default" : "secondary"}
+							aria-pressed={view.orientation === o}
+							onClick={() => set({ orientation: o })}
+						>
+							<OIcon />
+							{t(`sample.${o}`)}
+						</Button>
+					))}
+				</div>
+				<fieldset
+					disabled={!vertical}
+					className="mt-3 flex flex-col gap-2 border-t border-g-line pt-3 disabled:opacity-50"
+				>
+					<div className="flex items-center gap-2">
+						<Switch
+							id={`${id}-slim`}
+							checked={view.slim}
+							onCheckedChange={(slim) => set({ slim })}
+						/>
+						<Label htmlFor={`${id}-slim`} className="font-normal">
+							{t("sample.slim_chips")}
+						</Label>
+					</div>
+					<label
+						className={cn(
+							"flex flex-col gap-1 text-g-ink-dim",
+							!view.slim && "opacity-50",
+						)}
+					>
+						{t("sample.chip_cap", { count: view.cap })}
+						<input
+							type="range"
+							min={CAP_MIN}
+							max={CAP_MAX}
+							step={1}
+							value={view.cap}
+							disabled={!view.slim}
+							style={{ accentColor: "var(--g-accent)" }}
+							onChange={(e) => set({ cap: Number(e.target.value) })}
+						/>
+					</label>
+					<p className="text-[11px] text-g-ink-mute">
+						{vertical ? t("sample.slim_chips_hint") : t("sample.vertical_only")}
+					</p>
+				</fieldset>
 			</PopoverContent>
 		</Popover>
 	);

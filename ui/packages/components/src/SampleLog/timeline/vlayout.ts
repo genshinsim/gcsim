@@ -3,7 +3,7 @@ import { type Chip, lowerBound } from "./model";
 
 export const CHIP_H = 18;
 const CHIP_GAP = 2;
-const PAD_Y = 4;
+export const V_CELL_PAD_Y = 4;
 export const MIN_ROW_H = 36;
 const RULE = 1;
 export const V_GAP_BIG = 16;
@@ -65,7 +65,7 @@ export function vRows(
 				stackH(items.slice(0, fit), chipH, fit < items.length),
 			);
 		}
-		const h = gap + Math.max(MIN_ROW_H, 2 * PAD_Y + content) + RULE;
+		const h = gap + Math.max(MIN_ROW_H, 2 * V_CELL_PAD_Y + content) + RULE;
 		const row = { i, col, y, h, gap };
 		y += h;
 		return row;

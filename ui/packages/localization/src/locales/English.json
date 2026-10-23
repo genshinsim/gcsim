@@ -185,6 +185,7 @@
 	},
 	"sample": {
 		"all": "All",
+		"chip_cap": "Chips per row: {{count}}",
 		"clear_duration": "{{label}}: {{start}} → {{end}} · click or Esc to clear",
 		"drop_text": "Drop sample file (.gz) from gcsim here, or click to select file.",
 		"empty_frames": "Empty frames: {{count}}",
@@ -195,6 +196,9 @@
 		"frame_title": "Frame {{frame}}",
 		"group_by_category": "Group by category",
 		"hide_overview": "Hide overview and controls",
+		"hide_overview_short": "Hide overview",
+		"horizontal": "Horizontal",
+		"layout": "Layout",
 		"less": "less",
 		"more": "+{{count}} more",
 		"next_frame": "Next frame",
@@ -208,9 +212,15 @@
 		"seconds": "seconds",
 		"show_duration": "Show duration: {{start}} → {{end}}",
 		"show_overview": "Show overview and controls",
+		"show_overview_short": "Show overview",
 		"sim_lane": "Sim / Enemy",
 		"since_last": "+{{count}}f since last",
-		"to_end": "to end"
+		"slim_chips": "Slim chips",
+		"slim_chips_hint": "Slim chips stay on one line and rows show up to the cap. Turn off to wrap chip text and show every chip.",
+		"to_end": "to end",
+		"vertical": "Vertical",
+		"vertical_only": "Only used by the vertical layout.",
+		"view": "View"
 	},
 	"settings": {
 		"dark": "Dark",

@@ -185,6 +185,7 @@
 	},
 	"sample": {
 		"all": "Alle",
+		"chip_cap": "Chips pro Zeile: {{count}}",
 		"clear_duration": "{{label}}: {{start}} → {{end}} · Klicken oder Esc zum Entfernen",
 		"drop_text": "Beispiel-Datei (.gz) aus gcsim per Drag-and-drop hochladen oder per Klick Dateien auswählen.",
 		"empty_frames": "Leere Frames: {{count}}",
@@ -195,6 +196,9 @@
 		"frame_title": "Frame {{frame}}",
 		"group_by_category": "Nach Kategorie gruppieren",
 		"hide_overview": "Übersicht und Steuerung ausblenden",
+		"hide_overview_short": "Übersicht ausblenden",
+		"horizontal": "Horizontal",
+		"layout": "Layout",
 		"less": "weniger",
 		"more": "+{{count}} weitere",
 		"next_frame": "Nächster Frame",
@@ -208,9 +212,15 @@
 		"seconds": "Sekunden",
 		"show_duration": "Dauer anzeigen: {{start}} → {{end}}",
 		"show_overview": "Übersicht und Steuerung einblenden",
+		"show_overview_short": "Übersicht einblenden",
 		"sim_lane": "Sim / Gegner",
 		"since_last": "+{{count}}F seit dem letzten",
-		"to_end": "bis Ende"
+		"slim_chips": "Schmale Chips",
+		"slim_chips_hint": "Schmale Chips bleiben einzeilig, Zeilen zeigen bis zur Obergrenze. Ausschalten, um Chiptext umzubrechen und alle Chips zu zeigen.",
+		"to_end": "bis Ende",
+		"vertical": "Vertikal",
+		"vertical_only": "Nur im vertikalen Layout.",
+		"view": "Ansicht"
 	},
 	"settings": {
 		"dark": "Dunkel",
