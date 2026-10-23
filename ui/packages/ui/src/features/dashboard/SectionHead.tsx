@@ -1,12 +1,13 @@
 import { cn } from "@gcsim/primitives";
 import { ArrowRight } from "lucide-react";
-import type { ReactNode } from "react";
+import type { MouseEventHandler, ReactNode } from "react";
 
 type SectionHeadProps = {
 	title: string;
 	subtitle: string;
 	linkLabel?: string;
 	linkHref?: string;
+	onLinkClick?: MouseEventHandler<HTMLAnchorElement>;
 	className?: string;
 	children?: ReactNode;
 };
@@ -16,6 +17,7 @@ export function SectionHead({
 	subtitle,
 	linkLabel,
 	linkHref,
+	onLinkClick,
 	className = "",
 	children,
 }: SectionHeadProps) {
@@ -33,6 +35,7 @@ export function SectionHead({
 						href={linkHref}
 						target="_blank"
 						rel="noreferrer"
+						onClick={onLinkClick}
 						className="inline-flex shrink-0 items-center gap-g-base-sm text-g-sm font-semibold text-g-accent hover:text-g-accent-hover"
 					>
 						{linkLabel}

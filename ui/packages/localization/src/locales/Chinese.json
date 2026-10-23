@@ -98,7 +98,12 @@
 		"dps_per_target": "DPS / 目标",
 		"mode_label": "模式 {{mode}}",
 		"mode_ttk": "TTK",
-		"mode_duration": "持续时间"
+		"mode_duration": "持续时间",
+		"kqm_leave_title": "你即将离开 gcsim",
+		"kqm_leave_body": "此链接将前往 KQM DB（db.kqm.gg），这是一个并非由 gcsim 运营的第三方网站。我们不对其内容、可用性或隐私政策负责。请自行斟酌是否继续。",
+		"kqm_leave_dont_show": "不再显示",
+		"kqm_leave_cancel": "取消",
+		"kqm_leave_continue": "继续"
 	},
 	"db": {
 		"author": "作者：",

@@ -5,6 +5,7 @@ import { DEFAULT_THEME_ID, THEMES } from "./themes";
 const PREFS_KEY = "gcsim-prefs";
 export const THEME_KEY = "gcsim-theme";
 export const HERO_KEY = "gcsim-hero";
+const SKIP_KQM_WARNING_KEY = "gcsim-skip-kqm-warning";
 
 export function loadSampleOnLoad(storage: KeyStorage): boolean {
 	const saved =
@@ -40,4 +41,12 @@ export function loadHero(storage: KeyStorage): string {
 
 export function saveHero(storage: KeyStorage, hero: string) {
 	storage.setItem(HERO_KEY, hero);
+}
+
+export function loadSkipKqmWarning(storage: KeyStorage): boolean {
+	return storage.getItem(SKIP_KQM_WARNING_KEY) === "true";
+}
+
+export function saveSkipKqmWarning(storage: KeyStorage, skip: boolean) {
+	storage.setItem(SKIP_KQM_WARNING_KEY, String(skip));
 }
