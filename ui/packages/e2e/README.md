@@ -190,6 +190,9 @@ specs stay offline:
 - `api.github.com` (latest-release lookup) returns a fixed payload;
 - any other `/api/**` returns an empty 200.
 
+The dev server runs with `VITE_HIDE_KQM_DB=true`, so the homepage's KQM DB
+section (which fetches `db.kqm.gg`) is not rendered.
+
 ## Out of scope
 
 CI integration, the production/preview (R2 wasm) path, server mode, creating a
