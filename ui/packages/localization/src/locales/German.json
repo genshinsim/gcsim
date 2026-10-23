@@ -100,7 +100,7 @@
 		"mode_ttk": "TTK",
 		"mode_duration": "Dauer",
 		"kqm_leave_title": "Du verlässt gcsim",
-		"kqm_leave_body": "Dieser Link führt zu KQM DB (db.kqm.gg), einer Drittanbieter-Website, die nicht von gcsim betrieben wird. Wir übernehmen keine Verantwortung für deren Inhalte, Verfügbarkeit oder Datenschutzpraktiken. Fortfahren auf eigenes Ermessen.",
+		"kqm_leave_body": "Dieser Link führt zu KQM DB (db.kqm.gg), einer Drittanbieter-Website, die nicht von gcsim betrieben wird. Wir übernehmen keine Verantwortung für deren Inhalte, Verfügbarkeit oder Datenschutzpraktiken. Fortfahren auf eigene Verantwortung.",
 		"kqm_leave_dont_show": "Nicht mehr anzeigen",
 		"kqm_leave_cancel": "Abbrechen",
 		"kqm_leave_continue": "Fortfahren"

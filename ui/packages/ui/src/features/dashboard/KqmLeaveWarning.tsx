@@ -35,34 +35,31 @@ export function useKqmLinkClick(): KqmLinkClick {
 const isPlainClick = (e: MouseEvent) =>
 	e.button === 0 && !e.metaKey && !e.ctrlKey && !e.shiftKey && !e.altKey;
 
-const openInNewTab = (url: string) =>
-	window.open(url, "_blank", "noopener,noreferrer");
-
 export function KqmLeaveWarning({ children }: { children: ReactNode }) {
 	const { t } = useTranslation();
-	const [pending, setPending] = useState<string | null>(null);
+	const [pendingUrl, setPendingUrl] = useState<string | null>(null);
 	const [dontShow, setDontShow] = useState(false);
 
 	const onLinkClick: KqmLinkClick = (e) => {
 		if (!isPlainClick(e) || loadSkipKqmWarning(localStorage)) return;
 		e.preventDefault();
 		setDontShow(false);
-		setPending(e.currentTarget.href);
+		setPendingUrl(e.currentTarget.href);
 	};
 
 	const onContinue = () => {
-		if (pending == null) return;
+		if (pendingUrl == null) return;
 		if (dontShow) saveSkipKqmWarning(localStorage, true);
-		openInNewTab(pending);
-		setPending(null);
+		window.open(pendingUrl, "_blank", "noopener,noreferrer");
+		setPendingUrl(null);
 	};
 
 	return (
 		<KqmLinkClickContext.Provider value={onLinkClick}>
 			{children}
 			<AlertDialog
-				open={pending != null}
-				onOpenChange={(open) => !open && setPending(null)}
+				open={pendingUrl != null}
+				onOpenChange={(open) => !open && setPendingUrl(null)}
 			>
 				<AlertDialogContent>
 					<AlertDialogHeader>
