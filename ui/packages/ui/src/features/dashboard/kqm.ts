@@ -2,6 +2,8 @@ import { model } from "@gcsim/types";
 
 export const KQM_DB_URL = "https://db.kqm.gg";
 
+export const SHOW_KQM_DB = import.meta.env.VITE_HIDE_KQM_DB !== "true";
+
 export type KqmEntry = {
 	_id?: string;
 	description?: string;
