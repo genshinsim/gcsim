@@ -931,6 +931,13 @@
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Maria_Awaken"
     },
+    "newbough": {
+      "id": 11437,
+      "key": "newbough",
+      "rarity": 4,
+      "weapon_class": "WEAPON_SWORD_ONE_HAND",
+      "image_name": "UI_EquipIcon_Sword_SpikedStake_Awaken"
+    },
     "nightweaverslookingglass": {
       "id": 14520,
       "key": "nightweaverslookingglass",

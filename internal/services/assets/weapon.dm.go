@@ -136,6 +136,7 @@ var weaponMap = map[string]string{
 	"moonweaversdawn":                 "UI_EquipIcon_Sword_Miekka_Awaken",
 	"mountainbracingbolt":             "UI_EquipIcon_Pole_Umpakati_Awaken",
 	"mouunsmoon":                      "UI_EquipIcon_Bow_Maria_Awaken",
+	"newbough":                        "UI_EquipIcon_Sword_SpikedStake_Awaken",
 	"nightweaverslookingglass":        "UI_EquipIcon_Catalyst_MenulisRing_Awaken",
 	"nocturnescurtaincall":            "UI_EquipIcon_Catalyst_Brisingamen_Awaken",
 	"oathsworneye":                    "UI_EquipIcon_Catalyst_Jyanome_Awaken",
