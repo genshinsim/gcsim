@@ -106,6 +106,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/waveridingwhirl"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/widsith"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/wine"
+	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/wintersheavyheart"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/akuoumaru"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/aquamarine"
 	_ "github.com/genshinsim/gcsim/internal/weapons/claymore/ateaspoonoftranscendence"

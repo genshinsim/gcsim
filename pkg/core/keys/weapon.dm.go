@@ -288,6 +288,7 @@ const (
 	WhiteTassel                                   // whitetassel
 	WindblumeOde                                  // windblumeode
 	WineAndSong                                   // wineandsong
+	WintersHeavyHeart                             // wintersheavyheart
 	WolfFang                                      // wolffang
 	WolfsGravestone                               // wolfsgravestone
 	XiphosMoonlight                               // xiphosmoonlight
@@ -541,6 +542,7 @@ var _WeaponNames = [...]string{
 	"whitetassel",
 	"windblumeode",
 	"wineandsong",
+	"wintersheavyheart",
 	"wolffang",
 	"wolfsgravestone",
 	"xiphosmoonlight",
@@ -794,6 +796,7 @@ var _WeaponValues = [...]Weapon{
 	WhiteTassel,
 	WindblumeOde,
 	WineAndSong,
+	WintersHeavyHeart,
 	WolfFang,
 	WolfsGravestone,
 	XiphosMoonlight,

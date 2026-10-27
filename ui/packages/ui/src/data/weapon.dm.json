@@ -1715,6 +1715,13 @@
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Outlaw_Awaken"
     },
+    "wintersheavyheart": {
+      "id": 14437,
+      "key": "wintersheavyheart",
+      "rarity": 4,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_FrostScepter_Awaken"
+    },
     "wolffang": {
       "id": 11424,
       "key": "wolffang",

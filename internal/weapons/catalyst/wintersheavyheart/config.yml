@@ -1,0 +1,7 @@
+use: pipeline
+kind: weapon
+name: wintersheavyheart
+
+shortcuts:
+  - winters
+  - whh
