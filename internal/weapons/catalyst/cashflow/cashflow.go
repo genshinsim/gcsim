@@ -15,9 +15,10 @@ import (
 )
 
 const (
-	buffKey   = "cashflow-buff"
-	buffIcd   = "cashflow-icd"
-	atkSpdKey = "cashflow-atkspd"
+	buffKey    = "cashflow-buff"
+	buffIcd    = "cashflow-icd"
+	atkSpdKey  = "cashflow-atkspd"
+	stellarKey = "cashflow-stellar"
 )
 
 type Weapon struct {
@@ -130,6 +131,15 @@ func (w *Weapon) onChangeHP() {
 			default:
 				return nil
 			}
+		},
+	})
+	w.char.AddReactBonusMod(character.ReactBonusMod{
+		Base: modifier.NewBaseWithHitlag(stellarKey, 4*60),
+		Amount: func(ai info.AttackInfo) float64 {
+			if ai.AttackTag == attacks.AttackTagDirectStellarConduct {
+				return (0.105 + 0.035*float64(w.refine)) * float64(w.stacks)
+			}
+			return 0
 		},
 	})
 	if w.stacks == 3 {
