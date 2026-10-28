@@ -29,6 +29,7 @@ type Weapon struct {
 	buffCA  []float64
 	buffNA  []float64
 	mAtkSpd []float64
+	stellar float64
 	Index   int
 }
 
@@ -52,6 +53,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 
 	atkp := 0.12 + 0.04*float64(p.Refine)
+	w.stellar = 0.105 + 0.035*float64(p.Refine)
 	val := make([]float64, attributes.EndStatType)
 	val[attributes.ATKP] = atkp
 
@@ -137,7 +139,7 @@ func (w *Weapon) onChangeHP() {
 		Base: modifier.NewBaseWithHitlag(stellarKey, 4*60),
 		Amount: func(ai info.AttackInfo) float64 {
 			if ai.AttackTag == attacks.AttackTagDirectStellarConduct {
-				return (0.105 + 0.035*float64(w.refine)) * float64(w.stacks)
+				return w.stellar * float64(w.stacks)
 			}
 			return 0
 		},
