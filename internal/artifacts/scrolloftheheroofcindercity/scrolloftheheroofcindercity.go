@@ -24,6 +24,7 @@ var reactToElements = map[info.ReactionType][]attributes.Element{
 	info.ReactionTypeLunarCharged:       {attributes.Electro, attributes.Hydro},
 	info.ReactionTypeSwirlHydro:         {attributes.Anemo, attributes.Hydro},
 	info.ReactionTypeSwirlCryo:          {attributes.Anemo, attributes.Cryo},
+	info.ReactionTypeStellarSwirl:       {attributes.Anemo, attributes.Cryo},
 	info.ReactionTypeSwirlElectro:       {attributes.Anemo, attributes.Electro},
 	info.ReactionTypeSwirlPyro:          {attributes.Anemo, attributes.Pyro},
 	info.ReactionTypeCrystallizeHydro:   {attributes.Geo, attributes.Hydro},
