@@ -63,24 +63,26 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	atkp := make([]float64, attributes.EndStatType)
 	atkp[attributes.ATKP] = 0.06*float64(p.Refine) + 0.18
 
-	for i := event.OnSwirlHydro; i <= event.OnSwirlPyro; i++ {
-		c.Events.Subscribe(i, func(args ...any) {
-			atk := args[1].(*info.AttackEvent)
-			if atk.Info.ActorIndex != char.Index() {
-				return
-			}
-			if c.Player.Active() != char.Index() {
-				return
-			}
-			char.AddStatMod(character.StatMod{
-				Base:         modifier.NewBaseWithHitlag("astralvulturescrimsonplumage-atkp", 12*60),
-				AffectedStat: attributes.ATKP,
-				Amount: func() []float64 {
-					return atkp
-				},
-			})
-		}, "astralvulturescrimsonplumage-swirl-"+char.Base.Key.String())
+	onSwirl := func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.ActorIndex != char.Index() {
+			return
+		}
+		if c.Player.Active() != char.Index() {
+			return
+		}
+		char.AddStatMod(character.StatMod{
+			Base:         modifier.NewBaseWithHitlag("astralvulturescrimsonplumage-atkp", 12*60),
+			AffectedStat: attributes.ATKP,
+			Amount: func() []float64 {
+				return atkp
+			},
+		})
 	}
+	for i := event.OnSwirlHydro; i <= event.OnSwirlPyro; i++ {
+		c.Events.Subscribe(i, onSwirl, "astralvulturescrimsonplumage-swirl-"+char.Base.Key.String())
+	}
+	c.Events.Subscribe(event.OnStellarSwirl, onSwirl, "astralvulturescrimsonplumage-stellar-swirl-"+char.Base.Key.String())
 
 	return w, nil
 }
