@@ -87,6 +87,9 @@ func NewSet(core *core.Core, char *character.CharWrapper, count int, param map[s
 		if !ok {
 			return
 		}
+		if ae.Info.ActorIndex != char.Index() {
+			return
+		}
 
 		if r.StatusIsActive(reactable.SuperConductShredKey) || r.StatusIsActive(reactable.StellarConductShredKey) {
 			ae.Snapshot.Stats[attributes.CR] += 0.16
