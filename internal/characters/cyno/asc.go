@@ -29,6 +29,22 @@ func (c *char) a1() {
 	c.QueueCharTask(c.a1, 234)
 }
 
+func (c *char) a1OnBurst() {
+	if c.Base.Ascension < 1 {
+		return
+	}
+	c.QueueCharTask(c.a1, 328)
+}
+
+func (c *char) a1OnSkillRevelation() {
+	if c.Base.Ascension < 1 {
+		return
+	}
+
+	// TODO: frame count for this
+	c.QueueCharTask(c.a1, 234)
+}
+
 func (c *char) a1Buff() {
 	m := make([]float64, attributes.EndStatType)
 	m[attributes.DmgP] = 0.35
@@ -82,4 +98,14 @@ func (c *char) a4Bolt() float64 {
 		return 0
 	}
 	return c.Stat(attributes.EM) * 2.5
+}
+
+// Cyno's DMG values will be increased based on his Elemental Mastery as follows:
+//
+// - Duststalker Bolt DMG from his Passive Talent Featherfall Judgment is increased by 250% of his Elemental Mastery.
+func (c *char) a4BoltSSC() float64 {
+	if c.Base.Ascension < 4 {
+		return 0
+	}
+	return c.Stat(attributes.EM) * 6
 }
