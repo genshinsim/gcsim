@@ -15,20 +15,24 @@ import (
 )
 
 const (
-	buffKey   = "cashflow-buff"
-	buffIcd   = "cashflow-icd"
-	atkSpdKey = "cashflow-atkspd"
+	buffKey    = "cashflow-buff"
+	buffIcd    = "cashflow-icd"
+	atkSpdKey  = "cashflow-atkspd"
+	stellarKey = "cashflow-stellar"
 )
 
 type Weapon struct {
-	stacks  int
-	core    *core.Core
-	char    *character.CharWrapper
-	refine  int
-	buffCA  []float64
-	buffNA  []float64
-	mAtkSpd []float64
-	Index   int
+	stacks          int
+	core            *core.Core
+	char            *character.CharWrapper
+	refine          int
+	buffNAPerStack  float64
+	buffCAPerStack  float64
+	stellarPerStack float64
+	buffCA          []float64
+	buffNA          []float64
+	mAtkSpd         []float64
+	Index           int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -42,12 +46,15 @@ func (w *Weapon) Init() error      { return nil }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{
-		core:    c,
-		char:    char,
-		refine:  p.Refine,
-		buffCA:  make([]float64, attributes.EndStatType),
-		buffNA:  make([]float64, attributes.EndStatType),
-		mAtkSpd: make([]float64, attributes.EndStatType),
+		core:            c,
+		char:            char,
+		refine:          p.Refine,
+		buffNAPerStack:  0.12 + 0.04*float64(p.Refine),
+		buffCAPerStack:  0.105 + 0.035*float64(p.Refine),
+		stellarPerStack: 0.105 + 0.035*float64(p.Refine),
+		buffCA:          make([]float64, attributes.EndStatType),
+		buffNA:          make([]float64, attributes.EndStatType),
+		mAtkSpd:         make([]float64, attributes.EndStatType),
 	}
 
 	atkp := 0.12 + 0.04*float64(p.Refine)
@@ -130,6 +137,15 @@ func (w *Weapon) onChangeHP() {
 			default:
 				return nil
 			}
+		},
+	})
+	w.char.AddReactBonusMod(character.ReactBonusMod{
+		Base: modifier.NewBaseWithHitlag(stellarKey, 4*60),
+		Amount: func(ai info.AttackInfo) float64 {
+			if ai.AttackTag == attacks.AttackTagDirectStellarConduct {
+				return w.stellarPerStack * float64(w.stacks)
+			}
+			return 0
 		},
 	})
 	if w.stacks == 3 {
