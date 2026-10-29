@@ -1,0 +1,12 @@
+use: pipeline
+kind: weapon
+name: hereticsmoltenblade
+
+shortcuts:
+  - heretics
+  - hmb
+
+abilities:
+  - name: default
+    params:
+      dist: "Distance traveled by the equipping character per second while Gleam of First Light is active, in meters. The ATK bonus scales linearly from the minimum at 0 to the maximum at 7 or more. Default: 7."
