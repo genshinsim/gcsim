@@ -12,9 +12,10 @@ import (
 )
 
 const (
-	a1Status = "wriothesley-a1"
-	a1ICD    = 5 * 60
-	a1ICDKey = "wriothesley-a1-icd"
+	a1Status   = "wriothesley-a1"
+	a1ICD      = 5 * 60
+	a1ICDKey   = "wriothesley-a1-icd"
+	a1HealName = "There Shall Be a Plea for Justice"
 )
 
 func (c *char) a1Ready() bool {
@@ -60,8 +61,8 @@ func (c *char) a1(ai *info.AttackInfo, snap *info.Snapshot) info.AttackCBFunc {
 		c.Core.Player.Heal(info.HealInfo{
 			Caller:  c.Index(),
 			Target:  c.Index(),
-			Message: "There Shall Be a Plea for Justice",
-			Src:     c.caHeal * c.MaxHP(),
+			Message: a1HealName,
+			Src:     c.rebukeHeal * c.MaxHP(),
 			Bonus:   c.Stat(attributes.Heal),
 		})
 	}
@@ -69,7 +70,7 @@ func (c *char) a1(ai *info.AttackInfo, snap *info.Snapshot) info.AttackCBFunc {
 
 // When Wriothesley's current HP increases or decreases, if he is in the Chilling Penalty state conferred by Icefang Rush,
 // Chilling Penalty will gain one stack of Prosecution Edict. Max 5 stacks. Each stack will increase Wriothesley's ATK by 6%.
-func (c *char) a4() {
+func (c *char) a4Init() {
 	if c.Base.Ascension < 4 {
 		return
 	}

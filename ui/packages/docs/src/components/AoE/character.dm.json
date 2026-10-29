@@ -13410,6 +13410,15 @@
       "box_y": 5
     },
     {
+      "ability": "charge",
+      "name": "CA-Luster-Vaulting-Fist",
+      "shape": "Box",
+      "center": "Player",
+      "offset_y": -0.8,
+      "box_x": 4,
+      "box_y": 5
+    },
+    {
       "ability": "plunge",
       "name": "Plunge",
       "shape": "Circle",

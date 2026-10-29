@@ -4,7 +4,6 @@ import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/keys"
 	"github.com/genshinsim/gcsim/pkg/core/player"
@@ -13,14 +12,15 @@ import (
 
 type char struct {
 	*tmpl.Character
+	revelation           bool
 	savedNormalCounter   int
-	caHeal               float64
+	rebukeHeal           float64
 	a4Stack              int
 	c1N5Proc             bool
 	c1SkillExtensionProc bool
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -30,6 +30,12 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.BurstCon = 5
 	c.HasArkhe = true
 
+	revelation, ok := p.Params["revelation"]
+	if !ok {
+		revelation = 1
+	}
+	c.revelation = revelation > 0
+
 	w.Character = &c
 
 	return nil
@@ -37,22 +43,11 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.onExit()
-
-	c.a4()
-	c.c4()
+	c.stellarInit()
+	c.a4Init()
+	c.c4Init()
 
 	return nil
-}
-
-func (c *char) Snapshot(ai *info.AttackInfo) info.Snapshot {
-	ds := c.Character.Snapshot(ai)
-
-	// apply skill multiplier
-	if c.skillBuffActive() && ai.AttackTag == attacks.AttackTagNormal {
-		ai.Mult *= skill[c.TalentLvlSkill()]
-	}
-
-	return ds
 }
 
 func (c *char) graciousRebukeReady() bool {
@@ -66,7 +61,7 @@ func (c *char) graciousRebukeReady() bool {
 }
 
 func (c *char) ActionStam(a action.Action, p map[string]int) float64 {
-	if a == action.ActionCharge && c.graciousRebukeReady() {
+	if a == action.ActionCharge && (c.graciousRebukeReady() || c.a1StellarCAReady()) {
 		return 0
 	}
 	return c.Character.ActionStam(a, p)
@@ -76,6 +71,8 @@ func (c *char) Condition(fields []string) (any, error) {
 	switch fields[0] {
 	case "gracious-rebuke":
 		return c.graciousRebukeReady(), nil
+	case "gracious-rebuke-unveiling":
+		return c.a1StellarCAReady(), nil
 	default:
 		return c.Character.Condition(fields)
 	}
