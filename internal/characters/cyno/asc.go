@@ -20,20 +20,20 @@ const a1Key = "cyno-a1"
 // - checks for ascension level in burst.go to avoid queuing this up only to fail the ascension level check
 //
 // - other parts of a1 depend on the status that this task applies so they don't need an extra ascension check
-func (c *char) a1() {
+func (c *char) a1(src int) {
 	if !c.StatusIsActive(burstKey) {
 		return
 	}
 	c.a1Extended = false
 	c.AddStatus(a1Key, 84, true)
-	c.QueueCharTask(c.a1, 234)
+	c.QueueCharTask(func() { c.a1(src) }, 234)
 }
 
 func (c *char) a1OnBurst() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.QueueCharTask(c.a1, 328)
+	c.QueueCharTask(func() { c.a1(c.burstSrc) }, 328)
 }
 
 func (c *char) a1OnSkillRevelation() {
@@ -42,7 +42,7 @@ func (c *char) a1OnSkillRevelation() {
 	}
 
 	// TODO: frame count for this
-	c.QueueCharTask(c.a1, 234)
+	c.QueueCharTask(func() { c.a1(c.burstSrc) }, 234)
 }
 
 func (c *char) a1Buff() {

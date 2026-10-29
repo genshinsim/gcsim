@@ -81,7 +81,7 @@ func (c *char) c1RevelationOnPactsworn(dur int) {
 	if c.Base.Cons < 1 {
 		return
 	}
-	if !c.revelation {
+	if !c.isStellarRadiance() {
 		return
 	}
 	c.addC1RevelationBuff(c.CharWrapper, dur)
@@ -95,6 +95,16 @@ func (c *char) addC1RevelationBuff(ch *character.CharWrapper, dur int) {
 			return c.c1EM
 		},
 	})
+}
+
+func (c *char) c2RevelationOnPactsworn() {
+	if c.Base.Cons < 1 {
+		return
+	}
+	if !c.revelation {
+		return
+	}
+	c.c2Stacks = 0
 }
 
 // When Cyno's Normal Attacks hit opponents, his Electro DMG Bonus will
@@ -204,6 +214,10 @@ func (c *char) c2Init() {
 // reaction, they will also regenerate 20 Elemental Energy for Cyno. This effect
 // can trigger once every 18s.
 func (c *char) c4Init() {
+	if c.Base.Cons < 4 {
+		return
+	}
+
 	restore := func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		if atk.Info.ActorIndex != c.Index() {
@@ -270,9 +284,22 @@ func (c *char) c6OnA1Skill() {
 // A maximum of 1 Duststalker Bolt can be unleashed this way every 0.4s.
 // You must first unlock the Passive Talent "Featherfall Judgment."
 func (c *char) makeC6CB() info.AttackCBFunc {
-	if c.Base.Cons < 6 || c.c6Stacks == 0 || !c.StatusIsActive(c6Key) {
+	if c.Base.Cons < 6 {
 		return nil
 	}
+
+	if c.c6Stacks == 0 {
+		return nil
+	}
+
+	if !c.StatusIsActive(c6Key) {
+		return nil
+	}
+
+	if !c.StatusIsActive(burstKey) {
+		return nil
+	}
+
 	return func(a info.AttackCB) {
 		if a.Target.Type() != info.TargettableEnemy {
 			return

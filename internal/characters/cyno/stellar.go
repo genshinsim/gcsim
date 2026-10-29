@@ -38,12 +38,13 @@ func (c *char) revelationOnSkill() {
 			return c.burstEM
 		},
 	})
+	c.burstSrc = c.Core.F
 
 	// cannot extend the duration of Pactsworn when the state is granted by the
 	// revelation passive
 	c.burstExtension = 2
-	c.burstSrc = c.Core.F
 	c.a1OnSkillRevelation()
 
 	c.c1RevelationOnPactsworn(dur)
+	c.c2RevelationOnPactsworn()
 }

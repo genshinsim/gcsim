@@ -50,6 +50,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	if c.Base.Cons >= 1 {
 		c.c1()
 	}
+	c.c1RevelationOnPactsworn(712)
+	c.c2RevelationOnPactsworn()
 	c.c6OnA1Skill()
 
 	return action.Info{
@@ -64,6 +66,7 @@ func (c *char) tryBurstPPSlide(hitmark int) {
 	duration := c.StatusDuration(burstKey)
 	if 0 < duration && duration < hitmark {
 		c.ExtendStatus(burstKey, hitmark-duration+1)
+		c.ExtendStatus(c1RevKey, hitmark-duration+1)
 		c.Core.Log.NewEvent("pp slide activated", glog.LogCharacterEvent, c.Index()).
 			Write("expiry", c.StatusExpiry(burstKey))
 		src := c.burstSrc
