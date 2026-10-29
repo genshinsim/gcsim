@@ -131,7 +131,7 @@ func (c *CharWrapper) AddHealBonusMod(mod HealBonusMod) {
 //		Amount: func(ai info.AttackInfo) float64 {
 //			switch ai.AttackTag {
 //			case attacks.AttackTagOverloadDamage,
-//				attacks.AttackTagBurningDamage,
+//				attacks.AttackTagBurningDamage:
 //				return 0.5
 //			}
 //			return 0
