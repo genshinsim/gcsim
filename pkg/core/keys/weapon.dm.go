@@ -141,6 +141,7 @@ const (
 	Hamayumi                                      // hamayumi
 	HaranGeppakuFutsu                             // harangeppakufutsu
 	HarbingerOfDawn                               // harbingerofdawn
+	HereticsMoltenBlade                           // hereticsmoltenblade
 	HuntersBow                                    // huntersbow
 	HuntersPath                                   // hunterspath
 	IbisPiercer                                   // ibispiercer
@@ -394,6 +395,7 @@ var _WeaponNames = [...]string{
 	"hamayumi",
 	"harangeppakufutsu",
 	"harbingerofdawn",
+	"hereticsmoltenblade",
 	"huntersbow",
 	"hunterspath",
 	"ibispiercer",
@@ -647,6 +649,7 @@ var _WeaponValues = [...]Weapon{
 	Hamayumi,
 	HaranGeppakuFutsu,
 	HarbingerOfDawn,
+	HereticsMoltenBlade,
 	HuntersBow,
 	HuntersPath,
 	IbisPiercer,

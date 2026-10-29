@@ -222,6 +222,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/freedom"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/haran"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/harbinger"
+	_ "github.com/genshinsim/gcsim/internal/weapons/sword/hereticsmoltenblade"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/ironsting"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/kagotsurubeisshin"
 	_ "github.com/genshinsim/gcsim/internal/weapons/sword/keyofkhajnisut"
