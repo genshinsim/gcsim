@@ -37,7 +37,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 	minBonus := 0.135 + 0.045*float64(r)
 	maxBonus := 0.27 + 0.09*float64(r)
-	// Linear scaling with distance is unverified in-game.
+	// Min and max were verified in-game and values in between are continuous;
+	// linear scaling up to 7m/s is an assumption.
 	bonus := minBonus + (maxBonus-minBonus)*float64(dist)/7
 	buff := make([]float64, attributes.EndStatType)
 	buff[attributes.ATKP] = bonus
