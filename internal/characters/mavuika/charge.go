@@ -15,16 +15,15 @@ import (
 )
 
 var (
-	chargeFrames           []int
-	bikeChargeFrames       []int
-	bikeChargeFinalFrames  []int
-	bikeHittableEntityList []HittableEntity
+	chargeFrames          []int
+	bikeChargeFrames      []int
+	bikeChargeFinalFrames []int
 )
 
 // Minimum CA time before CAF anim is 50f
 var (
 	bikeChargeAttackMinimumDuration = 50
-	bikeChargeAttackStartupHitmark  = 35
+	bikeChargeAttackStartupHitmark  = 34
 )
 
 // Maximum CA time before CAF anim is 375f
@@ -210,7 +209,7 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 		// Hold CA logic
 		c.HoldBikeChargeAttack(durationCA, skippedWindupFrames, bikeHittableEntities)
 	} else {
-		hasValidTarget, _, _ := c.HasValidTargetCheck(bikeHittableEntities)
+		hasValidTarget := c.HasValidTargetCheck(bikeHittableEntities)
 		if !hasValidTarget {
 			c.Core.Log.NewEvent("Mav's CA has no valid targets, defaulting to max buffered frames", glog.LogCharacterEvent, c.Index())
 			durationCA = maxBufferedBikeChargeFrames + 2 // Arbitrary
@@ -637,11 +636,10 @@ func (c *char) IsGadgetHittable(v info.Gadget) (HittableEntity, bool, error) {
 	return newGadget, isIntersecting, hitboxError
 }
 
-func (c *char) HasValidTargetCheck(bikeHittableEntities []HittableEntity) (bool, action.Info, error) {
+func (c *char) HasValidTargetCheck(bikeHittableEntities []HittableEntity) bool {
 	isTargetForCountsHittable := false
 	if len(bikeHittableEntities) == 0 {
-		c.SetHittableEntityList(bikeHittableEntities)
-		return false, action.Info{}, errors.New("no valid targets within flamestrider area")
+		return false
 	}
 	for _, t := range bikeHittableEntities {
 		if t.Entity == c.Core.Combat.PrimaryTarget() {
@@ -650,9 +648,9 @@ func (c *char) HasValidTargetCheck(bikeHittableEntities []HittableEntity) (bool,
 		}
 	}
 	if !isTargetForCountsHittable {
-		return false, action.Info{}, errors.New("primary target is not within flamestrider area")
+		return false
 	}
-	return true, action.Info{}, nil
+	return true
 }
 
 // Currently used for dendro cores spawning, other movements/additions should not happen mid-CA anim
@@ -690,14 +688,6 @@ func (c *char) bikeChargeAttackHook() {
 
 func (c *char) bikeChargeAttackUnhook() {
 	c.Core.Events.Unsubscribe(event.OnDendroCore, "mavuika-bike-gadget-check")
-}
-
-func (*char) SetHittableEntityList(bikeHittableEntities []HittableEntity) {
-	bikeHittableEntityList = bikeHittableEntities
-}
-
-func (*char) GetHittableEntityList() []HittableEntity {
-	return bikeHittableEntityList
 }
 
 // Iterate through CA frames, starting at hitmark
