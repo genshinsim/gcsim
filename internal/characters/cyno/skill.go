@@ -161,6 +161,7 @@ func (c *char) skillB() (action.Info, error) {
 
 	if c.burstExtension < 2 { // burst can only be extended 2 times per burst cycle (up to 18s, 10s base and +4 each time)
 		c.ExtendStatus(burstKey, 240) // 4s*60
+		c.ExtendStatus(c1RevKey, 240)
 		c.burstExtension++
 	}
 
