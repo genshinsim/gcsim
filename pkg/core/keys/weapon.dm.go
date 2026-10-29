@@ -176,6 +176,7 @@ const (
 	MoonweaversDawn                               // moonweaversdawn
 	MountainBracingBolt                           // mountainbracingbolt
 	MouunsMoon                                    // mouunsmoon
+	NewBough                                      // newbough
 	NightweaversLookingGlass                      // nightweaverslookingglass
 	NocturnesCurtainCall                          // nocturnescurtaincall
 	OathswornEye                                  // oathsworneye
@@ -429,6 +430,7 @@ var _WeaponNames = [...]string{
 	"moonweaversdawn",
 	"mountainbracingbolt",
 	"mouunsmoon",
+	"newbough",
 	"nightweaverslookingglass",
 	"nocturnescurtaincall",
 	"oathsworneye",
@@ -682,6 +684,7 @@ var _WeaponValues = [...]Weapon{
 	MoonweaversDawn,
 	MountainBracingBolt,
 	MouunsMoon,
+	NewBough,
 	NightweaversLookingGlass,
 	NocturnesCurtainCall,
 	OathswornEye,
