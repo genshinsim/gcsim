@@ -20,10 +20,10 @@ func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	// Gains the Kagura Dance effect when using an Elemental Skill, causing the
-	// Elemental Skill DMG of the character wielding this weapon to increase by
-	// 12% for 16s. Max 3 stacks. This character will gain 12% All Elemental DMG
-	// Bonus when they possess 3 stacks.
+	// Using an Elemental Skill grants Kagura Dance, increasing the wielding
+	// character's Elemental Skill DMG and Stellar-Conduct DMG by 12% for 24s.
+	// Max 3 stacks. This character gains 12% All Elemental DMG Bonus when they
+	// possess 3 stacks.
 	w := &Weapon{}
 	r := p.Refine
 	stacks := 0
@@ -31,7 +31,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	dmg := 0.12 + 0.03*float64(r-1)
 	val := make([]float64, attributes.EndStatType)
 	const stackKey = "kaguras-verity-stacks"
-	stackDuration := 960 // 16s * 60
+	stackDuration := 1440 // 24s * 60
 
 	// TODO: this used to be on postskill. make sure nothing broke here
 	c.Events.Subscribe(event.OnSkill, func(args ...any) {
@@ -54,7 +54,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			val[attributes.ElectroP] = dmg
 			val[attributes.AnemoP] = dmg
 			val[attributes.GeoP] = dmg
-			val[attributes.PhyP] = dmg
 			val[attributes.DendroP] = dmg
 		} else {
 			// clean stacks ele dmg% otherwise
@@ -64,7 +63,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			val[attributes.ElectroP] = 0
 			val[attributes.AnemoP] = 0
 			val[attributes.GeoP] = 0
-			val[attributes.PhyP] = 0
 			val[attributes.DendroP] = 0
 		}
 		// add mod for duration, override last
@@ -80,6 +78,15 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 					val[attributes.DmgP] = 0
 				}
 				return val
+			},
+		})
+		char.AddReactBonusMod(character.ReactBonusMod{
+			Base: modifier.NewBaseWithHitlag("kaguras-verity-stellar", stackDuration),
+			Amount: func(ai info.AttackInfo) float64 {
+				if ai.AttackTag == attacks.AttackTagDirectStellarConduct {
+					return dmg * float64(stacks)
+				}
+				return 0
 			},
 		})
 	}, key)
