@@ -210,13 +210,14 @@ func (c *char) BikeCharge(p map[string]int) (action.Info, error) {
 		// Hold CA logic
 		c.HoldBikeChargeAttack(durationCA, skippedWindupFrames, bikeHittableEntities)
 	} else {
-		hasValidTarget, ai, err := c.HasValidTargetCheck(bikeHittableEntities)
+		hasValidTarget, _, _ := c.HasValidTargetCheck(bikeHittableEntities)
 		if !hasValidTarget {
-			// Shouldn't matter
-			ai.Segmented = segmented
-			return ai, err
+			c.Core.Log.NewEvent("Mav's CA has no valid targets, defaulting to max buffered frames", glog.LogCharacterEvent, c.Index())
+			durationCA = maxBufferedBikeChargeFrames + 2 // Arbitrary
+			c.HoldBikeChargeAttack(durationCA, skippedWindupFrames, bikeHittableEntities)
+		} else {
+			durationCA = c.CountBikeChargeAttack(1, skippedWindupFrames, bikeHittableEntities, nightSoulDuration)
 		}
-		durationCA = c.CountBikeChargeAttack(1, skippedWindupFrames, bikeHittableEntities, nightSoulDuration)
 	}
 
 	// Add any existing CA frames
