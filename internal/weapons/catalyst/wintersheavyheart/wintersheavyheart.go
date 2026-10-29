@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
+	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 type Weapon struct {
@@ -21,11 +22,17 @@ func (w *Weapon) Init() error {
 	return nil
 }
 
-// Radiance: Stellar Glimmer is not implemented because the reaction is unsupported and never active in current teams.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{}
 	r := float64(p.Refine)
+	normalEM := 18 + 6*r
+	normalATK := 0.036 + 0.012*r
+	radianceEM := 15 + 5*r
+	radianceDmg := 0.045 + 0.015*r
 	m := make([]float64, attributes.EndStatType)
+	isRadiance := func() bool {
+		return char.StatusIsActive(reactable.PolestarFieldKey) || char.StatusIsActive(reactable.RadianceSwirlKey)
+	}
 
 	c.Events.Subscribe(event.OnInitialize, func(args ...any) {
 		cryo := 0
@@ -45,12 +52,25 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 
-		m[attributes.EM] = (18 + 6*r) * float64(cryo)
-		m[attributes.ATKP] = (0.036 + 0.012*r) * float64(electro)
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBase("wintersheavyheart", -1),
 			Amount: func() []float64 {
+				m[attributes.EM] = normalEM * float64(cryo)
+				m[attributes.ATKP] = normalATK * float64(electro)
+				if isRadiance() {
+					m[attributes.EM] = radianceEM * float64(cryo+electro)
+					m[attributes.ATKP] = 0
+				}
 				return m
+			},
+		})
+		char.AddReactBonusMod(character.ReactBonusMod{
+			Base: modifier.NewBase("wintersheavyheart-stellar", -1),
+			Amount: func(ai info.AttackInfo) float64 {
+				if isRadiance() && ai.AttackTag.IsStellar() {
+					return radianceDmg * float64(cryo+electro)
+				}
+				return 0
 			},
 		})
 	}, fmt.Sprintf("wintersheavyheart-%v", char.Base.Key.String()))
