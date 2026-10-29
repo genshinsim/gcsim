@@ -29,13 +29,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.c4Counter = 0      // reset c4 stacks
 	c.c6Stacks = 0       // same as above
 
-	m := make([]float64, attributes.EndStatType)
-	m[attributes.EM] = 100
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(burstKey, 712), // 112f extra duration
 		AffectedStat: attributes.EM,
 		Amount: func() []float64 {
-			return m
+			return c.burstEM
 		},
 	})
 	c.burstSrc = c.Core.F
@@ -44,16 +42,15 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.QueueCharTask(func() { c.onBurstExpiry(src) }, 713+240)
 	c.QueueCharTask(func() { c.onBurstExpiry(src) }, 713+480)
 
-	if c.Base.Ascension >= 1 {
-		c.QueueCharTask(c.a1, 328)
-	}
+	c.a1OnBurst()
+
 	c.SetCD(action.ActionBurst, 1200)
 	c.ConsumeEnergy(3)
 
 	if c.Base.Cons >= 1 {
 		c.c1()
 	}
-	c.c6Init()
+	c.c6OnA1Skill()
 
 	return action.Info{
 		Frames:          frames.NewAbilFunc(burstFrames),
@@ -76,7 +73,10 @@ func (c *char) tryBurstPPSlide(hitmark int) {
 	}
 }
 
-func (c *char) onExitField() {
+func (c *char) burstInit() {
+	c.burstEM = make([]float64, attributes.EndStatType)
+	c.burstEM[attributes.EM] = 100
+
 	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		if !c.StatusIsActive(burstKey) {
 			return
