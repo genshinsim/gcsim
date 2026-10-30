@@ -101,6 +101,7 @@ var weaponMap = map[string]string{
 	"hamayumi":                        "UI_EquipIcon_Bow_Bakufu_Awaken",
 	"harangeppakufutsu":               "UI_EquipIcon_Sword_Amenoma_Awaken",
 	"harbingerofdawn":                 "UI_EquipIcon_Sword_Dawn_Awaken",
+	"hereticsmoltenblade":             "UI_EquipIcon_Sword_SerpentTooth_Awaken",
 	"huntersbow":                      "UI_EquipIcon_Bow_Hunters_Awaken",
 	"hunterspath":                     "UI_EquipIcon_Bow_Ayus_Awaken",
 	"ibispiercer":                     "UI_EquipIcon_Bow_Ibis_Awaken",
