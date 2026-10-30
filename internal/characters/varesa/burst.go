@@ -122,7 +122,6 @@ func (c *char) volcanicKablam() action.Info {
 	}, kablamHitmark)
 
 	c.ConsumeEnergyPartial(0, kablamCost)
-	c.SetCD(action.ActionBurst, 1*60)
 	c.usedShortBurst = true
 
 	return action.Info{

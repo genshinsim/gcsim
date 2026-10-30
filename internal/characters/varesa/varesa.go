@@ -67,9 +67,6 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 		if !c.Core.Flags.IgnoreBurstEnergy && c.Energy < kablamCost {
 			return false, action.InsufficientEnergy
 		}
-		if c.AvailableCDCharge[a] <= 0 {
-			return false, action.BurstCD
-		}
 		return true, action.NoFailure
 	}
 	return c.Character.ActionReady(a, p)
