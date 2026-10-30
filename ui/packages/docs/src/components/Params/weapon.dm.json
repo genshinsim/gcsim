@@ -27,13 +27,6 @@
       "desc": "Sets the buff type to be applied first. 0 = ATK%, 1 = EM, 2 = Stellar. Default is 0."
     }
   ],
-  "hereticsmoltenblade": [
-    {
-      "ability": "-",
-      "param": "dist",
-      "desc": "Distance traveled by the equipping character per second while Gleam of First Light is active, in meters. The ATK bonus scales linearly from the minimum at 0 to the maximum at 7 or more. Default: 7."
-    }
-  ],
   "lostprayertothesacredwinds": [
     {
       "ability": "-",
