@@ -6,7 +6,7 @@ import (
 )
 
 // Characters shielded by Icy Paws have their Movement SPD increased by 10% and their Stamina Consumption decreased by 10%.
-func (c *char) a1() {
+func (c *char) a1Init() {
 	if c.Base.Ascension < 1 {
 		return
 	}
