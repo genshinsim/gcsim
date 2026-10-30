@@ -445,7 +445,6 @@ var WeaponNameToKey = map[string]keys.Weapon{
 	"wineandsong":                     keys.WineAndSong,
 	"wintersheavyheart":               keys.WintersHeavyHeart,
 	"whh":                             keys.WintersHeavyHeart,
-	"winters":                         keys.WintersHeavyHeart,
 	"wolffang":                        keys.WolfFang,
 	"wolfsgravestone":                 keys.WolfsGravestone,
 	"gravestone":                      keys.WolfsGravestone,
