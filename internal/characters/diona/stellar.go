@@ -33,7 +33,7 @@ func (c *char) getRadiance() radianceState {
 		return radianceStellarConduct
 	}
 
-	if c.StatusIsActive(reactable.StellarSwirlKey) {
+	if c.StatusIsActive(reactable.RadianceSwirlKey) {
 		return radianceStellarSwirl
 	}
 
