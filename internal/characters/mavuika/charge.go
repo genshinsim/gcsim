@@ -637,20 +637,15 @@ func (c *char) IsGadgetHittable(v info.Gadget) (HittableEntity, bool, error) {
 }
 
 func (c *char) HasValidTargetCheck(bikeHittableEntities []HittableEntity) bool {
-	isTargetForCountsHittable := false
 	if len(bikeHittableEntities) == 0 {
 		return false
 	}
 	for _, t := range bikeHittableEntities {
 		if t.Entity == c.Core.Combat.PrimaryTarget() {
-			isTargetForCountsHittable = true
-			break
+			return true
 		}
 	}
-	if !isTargetForCountsHittable {
-		return false
-	}
-	return true
+	return false
 }
 
 // Currently used for dendro cores spawning, other movements/additions should not happen mid-CA anim
