@@ -170,10 +170,6 @@ func (c *char) c2() {
 	c.c2Buff = make([]float64, attributes.EndStatType)
 	c.c2UpdateTask()
 
-	if c.revelation {
-		c.c2UpdateShredTask()
-	}
-
 	for _, char := range c.Core.Player.Chars() {
 		if char.Index() == c.Index() {
 			continue
@@ -207,51 +203,68 @@ func (c *char) c2UpdateTask() {
 	}, c2Interval)
 }
 
-func (c *char) c2UpdateShredTask() {
+func (c *char) c2ShredTask(src int) {
 	if c.Base.Cons < 2 {
 		return
 	}
 
+	if !c.revelation {
+		return
+	}
+
+	c.c2ShredTaskSrc = src
+	c.c2ShredTaskUpdate(src)
+}
+
+func (c *char) c2ShredTaskUpdate(src int) {
+	if c.Base.Cons < 2 {
+		return
+	}
+
+	if !c.revelation {
+		return
+	}
+
+	if src != c.c2ShredTaskSrc {
+		return
+	}
+
+	ae := combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 20)
+
+	for _, e := range c.Core.Combat.EnemiesWithinArea(ae, nil) {
+		e.AddResistMod(info.ResistMod{
+			Base:  modifier.NewBaseWithHitlag("mizuki-c2-pyro", 1*60),
+			Ele:   attributes.Pyro,
+			Value: -0.2,
+		})
+
+		e.AddResistMod(info.ResistMod{
+			Base:  modifier.NewBaseWithHitlag("mizuki-c2-hydro", 1*60),
+			Ele:   attributes.Hydro,
+			Value: -0.2,
+		})
+
+		e.AddResistMod(info.ResistMod{
+			Base:  modifier.NewBaseWithHitlag("mizuki-c2-electro", 1*60),
+			Ele:   attributes.Electro,
+			Value: -0.2,
+		})
+
+		e.AddResistMod(info.ResistMod{
+			Base:  modifier.NewBaseWithHitlag("mizuki-c2-cryo", 1*60),
+			Ele:   attributes.Cryo,
+			Value: -0.2,
+		})
+
+		e.AddResistMod(info.ResistMod{
+			Base:  modifier.NewBaseWithHitlag("mizuki-c2-anemo", 1*60),
+			Ele:   attributes.Anemo,
+			Value: -0.2,
+		})
+	}
+
 	c.QueueCharTask(func() {
-		defer c.c2UpdateShredTask()
-
-		if !c.StatusIsActive(dreamDrifterStateKey) {
-			return
-		}
-
-		ae := combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 20)
-
-		for _, e := range c.Core.Combat.EnemiesWithinArea(ae, nil) {
-			e.AddResistMod(info.ResistMod{
-				Base:  modifier.NewBaseWithHitlag("mizuki-c2-pyro", 1*60),
-				Ele:   attributes.Pyro,
-				Value: -0.2,
-			})
-
-			e.AddResistMod(info.ResistMod{
-				Base:  modifier.NewBaseWithHitlag("mizuki-c2-hydro", 1*60),
-				Ele:   attributes.Hydro,
-				Value: -0.2,
-			})
-
-			e.AddResistMod(info.ResistMod{
-				Base:  modifier.NewBaseWithHitlag("mizuki-c2-electro", 1*60),
-				Ele:   attributes.Electro,
-				Value: -0.2,
-			})
-
-			e.AddResistMod(info.ResistMod{
-				Base:  modifier.NewBaseWithHitlag("mizuki-c2-cryo", 1*60),
-				Ele:   attributes.Cryo,
-				Value: -0.2,
-			})
-
-			e.AddResistMod(info.ResistMod{
-				Base:  modifier.NewBaseWithHitlag("mizuki-c2-anemo", 1*60),
-				Ele:   attributes.Anemo,
-				Value: -0.2,
-			})
-		}
+		c.c2ShredTaskUpdate(src)
 	}, c2ShredInterval)
 }
 

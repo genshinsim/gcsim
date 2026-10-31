@@ -20,6 +20,7 @@ type char struct {
 	a4Buff                          []float64
 	c1EM                            float64
 	c2Buff                          []float64
+	c2ShredTaskSrc                  int
 	c4EnergyGenerationsRemaining    int
 	c6Buff                          []float64
 	c6revelationBuff                []float64
