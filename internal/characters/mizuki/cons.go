@@ -229,6 +229,10 @@ func (c *char) c2ShredTaskUpdate(src int) {
 		return
 	}
 
+	if !c.StatusIsActive(dreamDrifterStateKey) {
+		return
+	}
+
 	ae := combat.NewCircleHitOnTarget(c.Core.Combat.Player().Pos(), nil, 20)
 
 	for _, e := range c.Core.Combat.EnemiesWithinArea(ae, nil) {
