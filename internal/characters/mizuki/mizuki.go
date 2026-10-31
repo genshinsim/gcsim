@@ -15,14 +15,20 @@ type char struct {
 	cloudAttack                     info.AttackInfo
 	cloudSnap                       info.Snapshot
 	cloudSrc                        int
+	cloudTravel                     int
+	cloudSkipTicks                  int
 	a4Buff                          []float64
 	c1EM                            float64
 	c2Buff                          []float64
+	c2ShredTaskSrc                  int
 	c4EnergyGenerationsRemaining    int
 	c6Buff                          []float64
+	c6revelationBuff                []float64
+	revelation                      bool
+	revelationBuff                  []float64
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -33,17 +39,48 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 	w.Character = &c
 
+	revelation, ok := p.Params["revelation"]
+	if !ok {
+		revelation = 1
+	}
+	c.revelation = revelation > 0
+
 	return nil
 }
 
 func (c *char) Init() error {
+	c.revelationInit()
 	c.skillInit()
 	c.a1()
 	c.a4()
 	c.c1()
 	c.c2()
 	c.c6()
+	c.c6RevelationInit()
 	return nil
+}
+
+func (c *char) lowestHPChar() int {
+	lowestIdx := -1
+	lowestPct := 2.0 // > 1
+
+	for i := 0; i < len(c.Core.Player.Chars()); i++ {
+		ch := c.Core.Player.Chars()[i]
+		if ch.CurrentHP() <= 0 {
+			continue
+		}
+
+		if ch.Index() == c.Index() {
+			continue
+		}
+
+		if ch.CurrentHPRatio() < lowestPct {
+			lowestPct = ch.CurrentHPRatio()
+			lowestIdx = i
+		}
+	}
+
+	return lowestIdx
 }
 
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {

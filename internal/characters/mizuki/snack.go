@@ -13,6 +13,7 @@ import (
 const (
 	snackDmgName              = "Munen Shockwave"
 	snackHealName             = "Snack Pick-Up"
+	snackHealNameLowest       = "Snack Pick-Up Lowest Heal (C4)"
 	snackDurability           = 25
 	snackDmgRadius            = 4
 	snackHealTriggerHpRatio   = 0.7
@@ -97,15 +98,10 @@ func (p *snack) onPickedUp() {
 	mizuki := p.char
 	activeChar := p.Core.Player.ActiveChar()
 
-	// C4 triggers both DMG and Heal
-	if mizuki.Base.Cons >= 4 {
-		dmg = true
-		heal = true
-	} else {
-		// Heals active char if is bellow 70% hp otherwise deals DMG
-		dmg = activeChar.CurrentHP() > (activeChar.MaxHP() * snackHealTriggerHpRatio)
-		heal = !dmg
-	}
+	dmg = activeChar.CurrentHP() > (activeChar.MaxHP() * snackHealTriggerHpRatio)
+	heal = !dmg
+
+	mizuki.c4SnackSetup(&dmg, &heal)
 
 	p.Core.Log.NewEvent("Picked up snack", glog.LogCharacterEvent, activeChar.Index()).
 		Write("heal", heal).
@@ -116,17 +112,17 @@ func (p *snack) onPickedUp() {
 	}
 
 	if heal {
-		// Heals double the amount on Mizuki
-		healMultiplier := 1.0
+		// Heal bonus increased by 100% on Mizuki
+		bonus := mizuki.Stat(attributes.Heal)
 		if activeChar.Index() == mizuki.Index() {
-			healMultiplier = 2.0
+			bonus += 1.0
 		}
 		mizuki.Core.Player.Heal(info.HealInfo{
 			Caller:  mizuki.Index(),
 			Target:  activeChar.Index(),
 			Message: snackHealName,
-			Src:     ((mizuki.Stat(attributes.EM) * snackHealEM[mizuki.TalentLvlBurst()]) + snackHealFlat[mizuki.TalentLvlBurst()]) * healMultiplier,
-			Bonus:   mizuki.Stat(attributes.Heal),
+			Src:     ((mizuki.Stat(attributes.EM) * snackHealEM[mizuki.TalentLvlBurst()]) + snackHealFlat[mizuki.TalentLvlBurst()]),
+			Bonus:   bonus,
 		})
 	}
 
