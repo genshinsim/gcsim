@@ -74,7 +74,8 @@ func (c *char) burstTicker(src int, ap *info.AttackPattern) {
 		Mult:       burst[c.TalentLvlBurst()],
 	}
 
-	c.Core.QueueAttack(ai, *ap, 0, 0, c.c2MakeBurstCB())
+	c.Core.QueueAttack(ai, *ap, 0, 0)
+	c.c2OnBurstTick()
 
 	aiDog := info.AttackInfo{
 		ActorIndex: c.Index(),
