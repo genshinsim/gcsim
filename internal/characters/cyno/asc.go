@@ -20,13 +20,29 @@ const a1Key = "cyno-a1"
 // - checks for ascension level in burst.go to avoid queuing this up only to fail the ascension level check
 //
 // - other parts of a1 depend on the status that this task applies so they don't need an extra ascension check
-func (c *char) a1() {
+func (c *char) a1(src int) {
 	if !c.StatusIsActive(burstKey) {
 		return
 	}
 	c.a1Extended = false
 	c.AddStatus(a1Key, 84, true)
-	c.QueueCharTask(c.a1, 234)
+	c.QueueCharTask(func() { c.a1(src) }, 234)
+}
+
+func (c *char) a1OnBurst() {
+	if c.Base.Ascension < 1 {
+		return
+	}
+	c.QueueCharTask(func() { c.a1(c.burstSrc) }, 328)
+}
+
+func (c *char) a1OnSkillRevelation() {
+	if c.Base.Ascension < 1 {
+		return
+	}
+
+	// TODO: frame count for this
+	c.QueueCharTask(func() { c.a1(c.burstSrc) }, 234)
 }
 
 func (c *char) a1Buff() {
@@ -82,4 +98,14 @@ func (c *char) a4Bolt() float64 {
 		return 0
 	}
 	return c.Stat(attributes.EM) * 2.5
+}
+
+// Cyno's DMG values will be increased based on his Elemental Mastery as follows:
+//
+// - Duststalker Bolt DMG from his Passive Talent Featherfall Judgment is increased by 250% of his Elemental Mastery.
+func (c *char) a4BoltSSC() float64 {
+	if c.Base.Ascension < 4 {
+		return 0
+	}
+	return c.Stat(attributes.EM) * 6
 }
