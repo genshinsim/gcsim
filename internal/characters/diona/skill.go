@@ -41,10 +41,11 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	if !ok {
 		travel = 10
 	}
+	c.skillTravel = travel
 	if p["hold"] == 1 {
-		return c.skillHold(travel)
+		return c.skillHold()
 	}
-	return c.skillPress(travel)
+	return c.skillPress()
 }
 
 func (c *char) makeParticleCB() info.AttackCBFunc {
@@ -63,8 +64,8 @@ func (c *char) makeParticleCB() info.AttackCBFunc {
 	}
 }
 
-func (c *char) skillPress(travel int) (action.Info, error) {
-	c.pawsPewPew(skillPressHitmark, travel, 2)
+func (c *char) skillPress() (action.Info, error) {
+	c.pawsPewPew(skillPressHitmark, c.skillTravel, 2)
 	c.QueueCharTask(func() {
 		c.SetCD(action.ActionSkill, 360)
 		c.revelationOnSkill()
@@ -78,8 +79,8 @@ func (c *char) skillPress(travel int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) skillHold(travel int) (action.Info, error) {
-	c.pawsPewPew(skillHoldHitmark, travel, 5)
+func (c *char) skillHold() (action.Info, error) {
+	c.pawsPewPew(skillHoldHitmark, c.skillTravel, 5)
 
 	c.QueueCharTask(func() {
 		c.SetCD(action.ActionSkill, 900)

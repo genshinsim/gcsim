@@ -12,6 +12,7 @@ type char struct {
 	revelation    bool
 	burstBuffArea info.AttackPattern
 	c6buff        []float64
+	skillTravel   int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
