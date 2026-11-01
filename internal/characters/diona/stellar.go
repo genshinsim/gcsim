@@ -77,7 +77,7 @@ func (c *char) revelationInit() {
 			Mult:       paw[c.TalentLvlSkill()],
 		}
 
-		for i := range 3 {
+		for range 3 {
 			c.Core.QueueAttack(
 				ai,
 				combat.NewCircleHit(
@@ -87,7 +87,7 @@ func (c *char) revelationInit() {
 					0.5,
 				),
 				0,
-				5+i,
+				25,
 			)
 		}
 	}
