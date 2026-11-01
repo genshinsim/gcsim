@@ -33,7 +33,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	normalEM := 15 + 5*float64(p.Refine)
 	radianceATK := 0.045 + 0.015*float64(p.Refine)
 	radianceDmg := 0.06 + 0.02*float64(p.Refine)
-	val := make([]float64, attributes.EndStatType)
+	m := make([]float64, attributes.EndStatType)
 
 	c.Events.Subscribe(event.OnSkill, func(args ...any) {
 		if c.Player.Active() == char.Index() {
@@ -41,7 +41,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 	}, fmt.Sprintf("newbough-skill-%v", char.Base.Key.String()))
 
-	c.Events.Subscribe(event.OnEnemyDamage, func(args ...any) {
+	c.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk, ok := args[1].(*info.AttackEvent)
 		if !ok {
 			return
@@ -66,14 +66,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag(buffKey, 6*60),
 			Amount: func() []float64 {
-				clear(val)
 				if isRadiance(char) {
-					val[attributes.ATKP] = radianceATK * float64(w.stacks)
+					m[attributes.ATKP] = radianceATK * float64(w.stacks)
+					m[attributes.EM] = 0
 				} else {
-					val[attributes.ATKP] = normalATK * float64(w.stacks)
-					val[attributes.EM] = normalEM * float64(w.stacks)
+					m[attributes.ATKP] = normalATK * float64(w.stacks)
+					m[attributes.EM] = normalEM * float64(w.stacks)
 				}
-				return val
+				return m
 			},
 		})
 		char.AddReactBonusMod(character.ReactBonusMod{
