@@ -10,10 +10,9 @@ import (
 )
 
 const (
-	buffKey  = "heretics-molten-blade-atk"
-	icdKey   = "heretics-molten-blade-icd"
-	gleamKey = "heretics-molten-blade-gleam"
-	maxDist  = 7
+	buffKey = "heretics-molten-blade-atk"
+	icdKey  = "heretics-molten-blade-icd"
+	maxDist = 7
 )
 
 type Weapon struct {
@@ -43,7 +42,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		char.AddStatus(icdKey, 14*60, true)
-		char.AddStatus(gleamKey, 14*60, true)
 		w.src = c.F
 		w.dist = 0
 		w.buff[attributes.ATKP] = w.minBonus
@@ -51,9 +49,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			Base:         modifier.NewBaseWithHitlag(buffKey, 14*60),
 			AffectedStat: attributes.ATKP,
 			Amount: func() []float64 {
-				if !char.StatusIsActive(gleamKey) {
-					return nil
-				}
 				return w.buff
 			},
 		})
@@ -61,7 +56,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, "heretics-molten-blade-on-skill-"+char.Base.Key.String())
 
 	c.Events.Subscribe(event.OnMovement, func(args ...any) {
-		if !char.StatusIsActive(gleamKey) || c.Player.Active() != char.Index() {
+		if !char.StatModIsActive(buffKey) {
 			return
 		}
 		if d := args[0].(float64); d > 0 {
@@ -72,7 +67,6 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	c.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
 		if args[0].(int) == char.Index() {
 			char.DeleteStatMod(buffKey)
-			char.DeleteStatus(gleamKey)
 			w.src = -1
 		}
 	}, "heretics-molten-blade-swap-"+char.Base.Key.String())
@@ -82,7 +76,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 func (w *Weapon) tick(src int) func() {
 	return func() {
-		if w.src != src || !w.char.StatusIsActive(gleamKey) {
+		if w.src != src || !w.char.StatModIsActive(buffKey) {
 			return
 		}
 
