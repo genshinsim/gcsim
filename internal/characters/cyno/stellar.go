@@ -30,9 +30,9 @@ func (c *char) revelationOnSkill() {
 		return
 	}
 
-	dur := 6 * 60
+	dur := 379
 	c.AddStatMod(character.StatMod{
-		Base:         modifier.NewBaseWithHitlag(burstKey, dur), // TODO: extra duration?
+		Base:         modifier.NewBaseWithHitlag(burstKey, dur),
 		AffectedStat: attributes.EM,
 		Amount: func() []float64 {
 			return c.burstEM

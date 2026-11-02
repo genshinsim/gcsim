@@ -41,8 +41,7 @@ func (c *char) a1OnSkillRevelation() {
 		return
 	}
 
-	// TODO: frame count for this
-	c.QueueCharTask(func() { c.a1(c.burstSrc) }, 234)
+	c.QueueCharTask(func() { c.a1(c.burstSrc) }, 265)
 }
 
 func (c *char) a1Buff() {
