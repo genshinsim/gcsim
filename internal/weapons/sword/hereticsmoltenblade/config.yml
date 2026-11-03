@@ -1,0 +1,7 @@
+use: pipeline
+kind: weapon
+name: hereticsmoltenblade
+
+shortcuts:
+  - heretics
+  - hmb
