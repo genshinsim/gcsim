@@ -32,6 +32,9 @@ func (c *char) a1Init() {
 		char := c.Core.Player.Chars()[next]
 		src := c.Core.F
 		c.a1Src = src
+		if next == c.Index() {
+			return
+		}
 
 		delay := 3 * 60
 		if char.IsHexerei {
