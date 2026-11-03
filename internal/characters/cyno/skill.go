@@ -167,8 +167,7 @@ func (c *char) skillB() (action.Info, error) {
 
 	c.tryBurstPPSlide(skillBHitmark)
 
-	c.Core.Tasks.Add(c.triggerSkillCD, skillBCDDelay)
-
+	c.SetCDWithDelay(action.ActionSpecialSkill, skillBCD, skillBCDDelay)
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillBFrames),
 		AnimationLength: skillBFrames[action.InvalidAction],
@@ -178,9 +177,10 @@ func (c *char) skillB() (action.Info, error) {
 }
 
 func (c *char) triggerSkillCD() {
-	c.ResetActionCooldown(action.ActionSkill)
 	c.SetCD(action.ActionSkill, skillCD)
-	c.SetCD(action.ActionLowPlunge, skillBCD)
+	// using E puts special E on CD. But using special E doesn't affect E CD
+	c.ResetActionCooldown(action.ActionSpecialSkill)
+	c.SetCD(action.ActionSpecialSkill, skillBCD)
 }
 
 func (c *char) makeParticleCB(burst bool) info.AttackCBFunc {

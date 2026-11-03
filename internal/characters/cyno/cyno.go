@@ -85,7 +85,7 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 		return c.Character.ActionReady(a, p)
 	}
 	if c.StatusIsActive(burstKey) {
-		if c.AvailableCDCharge[action.ActionLowPlunge] <= 0 {
+		if c.AvailableCDCharge[action.ActionSpecialSkill] <= 0 {
 			return false, action.SkillCD
 		}
 		return true, action.NoFailure
@@ -99,14 +99,14 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 func (c *char) ReduceActionCooldown(a action.Action, v int) {
 	c.Character.ReduceActionCooldown(a, v)
 	if a == action.ActionSkill {
-		c.Character.ReduceActionCooldown(action.ActionLowPlunge, v)
+		c.Character.ReduceActionCooldown(action.ActionSpecialSkill, v)
 	}
 }
 
 func (c *char) ResetActionCooldown(a action.Action) {
 	c.Character.ResetActionCooldown(a)
 	if a == action.ActionSkill {
-		c.Character.ResetActionCooldown(action.ActionLowPlunge)
+		c.Character.ResetActionCooldown(action.ActionSpecialSkill)
 	}
 }
 
