@@ -50,7 +50,10 @@ docs:
       count_credit: caramielle.
       video: https://youtu.be/ZrDwv23yHgc
       video_credit: caramielle.
-
+    - count: https://docs.google.com/spreadsheets/d/1-s-scT8lm0XAKVSOlEDYhSRN6jhd8m5FPwgvPwxVIcg/edit?usp=sharing
+      count_credit: charliex3000
+      video: https://youtu.be/vLtY8A3wUc4
+      video_credit: jwalk511
 abilities:
   - name: attack
     hitbox:
@@ -60,14 +63,14 @@ abilities:
         offset: [0, 0.5]
         fan_angle: 270
         radius: 1.8
-        hitlag: {time: 0.01, scale: 0.01}
+        hitlag: { time: 0.01, scale: 0.01 }
 
       - name: N2
         shape: Box
         center: Player
         offset: [0, -0.2]
         box: [1.8, 2.7]
-        hitlag: {time: 0.06, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.06, scale: 0.01, defense_halt: true }
 
       - name: N3-1
         shape: Box
@@ -78,56 +81,56 @@ abilities:
         shape: Box
         center: Player
         box: [2.2, 3.6]
-        hitlag: {time: 0.02, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.02, scale: 0.01, defense_halt: true }
 
       - name: N4
         shape: Circle
         center: Player
         offset: [0, 1]
         radius: 2.3
-        hitlag: {time: 0.04, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.04, scale: 0.01, defense_halt: true }
 
       - name: Q-N1
         shape: Circle
         center: Player
         offset: [0, 1]
         radius: 2
-        hitlag: {time: 0.01, scale: 0.01}
+        hitlag: { time: 0.01, scale: 0.01 }
 
       - name: Q-N2
         shape: Circle
         center: Player
         offset: [0, 1]
         radius: 2
-        hitlag: {time: 0.01, scale: 0.01}
+        hitlag: { time: 0.01, scale: 0.01 }
 
       - name: Q-N3
         shape: Box
         center: Player
         offset: [0, -0.2]
         box: [2.5, 6]
-        hitlag: {time: 0.03, scale: 0.01}
+        hitlag: { time: 0.03, scale: 0.01 }
 
       - name: Q-N4-1
         shape: Circle
         center: Player
         offset: [0, 0.8]
         radius: 2.5
-        hitlag: {time: 0.01, scale: 0.01}
+        hitlag: { time: 0.01, scale: 0.01 }
 
       - name: Q-N4-2
         shape: Circle
         center: Player
         offset: [0, 0.8]
         radius: 2.5
-        hitlag: {time: 0.03, scale: 0.01}
+        hitlag: { time: 0.03, scale: 0.01 }
 
       - name: Q-N5
         shape: Circle
         center: Player
         offset: [0, 1.5]
         radius: 3.5
-        hitlag: {time: 0.05, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.05, scale: 0.01, defense_halt: true }
 
   - name: charge
     note: Need to use attack right before charge.
@@ -136,13 +139,13 @@ abilities:
         shape: Circle
         center: PrimaryTarget
         radius: 0.8
-        hitlag: {scale: 0.01, defense_halt: true, deployable: true}
+        hitlag: { scale: 0.01, defense_halt: true, deployable: true }
 
       - name: Q-CA
         shape: Circle
         center: PrimaryTarget
         radius: 0.8
-        hitlag: {scale: 0.01, defense_halt: true, deployable: true}
+        hitlag: { scale: 0.01, defense_halt: true, deployable: true }
 
   - name: plunge
     hitbox:
@@ -198,14 +201,14 @@ abilities:
         shape: Circle
         center: PrimaryTarget
         radius: 1
-        hitlag: {scale: 0.01, deployable: true}
+        hitlag: { scale: 0.01, deployable: true }
 
       - name: Q-E
         shape: Circle
         center: Player
         offset: [0, 1.5]
         radius: 6
-        hitlag: {time: 0.03, scale: 0.01}
+        hitlag: { time: 0.03, scale: 0.01 }
 
   - name: burst
     hitbox:
