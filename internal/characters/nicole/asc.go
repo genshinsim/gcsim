@@ -61,6 +61,9 @@ func (c *char) a1OnSkillRemoveBuff() {
 }
 
 func (c *char) a4Init() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return

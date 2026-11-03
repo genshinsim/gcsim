@@ -28,7 +28,7 @@ func (c *char) a1() {
 
 // DMG dealt by Crimson Ooyoroi's Fiery Collapse is increased by 2.2% of Thoma's Max HP.
 func (c *char) a4() float64 {
-	if c.Base.Ascension < 1 {
+	if c.Base.Ascension < 4 {
 		return 0
 	}
 	return 0.022 * c.MaxHP()

@@ -83,6 +83,9 @@ func (c *char) a1SkillMulti() float64 {
 }
 
 func (c *char) a4Init() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	a4Hook := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return
