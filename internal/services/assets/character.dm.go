@@ -99,6 +99,7 @@ var avatarMap = map[string]string{
 	"raidenshogun":      "UI_AvatarIcon_Shougun",
 	"razor":             "UI_AvatarIcon_Razor",
 	"rosaria":           "UI_AvatarIcon_Rosaria",
+	"sandrone":          "UI_AvatarIcon_MarionetteNew",
 	"sangonomiyakokomi": "UI_AvatarIcon_Kokomi",
 	"sayu":              "UI_AvatarIcon_Sayu",
 	"sethos":            "UI_AvatarIcon_Sethos",

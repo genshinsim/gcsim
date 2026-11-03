@@ -1,0 +1,57 @@
+use: pipeline
+kind: character
+name: sandrone
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+  - chargeSweep: attack(Charged Attack Sweeping Fire DMG)
+  - chargeBeam: attack(Charged Attack Condensed Beam DMG)
+  - chargeBeamConduct: attack(Charged Attack Condensed Beam Stellar-Conduct DMG)
+  - chargeBeamSwirl: attack(Charged Attack Condensed Beam Stellar Swirl DMG)
+  - overdrive: attack(DMG When in Power Overdrive)
+  - plunge: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG) # {}/{}
+  - highPlunge: attack(Low/High Plunge DMG|1) # {}/{}
+
+  - skillPrism: skill(Prism Shot DMG)
+  - skillPrismConduct: skill(Prism Shot Stellar-Conduct DMG)
+  - skillPrismSwirl: skill(Prism Shot Stellar Swirl DMG)
+  - skillCD: skill(CD)
+
+  - burstBombard: burst(Bombardment DMG)
+  - burstRay: burst(Convective Inhibition Ray DMG)
+  - burstRayConduct: burst(Convective Inhibition Ray Stellar-Conduct DMG)
+  - burstRaySwirl: burst(Convective Inhibition Ray Stellar Swirl DMG)
+  - burstCD: burst(CD)
+  - burstEnergy: burst(Energy Cost)
+
+  # Radiance: Stellar Glimmer: second Prism Shot deals 400% when Decoding Power > 50;
+  # every 10 Decoding Power lost grants a Refined Tactics stack (max 10), each +10% to the Burst ray.
+  - a1PrismMult: a1#0 # 3
+  - a1TacticsMult: a1#1 # 0.1
+
+  # +8 EM per 100 ATK, max 160
+  - a4EMPerATK: a4#0 # 0.08
+  - a4EMMax: a4#1 # 160
+
+  # Decoding mode: Decoding Power rises 50% slower, party Stellar Glimmer DMG +30%
+  - c1Bonus: c1#0 # 0.3
+
+  # Radiance: Stellar Glimmer: condensed beam CRIT DMG +40%, +20% per beam this Decoding (max 3)
+  - c2CD: c2#0 # 0.4
+  - c2CDStack: c2#1 # 0.2
+
+  # Stellar-Conduct / Stellar Swirl DMG summons an extra cannon: 125% / 187.5% ATK, CD 4s
+  - c4Conduct: c4#0 # 1.25
+  - c4CD: c4#1 # 4
+  - c4Swirl: c4#2 # 1.875
+
+  # Third condensed beam in Decoding becomes a Condensed Cluster Beam: 4 extra Cryo hits at 100% ATK;
+  # in Radiance 80% (Stellar-Conduct) / 120% (Stellar Swirl) ATK; Sandrone's Stellar Glimmer DMG elevated 20%
+  - c6Cluster: c6#0 # 1
+  - c6Conduct: c6#1 # 0.8
+  - c6Elevate: c6#2 # 0.2
+  - c6Swirl: c6#3 # 1.2
