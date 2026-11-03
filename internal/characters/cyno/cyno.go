@@ -10,16 +10,21 @@ import (
 
 type char struct {
 	*tmpl.Character
+	revelation     bool
+	burstEM        []float64
 	burstExtension int
 	burstSrc       int
+	c1AtkSpd       []float64
+	c1EM           []float64
 	c2Stacks       int
+	c2RevStacks    int
 	c4Counter      int
 	c6Stacks       int
 	a1Extended     bool
 	normalBCounter int
 }
 
-func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
+func NewChar(s *core.Core, w *character.CharWrapper, p info.CharacterProfile) error {
 	c := char{}
 	c.Character = tmpl.NewWithWrapper(s, w)
 
@@ -28,18 +33,23 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 	c.SkillCon = 5
 	c.NormalHitNum = normalHitNum
 
+	revelation, ok := p.Params["revelation"]
+	if !ok {
+		revelation = 1
+	}
+	c.revelation = revelation > 0
+
 	w.Character = &c
 
 	return nil
 }
 
 func (c *char) Init() error {
-	c.onExitField()
+	c.burstInit()
 	c.a1Extension()
-
-	if c.Base.Cons >= 4 {
-		c.c4()
-	}
+	c.c1Init()
+	c.c2Init()
+	c.c4Init()
 
 	return nil
 }
@@ -75,7 +85,7 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 		return c.Character.ActionReady(a, p)
 	}
 	if c.StatusIsActive(burstKey) {
-		if c.AvailableCDCharge[action.ActionLowPlunge] <= 0 {
+		if c.AvailableCDCharge[action.ActionSpecialSkill] <= 0 {
 			return false, action.SkillCD
 		}
 		return true, action.NoFailure
@@ -89,14 +99,14 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 func (c *char) ReduceActionCooldown(a action.Action, v int) {
 	c.Character.ReduceActionCooldown(a, v)
 	if a == action.ActionSkill {
-		c.Character.ReduceActionCooldown(action.ActionLowPlunge, v)
+		c.Character.ReduceActionCooldown(action.ActionSpecialSkill, v)
 	}
 }
 
 func (c *char) ResetActionCooldown(a action.Action) {
 	c.Character.ResetActionCooldown(a)
 	if a == action.ActionSkill {
-		c.Character.ResetActionCooldown(action.ActionLowPlunge)
+		c.Character.ResetActionCooldown(action.ActionSpecialSkill)
 	}
 }
 

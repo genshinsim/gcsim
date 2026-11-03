@@ -70,6 +70,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	c.Core.Tasks.Add(c.triggerSkillCD, skillCDDelay)
 
+	c.revelationOnSkill()
+
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillFrames),
 		AnimationLength: skillFrames[action.InvalidAction],
@@ -108,25 +110,42 @@ func (c *char) skillB() (action.Info, error) {
 		if c.Base.Cons >= 1 && c.StatusIsActive(c1Key) {
 			c.c1()
 		}
-		c.c6Init()
+		c.c6OnA1Skill()
 
 		c.Core.QueueAttack(ai, ap, skillBHitmark, skillBHitmark, particleCB)
-		// Apply the extra hit
-		ai.Abil = "Duststalker Bolt"
-		ai.Mult = 1.0
-		ai.FlatDmg = c.a4Bolt()
-		ai.AttackTag = attacks.AttackTagElementalArtHold
-		ai.ICDTag = attacks.ICDTagElementalArt
-		ai.ICDGroup = attacks.ICDGroupCynoBolt
-		ai.StrikeType = attacks.StrikeTypeSlash
-		ai.PoiseDMG = 25
-		ai.HitlagFactor = 0
-		ai.HitlagHaltFrames = 0
+
+		var aiExtra info.AttackInfo
+
+		if c.isStellarRadiance() {
+			aiExtra = info.AttackInfo{
+				ActorIndex:       c.Index(),
+				Abil:             "Duststalker Bolt" + stellarConductText,
+				AttackTag:        attacks.AttackTagDirectStellarConduct,
+				StrikeType:       attacks.StrikeTypeSlash,
+				Element:          attributes.Electro,
+				Mult:             2.0,
+				IgnoreDefPercent: 1,
+				FlatDmg:          c.a4BoltSSC(),
+			}
+		} else {
+			aiExtra = info.AttackInfo{
+				ActorIndex: c.Index(),
+				Abil:       "Duststalker Bolt",
+				AttackTag:  attacks.AttackTagElementalArtHold,
+				ICDTag:     attacks.ICDTagElementalArt,
+				ICDGroup:   attacks.ICDGroupCynoBolt,
+				StrikeType: attacks.StrikeTypeSlash,
+				Element:    attributes.Electro,
+				Durability: 25,
+				Mult:       1.0,
+				FlatDmg:    c.a4Bolt(),
+			}
+		}
 
 		// 3 instances
 		for range 3 {
 			c.Core.QueueAttack(
-				ai,
+				aiExtra,
 				combat.NewCircleHit(
 					c.Core.Combat.Player(),
 					c.Core.Combat.PrimaryTarget(),
@@ -139,15 +158,16 @@ func (c *char) skillB() (action.Info, error) {
 			)
 		}
 	}
+
 	if c.burstExtension < 2 { // burst can only be extended 2 times per burst cycle (up to 18s, 10s base and +4 each time)
 		c.ExtendStatus(burstKey, 240) // 4s*60
+		c.ExtendStatus(c1RevKey, 240)
 		c.burstExtension++
 	}
 
 	c.tryBurstPPSlide(skillBHitmark)
 
-	c.Core.Tasks.Add(c.triggerSkillCD, skillBCDDelay)
-
+	c.SetCDWithDelay(action.ActionSpecialSkill, skillBCD, skillBCDDelay)
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillBFrames),
 		AnimationLength: skillBFrames[action.InvalidAction],
@@ -157,9 +177,10 @@ func (c *char) skillB() (action.Info, error) {
 }
 
 func (c *char) triggerSkillCD() {
-	c.ResetActionCooldown(action.ActionSkill)
 	c.SetCD(action.ActionSkill, skillCD)
-	c.SetCD(action.ActionLowPlunge, skillBCD)
+	// using E puts special E on CD. But using special E doesn't affect E CD
+	c.ResetActionCooldown(action.ActionSpecialSkill)
+	c.SetCD(action.ActionSpecialSkill, skillBCD)
 }
 
 func (c *char) makeParticleCB(burst bool) info.AttackCBFunc {
