@@ -47,6 +47,7 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 
 func (c *char) Init() error {
 	c.stellarInit()
+	c.hovermechInit()
 	c.a4Init()
 	c.c1Init()
 	c.c2Init()

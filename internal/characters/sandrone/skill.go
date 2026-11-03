@@ -6,6 +6,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
@@ -91,6 +92,17 @@ func (c *char) prismShot(second, a1 bool) func() {
 		ap := combat.NewCircleHitOnTarget(c.Core.Combat.PrimaryTarget(), nil, 2)
 		c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB)
 	}
+}
+
+// Swapping out takes Sandrone off the Hovermech.
+func (c *char) hovermechInit() {
+	c.Core.Events.Subscribe(event.OnCharacterSwap, func(args ...any) {
+		prev := args[0].(int)
+		if prev != c.Index() {
+			return
+		}
+		c.endHovermech()
+	}, hovermechKey+"-swap")
 }
 
 // endHovermech is called when Sandrone performs another action that takes her off the Hovermech.

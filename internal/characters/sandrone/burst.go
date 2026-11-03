@@ -50,7 +50,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		c.Core.QueueAttack(ai, ap, delay, delay)
 	}
 
-	c.QueueCharTask(c.burstRay, burstRayHitmark)
+	// A1: Refined Tactics are consumed if the Burst is used while in Radiance
+	inRadiance := c.getRadiance() != radianceNone
+	c.QueueCharTask(func() { c.burstRay(inRadiance) }, burstRayHitmark)
 
 	c.ConsumeEnergy(8)
 	c.SetCD(action.ActionBurst, burstCD*60)
@@ -63,7 +65,7 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) burstRay() {
+func (c *char) burstRay(consumeTactics bool) {
 	lvl := c.TalentLvlBurst()
 	ai := info.AttackInfo{
 		ActorIndex: c.Index(),
@@ -76,7 +78,8 @@ func (c *char) burstRay() {
 		Durability: 25,
 		Mult:       burstRay[lvl],
 	}
-	if c.toStellar(&ai, burstRayConduct[lvl], burstRaySwirl[lvl]) {
+	c.toStellar(&ai, burstRayConduct[lvl], burstRaySwirl[lvl])
+	if consumeTactics {
 		ai.Mult *= c.a1ConsumeTactics()
 	}
 	ap := combat.NewBoxHitOnTarget(c.Core.Combat.Player(), info.Point{Y: -1}, 5, 14)
