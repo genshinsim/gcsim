@@ -23,11 +23,11 @@ func init() {
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 60) // N1 -> W
 	attackFrames[0][action.ActionAttack] = 52                             // N1 -> N2
 
-	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 80) // N2 -> W
-	attackFrames[1][action.ActionAttack] = 75                             // N2 -> N3
+	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 60) // N2 -> W
+	attackFrames[1][action.ActionAttack] = 52                             // N2 -> N3
 
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 90) // N3 -> W
-	attackFrames[2][action.ActionAttack] = 90                             // N3 -> N1
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 80) // N3 -> W
+	attackFrames[2][action.ActionAttack] = 68                             // N3 -> N1
 }
 
 // Generates threads that control her weapon using formulae, performing up to 3 consecutive strikes.
