@@ -37,7 +37,11 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}
 
 	c.Events.Subscribe(event.OnSkill, func(args ...any) {
-		if c.Player.Active() != char.Index() || char.StatusIsActive(icdKey) {
+		if c.Player.Active() != char.Index() {
+			return
+		}
+
+		if char.StatusIsActive(icdKey) {
 			return
 		}
 
@@ -76,12 +80,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 
 func (w *Weapon) tick(src int) func() {
 	return func() {
-		if w.src != src || !w.char.StatModIsActive(buffKey) {
+		if w.src != src {
 			return
 		}
 
-		// Min and max were verified in-game and values in between are continuous;
-		// linear scaling up to 7m/s is an assumption.
+		if !w.char.StatModIsActive(buffKey) {
+			return
+		}
+
 		w.buff[attributes.ATKP] = w.minBonus + (w.maxBonus-w.minBonus)*min(w.dist/maxDist, 1)
 		w.dist = 0
 		w.char.QueueCharTask(w.tick(src), 60)
