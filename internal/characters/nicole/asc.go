@@ -32,6 +32,9 @@ func (c *char) a1Init() {
 		char := c.Core.Player.Chars()[next]
 		src := c.Core.F
 		c.a1Src = src
+		if next == c.Index() {
+			return
+		}
 
 		delay := 3 * 60
 		if char.IsHexerei {
@@ -58,6 +61,9 @@ func (c *char) a1OnSkillRemoveBuff() {
 }
 
 func (c *char) a4Init() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return

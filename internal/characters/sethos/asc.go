@@ -18,6 +18,9 @@ func (c *char) a1Calc() (int, float64) {
 }
 
 func (c *char) a1Consume(energy float64, holdLevel int) {
+	if c.Base.Ascension < 1 {
+		return
+	}
 	switch holdLevel {
 	default:
 		return

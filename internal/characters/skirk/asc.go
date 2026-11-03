@@ -24,6 +24,10 @@ var (
 )
 
 func (c *char) a1Init() {
+	c.voidRifts = NewRingQueue[int](3)
+	if c.Base.Ascension < 1 {
+		return
+	}
 	a1Hook := func(args ...any) {
 		if _, ok := args[0].(*enemy.Enemy); !ok {
 			return
@@ -34,7 +38,6 @@ func (c *char) a1Init() {
 		c.AddStatus(a1IcdKey, 2.5*60, true)
 		c.createVoidRift()
 	}
-	c.voidRifts = NewRingQueue[int](3)
 	c.Core.Events.Subscribe(event.OnFrozen, a1Hook, a1Key+"frozen")
 	c.Core.Events.Subscribe(event.OnSuperconduct, a1Hook, a1Key+"superconduct")
 	c.Core.Events.Subscribe(event.OnStellarConduct, a1Hook, a1Key+"ssc")
@@ -106,6 +109,9 @@ func (c *char) createVoidRift() {
 }
 
 func (c *char) a4Init() {
+	if c.Base.Ascension < 4 {
+		return
+	}
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
 		charElem := c.Core.Player.Chars()[atk.Info.ActorIndex].Base.Element

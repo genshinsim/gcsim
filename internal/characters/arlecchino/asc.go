@@ -25,6 +25,9 @@ func (c *char) passive() {
 }
 
 func (c *char) a1OnKill() {
+	if c.Base.Ascension < 1 {
+		return
+	}
 	c.Core.Events.Subscribe(event.OnTargetDied, func(args ...any) {
 		e, ok := args[0].(*enemy.Enemy)
 		// ignore if not an enemy
