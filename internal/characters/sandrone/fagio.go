@@ -29,7 +29,7 @@ func (m fagioMode) String() string {
 
 // Decoding Power rates are not published; they are fitted to footage:
 // starting from 0, continuous holding reaches 100 right at the 3rd condensed beam (~236f).
-// TODO: rates estimated from pre-release footage.
+// TODO: rates estimated from in-game footage.
 const (
 	decodingMax       = 100.0
 	overdriveExit     = 50.0

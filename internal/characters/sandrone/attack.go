@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-// TODO: frames estimated from pre-release footage (60 FPS, no hit markers), +-2-4 frames.
+// TODO: frames estimated from in-game footage (60 FPS, no hit markers), +-2-4 frames.
 var (
 	attackFrames   [][]int
 	attackHitmarks = []int{18, 20, 30}

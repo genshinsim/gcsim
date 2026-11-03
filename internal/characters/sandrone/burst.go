@@ -9,7 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
-// TODO: frames estimated from pre-release footage (60 FPS), +-2-4 frames.
+// TODO: frames estimated from in-game footage (60 FPS), +-2-4 frames.
 var (
 	burstFrames         []int
 	burstBombardHitmark = []int{135, 142, 149, 156}

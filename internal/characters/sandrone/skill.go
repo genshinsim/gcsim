@@ -12,7 +12,7 @@ import (
 
 var skillFrames []int
 
-// TODO: frames and particle count estimated from pre-release footage.
+// TODO: frames and particle count estimated from in-game footage.
 const (
 	hovermechKey      = "sandrone-hovermech"
 	hovermechDuration = 6 * 60
