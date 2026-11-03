@@ -37,7 +37,9 @@ const (
 	decodeBeamGain    = 10.0 // per condensed beam fired
 	decayRate         = 4.0  // per second while not in Decoding mode, Sandrone on-field
 	decayOffFieldMult = 3.0
-	hovermechDecay    = 20.0 // per second while on the Hovermech ("swiftly decrease")
+	// per second while on the Hovermech ("swiftly decrease"); fast enough that the usual
+	// CA -> E -> CA loop starts every Charged Attack from a reset gauge
+	hovermechDecay = 100.0
 
 	fagioTickInterval = 6 // frames
 
