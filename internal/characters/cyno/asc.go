@@ -24,6 +24,10 @@ func (c *char) a1(src int) {
 	if !c.StatusIsActive(burstKey) {
 		return
 	}
+
+	if src != c.burstSrc {
+		return
+	}
 	c.a1Extended = false
 	c.AddStatus(a1Key, 84, true)
 	c.QueueCharTask(func() { c.a1(src) }, 234)
