@@ -90,7 +90,7 @@ func (c *char) c4Init() {
 		if atk.Info.ActorIndex != c.Index() || atk.Info.Abil == c4Abil {
 			return
 		}
-		mult := 0.0
+		var mult float64
 		switch atk.Info.AttackTag {
 		case attacks.AttackTagDirectStellarConduct:
 			mult = c4Conduct
