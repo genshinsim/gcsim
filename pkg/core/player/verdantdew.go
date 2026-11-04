@@ -40,7 +40,7 @@ func (h *Handler) OnLunarBloom() {
 // sets verdant dew to an amt between 0 and 3, inclusive.
 func (h *Handler) SetVerdantDew(amt int) {
 	h.verdantDew = max(min(amt, 3), 0)
-	h.Log.NewEvent(fmt.Sprintf("verdant dew set to %v", h.moonridgeDew), glog.LogElementEvent, -1)
+	h.Log.NewEvent(fmt.Sprintf("verdant dew set to %v", h.verdantDew), glog.LogElementEvent, -1)
 }
 
 func (h *Handler) AddVerdantDew() {
