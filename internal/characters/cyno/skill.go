@@ -183,7 +183,6 @@ func (c *char) triggerSkillCD() {
 		c.SetCD(action.ActionSkill, skillCD)
 	}
 	if c.AvailableCDCharge[action.ActionSpecialSkill] > 0 {
-		// using E puts special E on CD. But using special E doesn't affect E CD
 		c.SetCD(action.ActionSpecialSkill, skillBCD)
 	}
 }
