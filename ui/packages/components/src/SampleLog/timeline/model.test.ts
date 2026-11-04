@@ -5,8 +5,8 @@ import { sampleFixture } from "../testdata";
 import {
 	chipShortText,
 	chipText,
-	formatDamage,
 	damageOf,
+	formatDamage,
 	lowerBound,
 	modelFromEvents,
 	modelFromSample,
