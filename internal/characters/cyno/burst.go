@@ -29,11 +29,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.c4Counter = 0      // reset c4 stacks
 	c.c6Stacks = 0       // same as above
 
-	if !c.StatusIsActive(burstKey) {
-		c.burstSrc = c.Core.F
-		c.a1OnBurst()
-	}
-
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(burstKey, 712), // 112f extra duration
 		AffectedStat: attributes.EM,
@@ -41,6 +36,9 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			return c.burstEM
 		},
 	})
+
+	c.burstSrc = c.Core.F
+	c.a1OnBurst()
 
 	c.SetCD(action.ActionBurst, 1200)
 	c.ConsumeEnergy(3)
