@@ -136,7 +136,7 @@ describe("chipShortText", () => {
 			mods: "vaporize crit",
 			message: "Pyronado [12,346] (vaporize crit)",
 		});
-		expect(chipShortText(c)).toBe("12.3K Pyronado (vaporize crit)");
+		expect(chipShortText(c)).toBe("12,345 Pyronado (vaporize crit)");
 		expect(chipText(c)).toBe("Pyronado [12,346] (vaporize crit)");
 	});
 

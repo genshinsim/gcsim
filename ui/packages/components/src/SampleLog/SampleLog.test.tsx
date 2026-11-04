@@ -189,7 +189,7 @@ describe("SampleLog", () => {
 		expect(chipsOfType("action")).toEqual([]);
 	});
 
-	it("leads a damage chip with the compact amount and keeps the exact one in its title", async () => {
+	it("leads a damage chip with the formatted amount and keeps the exact one in its title", async () => {
 		renderLog();
 		await userEvent.type(
 			screen.getByPlaceholderText("sample.search_placeholder"),
@@ -201,7 +201,7 @@ describe("SampleLog", () => {
 		const chip = screen.getByTitle(
 			"122 · damage: Sesshou Sakura Tick [8,815] (crit)",
 		);
-		expect(chip).toHaveTextContent(/8\.82K Sesshou Sakura Tick \(crit\)$/);
+		expect(chip).toHaveTextContent(/8,815 Sesshou Sakura Tick \(crit\)$/);
 	});
 
 	it("opens an event's details from its chip", async () => {
