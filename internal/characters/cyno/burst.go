@@ -29,6 +29,11 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 	c.c4Counter = 0      // reset c4 stacks
 	c.c6Stacks = 0       // same as above
 
+	if !c.StatusIsActive(burstKey) {
+		c.burstSrc = c.Core.F
+		c.a1OnBurst()
+	}
+
 	c.AddStatMod(character.StatMod{
 		Base:         modifier.NewBaseWithHitlag(burstKey, 712), // 112f extra duration
 		AffectedStat: attributes.EM,
@@ -36,13 +41,6 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			return c.burstEM
 		},
 	})
-	c.burstSrc = c.Core.F
-	src := c.Core.F
-	// if cyno extends his burst, we need to set skill CD properly
-	c.QueueCharTask(func() { c.onBurstExpiry(src) }, 713+240)
-	c.QueueCharTask(func() { c.onBurstExpiry(src) }, 713+480)
-
-	c.a1OnBurst()
 
 	c.SetCD(action.ActionBurst, 1200)
 	c.ConsumeEnergy(3)
@@ -69,10 +67,6 @@ func (c *char) tryBurstPPSlide(hitmark int) {
 		c.ExtendStatus(c1RevKey, hitmark-duration+1)
 		c.Core.Log.NewEvent("pp slide activated", glog.LogCharacterEvent, c.Index()).
 			Write("expiry", c.StatusExpiry(burstKey))
-		src := c.burstSrc
-		c.QueueCharTask(func() {
-			c.onBurstExpiry(src)
-		}, hitmark-duration+3) // 3f because burst expires on 2f
 	}
 }
 
@@ -87,17 +81,6 @@ func (c *char) burstInit() {
 		prev := args[0].(int)
 		if prev == c.Index() {
 			c.DeleteStatus(burstKey)
-			c.onBurstExpiry(c.burstSrc)
 		}
 	}, "cyno-burst-clear")
-}
-
-func (c *char) onBurstExpiry(burstSrc int) {
-	if burstSrc != c.burstSrc {
-		return
-	}
-	if c.StatusIsActive(burstKey) {
-		return
-	}
-	c.burstSrc = -1 // make sure we don't call other burst fns
 }

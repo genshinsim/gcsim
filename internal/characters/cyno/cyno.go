@@ -21,6 +21,7 @@ type char struct {
 	c4Counter      int
 	c6Stacks       int
 	a1Extended     bool
+	a1IsTicking    bool
 	normalBCounter int
 }
 
