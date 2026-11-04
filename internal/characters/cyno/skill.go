@@ -167,7 +167,7 @@ func (c *char) skillB() (action.Info, error) {
 
 	c.tryBurstPPSlide(skillBHitmark)
 
-	c.SetCDWithDelay(action.ActionSpecialSkill, skillBCD, skillBCDDelay)
+	c.Core.Tasks.Add(c.triggerSkillCD, skillBCDDelay)
 	return action.Info{
 		Frames:          frames.NewAbilFunc(skillBFrames),
 		AnimationLength: skillBFrames[action.InvalidAction],
@@ -176,11 +176,16 @@ func (c *char) skillB() (action.Info, error) {
 	}, nil
 }
 
+// Using E puts both E and special E on CD for whichever has a charge available.
+// May trigger both CDs if both are available.
 func (c *char) triggerSkillCD() {
-	c.SetCD(action.ActionSkill, skillCD)
-	// using E puts special E on CD. But using special E doesn't affect E CD
-	c.ResetActionCooldown(action.ActionSpecialSkill)
-	c.SetCD(action.ActionSpecialSkill, skillBCD)
+	if c.AvailableCDCharge[action.ActionSkill] > 0 {
+		c.SetCD(action.ActionSkill, skillCD)
+	}
+	if c.AvailableCDCharge[action.ActionSpecialSkill] > 0 {
+		// using E puts special E on CD. But using special E doesn't affect E CD
+		c.SetCD(action.ActionSpecialSkill, skillBCD)
+	}
 }
 
 func (c *char) makeParticleCB(burst bool) info.AttackCBFunc {
