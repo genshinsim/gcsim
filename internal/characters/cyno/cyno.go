@@ -5,6 +5,8 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/action"
 	"github.com/genshinsim/gcsim/pkg/core/info"
+	"github.com/genshinsim/gcsim/pkg/core/keys"
+	"github.com/genshinsim/gcsim/pkg/core/player"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
@@ -78,6 +80,17 @@ func (c *char) NextNormalCounter() int {
 		return c.normalBCounter + 1
 	}
 	return c.NormalCounter + 1
+}
+
+func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
+	if a == action.ActionCharge && c.StatusIsActive(burstKey) {
+		// Burst needs to check separate normal counter for valid CA
+		if c.normalBCounter == 0 {
+			return player.ErrInvalidChargeAction
+		}
+		return nil
+	}
+	return c.Character.NextQueueItemIsValid(k, a, p)
 }
 
 func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Failure) {
