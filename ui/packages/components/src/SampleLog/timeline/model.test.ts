@@ -5,8 +5,8 @@ import { sampleFixture } from "../testdata";
 import {
 	chipShortText,
 	chipText,
-	compactDamage,
 	damageOf,
+	formatDamage,
 	lowerBound,
 	modelFromEvents,
 	modelFromSample,
@@ -108,24 +108,19 @@ describe("modelFromEvents", () => {
 	});
 });
 
-describe("compactDamage", () => {
+describe("formatDamage", () => {
 	it.each([
 		[8, "8"],
-		[999, "999"],
-		[1234, "1.23K"],
-		[12345, "12.3K"],
-		[999_400, "999K"],
-		[999_600, "1M"],
-		[1_234_567, "1.23M"],
-		[8815.17, "8.82K"],
-		[2_345_678_901, "2.35B"],
+		[12345, "12,345"],
+		[140_000.52, "140,000"],
+		[2_345_678_901, "2,345,678,901"],
 	])("shows %d as %s", (n, want) => {
-		expect(compactDamage(n)).toBe(want);
+		expect(formatDamage(n)).toBe(want);
 	});
 
 	it("ignores the UI language", async () => {
 		await i18next.init({ lng: "de", resources: {} });
-		expect(compactDamage(12345.6)).toBe("12.3K");
+		expect(formatDamage(12345.6)).toBe("12,345");
 	});
 });
 
@@ -141,7 +136,7 @@ describe("chipShortText", () => {
 			mods: "vaporize crit",
 			message: "Pyronado [12,346] (vaporize crit)",
 		});
-		expect(chipShortText(c)).toBe("12.3K Pyronado (vaporize crit)");
+		expect(chipShortText(c)).toBe("12,345 Pyronado (vaporize crit)");
 		expect(chipText(c)).toBe("Pyronado [12,346] (vaporize crit)");
 	});
 
