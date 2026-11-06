@@ -94,8 +94,13 @@ func (c *char) ActionReady(a action.Action, p map[string]int) (bool, action.Fail
 		return true, action.NoFailure
 	}
 
-	// restrict actions that can be performed while in dreamDrifter stat to swap, dash, burst
-	if a != action.ActionDash && a != action.ActionSwap && a != action.ActionBurst {
+	// restrict actions that can be performed while in dreamDrifter stat to swap, dash, burst, walk
+	switch a {
+	case action.ActionDash:
+	case action.ActionSwap:
+	case action.ActionBurst:
+	case action.ActionWalk:
+	default:
 		return false, action.NoFailure
 	}
 
