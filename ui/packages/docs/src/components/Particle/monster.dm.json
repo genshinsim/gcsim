@@ -201,6 +201,62 @@
       "hp_percent": 0
     }
   ],
+  "battlehardenedancientironquill": [
+    {
+      "drop_id": 22010027,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010027,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010047,
+      "hp_percent": 0
+    }
+  ],
+  "battlehardenedbeasthostchannelcontact": [
+    {
+      "drop_id": 22010013,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010013,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010023,
+      "hp_percent": 0
+    }
+  ],
+  "battlehardenedbeasthostleomastiffguard": [
+    {
+      "drop_id": 22010012,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010012,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010022,
+      "hp_percent": 0
+    }
+  ],
+  "battlehardenedbeasthostlongearedstriker": [
+    {
+      "drop_id": 22010015,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010015,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010025,
+      "hp_percent": 0
+    }
+  ],
   "battlehardenedbitingcoldwayobmanifestation": [
     {
       "drop_id": 22010016,
@@ -276,6 +332,20 @@
     },
     {
       "drop_id": 22010050,
+      "hp_percent": 0
+    }
+  ],
+  "battlehardenedelderblighttree": [
+    {
+      "drop_id": 22010017,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010017,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010027,
       "hp_percent": 0
     }
   ],
@@ -663,6 +733,12 @@
       "hp_percent": 0
     }
   ],
+  "chimericcrocohoof": [
+    {
+      "drop_id": 22010012,
+      "hp_percent": 0
+    }
+  ],
   "chimerichornedbear": [
     {
       "drop_id": 22010011,
@@ -670,6 +746,16 @@
     },
     {
       "drop_id": 22010011,
+      "hp_percent": 0
+    }
+  ],
+  "chimericskorp": [
+    {
+      "drop_id": 22010013,
+      "hp_percent": 0.6
+    },
+    {
+      "drop_id": 22010013,
       "hp_percent": 0
     }
   ],
@@ -2192,6 +2278,20 @@
     },
     {
       "drop_id": 22010022,
+      "hp_percent": 0
+    }
+  ],
+  "iceboundreflection": [
+    {
+      "drop_id": 22010016,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010016,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010016,
       "hp_percent": 0
     }
   ],
@@ -4720,6 +4820,20 @@
     },
     {
       "drop_id": 22010030,
+      "hp_percent": 0
+    }
+  ],
+  "wavebinder": [
+    {
+      "drop_id": 22010032,
+      "hp_percent": 0.66
+    },
+    {
+      "drop_id": 22010032,
+      "hp_percent": 0.33
+    },
+    {
+      "drop_id": 22010022,
       "hp_percent": 0
     }
   ],
