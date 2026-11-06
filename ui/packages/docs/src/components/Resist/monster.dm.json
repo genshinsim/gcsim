@@ -373,6 +373,50 @@
     "physical": 0.1,
     "freeze": 0
   },
+  "battlehardenedancientironquill": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.5,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "battlehardenedbeasthostchannelcontact": {
+    "pyro": 0.1,
+    "dendro": 0.5,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "battlehardenedbeasthostleomastiffguard": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.5,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "battlehardenedbeasthostlongearedstriker": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.5,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
   "battlehardenedbitingcoldwayobmanifestation": {
     "pyro": 0.1,
     "dendro": 0.1,
@@ -425,6 +469,17 @@
     "anemo": 0.3,
     "cryo": 0.3,
     "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "battlehardenedelderblighttree": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.3,
     "physical": 0.1,
     "freeze": 0
   },
@@ -802,9 +857,31 @@
     "physical": 0.1,
     "freeze": 0
   },
+  "chimericcrocohoof": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.2,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
   "chimerichornedbear": {
     "pyro": 0.3,
     "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "chimericskorp": {
+    "pyro": 0.1,
+    "dendro": 0.3,
     "hydro": 0.1,
     "electro": 0.1,
     "anemo": 0.1,
@@ -1419,6 +1496,17 @@
     "freeze": 0
   },
   "erodingavataroflava": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
+  },
+  "everburgeoningillusion": {
     "pyro": 0.1,
     "dendro": 0.1,
     "hydro": 0.1,
@@ -2352,6 +2440,17 @@
     "geo": 0.1,
     "physical": 0.1,
     "freeze": 1
+  },
+  "iceboundreflection": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.1,
+    "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.3,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 0
   },
   "iceshieldhilichurlguard": {
     "pyro": 0.1,
@@ -4745,6 +4844,17 @@
     "dendro": 0.1,
     "hydro": 0.1,
     "electro": 0.1,
+    "anemo": 0.1,
+    "cryo": 0.1,
+    "geo": 0.1,
+    "physical": 0.1,
+    "freeze": 1
+  },
+  "wavebinder": {
+    "pyro": 0.1,
+    "dendro": 0.1,
+    "hydro": 0.7,
+    "electro": -0.1,
     "anemo": 0.1,
     "cryo": 0.1,
     "geo": 0.1,

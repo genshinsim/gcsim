@@ -812,6 +812,130 @@ var MonsterMap = map[int]*model.MonsterData{
 			},
 		},
 	},
+	28021802: {
+		Id:  28021802,
+		Key: "battlehardenedancientironquill",
+		BaseStats: &model.MonsterStatsData{
+			BaseHp:  414.20334,
+			HpCurve: model.GrowCurveType_GROW_CURVE_HP_2,
+			Resist: &model.MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.5,
+				PhysicalResist: 0.1,
+			},
+			HpDrop: []*model.MonsterHPDrop{
+				{
+					DropId:    22010027,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010027,
+					HpPercent: 0.33,
+				},
+				{
+					DropId: 22010047,
+				},
+			},
+		},
+	},
+	25133101: {
+		Id:  25133101,
+		Key: "battlehardenedbeasthostchannelcontact",
+		BaseStats: &model.MonsterStatsData{
+			BaseHp:  855.792,
+			HpCurve: model.GrowCurveType_GROW_CURVE_HP_2,
+			Resist: &model.MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.5,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			HpDrop: []*model.MonsterHPDrop{
+				{
+					DropId:    22010013,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010013,
+					HpPercent: 0.33,
+				},
+				{
+					DropId: 22010023,
+				},
+			},
+		},
+	},
+	25132901: {
+		Id:  25132901,
+		Key: "battlehardenedbeasthostleomastiffguard",
+		BaseStats: &model.MonsterStatsData{
+			BaseHp:  1059.552,
+			HpCurve: model.GrowCurveType_GROW_CURVE_HP_2,
+			Resist: &model.MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.5,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			HpDrop: []*model.MonsterHPDrop{
+				{
+					DropId:    22010012,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010012,
+					HpPercent: 0.33,
+				},
+				{
+					DropId: 22010022,
+				},
+			},
+		},
+	},
+	25133001: {
+		Id:  25133001,
+		Key: "battlehardenedbeasthostlongearedstriker",
+		BaseStats: &model.MonsterStatsData{
+			BaseHp:  774.288,
+			HpCurve: model.GrowCurveType_GROW_CURVE_HP_2,
+			Resist: &model.MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.5,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			HpDrop: []*model.MonsterHPDrop{
+				{
+					DropId:    22010015,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010015,
+					HpPercent: 0.33,
+				},
+				{
+					DropId: 22010025,
+				},
+			},
+		},
+	},
 	26261001: {
 		Id:  26261001,
 		Key: "battlehardenedbitingcoldwayobmanifestation",
@@ -971,6 +1095,37 @@ var MonsterMap = map[int]*model.MonsterData{
 				},
 				{
 					DropId: 22010050,
+				},
+			},
+		},
+	},
+	25137101: {
+		Id:  25137101,
+		Key: "battlehardenedelderblighttree",
+		BaseStats: &model.MonsterStatsData{
+			BaseHp:  1222.56,
+			HpCurve: model.GrowCurveType_GROW_CURVE_HP_2,
+			Resist: &model.MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.3,
+				PhysicalResist: 0.1,
+			},
+			HpDrop: []*model.MonsterHPDrop{
+				{
+					DropId:    22010017,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010017,
+					HpPercent: 0.33,
+				},
+				{
+					DropId: 22010027,
 				},
 			},
 		},
@@ -1942,6 +2097,29 @@ var MonsterMap = map[int]*model.MonsterData{
 			},
 		},
 	},
+	26310701: {
+		Id:  26310701,
+		Key: "chimericcrocohoof",
+		BaseStats: &model.MonsterStatsData{
+			BaseHp:  27.168,
+			HpCurve: model.GrowCurveType_GROW_CURVE_HP_2,
+			Resist: &model.MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.2,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			HpDrop: []*model.MonsterHPDrop{
+				{
+					DropId: 22010012,
+				},
+			},
+		},
+	},
 	26310401: {
 		Id:  26310401,
 		Key: "chimerichornedbear",
@@ -1965,6 +2143,33 @@ var MonsterMap = map[int]*model.MonsterData{
 				},
 				{
 					DropId: 22010011,
+				},
+			},
+		},
+	},
+	26310801: {
+		Id:  26310801,
+		Key: "chimericskorp",
+		BaseStats: &model.MonsterStatsData{
+			BaseHp:  114.1056,
+			HpCurve: model.GrowCurveType_GROW_CURVE_HP_2,
+			Resist: &model.MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.3,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			HpDrop: []*model.MonsterHPDrop{
+				{
+					DropId:    22010013,
+					HpPercent: 0.6,
+				},
+				{
+					DropId: 22010013,
 				},
 			},
 		},
@@ -3606,6 +3811,24 @@ var MonsterMap = map[int]*model.MonsterData{
 				{
 					DropId: 22010010,
 				},
+			},
+		},
+	},
+	25137201: {
+		Id:  25137201,
+		Key: "everburgeoningillusion",
+		BaseStats: &model.MonsterStatsData{
+			BaseHp:  100.58158,
+			HpCurve: model.GrowCurveType_GROW_CURVE_HP_2,
+			Resist: &model.MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
 			},
 		},
 	},
@@ -5906,6 +6129,37 @@ var MonsterMap = map[int]*model.MonsterData{
 				},
 				{
 					DropId: 22010022,
+				},
+			},
+		},
+	},
+	20090101: {
+		Id:  20090101,
+		Key: "iceboundreflection",
+		BaseStats: &model.MonsterStatsData{
+			BaseHp:  122.256,
+			HpCurve: model.GrowCurveType_GROW_CURVE_HP_2,
+			Resist: &model.MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.1,
+				ElectricResist: 0.1,
+				WindResist:     0.1,
+				IceResist:      0.3,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			HpDrop: []*model.MonsterHPDrop{
+				{
+					DropId:    22010016,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010016,
+					HpPercent: 0.33,
+				},
+				{
+					DropId: 22010016,
 				},
 			},
 		},
@@ -12220,6 +12474,38 @@ var MonsterMap = map[int]*model.MonsterData{
 				},
 				{
 					DropId: 22010030,
+				},
+			},
+		},
+	},
+	25134601: {
+		Id:  25134601,
+		Key: "wavebinder",
+		BaseStats: &model.MonsterStatsData{
+			BaseHp:  393.936,
+			HpCurve: model.GrowCurveType_GROW_CURVE_HP_2,
+			Resist: &model.MonsterResistData{
+				FireResist:     0.1,
+				GrassResist:    0.1,
+				WaterResist:    0.7,
+				ElectricResist: -0.1,
+				WindResist:     0.1,
+				IceResist:      0.1,
+				RockResist:     0.1,
+				PhysicalResist: 0.1,
+			},
+			FreezeResist: 1.0,
+			HpDrop: []*model.MonsterHPDrop{
+				{
+					DropId:    22010032,
+					HpPercent: 0.66,
+				},
+				{
+					DropId:    22010032,
+					HpPercent: 0.33,
+				},
+				{
+					DropId: 22010022,
 				},
 			},
 		},
