@@ -37,7 +37,8 @@ func (c *char) a1OnBurst() {
 	if c.Base.Ascension < 1 {
 		return
 	}
-	c.QueueCharTask(func() { c.a1(c.burstSrc) }, 328)
+	src := c.burstSrc
+	c.QueueCharTask(func() { c.a1(src) }, 328)
 }
 
 func (c *char) a1OnSkillRevelation() {
@@ -45,7 +46,8 @@ func (c *char) a1OnSkillRevelation() {
 		return
 	}
 
-	c.QueueCharTask(func() { c.a1(c.burstSrc) }, 265)
+	src := c.burstSrc
+	c.QueueCharTask(func() { c.a1(src) }, 265)
 }
 
 func (c *char) a1Buff() {
