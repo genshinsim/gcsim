@@ -2,6 +2,9 @@ use: pipeline
 kind: character
 name: sandrone
 
+shortcuts:
+    - marionette
+
 override:
     icd_group:
         SandroneSweepingFire:
