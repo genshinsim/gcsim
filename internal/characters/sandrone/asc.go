@@ -60,8 +60,9 @@ func (c *char) a1OnBurstRayStellar() float64 {
 	if c.getRadiance() == radianceNone {
 		return 0.0
 	}
-
-	return float64(c.a1RefinedTactics) * 0.1
+	bonusMult := float64(c.a1RefinedTactics) * 0.1
+	c.a1RefinedTactics = 0
+	return bonusMult
 }
 
 // Increases Sandrone's Elemental Mastery based on her ATK. Every 100 ATK will increase her

@@ -88,14 +88,14 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	c.Core.Log.NewEvent(fmt.Sprintf("CA started with Decode (%.2f)", c.decode), glog.LogCharacterEvent, c.Index())
 	c.c2OnCAStart()
 	c.c6OnCaStart()
-	if c.currFagio == stateOverdriveCharge {
+	if c.currFagio == stateOverdriveIdle {
 		c.currFagio = stateOverdriveCharge
 		c.QueueCharTask(func() {
 			src := c.Core.F
 			c.caSrc = src
 			c.decodeReduceSrc = -1
 			c.overdriveTicker(src)
-		}, windup+chargeFirstTick)
+		}, windup+overdriveFirstTick)
 	} else {
 		// heat starts ticking from windup + first tick
 		c.currFagio = stateDecoding

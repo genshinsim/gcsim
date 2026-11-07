@@ -69,14 +69,15 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 			PoiseDMG:   70,
 			Element:    attributes.Cryo,
 			Durability: 25,
-			Mult:       burstRay[c.TalentLvlSkill()],
+			Mult:       burstRay[c.TalentLvlBurst()],
 		}
 
-		dmgSSC := burstRaySSC[c.TalentLvlSkill()] * (1 + c.a1OnBurstRayStellar())
-		dmgSSw := burstRaySSw[c.TalentLvlSkill()] * (1 + c.a1OnBurstRayStellar())
+		bonusMult := 1 + c.a1OnBurstRayStellar()
+		dmgSSC := burstRaySSC[c.TalentLvlBurst()] * (1 + bonusMult)
+		dmgSSw := burstRaySSw[c.TalentLvlBurst()] * (1 + bonusMult)
 		c.toStellar(&aiRay, dmgSSC, dmgSSw)
 		if aiRay.AttackTag != attacks.AttackTagElementalBurst {
-			ai.PoiseDMG = 100
+			aiRay.PoiseDMG = 100
 		}
 
 		c.Core.QueueAttack(aiRay, apRay, 0, 0)

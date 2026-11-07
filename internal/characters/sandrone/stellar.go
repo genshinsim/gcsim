@@ -67,7 +67,7 @@ func (c *char) stellarInit() {
 			return
 		}
 
-		bonus := min(c.TotalAtk()/100.0*0.07, 0.14)
+		bonus := min(c.TotalAtk()/100.0*0.007, 0.14)
 
 		if c.Core.Flags.LogDebug {
 			c.Core.Log.NewEvent("sandrone adding stellar base damage", glog.LogCharacterEvent, c.Index()).Write("bonus", bonus)
