@@ -60,6 +60,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	case action.Idle, action.JumpState, action.DashState, action.SwapState:
 		windup = 25
 	}
+	c.caLength = 0
 	c.currSweepingFireTick = 0
 	c.caBeamsRemaining = c.caMaxBeams
 	c.caToBeams = true
@@ -85,7 +86,10 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		c.Core.Tasks.Add(c.exitCA, windup+chargeFirstTick+c.caLength)
 	}
 
-	c.Core.Log.NewEvent(fmt.Sprintf("CA started with Decode (%.2f)", c.decode), glog.LogCharacterEvent, c.Index())
+	if c.Core.Flags.LogDebug {
+		c.Core.Log.NewEvent(fmt.Sprintf("CA started with Decode (%.2f)", c.decode), glog.LogCharacterEvent, c.Index())
+	}
+
 	c.c2OnCAStart()
 	c.c6OnCaStart()
 	if c.currFagio == stateOverdriveIdle {
@@ -137,7 +141,6 @@ func (c *char) exitCA() {
 }
 
 func (c *char) sweepingFireTicker(src int) {
-	c.Core.Log.NewEvent(fmt.Sprintf("Sweeping Fire Ticker (src: %v, currFagio: %v, caSrc: %v, caLength: %v, F: %v)", src, c.currFagio, c.caSrc, c.caLength, c.Core.F), glog.LogCharacterEvent, c.Index())
 	if c.caSrc != src {
 		return
 	}
@@ -217,7 +220,6 @@ func (c *char) overdriveTicker(src int) {
 }
 
 func (c *char) beamTicker(src int) {
-	c.Core.Log.NewEvent(fmt.Sprintf("Beam Ticker (src: %v, currFagio: %v, caSrc: %v, caLength: %v, F: %v)", src, c.currFagio, c.caSrc, c.caLength, c.Core.F), glog.LogCharacterEvent, c.Index())
 	if c.caSrc != src {
 		return
 	}
@@ -335,15 +337,25 @@ func (c *char) enterOverdriveCharge() {
 func (c *char) addDecode(amt float64) {
 	amt *= c.c1DecoderGainMult()
 	c.decode += amt
-	c.Core.Log.NewEvent(fmt.Sprintf("Gained %.2f Decode (%.2f)", amt, min(c.decode, maxDecode)), glog.LogCharacterEvent, c.Index())
+
+	if c.Core.Flags.LogDebug {
+		c.Core.Log.NewEvent(fmt.Sprintf("Gained %.2f Decode (%.2f)", amt, min(c.decode, maxDecode)), glog.LogCharacterEvent, c.Index())
+	}
+
 	if c.decode < maxDecode {
 		return
 	}
 	c.decode = maxDecode
 
 	reachedMaxDecode := func() {
+		if c.decode < maxDecode {
+			return
+		}
 		if c.currFagio == stateDecoding {
 			c.currFagio = stateOverdriveCharge
+			if c.Core.Flags.LogDebug {
+				c.Core.Log.NewEvent("Enter Overdrive", glog.LogCharacterEvent, c.Index())
+			}
 			if c.caToBeams {
 				c.exitCA()
 			} else {
@@ -360,6 +372,10 @@ func (c *char) addDecode(amt float64) {
 }
 
 func (c *char) reduceDecode(amt float64) {
+	if c.decode <= 0 {
+		return
+	}
+
 	start := c.decode
 	c.decode -= amt
 
@@ -371,7 +387,9 @@ func (c *char) reduceDecode(amt float64) {
 		c.decode = 0
 	}
 
-	c.Core.Log.NewEvent(fmt.Sprintf("Reduced %.2f Decode (%.2f)", amt, c.decode), glog.LogCharacterEvent, c.Index())
+	if c.Core.Flags.LogDebug {
+		c.Core.Log.NewEvent(fmt.Sprintf("Reduced %.2f Decode (%.2f)", amt, c.decode), glog.LogCharacterEvent, c.Index())
+	}
 
 	actualAmt := start - c.decode
 	c.a1OnDecreaseDecode(actualAmt)

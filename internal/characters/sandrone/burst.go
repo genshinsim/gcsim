@@ -73,8 +73,8 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		}
 
 		bonusMult := 1 + c.a1OnBurstRayStellar()
-		dmgSSC := burstRaySSC[c.TalentLvlBurst()] * (1 + bonusMult)
-		dmgSSw := burstRaySSw[c.TalentLvlBurst()] * (1 + bonusMult)
+		dmgSSC := burstRaySSC[c.TalentLvlBurst()] * bonusMult
+		dmgSSw := burstRaySSw[c.TalentLvlBurst()] * bonusMult
 		c.toStellar(&aiRay, dmgSSC, dmgSSw)
 		if aiRay.AttackTag != attacks.AttackTagElementalBurst {
 			aiRay.PoiseDMG = 100
