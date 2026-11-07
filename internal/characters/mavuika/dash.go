@@ -41,8 +41,8 @@ func (c *char) Dash(p map[string]int) (action.Info, error) {
 	if travel > 24 {
 		travel = 24
 	}
-	if travel < 6 {
-		travel = 6
+	if travel < 2 {
+		travel = 2
 	}
 
 	// Travel is set to 2 to represent cancel frames instead of hitmark, if damage is skipped
