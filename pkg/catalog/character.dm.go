@@ -14600,6 +14600,158 @@ var CharacterMap = map[keys.Char]*model.AvatarData{
 			BurstEnergyCost: 60.0,
 		},
 	},
+	keys.Sandrone: {
+		Id:          10000133,
+		SubId:       13301,
+		Key:         "sandrone",
+		Rarity:      model.QualityType_QUALITY_ORANGE,
+		Body:        model.BodyType_BODY_GIRL,
+		Region:      model.AssocType_ASSOC_TYPE_SNEZHNAYA_STAR,
+		Element:     model.ElementType_Ice,
+		WeaponClass: model.WeaponType_WEAPON_CLAYMORE,
+		IconName:    "UI_AvatarIcon_MarionetteNew",
+		Stats: &model.AvatarStatsData{
+			BaseHp:   1029.5856,
+			BaseAtk:  26.6266,
+			BaseDef:  58.57357,
+			HpCurve:  model.GrowCurveType_GROW_CURVE_HP_S5,
+			AtkCurve: model.GrowCurveType_GROW_CURVE_ATTACK_S5,
+			DefCruve: model.GrowCurveType_GROW_CURVE_HP_S5,
+			PromoData: []*model.PromotionData{
+				{
+					MaxLevel: 20,
+				},
+				{
+					MaxLevel: 40,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    882.77655,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    50.2227,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    22.828234,
+						},
+					},
+				},
+				{
+					MaxLevel: 50,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    1510.0126,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    85.90725,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    39.048294,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_CRITICAL,
+							Value:    0.048,
+						},
+					},
+				},
+				{
+					MaxLevel: 60,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    2346.3271,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    133.48665,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    60.67504,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_CRITICAL,
+							Value:    0.096,
+						},
+					},
+				},
+				{
+					MaxLevel: 70,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    2973.5632,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    169.1712,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    76.8951,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_CRITICAL,
+							Value:    0.096,
+						},
+					},
+				},
+				{
+					MaxLevel: 80,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    3600.799,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    204.85574,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    93.115166,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_CRITICAL,
+							Value:    0.144,
+						},
+					},
+				},
+				{
+					MaxLevel: 90,
+					AddProps: []*model.PromotionAddProp{
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_HP,
+							Value:    4228.035,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_DEFENSE,
+							Value:    240.5403,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_BASE_ATTACK,
+							Value:    109.33523,
+						},
+						{
+							PropType: model.FightPropType_FIGHT_PROP_CRITICAL,
+							Value:    0.192,
+						},
+					},
+				},
+			},
+		},
+		SkillDetails: &model.AvatarSkillsData{
+			Skill:           11332,
+			Burst:           11335,
+			Attack:          11331,
+			BurstEnergyCost: 60.0,
+		},
+	},
 	keys.SangonomiyaKokomi: {
 		Id:          10000054,
 		SubId:       5401,

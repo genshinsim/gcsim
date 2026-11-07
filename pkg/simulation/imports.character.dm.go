@@ -87,6 +87,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/characters/raiden"
 	_ "github.com/genshinsim/gcsim/internal/characters/razor"
 	_ "github.com/genshinsim/gcsim/internal/characters/rosaria"
+	_ "github.com/genshinsim/gcsim/internal/characters/sandrone"
 	_ "github.com/genshinsim/gcsim/internal/characters/sara"
 	_ "github.com/genshinsim/gcsim/internal/characters/sayu"
 	_ "github.com/genshinsim/gcsim/internal/characters/sethos"
