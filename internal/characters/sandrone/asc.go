@@ -47,7 +47,7 @@ func (c *char) a1OnDecreaseDecode(amt int) {
 	if c.a1RefinedTactics > a1MaxStacks {
 		c.a1RefinedTactics = a1MaxStacks
 	}
-	c.a1DecreasedDecode = c.a1DecreasedDecode % 100
+	c.a1DecreasedDecode %= 100
 }
 
 func (c *char) a1OnBurstRayStellar() float64 {
