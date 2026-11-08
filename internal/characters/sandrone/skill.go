@@ -14,10 +14,8 @@ var skillFrames []int
 const skillParticleICDKey = "sandrone-particle-icd"
 
 func init() {
-	skillFrames = frames.InitAbilSlice(600) // need to full exit E before actual walk occurs
+	skillFrames = frames.InitAbilSlice(46) // E -> CA
 	skillFrames[action.ActionAttack] = 10
-	skillFrames[action.ActionCharge] = 46
-	skillFrames[action.ActionSkill] = 46 // TODO: Get actual value, currently assuming same as CA which is wrong
 	skillFrames[action.ActionBurst] = 6
 	skillFrames[action.ActionDash] = 26
 	skillFrames[action.ActionSwap] = 27
@@ -37,7 +35,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	bonusMult := 1 + c.a1OnSkillBonusMult()
-	c.reduceDecode(100)
 
 	c.QueueCharTask(func() {
 		ai := info.AttackInfo{
@@ -59,6 +56,17 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		ai.Mult *= bonusMult
 		c.Core.QueueAttack(ai, ap, 5, 5+travel, c.particleCB)
 	}, 19)
+
+	// Reduce by 70 on cast and then 10 every 0.1s
+	c.reduceDecode(70)
+	// only queue up to 3 more times because thats how many ticks is needed to reduce to 0
+	for i := range 3 {
+		c.QueueCharTask(func() {
+			if c.Core.Player.CurrentState() == action.SkillState {
+				c.reduceDecode(10)
+			}
+		}, 0.1*60*(i+1))
+	}
 
 	c.SetCD(action.ActionSkill, 4*60)
 

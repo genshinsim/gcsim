@@ -67,9 +67,16 @@ func (c *char) Init() error {
 }
 
 func (c *char) NextQueueItemIsValid(k keys.Char, a action.Action, p map[string]int) error {
-	if a == action.ActionJump && c.Core.Player.CurrentState() == action.SkillState {
-		return errors.New("cannot jump during skill")
+	if c.Core.Player.CurrentState() == action.SkillState {
+		if a == action.ActionJump {
+			return errors.New("cannot jump during skill")
+		}
+
+		if a == action.ActionWalk {
+			return errors.New("cannot walk during skill")
+		}
 	}
+
 	return c.Character.NextQueueItemIsValid(k, a, p)
 }
 
