@@ -43,7 +43,7 @@ func (c *char) a1OnDecreaseDecode(amt int) {
 	c.a1DecreasedDecode += amt
 
 	// TODO: RefinedTactics lasts 60s
-	c.a1RefinedTactics += int(c.a1DecreasedDecode / 100)
+	c.a1RefinedTactics += c.a1DecreasedDecode / 100
 	if c.a1RefinedTactics > a1MaxStacks {
 		c.a1RefinedTactics = a1MaxStacks
 	}
