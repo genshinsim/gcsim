@@ -19,6 +19,8 @@ var (
 	overdriveFirstTick   = 21
 	sweepingFireTickRate = []int{24, 18, 25, 15, 18, 24, 18, 18, 22, 18, 18, 24, 18, 18, 24, 18, 18, 24, 18, 18, 24, 18, 18, 24}
 	beamTickRate         = 60
+
+	decodeNeededForBeams = []int{0, 128, 458, 788, 1118, 1448, 1778}
 )
 
 func init() {
@@ -62,21 +64,17 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	}
 	c.caLength = 0
 	c.currSweepingFireTick = 0
-	c.caBeamsRemaining = c.caMaxBeams
 	c.caToBeams = true
 
 	beams, okBeams := p["beams"]
+	if !okBeams {
+		beams = c.caMaxBeams
+	}
+
 	frames, okFrames := p["frames"]
 
 	if okBeams && okFrames {
 		return action.Info{}, fmt.Errorf("cannot use both 'beams' and 'frames'")
-	}
-
-	if okBeams {
-		if beams > c.caMaxBeams {
-			return action.Info{}, fmt.Errorf("cannot set than %v beams", c.caMaxBeams)
-		}
-		c.caBeamsRemaining = beams
 	}
 
 	if okFrames {
@@ -84,10 +82,22 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 		c.caLength = frames
 		c.caBeamsRemaining = math.MaxInt
 		c.Core.Tasks.Add(c.exitCA, windup+chargeFirstTick+c.caLength)
+	} else {
+		// validate that the number of beams requested is possible given the current decode value
+		if beams > c.caMaxBeams {
+			return action.Info{}, fmt.Errorf("cannot set more than %v beams", c.caMaxBeams)
+		}
+
+		decodeNeeded := maxDecode - decodeNeededForBeams[beams]/c.c1DecoderGainDiv()
+		if decodeNeeded < c.decode {
+			return action.Info{}, fmt.Errorf("decode too high to fire %v beams. need <%v, got %v", beams, float64(decodeNeeded)/10, float64(c.decode)/10)
+		}
+
+		c.caBeamsRemaining = beams
 	}
 
 	if c.Core.Flags.LogDebug {
-		c.Core.Log.NewEvent(fmt.Sprintf("CA started with Decode (%.2f)", c.decode), glog.LogCharacterEvent, c.Index())
+		c.Core.Log.NewEvent(fmt.Sprintf("CA started with Decode (%.2f)", float64(c.decode)/10), glog.LogCharacterEvent, c.Index())
 	}
 
 	c.c2OnCAStart()
@@ -259,7 +269,7 @@ func (c *char) beamTicker(src int) {
 	c.c6OnBeam()
 	c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB)
 
-	c.addDecode(17)
+	c.addDecode(170)
 
 	if c.currFagio != stateDecoding {
 		return
@@ -289,12 +299,14 @@ func (c *char) heatReduceTicker(src int) {
 		return
 	}
 
-	amt := 2.5
+	amt := 25
 	if c.Core.Player.Active() != c.Index() {
 		amt *= 3
 	}
 	c.reduceDecode(amt)
-	c.Core.Tasks.Add(func() { c.heatReduceTicker(src) }, 0.5*60)
+	if c.decode > 0 {
+		c.Core.Tasks.Add(func() { c.heatReduceTicker(src) }, 0.5*60)
+	}
 }
 
 func (c *char) gainHeatTicker(src int) {
@@ -310,7 +322,7 @@ func (c *char) gainHeatTicker(src int) {
 		return
 	}
 
-	c.addDecode(3.2)
+	c.addDecode(32)
 
 	if c.currFagio != stateDecoding {
 		return
@@ -334,12 +346,12 @@ func (c *char) enterOverdriveCharge() {
 	c.Core.Tasks.Add(func() { c.overdriveTicker(c.caSrc) }, overdriveFirstTick)
 }
 
-func (c *char) addDecode(amt float64) {
-	amt *= c.c1DecoderGainMult()
+func (c *char) addDecode(amt int) {
+	amt /= c.c1DecoderGainDiv()
 	c.decode += amt
 
 	if c.Core.Flags.LogDebug {
-		c.Core.Log.NewEvent(fmt.Sprintf("Gained %.2f Decode (%.2f)", amt, min(c.decode, maxDecode)), glog.LogCharacterEvent, c.Index())
+		c.Core.Log.NewEvent(fmt.Sprintf("Gained %.2f Decode (%.2f)", float64(amt)/10, float64(min(c.decode, maxDecode))/10), glog.LogCharacterEvent, c.Index())
 	}
 
 	if c.decode < maxDecode {
@@ -371,7 +383,7 @@ func (c *char) addDecode(amt float64) {
 	c.Core.Tasks.Add(reachedMaxDecode, 19)
 }
 
-func (c *char) reduceDecode(amt float64) {
+func (c *char) reduceDecode(amt int) {
 	if c.decode <= 0 {
 		return
 	}
@@ -379,7 +391,7 @@ func (c *char) reduceDecode(amt float64) {
 	start := c.decode
 	c.decode -= amt
 
-	if c.decode < 50 {
+	if c.decode < 500 {
 		c.currFagio = stateIdle
 	}
 
@@ -388,7 +400,7 @@ func (c *char) reduceDecode(amt float64) {
 	}
 
 	if c.Core.Flags.LogDebug {
-		c.Core.Log.NewEvent(fmt.Sprintf("Reduced %.2f Decode (%.2f)", amt, c.decode), glog.LogCharacterEvent, c.Index())
+		c.Core.Log.NewEvent(fmt.Sprintf("Reduced %.2f Decode (%.2f)", float64(amt)/10, float64(c.decode)/10), glog.LogCharacterEvent, c.Index())
 	}
 
 	actualAmt := start - c.decode

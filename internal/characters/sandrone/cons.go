@@ -53,11 +53,11 @@ func (c *char) c1Init() {
 	}
 }
 
-func (c *char) c1DecoderGainMult() float64 {
+func (c *char) c1DecoderGainDiv() int {
 	if c.Base.Cons < 1 {
-		return 1.0
+		return 1
 	}
-	return 0.5
+	return 2
 }
 
 // Radiance: Stellar Glimmer: Increases CRIT DMG from Charged Attack condensed beams by 40%. Also,
@@ -235,13 +235,16 @@ func (c *char) c6OnBeam() {
 		ICDTag:         attacks.ICDTagSandroneExtraAttackLaser,
 		ICDGroup:       attacks.ICDGroupDefault,
 		StrikeType:     attacks.StrikeTypeBlunt,
-		PoiseDMG:       45,
+		PoiseDMG:       30,
 		Element:        attributes.Cryo,
 		Durability:     25,
 		Mult:           1,
 	}
 
 	c.toStellar(&ai, 0.8, 1.2)
+	if ai.AttackTag != attacks.AttackTagExtra {
+		ai.PoiseDMG = 45
+	}
 
 	ap := combat.NewBoxHitOnTarget(
 		c.Core.Combat.Player(),

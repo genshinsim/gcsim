@@ -1,8 +1,6 @@
 package sandrone
 
 import (
-	"math"
-
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 	"github.com/genshinsim/gcsim/pkg/modifier"
@@ -37,7 +35,7 @@ func (c *char) a1OnSkillBonusMult() float64 {
 	return 3.0
 }
 
-func (c *char) a1OnDecreaseDecode(amt float64) {
+func (c *char) a1OnDecreaseDecode(amt int) {
 	if c.Base.Ascension < 1 {
 		return
 	}
@@ -45,11 +43,11 @@ func (c *char) a1OnDecreaseDecode(amt float64) {
 	c.a1DecreasedDecode += amt
 
 	// TODO: RefinedTactics lasts 60s
-	c.a1RefinedTactics += int(c.a1DecreasedDecode / 10)
+	c.a1RefinedTactics += int(c.a1DecreasedDecode / 100)
 	if c.a1RefinedTactics > a1MaxStacks {
 		c.a1RefinedTactics = a1MaxStacks
 	}
-	c.a1DecreasedDecode = math.Mod(c.a1DecreasedDecode, 10)
+	c.a1DecreasedDecode = c.a1DecreasedDecode % 100
 }
 
 func (c *char) a1OnBurstRayStellar() float64 {

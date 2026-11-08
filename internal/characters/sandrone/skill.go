@@ -58,12 +58,12 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, 19)
 
 	// Reduce by 70 on cast and then 10 every 0.1s
-	c.reduceDecode(70)
+	c.reduceDecode(700)
 	// only queue up to 3 more times because thats how many ticks is needed to reduce to 0
 	for i := range 3 {
 		c.QueueCharTask(func() {
 			if c.Core.Player.CurrentState() == action.SkillState {
-				c.reduceDecode(10)
+				c.reduceDecode(100)
 			}
 		}, 0.1*60*(i+1))
 	}

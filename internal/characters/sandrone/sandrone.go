@@ -11,7 +11,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
 
-const maxDecode = 100
+const maxDecode = 1000
 
 type fagioState int
 
@@ -25,7 +25,8 @@ const (
 type char struct {
 	*tmpl.Character
 
-	decode               float64
+	// decode values are stored as 10x the actual value to avoid floating point errors
+	decode               int
 	currSweepingFireTick int
 	caLength             int
 	caToBeams            bool
@@ -34,10 +35,11 @@ type char struct {
 	caSrc                int
 	decodeReduceSrc      int
 	currFagio            fagioState
-	a1DecreasedDecode    float64
-	a1RefinedTactics     int
-	c2stacks             int
-	c6stacks             int
+	// decode values are stored as 10x the actual value to avoid floating point errors
+	a1DecreasedDecode int
+	a1RefinedTactics  int
+	c2stacks          int
+	c6stacks          int
 }
 
 func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) error {
