@@ -104,7 +104,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	c.c6OnCaStart()
 	if c.currFagio == stateOverdriveIdle {
 		c.currFagio = stateOverdriveCharge
-		c.QueueCharTask(func() {
+		c.Core.Tasks.Add(func() {
 			src := c.Core.F
 			c.caSrc = src
 			c.decodeReduceSrc = -1
@@ -113,7 +113,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 	} else {
 		// heat starts ticking from windup + first tick
 		c.currFagio = stateDecoding
-		c.QueueCharTask(func() {
+		c.Core.Tasks.Add(func() {
 			src := c.Core.F
 			c.caSrc = src
 			c.decodeReduceSrc = -1
@@ -134,7 +134,7 @@ func (c *char) ChargeAttack(p map[string]int) (action.Info, error) {
 }
 
 func (c *char) exitCA() {
-	// exit the CA at the end of this frame
+	// exit the CA next frame so we aren't starting another action the same frame as the hitmark
 	c.Core.Tasks.Add(func() {
 		switch c.currFagio {
 		case stateDecoding:
@@ -142,12 +142,13 @@ func (c *char) exitCA() {
 		case stateOverdriveCharge:
 			c.currFagio = stateOverdriveIdle
 		}
-		c.caLength = c.Core.F - c.caSrc
+		// setting the length to 0 immediately stops the CA
+		c.caLength = 0
 		c.caSrc = -1
 		src := c.Core.F
 		c.decodeReduceSrc = src
 		c.Core.Tasks.Add(func() { c.heatReduceTicker(src) }, 0.5*60)
-	}, 0)
+	}, 1)
 }
 
 func (c *char) sweepingFireTicker(src int) {
