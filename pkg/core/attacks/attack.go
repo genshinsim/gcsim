@@ -22,6 +22,7 @@ const (
 	AttackTagVarkaSpecial
 	AttackTagWrioSSCN5
 	AttackTagWrioSSCCA
+	AttackTagSandroneBeam
 
 	AttackTagNoneStat // ignore attacker stats delim
 

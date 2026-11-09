@@ -1,0 +1,50 @@
+use: pipeline
+kind: character
+name: sandrone
+
+shortcuts:
+    - marionette
+
+override:
+    icd_group:
+        SandroneSweepingFire:
+            name: Avatar_Marionette_MachineGun
+
+combat:
+    icd_tags:
+        - SandroneExtraAttackSweepingFire
+        - SandroneExtraAttackLaser
+        - SandroneBeam
+    icd_groups:
+        - SandroneSweepingFire
+
+abilities:
+    - name: attack
+    - name: charge
+      params:
+          beams: How many beams to fire. Default 3 beams (6 at c1+).
+          frames: How many frames to hold the CA for. Cannot be used with beams param.
+    - name: skill
+      params:
+          travel: Projectile travel time. Default 10 frames.
+    - name: burst
+
+talents:
+    - attack:
+          - attack(1-Hit DMG)
+          - attack(2-Hit DMG)
+          - attack(3-Hit DMG)
+    - chargeSweep: attack(Charged Attack Sweeping Fire DMG)
+    - chargeBeam: attack(Charged Attack Condensed Beam DMG)
+    - chargeBeamSSC: attack(Charged Attack Condensed Beam Stellar-Conduct DMG)
+    - chargeBeamSSw: attack(Charged Attack Condensed Beam Stellar Swirl DMG)
+    - chargeOverdrive: attack(DMG When in Power Overdrive)
+
+    - skill: skill(Prism Shot DMG)
+    - skillSSC: skill(Prism Shot Stellar-Conduct DMG)
+    - skillSSw: skill(Prism Shot Stellar Swirl DMG)
+
+    - burst: burst(Bombardment DMG)
+    - burstRay: burst(Convective Inhibition Ray DMG)
+    - burstRaySSC: burst(Convective Inhibition Ray Stellar-Conduct DMG)
+    - burstRaySSw: burst(Convective Inhibition Ray Stellar Swirl DMG)

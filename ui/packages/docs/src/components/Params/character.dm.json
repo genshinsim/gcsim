@@ -1721,6 +1721,23 @@
       "desc": "Default 0. 1 for disabling striking behind for A1 purposes."
     }
   ],
+  "sandrone": [
+    {
+      "ability": "charge",
+      "param": "beams",
+      "desc": "How many beams to fire. Default 3 beams (6 at c1+)."
+    },
+    {
+      "ability": "charge",
+      "param": "frames",
+      "desc": "How many frames to hold the CA for. Cannot be used with beams param."
+    },
+    {
+      "ability": "skill",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    }
+  ],
   "sangonomiyakokomi": [
     {
       "ability": "attack",
