@@ -42,6 +42,9 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		Mult:       skillPress[c.TalentLvlSkill()],
 	}
 
+	c.c2OnSkill(ai)
+	c.c4Hexerei()
+
 	act := action.Info{
 		Frames:          frames.NewAbilFunc(skillPressFrames),
 		AnimationLength: skillPressFrames[action.InvalidAction],
