@@ -48,12 +48,12 @@ func (c *char) Burst(p map[string]int) (action.Info, error) {
 		})
 	}, initialHeal)
 
-	for i := range 5 {
+	for i := range 12 {
 		c.QueueCharTask(func() {
 			heal := burstTickFlat[c.TalentLvlBurst()] + burstTickDef[c.TalentLvlBurst()]*c.TotalDef(false)
 			c.Core.Player.Heal(info.HealInfo{
 				Caller:  c.Index(),
-				Target:  -1,
+				Target:  c.Core.Player.Active(),
 				Message: "Memo: Survival Guide in Extreme Conditions (Tick)",
 				Src:     heal,
 				Bonus:   c.Stat(attributes.Heal),
