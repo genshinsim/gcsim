@@ -71,14 +71,14 @@ abilities:
         center: Player
         offset: [0, 0.5]
         radius: 2.2
-        hitlag: {time: 0.09, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.09, scale: 0.01, defense_halt: true }
 
       - name: N2
         shape: Box
         center: Player
         offset: [0, -1.3]
         box: [3.3, 4.3]
-        hitlag: {time: 0.05, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.05, scale: 0.01, defense_halt: true }
 
       - name: N3
         shape: Box
@@ -91,35 +91,35 @@ abilities:
         center: Player
         offset: [0, -0.8]
         radius: 3.2
-        hitlag: {time: 0.1, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.1, scale: 0.01, defense_halt: true }
 
       - name: N1-Flamestrider
         shape: Circle
         center: Player
         offset: [0, 1.5]
         radius: 3.2
-        hitlag: {time: 0.09, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.09, scale: 0.01, defense_halt: true }
 
       - name: N2-Flamestrider
         shape: Circle
         center: Player
         offset: [0, 1.85]
         radius: 3.5
-        hitlag: {time: 0.08, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.08, scale: 0.01, defense_halt: true }
 
       - name: N3-Flamestrider
         shape: Circle
         center: Player
         offset: [0, 0.5]
         radius: 3
-        hitlag: {time: 0.04, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.04, scale: 0.01, defense_halt: true }
 
       - name: N4-Flamestrider
         shape: Box
         center: Player
         offset: [0, -0.8]
         box: [3.5, 4.5]
-        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
 
       - name: N5-Flamestrider
         shape: Circle
@@ -132,28 +132,28 @@ abilities:
         center: Player
         offset: [0, 1.5]
         radius: 3.7
-        hitlag: {time: 0.09, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.09, scale: 0.01, defense_halt: true }
 
       - name: Q-N2-Flamestrider
         shape: Circle
         center: Player
         offset: [0, 1.85]
         radius: 4
-        hitlag: {time: 0.08, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.08, scale: 0.01, defense_halt: true }
 
       - name: Q-N3-Flamestrider
         shape: Circle
         center: Player
         offset: [0, 0.5]
         radius: 3.7
-        hitlag: {time: 0.04, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.04, scale: 0.01, defense_halt: true }
 
       - name: Q-N4-Flamestrider
         shape: Box
         center: Player
         offset: [0, -0.8]
         box: [4.5, 5.5]
-        hitlag: {time: 0.03, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: true }
 
       - name: Q-N5-Flamestrider
         shape: Circle
@@ -172,7 +172,7 @@ abilities:
         center: Player
         offset: [0, 0.3]
         radius: 3.3
-        hitlag: {time: 0.15, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.15, scale: 0.01, defense_halt: true }
 
       - name: CA-Flamestrider-Cyclic
         note: This is an approximation because we do not actually know the real AoE. This is a moving hitbox. It moves at varying speeds in a circle of radius 4.0m around the player with a hitbox radius of 3.0m.
@@ -184,14 +184,14 @@ abilities:
         center: Player
         offset: [0, 2]
         radius: 4
-        hitlag: {time: 0.04, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.04, scale: 0.01, defense_halt: true }
 
       - name: Q-CA-Flamestrider-Final
         shape: Circle
         center: Player
         offset: [0, 2]
         radius: 4.5
-        hitlag: {time: 0.04, scale: 0.01, defense_halt: true}
+        hitlag: { time: 0.04, scale: 0.01, defense_halt: true }
 
   - name: plunge
     hitbox:
@@ -288,8 +288,8 @@ abilities:
 
   - name: dash
     params:
-      charge_cancel: "1 to allow an early cancel (cdc), 0 for no early cancel (default). An early-cancelled dash allows a Flamestrider Charge Attack to begin as soon as the dash hitmark (or 2f, if collision is skipped). Only applies to Flamestrider dash following a charge attack or finisher. Note: after Mavuika has completed a revolution, when she is between 12:00 and 1:30 as the hourhand on a clock (approx) she is unable to perform an early cancel. An error is thrown if this param is used and the dash is not preceded by and followed by a biked charge (cyclic or finisher)."
-      travel: "Duration before Flamestrider hits the enemy. Values between 6 (default) and 24 inclusive. Only applies to Flamestrider dash. If collision is not set to 0, all abilities must wait at least <travel> frames before they can cancel dash."
+      charge_cancel: "1 to allow an early cancel (cdc), 0 for no early cancel (default). An early-cancelled dash allows a Flamestrider Charge Attack to begin as soon as the dash hitmark. Only applies to Flamestrider dash following a charge attack or finisher. Note: after Mavuika has completed a revolution, when she is between 12:00 and 1:30 as the hourhand on a clock (approx) she is unable to perform an early cancel. An error is thrown if this param is used and the dash is not preceded by and followed by a biked charge (cyclic or finisher)."
+      travel: "Duration before Flamestrider hits the enemy. Values between 2 and 24 inclusive (default 6). Only applies to Flamestrider dash. If collision is not set to 0, all abilities must wait at least <travel> frames before they can cancel dash."
       collision: "0 for no collision dmg, 1 for collision dmg (default). Only applies to Flamestrider dash."
     hitbox:
       - name: Dash
