@@ -8,12 +8,18 @@ const serverModeKey = "use-server-mode";
 
 const App = () => {
 	const { t } = useTranslation();
+	const serverModeParam = new URLSearchParams(window.location.search).get(
+		serverModeKey,
+	);
 	const [serverMode, setServerMode] = React.useState<boolean>((): boolean => {
+		if (serverModeParam !== null) return serverModeParam === "true";
 		return localStorage.getItem(serverModeKey) === "true";
 	});
 	React.useEffect(() => {
-		localStorage.setItem(serverModeKey, serverMode.toString());
-	}, [serverMode]);
+		if (serverModeParam === null) {
+			localStorage.setItem(serverModeKey, serverMode.toString());
+		}
+	}, [serverModeParam, serverMode]);
 
 	const serverSwitch = (
 		<div className="flex items-center gap-2">
