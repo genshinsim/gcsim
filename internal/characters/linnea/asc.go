@@ -36,7 +36,7 @@ func (c *char) a1Ticker(src int) {
 	if c.Core.Player.GetMoonsignLevel() >= 2 {
 		shred += 0.15
 	}
-	for _, e := range c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.LumiPos(), nil, 5), nil) {
+	for _, e := range c.Core.Combat.EnemiesWithinArea(combat.NewCircleHitOnTarget(c.LumiPos(), nil, 10), nil) {
 		e.AddResistMod(info.ResistMod{
 			Base:  modifier.NewBaseWithHitlag(a1Key, 1.5*60),
 			Ele:   attributes.Geo,

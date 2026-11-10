@@ -146,11 +146,11 @@ func (c *char) skillRecast() action.Info {
 		// do the big hit and then lower frequency
 		c.skillHitNum = 0
 		c.skillSrc = src
+		c.AddStatus(skillStandardPower, skillDur, false)
 		c.a1OnLumi(src)
 		c.Core.Tasks.Add(func() {
 			c.millionTonHammer()
 		}, skillMillionTonHitmark)
-		c.AddStatus(skillStandardPower, skillDur, false)
 		c.Core.Tasks.Add(func() { c.lumiAttack(src) }, skillMillionTonHitmark+skillStandardStart)
 	} else {
 		c.AddStatus(skillRecastKey, skillRecastDur, true)
