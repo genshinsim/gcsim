@@ -1,0 +1,49 @@
+use: pipeline
+kind: character
+name: linnea
+
+talents:
+  - attack:
+    - attack(1-Hit DMG)
+    - attack(2-Hit DMG)
+    - attack(3-Hit DMG)
+  - aim: attack(Aimed Shot)
+  - fullaim: attack(Fully-Charged Aimed Shot)
+  - collision: attack(Plunge DMG)
+  - lowPlunge: attack(Low/High Plunge DMG)
+  - highPlunge: attack(Low/High Plunge DMG|1)
+
+  - skillPound: skill(Lumi Pound-Pound Pummeler DMG)
+  - skillHeavy: skill(Lumi Heavy Overdrive Hammer DMG)
+  - skillMillion: skill(Lumi Million Ton Crush DMG)
+
+  - burstInitialFlat: burst(Initial Healing Amount)
+  - burstInitialDef: burst(Initial Healing Amount|1)
+  - burstTickFlat: burst(Continuous Healing)
+  - burstTickDef: burst(Continuous Healing|1)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1JBfw7ObsV8QXKiOEsrkeTcc36yChs9azBST5514U5uI/
+      count_credit: caramielle.
+      video: https://youtu.be/EczNMc6Q3R4
+      video_credit: caramielle.
+    - count: https://docs.google.com/spreadsheets/d/1JBfw7ObsV8QXKiOEsrkeTcc36yChs9azBST5514U5uI/
+      count_credit: caramielle.
+      video: https://youtu.be/CdDFKsKmRz0
+      video_credit: caramielle.
+
+abilities:
+  - name: attack
+    params:
+      travel: Projectile travel time. Default 10 frames.
+
+  - name: aim
+    params:
+      hold: 0 for Physical Aimed Shot, 1 for Fully-Charged Aimed Shot.
+      travel: Projectile travel time. Default 10 frames.
+      weakspot: Hit the weakspot with the aimed shot. Default 0 (false), 1 for true.
+
+  - name: skill
+    params:
+      recast: Recast the skill while its recast window is active.
