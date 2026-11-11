@@ -10,6 +10,8 @@ export interface EditorProps {
 	value: string;
 	onChange: (v: string) => void;
 	maxLines?: number;
+	fill?: boolean;
+	scrollMarginBottom?: () => number;
 	error?: string | null;
 	importedCharacters?: ImportedCharacterOption[];
 }

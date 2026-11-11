@@ -13,6 +13,9 @@ export class SimulatorPage {
 	readonly runButton: Locator;
 	readonly editor: Locator;
 	readonly importButton: Locator;
+	readonly content: Locator;
+	readonly toolbar: Locator;
+	readonly runBar: Locator;
 
 	constructor(page: Page) {
 		this.page = page;
@@ -22,6 +25,9 @@ export class SimulatorPage {
 			name: "Import",
 			exact: true,
 		});
+		this.content = page.locator("#app_content");
+		this.toolbar = page.locator("#config_toolbar");
+		this.runBar = page.locator("#run_bar");
 	}
 
 	/** Navigate to the simulator and wait for React to mount into `#root`. */

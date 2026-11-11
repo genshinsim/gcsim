@@ -307,6 +307,12 @@ function build({ palette: p, dark }: EditorTheme): Extension {
 				color: p.comment,
 				border: "none",
 			},
+			".cm-panels-top": {
+				position: "static",
+				border: "none",
+				borderBottom: `1px solid ${p.border}`,
+				borderRadius: "var(--g-r-md) var(--g-r-md) 0 0",
+			},
 			".cm-panels-bottom": {
 				position: "static",
 				border: "none",

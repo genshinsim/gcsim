@@ -23,7 +23,7 @@ export default () => {
 	);
 
 	return (
-		<div className={classNames("w-full", divider)}>
+		<footer className={classNames("w-full", divider)}>
 			<div className="px-5 xs:px-16 py-3 flex justify-center gap-2 2xl:mx-auto 2xl:container">
 				<div className="self-center text-right text-g-ink-mute text-g-xs grow shrink-0 w-2/3 max-w-fit">
 					{t("footer.gcsim_is_not")}
@@ -61,6 +61,6 @@ export default () => {
 					</IconContext.Provider>
 				</div>
 			</div>
-		</div>
+		</footer>
 	);
 };

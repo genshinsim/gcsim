@@ -8,6 +8,7 @@ import { Button, Spinner } from "@gcsim/primitives";
 import type { model } from "@gcsim/types";
 import { Play } from "lucide-react";
 import type React from "react";
+import { useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 export interface SimulatorLayoutProps {
@@ -34,9 +35,10 @@ export function SimulatorLayout({
 	busy,
 }: SimulatorLayoutProps) {
 	const { t } = useTranslation();
+	const runBarRef = useRef<HTMLDivElement>(null);
 
 	return (
-		<div className="flex flex-col">
+		<div className="flex flex-auto flex-col">
 			<SectionDivider>{t("simple.team")}</SectionDivider>
 			<div data-testid="editor-team-composer">
 				<TeamCard team={parsedTeam} />
@@ -49,9 +51,15 @@ export function SimulatorLayout({
 				onChange={setConfig}
 				error={error}
 				importedCharacters={importedCharacters}
+				fill
+				scrollMarginBottom={() => runBarRef.current?.offsetHeight ?? 0}
 			/>
 
-			<div className="sticky bottom-0 z-10 mt-1 flex flex-row flex-wrap place-items-center gap-1 bg-g-canvas p-2">
+			<div
+				ref={runBarRef}
+				id="run_bar"
+				className="sticky bottom-0 z-10 mt-1 flex flex-row flex-wrap place-items-center gap-1 bg-g-canvas p-2"
+			>
 				<div className="flex flex-grow basis-full items-center p-1 sm:basis-0">
 					{settings}
 				</div>
