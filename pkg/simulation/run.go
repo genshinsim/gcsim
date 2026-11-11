@@ -404,6 +404,7 @@ func (s *Simulation) nextFrame() (bool, error) {
 		s.handleHurt()
 	}
 	s.C.Events.Emit(event.OnTick)
+	s.yieldToGC()
 	return s.stopCheck(), nil
 }
 
