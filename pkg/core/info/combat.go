@@ -90,6 +90,8 @@ type Target interface {
 	Tick()                                         // called every tick
 	Kill()
 	// for collision check
+	// CollidableWith can only turn true for a gadget already added to combat if the gadget then
+	// calls Combat.EnableCollisionChecks, as target.Target's SetCollidableWith does.
 	CollidableWith(TargettableType) bool
 	CollidedWith(t Target)
 	WillCollide(Shape) bool

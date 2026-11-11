@@ -48,6 +48,7 @@ func (h *Handler) AddGadget(t info.Gadget) {
 	}
 	h.gadgets = append(h.gadgets, t)
 	t.SetKey(h.nextkey())
+	h.checkCollidable(t)
 }
 
 func (h *Handler) ReplaceGadget(key info.TargetKey, t info.Gadget) {
@@ -55,7 +56,18 @@ func (h *Handler) ReplaceGadget(key info.TargetKey, t info.Gadget) {
 	for i, v := range h.gadgets {
 		if v != nil && v.Key() == key {
 			h.gadgets[i] = t
+			if t != nil {
+				h.checkCollidable(t)
+			}
 		}
+	}
+}
+
+// checkCollidable enables the collision checks in Tick if t can collide with anything they
+// check against.
+func (h *Handler) checkCollidable(t info.Gadget) {
+	if t.CollidableWith(info.TargettablePlayer) || t.CollidableWith(info.TargettableEnemy) {
+		h.EnableCollisionChecks()
 	}
 }
 
