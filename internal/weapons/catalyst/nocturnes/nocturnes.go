@@ -12,8 +12,10 @@ import (
 )
 
 const (
-	ICDKey  = "nocturnes-curtain-call-icd"
-	buffKey = "nocturnes-curtain-call-buff"
+	ICDKey    = "nocturnes-curtain-call-icd"
+	buffName  = "nocturnes-curtain-call-buff"
+	hpBuffKey = buffName + "-hp"
+	cdBuffKey = buffName + "-cd"
 )
 
 type Weapon struct {
@@ -74,18 +76,19 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 
-		if !char.StatusIsActive(buffKey) {
+		if !char.StatusIsActive(cdBuffKey) {
 			return
 		}
 
-		atk.Snapshot.Stats[attributes.CD] += 0.4 + float64(r)*0.2
+		atk.Snapshot.Stats[attributes.CD] += critBuff[attributes.CD]
 	}
 
-	c.Events.Subscribe(event.OnSpecialReactionAttack, onLunarReactionAttackF, buffKey)
-	c.Events.Subscribe(event.OnEnemyDamage, onDmgF, buffKey)
-	c.Events.Subscribe(event.OnLunarCharged, onReactF, buffKey)
-	c.Events.Subscribe(event.OnLunarBloom, onReactF, buffKey)
-	c.Events.Subscribe(event.OnLunarCrystallize, onReactF, buffKey)
+	key := fmt.Sprintf("%v-%v", buffName, char.Base.Key.String())
+	c.Events.Subscribe(event.OnSpecialReactionAttack, onLunarReactionAttackF, key)
+	c.Events.Subscribe(event.OnEnemyDamage, onDmgF, key)
+	c.Events.Subscribe(event.OnLunarCharged, onReactF, key)
+	c.Events.Subscribe(event.OnLunarBloom, onReactF, key)
+	c.Events.Subscribe(event.OnLunarCrystallize, onReactF, key)
 
 	return w, nil
 }
@@ -97,14 +100,14 @@ func nocturneBuff(char *character.CharWrapper, energy float64, hpBuff, critBuff 
 	}
 
 	char.AddStatMod(character.StatMod{
-		Base: modifier.NewBaseWithHitlag(fmt.Sprintf("%v-hp", buffKey), 12*60),
+		Base: modifier.NewBaseWithHitlag(hpBuffKey, 12*60),
 		Amount: func() []float64 {
 			return hpBuff
 		},
 	})
 
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag(fmt.Sprintf("%v-cd", buffKey), 12*60),
+		Base: modifier.NewBaseWithHitlag(cdBuffKey, 12*60),
 		Amount: func(atk *info.AttackEvent, t info.Target) []float64 {
 			if !atk.Info.AttackTag.IsLunar() {
 				return nil
