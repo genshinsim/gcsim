@@ -15,12 +15,13 @@ import (
 var sswContributorMult = []float64{0.6, 0.3, 0.05, 0.05}
 
 const (
-	StellarSwirlKey    = "stellar-swirl"
-	sswStackKey        = StellarSwirlKey + "-stacks"
-	sswMaxStacks       = 6
-	sswContributionKey = "stellar-swirl-contribution"
-	sswOwnerKey        = "stellar-swirl-owner"
-	RadianceSwirlKey   = "radiance-stellar-swirl"
+	StellarSwirlKey          = "stellar-swirl"
+	sswStackKey              = StellarSwirlKey + "-stacks"
+	sswMaxStacks             = 6
+	sswContributionKey       = "stellar-swirl-contribution"
+	sswOwnerKey              = "stellar-swirl-owner"
+	RadianceSwirlKey         = "radiance-stellar-swirl"
+	RadianceSwirlBonusDurKey = "radiance-stellar-swirl-bonus-dur"
 )
 
 type sswContribution = struct {
@@ -31,8 +32,9 @@ type sswContribution = struct {
 }
 
 func (r *Reactable) queueStellarSwirl(charIndex int, mod info.ReactionModKey) {
+	bonusDur := int(r.core.Flags.Custom[RadianceSwirlBonusDurKey])
 	for _, c := range r.core.Player.Chars() {
-		c.AddStatus(RadianceSwirlKey, 8*60, false)
+		c.AddStatus(RadianceSwirlKey, 8*60+bonusDur, false)
 	}
 
 	// stellar swirl triggers an aoe attack
