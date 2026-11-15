@@ -3,11 +3,9 @@ package vodyanitsa
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
-	"github.com/genshinsim/gcsim/pkg/reactable"
 )
 
 type char struct {
@@ -83,12 +81,6 @@ func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 func (c *char) stellarSwirlInit() {
 	c.lastVortexDetonateExp = -1
 	c.Core.Events.Subscribe(event.OnStellarVortexDetonate, func(args ...any) {
-		atk := args[1].(*info.AttackEvent)
-
-		if atk.Info.AttackTag != attacks.AttackTagReactionStellarSwirl {
-			return
-		}
-
 		if !c.StatusIsActive(skillKey) {
 			return
 		}
@@ -97,5 +89,14 @@ func (c *char) stellarSwirlInit() {
 }
 
 func (c *char) recentWandering() bool {
-	return c.Core.F < c.lastVortexDetonateExp || (c.StatusIsActive(reactable.RadianceSwirlKey) && c.StatusIsActive(skillKey))
+	if c.Core.F < c.lastVortexDetonateExp {
+		return true
+	}
+
+	for _, g := range c.Core.Combat.Gadgets() {
+		if g != nil && g.GadgetTyp() == info.GadgetTypStellarVortex {
+			return true
+		}
+	}
+	return false
 }

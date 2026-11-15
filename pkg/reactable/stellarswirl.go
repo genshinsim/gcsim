@@ -65,9 +65,11 @@ func (r *Reactable) queueStellarSwirl(charIndex int, mod info.ReactionModKey) {
 		if willHit, _ := e.AttackWillLand(ap); !willHit {
 			continue
 		}
-		ai, snap := r.calcStellarSwirlDmg(e, ai, ap, contribMap, 0.75)
-		ai.ActorIndex = charIndex
-		r.core.QueueAttackWithSnap(ai, snap, combat.NewSingleTargetHit(e.Key()), 3)
+		r.core.Tasks.Add(func() {
+			ai, snap := r.calcStellarSwirlDmg(e, ai, ap, contribMap, 0.75)
+			ai.ActorIndex = charIndex
+			r.core.QueueAttackWithSnap(ai, snap, combat.NewSingleTargetHit(e.Key()), 0)
+		}, 3)
 	}
 
 	r.addSSwContributor(contribMap)

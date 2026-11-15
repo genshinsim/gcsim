@@ -105,7 +105,7 @@ func (c *char) a4Init() {
 	// even in AoE.
 	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
 		ae := args[1].(*info.AttackEvent)
-		owner := args[2].(int)
+		owner := ae.Info.ActorIndex
 		if !c.StatusIsActive(a4Key) {
 			return
 		}
@@ -136,10 +136,6 @@ func (c *char) a4Init() {
 			return
 		}
 
-		if !c.a4StacksCheck(ae.Info.ActorIndex) {
-			return
-		}
-
 		var amt float64
 		switch ae.Info.AttackTag {
 		case attacks.AttackTagNormal,
@@ -153,10 +149,23 @@ func (c *char) a4Init() {
 			if c.recentWandering() {
 				return
 			}
+			if !c.a4StacksCheck(ae.Info.ActorIndex) {
+				return
+			}
 			amt = max(min((c.MaxHP()-40000)*140/1000, 3500), 0)
 		case attacks.AttackTagDirectStellarSwirl:
+			if !c.recentWandering() {
+				return
+			}
+			if !c.a4StacksCheck(ae.Info.ActorIndex) {
+				return
+			}
 			amt = max(min((c.MaxHP()-40000)*260/1000, 6500), 0)
 		case attacks.AttackTagReactionStellarSwirl:
+			if !c.recentWandering() {
+				return
+			}
+
 			// Based on testing, even if there are multiple off field contributors, only 1 stack
 			// of Chorus is consumed per reaction attack
 			c.a4StacksRemoveReaction(activeContrib, offFieldContrib)

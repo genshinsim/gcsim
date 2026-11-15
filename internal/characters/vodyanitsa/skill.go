@@ -55,19 +55,18 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5.5)
 
-	c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB, c.skillShredCB)
+	c.Core.QueueAttack(ai, ap, skillHitmark, skillHitmark, c.particleCB, c.skillShredCB)
 
-	c.c2OnSkillAttack()
-
-	c.skillSrc = c.Core.F
-	c.Core.Tasks.Add(func() { c.skillHealTask(c.skillSrc) }, skillFirstHeal)
-	c.Core.Tasks.Add(func() { c.skillAttackTask(c.skillSrc) }, skillHitmark+skillFirstTick)
+	src := c.Core.F
+	c.skillSrc = src
+	c.Core.Tasks.Add(func() { c.skillHealTask(src) }, skillFirstHeal)
+	c.Core.Tasks.Add(func() { c.skillAttackTask(src) }, skillHitmark+skillFirstTick)
 
 	c.AddStatus(skillKey, skillDur+c.c2SkillDurBonus(), false)
 
 	c.SetCD(action.ActionSkill, 16*60)
 
-	c.a1OnSkill(c.skillSrc)
+	c.a1OnSkill(src)
 	c.a4OnSkill()
 	c.c6OnSkill()
 
@@ -120,14 +119,14 @@ func (c *char) skillHealTask(src int) {
 
 	maxhp := c.MaxHP()
 
-	c.c4BeforeHeal()
+	healBonus := c.c4BeforeHeal()
 
 	c.Core.Player.Heal(info.HealInfo{
 		Caller:  c.Index(),
 		Target:  c.Core.Player.Active(),
 		Message: "Song of Ages Past",
 		Src:     skillHealRatio[c.TalentLvlSkill()]*maxhp + skillHealFlat[c.TalentLvlSkill()],
-		Bonus:   c.Stat(attributes.Heal),
+		Bonus:   c.Stat(attributes.Heal) + healBonus,
 	})
 	c.c1OnHeal()
 
