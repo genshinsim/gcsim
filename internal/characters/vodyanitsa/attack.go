@@ -99,7 +99,7 @@ func (c *char) Attack(p map[string]int) (action.Info, error) {
 
 	return action.Info{
 		Frames:          frames.NewAttackFuncWithOffset(c.Character, attackFrames, windup),
-		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction],
+		AnimationLength: attackFrames[c.NormalCounter][action.InvalidAction] + windup,
 		CanQueueAfter:   attackHitmarks[c.NormalCounter] + windup,
 		State:           action.NormalAttackState,
 	}, nil
