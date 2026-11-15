@@ -105,8 +105,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		c.dreamDrifterExtensionsRemaining = dreamDrifterExtensions
 	}
 
-	c.c2ShredTask(c.Core.F)
-
 	travel, ok := p["travel"]
 	if !ok {
 		c.cloudTravel = cloudTravelTime
@@ -124,6 +122,8 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}
 
 	c.applyDreamDrifterEffect()
+
+	c.c2ShredTask(c.Core.F)
 
 	c.SetCDWithDelay(action.ActionSkill, skillCd, skillCdDelay)
 
