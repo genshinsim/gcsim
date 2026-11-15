@@ -3,7 +3,6 @@ package vodyanitsa
 import (
 	tmpl "github.com/genshinsim/gcsim/internal/template/character"
 	"github.com/genshinsim/gcsim/pkg/core"
-	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
 )
@@ -13,9 +12,9 @@ type char struct {
 
 	skillSrc int
 
-	lastVortexDetonateExp int
-	leadVocal             int
-	chorus                int
+	nearbyWanderingVortexExp int
+	leadVocal                int
+	chorus                   int
 
 	c1Buff   []float64
 	c2Buff   []float64
@@ -39,8 +38,6 @@ func NewChar(s *core.Core, w *character.CharWrapper, _ info.CharacterProfile) er
 }
 
 func (c *char) Init() error {
-	c.stellarSwirlInit()
-
 	c.a1Init()
 	c.a4Init()
 
@@ -76,27 +73,4 @@ func (c *char) AnimationStartDelay(k info.AnimationDelayKey) int {
 		return 5
 	}
 	return c.Character.AnimationStartDelay(k)
-}
-
-func (c *char) stellarSwirlInit() {
-	c.lastVortexDetonateExp = -1
-	c.Core.Events.Subscribe(event.OnStellarVortexDetonate, func(args ...any) {
-		if !c.StatusIsActive(skillKey) {
-			return
-		}
-		c.lastVortexDetonateExp = c.Core.F + 5*60
-	}, "vodyanitsa-ssw")
-}
-
-func (c *char) recentWandering() bool {
-	if c.Core.F < c.lastVortexDetonateExp {
-		return true
-	}
-
-	for _, g := range c.Core.Combat.Gadgets() {
-		if g != nil && g.GadgetTyp() == info.GadgetTypStellarVortex {
-			return true
-		}
-	}
-	return false
 }

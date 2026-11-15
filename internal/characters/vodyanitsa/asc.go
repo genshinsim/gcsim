@@ -1,6 +1,8 @@
 package vodyanitsa
 
 import (
+	"math"
+
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
@@ -27,15 +29,30 @@ func (c *char) a1Init() {
 	if c.Base.Ascension < 1 {
 		return
 	}
+	c.nearbyWanderingVortexExp = -1
 
-	c.Core.Events.Subscribe(event.OnStellarVortex, c.a1ApplyShred, a1Key)
-	c.Core.Events.Subscribe(event.OnStellarVortexDetonate, c.a1ApplyShred, a1Key)
+	c.Core.Events.Subscribe(event.OnStellarVortex, func(args ...any) {
+		if !c.StatusIsActive(skillKey) {
+			return
+		}
+		c.nearbyWanderingVortexExp = c.Core.F + math.MaxUint16
+		c.a1ApplyShred()
+	}, a1Key)
+
+	c.Core.Events.Subscribe(event.OnStellarVortexDetonate, func(args ...any) {
+		if !c.StatusIsActive(skillKey) {
+			return
+		}
+		c.nearbyWanderingVortexExp = c.Core.F + 5*60
+		c.a1ApplyShred()
+	}, "vodyanitsa-ssw")
 }
 
-func (c *char) a1ApplyShred(args ...any) {
-	if !c.StatusIsActive(skillKey) {
-		return
-	}
+func (c *char) recentWandering() bool {
+	return c.Core.F < c.nearbyWanderingVortexExp
+}
+
+func (c *char) a1ApplyShred() {
 	ap := combat.NewCircleHitOnTarget(c.Core.Combat.Player(), nil, 5)
 	for _, e := range c.Core.Combat.EnemiesWithinArea(ap, nil) {
 		e, ok := e.(*enemy.Enemy)
