@@ -9,6 +9,7 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
 	"github.com/genshinsim/gcsim/pkg/core/combat"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/glog"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
@@ -191,6 +192,9 @@ func (c *char) fireBullets() {
 	if c.aimSrc < 0 {
 		return
 	}
+
+	// the charge ends the moment the volley is released
+	c.Core.Events.Emit(event.OnAimRelease, c.Index())
 
 	ai := info.AttackInfo{
 		ActorIndex:     c.Index(),

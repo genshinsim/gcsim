@@ -76,6 +76,7 @@ const (
 	OnChargeAttack // nil
 	OnPlunge       // nil
 	OnAimShoot     // nil
+	OnAimRelease   // char index; emitted when an aimed/charged (AttackTagExtra) attack is released, i.e. at its snapshot frame
 	OnDash
 	OnSpecialReactionAttack // target, AttackEvent; event so predamagemods can be applied to the individual lunar/stellar contributions. Emitted once per contributor
 	OnMoondriftHarmony      // target, AttackEvent;
