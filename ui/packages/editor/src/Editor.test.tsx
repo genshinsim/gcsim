@@ -72,6 +72,29 @@ test("an error marks the code and lists the whole message in a panel", () => {
 	expect(screen.queryByRole("alert")).toBeNull();
 });
 
+test("the error panel shows under the editor by default, or above it on request", () => {
+	const { container, rerender } = render(<Editor value="a" error="bad" />);
+	expect(
+		container.querySelector(".cm-panels-bottom [role=alert]"),
+	).not.toBeNull();
+	rerender(<Editor value="a" error="bad" errorPanelAt="top" />);
+	expect(container.querySelector(".cm-panels-top [role=alert]")).not.toBeNull();
+	expect(container.querySelector(".cm-panels-bottom")).toBeNull();
+});
+
+test("scrollMargins keeps the cursor clear of content pinned over the editor", () => {
+	let margins = { top: 10, bottom: 20 };
+	const { container } = render(
+		<Editor value="a" scrollMargins={() => margins} />,
+	);
+	const view = viewOf(container);
+	const read = () =>
+		view.state.facet(EditorView.scrollMargins).map((f) => f(view));
+	expect(read()).toContainEqual({ top: 10, bottom: 20 });
+	margins = { top: 30, bottom: 40 };
+	expect(read()).toContainEqual({ top: 30, bottom: 40 });
+});
+
 test("an error's position jumps to its line", () => {
 	const { container } = render(
 		<Editor value={"a\nbcd"} error={"ln2:3: bad"} />,

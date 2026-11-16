@@ -51,7 +51,7 @@ function SimulatorEditor() {
 
 export function Simulator() {
 	return (
-		<Viewport className="flex flex-col gap-2">
+		<Viewport className="flex flex-auto flex-col gap-2">
 			<ImportedCharactersProvider>
 				<SimulatorEditor />
 			</ImportedCharactersProvider>

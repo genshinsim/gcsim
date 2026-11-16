@@ -60,11 +60,11 @@ describe("SimulatorLayout", () => {
 		expect(team.getAllByRole("button")).toHaveLength(1);
 	});
 
-	it("shows the config error once, under the editor", () => {
+	it("shows the config error once, above the code", () => {
 		const { container } = renderLayout({ error: "bad line 3" });
 		expect(screen.getAllByText("bad line 3")).toHaveLength(1);
 		expect(
-			container.querySelector("#config_editor [role=alert]"),
+			container.querySelector("#config_editor .cm-panels-top [role=alert]"),
 		).toHaveTextContent("bad line 3");
 	});
 
