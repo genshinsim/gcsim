@@ -91,7 +91,7 @@ func (c *char) revelationInit() {
 	c.Core.Events.Subscribe(event.OnEnemyHit, onSkillHit, "mizuki-on-skill-hit")
 
 	c.revelationBuff = make([]float64, attributes.EndStatType)
-	c.revelationBuff[attributes.EM] = c.Stat(attributes.EM) * 0.1
+	c.revelationBuff[attributes.EM] = c.NonExtraStat(attributes.EM) * 0.1
 	for _, char := range c.Core.Player.Chars() {
 		char.AddStatMod(character.StatMod{
 			Base:  modifier.NewBase(revelationShareEMKey, -1),
@@ -119,6 +119,7 @@ func (c *char) revelationShareEM(src int) {
 		return
 	}
 
+	c.revelationBuff[attributes.EM] = c.NonExtraStat(attributes.EM) * 0.1
 	c.QueueCharTask(func() {
 		c.revelationShareEM(src)
 	}, 0.5*60)
