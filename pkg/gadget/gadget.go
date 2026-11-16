@@ -45,6 +45,9 @@ func (g *Gadget) Type() info.TargettableType { return info.TargettableGadget }
 func (g *Gadget) Src() int                   { return g.src }
 func (g *Gadget) GadgetTyp() info.GadgetTyp  { return g.gadgetTyp }
 
+// HandleSharedAttack declines, so the gadget's HandleAttack gets its own copy of the event.
+func (g *Gadget) HandleSharedAttack(*info.AttackEvent) (float64, bool) { return 0, false }
+
 func (g *Gadget) Tick() {
 	if g.OnThinkInterval != nil && g.ThinkInterval > 0 {
 		if g.sinceLastThink < g.ThinkInterval {

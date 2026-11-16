@@ -26,5 +26,8 @@ func (s *Gadget) CalcTempDirection(trg info.Point) info.Point {
 	return info.DefaultDirection()
 }
 
+// HandleSharedAttack does nothing, as HandleAttack, so combat can skip copying the event.
+func (s *Gadget) HandleSharedAttack(*info.AttackEvent) (float64, bool) { return 0, true }
+
 func (s *Gadget) Type() info.TargettableType                           { return info.TargettableGadget }
 func (s *Gadget) Attack(*info.AttackEvent, glog.Event) (float64, bool) { return 0, false }
