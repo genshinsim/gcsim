@@ -1421,6 +1421,13 @@
       "weapon_class": "WEAPON_CATALYST",
       "image_name": "UI_EquipIcon_Catalyst_Figurines_Awaken"
     },
+    "starsealededict": {
+      "id": 14525,
+      "key": "starsealededict",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_Chernaya_Awaken"
+    },
     "sturdybone": {
       "id": 11430,
       "key": "sturdybone",

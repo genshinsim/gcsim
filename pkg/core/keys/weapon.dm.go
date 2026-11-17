@@ -246,6 +246,7 @@ const (
 	StaffOfHoma                                   // staffofhoma
 	StaffOfTheScarletSands                        // staffofthescarletsands
 	StarcallersWatch                              // starcallerswatch
+	StarsealedEdict                               // starsealededict
 	SturdyBone                                    // sturdybone
 	SummitShaper                                  // summitshaper
 	SunnyMorningSleepIn                           // sunnymorningsleepin
@@ -502,6 +503,7 @@ var _WeaponNames = [...]string{
 	"staffofhoma",
 	"staffofthescarletsands",
 	"starcallerswatch",
+	"starsealededict",
 	"sturdybone",
 	"summitshaper",
 	"sunnymorningsleepin",
@@ -758,6 +760,7 @@ var _WeaponValues = [...]Weapon{
 	StaffOfHoma,
 	StaffOfTheScarletSands,
 	StarcallersWatch,
+	StarsealedEdict,
 	SturdyBone,
 	SummitShaper,
 	SunnyMorningSleepIn,
