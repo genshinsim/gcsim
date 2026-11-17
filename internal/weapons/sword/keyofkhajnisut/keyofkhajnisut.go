@@ -98,7 +98,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		}
 
 		char.AddStatus(icdKey, cd, true)
-	}, "khaj-nisut")
+	}, "khaj-nisut-"+char.Base.Key.String())
 
 	return w, nil
 }
