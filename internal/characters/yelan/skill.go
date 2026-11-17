@@ -58,20 +58,17 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		}
 	}
 
-	if !c.StatusIsActive("yelanc4") {
-		c.c4count = 0
-		c.Core.Log.NewEvent("c4 stacks set to 0", glog.LogCharacterEvent, c.Index())
-	}
+	enemiesMarked := 0
 
 	// add a task to loop through targets and mark them
-	marked, ok := p[skillTargetCountTag]
+	maxMarks, ok := p[skillTargetCountTag]
 	// default 1
 	if !ok {
-		marked = 1
+		maxMarks = 1
 	}
 	c.Core.Tasks.Add(func() {
 		for _, t := range c.Core.Combat.Enemies() {
-			if marked == 0 {
+			if enemiesMarked == maxMarks {
 				break
 			}
 			e, ok := t.(*enemy.Enemy)
@@ -81,11 +78,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			e.SetTag(skillMarkedTag, 1)
 			c.Core.Log.NewEvent("marked by Lifeline", glog.LogCharacterEvent, c.Index()).
 				Write("target", e.Key())
-			marked--
-			c.c4count++
-			if c.Base.Cons >= 4 {
-				c.AddStatus("yelanc4", 25*60, true)
-			}
+			enemiesMarked++
 		}
 	}, skillHitmark) // TODO: frames for hold e
 
@@ -120,7 +113,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 			e.SetTag(skillMarkedTag, 0)
 			c.Core.Log.NewEvent("damaging marked target", glog.LogCharacterEvent, c.Index()).
 				Write("target", e.Key())
-			marked--
 			// queueing attack one frame later
 			// TODO: does hold have different attack size? don't think so?
 			c.Core.QueueAttack(ai, combat.NewSingleTargetHit(e.Key()), 1, 1, c.particleCB, cb)
@@ -128,14 +120,11 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 
 		// activate c4 if relevant
 		// TODO: check if this is accurate
-		if c.Base.Cons >= 4 && c.c4count > 0 {
+		if c.Base.Cons >= 4 && enemiesMarked > 0 {
 			m := make([]float64, attributes.EndStatType)
-			m[attributes.HPP] = float64(c.c4count) * 0.1
-			if m[attributes.HPP] > 0.4 {
-				m[attributes.HPP] = 0.4
-			}
+			m[attributes.HPP] = 0.1 * float64(min(enemiesMarked, 4))
 			c.Core.Log.NewEvent("c4 activated", glog.LogCharacterEvent, c.Index()).
-				Write("enemies count", c.c4count)
+				Write("enemies count", enemiesMarked)
 			for _, char := range c.Core.Player.Chars() {
 				char.AddStatMod(character.StatMod{
 					Base:         modifier.NewBaseWithHitlag("yelan-c4", 25*60),

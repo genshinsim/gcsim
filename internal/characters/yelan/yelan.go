@@ -24,7 +24,6 @@ type char struct {
 	breakthrough bool // tracks breakthrough state
 	c2icd        int
 	c6count      int
-	c4count      int // keep track of number of enemies tagged
 	burstWatcher *minazuki.Watcher
 }
 
