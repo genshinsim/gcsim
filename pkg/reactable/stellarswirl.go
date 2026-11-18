@@ -41,8 +41,8 @@ func (r *Reactable) queueStellarSwirl(charIndex int, mod info.ReactionModKey) {
 		DamageSrc:        r.self.Key(),
 		Abil:             "Stellar Swirl",
 		AttackTag:        attacks.AttackTagReactionStellarSwirl,
-		ICDTag:           attacks.ICDTagNone,      // TODO: use stellar swirl ICD tag
-		ICDGroup:         attacks.ICDGroupDefault, // TODO: use stellar swirl ICD group
+		ICDTag:           attacks.ICDTagNone,
+		ICDGroup:         attacks.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeDefault,
 		Element:          attributes.Anemo,
 		IgnoreDefPercent: 1,
