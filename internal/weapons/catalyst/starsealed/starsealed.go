@@ -47,6 +47,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if c.Player.Active() != char.Index() {
 			return
 		}
+		// clear stacks
+		w.stacks = 0
 		// refresh duration if already active
 		if char.StatModIsActive("starsealed-skill-buff") {
 			char.ExtendStatus(
@@ -55,9 +57,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			)
 			return
 		}
-		// clear stacks
-		w.stacks = 0
-		// add buff
+		// add EM buff
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag("starsealed-skill-buff", 20*60),
 			Amount: func() []float64 {
