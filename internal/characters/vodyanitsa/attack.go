@@ -13,7 +13,7 @@ import (
 
 var (
 	attackFrames   [][]int
-	attackHitmarks = []int{13, 13, 23, 34} // N1 hitmark includes windup
+	attackHitmarks = []int{13, 13, 23, 34}
 	attackSize     = [][]float64{{0.7}, {0.7}, {0.7}, {2, 10}}
 )
 
@@ -43,7 +43,6 @@ func init() {
 	attackFrames[3][action.ActionWalk] = 99
 }
 
-// Standard attack function with seal handling
 func (c *char) Attack(p map[string]int) (action.Info, error) {
 	travel, ok := p["travel"]
 	if !ok {

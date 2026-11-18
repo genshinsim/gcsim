@@ -116,10 +116,10 @@ func (c *char) a4Init() {
 	activeContrib := false
 	offFieldContrib := false
 
-	// this is emitted up to 4 times per attack, but we should only consume 1 stack per "attack"
-	// so we only add damage in OnLunarReactionAttack, but we will consume in OnEnemyHit
-	// This relies on OnSpecialReactionAttack to be emitted before the corresponding OnEnemyHit,
-	// even in AoE.
+	// this is emitted up to 4 times per attack, but we should only consume 1 stack each of
+	// Lead Vocal and Chorus per "attack" so we only add damage in OnSpecialReactionAttack, but we
+	// will consume in OnEnemyHit. This relies on OnSpecialReactionAttack to be emitted before the
+	// corresponding OnEnemyHit, even in AoE.
 	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
 		ae := args[1].(*info.AttackEvent)
 		owner := ae.Info.ActorIndex
