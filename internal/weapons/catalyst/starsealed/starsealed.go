@@ -29,13 +29,16 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	skillem := 48 * multiplier
 	stackem := 24 * multiplier
 	stackssccd := 0.12 * multiplier
-	m := make([]float64, attributes.EndStatType)
+	constantCD := make([]float64, attributes.EndStatType)
+	constantCD[attributes.CD] = critdmg
+	skillEM := make([]float64, attributes.EndStatType)
+	skillEM[attributes.EM] = skillem
+	stackEM := make([]float64, attributes.EndStatType)
 
 	char.AddStatMod(character.StatMod{
 		Base: modifier.NewBase("Starsealed-constant-CDMG", -1),
 		Amount: func() []float64 {
-			m[attributes.CD] = critdmg
-			return m
+			return constantCD
 		},
 	})
 
@@ -45,7 +48,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			return
 		}
 		// refresh duration if already active
-		if !char.StatModIsActive("starsealed-skill-buff") {
+		if char.StatModIsActive("starsealed-skill-buff") {
 			char.ExtendStatus(
 				"starsealed-skill-buff",
 				20*60-char.StatusDuration("starsealed-skill-buff"),
@@ -58,8 +61,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		char.AddStatMod(character.StatMod{
 			Base: modifier.NewBaseWithHitlag("starsealed-skill-buff", 20*60),
 			Amount: func() []float64 {
-				m[attributes.EM] = skillem
-				return m
+				return skillEM
 			},
 		})
 	}, fmt.Sprintf("Starsealed-on-skill-%v", char.Base.Key.String()))
@@ -89,8 +91,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			if !char.StatModIsActive("starsealed-skill-buff") {
 				return nil
 			}
-			m[attributes.EM] = stackem * float64(w.stacks)
-			return m
+			stackEM[attributes.EM] = stackem * float64(w.stacks)
+			return stackEM
 		},
 	})
 
