@@ -44,6 +44,14 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if c.Player.Active() != char.Index() {
 			return
 		}
+		// refresh duration if already active
+		if !char.StatModIsActive("starsealed-skill-buff") {
+			char.ExtendStatus(
+				"starsealed-skill-buff",
+				20*60-char.StatusDuration("starsealed-skill-buff"),
+			)
+			return
+		}
 		// clear stacks
 		w.stacks = 0
 		// add buff
