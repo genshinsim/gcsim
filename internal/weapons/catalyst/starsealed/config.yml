@@ -1,0 +1,18 @@
+use: pipeline
+kind: weapon
+name: starsealededict
+
+shortcuts:
+  - starsealed
+  - edict
+
+talents:
+  # Increases CRIT DMG by 24%. The equipping character gains the Crystal Compounding
+  # effect when they use their Elemental Skill, increasing Elemental Mastery by 48 for
+  # 20s. During this time, the equipping character gains a Law of Combustion stack when
+  # a nearby party member triggers an Elemental Reaction. Each stack increases Elemental
+  # Mastery by an additional 24. Max 3 stacks. These stacks last until Crystal Compounding
+  # ends or the equipping character uses their Elemental Skill again.
+  # Radiance: Stellar-Conduct: Each Law of Combustion stack also increases the equipping
+  # character's Stellar-Conduct CRIT DMG by 12%.
+  # These effects can be triggered even when the equipping character is off-field.

@@ -206,6 +206,7 @@ var weaponMap = map[string]string{
 	"staffofhoma":                     "UI_EquipIcon_Pole_Homa_Awaken",
 	"staffofthescarletsands":          "UI_EquipIcon_Pole_Deshret_Awaken",
 	"starcallerswatch":                "UI_EquipIcon_Catalyst_Figurines_Awaken",
+	"starsealededict":                 "UI_EquipIcon_Catalyst_Chernaya_Awaken",
 	"sturdybone":                      "UI_EquipIcon_Sword_Umpakati_Awaken",
 	"summitshaper":                    "UI_EquipIcon_Sword_Kunwu_Awaken",
 	"sunnymorningsleepin":             "UI_EquipIcon_Catalyst_SakuraFan_Awaken",
