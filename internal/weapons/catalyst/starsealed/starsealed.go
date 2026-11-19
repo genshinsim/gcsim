@@ -1,8 +1,6 @@
 package starsealed
 
 import (
-	"fmt"
-
 	"github.com/genshinsim/gcsim/pkg/core"
 	"github.com/genshinsim/gcsim/pkg/core/attacks"
 	"github.com/genshinsim/gcsim/pkg/core/attributes"
@@ -20,7 +18,7 @@ type Weapon struct {
 }
 
 const (
-	skillembuff = "starsealed-em-buff"
+	skillEMKey = "starsealed-em-buff"
 )
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
@@ -29,18 +27,20 @@ func (w *Weapon) Init() error      { return nil }
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{char: char}
 	multiplier := 0.75 + (0.25 * float64(p.Refine))
-	critdmg := 0.24 * multiplier
-	skillem := 48 * multiplier
-	stackem := 24 * multiplier
-	stackssccd := 0.12 * multiplier
-	constantCD := make([]float64, attributes.EndStatType)
-	constantCD[attributes.CD] = critdmg
-	skillEM := make([]float64, attributes.EndStatType)
+	critDmg := 0.24 * multiplier
+	skillEM := 48 * multiplier
+	stackEM := 24 * multiplier
+	stackSscCD := 0.12 * multiplier
+
+	mEM := make([]float64, attributes.EndStatType)
+	mSscCD := make([]float64, attributes.EndStatType)
+	mCD := make([]float64, attributes.EndStatType)
+	mCD[attributes.CD] = critDmg
 
 	char.AddStatMod(character.StatMod{
-		Base: modifier.NewBase("Starsealed-cd", -1),
+		Base: modifier.NewBase("starsealed-cd", -1),
 		Amount: func() []float64 {
-			return constantCD
+			return mCD
 		},
 	})
 
@@ -53,17 +53,17 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		w.stacks = 0
 		// readds the buff if already active - refreshes it
 		char.AddStatMod(character.StatMod{
-			Base: modifier.NewBaseWithHitlag(skillembuff, 20*60),
+			Base: modifier.NewBaseWithHitlag(skillEMKey, 20*60),
 			Amount: func() []float64 {
-				skillEM[attributes.EM] = skillem + stackem*float64(w.stacks)
-				return skillEM
+				mEM[attributes.EM] = skillEM + stackEM*float64(w.stacks)
+				return mEM
 			},
 		})
 	}, "starsealed-on-skill-"+char.Base.Key.String())
 
 	onReaction := func(args ...any) {
 		// no stacks if the buff is not active
-		if !char.StatModIsActive(skillembuff) {
+		if !char.StatModIsActive(skillEMKey) {
 			return
 		}
 		// adds stack on team reaction, max 3 stacks
@@ -71,20 +71,21 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			w.stacks++
 		}
 	}
+
 	// activates the stacking function when a reaction happens
 	for e := event.ReactionEventStartDelim + 1; e < event.ReactionEventEndDelim; e++ {
 		c.Events.Subscribe(
 			e,
 			onReaction,
-			fmt.Sprintf("starsealed-reaction-%s-%d", char.Base.Key.String(), e),
+			"starsealed-reaction-"+char.Base.Key.String(),
 		)
 	}
+
 	// adds the stacking SSC crit dmg
-	sscCrit := make([]float64, attributes.EndStatType)
 	char.AddAttackMod(character.AttackMod{
-		Base: modifier.NewBaseWithHitlag("starsealed-ssc-crit", -1),
+		Base: modifier.NewBaseWithHitlag("starsealed-ssc-cd", -1),
 		Amount: func(atk *info.AttackEvent, _ info.Target) []float64 {
-			if !char.StatModIsActive(skillembuff) {
+			if !char.StatModIsActive(skillEMKey) {
 				return nil
 			}
 			if !w.isStellarRadiance() {
@@ -96,8 +97,8 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 			if w.stacks == 0 {
 				return nil
 			}
-			sscCrit[attributes.CD] = stackssccd * float64(w.stacks)
-			return sscCrit
+			mSscCD[attributes.CD] = stackSscCD * float64(w.stacks)
+			return mSscCD
 		},
 	})
 
