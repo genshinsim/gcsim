@@ -1,0 +1,86 @@
+use: pipeline
+kind: character
+name: vodyanitsa
+
+shortcuts:
+    - vody
+
+talents:
+    - attack:
+          - attack(1-Hit DMG)
+          - attack(2-Hit DMG)
+          - attack(3-Hit DMG)
+          - attack(4-Hit DMG)
+    - charge: attack(Charged Attack DMG)
+
+    - skill: skill(Skill DMG)
+    - skillDot: skill(Horn of Spring's Call DMG)
+    - skillHealFlat: skill(Song of Ages Past Healing) # {} + {} Max HP
+    - skillHealRatio: skill(Song of Ages Past Healing|1) # {} + {} Max HP
+    - skillShred: skill(Hydro/Cryo RES Reduction)
+
+    - burst: burst(Skill DMG)
+    - burstBonus: burst(Song of Ages Past DMG Bonus)
+
+docs:
+    fields:
+        .vodyanitsa.lead-vocal: Number of Lead Vocal stacks that Vodyanitsa has.
+        .vodyanitsa.chorus: Number of Chorus stacks that Vodyanitsa has.
+    frames:
+        - count: https://docs.google.com/spreadsheets/d/1l-rgH3cR58AQ55MbxoUK-yTPeN-QriJUDSho1E6rIPc/edit?usp=sharing
+          count_credit: caramielle.
+          video: https://youtu.be/n2-Kmdb2H8Y
+          video_credit: caramielle.
+        - count: https://docs.google.com/spreadsheets/d/1l-rgH3cR58AQ55MbxoUK-yTPeN-QriJUDSho1E6rIPc/edit?usp=sharing
+          count_credit: caramielle.
+          video: https://youtu.be/vGzXHpPYsoY
+          video_credit: caramielle.
+
+abilities:
+    - name: attack
+      params:
+          travel: Projectile travel time. Default 10 frames.
+      hitbox:
+          - name: N1
+            shape: Circle
+            center: PrimaryTarget
+            radius: 0.7
+
+          - name: N2
+            shape: Circle
+            center: PrimaryTarget
+            radius: 0.7
+
+          - name: N3
+            shape: Circle
+            center: PrimaryTarget
+            radius: 0.7
+
+          - name: N4
+            shape: Box
+            center: PrimaryTarget
+            box: [2, 10]
+    - name: charge
+      params:
+          travel: Projectile travel time. Default 10 frames.
+      hitbox:
+          - name: CA
+            shape: Circle
+            center: PrimaryTarget
+            radius: 2
+    - name: skill
+      hitbox:
+          - name: E-Initial
+            shape: Circle
+            center: Player
+            radius: 5.5
+          - name: E-DoT
+            shape: Circle
+            center: PrimaryTarget
+            radius: 3
+    - name: burst
+      hitbox:
+          - name: Q
+            shape: Circle
+            center: Player
+            radius: 5

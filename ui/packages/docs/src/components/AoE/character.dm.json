@@ -13151,6 +13151,65 @@
       "box_y": 1
     }
   ],
+  "vodyanitsa": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 0.7
+    },
+    {
+      "ability": "attack",
+      "name": "N2",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 0.7
+    },
+    {
+      "ability": "attack",
+      "name": "N3",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 0.7
+    },
+    {
+      "ability": "attack",
+      "name": "N4",
+      "shape": "Box",
+      "center": "PrimaryTarget",
+      "box_x": 2,
+      "box_y": 10
+    },
+    {
+      "ability": "charge",
+      "name": "CA",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 2
+    },
+    {
+      "ability": "skill",
+      "name": "E-Initial",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 5.5
+    },
+    {
+      "ability": "skill",
+      "name": "E-DoT",
+      "shape": "Circle",
+      "center": "PrimaryTarget",
+      "radius": 3
+    },
+    {
+      "ability": "burst",
+      "name": "Q",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 5
+    }
+  ],
   "wanderer": [
     {
       "ability": "attack",
