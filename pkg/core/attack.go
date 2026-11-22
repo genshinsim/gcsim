@@ -1,6 +1,8 @@
 package core
 
 import (
+	"github.com/genshinsim/gcsim/pkg/core/attacks"
+	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 )
 
@@ -59,6 +61,16 @@ func (c *Core) QueueAttack(
 		if f != nil {
 			ae.Callbacks = append(ae.Callbacks, f)
 		}
+	}
+
+	// charged (Extra-tag) attacks with a snapshot phase signal their release at the
+	// snapshot frame; used by e.g. flowerwreathedfeathers to know when charging stops.
+	// snapshotDelay <= 0 (immediate or no-snapshot) queues don't signal a release here
+	// because their queue frame is not the charge end (e.g. already-released follow-ups).
+	if a.AttackTag == attacks.AttackTagExtra && snapshotDelay > 0 {
+		c.Tasks.Add(func() {
+			c.Events.Emit(event.OnAimRelease, a.ActorIndex)
+		}, snapshotDelay)
 	}
 
 	switch {

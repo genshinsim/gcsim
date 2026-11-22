@@ -16,7 +16,9 @@ import (
 
 const (
 	buffStatus = "flowerwreathedfeathers"
-	icdStatus  = "flowerwreathedfeathers-icd"
+	// one stack is gained every 0.5s spent charging (i.e. in the aiming state)
+	stackInterval = 0.5 * 60
+	maxStacks     = 6
 )
 
 type Weapon struct {
@@ -26,14 +28,21 @@ type Weapon struct {
 	char     *character.CharWrapper
 	stacks   int
 	leaveSrc int
+	stackSrc int
 }
 
 func (w *Weapon) SetIndex(idx int) { w.Index = idx }
 func (w *Weapon) Init() error      { return nil }
 
-// Decreases Gliding Stamina consumption by 15%. When using Aimed Shots, the DMG dealt by Charged Attacks
-// increases by 6% every 0.5s. This effect can stack up to 6 times and will be removed 10s after leaving
-// Aiming Mode.
+// Decreases Gliding Stamina consumption by 15%. When using Aimed Shots, the DMG dealt by Charged
+// Attacks increases by 6% every 0.5s. This effect can stack up to 6 times and will be removed 10s
+// after leaving Aiming Mode.
+//
+// Implementation: each aim action starts a charging window; one stack is gained for every 0.5s
+// (30 frames) of charge time. Charging stops the moment the aimed shot is released (event.OnAimRelease,
+// e.g. Chasca's Shadowhunt volley release / a standard bow shot leaving the bow at its snapshot frame),
+// so a whole volley snapshots the stack count it was charged with. The stacks are removed 10s after
+// the character leaves Aiming Mode, unless they re-enter it in the meantime.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
 	w := &Weapon{
 		c:    c,
@@ -56,22 +65,28 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		},
 	})
 
+	// a new aim action starts a new charging window
 	c.Events.Subscribe(event.OnAimShoot, func(args ...any) {
 		if c.Player.Active() != char.Index() {
 			return
 		}
-		if char.StatusIsActive(icdStatus) {
+		// cancel any pending buff removal and start stacking
+		w.leaveSrc = -1
+		w.stackSrc = c.F
+		char.QueueCharTask(w.stackTick(w.stackSrc), stackInterval)
+	}, fmt.Sprintf("flower-wreathed-aim-%v", char.Base.Key.String()))
+
+	// the shot was released: charging is over, stop stacking
+	c.Events.Subscribe(event.OnAimRelease, func(args ...any) {
+		if len(args) < 1 {
 			return
 		}
-		char.AddStatus(icdStatus, 0.5*60, true)
-
-		w.leaveSrc = -1
-		if w.stacks < 6 {
-			w.stacks++
+		idx, ok := args[0].(int)
+		if !ok || idx != char.Index() {
+			return
 		}
-		c.Log.NewEvent("flower-wreathed feathers proc'd", glog.LogWeaponEvent, char.Index()).
-			Write("stacks", w.stacks)
-	}, fmt.Sprintf("flower-wreathed-aim-%v", char.Base.Key.String()))
+		w.stackSrc++
+	}, fmt.Sprintf("flower-wreathed-release-%v", char.Base.Key.String()))
 
 	c.Events.Subscribe(event.OnStateChange, func(args ...any) {
 		prev := args[0].(action.AnimationState)
@@ -86,6 +101,7 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if w.leaveSrc != -1 {
 			return
 		}
+		// left aiming mode: remove the buff after 10s
 		w.leaveSrc = c.F
 		char.QueueCharTask(w.clearBuff(w.leaveSrc), 10*60)
 	}, fmt.Sprintf("flower-wreathed-state-%v", char.Base.Key.String()))
@@ -104,6 +120,29 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 	}, fmt.Sprintf("flower-wreathed-swap-%v", char.Base.Key.String()))
 
 	return w, nil
+}
+
+// stackTick gains one stack every 0.5s while the charge is ongoing (character on field, in the
+// aiming state, and the shot has not been released yet). The src guard kills stale tick chains
+// when a new aim starts charging or when the shot is released.
+func (w *Weapon) stackTick(src int) func() {
+	return func() {
+		if w.stackSrc != src {
+			return
+		}
+		if w.c.Player.Active() != w.char.Index() {
+			return
+		}
+		if w.c.Player.CurrentState() != action.AimState {
+			return
+		}
+		if w.stacks < maxStacks {
+			w.stacks++
+			w.c.Log.NewEvent("flower-wreathed feathers stack gained", glog.LogWeaponEvent, w.char.Index()).
+				Write("stacks", w.stacks)
+		}
+		w.char.QueueCharTask(w.stackTick(src), stackInterval)
+	}
 }
 
 func (w *Weapon) clearBuff(src int) func() {
