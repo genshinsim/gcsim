@@ -97,6 +97,9 @@ console monitor.
 ### `DashPage` (`src/pages/dash-page.ts`) — the dash home (`/`)
 
 - `goto()` — navigate and wait for React to mount into `#root`.
+- `content`, `toolbar`, `runBar` — the app's scroll container (`#app_content`),
+  the pinned editor toolbar (`#config_toolbar`) and the pinned Run bar
+  (`#run_bar`), for layout checks.
 - `waitForLoaded()` — assert the title, the nav bar's Simulator link, and the
   "Open Simulator" CTA link. **Structural only.**
 - `waitForLoadedMobile()` — the same for the mobile layout, minus the nav link

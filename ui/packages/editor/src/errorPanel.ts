@@ -1,4 +1,4 @@
-import { StateEffect, StateField } from "@codemirror/state";
+import { Facet, StateEffect, StateField } from "@codemirror/state";
 import {
 	type EditorView,
 	type Panel,
@@ -12,7 +12,14 @@ export interface ErrorPanelValue {
 	title: string;
 }
 
+export type ErrorPanelPosition = "top" | "bottom";
+
 export const setErrorPanel = StateEffect.define<ErrorPanelValue>();
+
+export const errorPanelPosition = Facet.define<
+	ErrorPanelPosition,
+	ErrorPanelPosition
+>({ combine: (values) => values[0] ?? "bottom" });
 
 export const errorPanelField = StateField.define<ErrorPanelValue>({
 	create: () => ({ message: null, title: "" }),
@@ -21,7 +28,12 @@ export const errorPanelField = StateField.define<ErrorPanelValue>({
 		return value;
 	},
 	provide: (field) =>
-		showPanel.from(field, (value) => (value.message ? errorPanel : null)),
+		showPanel.compute([field, errorPanelPosition], (state) => {
+			if (!state.field(field).message) return null;
+			return state.facet(errorPanelPosition) === "top"
+				? errorPanelTop
+				: errorPanel;
+		}),
 });
 
 function jumpTo(view: EditorView, err: GcsimError) {
@@ -56,6 +68,10 @@ function render(dom: HTMLElement, view: EditorView, value: ErrorPanelValue) {
 		list.append(item);
 	}
 	dom.replaceChildren(title, list);
+}
+
+function errorPanelTop(view: EditorView): Panel {
+	return { ...errorPanel(view), top: true };
 }
 
 function errorPanel(view: EditorView): Panel {
