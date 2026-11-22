@@ -36,17 +36,20 @@ func _KindNoOp() {
 var _KindValues = []Kind{KindNone, KindArtifact, KindCharacter, KindMonster, KindWeapon, KindInvalid}
 
 var _KindNameToValueMap = map[string]Kind{
-	_KindName[0:0]:        KindNone,
+	_KindName[0:0]:   KindNone,
+	_KindName[0:8]:   KindArtifact,
+	_KindName[8:17]:  KindCharacter,
+	_KindName[17:24]: KindMonster,
+	_KindName[24:30]: KindWeapon,
+	_KindName[30:37]: KindInvalid,
+}
+
+var _KindLowerNameToValueMap = map[string]Kind{
 	_KindLowerName[0:0]:   KindNone,
-	_KindName[0:8]:        KindArtifact,
 	_KindLowerName[0:8]:   KindArtifact,
-	_KindName[8:17]:       KindCharacter,
 	_KindLowerName[8:17]:  KindCharacter,
-	_KindName[17:24]:      KindMonster,
 	_KindLowerName[17:24]: KindMonster,
-	_KindName[24:30]:      KindWeapon,
 	_KindLowerName[24:30]: KindWeapon,
-	_KindName[30:37]:      KindInvalid,
 	_KindLowerName[30:37]: KindInvalid,
 }
 
@@ -66,7 +69,7 @@ func KindString(s string) (Kind, error) {
 		return val, nil
 	}
 
-	if val, ok := _KindNameToValueMap[strings.ToLower(s)]; ok {
+	if val, ok := _KindLowerNameToValueMap[strings.ToLower(s)]; ok {
 		return val, nil
 	}
 	return 0, fmt.Errorf("%s does not belong to Kind values", s)
