@@ -33,7 +33,7 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 		AttackTag:    attacks.AttackTagElementalArt,
 		ICDTag:       attacks.ICDTagElementalArt,
 		ICDGroup:     attacks.ICDGroupDefault,
-		StrikeType:   attacks.StrikeTypeBlunt,
+		StrikeType:   attacks.StrikeTypeDefault,
 		Element:      attributes.Dendro,
 		HitlagFactor: 0.01,
 		Durability:   25,
