@@ -8,16 +8,20 @@ import (
 	"github.com/genshinsim/gcsim/pkg/core/event"
 	"github.com/genshinsim/gcsim/pkg/core/info"
 	"github.com/genshinsim/gcsim/pkg/core/player/character"
+	"github.com/genshinsim/gcsim/pkg/core/stacks"
 	"github.com/genshinsim/gcsim/pkg/modifier"
 )
 
 const (
 	reactionBuffKey      = "maelstrom-reaction-boost"
 	reactionBuffDuration = 5 * 60
+	stackDuration        = 10 * 60
 )
 
 type Weapon struct {
-	Index int
+	Index        int
+	char         *character.CharWrapper
+	stackTracker *stacks.MultipleRefreshNoRemove
 }
 
 func maelstromAtkBoost(maxHP float64, refine, count int) float64 {
@@ -42,50 +46,32 @@ func (w *Weapon) Init() error      { return nil }
 // The aforementioned effects can still trigger even when the equipping character is
 // not on the field.
 func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) (info.Weapon, error) {
-	w := &Weapon{}
-	multiplier := 0.75 + float64(p.Refine)*0.25
-	index := 0
-	hpboost := 0.04 * multiplier
-
-	atkcap := 0.08 * multiplier
-	stackKey := []string{
-		"maelstrom-stack-1",
-		"maelstrom-stack-2",
-		"maelstrom-stack-3",
+	w := &Weapon{
+		char:         char,
+		stackTracker: stacks.NewMultipleRefreshNoRemove(3, char.QueueCharTask, &c.F),
 	}
+	multiplier := 0.75 + float64(p.Refine)*0.25
+	hpboost := 0.04 * multiplier
+	atkcap := 0.08 * multiplier
+
 	atkBuffKey := fmt.Sprintf("maelstrom-ATK-%v", char.Base.Key.String())
 	m := make([]float64, attributes.EndStatType)
 
 	updateAtkBuff := func(target *character.CharWrapper) {
-		duration := 0
-		count := 0
-		for _, key := range stackKey {
-			remaining := char.StatusDuration(key)
-			if remaining > 0 {
-				count++
-				duration = max(duration, remaining)
-			}
-		}
-		if count == 0 {
+		if w.stackTracker.Count() == 0 {
 			target.DeleteStatMod(atkBuffKey)
 			return
 		}
 
 		target.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag(atkBuffKey, duration),
+			Base:         modifier.NewBaseWithHitlag(atkBuffKey, stackDuration),
 			AffectedStat: attributes.ATKP,
 			Amount: func() []float64 {
-				count := 0
-				for _, key := range stackKey {
-					if char.StatusIsActive(key) {
-						count++
-					}
-				}
 				boost := 1.0
 				if char.StatusIsActive(reactionBuffKey) {
 					boost = 1.75
 				}
-				m[attributes.ATKP] = min(maelstromAtkBoost(char.MaxHP(), p.Refine, count)*boost, atkcap*boost)
+				m[attributes.ATKP] = min(maelstromAtkBoost(char.MaxHP(), p.Refine, w.stackTracker.Count())*boost, atkcap*boost)
 				return m
 			},
 		})
@@ -125,32 +111,20 @@ func NewWeapon(c *core.Core, char *character.CharWrapper, p info.WeaponProfile) 
 		if amount <= 0 {
 			return
 		}
-		// add status to char given index
-		char.AddStatus(stackKey[index], 600, true)
-		// update buff
+		w.stackTracker.Add(stackDuration)
 		char.AddStatMod(character.StatMod{
-			Base:         modifier.NewBaseWithHitlag("maelstrom-HP", 600),
+			Base:         modifier.NewBaseWithHitlag("maelstrom-HP", stackDuration),
 			AffectedStat: attributes.HPP,
 			Amount: func() []float64 {
-				count := 0
-				for _, v := range stackKey {
-					if char.StatusIsActive(v) {
-						count++
-					}
-				}
 				boost := 1.0
 				if char.StatusIsActive(reactionBuffKey) {
 					boost = 1.75
 				}
-				m[attributes.HPP] = hpboost * float64(count) * boost
+				m[attributes.HPP] = hpboost * float64(w.stackTracker.Count()) * boost
 				return m
 			},
 		})
 		updateAtkBuff(c.Player.ActiveChar())
-		index++
-		if index == 3 {
-			index = 0
-		}
 	}, fmt.Sprintf("maelstrom-%v", char.Base.Key.String()))
 
 	return w, nil
