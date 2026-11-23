@@ -14,7 +14,9 @@ import (
 
 func init() {
 	core.RegisterCharFunc(keys.Nefer, NewChar)
-	paramsFor := map[action.Action][]string{}
+	paramsFor := map[action.Action][]string{
+		action.ActionCharge: {"hold"},
+	}
 	validation.RegisterCharParamValidationFunc(keys.Nefer, func(a action.Action, keys []string) error {
 		valid, ok := paramsFor[a]
 		if !ok {

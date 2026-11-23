@@ -9951,6 +9951,129 @@
       "radius": 3
     }
   ],
+  "nefer": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 0.5,
+      "radius": 1.5
+    },
+    {
+      "ability": "attack",
+      "name": "N2",
+      "shape": "Box",
+      "center": "Player",
+      "box_x": 2,
+      "box_y": 3.5
+    },
+    {
+      "ability": "attack",
+      "name": "N3-1",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1.2,
+      "radius": 2.1
+    },
+    {
+      "ability": "attack",
+      "name": "N3-2",
+      "shape": "Box",
+      "center": "Player",
+      "offset_y": -0.3,
+      "box_x": 2.5,
+      "box_y": 3
+    },
+    {
+      "ability": "attack",
+      "name": "N4",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 2.5,
+      "radius": 1
+    },
+    {
+      "ability": "charge",
+      "name": "CA",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1,
+      "radius": 3
+    },
+    {
+      "ability": "skill",
+      "name": "E",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1,
+      "radius": 3
+    },
+    {
+      "ability": "skill",
+      "name": "Phantasm-CA1",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 1,
+      "radius": 1
+    },
+    {
+      "ability": "skill",
+      "name": "Phantasm-CA2",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 2.75,
+      "radius": 2.75
+    },
+    {
+      "ability": "skill",
+      "name": "Phantasm-CA-Shadow1",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_x": 0.3,
+      "offset_y": 1,
+      "radius": 3.3
+    },
+    {
+      "ability": "skill",
+      "name": "Phantasm-CA-Shadow2",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_x": -0.3,
+      "offset_y": 1,
+      "radius": 3.3
+    },
+    {
+      "ability": "skill",
+      "name": "Phantasm-CA-Shadow3",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 2.75,
+      "radius": 4
+    },
+    {
+      "ability": "burst",
+      "name": "Q-1",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 6.5
+    },
+    {
+      "ability": "burst",
+      "name": "Q-2",
+      "shape": "Circle",
+      "center": "Player",
+      "radius": 6.5
+    },
+    {
+      "ability": "cons",
+      "name": "Phantasm-CA-ShadowC6",
+      "shape": "Circle",
+      "center": "Player",
+      "offset_y": 3.15,
+      "radius": 4.5
+    }
+  ],
   "neuvillette": [
     {
       "ability": "attack",
