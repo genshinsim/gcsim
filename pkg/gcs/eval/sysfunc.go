@@ -38,6 +38,7 @@ func (e *Eval) initSysFuncs(env *Env) {
 	e.addSysFunc("is_target_dead", e.isTargetDead, env)
 	e.addSysFunc("pick_up_crystallize", e.pickUpCrystallize, env)
 	e.addSysFunc("set_starting_verdant_dew", e.setStartingVerdantDew, env)
+	e.addSysFunc("set_starting_moonridge_dew", e.setStartingMoonridgeDew, env)
 	e.addSysFunc("movement", e.movement, env)
 
 	// math
@@ -358,6 +359,25 @@ func (e *Eval) setStartingVerdantDew(c *ast.CallExpr, env *Env) (Obj, error) {
 	}
 
 	e.Core.Player.SetVerdantDew(int(f))
+	return &null{}, nil
+}
+
+func (e *Eval) setStartingMoonridgeDew(c *ast.CallExpr, env *Env) (Obj, error) {
+	objs, err := e.validateArguments(c, env, typNum)
+	if err != nil {
+		return nil, err
+	}
+	f := ntoi(objs[0].(*number))
+
+	if f < 0 || f > 3 {
+		return nil, fmt.Errorf("invald value for set_starting_moonridge_dew, expected integer between 0-3, got %v", f)
+	}
+
+	if e.Core.F > 1 {
+		return nil, fmt.Errorf("cannot call set_starting_moonridge_dew after frame 1, got frame %v", e.Core.F)
+	}
+
+	e.Core.Player.SetMoonridgeDew(int(f))
 	return &null{}, nil
 }
 
