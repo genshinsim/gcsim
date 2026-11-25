@@ -76,6 +76,7 @@ import (
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/hakushin"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/jadefallssplendor"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/kagura"
+	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/maelstrom"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/magicguide"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/mappa"
 	_ "github.com/genshinsim/gcsim/internal/weapons/catalyst/memory"

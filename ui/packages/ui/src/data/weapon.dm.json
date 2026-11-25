@@ -707,6 +707,13 @@
       "weapon_class": "WEAPON_BOW",
       "image_name": "UI_EquipIcon_Bow_Ayus_Awaken"
     },
+    "hymnofthemaelstrom": {
+      "id": 14524,
+      "key": "hymnofthemaelstrom",
+      "rarity": 5,
+      "weapon_class": "WEAPON_CATALYST",
+      "image_name": "UI_EquipIcon_Catalyst_Bludnye_Awaken"
+    },
     "ibispiercer": {
       "id": 15419,
       "key": "ibispiercer",
