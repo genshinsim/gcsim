@@ -475,11 +475,11 @@ func setupAscendantGleam(core *core.Core) {
 	}
 
 	hook := func(args ...any) {
-		src = core.F
 		char := core.Player.ActiveChar()
 		if char.Moonsign != 0 {
 			return
 		}
+		src = core.F
 
 		for _, c := range core.Player.Chars() {
 			c.AddReactBonusMod(character.ReactBonusMod{
