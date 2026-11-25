@@ -1,0 +1,150 @@
+use: pipeline
+kind: character
+name: nefer
+
+combat:
+  icd_tags:
+    - Nefer_ElementalBurst
+
+talents:
+  - attack:
+      - attack(1-Hit DMG)
+      - attack(2-Hit DMG)
+      - attack(3-Hit DMG)
+      - attack(4-Hit DMG)
+  - charge: attack(Charged Attack DMG)
+  - collision_plunge: attack(Plunge DMG)
+  - low_plunge: attack(Low/High Plunge DMG) # {}/{}
+  - high_plunge: attack(Low/High Plunge DMG|1) # {}/{}
+
+  - skill_att: skill(Skill DMG)
+  - skill_em: skill(Skill DMG|1)
+  - phantasm_nefer_1_att: skill(Phantasm Performance 1-Hit DMG (Nefer)) # {} ATK+{} Elemental Mastery
+  - phantasm_nefer_1_em: skill(Phantasm Performance 1-Hit DMG (Nefer)|1) # {} ATK+{} Elemental Mastery
+  - phantasm_nefer_2_att: skill(Phantasm Performance 2-Hit DMG (Nefer)) # {} ATK+{} Elemental Mastery
+  - phantasm_nefer_2_em: skill(Phantasm Performance 2-Hit DMG (Nefer)|1) # {} ATK+{} Elemental Mastery
+  - phantasm_shade_1_em: skill(Phantasm Performance 1-Hit DMG (Shades))
+  - phantasm_shade_2_em: skill(Phantasm Performance 2-Hit DMG (Shades))
+  - phantasm_shade_3_em: skill(Phantasm Performance 3-Hit DMG (Shades))
+
+  - vow_1_att: burst(1-Hit DMG) # {} ATK+{} Elemental Mastery
+  - vow_1_em: burst(1-Hit DMG|1) # {} ATK+{} Elemental Mastery
+  - vow_2_att: burst(2-Hit DMG) # {} ATK+{} Elemental Mastery
+  - vow_2_em: burst(2-Hit DMG|1) # {} ATK+{} Elemental Mastery
+  - veil_bonus: burst(DMG Bonus)
+
+docs:
+  frames:
+    - count: https://docs.google.com/spreadsheets/d/1JMqNGKIXK8KM_rpP3eu8lYFnjYbIuX45f_QqxSBsTYY/edit#gid=0
+      count_credit: caramielle.
+      video: https://youtu.be/QeYtpxgiZeo
+      video_credit: caramielle.
+abilities:
+  - name: attack
+    hitbox:
+      - name: N1
+        shape: Circle
+        center: Player
+        offset: [0, 0.5]
+        radius: 1.5
+        hitlag: { time: 0.035, scale: 0.01, defense_halt: false }
+
+      - name: N2
+        shape: Box
+        center: Player
+        offset: [0, 0]
+        box: [2, 3.5]
+        hitlag: { time: 0.035, scale: 0.01, defense_halt: false }
+
+      - name: N3-1
+        shape: Circle
+        center: Player
+        offset: [0, 1.2]
+        radius: 2.1
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: false }
+
+      - name: N3-2
+        shape: Box
+        center: Player
+        offset: [0, -0.3]
+        box: [2.5, 3]
+        hitlag: { time: 0.03, scale: 0.01, defense_halt: false }
+
+      - name: N4
+        shape: Circle
+        center: Player
+        offset: [0, 2.5]
+        radius: 1
+        hitlag: { time: 0.05, scale: 0.01, defense_halt: false }
+
+  - name: charge
+    params:
+      hold: 0 for Tap (default), value between 1 and 150 for Hold. Used for duration of slither state.
+    hitbox:
+      - name: CA
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+        hitlag: { time: 0.07, scale: 0.01, defense_halt: false }
+
+  - name: skill
+    hitbox:
+      - name: E
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 3
+
+      - name: Phantasm-CA1
+        shape: Circle
+        center: Player
+        offset: [0, 1]
+        radius: 1
+        hitlag: { time: 0.06, scale: 0.01, defense_halt: false }
+
+      - name: Phantasm-CA2
+        shape: Circle
+        center: Player
+        offset: [0, 2.75]
+        radius: 2.75
+        hitlag: { time: 0.08, scale: 0.01, defense_halt: false }
+
+      - name: Phantasm-CA-Shadow1
+        shape: Circle
+        center: Player
+        offset: [0.3, 1]
+        radius: 3.3
+
+      - name: Phantasm-CA-Shadow2
+        shape: Circle
+        center: Player
+        offset: [-0.3, 1]
+        radius: 3.3
+
+      - name: Phantasm-CA-Shadow3
+        shape: Circle
+        center: Player
+        offset: [0, 2.75]
+        radius: 4
+
+  - name: burst
+    hitbox:
+      - name: Q-1
+        shape: Circle
+        center: Player
+        offset: [0, 0]
+        radius: 6.5
+
+      - name: Q-2
+        shape: Circle
+        center: Player
+        offset: [0, 0]
+        radius: 6.5
+  - name: cons
+    hitbox:
+      - name: Phantasm-CA-ShadowC6
+        shape: Circle
+        center: Player
+        offset: [0, 3.15]
+        radius: 4.5

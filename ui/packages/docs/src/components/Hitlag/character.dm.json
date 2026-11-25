@@ -3441,6 +3441,72 @@
       "deployable": false
     }
   ],
+  "nefer": [
+    {
+      "ability": "attack",
+      "name": "N1",
+      "time": 0.035,
+      "scale": 0.01,
+      "defense_halt": false,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N2",
+      "time": 0.035,
+      "scale": 0.01,
+      "defense_halt": false,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N3-1",
+      "time": 0.03,
+      "scale": 0.01,
+      "defense_halt": false,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N3-2",
+      "time": 0.03,
+      "scale": 0.01,
+      "defense_halt": false,
+      "deployable": false
+    },
+    {
+      "ability": "attack",
+      "name": "N4",
+      "time": 0.05,
+      "scale": 0.01,
+      "defense_halt": false,
+      "deployable": false
+    },
+    {
+      "ability": "charge",
+      "name": "CA",
+      "time": 0.07,
+      "scale": 0.01,
+      "defense_halt": false,
+      "deployable": false
+    },
+    {
+      "ability": "skill",
+      "name": "Phantasm-CA1",
+      "time": 0.06,
+      "scale": 0.01,
+      "defense_halt": false,
+      "deployable": false
+    },
+    {
+      "ability": "skill",
+      "name": "Phantasm-CA2",
+      "time": 0.08,
+      "scale": 0.01,
+      "defense_halt": false,
+      "deployable": false
+    }
+  ],
   "neuvillette": [
     {
       "ability": "skill",

@@ -1546,6 +1546,13 @@
       "desc": "0 for Tap (default), value between 1 and 241 for Hold. The number is added to the minimum holding frames for Tap to turn into Hold (41), subtracted by 1 to account for requiring a 1 to activate."
     }
   ],
+  "nefer": [
+    {
+      "ability": "charge",
+      "param": "hold",
+      "desc": "0 for Tap (default), value between 1 and 150 for Hold. Used for duration of slither state."
+    }
+  ],
   "neuvillette": [
     {
       "ability": "charge",

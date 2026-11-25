@@ -42,9 +42,10 @@ type Handler struct {
 	charPos map[keys.Char]int
 
 	// stam
-	Stam            float64
-	LastStamUse     int
-	stamPercentMods []stamPercentMod
+	Stam               float64
+	LastStamUse        int
+	stamPercentMods    []stamPercentMod
+	verdantDewRateMods []verdantDewRateMod
 
 	// airborne source
 	airborne AirborneSource
@@ -67,7 +68,7 @@ type Handler struct {
 
 	verdantDewExpiryFrame int
 	verdantDew            int
-	partialDewCount       int
+	partialDewCount       float64
 
 	moonridgeDew int
 }
@@ -84,12 +85,13 @@ type Opt struct {
 
 func New(opt Opt) *Handler {
 	h := &Handler{
-		chars:           make([]*character.CharWrapper, 0, 4),
-		charPos:         make(map[keys.Char]int),
-		stamPercentMods: make([]stamPercentMod, 0, 5),
-		Opt:             opt,
-		Stam:            MaxStam,
-		SwapICD:         SwapCDFrames,
+		chars:              make([]*character.CharWrapper, 0, 4),
+		charPos:            make(map[keys.Char]int),
+		stamPercentMods:    make([]stamPercentMod, 0, 5),
+		verdantDewRateMods: make([]verdantDewRateMod, 0, 4),
+		Opt:                opt,
+		Stam:               MaxStam,
+		SwapICD:            SwapCDFrames,
 	}
 	h.Shields = shield.New(opt.F, opt.Log, opt.Events)
 	h.Handler = infusion.New(opt.F, opt.Log, opt.Debug)
@@ -202,13 +204,39 @@ func (h *Handler) DistributeParticle(p character.Particle) {
 }
 
 func (h *Handler) AbilStamCost(i int, a action.Action, p map[string]int) float64 {
-	// stam percent mods are negative
-	// cap it to 100% stam decrease
+	return h.AbilStaminaSpec(i, a, p).Consume
+}
+
+func (h *Handler) AbilStaminaSpec(i int, a action.Action, p map[string]int) action.StaminaSpec {
+	char := h.chars[i]
+	var spec action.StaminaSpec
+	if provider, ok := char.Character.(character.StaminaProvider); ok {
+		spec = provider.ActionStamina(a, p)
+	} else {
+		cost := char.ActionStam(a, p)
+		spec = action.StaminaSpec{
+			Requirement: cost,
+			Consume:     cost,
+			Timing:      action.StaminaConsumeOnExec,
+		}
+		if a == action.ActionDash {
+			spec.Timing = action.StaminaConsumeByAbility
+		}
+	}
+
 	r := 1 + h.StamPercentMod(a)
 	if r < 0 {
 		r = 0
 	}
-	return r * h.chars[i].ActionStam(a, p)
+	spec.Requirement *= r
+	spec.Consume *= r
+	if spec.Requirement < 0 {
+		spec.Requirement = 0
+	}
+	if spec.Consume < 0 {
+		spec.Consume = 0
+	}
+	return spec
 }
 
 func (h *Handler) UseStam(amount float64, a action.Action) {

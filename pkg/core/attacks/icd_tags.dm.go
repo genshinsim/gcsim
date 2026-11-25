@@ -62,6 +62,7 @@ const (
 	ICDTagMonaWaterDamage
 	ICDTagNahidaC6
 	ICDTagNahidaSkill
+	ICDTagNeferElementalBurst
 	ICDTagNeuvilletteC6
 	ICDTagNilouTranquilityAura
 	ICDTagNormalAttack
