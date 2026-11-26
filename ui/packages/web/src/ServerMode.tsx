@@ -11,6 +11,10 @@ const defaultURL = "http://127.0.0.1:54321";
 const ServerMode = ({ children }: { children: ReactNode }) => {
 	const { t } = useTranslation();
 	const [url, setURL] = React.useState<string>((): string => {
+		const serverModeUrlParam = new URLSearchParams(window.location.search).get(
+			urlKey,
+		);
+		if (serverModeUrlParam) return serverModeUrlParam;
 		const saved = localStorage.getItem(urlKey);
 		if (saved === null) {
 			localStorage.setItem(urlKey, defaultURL);
