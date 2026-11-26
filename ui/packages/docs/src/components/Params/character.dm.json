@@ -1967,6 +1967,18 @@
       "desc": "0 for Tap (default), 1 for Hold."
     }
   ],
+  "vodyanitsa": [
+    {
+      "ability": "attack",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    },
+    {
+      "ability": "charge",
+      "param": "travel",
+      "desc": "Projectile travel time. Default 10 frames."
+    }
+  ],
   "wanderer": [
     {
       "ability": "attack",

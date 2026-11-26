@@ -267,6 +267,16 @@
       "desc": "Number of Void Rifts on the field."
     }
   ],
+  "vodyanitsa": [
+    {
+      "field": ".vodyanitsa.chorus",
+      "desc": "Number of Chorus stacks that Vodyanitsa has."
+    },
+    {
+      "field": ".vodyanitsa.lead-vocal",
+      "desc": "Number of Lead Vocal stacks that Vodyanitsa has."
+    }
+  ],
   "wanderer": [
     {
       "field": ".wanderer.skydweller-points",

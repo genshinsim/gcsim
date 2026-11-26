@@ -1885,6 +1885,23 @@
         "burst_energy_cost": 60
       }
     },
+    "vodyanitsa": {
+      "id": 10000140,
+      "sub_id": 14001,
+      "key": "vodyanitsa",
+      "rarity": "QUALITY_ORANGE",
+      "body": "BODY_GIRL",
+      "region": "ASSOC_TYPE_SNEZHNAYA",
+      "element": "Water",
+      "weapon_class": "WEAPON_CATALYST",
+      "icon_name": "UI_AvatarIcon_Vodyanitsa",
+      "skill_details": {
+        "skill": 11402,
+        "burst": 11405,
+        "attack": 11401,
+        "burst_energy_cost": 60
+      }
+    },
     "wanderer": {
       "id": 10000075,
       "sub_id": 7501,

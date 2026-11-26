@@ -34,6 +34,7 @@ func (r *Reactable) newStellarVortex() *StellarVortex {
 	p.OnKill = p.explode
 	p.OnExpiry = p.explode
 	r.core.Combat.AddGadget(p)
+	r.core.Events.Emit(event.OnStellarVortex, p)
 	return p
 }
 
