@@ -24,7 +24,7 @@ func init() {
 
 	attackFrames[0] = frames.InitNormalCancelSlice(attackHitmarks[0], 21) // N1 -> N2
 	attackFrames[1] = frames.InitNormalCancelSlice(attackHitmarks[1], 26) // N2 -> N3
-	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 43) // N3 -> N1
+	attackFrames[2] = frames.InitNormalCancelSlice(attackHitmarks[2], 47) // N3 -> N1
 }
 
 // Normal attack damage queue generator

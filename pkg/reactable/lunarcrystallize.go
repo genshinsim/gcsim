@@ -60,7 +60,7 @@ func (r *Reactable) TryAddLCr(a *info.AttackEvent) bool {
 	} else if r.core.Flags.Custom[lcrCountKey] >= 3 && r.core.Status.Duration(moondriftHarmonyICDKey) == 0 {
 		// trigger three attacks
 		r.core.Flags.Custom[lcrCountKey] -= 3
-		r.core.Events.Emit(event.OnMoondriftHarmony, r.self, &a)
+		r.core.Events.Emit(event.OnMoondriftHarmony, r.self, a)
 		r.core.Log.NewEvent("Moondrift Harmony triggered", glog.LogElementEvent, a.Info.ActorIndex)
 		r.core.Status.Add(moondriftHarmonyICDKey, lcrHitmarks[len(lcrHitmarks)-1])
 		r.DoLCrAttack(a.Info.ActorIndex)

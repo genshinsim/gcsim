@@ -79,12 +79,15 @@ func (c *char) a4Init() {
 		Base:         modifier.NewBaseWithHitlag(a4Key, -1),
 		AffectedStat: attributes.EM,
 		Amount: func() []float64 {
-			if c.Core.Player.ActiveChar().Moonsign > 0 && c.Core.Player.Active() != c.Index() {
-				return nil
+			m[attributes.EM] = c.TotalDef(true) * 0.05
+			if c.Core.Player.ActiveChar().Moonsign == 0 {
+				return m
+			}
+			if c.Core.Player.Active() == c.Index() {
+				return m
 			}
 
-			m[attributes.EM] = c.TotalDef(true) * 0.05
-			return m
+			return nil
 		},
 	})
 }

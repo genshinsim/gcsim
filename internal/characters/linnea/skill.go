@@ -28,13 +28,13 @@ const (
 	skillDur        = 25 * 60
 	skillSuperPower = "linnea-super-power"
 
-	skillStandardPower     = "linnea-standard-power"
-	skillMillionTonHitmark = 50
-	skillStandardStart     = 48
-	skillStandardInterval  = 120
-	skillSecondHitDelay    = 21
-	skillMillionAbil       = "Lumi Million Ton Crush"
-	skillOverdriveAbil     = "Lumi Heavy Overdrive Hammer"
+	skillStandardPower       = "linnea-standard-power"
+	skillMillionTonHitmark   = 50
+	skillStandardStart       = 48
+	skillStandardInterval    = 120
+	skillPoundSecondHitDelay = 21
+	skillMillionAbil         = "Lumi Million Ton Crush"
+	skillOverdriveAbil       = "Lumi Heavy Overdrive Hammer"
 
 	skillCD      = 18 * 60
 	skillCDStart = 1
@@ -45,7 +45,7 @@ const (
 )
 
 func init() {
-	skillFrames = frames.InitAbilSlice(14) // ?
+	skillFrames = frames.InitAbilSlice(44)
 	skillFrames[action.ActionAttack] = 33
 	skillFrames[action.ActionAim] = 44
 	skillFrames[action.ActionSkill] = 20
@@ -66,21 +66,13 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	c.DeleteStatus(skillStandardPower)
 	c.DeleteStatus(skillSuperPower)
 
-	c.AddStatus(skillRecastKey, skillRecastDur, true)
 	src := c.Core.F
 	c.skillRecastSrc = src
 	c.QueueCharTask(func() {
 		if c.skillRecastSrc != src {
 			return
 		}
-		if !c.StatusIsActive(skillSuperPower) && c.Core.Constructs.CountByType(construct.GeoConstructLunarCrystallize) > 0 {
-			c.skillHitNum = 1
-		}
-		c.AddStatus(skillSuperPower, skillDur, false)
-		c.skillSrc = src
-		c.a1OnLumi(src)
-		c.advanceSkillIndex() // the first pound pound is skipped right after summoning
-		c.Core.Tasks.Add(func() { c.lumiAttack(src) }, skillSuperInterval[1])
+		c.summonLumiSuper(src)
 	}, skillRecastDur)
 
 	c.c1OnSkill()
@@ -94,48 +86,6 @@ func (c *char) Skill(p map[string]int) (action.Info, error) {
 	}, nil
 }
 
-func (c *char) lumiAttack(src int) {
-	if c.skillSrc != src {
-		return
-	}
-	if !c.StatusIsActive(skillStandardPower) && !c.StatusIsActive(skillSuperPower) {
-		return
-	}
-
-	attack := skillPoundAttack
-	if c.StatusIsActive(skillSuperPower) && skillSequence[c.skillHitNum] == skillHeavyAttack {
-		attack = skillHeavyAttack
-	}
-
-	switch attack {
-	case skillPoundAttack:
-		c.poundPoundHammer(src)
-	case skillHeavyAttack:
-		c.heavyOverdriveHammer()
-	}
-
-	delay := skillSuperInterval[c.skillHitNum]
-	if c.StatusIsActive(skillStandardPower) {
-		delay = skillStandardInterval
-	} else {
-		c.advanceSkillIndex()
-	}
-
-	c.Core.Tasks.Add(func() { c.lumiAttack(src) }, delay)
-}
-
-func (c *char) advanceSkillIndex() {
-	if c.Core.Constructs.CountByType(construct.GeoConstructLunarCrystallize) == 0 {
-		c.skillHitNum = 0
-		return
-	}
-
-	c.skillHitNum++
-	if c.skillHitNum >= 3 {
-		c.skillHitNum = 0
-	}
-}
-
 func (c *char) skillRecast() action.Info {
 	c.recastCount++
 	src := c.Core.F
@@ -143,28 +93,14 @@ func (c *char) skillRecast() action.Info {
 
 	if c.recastCount == 3 {
 		c.DeleteStatus(skillRecastKey)
-		// do the big hit and then lower frequency
-		c.skillHitNum = 0
-		c.skillSrc = src
-		c.AddStatus(skillStandardPower, skillDur, false)
-		c.a1OnLumi(src)
-		c.Core.Tasks.Add(func() {
-			c.millionTonHammer()
-		}, skillMillionTonHitmark)
-		c.Core.Tasks.Add(func() { c.lumiAttack(src) }, skillMillionTonHitmark+skillStandardStart)
+		c.summonLumiUltimate(src)
 	} else {
 		c.AddStatus(skillRecastKey, skillRecastDur, true)
 		c.QueueCharTask(func() {
 			if c.skillRecastSrc != src {
 				return
 			}
-			if !c.StatusIsActive(skillSuperPower) && c.Core.Constructs.CountByType(construct.GeoConstructLunarCrystallize) > 0 {
-				c.skillHitNum = 1
-			}
-			c.AddStatus(skillSuperPower, skillDur, false)
-			c.skillSrc = src
-			c.a1OnLumi(src)
-			c.Core.Tasks.Add(func() { c.lumiAttack(src) }, skillSuperInterval[1])
+			c.summonLumiSuper(src)
 		}, skillRecastDur)
 	}
 
@@ -176,6 +112,107 @@ func (c *char) skillRecast() action.Info {
 	}
 }
 
+func (c *char) lumiAttackStandard(src int) {
+	if c.skillSrc != src {
+		return
+	}
+	if !c.StatusIsActive(skillStandardPower) {
+		return
+	}
+	c.poundPoundHammer(src)
+	c.Core.Tasks.Add(func() { c.lumiAttackStandard(src) }, skillStandardInterval)
+}
+
+func (c *char) lumiAttackSuper(src int) {
+	if c.skillSrc != src {
+		return
+	}
+	if !c.StatusIsActive(skillSuperPower) {
+		return
+	}
+
+	attack := skillPoundAttack
+
+	moondrifts, _ := c.Core.Constructs.ConstructsByType(construct.GeoConstructLunarCrystallize)
+	moondriftnearby := false
+	playerPos := c.Core.Combat.Player().Pos()
+	for _, moondrift := range moondrifts {
+		if playerPos.Distance(moondrift.Pos()) < 16 {
+			moondriftnearby = true
+			break
+		}
+	}
+	if skillSequence[c.skillHitNum] == skillHeavyAttack && moondriftnearby {
+		attack = skillHeavyAttack
+	}
+
+	switch attack {
+	case skillPoundAttack:
+		c.poundPoundHammer(src)
+	case skillHeavyAttack:
+		c.heavyOverdriveHammer()
+	}
+
+	c.advanceSkillIndex()
+	c.Core.Tasks.Add(func() { c.lumiAttackSuper(src) }, skillSuperInterval[c.skillHitNum])
+}
+
+func (c *char) advanceSkillIndex() {
+	moondrifts, _ := c.Core.Constructs.ConstructsByType(construct.GeoConstructLunarCrystallize)
+	moondriftnearby := false
+	playerPos := c.Core.Combat.Player().Pos()
+	for _, moondrift := range moondrifts {
+		if playerPos.Distance(moondrift.Pos()) < 16 {
+			moondriftnearby = true
+			break
+		}
+	}
+
+	if !moondriftnearby {
+		return
+	}
+
+	c.skillHitNum++
+	if c.skillHitNum >= 3 {
+		c.skillHitNum = 0
+	}
+}
+
+func (c *char) summonLumiStandard(src int) {
+	c.DeleteStatus(skillStandardPower)
+	c.DeleteStatus(skillSuperPower)
+	c.AddStatus(skillStandardPower, skillDur, false)
+	c.skillHitNum = 0
+	c.skillSrc = src
+	c.a1OnLumi(src)
+	c.Core.Tasks.Add(func() { c.lumiAttackStandard(src) }, skillStandardStart)
+}
+
+func (c *char) summonLumiSuper(src int) {
+	c.DeleteStatus(skillStandardPower)
+	c.DeleteStatus(skillSuperPower)
+	c.AddStatus(skillSuperPower, skillDur, false)
+	// attempts to use millionTonHammer right after summoning in super form if there are moondrifts nearby
+	c.skillHitNum = 1
+	c.advanceSkillIndex()
+	c.skillSrc = src
+	c.a1OnLumi(src)
+	c.Core.Tasks.Add(func() { c.lumiAttackSuper(src) }, skillSuperInterval[1])
+}
+
+func (c *char) summonLumiUltimate(src int) {
+	c.DeleteStatus(skillStandardPower)
+	c.DeleteStatus(skillSuperPower)
+	c.AddStatus(skillStandardPower, skillDur, false)
+	c.skillHitNum = 0
+	c.skillSrc = src
+	c.a1OnLumi(src)
+	c.Core.Tasks.Add(func() {
+		c.millionTonHammer()
+	}, skillMillionTonHitmark)
+	c.Core.Tasks.Add(func() { c.lumiAttackStandard(src) }, skillMillionTonHitmark+skillStandardStart)
+}
+
 func (c *char) millionTonHammer() {
 	ai := info.AttackInfo{
 		Abil:             skillMillionAbil,
@@ -184,6 +221,7 @@ func (c *char) millionTonHammer() {
 		ICDTag:           attacks.ICDTagNone,
 		ICDGroup:         attacks.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeBlunt,
+		PoiseDMG:         150,
 		Element:          attributes.Geo,
 		Mult:             skillMillion[c.TalentLvlSkill()],
 		UseDef:           true,
@@ -202,7 +240,7 @@ func (c *char) millionTonHammer() {
 
 	ae.Callbacks = append(ae.Callbacks, c.particleCB)
 	c.Core.QueueAttackEvent(&ae, 0)
-	c.c2TriggerMoonDrift()
+	c.c2TriggerMoonDrift(&ae)
 }
 
 func (c *char) poundPoundHammer(src int) {
@@ -213,6 +251,7 @@ func (c *char) poundPoundHammer(src int) {
 		ICDTag:     attacks.ICDTagElementalArt,
 		ICDGroup:   attacks.ICDGroupDefault,
 		StrikeType: attacks.StrikeTypeBlunt,
+		PoiseDMG:   35,
 		Element:    attributes.Geo,
 		Durability: 25,
 		Mult:       skillPound[c.TalentLvlSkill()],
@@ -226,7 +265,7 @@ func (c *char) poundPoundHammer(src int) {
 		}
 		ai.Abil = "Lumi Pound-Pound Pummeler 2"
 		c.Core.QueueAttack(ai, ap, 0, 0, c.particleCB)
-	}, skillSecondHitDelay)
+	}, skillPoundSecondHitDelay)
 }
 
 func (c *char) heavyOverdriveHammer() {
@@ -237,6 +276,7 @@ func (c *char) heavyOverdriveHammer() {
 		ICDTag:           attacks.ICDTagNone,
 		ICDGroup:         attacks.ICDGroupDefault,
 		StrikeType:       attacks.StrikeTypeBlunt,
+		PoiseDMG:         75,
 		Element:          attributes.Geo,
 		Mult:             skillHeavy[c.TalentLvlSkill()],
 		UseDef:           true,
@@ -253,8 +293,7 @@ func (c *char) heavyOverdriveHammer() {
 	}
 	ae.Callbacks = append(ae.Callbacks, c.particleCB)
 	c.Core.QueueAttackEvent(&ae, 0)
-
-	c.c2TriggerMoonDrift()
+	c.c2TriggerMoonDrift(&ae)
 }
 
 func (c *char) particleCB(a info.AttackCB) {

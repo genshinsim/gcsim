@@ -12,28 +12,23 @@ var burstFrames []int
 const (
 	initialHeal        = 96
 	energyDrainDelay   = 4
-	firstSkillHitDelay = 214
+	firstSkillHitDelay = 96
 )
 
 func init() {
-	burstFrames = frames.InitAbilSlice(110)
+	burstFrames = frames.InitAbilSlice(96)
 	burstFrames[action.ActionSkill] = 96
-	burstFrames[action.ActionSwap] = 97
+	burstFrames[action.ActionSwap] = 96
 }
 
 func (c *char) Burst(p map[string]int) (action.Info, error) {
 	src := c.Core.F
 	c.skillSrc = src
-	switch {
-	case c.StatusIsActive(skillStandardPower):
-		c.AddStatus(skillStandardPower, skillDur, false)
-	case c.StatusIsActive(skillSuperPower):
-		c.AddStatus(skillSuperPower, skillDur, false)
-	default:
-		c.AddStatus(skillSuperPower, skillDur, false)
-		c.a1OnLumi(src)
-		c.advanceSkillIndex() // the first pound pound is skipped right after summoning
-		c.Core.Tasks.Add(func() { c.lumiAttack(src) }, firstSkillHitDelay)
+	// Doesn't behave as explained in the ability description. It will always re-summon Lumi, not refresh the duration.
+	if c.StatusIsActive(skillStandardPower) {
+		c.Core.Tasks.Add(func() { c.summonLumiStandard(src) }, firstSkillHitDelay)
+	} else {
+		c.Core.Tasks.Add(func() { c.summonLumiSuper(src) }, firstSkillHitDelay)
 	}
 
 	// initial heal

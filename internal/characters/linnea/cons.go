@@ -35,53 +35,77 @@ func (c *char) c1Init() {
 		c.c1Stacks = min(c.c1Stacks+stacks, 18)
 	}, c1Key)
 
-	f := func(atk *info.AttackEvent) {
+	applyStacks := func(atk *info.AttackEvent) {
 		if !c.StatusIsActive(c1Key) {
 			return
 		}
 
-		maxStacks := 1
+		maxAppliedStacks := 1
 		scaling := 0.75
 		if atk.Info.ActorIndex == c.Index() && atk.Info.Abil == skillMillionAbil {
-			maxStacks = 5
+			maxAppliedStacks = 5
 			scaling = 1.5
 		}
 
 		c6stacks, c6scale := c.c6C1Mult()
-		maxStacks *= c6stacks
+		maxAppliedStacks *= c6stacks
 		scaling *= c6scale
 
 		if c.c1Stacks > 0 {
-			def := c.TotalDef(false)
-			stacks := min(c.c1Stacks, maxStacks)
-			amt := def * scaling * float64(stacks)
+			consumedStacks := min(c.c1Stacks, maxAppliedStacks)
+			amt := c.TotalDef(false) * scaling * float64(consumedStacks)
 			if c.Core.Flags.LogDebug {
 				c.Core.Log.NewEvent("Linnea C1 proc dmg add", glog.LogPreDamageMod, atk.Info.ActorIndex).
-					Write("addition", amt).
 					Write("Field Catalog stacks left", c.c1Stacks)
 			}
 			atk.Info.FlatDmg += amt
-			c.c1Stacks -= stacks
+		}
+	}
+
+	consumeStacks := func(atk *info.AttackEvent) {
+		if !c.StatusIsActive(c1Key) {
+			return
+		}
+
+		maxConsumedStacks := 1
+		if atk.Info.ActorIndex == c.Index() && atk.Info.Abil == skillMillionAbil {
+			maxConsumedStacks = 5
+		}
+
+		c6stacks, _ := c.c6C1Mult()
+		maxConsumedStacks *= c6stacks
+
+		if c.c1Stacks > 0 {
+			consumedStacks := min(c.c1Stacks, maxConsumedStacks)
+			if c.Core.Flags.LogDebug {
+				c.Core.Log.NewEvent("Linnea C1 stack conume", glog.LogPreDamageMod, atk.Info.ActorIndex).
+					Write("Field Catalog stacks left", c.c1Stacks)
+			}
+			c.c1Stacks -= consumedStacks
 		}
 	}
 
 	c.Core.Events.Subscribe(event.OnEnemyHit, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
-		switch atk.Info.AttackTag {
-		case attacks.AttackTagDirectLunarCrystallize:
-		default:
+		if atk.Info.AttackTag != attacks.AttackTagDirectLunarCrystallize {
 			return
 		}
-		f(atk)
+		applyStacks(atk)
+		consumeStacks(atk)
 	}, c1Key)
 	c.Core.Events.Subscribe(event.OnSpecialReactionAttack, func(args ...any) {
 		atk := args[1].(*info.AttackEvent)
-		switch atk.Info.AttackTag {
-		case attacks.AttackTagReactionLunarCrystallize:
-		default:
+		if atk.Info.AttackTag != attacks.AttackTagReactionLunarCrystallize {
 			return
 		}
-		f(atk)
+		applyStacks(atk)
+	}, c1Key)
+	c.Core.Events.Subscribe(event.OnMoondriftHarmony, func(args ...any) {
+		atk := args[1].(*info.AttackEvent)
+		if atk.Info.AttackTag != attacks.AttackTagReactionLunarCrystallize {
+			return
+		}
+		consumeStacks(atk)
 	}, c1Key)
 }
 
@@ -134,7 +158,7 @@ func (c *char) c2MillionTonCDBonus(snap *info.Snapshot) {
 	snap.Stats[attributes.CD] += 1.5
 }
 
-func (c *char) c2TriggerMoonDrift() {
+func (c *char) c2TriggerMoonDrift(ae *info.AttackEvent) {
 	if c.Base.Cons < 2 {
 		return
 	}
@@ -151,7 +175,9 @@ func (c *char) c2TriggerMoonDrift() {
 		}
 		contribMap[char.Index()] = true
 	}
-	reactable.DoLCrAttackWithContrib(contribMap, c.Core.Combat.PrimaryTarget(), c.Core, c.Index())
+	target := c.Core.Combat.PrimaryTarget()
+	c.Core.Events.Emit(event.OnMoondriftHarmony, target, ae)
+	reactable.DoLCrAttackWithContrib(contribMap, target, c.Core, c.Index())
 	c.Core.Log.NewEvent("Linnea C2 Lunar Crystallize attack triggered", glog.LogElementEvent, c.Index())
 }
 
